@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.tls.config.TLSDelegateConfig;
-import de.rub.nds.tlsattacker.tls.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 
 /**
  *

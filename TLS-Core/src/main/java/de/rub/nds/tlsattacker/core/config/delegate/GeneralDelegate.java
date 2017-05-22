@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -16,11 +16,9 @@ import java.security.Provider;
 import java.security.Security;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  *
@@ -92,8 +90,7 @@ public class GeneralDelegate extends Delegate {
         }
         // TODO this should probably not be here?
         // ECC does not work properly in the NSS provider
-        Security.removeProvider("SunPKCS11-NSS");
-        Security.addProvider(new BouncyCastleProvider());
+        // Security.removeProvider("SunPKCS11-NSS");
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());

@@ -9,7 +9,6 @@
     <name>TLS-Attacker</name>
     <url>https://github.com/RUB-NDS/TLS-Attacker</url>
     <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/) and the Hackmanit GmbH (http://hackmanit.de/). </description>
-    
     <developers>
         <developer>
             <id>jsomorovsky</id>
@@ -35,14 +34,6 @@
             </roles>
         </developer>
     </developers>
-     
-    <repositories>
-        <repository>
-            <id>libs</id>
-            <url>https://repo.nds.rub.de/repository/libs/</url>
-        </repository>
-    </repositories>
-    
     <modules>
         <module>Utils</module>
         <module>Transport</module>
@@ -51,7 +42,6 @@
         <module>TLS-Server</module>
         <module>Attacks</module>
     </modules>
-
     <dependencies>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -97,6 +87,12 @@
             <version>1.55</version>
         </dependency>
         <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.55</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>com.openpojo</groupId>
             <artifactId>openpojo</artifactId>
             <version>0.8.4</version>
@@ -119,10 +115,46 @@
             <version>2.0</version>
         </dependency>
     </dependencies>
-    
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <executions>
+                        <execution>             
+                            <id>copy</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>${project.artifactId}</artifactId>
+                                        <version>${project.version}</version>
+                                        <type>${project.packaging}</type>
+                                        <destFileName>${project.build.finalName}.${project.packaging}</destFileName>
+                                    </artifactItem>
+                                </artifactItems>
+                                <outputDirectory>${project.parent.basedir}/apps</outputDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>copy-dependencies</id>
+                            <phase>package</phase> 
+                            <goals> 
+                                <goal>copy-dependencies</goal> 
+                            </goals> 
+                            <configuration> 
+                                <outputDirectory>${project.parent.basedir}/apps/lib</outputDirectory>
+                                <!--Ensures only runnable dependencies are included-->
+                                <includeScope>compile</includeScope> 
+                            </configuration> 
+                        </execution> 
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
@@ -133,7 +165,7 @@
                             <include>**/*.java</include>
                         </includes>
                         <!-- Integration tests and slow tests are excluded by default when runing mvn package. Fast tests and not annotated tests are executed -->
-                        <excludedGroups>de.rub.nds.tlsattacker.tests.SlowTests,de.rub.nds.tlsattacker.tests.IntegrationTests</excludedGroups>
+                        <excludedGroups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</excludedGroups>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -146,7 +178,7 @@
                             <include>**/*.java</include>
                         </includes>
                         <!-- Integration tests and slow tests are started -->
-                        <groups>de.rub.nds.tlsattacker.tests.SlowTests,de.rub.nds.tlsattacker.tests.IntegrationTests</groups>
+                        <groups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</groups>
                     </configuration>
                     <executions>
                         <execution>
@@ -164,7 +196,6 @@
                     <configuration>
                         <source>1.7</source>
                         <target>1.7</target>
-                        <debug>true</debug>
                     </configuration>
                 </plugin>
                 <!-- Format the Code -->
@@ -227,7 +258,6 @@
             </plugin>
         </plugins>
     </build>
-
     <reporting>
         <plugins>
             <plugin>

@@ -1,14 +1,14 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

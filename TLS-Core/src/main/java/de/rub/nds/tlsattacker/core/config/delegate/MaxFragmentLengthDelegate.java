@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -36,6 +36,7 @@ public class MaxFragmentLengthDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         if (maxFragmentLength != null) {
+            config.setAddMaxFragmentLengthExtenstion(true);
             config.setMaxFragmentLength(MaxFragmentLength.getMaxFragmentLength(maxFragmentLength.byteValue())); // TODO
         } // Converter
     }

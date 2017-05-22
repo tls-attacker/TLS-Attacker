@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,23 +9,22 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
-import de.rub.nds.tlsattacker.tls.constants.NameType;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
+import de.rub.nds.tlsattacker.core.constants.NameType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -63,15 +62,18 @@ public class SniAttacker extends Attacker<SniTestCommandConfig> {
         pair.setServerNameConfig(config.getServerName2().getBytes());
         pair.setServerNameTypeConfig(NameType.HOST_NAME.getValue());
         sni.getServerNameList().add(pair);
-        ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
-                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
-        ch2.addExtension(sni);
-        actions.add(new SendAction(ch2));
-        List<ProtocolMessage> messageList = new LinkedList<>();
-        messageList.add(new ServerHelloMessage(tlsConfig));
-        messageList.add(new CertificateMessage(tlsConfig));
-        actions.add(new ReceiveAction(messageList));
-        workflowExecutor.executeWorkflow();
+        
+//        The UnoptimizedDeepCopy was deleted from this project.
+//        ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
+//                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
+//        ch2.addExtension(sni);
+//        actions.add(new SendAction(ch2));
+//        List<ProtocolMessage> messageList = new LinkedList<>();
+//        messageList.add(new ServerHelloMessage(tlsConfig));
+//        messageList.add(new CertificateMessage(tlsConfig));
+//        actions.add(new ReceiveAction(messageList));
+//        workflowExecutor.executeWorkflow();
+        
         throw new UnsupportedOperationException("Work in progress");
     }
 

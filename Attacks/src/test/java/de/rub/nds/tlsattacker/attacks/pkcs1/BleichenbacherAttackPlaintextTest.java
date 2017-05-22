@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -34,7 +35,8 @@ public class BleichenbacherAttackPlaintextTest {
 
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
+        RandomHelper.getBadSecureRandom().setSeed(0);
+        keyPairGenerator.initialize(2048, RandomHelper.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 
         SecureRandom sr = new SecureRandom();

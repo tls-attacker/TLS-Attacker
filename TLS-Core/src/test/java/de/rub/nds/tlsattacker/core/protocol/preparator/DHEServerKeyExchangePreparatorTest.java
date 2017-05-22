@@ -1,14 +1,13 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -17,7 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -46,7 +44,6 @@ public class DHEServerKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new DHEServerKeyExchangeMessage();
         preparator = new DHEServerKeyExchangePreparator(context, message);
-        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
@@ -73,8 +70,8 @@ public class DHEServerKeyExchangePreparatorTest {
         // Generate RSA key pair
         KeyPairGenerator keyGen = null;
         try {
-            keyGen = KeyPairGenerator.getInstance("RSA", "BC");
-        } catch (NoSuchAlgorithmException | NoSuchProviderException ex) {
+            keyGen = KeyPairGenerator.getInstance("RSA");
+        } catch (NoSuchAlgorithmException ex) {
             throw new PreparationException("Could not generate a new Key", ex);
         }
         context.getConfig().setPrivateKey(keyGen.genKeyPair().getPrivate());

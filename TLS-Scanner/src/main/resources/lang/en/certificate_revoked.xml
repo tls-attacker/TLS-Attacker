@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<checkConfig>
-    <successDescription>The provided certificate has not been revoked yet</successDescription>
-    <successName>Certificate not revoked</successName>
-    <transparentIfPassed>false</transparentIfPassed>
-    <unsuccessDescription>The provided certificate has been revoked and should not be used anymore.</unsuccessDescription>
-    <unsuccessName>Certificate revoked</unsuccessName>
-</checkConfig>

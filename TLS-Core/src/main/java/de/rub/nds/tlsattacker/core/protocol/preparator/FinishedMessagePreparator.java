@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,14 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.crypto.TlsMessageDigest;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -41,19 +37,11 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
         prepareVerifyData(msg);
     }
 
-    private TlsMessageDigest getDigest() {
-        TlsMessageDigest digest = context.getDigest();
-        if (!digest.isInitialised()) {
-            context.initiliazeTlsMessageDigest();
-            digest = context.getDigest();
-        }
-        return digest;
-    }
-
     private byte[] computeVerifyData() {
         PRFAlgorithm prfAlgorithm = context.getPRFAlgorithm();
         byte[] masterSecret = context.getMasterSecret();
-        byte[] handshakeMessageHash = getDigest().digest();
+        byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
+                context.getSelectedCipherSuite());
 
         if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
             // TODO put this in seperate config option

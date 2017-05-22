@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -20,7 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -48,8 +47,6 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
  */
 public class KeyStoreGenerator {
 
-    private static final Date BEFORE = new Date(System.currentTimeMillis() - 5000);
-    private static final Date AFTER = new Date(System.currentTimeMillis() + 600000);
     public static final String PASSWORD = "password";
     public static final String ALIAS = "alias";
 
@@ -77,8 +74,9 @@ public class KeyStoreGenerator {
         X500Name subjectName = issuerName;
 
         BigInteger serial = BigInteger.valueOf(RandomHelper.getBadSecureRandom().nextInt());
-
-        X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, BEFORE, AFTER,
+        Date before = new Date(System.currentTimeMillis() - 5000);
+        Date after = new Date(System.currentTimeMillis() + 600000);
+        X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, before, after,
                 subjectName, publicKey);
         builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
 
@@ -117,7 +115,7 @@ public class KeyStoreGenerator {
             case "EC":
                 return "SHA256withECDSA";
             case "DH":
-                return "SHa256withDSA";
+                return "SHA256withDSA";
             default:
                 throw new UnsupportedOperationException("Algorithm " + keyPair.getPublic().getAlgorithm()
                         + " not supported");

@@ -1,14 +1,13 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializerTest;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -54,10 +53,11 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.tests.IntegrationTests;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -91,7 +91,6 @@ public class SerialisationFullTest {
     }
 
     @Test
-    @Category(IntegrationTests.class)
     public void test() throws JAXBException, IOException {
         TlsConfig config = TlsConfig.createConfig();
         config.setAddECPointFormatExtension(true);
@@ -107,6 +106,8 @@ public class SerialisationFullTest {
         trace.add(new ChangeCompressionAction(CompressionMethod.LZS));
         trace.add(new ChangeMasterSecretAction(new byte[] { 0x00, 0x22, 0x44, 0x66, 0x44 }));
         trace.add(new ChangePreMasterSecretAction(new byte[] { 0x33, 0x66, 0x55, 0x44, }));
+        trace.add(new WaitingAction(10000));
+        trace.add(new ResetConnectionAction());
         trace.add(new ChangeProtocolVersionAction(ProtocolVersion.SSL3));
         trace.add(new ChangeServerCertificateAction(Certificate.EMPTY_CHAIN));
         trace.add(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));
@@ -152,7 +153,7 @@ public class SerialisationFullTest {
         while ((line = reader.readLine()) != null) {
             builder.append("\n" + line);
         }
-        LOGGER.debug(builder.toString());
+        LOGGER.info(builder.toString());
         try {
             trace = WorkflowTraceSerializer.read(new FileInputStream(f));
         } catch (XMLStreamException ex) {

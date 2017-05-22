@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -78,11 +78,6 @@ public final class RecordBlockCipher extends RecordCipher {
     private IvParameterSpec decryptIv;
 
     /**
-     * sequence number used for mac computation
-     */
-    private long sequenceNumber;
-
-    /**
      * CipherAlgorithm algorithm (AES, 3DES ...)
      */
     private BulkCipherAlgorithm bulkCipherAlg;
@@ -129,8 +124,6 @@ public final class RecordBlockCipher extends RecordCipher {
         LOGGER.debug("The MAC was caluculated over the following data: {}", ArrayConverter.bytesToHexString(data));
         byte[] result = writeMac.doFinal();
         LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
-        // we increment sequence number for the sent records
-        sequenceNumber++;
         return result;
     }
 
@@ -142,6 +135,7 @@ public final class RecordBlockCipher extends RecordCipher {
      * @return
      * @throws CryptoException
      */
+    @Override
     public byte[] encrypt(byte[] data) throws CryptoException {
         try {
             byte[] ciphertext;

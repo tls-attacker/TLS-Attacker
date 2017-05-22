@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -40,6 +40,8 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
+        // status_request & signed_certificate_timestamp & server_certificate_type
+        // extensions can be added, but not implemented
     }
 
     public CertificateMessage(TlsConfig tlsConfig) {

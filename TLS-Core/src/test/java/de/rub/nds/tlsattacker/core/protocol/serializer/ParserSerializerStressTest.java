@@ -1,34 +1,13 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifyMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -67,7 +46,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
@@ -75,7 +53,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.tests.SlowTests;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -100,10 +78,10 @@ public class ParserSerializerStressTest {
     }
 
     @Test
-    @Category(SlowTests.class)
+    @Category(IntegrationTests.class)
     public void testParser() {
 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
             Random r = new Random(i);
             int random = r.nextInt(20);
             ProtocolMessage message = null;

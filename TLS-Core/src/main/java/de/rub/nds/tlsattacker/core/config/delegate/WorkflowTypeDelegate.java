@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -51,8 +51,8 @@ public class WorkflowTypeDelegate extends Delegate {
                 case HANDSHAKE:
                     trace = factory.createHandshakeWorkflow();
                     break;
-                case CLIENT_HELLO:
-                    trace = factory.createClientHelloWorkflow();
+                case HELLO:
+                    trace = factory.createHelloWorkflow();
                     break;
                 default:
                     throw new ConfigurationException("not supported workflow type: " + config.getWorkflowTraceType());

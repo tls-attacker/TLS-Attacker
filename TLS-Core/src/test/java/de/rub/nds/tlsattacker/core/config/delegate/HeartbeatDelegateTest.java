@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -14,6 +14,7 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,8 +79,10 @@ public class HeartbeatDelegateTest {
         args[0] = "-heartbeat_mode";
         args[1] = "PEER_ALLOWED_TO_SEND";
         jcommander.parse(args);
+        assertFalse(config.isAddHeartbeatExtension());
         delegate.applyDelegate(config);
         assertTrue(config.getHeartbeatMode() == HeartbeatMode.PEER_ALLOWED_TO_SEND);
+        assertTrue(config.isAddHeartbeatExtension());
     }
 
     @Test

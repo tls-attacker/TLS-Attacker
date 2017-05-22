@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.security.InvalidKeyException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -19,7 +17,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
@@ -42,7 +39,7 @@ public class UnlimitedStrengthTest {
         try {
             new GeneralDelegate().applyDelegate(TlsConfig.createConfig());
 
-            Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding", new BouncyCastleProvider());
+            Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding");
             IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);
             SecretKey encryptKey = new SecretKeySpec(new byte[32], "AES");
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);

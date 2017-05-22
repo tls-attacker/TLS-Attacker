@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,23 +11,23 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
-import de.rub.nds.tlsattacker.tls.crypto.ec.CurveFactory;
-import de.rub.nds.tlsattacker.tls.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.util.LogLevel;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

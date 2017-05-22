@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -60,43 +60,21 @@ public class HostnameExtensionDelegateTest {
     }
 
     /**
-     * Test of isServerNameFatal method, of class HostnameExtensionDelegate.
-     */
-    @Test
-    public void testIsServerNameFatal() {
-        args = new String[1];
-        args[0] = "-servername_fatal";
-        assertTrue(delegate.isServerNameFatal() == null);
-        jcommander.parse(args);
-        assertTrue(delegate.isServerNameFatal());
-    }
-
-    /**
-     * Test of setServerNameFatal method, of class HostnameExtensionDelegate.
-     */
-    @Test
-    public void testSetServerNameFatal() {
-        assertTrue(delegate.isServerNameFatal() == null);
-        delegate.setServerNameFatal(true);
-        assertTrue(delegate.isServerNameFatal());
-    }
-
-    /**
      * Test of applyDelegate method, of class HostnameExtensionDelegate.
      */
     @Test
     public void testApplyDelegate() {
-        args = new String[3];
+        args = new String[2];
         args[0] = "-server_name";
         args[1] = "its_me";
-        args[2] = "-servername_fatal";
         jcommander.parse(args);
         TlsConfig config = TlsConfig.createConfig();
         config.setSniHostname(null);
-        config.setSniHostnameFatal(false);
+        config.setAddServerNameIndicationExtension(false);
+        assertFalse(config.isAddServerNameIndicationExtension());
         delegate.applyDelegate(config);
         assertTrue(config.getSniHostname().equals("its_me"));
-        assertTrue(config.isSniHostnameFatal());
+        assertTrue(config.isAddServerNameIndicationExtension());
     }
 
     @Test
@@ -105,6 +83,5 @@ public class HostnameExtensionDelegateTest {
         TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
-                                                                                // ugly
     }
 }

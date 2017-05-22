@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutorFactor
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import javax.xml.bind.JAXBException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -47,6 +43,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
         context.getTransportHandler().closeConnection();
+        if (context.getConfig().isStripWorkflowtracesBeforeSaving()) {
+            context.getWorkflowTrace().strip();
+        }
         storeTrace();
     }
 }

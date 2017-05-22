@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * 
+* Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -213,7 +213,7 @@ public final class TlsConfig implements Serializable {
     /**
      * The Type of workflow trace that should be generated
      */
-    private WorkflowTraceType workflowTraceType = WorkflowTraceType.CLIENT_HELLO;
+    private WorkflowTraceType workflowTraceType = WorkflowTraceType.HELLO;
     /**
      * If the Default generated workflowtrace should contain Application data
      * send by servers
@@ -355,6 +355,19 @@ public final class TlsConfig implements Serializable {
      */
     private RecordLayerType recordLayerType = RecordLayerType.RECORD;
 
+    /**
+     * If this value is set the default workflowExecutor will remove all runtime
+     * values from the workflow trace and will only keep the relevant
+     * information
+     */
+    private boolean stripWorkflowtracesBeforeSaving = false;
+
+    /**
+     * TLS-Attacker will not try to receive additional messages after the
+     * configured number of messages has been received
+     */
+    private boolean quickReceive = true;
+
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
         return TlsConfigIO.read(stream);
@@ -416,6 +429,22 @@ public final class TlsConfig implements Serializable {
         supportedVersions.add(ProtocolVersion.TLS12);
         supportedVersions.add(ProtocolVersion.TLS11);
         supportedVersions.add(ProtocolVersion.TLS10);
+    }
+
+    public boolean isQuickReceive() {
+        return quickReceive;
+    }
+
+    public void setQuickReceive(boolean quickReceive) {
+        this.quickReceive = quickReceive;
+    }
+
+    public boolean isStripWorkflowtracesBeforeSaving() {
+        return stripWorkflowtracesBeforeSaving;
+    }
+
+    public void setStripWorkflowtracesBeforeSaving(boolean stripWorkflowtracesBeforeSaving) {
+        this.stripWorkflowtracesBeforeSaving = stripWorkflowtracesBeforeSaving;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -950,7 +979,7 @@ public final class TlsConfig implements Serializable {
     public void setKeyStoreFile(String keyStoreFile) {
         this.keyStoreFile = keyStoreFile;
     }
-
+    
     public int getPaddingLength() {
         return paddingLength;
     }

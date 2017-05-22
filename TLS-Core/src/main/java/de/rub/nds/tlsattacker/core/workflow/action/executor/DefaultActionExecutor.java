@@ -1,13 +1,14 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -16,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
@@ -128,6 +130,9 @@ public class DefaultActionExecutor extends ActionExecutor {
             }
             AbstractRecord record = records.get(position);
             toFillList.add(record);
+            if (record.getMaxRecordLengthConfig() == null) {
+                record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
+            }
             recordLength += record.getMaxRecordLengthConfig();
             position++;
         }
@@ -173,6 +178,31 @@ public class DefaultActionExecutor extends ActionExecutor {
                     records = parseRecords(recievedBytes);
                     decryptRecords(records);
                     messages.addAll(parseMessages(records));
+                    if (context.getConfig().isQuickReceive()) {
+                        boolean receivedFatalAlert = false;
+                        for (ProtocolMessage message : messages) {
+                            if (message instanceof AlertMessage) {
+                                AlertMessage alert = (AlertMessage) message;
+                                if (alert.getLevel().getValue().byteValue() == AlertLevel.FATAL.getValue()) {
+                                    receivedFatalAlert = true;
+                                }
+                            }
+                        }
+                        boolean receivedAllConfiguredMessages = true;
+                        if (messages.size() != expectedMessages.size()) {
+                            receivedAllConfiguredMessages = false;
+                        } else {
+                            for (int i = 0; i < messages.size(); i++) {
+                                if (!expectedMessages.get(i).getClass().equals(messages.get(i).getClass())) {
+                                    receivedAllConfiguredMessages = false;
+                                }
+                            }
+                        }
+                        if (receivedAllConfiguredMessages || receivedFatalAlert) {
+                            LOGGER.debug("Quickreceive active. Stopping listening");
+                            break;
+                        }
+                    }
                 }
             } while (recievedBytes.length != 0);
 

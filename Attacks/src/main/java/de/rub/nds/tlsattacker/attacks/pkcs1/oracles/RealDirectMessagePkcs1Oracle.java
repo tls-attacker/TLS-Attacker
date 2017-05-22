@@ -1,30 +1,30 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTraceType;
-import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.PublicKey;
@@ -49,7 +49,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         this.publicKey = (RSAPublicKey) pubKey;
         this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), 8);
         this.config = config;
-        this.config.setWorkflowTraceType(WorkflowTraceType.CLIENT_HELLO);
+        this.config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration ctxConfig = ctx.getConfiguration();

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECOracle;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECSunOracle;
-import de.rub.nds.tlsattacker.tests.SlowTests;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

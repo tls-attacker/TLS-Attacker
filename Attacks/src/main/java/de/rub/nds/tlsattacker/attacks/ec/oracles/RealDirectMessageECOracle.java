@@ -1,34 +1,31 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.attacks.ec.oracles;
 
-import de.rub.nds.tlsattacker.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Curve;
-import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
-import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.message.ArbitraryMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
+import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
+import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,29 +9,31 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
-import de.rub.nds.tlsattacker.modifiablevariable.VariableModification;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.tlsattacker.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.tls.constants.AlertDescription;
-import de.rub.nds.tlsattacker.tls.constants.AlertLevel;
-import de.rub.nds.tlsattacker.tls.constants.CipherSuite;
-import de.rub.nds.tlsattacker.tls.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.tls.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.tls.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.tls.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.tls.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.tls.record.AbstractRecord;
-import de.rub.nds.tlsattacker.tls.record.Record;
-import de.rub.nds.tlsattacker.tls.util.LogLevel;
-import de.rub.nds.tlsattacker.tls.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.tls.workflow.TlsContext;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.tls.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.tls.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.tls.workflow.action.SendAction;
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.constants.AlertDescription;
+import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -68,18 +70,19 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         tlsConfig.setEnforceSettings(true);
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
-
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
         SendAction sendAction = trace.getFirstConfiguredSendActionWithType(HandshakeMessageType.FINISHED);
-        // We need two Records, one for the CCS message and one with finished
-        // message with the modified padding
+        // We need 2-3 Records,one for every message, while the last one will
+        // have the modified padding
         List<AbstractRecord> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
-        records.add(new Record());
+        tlsConfig.setCreateIndividualRecords(true);
+        records.add(new Record(tlsConfig));
+        if (sendAction.getConfiguredMessages().size() > 2) {
+            records.add(new Record(tlsConfig));
+        }
         records.add(record);
         sendAction.setConfiguredRecords(records);
 
@@ -91,6 +94,10 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setConfiguredMessages(messages);
+        tlsConfig.setWorkflowTrace(trace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
+
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

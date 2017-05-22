@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -38,7 +38,7 @@ public abstract class TLSAction implements Serializable {
         return executed;
     }
 
-    public void setExecuted(boolean executed) {
+    public void setExecuted(Boolean executed) {
         this.executed = executed;
     }
 

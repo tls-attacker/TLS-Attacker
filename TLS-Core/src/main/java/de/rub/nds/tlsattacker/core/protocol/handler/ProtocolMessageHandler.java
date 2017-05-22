@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -11,21 +11,15 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,19 +56,19 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public byte[] prepareMessage(Message message) {
         Preparator preparator = getPreparator(message);
         preparator.prepare();
-        Serializer serializer = getSerializer(message);
-        byte[] completeMessage = serializer.serialize();
-        message.setCompleteResultingMessage(completeMessage);
-        if (message instanceof HandshakeMessage) {
-            if (((HandshakeMessage) message).getIncludeInDigest()) {
-                tlsContext.getDigest().update(message.getCompleteResultingMessage().getValue());
-            }
-        }
         try {
             adjustTLSContext(message);
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
+        }
+        Serializer serializer = getSerializer(message);
+        byte[] completeMessage = serializer.serialize();
+        message.setCompleteResultingMessage(completeMessage);
+        if (message instanceof HandshakeMessage) {
+            if (((HandshakeMessage) message).getIncludeInDigest()) {
+                tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+            }
         }
         return message.getCompleteResultingMessage().getValue();
     }
@@ -91,16 +85,16 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
-        if (parsedMessage instanceof HandshakeMessage) {
-            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                tlsContext.getDigest().update(parsedMessage.getCompleteResultingMessage().getValue());
-            }
-        }
         try {
             adjustTLSContext(parsedMessage);
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
+        }
+        if (parsedMessage instanceof HandshakeMessage) {
+            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
+                tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+            }
         }
         return new ParserResult(parsedMessage, parser.getPointer());
     }

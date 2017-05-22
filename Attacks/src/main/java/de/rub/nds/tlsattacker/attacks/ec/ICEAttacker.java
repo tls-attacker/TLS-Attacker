@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.attacks.ec.oracles.ECOracle;
-import de.rub.nds.tlsattacker.tls.crypto.ec.DivisionException;
-import de.rub.nds.tlsattacker.tls.crypto.ec.ECComputer;
-import de.rub.nds.tlsattacker.tls.crypto.ec.Point;
-import de.rub.nds.tlsattacker.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
+import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ICEAttacker {
 
-    Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
+    private static Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
 
     private final ServerType server;
 

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -14,9 +14,6 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * 
@@ -60,7 +57,7 @@ public class ChangeProtocolVersionAction extends TLSAction {
     @Override
     public void reset() {
         oldValue = null;
-        setExecuted(false);
+        setExecuted(null);
     }
 
     @Override

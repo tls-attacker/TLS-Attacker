@@ -1,12 +1,11 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
@@ -56,8 +55,8 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createWorkflowTrace(WorkflowTraceType type) {
         switch (type) {
-            case CLIENT_HELLO:
-                return createClientHelloWorkflow();
+            case HELLO:
+                return createHelloWorkflow();
             case FULL:
                 return createFullWorkflow();
             case HANDSHAKE:
@@ -66,7 +65,7 @@ public class WorkflowConfigurationFactory {
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
 
-    public WorkflowTrace createClientHelloWorkflow() {
+    public WorkflowTrace createHelloWorkflow() {
         WorkflowTrace workflowTrace = new WorkflowTrace();
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
@@ -100,7 +99,7 @@ public class WorkflowConfigurationFactory {
     }
 
     public WorkflowTrace createHandshakeWorkflow() {
-        WorkflowTrace workflowTrace = this.createClientHelloWorkflow();
+        WorkflowTrace workflowTrace = this.createHelloWorkflow();
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         messages.add(new CertificateMessage(config));

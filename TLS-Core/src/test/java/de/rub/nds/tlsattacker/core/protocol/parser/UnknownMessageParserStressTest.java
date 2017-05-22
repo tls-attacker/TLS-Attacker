@@ -1,17 +1,16 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.tests.SlowTests;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,7 +31,7 @@ public class UnknownMessageParserStressTest {
      * Test of parse method, of class UnknownMessageParser.
      */
     @Test
-    @Category(SlowTests.class)
+    @Category(IntegrationTests.class)
     public void testParse() {
         Random r = new Random(10);
         for (int i = 0; i < 100; i++) {

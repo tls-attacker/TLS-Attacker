@@ -139,4 +139,5 @@ B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
     <createRecordsDynamically>true</createRecordsDynamically>
     <createIndividualRecords>true</createIndividualRecords>
     <recordLayerType>RECORD</recordLayerType>
+    <stripWorkflowtracesBeforeSaving>false</stripWorkflowtracesBeforeSaving>
 </tlsConfig>
