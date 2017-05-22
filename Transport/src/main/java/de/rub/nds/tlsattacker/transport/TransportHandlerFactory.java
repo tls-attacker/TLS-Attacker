@@ -18,8 +18,6 @@ public class TransportHandlerFactory {
         switch (type) {
             case TCP:
                 return new SimpleTransportHandler(hostname, port, end, socketTimeout, tlsTimeout);
-            case EAP_TLS:
-                return new EAPTLSTransportHandler(hostname, port, end, tlsTimeout);
             case UDP:
                 return new UDPTransportHandler(hostname, port, end, tlsTimeout);
             default:
