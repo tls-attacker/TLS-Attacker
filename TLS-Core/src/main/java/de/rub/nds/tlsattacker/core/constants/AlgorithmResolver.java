@@ -36,6 +36,9 @@ public class AlgorithmResolver {
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         PRFAlgorithm result;
+        if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
+            throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
+        }
         if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
@@ -63,6 +66,9 @@ public class AlgorithmResolver {
      */
     public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         DigestAlgorithm result;
+        if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
+            throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
+        }
         if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
@@ -77,38 +83,63 @@ public class AlgorithmResolver {
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
-        if (cipher.startsWith("TLS_RSA_")) {
+        if (cipher.contains("TLS_RSA_WITH") || cipher.contains("TLS_RSA_EXPORT")) {
             return KeyExchangeAlgorithm.RSA;
+        } else if (cipher.contains("TLS_RSA_PSK_")) {
+            return KeyExchangeAlgorithm.RSA_PSK;
         } else if (cipher.startsWith("TLS_DH_DSS_")) {
             return KeyExchangeAlgorithm.DH_DSS;
         } else if (cipher.startsWith("TLS_DH_RSA_")) {
             return KeyExchangeAlgorithm.DH_RSA;
         } else if (cipher.startsWith("TLS_DHE_DSS_")) {
             return KeyExchangeAlgorithm.DHE_DSS;
-        } else if (cipher.startsWith("TLS_DHE_RSA_")) {
+        } else if (cipher.contains("TLS_DHE_RSA_")) {
             return KeyExchangeAlgorithm.DHE_RSA;
-        } else if (cipher.startsWith("TLS_DHE_PSK")) {
+        } else if (cipher.contains("TLS_DHE_PSK") || cipher.contains("TLS_PSK_DHE")) {
             return KeyExchangeAlgorithm.DHE_PSK;
         } else if (cipher.startsWith("TLS_DH_ANON_")) {
             return KeyExchangeAlgorithm.DH_ANON;
-        } else if (cipher.startsWith("TLS_ECDH_")) {
-            return KeyExchangeAlgorithm.ECDH;
-        } else if (cipher.startsWith("TLS_ECDHE_")) {
-            return KeyExchangeAlgorithm.ECDH;
+        } else if (cipher.contains("TLS_ECDHE_RSA")) {
+            return KeyExchangeAlgorithm.ECDHE_RSA;
+        } else if (cipher.contains("TLS_ECDHE_ECDSA")) {
+            return KeyExchangeAlgorithm.ECDHE_ECDSA;
+        } else if (cipher.contains("TLS_ECDH_ANON")) {
+            return KeyExchangeAlgorithm.ECDH_ANON;
+        } else if (cipher.contains("TLS_ECDH_ECDSA")) {
+            return KeyExchangeAlgorithm.ECDH_ECDSA;
+        } else if (cipher.contains("TLS_ECDH_RSA")) {
+            return KeyExchangeAlgorithm.ECDH_RSA;
+        } else if (cipher.contains("TLS_ECDHE_PSK")) {
+            return KeyExchangeAlgorithm.ECDHE_PSK;
         } else if (cipher.startsWith("TLS_NULL_")) {
             return KeyExchangeAlgorithm.NULL;
         } else if (cipher.startsWith("TLS_KRB5_")) {
             return KeyExchangeAlgorithm.KRB5;
-        } else if (cipher.startsWith("TLS_PSK_")) {
+        } else if (cipher.contains("TLS_PSK_")) {
             return KeyExchangeAlgorithm.PSK;
-        } else if (cipher.startsWith("TLS_SRP_")) {
-            return KeyExchangeAlgorithm.SRP;
+        } else if (cipher.startsWith("TLS_SRP_SHA_RSA")) {
+            return KeyExchangeAlgorithm.SRP_SHA_RSA;
+        } else if (cipher.startsWith("TLS_SRP_SHA_DSS")) {
+            return KeyExchangeAlgorithm.SRP_SHA_DSS;
+        } else if (cipher.startsWith("TLS_SRP_SHA")) {
+            return KeyExchangeAlgorithm.SRP_SHA;
         } else if (cipher.startsWith("TLS_GOSTR341001_")) {
             return KeyExchangeAlgorithm.GOSTR341001;
         } else if (cipher.startsWith("TLS_GOSTR341094_")) {
             return KeyExchangeAlgorithm.GOSTR341094;
         } else if (cipher.startsWith("TLS_CECPQ1_")) {
-            return KeyExchangeAlgorithm.CECPQ1;
+            return KeyExchangeAlgorithm.CECPQ1_ECDSA;
+        } else if (cipher.contains("SSL_FORTEZZA_KEA")) {
+            return KeyExchangeAlgorithm.FORTEZZA_KEA;
+        } else if (cipher.contains("ECMQV_ECNRA")) {
+            return KeyExchangeAlgorithm.ECMQV_ECNRA;
+        } else if (cipher.contains("ECMQV_ECDSA")) {
+            return KeyExchangeAlgorithm.ECMQV_ECDSA;
+        } else if (cipher.contains("ECDH_ECNRA")) {
+            return KeyExchangeAlgorithm.ECDH_ECNRA;
+        }
+        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+            throw new IllegalArgumentException("The CipherSuite:");
         }
         throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
                 + " is not supported yet.");
@@ -194,7 +225,7 @@ public class AlgorithmResolver {
                 || cipher.contains("WITH_FORTEZZA") || cipher.contains("CAMELLIA") || cipher.contains("GOST")
                 || cipher.contains("WITH_SEED") || cipher.contains("WITH_ARIA") || cipher.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cipher.contains("RC4")  || cipher.contains("WITH_NULL")
+        } else if (cipher.contains("RC4") || cipher.contains("WITH_NULL")
                 || cipher.contains("CHACHA")) {
             return CipherType.STREAM;
         }
