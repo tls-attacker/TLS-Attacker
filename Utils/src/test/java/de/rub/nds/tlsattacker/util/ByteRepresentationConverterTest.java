@@ -23,13 +23,13 @@ public class ByteRepresentationConverterTest {
         assertArrayEquals(new byte[] { (byte) 0x1a, (byte) 0x2b }, result);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void hexStringToByteArray_OddArgumentLength() {
-        ByteRepresentationConverter.hexStringToByteArray("12345");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void hexStringToByteArray_IllegalCharacter() {
-        ByteRepresentationConverter.hexStringToByteArray("1g");
-    }
+    /*
+     * @Test(expected = IllegalArgumentException.class) public void
+     * hexStringToByteArray_OddArgumentLength() {
+     * ByteRepresentationConverter.hexStringToByteArray("12345"); }
+     * 
+     * @Test(expected = IllegalArgumentException.class) public void
+     * hexStringToByteArray_IllegalCharacter() {
+     * ByteRepresentationConverter.hexStringToByteArray("1g"); }
+     */
 }
