@@ -16,7 +16,7 @@ package de.rub.nds.tlsattacker.core.constants;
 public enum CipherAlgorithm {
 
     NULL(0, 0, 0, ""),
-    RC2_128(16, 0, 0, "RC2/CBC/NoPadding"),
+    RC2_128(16, 8, 0, "RC2/CBC/NoPadding"),
     RC4_128(16, 0, 0, "RC4"),
     DES_CBC(8, 8, 0, "DES/CBC/NoPadding"),
     DES_EDE_CBC(24, 8, 0, "DESede/CBC/NoPadding"),
@@ -26,8 +26,8 @@ public enum CipherAlgorithm {
     AES_256_GCM(32, 4, 8, "AES/GCM/NoPadding"),
     CAMELLIA_128_CBC(16, 16, 0, "Camellia/CBC/NoPadding"),
     CAMELLIA_256_CBC(32, 16, 0, "Camellia/CBC/NoPadding"),
-    CAMELLIA_128_GCM(16, 16, 8, "Camellia/CBC/NoPadding"), //not tested yet
-    CAMELLIA_256_GCM(32, 16, 8, "Camellia/CBC/NoPadding"), //not tested yet
+    CAMELLIA_128_GCM(16, 16, 8, "Camellia/CBC/NoPadding"), // not tested yet
+    CAMELLIA_256_GCM(32, 16, 8, "Camellia/CBC/NoPadding"), // not tested yet
     IDEA_128(16, 16, 0, "IDEA/CBC/NoPadding"),
     SEED_CBC(16, 16, 0, "SEED/CBC/NoPadding"), // TODO this is not verified
     AES_128_CCM(16, 4, 8, "AES/CCM/NoPadding"),
@@ -38,7 +38,7 @@ public enum CipherAlgorithm {
     ARIA_256_CBC(32, 16, 0, "ARIA/CBC/NoPadding"), // not tested yet
     ARIA_128_GCM(16, 16, 0, "ARIA/GCM/NoPadding"), // not tested yet
     ARIA_256_GCM(16, 16, 0, "ARIA/GCM/NoPadding"), // not tested yet
-    GOST_28147(0,0,0,""),
+    GOST_28147(0, 0, 0, ""),
     FORTEZZA_CBC(0, 0, 0, "");
 
     CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, String javaName) {
