@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -26,13 +25,6 @@ public class WorkflowTraceTest {
     public WorkflowTraceTest() {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(TlsConfig.createConfig());
         trace = factory.createFullWorkflow();
-    }
-
-    @Test
-    public void testDeepCopy() {
-        WorkflowTrace copy = (WorkflowTrace) UnoptimizedDeepCopy.copy(trace);
-        assertEquals("The number of messages in both traces has to be equal", trace.getAllConfiguredMessages().size(),
-                copy.getAllConfiguredMessages().size());
     }
 
 }
