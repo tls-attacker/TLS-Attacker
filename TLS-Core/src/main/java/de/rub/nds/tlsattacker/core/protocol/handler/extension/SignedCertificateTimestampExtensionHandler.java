@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
@@ -45,6 +46,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      */
     @Override
     public ExtensionParser getParser(byte[] message, int pointer) {
+        LOGGER.debug("The signed certificate timestamp extension handler returned the parser.");
         return new SignedCertificateTimestampExtensionParser(pointer, message);
     }
 
@@ -57,6 +59,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      */
     @Override
     public ExtensionPreparator getPreparator(SignedCertificateTimestampExtensionMessage message) {
+        LOGGER.debug("The signed certificate timestamp extension handler returned the preparator.");
         return new SignedCertificateTimestampExtensionPreparator(context, message);
     }
 
@@ -69,6 +72,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      */
     @Override
     public ExtensionSerializer getSerializer(SignedCertificateTimestampExtensionMessage message) {
+        LOGGER.debug("The signed certificate timestamp extension handler returned the serializer.");
         return new SignedCertificateTimestampExtensionSerializer(message);
     }
 
@@ -86,6 +90,7 @@ public class SignedCertificateTimestampExtensionHandler extends
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
+        LOGGER.debug("The signed certificate timestamp extension handler adjusted the TLS context.");
     }
 
 }

@@ -41,6 +41,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      */
     @Override
     public ExtensionParser getParser(byte[] message, int pointer) {
+        LOGGER.debug("The session ticket TLS extension handler returned the parser.");
         return new SessionTicketTLSExtensionParser(pointer, message);
     }
 
@@ -52,6 +53,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      */
     @Override
     public ExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
+        LOGGER.debug("The session ticket TLS extension handler returned the preparator.");
         return new SessionTicketTLSExtensionPreparator(context, message);
     }
 
@@ -63,6 +65,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      */
     @Override
     public ExtensionSerializer getSerializer(SessionTicketTLSExtensionMessage message) {
+        LOGGER.debug("The extended session ticket TLS extension handler returned the serializer.");
         return new SessionTicketTLSExtensionSerializer(message);
     }
 
@@ -79,6 +82,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSessionTicketTLS(message.getTicket().getValue());
+        LOGGER.debug("The session ticket TLS extension handler adjusted the TLS context.");
     }
 
 }

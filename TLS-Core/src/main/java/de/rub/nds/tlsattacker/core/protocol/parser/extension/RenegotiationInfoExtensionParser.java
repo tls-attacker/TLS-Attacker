@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 
 /**
@@ -27,6 +28,7 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
                     + "Length was " + msg.getExtensionLength().getValue());
         }
         msg.setRenegotiationInfo(parseByteArrayField(msg.getExtensionLength().getValue()));
+        LOGGER.debug("The padding extension parser parsed the value " + bytesToHexString(msg.getRenegotiationInfo().getValue()));
     }
 
     @Override
