@@ -24,29 +24,28 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class HeartbeatMessageParserTest {
-    private static String heartbeatRequest = "010012000075a6d1d422693ea31584902266171b14ee376d595f5c65aeba8d04b0378faeda";
-    private static String requestPayload = "000075a6d1d422693ea31584902266171b14";
-    private static String requestPadding = "ee376d595f5c65aeba8d04b0378faeda";
-    private static String heartbeatResponse = "020012000075a6d1d422693ea31584902266171b1429ee15bbaa07f19c012dc29e2449e1e1";
-    private static String responsePayload = requestPayload;
-    private static String responsePadding = "29ee15bbaa07f19c012dc29e2449e1e1";
+    private static byte[] heartbeatRequest = ByteRepresentationConverter
+            .hexStringToByteArray("010012000075a6d1d422693ea31584902266171b14ee376d595f5c65aeba8d04b0378faeda");
+    private static byte[] requestPayload = ByteRepresentationConverter
+            .hexStringToByteArray("000075a6d1d422693ea31584902266171b14");
+    private static byte[] requestPadding = ByteRepresentationConverter
+            .hexStringToByteArray("ee376d595f5c65aeba8d04b0378faeda");
+    private static byte[] heartbeatResponse = ByteRepresentationConverter
+            .hexStringToByteArray("020012000075a6d1d422693ea31584902266171b1429ee15bbaa07f19c012dc29e2449e1e1");
+    private static byte[] responsePayload = requestPayload;
+    private static byte[] responsePadding = ByteRepresentationConverter
+            .hexStringToByteArray("29ee15bbaa07f19c012dc29e2449e1e1");
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ByteRepresentationConverter.hexStringToByteArray(heartbeatRequest), 0,
-                        ByteRepresentationConverter.hexStringToByteArray(heartbeatRequest), (byte) 0x1, 18,
-                        ByteRepresentationConverter.hexStringToByteArray(requestPayload),
-                        ByteRepresentationConverter.hexStringToByteArray(requestPadding) },
-                { ByteRepresentationConverter.hexStringToByteArray(heartbeatResponse), 0,
-                        ByteRepresentationConverter.hexStringToByteArray(heartbeatResponse), (byte) 0x2, 18,
-                        ByteRepresentationConverter.hexStringToByteArray(responsePayload),
-                        ByteRepresentationConverter.hexStringToByteArray(responsePadding) } });
+                { heartbeatRequest, 0, heartbeatRequest, (byte) 0x1, 18, requestPayload, requestPadding },
+                { heartbeatResponse, 0, heartbeatResponse, (byte) 0x2, 18, responsePayload, responsePadding } });
     }
 
     private final byte[] message;
     private final int start;
-    private final byte[] expectedPart;
+    // private final byte[] expectedPart;
 
     private final byte heartBeatType;
     private final int payloadLength;
@@ -57,7 +56,7 @@ public class HeartbeatMessageParserTest {
             int payloadLength, byte[] payload, byte[] padding) {
         this.message = message;
         this.start = start;
-        this.expectedPart = expectedPart;
+        // this.expectedPart = expectedPart;
         this.heartBeatType = heartBeatType;
         this.payloadLength = payloadLength;
         this.payload = payload;
