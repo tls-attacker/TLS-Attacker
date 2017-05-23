@@ -138,8 +138,11 @@ public class AlgorithmResolver {
         } else if (cipher.contains("ECDH_ECNRA")) {
             return KeyExchangeAlgorithm.ECDH_ECNRA;
         }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name() + " does not specify a KeyExchangeAlgorithm");
+        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
+                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+                    + " does not specify a KeyExchangeAlgorithm");
         }
         throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
                 + " is not supported yet.");
@@ -227,7 +230,9 @@ public class AlgorithmResolver {
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CipherAlgorithm.ChaCha20Poly1305;
         }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
+                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
             throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name() + " does not specify a Cipher");
         }
         throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
@@ -246,12 +251,14 @@ public class AlgorithmResolver {
                 || cipher.contains("WITH_FORTEZZA") || cipher.contains("CAMELLIA") || cipher.contains("GOST")
                 || cipher.contains("WITH_SEED") || cipher.contains("WITH_ARIA") || cipher.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cipher.contains("RC4") || cipher.contains("WITH_NULL")
-                || cipher.contains("CHACHA")) {
+        } else if (cipher.contains("RC4") || cipher.contains("WITH_NULL") || cipher.contains("CHACHA")) {
             return CipherType.STREAM;
         }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name() + " does not specify a CipherType");
+        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
+                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+                    + " does not specify a CipherType");
         }
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
@@ -280,8 +287,11 @@ public class AlgorithmResolver {
                 result = MacAlgorithm.HMAC_GOSTR3411;
             }
         }
-        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name() + " does not specify a MAC-Algorithm");
+        if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
+                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+                    + " does not specify a MAC-Algorithm");
         }
         if (result != null) {
             LOGGER.debug("Using the following Mac Algorithm: {}", result);

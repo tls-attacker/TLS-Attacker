@@ -20,8 +20,8 @@ public enum MacAlgorithm {
     HMAC_SHA256("HmacSHA256"),
     HMAC_SHA384("HmacSHA384"),
     HMAC_SHA512("HmacSHA512"),
-    IMIT_GOST28147("IMIT_GOST28147"),//java name not verified
-    HMAC_GOSTR3411("HmacGOSTR3411");//java name not verified
+    IMIT_GOST28147("IMIT_GOST28147"), // java name not verified
+    HMAC_GOSTR3411("HmacGOSTR3411");// java name not verified
     MacAlgorithm(String javaName) {
         this.javaName = javaName;
     }

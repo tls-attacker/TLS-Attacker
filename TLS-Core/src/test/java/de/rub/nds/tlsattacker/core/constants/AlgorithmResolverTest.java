@@ -30,19 +30,25 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetPRFAlgorithm() {
-        //Some protocol versions should always return tls_legacy
+        // Some protocol versions should always return tls_legacy
         for (CipherSuite suite : CipherSuite.values()) {
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS10, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS11, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
             assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS10, suite) == PRFAlgorithm.TLS_PRF_LEGACY);
         }
-        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
-        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
-        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
-        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
-        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12, CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == PRFAlgorithm.TLS_PRF_SHA256);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12,
+                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == PRFAlgorithm.TLS_PRF_SHA384);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12,
+                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == PRFAlgorithm.TLS_PRF_SHA256);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == PRFAlgorithm.TLS_PRF_SHA256);
-        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == PRFAlgorithm.TLS_PRF_SHA256);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == PRFAlgorithm.TLS_PRF_SHA256);
 
     }
 
@@ -76,13 +82,20 @@ public class AlgorithmResolverTest {
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS11, suite) == DigestAlgorithm.LEGACY);
             assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS10, suite) == DigestAlgorithm.LEGACY);
         }
-        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
-        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
-        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
-        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
-        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12, CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == DigestAlgorithm.SHA256);
-        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == DigestAlgorithm.SHA256);
-        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
+                CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384) == DigestAlgorithm.SHA384);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
+                CipherSuite.TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.SSL_FORTEZZA_KEA_WITH_FORTEZZA_CBC_SHA) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.DTLS12,
+                CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == DigestAlgorithm.SHA256);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == DigestAlgorithm.SHA256);
 
     }
 
@@ -91,7 +104,7 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetKeyExchangeAlgorithm() {
-        //I tried to get one ciphersuite of every type at random
+        // I tried to get one ciphersuite of every type at random
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == KeyExchangeAlgorithm.DHE_RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.SSL_FORTEZZA_KEA_WITH_NULL_SHA) == KeyExchangeAlgorithm.FORTEZZA_KEA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384) == KeyExchangeAlgorithm.CECPQ1_ECDSA);
@@ -122,8 +135,10 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_SRP_SHA_RSA_WITH_3DES_EDE_CBC_SHA) == KeyExchangeAlgorithm.SRP_SHA_RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_SRP_SHA_WITH_3DES_EDE_CBC_SHA) == KeyExchangeAlgorithm.SRP_SHA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_DES_CBC_SHA) == KeyExchangeAlgorithm.ECMQV_ECNRA);
-        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
-        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
+        assertTrue(AlgorithmResolver
+                .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
+        assertTrue(AlgorithmResolver
+                .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -143,9 +158,10 @@ public class AlgorithmResolverTest {
 
     @Test
     public void testAllCipherSuitesGetKeyExchange() {
-        //Checks that we can retrieve all ciphersuites key exchange algorithms and 
-        //that none throws an unsupported operation exception
-        //Only IllegalArgmumentExceptions are allowed here
+        // Checks that we can retrieve all ciphersuites key exchange algorithms
+        // and
+        // that none throws an unsupported operation exception
+        // Only IllegalArgmumentExceptions are allowed here
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getKeyExchangeAlgorithm(suite);
@@ -195,7 +211,7 @@ public class AlgorithmResolverTest {
 
     @Test
     public void testGetAllCipher() {
-        //Test that we can retrieve a Cipher for every Ciphersuite
+        // Test that we can retrieve a Cipher for every Ciphersuite
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getCipher(suite);
@@ -219,10 +235,10 @@ public class AlgorithmResolverTest {
         AlgorithmResolver.getCipher(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
-    //Test that we can receive a cipher type for every ciphersuite
+    // Test that we can receive a cipher type for every ciphersuite
     @Test
     public void testGetAllCipherTypes() {
-        //Test that we can retrieve a Cipher for every Ciphersuite
+        // Test that we can retrieve a Cipher for every Ciphersuite
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getCipherType(suite);
@@ -274,7 +290,7 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_128_GCM_SHA256) == CipherType.AEAD);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_DH_anon_WITH_ARIA_256_CBC_SHA384) == CipherType.BLOCK);
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_RSA_WITH_ARIA_256_GCM_SHA384) == CipherType.AEAD);
-        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherType.BLOCK); //?
+        assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == CipherType.BLOCK); // ?
         assertTrue(AlgorithmResolver.getCipherType(CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256) == CipherType.STREAM);
     }
 
@@ -283,24 +299,21 @@ public class AlgorithmResolverTest {
      */
     @Test
     public void testGetMacAlgorithm() {
-        
+
     }
-    //Test get Mac algorithm for all ciphersuites
+
+    // Test get Mac algorithm for all ciphersuites
     @Test
-    public void getAllMacAlgorithms()
-    {
-        for(CipherSuite suite : CipherSuite.values())
-        {
-            try
-            {
+    public void getAllMacAlgorithms() {
+        for (CipherSuite suite : CipherSuite.values()) {
+            try {
                 AlgorithmResolver.getMacAlgorithm(suite);
-            }
-            catch(IllegalArgumentException E)
-            {
-                
+            } catch (IllegalArgumentException E) {
+
             }
         }
     }
+
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACUnknown() {
         AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_UNKNOWN_CIPHER);
