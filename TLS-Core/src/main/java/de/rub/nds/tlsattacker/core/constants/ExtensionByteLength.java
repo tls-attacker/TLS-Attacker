@@ -63,4 +63,6 @@ public class ExtensionByteLength {
      * Length of the Padding Length field of the Padding Extension
      */
     public static final int PADDING_LENGTH = 2;
+    
+    public static final int TOKENBINDING_VERSION_LENGTH = 1;
 }
