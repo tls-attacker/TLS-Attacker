@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 
 /**
@@ -27,7 +28,7 @@ public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMess
             LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
         }
         msg.setPaddingBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
-        LOGGER.debug("The padding extension parser parsed the value " + ArrayConverter.bytesToHexString(msg.getPaddingBytes().getValue()));
+        LOGGER.debug("The padding extension parser parsed the value " + bytesToHexString(msg.getPaddingBytes()));
     }
 
     @Override

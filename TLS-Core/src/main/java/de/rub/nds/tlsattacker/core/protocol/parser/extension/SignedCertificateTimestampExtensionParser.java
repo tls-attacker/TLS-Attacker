@@ -1,13 +1,14 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 
 /**
@@ -39,6 +40,8 @@ public class SignedCertificateTimestampExtensionParser extends
                     + "Length was " + msg.getExtensionLength().getValue());
         }
         msg.setSignedTimestamp(parseByteArrayField(msg.getExtensionLength().getValue()));
+        LOGGER.debug("The signed certificate timestamp extension parser parsed the value "
+                + bytesToHexString(msg.getSignedTimestamp()));
     }
 
     /**

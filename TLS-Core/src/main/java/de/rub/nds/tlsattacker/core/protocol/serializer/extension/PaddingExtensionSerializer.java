@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -26,7 +26,7 @@ public class PaddingExtensionSerializer extends ExtensionSerializer<PaddingExten
     @Override
     public byte[] serializeExtensionContent() {
         appendBytes(message.getPaddingBytes().getValue());
-        LOGGER.debug("Serialized PaddingExtension with " + message.getPaddingBytes().getValue() + " padding bytes.");
+        LOGGER.debug("Serialized PaddingExtension with " + message.getPaddingBytes().getValue().length + " padding bytes.");
         return getAlreadySerialized();
     }
 
