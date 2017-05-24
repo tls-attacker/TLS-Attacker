@@ -19,6 +19,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -26,6 +28,8 @@ import java.util.List;
  */
 public class CipherSuiteTest {
 
+    protected static final Logger LOGGER = LogManager.getLogger("CipherSuiteTest");
+    
     public CipherSuiteTest() {
     }
 
@@ -61,6 +65,13 @@ public class CipherSuiteTest {
         assertEquals(2, cipherSuites.size());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0001"), cipherSuites.get(0).getByteValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0002"), cipherSuites.get(1).getByteValue());
+    }
+
+    @Test
+    public void testUnimplemented() {
+        for (CipherSuite suite : CipherSuite.getNotImplemented()) {
+            LOGGER.debug(suite.name());
+        }
     }
 
 }

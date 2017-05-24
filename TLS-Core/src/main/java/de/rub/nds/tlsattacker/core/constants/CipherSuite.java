@@ -563,6 +563,22 @@ public enum CipherSuite {
         list.add(TLS_DHE_RSA_WITH_DES_CBC_SHA);
         list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
         list.add(TLS_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_RSA_WITH_IDEA_CBC_SHA);
+        list.add(TLS_RSA_WITH_DES_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA);
         return list;
+    }
+
+    public static List<CipherSuite> getNotImplemented() {
+        List<CipherSuite> notImplemented = new LinkedList<>();
+        for (CipherSuite suite : values()) {
+            if (!getImplemented().contains(suite)) {
+                notImplemented.add(suite);
+            }
+        }
+        return notImplemented;
     }
 }
