@@ -20,22 +20,18 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> extends ExtensionPreparator<T> {
 
+    private UnknownExtensionMessage msg;
+
     public UnknownExtensionPreparator(TlsContext context, T object) {
         super(context, object);
+        msg = object;
     }
 
     @Override
     public void prepareExtensionContent() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        msg.setExtensionData(msg.getDataConfig());
+        msg.setExtensionType(msg.getTypeConfig());
+        msg.setExtensionLength(msg.getLengthConfig());
     }
 
 }
