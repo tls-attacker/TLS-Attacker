@@ -171,6 +171,8 @@ public class TlsContext {
 
     private boolean receivedFatalAlert = false;
 
+    private boolean encryptActive = false;
+
     private List<ClientCertificateType> clientCertificateTypes;
 
     private byte[] distinguishedNames;
@@ -201,7 +203,7 @@ public class TlsContext {
         clientCertificateTypes = new LinkedList<>();
         lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
-}
+    }
 
     public List<ProtocolVersion> getClientSupportedProtocolVersions() {
         return clientSupportedProtocolVersions;
@@ -274,6 +276,14 @@ public class TlsContext {
 
     public void setReceivedFatalAlert(boolean receivedFatalAlert) {
         this.receivedFatalAlert = receivedFatalAlert;
+    }
+
+    public boolean isEncryptActive() {
+        return encryptActive;
+    }
+
+    public void setEncryptActive(boolean encryptActive) {
+        this.encryptActive = encryptActive;
     }
 
     public ECPublicKeyParameters getServerPublicKeyParameters() {
@@ -530,7 +540,7 @@ public class TlsContext {
     public PRFAlgorithm getPRFAlgorithm() {
         return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
     }
-    
+
     public byte[] getClientHandshakeTrafficSecret() {
         return clientHandshakeTrafficSecret;
     }

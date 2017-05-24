@@ -15,6 +15,14 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
@@ -38,18 +46,39 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     }
 
     private byte[] computeVerifyData() {
-        PRFAlgorithm prfAlgorithm = context.getPRFAlgorithm();
-        byte[] masterSecret = context.getMasterSecret();
-        byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
+        if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+            try {
+                String algorithm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite()).getMacAlgorithm().getJavaName();
+                byte[] finishedKey;
+                LOGGER.debug("Connection End: " + context.getConfig().getConnectionEnd());
+                if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+                    finishedKey = HKDFunction.deriveSecret(algorithm, context.getServerHandshakeTrafficSecret(), HKDFunction.FINISHED, new byte[] {});
+                } else {
+                    finishedKey = HKDFunction.deriveSecret(algorithm, context.getClientHandshakeTrafficSecret(), HKDFunction.FINISHED, new byte[] {});
+                }
+                LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
+                SecretKeySpec keySpec = new SecretKeySpec(finishedKey, algorithm);
+                Mac mac = Mac.getInstance(algorithm);
+                mac.init(keySpec);
+                mac.update(context.getDigest().digest(context.getSelectedProtocolVersion(), context.getSelectedCipherSuite()));
+                return mac.doFinal();
+            } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+                throw new CryptoException(ex);
+            }
+        } else {
+            PRFAlgorithm prfAlgorithm = context.getPRFAlgorithm();
+            byte[] masterSecret = context.getMasterSecret();
+            byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
+                    context.getSelectedCipherSuite());
 
-        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
-            // TODO put this in seperate config option
+            if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+                // TODO put this in seperate config option
             return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
                     handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
-        } else {
+            } else {
             return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.CLIENT_FINISHED_LABEL,
                     handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
+            }
         }
     }
 

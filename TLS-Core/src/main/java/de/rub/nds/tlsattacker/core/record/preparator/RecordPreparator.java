@@ -33,12 +33,18 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
 
     @Override
     public void prepare() {
-        // TODO set MessageTypeContent
-        record.setContentType(type.getValue());
-        prepareConentMessageType(type);
         if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            record.setContentType(type.getValue());
+            prepareConentMessageType(type);
             record.setProtocolVersion(context.getSelectedProtocolVersion().getValue());
         } else {
+            if (context.isEncryptActive() == true) {
+                record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
+                prepareConentMessageType(type);
+            } else {
+                record.setContentType(type.getValue());
+                prepareConentMessageType(type);
+            }
             record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
             record.setPaddingLength(context.getConfig().getPaddingLength());
         }

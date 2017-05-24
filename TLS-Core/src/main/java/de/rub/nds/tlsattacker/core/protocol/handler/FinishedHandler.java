@@ -8,6 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
@@ -45,7 +50,24 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     protected void adjustTLSContext(FinishedMessage message) {
-        // Nothing to do
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+            adjustApplicationTrafficSecrets();
+        }
     }
 
+    private void adjustApplicationTrafficSecrets() {
+        MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getSelectedCipherSuite()).getMacAlgorithm();
+        byte[] saltMasterSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), tlsContext.getHandshakeSecret(), HKDFunction.DERIVED, new byte[] {});
+        byte[] masterSecret = HKDFunction.extract(macAlg.getJavaName(), saltMasterSecret, new byte[32]);
+        byte[] clientApplicationTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), masterSecret,
+                        HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().
+                        digest(tlsContext.getSelectedProtocolVersion(), tlsContext.getSelectedCipherSuite()));
+        tlsContext.setClientApplicationTrafficSecret0(clientApplicationTrafficSecret);
+        LOGGER.debug("Set clientApplicationTrafficSecret in Context to " + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
+        byte[] serverApplicationTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), masterSecret,
+                        HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest()
+                        .digest(tlsContext.getSelectedProtocolVersion(), tlsContext.getSelectedCipherSuite()));
+        tlsContext.setServerApplicationTrafficSecret0(serverApplicationTrafficSecret);
+        LOGGER.debug("Set serverApplicationTrafficSecret in Context to " + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
+    }
 }

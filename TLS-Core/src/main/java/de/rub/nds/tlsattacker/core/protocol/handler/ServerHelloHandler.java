@@ -122,5 +122,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         LOGGER.debug("Setting new Cipher in RecordLayer");
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
         tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.setEncryptActive(true);
     }
 }
