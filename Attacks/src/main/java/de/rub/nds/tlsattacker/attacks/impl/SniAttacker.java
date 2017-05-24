@@ -62,18 +62,19 @@ public class SniAttacker extends Attacker<SniTestCommandConfig> {
         pair.setServerNameConfig(config.getServerName2().getBytes());
         pair.setServerNameTypeConfig(NameType.HOST_NAME.getValue());
         sni.getServerNameList().add(pair);
-        
-//        The UnoptimizedDeepCopy was deleted from this project.
-//        ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
-//                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
-//        ch2.addExtension(sni);
-//        actions.add(new SendAction(ch2));
-//        List<ProtocolMessage> messageList = new LinkedList<>();
-//        messageList.add(new ServerHelloMessage(tlsConfig));
-//        messageList.add(new CertificateMessage(tlsConfig));
-//        actions.add(new ReceiveAction(messageList));
-//        workflowExecutor.executeWorkflow();
-        
+
+        // The UnoptimizedDeepCopy was deleted from this project.
+        // ClientHelloMessage ch2 = (ClientHelloMessage)
+        // UnoptimizedDeepCopy.copy(trace
+        // .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
+        // ch2.addExtension(sni);
+        // actions.add(new SendAction(ch2));
+        // List<ProtocolMessage> messageList = new LinkedList<>();
+        // messageList.add(new ServerHelloMessage(tlsConfig));
+        // messageList.add(new CertificateMessage(tlsConfig));
+        // actions.add(new ReceiveAction(messageList));
+        // workflowExecutor.executeWorkflow();
+
         throw new UnsupportedOperationException("Work in progress");
     }
 

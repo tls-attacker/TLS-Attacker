@@ -26,7 +26,8 @@ public class PaddingExtensionSerializer extends ExtensionSerializer<PaddingExten
     @Override
     public byte[] serializeExtensionContent() {
         appendBytes(message.getPaddingBytes().getValue());
-        LOGGER.debug("Serialized PaddingExtension with " + message.getPaddingBytes().getValue().length + " padding bytes.");
+        LOGGER.debug("Serialized PaddingExtension with " + message.getPaddingBytes().getValue().length
+                + " padding bytes.");
         return getAlreadySerialized();
     }
 

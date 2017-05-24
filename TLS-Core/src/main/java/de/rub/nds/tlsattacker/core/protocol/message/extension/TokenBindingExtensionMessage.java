@@ -30,8 +30,6 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     public TokenBindingExtensionMessage() {
         super(ExtensionType.TOKEN_BINDING);
     }
-    
-    
 
     @Override
     public ExtensionHandler getHandler(TlsContext context) {
