@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 public class CipherSuiteTest {
 
     protected static final Logger LOGGER = LogManager.getLogger("CipherSuiteTest");
-    
+
     public CipherSuiteTest() {
     }
 
