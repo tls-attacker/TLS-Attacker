@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.SecureRandom;
@@ -40,13 +41,11 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates;
-import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyPairFromStore;
-import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyStoreFromRsaPem;
-
+import static de.rub.nds.tlsattacker.core.util.JKSLoader.loadTLSCertificate;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import static de.rub.nds.tlsattacker.core.util.JKSLoader.loadTLSCertificate;
-import java.io.IOException;
+import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyPairFromStore;
+import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyStoreFromRsaPem;
 
 /**
  *

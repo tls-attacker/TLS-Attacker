@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +16,8 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
