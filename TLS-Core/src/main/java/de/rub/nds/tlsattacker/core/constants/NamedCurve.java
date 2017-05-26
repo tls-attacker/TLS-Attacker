@@ -8,8 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -94,5 +102,34 @@ public enum NamedCurve {
 
     public int getIntValue() {
         return valueToInt(value);
+    }
+
+    public static byte[] namedCurvesToByteArray(List<NamedCurve> curves) throws IOException {
+        if (curves == null || curves.isEmpty()) {
+            return null;
+        }
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(bytes);
+        os.writeObject(curves.toArray(new NamedCurve[curves.size()]));
+
+        return bytes.toByteArray();
+    }
+
+    public static NamedCurve[] namedCurvesFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
+        if (sourceBytes == null || sourceBytes.length == 0) {
+            return null;
+        }
+
+        if (sourceBytes.length % NamedCurve.LENGTH != 0) {
+            throw new IllegalArgumentException("Failed to convert byte array. "
+                    + "Source array size is not a multiple of destination type size.");
+        }
+
+        ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
+        ObjectInputStream is = new ObjectInputStream(in);
+        NamedCurve[] curves = (NamedCurve[]) is.readObject();
+
+        return curves;
     }
 }
