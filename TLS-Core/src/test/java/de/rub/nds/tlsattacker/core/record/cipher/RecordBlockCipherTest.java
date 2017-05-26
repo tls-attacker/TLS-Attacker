@@ -35,6 +35,7 @@ public class RecordBlockCipherTest {
     @Before
     public void setUp() {
         context = new TlsContext();
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Test
