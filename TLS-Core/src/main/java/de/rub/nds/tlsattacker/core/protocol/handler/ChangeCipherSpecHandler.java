@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerialize
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,6 +48,10 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
     @Override
     protected void adjustTLSContext(ChangeCipherSpecMessage message) {
         setRecordCipher();
+        if (tlsContext.getTalkingConnectionEnd() != tlsContext.getConfig().getConnectionEnd()) {
+            System.out.println("Starting to decrypt");
+            tlsContext.getRecordLayer().updateDecryptionCipher();
+        }
     }
 
     private void setRecordCipher() {

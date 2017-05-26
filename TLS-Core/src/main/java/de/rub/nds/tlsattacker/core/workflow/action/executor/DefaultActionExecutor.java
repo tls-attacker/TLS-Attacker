@@ -176,31 +176,34 @@ public class DefaultActionExecutor extends ActionExecutor {
                 recievedBytes = receiveByteArray();
                 if (recievedBytes.length != 0) {
                     records = parseRecords(recievedBytes);
-                    decryptRecords(records);
-                    messages.addAll(parseMessages(records));
-                    if (context.getConfig().isQuickReceive()) {
-                        boolean receivedFatalAlert = false;
-                        for (ProtocolMessage message : messages) {
-                            if (message instanceof AlertMessage) {
-                                AlertMessage alert = (AlertMessage) message;
-                                if (alert.getLevel().getValue().byteValue() == AlertLevel.FATAL.getValue()) {
-                                    receivedFatalAlert = true;
+                    List<List<AbstractRecord>> recordGroups = getRecordGroups(records);
+                    for (List<AbstractRecord> recordGroup : recordGroups) {
+                        decryptRecords(recordGroup);
+                        messages.addAll(parseMessages(recordGroup));
+                        if (context.getConfig().isQuickReceive()) {
+                            boolean receivedFatalAlert = false;
+                            for (ProtocolMessage message : messages) {
+                                if (message instanceof AlertMessage) {
+                                    AlertMessage alert = (AlertMessage) message;
+                                    if (alert.getLevel().getValue().byteValue() == AlertLevel.FATAL.getValue()) {
+                                        receivedFatalAlert = true;
+                                    }
                                 }
                             }
-                        }
-                        boolean receivedAllConfiguredMessages = true;
-                        if (messages.size() != expectedMessages.size()) {
-                            receivedAllConfiguredMessages = false;
-                        } else {
-                            for (int i = 0; i < messages.size(); i++) {
-                                if (!expectedMessages.get(i).getClass().equals(messages.get(i).getClass())) {
-                                    receivedAllConfiguredMessages = false;
+                            boolean receivedAllConfiguredMessages = true;
+                            if (messages.size() != expectedMessages.size()) {
+                                receivedAllConfiguredMessages = false;
+                            } else {
+                                for (int i = 0; i < messages.size(); i++) {
+                                    if (!expectedMessages.get(i).getClass().equals(messages.get(i).getClass())) {
+                                        receivedAllConfiguredMessages = false;
+                                    }
                                 }
                             }
-                        }
-                        if (receivedAllConfiguredMessages || receivedFatalAlert) {
-                            LOGGER.debug("Quickreceive active. Stopping listening");
-                            break;
+                            if (receivedAllConfiguredMessages || receivedFatalAlert) {
+                                LOGGER.debug("Quickreceive active. Stopping listening");
+                                break;
+                            }
                         }
                     }
                 }
@@ -223,20 +226,14 @@ public class DefaultActionExecutor extends ActionExecutor {
     }
 
     private List<ProtocolMessage> parseMessages(List<AbstractRecord> records) {
-        List<ProtocolMessage> receivedMessages = new LinkedList<>();
-        int recordPosition = 0;
-        do {
-            List<AbstractRecord> recordSubGroup = getNextRecordSubgroupd(records, recordPosition);
-            ProtocolMessageType type = getProtocolMessageType(recordSubGroup);
-            recordPosition += recordSubGroup.size();
-            byte[] cleanProtocolMessageBytes = getCleanBytes(recordSubGroup);
-            receivedMessages.addAll(recieveMessage(cleanProtocolMessageBytes, type));
-        } while (records.size() > recordPosition);
-        return receivedMessages;
+        if (records.size() == 0) {
+            return new LinkedList<>();
+        }
+        byte[] cleanProtocolMessageBytes = getCleanBytes(records);
+        return recieveMessage(cleanProtocolMessageBytes, getProtocolMessageType(records));
     }
 
     private List<ProtocolMessage> recieveMessage(byte[] cleanProtocolMessageBytes, ProtocolMessageType typeFromRecord) {
-
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
@@ -246,7 +243,6 @@ public class DefaultActionExecutor extends ActionExecutor {
                         .getMessageType(cleanProtocolMessageBytes[dataPointer]);
                 ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
                 result = pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
-
             } catch (ParserException | AdjustmentException E) {
                 LOGGER.warn("Could not parse Message as a CorrectMessage, parsing as UnknownHandshakeMessage instead!");
                 LOGGER.debug(E);
@@ -292,20 +288,24 @@ public class DefaultActionExecutor extends ActionExecutor {
         return stream.toByteArray();
     }
 
-    private List<AbstractRecord> getNextRecordSubgroupd(List<AbstractRecord> records, int recordPosition) {
-        List<AbstractRecord> returnList = new LinkedList<>();
-        if (records.size() <= recordPosition) {
+    private List<List<AbstractRecord>> getRecordGroups(List<AbstractRecord> records) {
+        List<List<AbstractRecord>> returnList = new LinkedList<>();
+        if (records.size() == 0) {
             return returnList;
         }
-        ProtocolMessageType type = records.get(recordPosition).getContentMessageType();
-        for (int i = recordPosition; i < records.size(); i++) {
-            AbstractRecord record = records.get(i);
-            if (record.getContentMessageType() == type) {
-                returnList.add(record);
+        List<AbstractRecord> subGroup = new LinkedList<>();
+        ProtocolMessageType currentSearchType = records.get(0).getContentMessageType();
+        for (AbstractRecord record : records) {
+            if (record.getContentMessageType() == currentSearchType) {
+                subGroup.add(record);
             } else {
-                return returnList;
+                returnList.add(subGroup);
+                subGroup = new LinkedList<>();
+                currentSearchType = record.getContentMessageType();
+                subGroup.add(record);
             }
         }
+        returnList.add(subGroup);
         return returnList;
 
     }
@@ -330,10 +330,6 @@ public class DefaultActionExecutor extends ActionExecutor {
     private void decryptRecords(List<AbstractRecord> records) {
         for (AbstractRecord record : records) {
             context.getRecordLayer().decryptRecord(record);
-            if (record.getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                context.getRecordLayer().updateDecryptionCipher();// TODO
-                // unfortunate
-            }
         }
     }
 }
