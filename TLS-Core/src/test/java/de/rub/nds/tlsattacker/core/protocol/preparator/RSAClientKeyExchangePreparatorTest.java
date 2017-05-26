@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import static org.junit.Assert.*;
 
@@ -75,5 +77,4 @@ public class RSAClientKeyExchangePreparatorTest {
         assertNotNull(message.getSerializedPublicKeyLength().getValue());
         assertNotNull(message.getSerializedPublicKey());
     }
-
 }

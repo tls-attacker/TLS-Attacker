@@ -31,6 +31,9 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.util.FixedTimeProvider;
+import de.rub.nds.tlsattacker.util.TimeHelper;
+import de.rub.nds.tlsattacker.util.TimeProvider;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -85,6 +88,7 @@ public class TlsClientTest {
     @Category(IntegrationTests.class)
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
+            TimeHelper.setProvider(new FixedTimeProvider(0));
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
             KeyStore ks = KeyStoreGenerator.createKeyStore(k);
             tlsServer = new TLSServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
@@ -192,6 +196,7 @@ public class TlsClientTest {
 
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
+        clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TlsConfig config = clientCommandConfig.createConfig();
         config.setHost("localhost:" + port);
         config.setTlsTimeout(TIMEOUT);
