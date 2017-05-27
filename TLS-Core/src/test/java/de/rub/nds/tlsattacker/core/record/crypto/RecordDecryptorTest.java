@@ -58,8 +58,8 @@ public class RecordDecryptorTest {
         decryptor = new RecordDecryptor(recordCipher, ProtocolVersion.TLS13);
         record.setProtocolMessageBytes(ArrayConverter
                 .hexStringToByteArray("161e94818226d7bd6180630804644debc52bdd661034243217ac45a084228c82086baa4893ecfc969624d68e19d88c3e67ccb48bdf"));
-        record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         decryptor.decrypt(record);
+        assertTrue(record.getContentMessageType() == ProtocolMessageType.HANDSHAKE);
         assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 36);
         assertArrayEquals(
                 record.getCleanProtocolMessageBytes().getValue(),

@@ -60,14 +60,7 @@ public class RecordDecryptor extends Decryptor<Record> {
         } else {
             record.setPaddingLength(0);
             record.setPadding(new byte[0]);
-            if (version != ProtocolVersion.TLS13) {
-                record.setUnpaddedRecordBytes(decrypted);
-            } else {
-                byte contentMessageType = parseContentMessageType(decrypted);
-                record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
-                byte[] unpaddedAndWithoutType = Arrays.copyOf(decrypted, decrypted.length - 1);
-                record.setUnpaddedRecordBytes(unpaddedAndWithoutType);
-            }
+            record.setUnpaddedRecordBytes(decrypted);
         }
         byte[] cleanBytes;
         if (recordCipher.isUseMac()) {

@@ -61,12 +61,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
+        adjustLastRecordVersion(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
             }
         }
-        adjustLastRecordVersion(message);
         if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             setRecordCipher();
         }

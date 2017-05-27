@@ -65,7 +65,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getKeyShareType().getValue()));
             }
         }
-        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
             // The server has only one key
             context.setServerKSEntry(ksEntryList.get(0));
             adjustHandshakeTrafficSecrets();

@@ -120,6 +120,7 @@ public class WorkflowConfigurationFactory {
             }
             messages.add(new CertificateMessage(config));
             messages.add(new CertificateVerifyMessage(config));
+            messages.add(new FinishedMessage(config));
         }
         workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
         messages = new LinkedList<>();

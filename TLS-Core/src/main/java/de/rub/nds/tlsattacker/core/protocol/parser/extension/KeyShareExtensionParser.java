@@ -34,12 +34,14 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
             msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
         } else {
             msg.setKeyShareListBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
+            msg.setKeyShareListLength(msg.getKeyShareListBytes().getValue().length);
         }
         int position = 0;
         List<KeySharePair> pairList = new LinkedList<>();
         while (position < msg.getKeyShareListLength().getValue()) {
             KeySharePairParser parser = new KeySharePairParser(position, msg.getKeyShareListBytes().getValue());
             pairList.add(parser.parse());
+            position = parser.getPointer();
         }
         msg.setKeyShareList(pairList);
     }

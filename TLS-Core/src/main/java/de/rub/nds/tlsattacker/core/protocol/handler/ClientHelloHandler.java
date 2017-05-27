@@ -65,12 +65,12 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         if (tlsContext.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             adjustSessionID(message);
         }
+        adjustLastRecordVersion(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
             }
         }
-        adjustLastRecordVersion(message);
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {
