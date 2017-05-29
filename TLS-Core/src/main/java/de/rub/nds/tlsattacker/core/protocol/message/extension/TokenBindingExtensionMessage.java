@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
@@ -33,7 +34,7 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
 
     @Override
     public ExtensionHandler getHandler(TlsContext context) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new TokenBindingExtensionHandler(context);
     }
 
     public ModifiableInteger getMajor() {

@@ -174,6 +174,19 @@ public final class TlsConfig implements Serializable {
      */
     private byte[] signedCertificateTimestamp = new byte[0];
     /**
+     * TokenBinding default major version. To be defined later.
+     */
+    private int tokenBindingMajor = 0;
+    /**
+     * TokenBinding default minor version. To be defined later.
+     */
+    private int tokenBindingMinor = 0;
+    /**
+     * Default TokenBinding Key Parameters as seen in Google's Chrome
+     * implementation.
+     */
+    private byte[] tokenBindingKeyParameters = {0x01, 0x02};
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -250,6 +263,10 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with RenegotiationInfo extension
      */
     private boolean addRenegotiationInfoExtension = false;
+    /**
+     * If we generate ClientHello with TokenBinding extension.
+     */
+    private boolean addTokenBindingExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -286,7 +303,7 @@ public final class TlsConfig implements Serializable {
      * Fixed DH g value used in Server Key Exchange
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] fixedDHg = { 0x02 };
+    private byte[] fixedDHg = {0x02};
 
     private String defaultApplicationMessageData = "Test";
 
@@ -992,4 +1009,35 @@ public final class TlsConfig implements Serializable {
         this.addRenegotiationInfoExtension = addRenegotiationInfoExtension;
     }
 
+    public int getTokenBindingMajor() {
+        return tokenBindingMajor;
+    }
+
+    public void setTokenBindingMajor(int tokenBindingMajor) {
+        this.tokenBindingMajor = tokenBindingMajor;
+    }
+
+    public int getTokenBindingMinor() {
+        return tokenBindingMinor;
+    }
+
+    public void setTokenBindingMinor(int tokenBindingMinor) {
+        this.tokenBindingMinor = tokenBindingMinor;
+    }
+
+    public byte[] getTokenBindingKeyParameters() {
+        return tokenBindingKeyParameters;
+    }
+
+    public void setTokenBindingKeyParameters(byte[] tokenBindingKeyParameters) {
+        this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public boolean isAddTokenBindingExtension() {
+        return addTokenBindingExtension;
+    }
+
+    public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
+        this.addTokenBindingExtension = addTokenBindingExtension;
+    }
 }
