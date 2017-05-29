@@ -19,6 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  *
@@ -75,6 +76,7 @@ public class GeneralDelegate extends Delegate {
 
     @Override
     public void applyDelegate(TlsConfig config) {
+        Security.addProvider(new BouncyCastleProvider());
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration ctxConfig = ctx.getConfiguration();
         LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
@@ -88,9 +90,6 @@ public class GeneralDelegate extends Delegate {
             loggerConfig.setLevel(getLogLevel());
             ctx.updateLoggers();
         }
-        // TODO this should probably not be here?
-        // ECC does not work properly in the NSS provider
-        // Security.removeProvider("SunPKCS11-NSS");
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
