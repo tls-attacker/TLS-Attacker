@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
@@ -34,11 +35,11 @@ public class RecordBlockCipherTest {
     @Before
     public void setUp() {
         context = new TlsContext();
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Test
     public void testConstructors() {
-        Security.addProvider(new BouncyCastleProvider());
         // This test just checks that the init() method will not break
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
@@ -52,12 +53,27 @@ public class RecordBlockCipherTest {
                 for (ConnectionEnd end : ConnectionEnd.values()) {
                     context.getConfig().setConnectionEnd(end);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
+                        if (version == ProtocolVersion.SSL2 || version == ProtocolVersion.SSL3) {
+                            continue;
+                        }
                         context.setSelectedProtocolVersion(version);
                         RecordBlockCipher cipher = new RecordBlockCipher(context);
                     }
                 }
             }
         }
+    }
+
+    @Test
+    public void test() {
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+        context.setClientRandom(new byte[] { 0 });
+        context.setServerRandom(new byte[] { 0 });
+        context.setMasterSecret(new byte[] { 0 });
+        context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
+        RecordBlockCipher cipher = new RecordBlockCipher(context);
+        System.out.println(ArrayConverter.bytesToHexString(cipher.calculatePadding(9)));
     }
 
     /**

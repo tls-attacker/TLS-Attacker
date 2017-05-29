@@ -383,14 +383,17 @@ public enum CipherSuite {
     TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCC14),
     TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC15),
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
-    UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
-    UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC13),
-    UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_OLD(0xCC14),
-    UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC15),
-    UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
-    UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
-    UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
-    UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
+    // These Ciphersuite are from a Draft and also dont have a mac algorithm
+    // defined
+    // i am not sure if we want to keep draft ciphers here
+    // UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
+    // UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC13),
+    // UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_OLD(0xCC14),
+    // UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC15),
+    // UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
+    // UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
+    // UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
+    // UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
     // Chacha poly CipherSuites, some are double specified, added RFC_ infront
     RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
     RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
@@ -559,7 +562,23 @@ public enum CipherSuite {
         list.add(TLS_DHE_RSA_WITH_AES_256_CBC_SHA256);
         list.add(TLS_DHE_RSA_WITH_DES_CBC_SHA);
         list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
-        list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_RSA_WITH_IDEA_CBC_SHA);
+        list.add(TLS_RSA_WITH_DES_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA);
         return list;
+    }
+
+    public static List<CipherSuite> getNotImplemented() {
+        List<CipherSuite> notImplemented = new LinkedList<>();
+        for (CipherSuite suite : values()) {
+            if (!getImplemented().contains(suite)) {
+                notImplemented.add(suite);
+            }
+        }
+        return notImplemented;
     }
 }

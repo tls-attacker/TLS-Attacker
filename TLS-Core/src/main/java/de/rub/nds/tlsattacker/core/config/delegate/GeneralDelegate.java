@@ -90,9 +90,6 @@ public class GeneralDelegate extends Delegate {
             loggerConfig.setLevel(getLogLevel());
             ctx.updateLoggers();
         }
-        // TODO this should probably not be here?
-        // ECC does not work properly in the NSS provider
-        // Security.removeProvider("SunPKCS11-NSS");
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());
