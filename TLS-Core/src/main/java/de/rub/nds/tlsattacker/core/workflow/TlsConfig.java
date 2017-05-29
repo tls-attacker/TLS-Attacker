@@ -185,7 +185,7 @@ public final class TlsConfig implements Serializable {
      * Default TokenBinding Key Parameters as seen in Google's Chrome
      * implementation.
      */
-    private byte[] tokenBindingKeyParameters = {0x01, 0x02};
+    private byte[] tokenBindingKeyParameters = { 0x01, 0x02 };
     /**
      * Default Timeout we wait for TLSMessages
      */
@@ -303,7 +303,7 @@ public final class TlsConfig implements Serializable {
      * Fixed DH g value used in Server Key Exchange
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] fixedDHg = {0x02};
+    private byte[] fixedDHg = { 0x02 };
 
     private String defaultApplicationMessageData = "Test";
 

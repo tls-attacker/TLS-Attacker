@@ -60,44 +60,6 @@ public class TLSServer extends Thread {
         return keyStore;
     }
 
-    public static void main(String[] args) throws Exception {
-        if (args.length == 5 && args[4].equalsIgnoreCase("BC")) {
-            Security.removeProvider("SunPKCS11-NSS");
-            Security.removeProvider("SunEC");
-            Security.insertProviderAt(new BouncyCastleProvider(), 1);
-            LOGGER.debug("Using BC provider");
-        }
-        for (Provider p : Security.getProviders()) {
-            LOGGER.debug(p);
-        }
-        System.setProperty("java.security.debug", "ssl");
-        String path;
-        String password;
-        String protocol;
-        int port;
-
-        if (args.length == 4 || args.length == 5) {
-            path = args[0];
-            password = args[1];
-            protocol = args[2];
-            port = Integer.parseInt(args[3]);
-        } else if (args.length == 0) {
-            path = PATH_TO_JKS;
-            password = JKS_PASSWORD;
-            protocol = PROTOCOL;
-            port = PORT;
-        } else {
-            LOGGER.info("Usage (run with): java -jar [name].jar [jks-path] "
-                    + "[password] [protocol] [port] \n (set [protocol] to TLS)");
-            return;
-        }
-
-        KeyStore keyStore = readKeyStore(path, password);
-        TLSServer server = new TLSServer(keyStore, password, protocol, port);
-        Thread t = new Thread(server);
-        t.start();
-    }
-
     private String[] cipherSuites = null;
 
     private final int port;

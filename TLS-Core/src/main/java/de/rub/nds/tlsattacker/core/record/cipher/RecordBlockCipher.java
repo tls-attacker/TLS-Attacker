@@ -15,17 +15,18 @@ import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -34,8 +35,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -256,7 +255,8 @@ public final class RecordBlockCipher extends RecordCipher {
                     readMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
                     writeMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
                 } catch (InvalidAlgorithmParameterException | InvalidKeyException E) {
-                    throw new UnsupportedOperationException(E);
+                    throw new UnsupportedOperationException("Unsupported Ciphersuite:"
+                            + tlsContext.getSelectedCipherSuite().name(), E);
                 }
             } else {
                 decryptIv = new IvParameterSpec(clientWriteIv);
@@ -284,7 +284,8 @@ public final class RecordBlockCipher extends RecordCipher {
             setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
                     * decryptCipher.getBlockSize());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize RecordBlocKCipher", ex);
+            throw new CryptoException("Could not initialize RecordBlocKCipher with Ciphersuite:"
+                    + tlsContext.getSelectedCipherSuite().name(), ex);
         }
     }
 

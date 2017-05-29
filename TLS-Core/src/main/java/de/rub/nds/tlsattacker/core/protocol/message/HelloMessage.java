@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +72,7 @@ public abstract class HelloMessage extends HandshakeMessage {
             @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
             @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
             @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
+            @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
             @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension") })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;

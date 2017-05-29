@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage>{
+public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
 
     public TokenBindingExtensionHandler(TlsContext context) {
         super(context);
@@ -52,5 +52,5 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
         context.setTokenBindingKeyParameters(message.getTokenBindingKeyParameters().getValue());
         LOGGER.debug("The token binding extension handler adjusted the TLS context.");
     }
-    
+
 }

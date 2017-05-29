@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBindingExtensionMessage>{
+public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBindingExtensionMessage> {
     private final TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionPreparator(TlsContext context, TokenBindingExtensionMessage message) {
@@ -30,5 +30,5 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
         message.setTokenBindingKeyParameters(context.getConfig().getTokenBindingKeyParameters());
         LOGGER.debug("Prepared the TokenBindingExtensionMessage.");
     }
-    
+
 }
