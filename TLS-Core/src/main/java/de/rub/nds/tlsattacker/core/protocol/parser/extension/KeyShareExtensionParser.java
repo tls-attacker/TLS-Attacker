@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -20,20 +21,20 @@ import java.util.List;
  */
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
 
-    private final ConnectionEnd connection;
-
-    public KeyShareExtensionParser(int startposition, byte[] array, ConnectionEnd connection) {
+    public KeyShareExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
-        this.connection = connection;
     }
 
     @Override
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
-        if (connection == ConnectionEnd.CLIENT) {
-            msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
+        int listLength = parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+        if (listLength == getBytesLeft()) {
+            msg.setKeyShareListLength(listLength);
             msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
         } else {
-            msg.setKeyShareListBytes(parseByteArrayField(msg.getExtensionLength().getValue()));
+            byte[] keyBegin = ArrayConverter.intToBytes(listLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+            msg.setKeyShareListBytes(ArrayConverter.concatenate(keyBegin, parseByteArrayField(msg.getExtensionLength()
+                    .getValue() - ExtensionByteLength.KEY_SHARE_LIST_LENGTH)));
             msg.setKeyShareListLength(msg.getKeyShareListBytes().getValue().length);
         }
         int position = 0;

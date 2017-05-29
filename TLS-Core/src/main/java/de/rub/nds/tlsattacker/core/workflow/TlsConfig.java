@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  * 
-* Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -150,17 +150,16 @@ public final class TlsConfig implements Serializable {
      * KeyShare Client
      */
     private byte[] keyShare = ArrayConverter
-            .hexStringToByteArray("131324A5B09F9F6D1E8533DD7185E3E197280B1056EF1FE2C24A85F2358E634B18"
-                    + "29C43EB9CA18FF7F981F15AE1D873187A6F83EAEE0A57D78C741C045D715AAB82F44A2CA6D05FD"
-                    + "08C20EFA919347A9131235A4F0A82F0E08366BCE4952E5C7D06FFF029CF048B11638E3D75A5CFE"
-                    + "D447075EE42FFC3701E9C32D6572E03C081313B74DC29EF05FACEC5AE4BCC9F4640A3726007922"
-                    + "C2A94603C70ACC91B31EC823A9BC5763747E6D919210C247093F79C5554E1393473AB63E30B9E3"
-                    + "F28BA814573CB86E238BA153B829B4509042BD61D370DB2D8D31A3D18CC7A1A6F8AEBD5E03518F"
-                    + "7304EEEB7430C67EF869F069FEA4F65654A54D69B4EA6942EE11C97F");
+            .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
     /**
      * KeyShare Client Type
      */
-    private NamedCurve keyShareType = NamedCurve.FFDHE2048;
+    private NamedCurve keyShareType = NamedCurve.ECDH_X25519;
+    /**
+     * KeyShare Client random
+     */
+    private byte[] keyShareRandom = ArrayConverter
+            .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
     /**
      * KeyShare Client private exponent
      */
@@ -213,7 +212,7 @@ public final class TlsConfig implements Serializable {
     /**
      * The Type of workflow trace that should be generated
      */
-    private WorkflowTraceType workflowTraceType = WorkflowTraceType.HELLO;
+    private WorkflowTraceType workflowTraceType = WorkflowTraceType.HANDSHAKE;
     /**
      * If the Default generated workflowtrace should contain Application data
      * send by servers
@@ -979,13 +978,21 @@ public final class TlsConfig implements Serializable {
     public void setKeyStoreFile(String keyStoreFile) {
         this.keyStoreFile = keyStoreFile;
     }
-    
+
     public int getPaddingLength() {
         return paddingLength;
     }
 
     public void setPaddingLength(int paddingLength) {
         this.paddingLength = paddingLength;
+    }
+
+    public byte[] getKeyShareRandom() {
+        return keyShareRandom;
+    }
+
+    public void setKeyShareRandom(byte[] keyShareRandom) {
+        this.keyShareRandom = keyShareRandom;
     }
 
 }

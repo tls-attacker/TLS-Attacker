@@ -70,6 +70,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             setRecordCipher();
         }
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13
+                && tlsContext.getTalkingConnectionEnd() != tlsContext.getConfig().getConnectionEnd()) {
+            setRecordCipher();
+            System.out.println("Starting to decrypt");
+            tlsContext.getRecordLayer().updateDecryptionCipher();
+        }
     }
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {

@@ -25,7 +25,6 @@ public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("ExtensionParserFactory");
 
-    // Add ConnectionEnd and use them
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new PreparationException("Could not retrieve Parser for ExtensionBytes");
@@ -60,8 +59,7 @@ public class ExtensionParserFactory {
                 parser = new SupportedVersionsExtensionParser(pointer, extensionBytes);
                 break;
             case KEY_SHARE:
-                // parser = new KeyShareExtensionParser(pointer,
-                // extensionBytes);
+                parser = new KeyShareExtensionParser(pointer, extensionBytes);
                 break;
             case STATUS_REQUEST:
                 break;
