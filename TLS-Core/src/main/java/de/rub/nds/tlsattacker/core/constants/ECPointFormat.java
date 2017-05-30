@@ -8,9 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -59,5 +66,31 @@ public enum ECPointFormat {
 
     public short getShortValue() {
         return (short) (value & 0xFF);
+    }
+
+    public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats) throws IOException {
+        if (pointFormats == null || pointFormats.isEmpty()) {
+            return null;
+        }
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream os = new ObjectOutputStream(bytes);
+        os.writeObject(pointFormats.toArray(new ECPointFormat[pointFormats.size()]));
+
+        return bytes.toByteArray();
+
+    }
+
+    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) throws IOException,
+            ClassNotFoundException {
+        if (sourceBytes == null || sourceBytes.length == 0) {
+            return null;
+        }
+
+        ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
+        ObjectInputStream is = new ObjectInputStream(in);
+        ECPointFormat[] formats = (ECPointFormat[]) is.readObject();
+
+        return formats;
     }
 }

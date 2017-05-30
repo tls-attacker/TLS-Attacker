@@ -62,7 +62,7 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
     }
 
     public ModifiableByteArray getServerRandom() {
-        return clientRandom;
+        return serverRandom;
     }
 
     public void setServerRandom(ModifiableByteArray random) {
