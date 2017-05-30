@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -18,6 +18,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import static org.junit.Assert.*;
 
@@ -75,5 +77,4 @@ public class RSAClientKeyExchangePreparatorTest {
         assertNotNull(message.getSerializedPublicKeyLength().getValue());
         assertNotNull(message.getSerializedPublicKey());
     }
-
 }

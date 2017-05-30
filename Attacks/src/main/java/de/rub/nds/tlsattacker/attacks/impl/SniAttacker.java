@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.util.UnoptimizedDeepCopy;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -63,15 +62,6 @@ public class SniAttacker extends Attacker<SniTestCommandConfig> {
         pair.setServerNameConfig(config.getServerName2().getBytes());
         pair.setServerNameTypeConfig(NameType.HOST_NAME.getValue());
         sni.getServerNameList().add(pair);
-        ClientHelloMessage ch2 = (ClientHelloMessage) UnoptimizedDeepCopy.copy(trace
-                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HANDSHAKE));
-        ch2.addExtension(sni);
-        actions.add(new SendAction(ch2));
-        List<ProtocolMessage> messageList = new LinkedList<>();
-        messageList.add(new ServerHelloMessage(tlsConfig));
-        messageList.add(new CertificateMessage(tlsConfig));
-        actions.add(new ReceiveAction(messageList));
-        workflowExecutor.executeWorkflow();
         throw new UnsupportedOperationException("Work in progress");
     }
 

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -38,6 +38,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class TLSServer extends Thread {
     // TODO should be in core package
     // TODO should be clean
+    // TODO contains the BouncyCastle provider and will probably not work as a
+    // standalone
+    // server once moved to core
     private static final Logger LOGGER = LogManager.getLogger("TLSServer");
 
     private static final String PATH_TO_JKS = "eckey192.jks";
@@ -55,44 +58,6 @@ public class TLSServer extends Thread {
             keyStore.load(fis, password.toCharArray());
         }
         return keyStore;
-    }
-
-    public static void main(String[] args) throws Exception {
-        if (args.length == 5 && args[4].equalsIgnoreCase("BC")) {
-            Security.removeProvider("SunPKCS11-NSS");
-            Security.removeProvider("SunEC");
-            Security.insertProviderAt(new BouncyCastleProvider(), 1);
-            LOGGER.debug("Using BC provider");
-        }
-        for (Provider p : Security.getProviders()) {
-            LOGGER.debug(p);
-        }
-        System.setProperty("java.security.debug", "ssl");
-        String path;
-        String password;
-        String protocol;
-        int port;
-
-        if (args.length == 4 || args.length == 5) {
-            path = args[0];
-            password = args[1];
-            protocol = args[2];
-            port = Integer.parseInt(args[3]);
-        } else if (args.length == 0) {
-            path = PATH_TO_JKS;
-            password = JKS_PASSWORD;
-            protocol = PROTOCOL;
-            port = PORT;
-        } else {
-            LOGGER.info("Usage (run with): java -jar [name].jar [jks-path] "
-                    + "[password] [protocol] [port] \n (set [protocol] to TLS)");
-            return;
-        }
-
-        KeyStore keyStore = readKeyStore(path, password);
-        TLSServer server = new TLSServer(keyStore, password, protocol, port);
-        Thread t = new Thread(server);
-        t.start();
     }
 
     private String[] cipherSuites = null;

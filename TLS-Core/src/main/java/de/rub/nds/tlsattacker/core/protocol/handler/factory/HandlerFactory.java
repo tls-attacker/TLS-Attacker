@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -116,7 +116,10 @@ public class HandlerFactory {
         switch (algorithm) {
             case RSA:
                 return new RSAClientKeyExchangeHandler(context);
-            case ECDH:
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
                 return new ECDHClientKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:
@@ -139,7 +142,10 @@ public class HandlerFactory {
         CipherSuite cs = context.getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
-            case ECDH:
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
                 return new ECDHEServerKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:

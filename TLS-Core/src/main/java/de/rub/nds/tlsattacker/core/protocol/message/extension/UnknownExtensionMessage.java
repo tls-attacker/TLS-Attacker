@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHa
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -45,6 +47,7 @@ public class UnknownExtensionMessage extends ExtensionMessage {
         return dataConfig;
     }
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public void setDataConfig(byte[] dataConfig) {
         this.dataConfig = dataConfig;
     }
@@ -53,6 +56,7 @@ public class UnknownExtensionMessage extends ExtensionMessage {
         return typeConfig;
     }
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     public void setTypeConfig(byte[] typeConfig) {
         this.typeConfig = typeConfig;
     }

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -99,19 +99,19 @@ public enum CipherSuite {
     UNOFFICIAL_TLS_ECDH_ECDSA_WITH_RC4_128_SHA(0x48),
     UNOFFICIAL_TLS_ECDH_ECDSA_WITH_DES_CBC_SHA(0X49),
     UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA(0X4A),
-    UNOFFICIAL_TLS_ECDH_ECNRA_NULL_SHA(0x4B),
+    UNOFFICIAL_TLS_ECDH_ECNRA_WITH_NULL_SHA(0x4B),
     UNOFFICIAL_TLS_ECDH_ECNRA_WITH_RC4_128_SHA(0x4C),
     UNOFFICIAL_TLS_ECDH_ECNRA_WITH_DES_CBC_SHA(0x4D),
     UNOFFICIAL_TLS_ECDH_ECNRA_WITH_3DES_EDE_CBC_SHA(0x4E),
-    UNOFFICIAL_TLS_ECMQV_ECDSA_NULL_SHA(0x4F),
+    UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_NULL_SHA(0x4F),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_RC4_128_SHA(0x50),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_DES_CBC_SHA(0x51),
     UNOFFICIAL_TLS_ECMQV_ECDSA_WITH_3DES_EDE_CBC_SHA(0x52),
-    UNOFFICIAL_TLS_ECMQV_ECNRA_NULL_SHA(0x53),
+    UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_NULL_SHA(0x53),
     UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_RC4_128_SHA(0x54),
     UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_DES_CBC_SHA(0x55),
     UNOFFICIAL_TLS_ECMQV_ECNRA_WITH_3DES_EDE_CBC_SHA(0x56),
-    UNOFFICIAL_TLS_ECDH_anon_NULL_WITH_SHA(0x57),
+    UNOFFICIAL_TLS_ECDH_anon_WITH_NULL_SHA(0x57),
     UNOFFICIAL_TLS_ECDH_anon_WITH_RC4_128_SHA(0x58),
     UNOFFICIAL_TLS_ECDH_anon_WITH_DES_CBC_SHA(0x59),
     UNOFFICIAL_TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA(0x5A),
@@ -383,14 +383,17 @@ public enum CipherSuite {
     TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCC14),
     TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCC15),
     // Unofficial Ciphersuites draft-mavrogiannopoulos-chacha-tls-01
-    UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
-    UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC13),
-    UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_OLD(0xCC14),
-    UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC15),
-    UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
-    UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
-    UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
-    UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
+    // These Ciphersuite are from a Draft and also dont have a mac algorithm
+    // defined
+    // i am not sure if we want to keep draft ciphers here
+    // UNOFFICIAL_TLS_RSA_WITH_CHACHA20_POLY1305(0xCC12),
+    // UNOFFICIAL_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC13),
+    // UNOFFICIAL_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_OLD(0xCC14),
+    // UNOFFICIAL_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_OLD(0xCC15),
+    // UNOFFICIAL_TLS_DHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC16),
+    // UNOFFICIAL_TLS_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC17),
+    // UNOFFICIAL_TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC18),
+    // UNOFFICIAL_TLS_RSA_PSK_WITH_CHACHA20_POLY1305_OLD(0xCC19),
     // Chacha poly CipherSuites, some are double specified, added RFC_ infront
     RFC_TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA8),
     RFC_TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0xCCA9),
@@ -479,6 +482,10 @@ public enum CipherSuite {
         return this.name().contains("DHE_");
     }
 
+    public boolean isExport() {
+        return this.name().contains("EXPORT");
+    }
+
     /**
      * Returns true in case the cipher suite is an AEAD cipher suite.
      *
@@ -495,6 +502,10 @@ public enum CipherSuite {
      */
     public boolean isCBC() {
         return (this.name().contains("_CBC"));
+    }
+
+    public boolean isSCSV() {
+        return (this.name().contains("SCSV"));
     }
 
     /**
@@ -547,6 +558,27 @@ public enum CipherSuite {
         list.add(TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
         list.add(TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384);
         list.add(TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_DHE_RSA_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_DHE_RSA_WITH_AES_256_CBC_SHA256);
+        list.add(TLS_DHE_RSA_WITH_DES_CBC_SHA);
+        list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_RSA_WITH_IDEA_CBC_SHA);
+        list.add(TLS_RSA_WITH_DES_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA);
         return list;
+    }
+
+    public static List<CipherSuite> getNotImplemented() {
+        List<CipherSuite> notImplemented = new LinkedList<>();
+        for (CipherSuite suite : values()) {
+            if (!getImplemented().contains(suite)) {
+                notImplemented.add(suite);
+            }
+        }
+        return notImplemented;
     }
 }

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -20,22 +20,18 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> extends ExtensionPreparator<T> {
 
+    private UnknownExtensionMessage msg;
+
     public UnknownExtensionPreparator(TlsContext context, T object) {
         super(context, object);
+        msg = object;
     }
 
     @Override
     public void prepareExtensionContent() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        msg.setExtensionData(msg.getDataConfig());
+        msg.setExtensionType(msg.getTypeConfig());
+        msg.setExtensionLength(msg.getLengthConfig());
     }
 
 }

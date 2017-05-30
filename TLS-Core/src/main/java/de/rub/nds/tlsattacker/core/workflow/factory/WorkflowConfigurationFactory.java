@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -137,7 +137,10 @@ public class WorkflowConfigurationFactory {
             case RSA:
                 messages.add(new RSAClientKeyExchangeMessage(config));
                 break;
-            case ECDH:
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
                 messages.add(new ECDHClientKeyExchangeMessage(config));
                 break;
             case DHE_DSS:
@@ -160,7 +163,10 @@ public class WorkflowConfigurationFactory {
             case RSA:
                 messages.add(new ECDHEServerKeyExchangeMessage(config));
                 break;
-            case ECDH:
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
                 messages.add(new ECDHEServerKeyExchangeMessage(config));
                 break;
             case DHE_DSS:

@@ -1,7 +1,7 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
  *
- * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -19,14 +19,25 @@ public enum KeyExchangeAlgorithm {
     DHE_PSK,
     DH_ANON,
     RSA,
+    RSA_PSK,
     DH_DSS,
     DH_RSA,
     KRB5,
-    SRP,
+    SRP_SHA_DSS,
+    SRP_SHA_RSA,
+    SRP_SHA,
     PSK,
-    ECDH,
+    ECDH_RSA,
+    ECDH_ANON,
+    ECDH_ECDSA,
+    ECDHE_ECDSA,
+    ECDHE_RSA,
+    ECDHE_PSK,
     GOSTR341001,
     GOSTR341094,
-    CECPQ1;
-
+    FORTEZZA_KEA,
+    ECMQV_ECDSA,
+    ECMQV_ECNRA,
+    ECDH_ECNRA,
+    CECPQ1_ECDSA;
 }
