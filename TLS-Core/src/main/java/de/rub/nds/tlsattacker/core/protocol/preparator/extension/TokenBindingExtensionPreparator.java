@@ -26,8 +26,10 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
     @Override
     public void prepareExtensionContent() {
         message.setMajor(context.getConfig().getTokenBindingMajor());
+        message.setMajor(context.getConfig().getTokenBindingMinor());
         message.setMinor(context.getConfig().getTokenBindingMinor());
-        message.setTokenBindingKeyParameters(context.getConfig().getTokenBindingKeyParameters());
+        message.setParameterListLength(context.getConfig().getTokenBindingKeyParameters().length);
+        message.setTokenbindingParameters(context.getConfig().getTokenBindingKeyParameters());
         LOGGER.debug("Prepared the TokenBindingExtensionMessage.");
     }
 

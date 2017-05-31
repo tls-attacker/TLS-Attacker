@@ -28,6 +28,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
@@ -176,16 +178,16 @@ public final class TlsConfig implements Serializable {
     /**
      * TokenBinding default major version. To be defined later.
      */
-    private int tokenBindingMajor = 0;
+    private TokenBindingVersion tokenBindingMajor = TokenBindingVersion.ZERO_BYTE;
     /**
      * TokenBinding default minor version. To be defined later.
      */
-    private int tokenBindingMinor = 0;
+    private TokenBindingVersion tokenBindingMinor = TokenBindingVersion.DRAFT_13;
     /**
      * Default TokenBinding Key Parameters as seen in Google's Chrome
      * implementation.
      */
-    private byte[] tokenBindingKeyParameters = { 0x01, 0x02 };
+    private TokenBindingKeyParameters[] tokenBindingKeyParameters = { TokenBindingKeyParameters.ECDSAP256 };
     /**
      * Default Timeout we wait for TLSMessages
      */
@@ -1009,27 +1011,27 @@ public final class TlsConfig implements Serializable {
         this.addRenegotiationInfoExtension = addRenegotiationInfoExtension;
     }
 
-    public int getTokenBindingMajor() {
+    public TokenBindingVersion getTokenBindingMajor() {
         return tokenBindingMajor;
     }
 
-    public void setTokenBindingMajor(int tokenBindingMajor) {
+    public void setTokenBindingMajor(TokenBindingVersion tokenBindingMajor) {
         this.tokenBindingMajor = tokenBindingMajor;
     }
 
-    public int getTokenBindingMinor() {
+    public TokenBindingVersion getTokenBindingMinor() {
         return tokenBindingMinor;
     }
 
-    public void setTokenBindingMinor(int tokenBindingMinor) {
+    public void setTokenBindingMinor(TokenBindingVersion tokenBindingMinor) {
         this.tokenBindingMinor = tokenBindingMinor;
     }
 
-    public byte[] getTokenBindingKeyParameters() {
+    public TokenBindingKeyParameters[] getTokenBindingKeyParameters() {
         return tokenBindingKeyParameters;
     }
 
-    public void setTokenBindingKeyParameters(byte[] tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(TokenBindingKeyParameters[] tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 

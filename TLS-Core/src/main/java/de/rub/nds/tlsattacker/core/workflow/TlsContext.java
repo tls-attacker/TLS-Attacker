@@ -26,6 +26,8 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -185,11 +187,11 @@ public class TlsContext {
 
     private int sequenceNumber = 0;
 
-    private int tokenBindingMajorVersion;
+    private TokenBindingVersion tokenBindingMajorVersion;
 
-    private int tokenBindingMinorVersion;
+    private TokenBindingVersion tokenBindingMinorVersion;
 
-    private byte[] tokenBindingKeyParameters;
+    private TokenBindingKeyParameters[] tokenBindingKeyParameters;
 
     public TlsContext() {
         this(TlsConfig.createConfig());
@@ -564,27 +566,27 @@ public class TlsContext {
         this.renegotiationInfo = renegotiationInfo;
     }
 
-    public int getTokenBindingMajorVersion() {
+    public TokenBindingVersion getTokenBindingMajorVersion() {
         return tokenBindingMajorVersion;
     }
 
-    public void setTokenBindingMajorVersion(int tokenBindingMajorVersion) {
+    public void setTokenBindingMajorVersion(TokenBindingVersion tokenBindingMajorVersion) {
         this.tokenBindingMajorVersion = tokenBindingMajorVersion;
     }
 
-    public int getTokenBindingMinorVersion() {
+    public TokenBindingVersion getTokenBindingMinorVersion() {
         return tokenBindingMinorVersion;
     }
 
-    public void setTokenBindingMinorVersion(int tokenBindingMinorVersion) {
+    public void setTokenBindingMinorVersion(TokenBindingVersion tokenBindingMinorVersion) {
         this.tokenBindingMinorVersion = tokenBindingMinorVersion;
     }
 
-    public byte[] getTokenBindingKeyParameters() {
+    public TokenBindingKeyParameters[] getTokenBindingKeyParameters() {
         return tokenBindingKeyParameters;
     }
 
-    public void setTokenBindingKeyParameters(byte[] tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(TokenBindingKeyParameters[] tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 

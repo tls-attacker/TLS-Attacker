@@ -47,9 +47,9 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public void adjustTLSContext(TokenBindingExtensionMessage message) {
-        context.setTokenBindingMajorVersion(message.getMajor().getValue());
-        context.setTokenBindingMinorVersion(message.getMinor().getValue());
-        context.setTokenBindingKeyParameters(message.getTokenBindingKeyParameters().getValue());
+        context.setTokenBindingMajorVersion(message.getMajor());
+        context.setTokenBindingMinorVersion(message.getMinor());
+        context.setTokenBindingKeyParameters(message.getTokenbindingParameters());
         LOGGER.debug("The token binding extension handler adjusted the TLS context.");
     }
 

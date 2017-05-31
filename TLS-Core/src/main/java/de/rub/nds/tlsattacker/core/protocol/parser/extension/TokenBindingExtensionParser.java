@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToInt;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 
 /**
@@ -25,13 +25,14 @@ public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExt
 
     @Override
     public void parseExtensionMessageContent(TokenBindingExtensionMessage msg) {
-        msg.setMajor(bytesToInt(parseByteArrayField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH)));
-        msg.setMinor(bytesToInt(parseByteArrayField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH)));
-        msg.setTokenBindingKeyParameters(parseByteArrayField(msg.getExtensionLength().getValue()
-                - ExtensionByteLength.TOKENBINDING_VERSION_LENGTH - ExtensionByteLength.TOKENBINDING_VERSION_LENGTH));
-        LOGGER.debug("The token binding extension parser parsed the major version: " + msg.getMajor().getValue()
-                + " the minor version: " + msg.getMinor().getValue() + " and the key binding parameters: "
-                + bytesToHexString(msg.getTokenBindingKeyParameters()));
+        msg.setMajor(TokenBindingVersion
+                .getExtensionType(parseByteField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH)));
+        msg.setMinor(TokenBindingVersion
+                .getExtensionType(parseByteField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH)));
+        msg.setParameterListLength(parseIntField(1));
+        msg.setTokenbindingParameters(parseByteArrayField(msg.getParameterListLength()));
+        LOGGER.debug("The token binding extension parser parsed the major version: " + msg.getMajor().toString()
+                + " the minor version: " + msg.getMinor().toString() + " and the key binding parameters.");
     }
 
     @Override
