@@ -71,30 +71,30 @@ public class ExtensionParserFactory {
             case ENCRYPT_THEN_MAC:
                 break;
             case EXTENDED_MASTER_SECRET:
-                parser = new ExtendedMasterSecretExtensionParser(pointer, typeBytes);
+                parser = new ExtendedMasterSecretExtensionParser(pointer, extensionBytes);
                 break;
             case PADDING:
-                parser = new PaddingExtensionParser(pointer, typeBytes);
+                parser = new PaddingExtensionParser(pointer, extensionBytes);
                 break;
             case RENEGOTIATION_INFO:
-                parser = new RenegotiationInfoExtensionParser(pointer, typeBytes);
+                parser = new RenegotiationInfoExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_AUTHZ:
                 break;
             case SERVER_CERTIFICATE_TYPE:
                 break;
             case SESSION_TICKET:
-                parser = new SessionTicketTLSExtensionParser(pointer, typeBytes);
+                parser = new SessionTicketTLSExtensionParser(pointer, extensionBytes);
                 break;
             case SIGNED_CERTIFICATE_TIMESTAMP:
-                parser = new SignedCertificateTimestampExtensionParser(pointer, typeBytes);
+                parser = new SignedCertificateTimestampExtensionParser(pointer, extensionBytes);
                 break;
             case SRP:
                 break;
             case STATUS_REQUEST_V2:
                 break;
             case TOKEN_BINDING:
-                parser = new TokenBindingExtensionParser(pointer, typeBytes);
+                parser = new TokenBindingExtensionParser(pointer, extensionBytes);
                 break;
             case USER_MAPPING:
                 break;
