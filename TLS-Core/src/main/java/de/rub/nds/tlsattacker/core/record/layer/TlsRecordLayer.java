@@ -119,7 +119,12 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public void decryptRecord(AbstractRecord record) {
-        decryptor.decrypt(record);
+        if (record instanceof Record) {
+            decryptor.decrypt(record);
+        } else {
+            LOGGER.warn("Not decrypting received AbstractRecord:" + record.toString());
+            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
+        }
     }
 
     @Override

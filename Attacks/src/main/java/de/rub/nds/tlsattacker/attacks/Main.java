@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
@@ -29,6 +30,7 @@ import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -60,14 +62,16 @@ public class Main {
         jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
         PaddingOracleCommandConfig paddingOracle = new PaddingOracleCommandConfig(generalDelegate);
         jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
-        PoodleCommandConfig poodle = new PoodleCommandConfig(generalDelegate);
-        jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
+        TLSPoodleCommandConfig tlsPoodle = new TLSPoodleCommandConfig(generalDelegate);
+        jc.addCommand(TLSPoodleCommandConfig.ATTACK_COMMAND, tlsPoodle);
         Cve20162107CommandConfig cve20162107 = new Cve20162107CommandConfig(generalDelegate);
         jc.addCommand(Cve20162107CommandConfig.ATTACK_COMMAND, cve20162107);
         WinshockCommandConfig winshock = new WinshockCommandConfig(generalDelegate);
         jc.addCommand(WinshockCommandConfig.ATTACK_COMMAND, winshock);
         EarlyCCSCommandConfig earlyCCS = new EarlyCCSCommandConfig(generalDelegate);
         jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
+        PoodleCommandConfig poodle = new PoodleCommandConfig(generalDelegate);
+        jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         jc.parse(args);
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
@@ -91,8 +95,8 @@ public class Main {
             case Lucky13CommandConfig.ATTACK_COMMAND:
                 attacker = new Lucky13Attacker(lucky13);
                 break;
-            case PoodleCommandConfig.ATTACK_COMMAND:
-                attacker = new PoodleAttacker(poodle);
+            case TLSPoodleCommandConfig.ATTACK_COMMAND:
+                attacker = new TLSPoodleAttacker(tlsPoodle);
                 break;
             case PaddingOracleCommandConfig.ATTACK_COMMAND:
                 attacker = new PaddingOracleAttacker(paddingOracle);
@@ -108,6 +112,9 @@ public class Main {
                 break;
             case EarlyCCSCommandConfig.ATTACK_COMMAND:
                 attacker = new EarlyCCSAttacker(earlyCCS);
+                break;
+            case PoodleCommandConfig.ATTACK_COMMAND:
+                attacker = new PoodleAttacker(poodle);
                 break;
             default:
                 throw new ConfigurationException("No command found");
