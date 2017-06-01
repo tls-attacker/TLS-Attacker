@@ -86,6 +86,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
         try {
+            prepareAfterParse(parsedMessage);
             adjustTLSContext(parsedMessage);
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
@@ -112,4 +113,9 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * @param message
      */
     protected abstract void adjustTLSContext(Message message);
+
+    public void prepareAfterParse(Message message) {
+        ProtocolMessagePreparator prep = getPreparator(message);
+        prep.prepareAfterParse();
+    }
 }

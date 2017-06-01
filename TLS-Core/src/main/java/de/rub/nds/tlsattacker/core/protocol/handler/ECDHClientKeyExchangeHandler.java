@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
@@ -44,9 +45,7 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     protected void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
-        if (message.getComputations() != null) {
-            adjustPremasterSecret(message);
-            adjustMasterSecret(message);
-        }
+        adjustPremasterSecret(message);
+        adjustMasterSecret(message);
     }
 }

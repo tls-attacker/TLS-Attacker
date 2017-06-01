@@ -34,4 +34,6 @@ public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> exten
 
     protected abstract void prepareProtocolMessageContents();
 
+    public void prepareAfterParse() {
+    }
 }

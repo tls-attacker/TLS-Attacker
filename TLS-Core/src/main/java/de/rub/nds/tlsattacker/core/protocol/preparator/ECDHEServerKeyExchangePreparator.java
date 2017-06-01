@@ -48,12 +48,12 @@ import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage> {
 
     private final ECDHEServerKeyExchangeMessage msg;
-    private SecureRandom randomHelper;
+    private ECPublicKeyParameters pubEcParams;
+    private ECPrivateKeyParameters privEcParams;
 
     public ECDHEServerKeyExchangePreparator(TlsContext ctx, ECDHEServerKeyExchangeMessage msg) {
         super(ctx, msg);
         this.msg = msg;
-        this.randomHelper = RandomHelper.getBadSecureRandom();
     }
 
     @Override
@@ -66,14 +66,13 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         prepareNamedCurve(msg);
 
         ECDomainParameters ecParams = generateEcParameters(msg);
-        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(randomHelper, ecParams);
+        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), ecParams);
 
-        ECPublicKeyParameters pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
-        ECPrivateKeyParameters privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();
-
+        pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
+        privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();
+        preparePrivateKey(msg);
         prepareSerializedPublicKey(msg, pubEcParams.getQ());
         prepareSerializedPublicKeyLength(msg);
-
         prepareClientRandom(msg);
         prepareServerRandom(msg);
 
@@ -85,10 +84,6 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         byte[] signature = generateSignature(msg, signHashAlgo);
         prepareSignature(msg, signature);
         prepareSignatureLength(msg);
-    }
-
-    void setRandomHelper(SecureRandom randomHelper) {
-        this.randomHelper = randomHelper;
     }
 
     private ECDomainParameters generateEcParameters(ECDHEServerKeyExchangeMessage msg) {
@@ -236,18 +231,6 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         }
     }
 
-    private void preparePremasterSecret(ECDHEServerKeyExchangeMessage msg, byte[] pms) {
-        msg.getComputations().setPremasterSecret(pms);
-        LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
-    }
-
-    private void prepareMasterSecret(ECDHEServerKeyExchangeMessage msg, byte[] ms) {
-        msg.getComputations().setMasterSecret(ms);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
-    }
-
     private void prepareSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm signHashAlgo) {
         msg.setSignatureAlgorithm(signHashAlgo.getSignatureAlgorithm().getValue());
         LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
@@ -315,5 +298,10 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
             throw new PreparationException("Couldn't read list of named curves from computations", ex);
         }
         msg.setNamedCurve(curves[0].getValue());
+    }
+
+    private void preparePrivateKey(ECDHEServerKeyExchangeMessage msg) {
+        msg.getComputations().setPrivateKey(privEcParams.getD());
+        LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
     }
 }

@@ -38,8 +38,10 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +53,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
@@ -885,5 +888,10 @@ public final class TlsConfig implements Serializable {
 
     public void setKeyStoreFile(String keyStoreFile) {
         this.keyStoreFile = keyStoreFile;
+    }
+
+    public PublicKey getPublicKey() throws CertificateParsingException {
+        X509CertificateObject certObj = new X509CertificateObject(getOurCertificate().getCertificateAt(0));
+        return certObj.getPublicKey();
     }
 }

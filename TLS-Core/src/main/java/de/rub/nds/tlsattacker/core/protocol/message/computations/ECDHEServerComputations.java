@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import java.math.BigInteger;
 
 /**
  *
@@ -34,7 +35,22 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     protected ModifiableByteArray serverRandom;
 
+    @ModifiableVariableProperty
+    protected ModifiableBigInteger privateKey;
+
     public ECDHEServerComputations() {
+    }
+
+    public ModifiableBigInteger getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(ModifiableBigInteger privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public void setPrivateKey(BigInteger privateKey) {
+        this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
     public ModifiableByteArray getEcPointFormatList() {

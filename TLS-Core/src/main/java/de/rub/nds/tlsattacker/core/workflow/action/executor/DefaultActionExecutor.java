@@ -67,6 +67,7 @@ public class DefaultActionExecutor extends ActionExecutor {
                     && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
                 if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                    // TODO this should not be here
                     context.getRecordLayer().updateEncryptionCipher();
                 }
             }

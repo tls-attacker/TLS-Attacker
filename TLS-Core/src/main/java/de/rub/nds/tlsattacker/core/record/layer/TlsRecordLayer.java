@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -119,7 +120,13 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public void decryptRecord(AbstractRecord record) {
-        decryptor.decrypt(record);
+        try {
+            decryptor.decrypt(record);
+        } catch (CryptoException E) {
+            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
+            LOGGER.warn("Could not decrypt Record, parsing as unencrypted");
+            LOGGER.debug(E);
+        }
     }
 
     @Override
