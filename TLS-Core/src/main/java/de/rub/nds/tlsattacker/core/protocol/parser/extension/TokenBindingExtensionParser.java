@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 
 /**
@@ -25,10 +23,8 @@ public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExt
 
     @Override
     public void parseExtensionMessageContent(TokenBindingExtensionMessage msg) {
-        msg.setMajor(TokenBindingVersion
-                .getExtensionType(parseByteField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH)));
-        msg.setMinor(TokenBindingVersion
-                .getExtensionType(parseByteField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH)));
+        msg.setMajor(parseByteField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH));
+        msg.setMinor(parseByteField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH));
         msg.setParameterListLength(parseIntField(1));
         msg.setTokenbindingParameters(parseByteArrayField(msg.getParameterListLength()));
         LOGGER.debug("The token binding extension parser parsed the major version: " + msg.getMajor().toString()

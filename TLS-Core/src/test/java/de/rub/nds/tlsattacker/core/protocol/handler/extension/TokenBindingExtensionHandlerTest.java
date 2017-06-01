@@ -13,10 +13,11 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -39,11 +40,10 @@ public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
     private final TokenBindingVersion majorVersion;
     private final TokenBindingVersion minorVersion;
     private final int parameterLength;
-    private final TokenBindingKeyParameters[] keyParameter;
+    private final byte[] keyParameter;
 
     public TokenBindingExtensionHandlerTest(ExtensionType extensionType, byte[] extension, int extensionLength,
-            TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength,
-            TokenBindingKeyParameters[] keyParameter) {
+            TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
         this.extensionType = extensionType;
         this.extensionBytes = extension;
         this.extensionLength = extensionLength;
@@ -55,10 +55,7 @@ public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.TOKEN_BINDING,
-                new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.ZERO_BYTE,
-                TokenBindingVersion.DRAFT_13, 1,
-                new TokenBindingKeyParameters[] { TokenBindingKeyParameters.ECDSAP256 } } });
+        return TokenBindingExtensionParserTest.generateData();
     }
 
     @Before
@@ -72,14 +69,18 @@ public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
     @Override
     public void testAdjustTLSContext() {
         TokenBindingExtensionMessage message = new TokenBindingExtensionMessage();
-        message.setMajor(majorVersion);
-        message.setMinor(minorVersion);
+        message.setMajor(majorVersion.getByteValue());
+        message.setMinor(minorVersion.getByteValue());
         message.setTokenbindingParameters(keyParameter);
         handler.adjustTLSContext(message);
 
         assertEquals(majorVersion, context.getTokenBindingMajorVersion());
         assertEquals(minorVersion, context.getTokenBindingMinorVersion());
-        assertArrayEquals(keyParameter, context.getTokenBindingKeyParameters());
+        ByteArrayOutputStream contextKeyParameters = new ByteArrayOutputStream();
+        for (TokenBindingKeyParameters kp : context.getTokenBindingKeyParameters()) {
+            contextKeyParameters.write(kp.getKeyParameterValue());
+        }
+        assertArrayEquals(keyParameter, contextKeyParameters.toByteArray());
     }
 
     @Test

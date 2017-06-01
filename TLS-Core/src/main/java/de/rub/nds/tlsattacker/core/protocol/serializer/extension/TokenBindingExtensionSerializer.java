@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import static de.rub.nds.modifiablevariable.util.ArrayConverter.intToBytes;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import java.util.ArrayList;
 
 /**
  *
@@ -28,12 +25,10 @@ public class TokenBindingExtensionSerializer extends ExtensionSerializer<TokenBi
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendBytes(new byte[] { message.getMajor().getByteValue() });
-        appendBytes(new byte[] { message.getMinor().getByteValue() });
+        appendByte(message.getMajor().getValue());
+        appendByte(message.getMinor().getValue());
         appendByte((byte) message.getParameterListLength());
-        for (TokenBindingKeyParameters kp : message.getTokenbindingParameters()) {
-            appendByte(kp.getKeyParameterValue());
-        }
+        appendBytes(message.getTokenbindingParameters().getValue());
         LOGGER.debug("Serialized the token binding extension.");
         return getAlreadySerialized();
     }

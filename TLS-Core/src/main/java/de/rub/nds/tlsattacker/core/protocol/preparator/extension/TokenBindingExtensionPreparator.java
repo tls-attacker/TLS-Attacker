@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import java.io.ByteArrayOutputStream;
 
 /**
  *
@@ -25,11 +27,14 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
 
     @Override
     public void prepareExtensionContent() {
-        message.setMajor(context.getConfig().getTokenBindingMajor());
-        message.setMajor(context.getConfig().getTokenBindingMinor());
-        message.setMinor(context.getConfig().getTokenBindingMinor());
+        message.setMajor(context.getConfig().getTokenBindingMajor().getByteValue());
+        message.setMinor(context.getConfig().getTokenBindingMinor().getByteValue());
         message.setParameterListLength(context.getConfig().getTokenBindingKeyParameters().length);
-        message.setTokenbindingParameters(context.getConfig().getTokenBindingKeyParameters());
+        ByteArrayOutputStream tokenbindingKeyParameters = new ByteArrayOutputStream();
+        for (TokenBindingKeyParameters kp : context.getConfig().getTokenBindingKeyParameters()) {
+            tokenbindingKeyParameters.write(kp.getKeyParameterValue());
+        }
+        message.setTokenbindingParameters(tokenbindingKeyParameters.toByteArray());
         LOGGER.debug("Prepared the TokenBindingExtensionMessage.");
     }
 

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
@@ -16,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import java.util.ArrayList;
 
 /**
  *
@@ -47,9 +50,14 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public void adjustTLSContext(TokenBindingExtensionMessage message) {
-        context.setTokenBindingMajorVersion(message.getMajor());
-        context.setTokenBindingMinorVersion(message.getMinor());
-        context.setTokenBindingKeyParameters(message.getTokenbindingParameters());
+        context.setTokenBindingMajorVersion(TokenBindingVersion.getExtensionType(message.getMajor().getValue()));
+        context.setTokenBindingMinorVersion(TokenBindingVersion.getExtensionType(message.getMinor().getValue()));
+        ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
+        for (byte kp : message.getTokenbindingParameters().getValue()) {
+            tokenbindingKeyParameters.add(TokenBindingKeyParameters.getExtensionType(kp));
+        }
+        context.setTokenBindingKeyParameters(tokenbindingKeyParameters
+                .toArray(new TokenBindingKeyParameters[tokenbindingKeyParameters.size()]));
         LOGGER.debug("The token binding extension handler adjusted the TLS context.");
     }
 
