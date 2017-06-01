@@ -120,12 +120,18 @@ public class TlsRecordLayer extends RecordLayer {
 
     @Override
     public void decryptRecord(AbstractRecord record) {
-        try {
-            decryptor.decrypt(record);
-        } catch (CryptoException E) {
-            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
-            LOGGER.warn("Could not decrypt Record, parsing as unencrypted");
-            LOGGER.debug(E);
+        if (record instanceof Record) {
+            try {
+                decryptor.decrypt(record);
+            } catch (CryptoException E) {
+                record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
+                LOGGER.warn("Could not decrypt Record, parsing as unencrypted");
+                LOGGER.debug(E);
+            }
+        } else {
+            LOGGER.warn("Not decrypting received non Record:" + record.toString());
+            record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
+            
         }
     }
 
