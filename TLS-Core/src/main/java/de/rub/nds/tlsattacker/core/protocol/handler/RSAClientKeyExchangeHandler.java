@@ -45,9 +45,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
     @Override
     protected void adjustTLSContext(RSAClientKeyExchangeMessage message) {
-        if (message.getComputations() != null) {
-            adjustPremasterSecret(message);
-            adjustMasterSecret(message);
-        }
+        adjustPremasterSecret(message);
+        adjustMasterSecret(message);
     }
 }

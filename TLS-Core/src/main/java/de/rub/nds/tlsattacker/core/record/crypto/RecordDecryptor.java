@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -84,10 +85,10 @@ public class RecordDecryptor extends Decryptor<Record> {
     }
 
     private byte[] parsePadding(byte[] decrypted, int paddingLength) {
-        if (paddingLength > decrypted.length) {
-            throw new CryptoException("Could parse Padding. Padding length greater than data length");
-        }
         int paddingStart = decrypted.length - paddingLength - 1;
+        if (paddingStart > decrypted.length) {
+            throw new CryptoException("Could parse Padding. Padding start greater than data length");
+        }
         return Arrays.copyOfRange(decrypted, paddingStart, decrypted.length);
     }
 

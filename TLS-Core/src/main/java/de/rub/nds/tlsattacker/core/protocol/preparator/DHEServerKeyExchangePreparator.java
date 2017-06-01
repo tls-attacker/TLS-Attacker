@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,7 +43,6 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     private DHPublicKeyParameters dhPublic;
     private DHPrivateKeyParameters dhPrivate;
-    private ServerDHParams publicKeyParameters;
     private SignatureAndHashAlgorithm selectedSignatureHashAlgo;
     private byte[] signature;
     private final DHEServerKeyExchangeMessage msg;
@@ -78,11 +78,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         prepareSerializedPublicKey(msg);
         prepareSerializedPublicKeyLength(msg);
         preparePrivateKey(msg);
-        adjustServerDHPrivateParameters(context);
-        BigInteger y = new BigInteger(1, msg.getSerializedPublicKey().getValue());
-        ServerDHParams publicKeyParameters = new ServerDHParams(new DHPublicKeyParameters(y, new DHParameters(p, g)));
-        // could be extended to choose the algorithms depending on the
-        // certificate
+        // TODO this should not be here
         selectedSignatureHashAlgo = context.getConfig().getSupportedSignatureAndHashAlgorithms().get(0);
         prepareSignatureAlgorithm(msg);
         prepareHashAlgorithm(msg);
@@ -94,7 +90,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     private byte[] generateToBeSigned() {
-        byte[] dhParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(msg.getgLength().getValue(),
+        byte[] dhParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(msg.getpLength().getValue(),
                 HandshakeByteLength.DH_P_LENGTH), msg.getP().getValue(), ArrayConverter.intToBytes(msg.getgLength()
                 .getValue(), HandshakeByteLength.DH_G_LENGTH), msg.getG().getValue(), ArrayConverter.intToBytes(msg
                 .getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH), msg
@@ -106,9 +102,9 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
         try {
-            PrivateKey key = context.getConfig().getPrivateKey();
+            RSAPrivateCrtKey rsakey = (RSAPrivateCrtKey) context.getConfig().getPrivateKey();
             Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key);
+            instance.initSign(rsakey);
             instance.update(generateToBeSigned());
             return instance.sign();
         } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException ex) {
@@ -150,16 +146,6 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     private void preparePrivateKey(DHEServerKeyExchangeMessage msg) {
         msg.getComputations().setPrivateKey(dhPrivate.getX());
         LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
-    }
-
-    /**
-     * TODO Preparators should never change Context fields
-     *
-     * @param context
-     */
-    private void adjustServerDHPrivateParameters(TlsContext context) {
-        context.setServerDHPrivateKeyParameters(dhPrivate);
-        LOGGER.debug("ServerDHPrivateKeyParameters: " + context.getServerDHPrivateKeyParameters());
     }
 
     private void setComputedP(DHEServerKeyExchangeMessage msg) {
