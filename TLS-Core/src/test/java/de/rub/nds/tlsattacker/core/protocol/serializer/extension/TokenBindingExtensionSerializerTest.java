@@ -6,21 +6,14 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
+package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParserTest;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.util.ArrayList;
 import java.util.Collection;
-import jdk.nashorn.internal.objects.annotations.Setter;
-import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -30,7 +23,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest {
+public class TokenBindingExtensionSerializerTest extends ExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
@@ -40,7 +33,7 @@ public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest
     private final int parameterLength;
     private final byte[] keyParameter;
 
-    public TokenBindingExtensionPreparatorTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
+    public TokenBindingExtensionSerializerTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
             TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
@@ -56,30 +49,24 @@ public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest
         return TokenBindingExtensionParserTest.generateData();
     }
 
-    @Before
-    public void setUp() {
-        context = new TlsContext();
-        message = new TokenBindingExtensionMessage();
-        preparator = new TokenBindingExtensionPreparator(context, (TokenBindingExtensionMessage) message);
-    }
-
     @Test
     @Override
-    public void testPreparator() {
-        context.getConfig().setTokenBindingMajor(majorVersion);
-        context.getConfig().setTokenBindingMinor(minorVersion);
-        ArrayList<TokenBindingKeyParameters> keyParameterArray = new ArrayList<>();
-        for (byte kp : keyParameter) {
-            keyParameterArray.add(TokenBindingKeyParameters.getExtensionType(kp));
-        }
-        context.getConfig().setTokenBindingKeyParameters(
-                keyParameterArray.toArray(new TokenBindingKeyParameters[keyParameterArray.size()]));
+    public void testSerializeExtensionContent() {
+        message = new TokenBindingExtensionMessage();
 
-        preparator.prepare();
+        message.setExtensionType(extensionType.getValue());
+        message.setExtensionLength(extensionLength);
 
-        assertEquals(majorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message).getMajor().getValue());
-        assertEquals(minorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message).getMinor().getValue());
-        assertArrayEquals(keyParameter, ((TokenBindingExtensionMessage) message).getTokenbindingParameters().getValue());
+        ((TokenBindingExtensionMessage) message).setMajor(majorVersion.getByteValue());
+        ((TokenBindingExtensionMessage) message).setMinor(minorVersion.getByteValue());
+        ((TokenBindingExtensionMessage) message).setParameterListLength(parameterLength);
+        ((TokenBindingExtensionMessage) message).setTokenbindingParameters(keyParameter);
+
+        TokenBindingExtensionSerializer serializer = new TokenBindingExtensionSerializer(
+                ((TokenBindingExtensionMessage) message));
+
+        assertArrayEquals(extensionBytes, serializer.serialize());
+
     }
 
 }
