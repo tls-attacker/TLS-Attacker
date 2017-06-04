@@ -60,7 +60,7 @@ public final class TlsConfig implements Serializable {
     /**
      * Default value for PtocolverionFields
      */
-    private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
+    private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS13;
 
     /**
      * Indicates which ConnectionEnd we are
@@ -221,7 +221,7 @@ public final class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the ECPointFormat extension
      */
-    private boolean addECPointFormatExtension = true;
+    private boolean addECPointFormatExtension = false;
     /**
      * If we generate ClientHello with the EllipticCurve extension
      */
@@ -402,15 +402,11 @@ public final class TlsConfig implements Serializable {
         supportedCompressionMethods.add(CompressionMethod.NULL);
         supportedCompressionMethods.add(CompressionMethod.DEFLATE);
         supportedCiphersuites = new LinkedList<>();
-        // supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_256);
-        // supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA_384);
+        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA384);
         supportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
         namedCurves.add(NamedCurve.ECDH_X25519);
-        namedCurves.add(NamedCurve.SECP192R1);
-        namedCurves.add(NamedCurve.SECP256R1);
-        namedCurves.add(NamedCurve.SECP384R1);
-        namedCurves.add(NamedCurve.SECP521R1);
         namedCurves.add(NamedCurve.FFDHE2048);
         pointFormats = new LinkedList<>();
         pointFormats.add(ECPointFormat.UNCOMPRESSED);

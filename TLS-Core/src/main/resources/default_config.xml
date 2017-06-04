@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <tlsConfig>
-    <highestProtocolVersion>TLS12</highestProtocolVersion>
+    <highestProtocolVersion>TLS13</highestProtocolVersion>
     <connectionEnd>CLIENT</connectionEnd>
-    <WorkflowTraceType>HANDSHAKE</WorkflowTraceType>
     <alias>default</alias>
     <password>password</password>
     <clientAuthentication>false</clientAuthentication>
@@ -41,6 +40,8 @@
         <signatureAlgorithm>ECDSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
     <fuzzingMode>false</fuzzingMode>
+    <supportedCiphersuites>TLS_AES_128_GCM_SHA256</supportedCiphersuites>
+    <supportedCiphersuites>TLS_AES_128_GCM_SHA384</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
     <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</supportedCiphersuites>
@@ -78,10 +79,6 @@
     <dynamicWorkflow>false</dynamicWorkflow>
     <pointFormats>UNCOMPRESSED</pointFormats>
     <namedCurves>ECDH_X25519</namedCurves>	
-    <namedCurves>SECP192R1</namedCurves>
-    <namedCurves>SECP256R1</namedCurves>
-    <namedCurves>SECP384R1</namedCurves>
-    <namedCurves>SECP521R1</namedCurves>
     <namedCurves>FFDHE2048</namedCurves>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <sniHostname>localhost</sniHostname>
@@ -94,7 +91,7 @@
     <transportHandlerType>TCP</transportHandlerType>
     <verifyWorkflow>false</verifyWorkflow>
     <serverSendsApplicationData>false</serverSendsApplicationData>
-    <addECPointFormatExtension>true</addECPointFormatExtension>
+    <addECPointFormatExtension>false</addECPointFormatExtension>
     <addEllipticCurveExtension>true</addEllipticCurveExtension>
     <addHeartbeatExtension>false</addHeartbeatExtension>
     <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
