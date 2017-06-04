@@ -55,6 +55,11 @@ public class RecordAEADCipher extends RecordCipher {
     public static final int GCM_IV_LENGTH = 12;
 
     /**
+     * noncelength in byte
+     */
+    public static final int TLS13_NONCE_LENGTH = 8;
+
+    /**
      * cipher for encryption
      */
     private Cipher encryptCipher;
@@ -167,17 +172,20 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public byte[] encrypt(byte[] data) {
         try {
-            byte[] nonce = ArrayConverter.longToBytes(sequenceNumberEnc, GCM_IV_LENGTH);
+            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberEnc, TLS13_NONCE_LENGTH);
+            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - TLS13_NONCE_LENGTH], sequenceNumberByte);
             if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+                byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    clientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);
+                    newClientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);
                 }
-                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, clientWriteIv);
+                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newClientWriteIv);
             } else {
+                byte[] newServerWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    serverWriteIv[i] = (byte) (serverWriteIv[i] ^ nonce[i]);
+                    newServerWriteIv[i] = (byte) (serverWriteIv[i] ^ nonce[i]);
                 }
-                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, serverWriteIv);
+                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newServerWriteIv);
 
             }
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIV);
@@ -192,18 +200,20 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public byte[] decrypt(byte[] data) {
         try {
-            byte[] nonce = ArrayConverter.longToBytes(sequenceNumberDec, GCM_IV_LENGTH);
+            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberDec, TLS13_NONCE_LENGTH);
+            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - TLS13_NONCE_LENGTH], sequenceNumberByte);
             if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+                byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    clientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);
+                    newClientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);
                 }
-                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, clientWriteIv);
+                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newClientWriteIv);
             } else {
+                byte[] newServerWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    serverWriteIv[i] = (byte) (serverWriteIv[i] ^ nonce[i]);
+                    newServerWriteIv[i] = (byte) (serverWriteIv[i] ^ nonce[i]);
                 }
-                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, serverWriteIv);
-
+                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newServerWriteIv);
             }
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
             sequenceNumberDec++;

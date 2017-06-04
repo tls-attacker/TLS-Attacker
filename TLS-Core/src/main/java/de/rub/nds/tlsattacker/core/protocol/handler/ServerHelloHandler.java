@@ -73,8 +73,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13
                 && tlsContext.getTalkingConnectionEnd() != tlsContext.getConfig().getConnectionEnd()) {
             setRecordCipher();
-            System.out.println("Starting to decrypt");
+            // System.out.println("Starting to decrypt");
             tlsContext.getRecordLayer().updateDecryptionCipher();
+            // System.out.println("Starting to encrypt");
+            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.setEncryptActive(true);
         }
     }
 
@@ -128,6 +131,5 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         LOGGER.debug("Setting new Cipher in RecordLayer");
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
         tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-        tlsContext.setEncryptActive(true);
     }
 }

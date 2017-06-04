@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
@@ -77,7 +78,8 @@ public class HandlerFactory {
         try {
             switch (type) {
                 case CERTIFICATE:
-                    return new CertificateHandler(context);
+                    return new UnknownHandshakeMessageHandler(context);
+                    // return new CertificateHandler(context);
                 case CERTIFICATE_REQUEST:
                     return new CertificateRequestHandler(context);
                 case CERTIFICATE_VERIFY:
@@ -86,6 +88,8 @@ public class HandlerFactory {
                     return new ClientHelloHandler(context);
                 case CLIENT_KEY_EXCHANGE:
                     return getClientKeyExchangeHandler(context);
+                case ENCRYPTED_EXTENSIONS:
+                    return new EncryptedExtensionsHandler(context);
                 case FINISHED:
                     return new FinishedHandler(context);
                 case HELLO_REQUEST:

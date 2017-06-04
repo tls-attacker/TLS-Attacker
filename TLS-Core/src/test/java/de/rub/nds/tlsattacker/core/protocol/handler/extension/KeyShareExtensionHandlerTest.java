@@ -20,21 +20,8 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.security.interfaces.ECPrivateKey;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
-import org.bouncycastle.jce.spec.ECParameterSpec;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -62,7 +49,7 @@ public class KeyShareExtensionHandlerTest {
      * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
      */
     @Test
-    public void testAdjustTLSContext() {
+    public void testAdjustTLSContext1() {
         context.setTalkingConnectionEnd(ConnectionEnd.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
@@ -80,6 +67,32 @@ public class KeyShareExtensionHandlerTest {
         assertNotNull(context.getClientHandshakeTrafficSecret());
         assertNotNull(context.getServerHandshakeTrafficSecret());
 
+    }
+
+    /**
+     * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
+     */
+    @Test
+    public void testAdjustTLSContext2() {
+        context.setTalkingConnectionEnd(ConnectionEnd.SERVER);
+        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
+        List<KeySharePair> pairList = new LinkedList<>();
+        KeySharePair pair = new KeySharePair();
+        pair.setKeyShare(ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"));
+        pair.setKeyShareType(NamedCurve.ECDH_X25519.getValue());
+        pairList.add(pair);
+        msg.setKeyShareList(pairList);
+        handler.adjustTLSContext(msg);
+        assertNotNull(context.getServerKSEntry());
+        KSEntry entry = context.getServerKSEntry();
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
+                entry.getSerializedPublicKey());
+        assertTrue(entry.getGroup() == NamedCurve.ECDH_X25519);
+        assertNotNull(context.getClientHandshakeTrafficSecret());
+        assertNotNull(context.getServerHandshakeTrafficSecret());
+
+        assertTrue(entry.getGroup() != NamedCurve.ECDH_X25519);
     }
 
     /**
@@ -113,35 +126,6 @@ public class KeyShareExtensionHandlerTest {
         byte[] sharedSecret = handler.computeSharedSecretECDH();
         byte[] sharedSecret_correct = ArrayConverter.hexStringToByteArray("0dfa4c5e11a6f606d4b75f138412d85a4b2da0d5f981ffc1d2e8ceff2e00a12c");
         assertArrayEquals(sharedSecret, sharedSecret_correct);
-    }
-    
-    /**
-     * Test of doECDH method, of class KeyShareExtensionHandler with keys from KeyPairGenerator.
-     */
-    @Test
-    public void testECDH() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException, InvalidKeyException, Exception {
-        Security.addProvider(new BouncyCastleProvider());
-        KeyPairGenerator kpgen = KeyPairGenerator.getInstance("ECDH", "BC");
-        ECNamedCurveParameterSpec params = ECNamedCurveTable.getParameterSpec("curve25519");
-        ECParameterSpec parameters = new ECParameterSpec(params.getCurve(), params.getG(), params.getH(), params.getH(), params.getSeed());
-        kpgen.initialize(parameters, new SecureRandom());
-        KeyPair pairA = kpgen.generateKeyPair();
-        KeyPair pairB = kpgen.generateKeyPair();
-        
-        byte[] dataPrvA = handler.savePrivateKey(pairA.getPrivate());
-        byte[] dataPubA = handler.savePublicKey(pairA.getPublic());
-        byte[] dataPrvB = handler.savePrivateKey(pairB.getPrivate());
-        byte[] dataPubB = handler.savePublicKey(pairB.getPublic());
-        
-        System.out.println("Alice Prv: " + ArrayConverter.bytesToHexString(dataPrvA));
-        System.out.println("Alice Pub: " + ArrayConverter.bytesToHexString(dataPubA));
-        System.out.println("Bob Prv: " + ArrayConverter.bytesToHexString(dataPrvB));
-        System.out.println("Bob Pub: " + ArrayConverter.bytesToHexString(dataPubB));
-        
-        handler = new KeyShareExtensionHandler(context);
-        System.out.println("Aus A Sicht:" + ArrayConverter.bytesToHexString(handler.doECDH(dataPrvA, dataPubB)));
-        System.out.println("Aus B Sicht: " + ArrayConverter.bytesToHexString(handler.doECDH(dataPrvB, dataPubA)));
-        assertArrayEquals(handler.doECDH(dataPrvA, dataPubB), handler.doECDH(dataPrvB, dataPubA));
     }
 
     /**

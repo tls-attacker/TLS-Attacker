@@ -37,9 +37,9 @@ public class HKDFunction {
 
     public static final String EARLY_EXPORTER_MASTER_SECRET = "e exp master";
 
-    public static final String CLIENT_HANDSHAKE_TRAFFIC_SECRET = "c hs traffic";
+    public static final String CLIENT_HANDSHAKE_TRAFFIC_SECRET = "client handshake traffic secret";
 
-    public static final String SERVER_HANDSHAKE_TRAFFIC_SECRET = "s hs traffic";
+    public static final String SERVER_HANDSHAKE_TRAFFIC_SECRET = "server handshake traffic secret";
 
     public static final String CLIENT_APPLICATION_TRAFFIC_SECRET = "c ap traffic";
 
