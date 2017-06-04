@@ -8,16 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRetryRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRetryRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRetryRequestSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
@@ -47,7 +43,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
     @Override
     protected void adjustTLSContext(HelloRetryRequestMessage message) {
         adjustProtocolVersion(message);
-        adjustCiphersuite(message);
+        adjustLastRecordVersion(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
@@ -55,16 +51,16 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
         }
     }
 
-    private void adjustCiphersuite(HelloRetryRequestMessage message) {
-        CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
-        tlsContext.setSelectedCipherSuite(suite);
-        LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
-    }
-
     private void adjustProtocolVersion(HelloRetryRequestMessage message) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         tlsContext.setSelectedProtocolVersion(version);
         LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+    }
+
+    private void adjustLastRecordVersion(HelloRetryRequestMessage message) {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
+        tlsContext.setLastRecordVersion(version);
+        LOGGER.debug("Set LastRecordVersion in Context to " + version.name());
     }
 
 }
