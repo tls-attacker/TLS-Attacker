@@ -52,7 +52,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
      */
     @Override
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
-        context.setIsExtendedMasterSecret(true);
+        context.setIsExtendedMasterSecretExtension(true);
         LOGGER.debug("The extended master secret extension handler adjusted the TLS context.");
     }
 

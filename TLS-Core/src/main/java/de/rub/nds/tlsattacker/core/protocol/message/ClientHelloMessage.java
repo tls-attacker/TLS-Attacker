@@ -100,7 +100,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
-        if (tlsConfig.isAddExtendedMasterSecret()) {
+        if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
         }
         if (tlsConfig.isAddSessionTicketTLSExtension()) {

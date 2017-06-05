@@ -52,7 +52,7 @@ public class ExtendedMasterSecretExtensionPreparatorTest extends ExtensionPrepar
         preparator = new ExtendedMasterSecretExtensionPreparator(context,
                 (ExtendedMasterSecretExtensionMessage) message);
 
-        context.getConfig().setAddExtendedMasterSecret(true);
+        context.getConfig().setAddExtendedMasterSecretExtension(true);
         preparator.prepare();
 
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());

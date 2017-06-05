@@ -60,7 +60,7 @@ public class ExtendedMasterSecretExtensionHandlerTest extends ExtensionHandlerTe
 
         handler.adjustTLSContext(msg);
 
-        assertTrue(context.isExtendedMasterSecret());
+        assertTrue(context.isExtendedMasterSecretExtension());
 
     }
 

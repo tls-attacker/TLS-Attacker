@@ -145,7 +145,7 @@ public class TlsContext {
     /**
      * Is the extended master secret extension present?
      */
-    private boolean isExtendedMasterSecret;
+    private boolean isExtendedMasterSecretExtension;
 
     /**
      * This is the renegotiation info of the RenegotiationInfo extension.
@@ -331,12 +331,12 @@ public class TlsContext {
         return paddingExtensionLength;
     }
 
-    public boolean isExtendedMasterSecret() {
-        return isExtendedMasterSecret;
+    public boolean isExtendedMasterSecretExtension() {
+        return isExtendedMasterSecretExtension;
     }
 
-    public void setIsExtendedMasterSecret(boolean isExtendedMasterSecret) {
-        this.isExtendedMasterSecret = isExtendedMasterSecret;
+    public void setIsExtendedMasterSecretExtension(boolean isExtendedMasterSecretExtension) {
+        this.isExtendedMasterSecretExtension = isExtendedMasterSecretExtension;
     }
 
     public void setPaddingExtensionLength(int PaddingExtensionLength) {

@@ -252,7 +252,7 @@ public final class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the ExtendedMasterSecret extension
      */
-    private boolean addExtendedMasterSecret = false;
+    private boolean addExtendedMasterSecretExtension = false;
     /**
      * If we generate ClientHello with the SessionTicketTLS extension
      */
@@ -542,12 +542,12 @@ public final class TlsConfig implements Serializable {
         this.addPaddingExtension = addPaddingExtension;
     }
 
-    public boolean isAddExtendedMasterSecret() {
-        return addExtendedMasterSecret;
+    public boolean isAddExtendedMasterSecretExtension() {
+        return addExtendedMasterSecretExtension;
     }
 
-    public void setAddExtendedMasterSecret(boolean addExtendedMasterSecret) {
-        this.addExtendedMasterSecret = addExtendedMasterSecret;
+    public void setAddExtendedMasterSecretExtension(boolean addExtendedMasterSecretExtension) {
+        this.addExtendedMasterSecretExtension = addExtendedMasterSecretExtension;
     }
 
     public boolean isAddSessionTicketTLSExtension() {
