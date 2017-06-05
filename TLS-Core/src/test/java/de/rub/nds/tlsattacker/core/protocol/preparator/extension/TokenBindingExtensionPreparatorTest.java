@@ -77,9 +77,12 @@ public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest
 
         preparator.prepare();
 
-        assertEquals(majorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message).getMajorTokenbindingVersion().getValue());
-        assertEquals(minorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message).getMinorTokenbindingVersion().getValue());
-        assertArrayEquals(keyParameter, ((TokenBindingExtensionMessage) message).getTokenbindingKeyParameters().getValue());
+        assertEquals(majorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message)
+                .getMajorTokenbindingVersion().getValue());
+        assertEquals(minorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message)
+                .getMinorTokenbindingVersion().getValue());
+        assertArrayEquals(keyParameter, ((TokenBindingExtensionMessage) message).getTokenbindingKeyParameters()
+                .getValue());
     }
 
 }

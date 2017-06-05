@@ -27,8 +27,9 @@ public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExt
         msg.setMinorTokenbindingVersion(parseByteField(ExtensionByteLength.TOKENBINDING_VERSION_LENGTH));
         msg.setParameterListLength(parseIntField(1));
         msg.setTokenbindingKeyParameters(parseByteArrayField(msg.getParameterListLength()));
-        LOGGER.debug("The token binding extension parser parsed the major version: " + msg.getMajorTokenbindingVersion().toString()
-                + " the minor version: " + msg.getMinorTokenbindingVersion().toString() + " and the key binding parameters.");
+        LOGGER.debug("The token binding extension parser parsed the major version: "
+                + msg.getMajorTokenbindingVersion().toString() + " the minor version: "
+                + msg.getMinorTokenbindingVersion().toString() + " and the key binding parameters.");
     }
 
     @Override

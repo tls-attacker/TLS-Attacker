@@ -67,10 +67,13 @@ public class TokenBindingExtensionParserTest extends ExtensionParserTest {
     @Override
     public void testParseExtensionMessageContent() {
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(majorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message).getMajorTokenbindingVersion().getValue());
-        assertEquals(minorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message).getMinorTokenbindingVersion().getValue());
+        assertEquals(majorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message)
+                .getMajorTokenbindingVersion().getValue());
+        assertEquals(minorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message)
+                .getMinorTokenbindingVersion().getValue());
         assertEquals(parameterLength, ((TokenBindingExtensionMessage) message).getParameterListLength());
-        assertArrayEquals(keyParameter, ((TokenBindingExtensionMessage) message).getTokenbindingKeyParameters().getValue());
+        assertArrayEquals(keyParameter, ((TokenBindingExtensionMessage) message).getTokenbindingKeyParameters()
+                .getValue());
     }
 
 }
