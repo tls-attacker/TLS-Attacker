@@ -69,9 +69,9 @@ public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
     @Override
     public void testAdjustTLSContext() {
         TokenBindingExtensionMessage message = new TokenBindingExtensionMessage();
-        message.setMajor(majorVersion.getByteValue());
-        message.setMinor(minorVersion.getByteValue());
-        message.setTokenbindingParameters(keyParameter);
+        message.setMajorTokenbindingVersion(majorVersion.getByteValue());
+        message.setMinorTokenbindingVersion(minorVersion.getByteValue());
+        message.setTokenbindingKeyParameters(keyParameter);
         handler.adjustTLSContext(message);
 
         assertEquals(majorVersion, context.getTokenBindingMajorVersion());

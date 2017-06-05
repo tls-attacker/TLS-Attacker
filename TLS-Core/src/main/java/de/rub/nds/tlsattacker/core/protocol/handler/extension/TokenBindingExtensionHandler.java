@@ -50,10 +50,10 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public void adjustTLSContext(TokenBindingExtensionMessage message) {
-        context.setTokenBindingMajorVersion(TokenBindingVersion.getExtensionType(message.getMajor().getValue()));
-        context.setTokenBindingMinorVersion(TokenBindingVersion.getExtensionType(message.getMinor().getValue()));
+        context.setTokenBindingMajorVersion(TokenBindingVersion.getExtensionType(message.getMajorTokenbindingVersion().getValue()));
+        context.setTokenBindingMinorVersion(TokenBindingVersion.getExtensionType(message.getMinorTokenbindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
-        for (byte kp : message.getTokenbindingParameters().getValue()) {
+        for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getExtensionType(kp));
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters

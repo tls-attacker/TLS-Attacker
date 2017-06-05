@@ -25,10 +25,10 @@ public class TokenBindingExtensionSerializer extends ExtensionSerializer<TokenBi
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendByte(message.getMajor().getValue());
-        appendByte(message.getMinor().getValue());
+        appendByte(message.getMajorTokenbindingVersion().getValue());
+        appendByte(message.getMinorTokenbindingVersion().getValue());
         appendByte((byte) message.getParameterListLength());
-        appendBytes(message.getTokenbindingParameters().getValue());
+        appendBytes(message.getTokenbindingKeyParameters().getValue());
         LOGGER.debug("Serialized the token binding extension.");
         return getAlreadySerialized();
     }

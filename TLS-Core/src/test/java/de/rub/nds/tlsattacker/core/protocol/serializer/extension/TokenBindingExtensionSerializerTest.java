@@ -57,10 +57,10 @@ public class TokenBindingExtensionSerializerTest extends ExtensionSerializerTest
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
 
-        ((TokenBindingExtensionMessage) message).setMajor(majorVersion.getByteValue());
-        ((TokenBindingExtensionMessage) message).setMinor(minorVersion.getByteValue());
+        ((TokenBindingExtensionMessage) message).setMajorTokenbindingVersion(majorVersion.getByteValue());
+        ((TokenBindingExtensionMessage) message).setMinorTokenbindingVersion(minorVersion.getByteValue());
         ((TokenBindingExtensionMessage) message).setParameterListLength(parameterLength);
-        ((TokenBindingExtensionMessage) message).setTokenbindingParameters(keyParameter);
+        ((TokenBindingExtensionMessage) message).setTokenbindingKeyParameters(keyParameter);
 
         TokenBindingExtensionSerializer serializer = new TokenBindingExtensionSerializer(
                 ((TokenBindingExtensionMessage) message));

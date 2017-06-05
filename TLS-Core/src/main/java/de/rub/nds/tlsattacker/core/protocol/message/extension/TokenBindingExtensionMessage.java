@@ -27,11 +27,11 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 public class TokenBindingExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
-    private ModifiableByte major;
+    private ModifiableByte majorTokenbindingVersion;
     @ModifiableVariableProperty
-    private ModifiableByte minor;
+    private ModifiableByte minorTokenbindingVersion;
     @ModifiableVariableProperty
-    private ModifiableByteArray tokenbindingParameters;
+    private ModifiableByteArray tokenbindingKeyParameters;
     private int parameterListLength;
 
     public TokenBindingExtensionMessage() {
@@ -43,40 +43,40 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
         return new TokenBindingExtensionHandler(context);
     }
 
-    public ModifiableByte getMajor() {
-        return major;
+    public ModifiableByte getMajorTokenbindingVersion() {
+        return majorTokenbindingVersion;
     }
 
-    public void setMajor(ModifiableByte major) {
-        this.major = major;
+    public void setMajorTokenbindingVersion(ModifiableByte majorTokenbindingVersion) {
+        this.majorTokenbindingVersion = majorTokenbindingVersion;
     }
 
-    public void setMajor(byte major) {
-        this.major = ModifiableVariableFactory.safelySetValue(this.major, major);
+    public void setMajorTokenbindingVersion(byte major) {
+        this.majorTokenbindingVersion = ModifiableVariableFactory.safelySetValue(this.majorTokenbindingVersion, major);
     }
 
-    public ModifiableByte getMinor() {
-        return minor;
+    public ModifiableByte getMinorTokenbindingVersion() {
+        return minorTokenbindingVersion;
     }
 
-    public void setMinor(ModifiableByte minor) {
-        this.minor = minor;
+    public void setMinorTokenbindingVersion(ModifiableByte minorTokenbindingVersion) {
+        this.minorTokenbindingVersion = minorTokenbindingVersion;
     }
 
-    public void setMinor(byte minor) {
-        this.minor = ModifiableVariableFactory.safelySetValue(this.minor, minor);
+    public void setMinorTokenbindingVersion(byte minor) {
+        this.minorTokenbindingVersion = ModifiableVariableFactory.safelySetValue(this.minorTokenbindingVersion, minor);
     }
 
-    public ModifiableByteArray getTokenbindingParameters() {
-        return tokenbindingParameters;
+    public ModifiableByteArray getTokenbindingKeyParameters() {
+        return tokenbindingKeyParameters;
     }
 
-    public void setTokenbindingParameters(ModifiableByteArray tokenbindingParameters) {
-        this.tokenbindingParameters = tokenbindingParameters;
+    public void setTokenbindingKeyParameters(ModifiableByteArray tokenbindingKeyParameters) {
+        this.tokenbindingKeyParameters = tokenbindingKeyParameters;
     }
 
-    public void setTokenbindingParameters(byte[] tokenbindingParameters) {
-        this.tokenbindingParameters = ModifiableVariableFactory.safelySetValue(this.tokenbindingParameters,
+    public void setTokenbindingKeyParameters(byte[] tokenbindingParameters) {
+        this.tokenbindingKeyParameters = ModifiableVariableFactory.safelySetValue(this.tokenbindingKeyParameters,
                 tokenbindingParameters);
     }
 
