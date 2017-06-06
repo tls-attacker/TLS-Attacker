@@ -139,8 +139,13 @@ public class RecordAEADCipher extends RecordCipher {
                 CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
                 encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
                 decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-                clientHandshakeTrafficSecret = context.getClientHandshakeTrafficSecret();
-                serverHandshakeTrafficSecret = context.getServerHandshakeTrafficSecret();
+                if (context.isUpdateKeys() == false) {
+                    clientHandshakeTrafficSecret = context.getClientHandshakeTrafficSecret();
+                    serverHandshakeTrafficSecret = context.getServerHandshakeTrafficSecret();
+                } else {
+                    clientHandshakeTrafficSecret = context.getClientApplicationTrafficSecret0();
+                    serverHandshakeTrafficSecret = context.getServerApplicationTrafficSecret0();
+                }
                 MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(cipherSuite).getMacAlgorithm();
                 clientWriteKey = HKDFunction.expandLabel(macAlg.getJavaName(), clientHandshakeTrafficSecret,
                         HKDFunction.KEY, new byte[] {}, cipherAlg.getKeySize());

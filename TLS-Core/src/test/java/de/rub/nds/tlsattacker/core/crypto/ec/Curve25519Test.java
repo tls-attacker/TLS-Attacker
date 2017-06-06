@@ -6,10 +6,9 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.handler.extension;
+package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.crypto.Curve25519;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;

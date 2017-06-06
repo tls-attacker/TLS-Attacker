@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
@@ -20,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,8 +52,13 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     protected void adjustTLSContext(FinishedMessage message) {
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13
+                && tlsContext.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
             adjustApplicationTrafficSecrets();
+        }
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13
+                && tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+            tlsContext.setUpdateKeys(true);
         }
     }
 

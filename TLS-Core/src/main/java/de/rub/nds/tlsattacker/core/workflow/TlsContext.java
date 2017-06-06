@@ -172,6 +172,10 @@ public class TlsContext {
     private boolean receivedFatalAlert = false;
 
     private boolean encryptActive = false;
+    /**
+     * TLS 1.3, update keys for application data
+     */
+    private boolean updateKeys = false;
 
     private List<ClientCertificateType> clientCertificateTypes;
 
@@ -284,6 +288,14 @@ public class TlsContext {
 
     public void setEncryptActive(boolean encryptActive) {
         this.encryptActive = encryptActive;
+    }
+
+    public boolean isUpdateKeys() {
+        return updateKeys;
+    }
+
+    public void setUpdateKeys(boolean updateKeys) {
+        this.updateKeys = updateKeys;
     }
 
     public ECPublicKeyParameters getServerPublicKeyParameters() {

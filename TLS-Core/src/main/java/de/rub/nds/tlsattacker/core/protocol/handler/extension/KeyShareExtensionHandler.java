@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.crypto.Curve25519;
+import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
