@@ -27,12 +27,14 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class ExtendedMasterSecretExtensionHandlerTest extends ExtensionHandlerTest {
+public class ExtendedMasterSecretExtensionHandlerTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private ExtendedMasterSecretExtensionHandler handler;
 
     public ExtendedMasterSecretExtensionHandlerTest(ExtensionType extensionType, int extensionLength,
             byte[] expectedBytes, int startParsing) {
@@ -54,7 +56,6 @@ public class ExtendedMasterSecretExtensionHandlerTest extends ExtensionHandlerTe
     }
 
     @Test
-    @Override
     public void testAdjustTLSContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
 
@@ -65,19 +66,16 @@ public class ExtendedMasterSecretExtensionHandlerTest extends ExtensionHandlerTe
     }
 
     @Test
-    @Override
     public void testGetParser() {
         assertTrue(handler.getParser(expectedBytes, startParsing) instanceof ExtendedMasterSecretExtensionParser);
     }
 
     @Test
-    @Override
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new ExtendedMasterSecretExtensionMessage()) instanceof ExtendedMasterSecretExtensionPreparator);
     }
 
     @Test
-    @Override
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new ExtendedMasterSecretExtensionMessage()) instanceof ExtendedMasterSecretExtensionSerializer);
     }

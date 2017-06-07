@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class ExtendedMasterSecretExtensionSerializerTest extends ExtensionSerializerTest {
+public class ExtendedMasterSecretExtensionSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
@@ -35,6 +35,7 @@ public class ExtendedMasterSecretExtensionSerializerTest extends ExtensionSerial
     private final int extensionLength;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private ExtendedMasterSecretExtensionMessage message;
 
     public ExtendedMasterSecretExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
             byte[] expectedBytes, int startParsing) {
@@ -44,15 +45,13 @@ public class ExtendedMasterSecretExtensionSerializerTest extends ExtensionSerial
         this.startParsing = startParsing;
     }
 
-    @Override
     @Test
     public void testSerializeExtensionContent() {
         message = new ExtendedMasterSecretExtensionMessage();
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
 
-        ExtendedMasterSecretExtensionSerializer serializer = new ExtendedMasterSecretExtensionSerializer(
-                (ExtendedMasterSecretExtensionMessage) message);
+        ExtendedMasterSecretExtensionSerializer serializer = new ExtendedMasterSecretExtensionSerializer(message);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

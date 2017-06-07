@@ -29,13 +29,15 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class RenegotiationInfoExtensionHandlerTest extends ExtensionHandlerTest {
+public class RenegotiationInfoExtensionHandlerTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private RenegotiationInfoExtensionHandler handler;
 
     public RenegotiationInfoExtensionHandlerTest(ExtensionType extensionType, int extensionLength,
             byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
@@ -53,14 +55,12 @@ public class RenegotiationInfoExtensionHandlerTest extends ExtensionHandlerTest 
     }
 
     @Before
-    @Override
     public void setUp() {
         context = new TlsContext();
         handler = new RenegotiationInfoExtensionHandler(context);
     }
 
     @Test
-    @Override
     public void testAdjustTLSContext() {
         RenegotiationInfoExtensionMessage message = new RenegotiationInfoExtensionMessage();
         message.setRenegotiationInfo(extensionPayload);
@@ -70,19 +70,16 @@ public class RenegotiationInfoExtensionHandlerTest extends ExtensionHandlerTest 
     }
 
     @Test
-    @Override
     public void testGetParser() {
         assertTrue(handler.getParser(expectedBytes, startParsing) instanceof RenegotiationInfoExtensionParser);
     }
 
     @Test
-    @Override
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionPreparator);
     }
 
     @Test
-    @Override
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new RenegotiationInfoExtensionMessage()) instanceof RenegotiationInfoExtensionSerializer);
     }

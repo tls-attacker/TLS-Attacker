@@ -23,7 +23,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class TokenBindingExtensionSerializerTest extends ExtensionSerializerTest {
+public class TokenBindingExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
@@ -32,6 +32,7 @@ public class TokenBindingExtensionSerializerTest extends ExtensionSerializerTest
     private final TokenBindingVersion minorVersion;
     private final int parameterLength;
     private final byte[] keyParameter;
+    private TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionSerializerTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
             TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
@@ -50,20 +51,18 @@ public class TokenBindingExtensionSerializerTest extends ExtensionSerializerTest
     }
 
     @Test
-    @Override
     public void testSerializeExtensionContent() {
         message = new TokenBindingExtensionMessage();
 
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
 
-        ((TokenBindingExtensionMessage) message).setMajorTokenbindingVersion(majorVersion.getByteValue());
-        ((TokenBindingExtensionMessage) message).setMinorTokenbindingVersion(minorVersion.getByteValue());
-        ((TokenBindingExtensionMessage) message).setParameterListLength(parameterLength);
-        ((TokenBindingExtensionMessage) message).setTokenbindingKeyParameters(keyParameter);
+        message.setMajorTokenbindingVersion(majorVersion.getByteValue());
+        message.setMinorTokenbindingVersion(minorVersion.getByteValue());
+        message.setParameterListLength(parameterLength);
+        message.setTokenbindingKeyParameters(keyParameter);
 
-        TokenBindingExtensionSerializer serializer = new TokenBindingExtensionSerializer(
-                ((TokenBindingExtensionMessage) message));
+        TokenBindingExtensionSerializer serializer = new TokenBindingExtensionSerializer(message);
 
         assertArrayEquals(extensionBytes, serializer.serialize());
 

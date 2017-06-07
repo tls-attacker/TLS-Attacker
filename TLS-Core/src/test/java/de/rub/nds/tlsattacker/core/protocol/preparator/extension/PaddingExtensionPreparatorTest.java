@@ -25,13 +25,16 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class PaddingExtensionPreparatorTest extends ExtensionPreparatorTest {
+public class PaddingExtensionPreparatorTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private PaddingExtensionMessage message;
+    private PaddingExtensionPreparator preparator;
 
     public PaddingExtensionPreparatorTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
             byte[] expectedBytes, int startParsing) {
@@ -60,14 +63,14 @@ public class PaddingExtensionPreparatorTest extends ExtensionPreparatorTest {
     /**
      * Tests the preparator of the padding extension message.
      */
-    @Override
+
     @Test
     public void testPreparator() {
         context.getConfig().setDefaultPaddingExtensionLength(extensionLength);
         preparator.prepare();
 
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(extensionPayload, ((PaddingExtensionMessage) message).getPaddingBytes().getValue());
+        assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
 
     }
 

@@ -29,7 +29,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SignedCertificateTimestampExtensionHandlerTest extends ExtensionHandlerTest {
+public class SignedCertificateTimestampExtensionHandlerTest {
 
     private final ExtensionType extensionType;
     private final int lengthFirstPackage;
@@ -39,6 +39,8 @@ public class SignedCertificateTimestampExtensionHandlerTest extends ExtensionHan
     private final byte[] secondExpectedBytes;
     private final int lengthSecondPackage;
     private final int startPosition;
+    private TlsContext context;
+    private SignedCertificateTimestampExtensionHandler handler;
 
     public SignedCertificateTimestampExtensionHandlerTest(ExtensionType extensionType, int lengthFirstPackage,
             byte[] firstTimestamp, byte[] firstExpectedBytes, byte[] secondTimestamp, byte[] secondExpectedBytes,
@@ -81,14 +83,12 @@ public class SignedCertificateTimestampExtensionHandlerTest extends ExtensionHan
     }
 
     @Before
-    @Override
     public void setUp() {
         context = new TlsContext();
         handler = new SignedCertificateTimestampExtensionHandler(context);
     }
 
     @Test
-    @Override
     public void testAdjustTLSContext() {
         SignedCertificateTimestampExtensionMessage messageOne = new SignedCertificateTimestampExtensionMessage();
         messageOne.setSignedTimestamp(firstTimestamp);
@@ -106,19 +106,16 @@ public class SignedCertificateTimestampExtensionHandlerTest extends ExtensionHan
     }
 
     @Test
-    @Override
     public void testGetParser() {
         assertTrue(handler.getParser(firstExpectedBytes, startPosition) instanceof SignedCertificateTimestampExtensionParser);
     }
 
     @Test
-    @Override
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionPreparator);
     }
 
     @Test
-    @Override
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new SignedCertificateTimestampExtensionMessage()) instanceof SignedCertificateTimestampExtensionSerializer);
     }

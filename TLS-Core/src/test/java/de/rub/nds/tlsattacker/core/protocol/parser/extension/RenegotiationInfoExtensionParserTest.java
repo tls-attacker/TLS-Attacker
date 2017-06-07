@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import java.util.Collection;
-import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -25,13 +24,15 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class RenegotiationInfoExtensionParserTest extends ExtensionParserTest {
+public class RenegotiationInfoExtensionParserTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private RenegotiationInfoExtensionParser parser;
+    private RenegotiationInfoExtensionMessage message;
 
     public RenegotiationInfoExtensionParserTest(ExtensionType extensionType, int extensionLength,
             byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
@@ -48,19 +49,16 @@ public class RenegotiationInfoExtensionParserTest extends ExtensionParserTest {
     }
 
     @Before
-    @Override
     public void setUp() {
         parser = new RenegotiationInfoExtensionParser(startParsing, expectedBytes);
         message = parser.parse();
     }
 
     @Test
-    @Override
     public void testParseExtensionMessageContent() {
         assertEquals(extensionType, message.getExtensionTypeConstant());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(extensionPayload, ((RenegotiationInfoExtensionMessage) message).getRenegotiationInfo()
-                .getValue());
+        assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
     }
 
 }

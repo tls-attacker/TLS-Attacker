@@ -32,7 +32,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
+public class TokenBindingExtensionHandlerTest {
 
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
@@ -41,6 +41,8 @@ public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
     private final TokenBindingVersion minorVersion;
     private final int parameterLength;
     private final byte[] keyParameter;
+    private TlsContext context;
+    private TokenBindingExtensionHandler handler;
 
     public TokenBindingExtensionHandlerTest(ExtensionType extensionType, byte[] extension, int extensionLength,
             TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
@@ -59,14 +61,12 @@ public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
     }
 
     @Before
-    @Override
     public void setUp() {
         context = new TlsContext();
         handler = new TokenBindingExtensionHandler(context);
     }
 
     @Test
-    @Override
     public void testAdjustTLSContext() {
         TokenBindingExtensionMessage message = new TokenBindingExtensionMessage();
         message.setMajorTokenbindingVersion(majorVersion.getByteValue());
@@ -84,19 +84,16 @@ public class TokenBindingExtensionHandlerTest extends ExtensionHandlerTest {
     }
 
     @Test
-    @Override
     public void testGetParser() {
         assertTrue(handler.getParser(extensionBytes, 0) instanceof TokenBindingExtensionParser);
     }
 
     @Test
-    @Override
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionPreparator);
     }
 
     @Test
-    @Override
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new TokenBindingExtensionMessage()) instanceof TokenBindingExtensionSerializer);
     }

@@ -9,12 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNamePairParser;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;

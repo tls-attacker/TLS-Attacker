@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializerTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -23,12 +24,14 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class ExtendedMasterSecretExtensionParserTest extends ExtensionParserTest {
+public class ExtendedMasterSecretExtensionParserTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private ExtendedMasterSecretExtensionParser parser;
+    private ExtendedMasterSecretExtensionMessage message;
 
     public ExtendedMasterSecretExtensionParserTest(ExtensionType extensionType, int extensionLength,
             byte[] expectedBytes, int startParsing) {
@@ -44,14 +47,12 @@ public class ExtendedMasterSecretExtensionParserTest extends ExtensionParserTest
     }
 
     @Before
-    @Override
     public void setUp() {
         parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes);
         message = parser.parse();
     }
 
     @Test
-    @Override
     public void testParseExtensionMessageContent() {
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());

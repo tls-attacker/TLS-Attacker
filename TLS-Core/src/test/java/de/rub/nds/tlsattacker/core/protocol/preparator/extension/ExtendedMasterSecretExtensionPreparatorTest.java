@@ -24,12 +24,15 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class ExtendedMasterSecretExtensionPreparatorTest extends ExtensionPreparatorTest {
+public class ExtendedMasterSecretExtensionPreparatorTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private ExtendedMasterSecretExtensionMessage message;
+    private ExtendedMasterSecretExtensionPreparator preparator;
 
     public ExtendedMasterSecretExtensionPreparatorTest(ExtensionType extensionType, int extensionLength,
             byte[] expectedBytes, int startParsing) {
@@ -44,13 +47,11 @@ public class ExtendedMasterSecretExtensionPreparatorTest extends ExtensionPrepar
         return ExtendedMasterSecretExtensionSerializerTest.generateData();
     }
 
-    @Override
     @Test
     public void testPreparator() {
         context = new TlsContext();
         message = new ExtendedMasterSecretExtensionMessage();
-        preparator = new ExtendedMasterSecretExtensionPreparator(context,
-                (ExtendedMasterSecretExtensionMessage) message);
+        preparator = new ExtendedMasterSecretExtensionPreparator(context, message);
 
         context.getConfig().setAddExtendedMasterSecretExtension(true);
         preparator.prepare();

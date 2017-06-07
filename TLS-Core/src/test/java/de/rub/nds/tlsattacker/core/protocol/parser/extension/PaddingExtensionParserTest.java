@@ -24,7 +24,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class PaddingExtensionParserTest extends ExtensionParserTest {
+public class PaddingExtensionParserTest {
 
     /**
      * Parameterized set up of the test vector.
@@ -42,6 +42,8 @@ public class PaddingExtensionParserTest extends ExtensionParserTest {
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private PaddingExtensionParser parser;
+    private PaddingExtensionMessage message;
 
     public PaddingExtensionParserTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
             byte[] expectedBytes, int startParsing) {
@@ -53,7 +55,6 @@ public class PaddingExtensionParserTest extends ExtensionParserTest {
     }
 
     @Before
-    @Override
     public void setUp() {
 
         parser = new PaddingExtensionParser(startParsing, expectedBytes);
@@ -61,12 +62,11 @@ public class PaddingExtensionParserTest extends ExtensionParserTest {
     }
 
     @Test
-    @Override
     public void testParseExtensionMessageContent() {
 
         assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(extensionPayload, ((PaddingExtensionMessage) message).getPaddingBytes().getValue());
+        assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
     }
 
 }

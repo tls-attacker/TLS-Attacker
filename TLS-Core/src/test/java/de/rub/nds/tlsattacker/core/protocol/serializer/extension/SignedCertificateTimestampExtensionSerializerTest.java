@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SignedCertificateTimestampExtensionSerializerTest extends ExtensionSerializerTest {
+public class SignedCertificateTimestampExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final int lengthFirstPackage;
     private final byte[] firstTimestamp;
@@ -31,6 +31,7 @@ public class SignedCertificateTimestampExtensionSerializerTest extends Extension
     private final byte[] secondExpectedBytes;
     private final int lengthSecondPackage;
     private final int startPosition;
+    private SignedCertificateTimestampExtensionMessage message;
 
     public SignedCertificateTimestampExtensionSerializerTest(ExtensionType extensionType, int lengthFirstPackage,
             byte[] firstTimestamp, byte[] firstExpectedBytes, byte[] secondTimestamp, byte[] secondExpectedBytes,
@@ -51,19 +52,18 @@ public class SignedCertificateTimestampExtensionSerializerTest extends Extension
     }
 
     @Test
-    @Override
     public void testSerializeExtensionContent() {
         message = new SignedCertificateTimestampExtensionMessage();
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(lengthFirstPackage);
-        ((SignedCertificateTimestampExtensionMessage) message).setSignedTimestamp(firstTimestamp);
+        message.setSignedTimestamp(firstTimestamp);
 
         SignedCertificateTimestampExtensionSerializer serializer = new SignedCertificateTimestampExtensionSerializer(
-                (SignedCertificateTimestampExtensionMessage) message);
+                message);
         assertArrayEquals(firstExpectedBytes, serializer.serialize());
 
         message.setExtensionLength(lengthSecondPackage);
-        ((SignedCertificateTimestampExtensionMessage) message).setSignedTimestamp(secondTimestamp);
+        message.setSignedTimestamp(secondTimestamp);
         assertArrayEquals(secondExpectedBytes, serializer.serialize());
 
     }

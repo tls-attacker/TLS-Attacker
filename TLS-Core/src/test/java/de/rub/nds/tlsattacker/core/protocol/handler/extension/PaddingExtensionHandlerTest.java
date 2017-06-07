@@ -28,13 +28,15 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
+public class PaddingExtensionHandlerTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private PaddingExtensionHandler handler;
 
     public PaddingExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
             byte[] expectedBytes, int startParsing) {
@@ -53,7 +55,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Some initial set up.
      */
-    @Override
+
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -63,7 +65,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Test of adjustTLSContext method, of class PaddingExtensionHandler.
      */
-    @Override
+
     @Test
     public void testAdjustTLSContext() {
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
@@ -75,7 +77,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Test of getParser method, of class PaddingExtensionHandler.
      */
-    @Override
+
     @Test
     public void testGetParser() {
         assertTrue(handler.getParser(expectedBytes, startParsing) instanceof PaddingExtensionParser);
@@ -84,7 +86,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Test of getPreparator method, of class PaddingExtensionHandler.
      */
-    @Override
+
     @Test
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new PaddingExtensionMessage()) instanceof PaddingExtensionPreparator);
@@ -93,7 +95,7 @@ public class PaddingExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Test of getSerializer method, of class PaddingExtensionHandler.
      */
-    @Override
+
     @Test
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new PaddingExtensionMessage()) instanceof PaddingExtensionSerializer);

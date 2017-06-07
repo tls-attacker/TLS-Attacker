@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SignedCertificateTimestampExtensionPreparatorTest extends ExtensionPreparatorTest {
+public class SignedCertificateTimestampExtensionPreparatorTest {
 
     private final ExtensionType extensionType;
     private final int lengthFirstPackage;
@@ -35,6 +35,9 @@ public class SignedCertificateTimestampExtensionPreparatorTest extends Extension
     private final byte[] secondExpectedBytes;
     private final int lengthSecondPackage;
     private final int startPosition;
+    private TlsContext context;
+    private SignedCertificateTimestampExtensionMessage message;
+    private SignedCertificateTimestampExtensionPreparator preparator;
 
     public SignedCertificateTimestampExtensionPreparatorTest(ExtensionType extensionType, int lengthFirstPackage,
             byte[] firstTimestamp, byte[] firstExpectedBytes, byte[] secondTimestamp, byte[] secondExpectedBytes,
@@ -63,13 +66,11 @@ public class SignedCertificateTimestampExtensionPreparatorTest extends Extension
     }
 
     @Test
-    @Override
     public void testPreparator() {
         context.getConfig().setSignedCertificateTimestamp(secondTimestamp);
         preparator.prepare();
 
         assertEquals(lengthSecondPackage, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(secondTimestamp, ((SignedCertificateTimestampExtensionMessage) message).getSignedTimestamp()
-                .getValue());
+        assertArrayEquals(secondTimestamp, message.getSignedTimestamp().getValue());
     }
 }

@@ -20,6 +20,7 @@ import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -28,13 +29,15 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
+public class SessionTicketTLSExtensionHandlerTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] sessionTicket;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private SessionTicketTLSExtensionHandler handler;
 
     /**
      * Constructor for parameterized setup.
@@ -69,7 +72,6 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Some initial set up.
      */
-    @Override
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -79,7 +81,7 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Tests the adjustTLSContext of the SessionTicketTLSExtensionHandler class
      */
-    @Override
+    @Test
     public void testAdjustTLSContext() {
         SessionTicketTLSExtensionMessage message = new SessionTicketTLSExtensionMessage();
         message.setTicket(sessionTicket);
@@ -93,7 +95,7 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Tests the getParser of the SessionTicketTLSExtensionHandler class
      */
-    @Override
+    @Test
     public void testGetParser() {
         assertTrue(handler.getParser(expectedBytes, startParsing) instanceof SessionTicketTLSExtensionParser);
     }
@@ -101,7 +103,7 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Tests the getPreparator of the SessionTicketTLSExtensionHandler class
      */
-    @Override
+    @Test
     public void testGetPreparator() {
         assertTrue(handler.getPreparator(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionPreparator);
     }
@@ -109,7 +111,7 @@ public class SessionTicketTLSExtensionHandlerTest extends ExtensionHandlerTest {
     /**
      * Tests the getSerializer of the SessionTicketTLSExtensionHandler class
      */
-    @Override
+    @Test
     public void testGetSerializer() {
         assertTrue(handler.getSerializer(new SessionTicketTLSExtensionMessage()) instanceof SessionTicketTLSExtensionSerializer);
     }

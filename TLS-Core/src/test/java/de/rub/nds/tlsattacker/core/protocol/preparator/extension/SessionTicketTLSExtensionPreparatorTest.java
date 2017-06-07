@@ -25,13 +25,16 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SessionTicketTLSExtensionPreparatorTest extends ExtensionPreparatorTest {
+public class SessionTicketTLSExtensionPreparatorTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private SessionTicketTLSExtensionMessage message;
+    private SessionTicketTLSExtensionPreparator preparator;
 
     /**
      * Constructor for parameterized setup.
@@ -75,13 +78,12 @@ public class SessionTicketTLSExtensionPreparatorTest extends ExtensionPreparator
      * Tests the preparator of the SessionTicketTLSExtensionPreparator.
      */
     @Test
-    @Override
     public void testPreparator() {
         context.getConfig().setSessionTLSTicket(new byte[0]);
         preparator.prepare();
 
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(extensionPayload, ((SessionTicketTLSExtensionMessage) message).getTicket().getValue());
+        assertArrayEquals(extensionPayload, message.getTicket().getValue());
     }
 
 }

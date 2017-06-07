@@ -16,8 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensi
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.ArrayList;
 import java.util.Collection;
-import jdk.nashorn.internal.objects.annotations.Setter;
-import org.junit.Assert;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -30,7 +28,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest {
+public class TokenBindingExtensionPreparatorTest {
 
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
@@ -39,6 +37,9 @@ public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest
     private final TokenBindingVersion minorVersion;
     private final int parameterLength;
     private final byte[] keyParameter;
+    private TlsContext context;
+    private TokenBindingExtensionMessage message;
+    private TokenBindingExtensionPreparator preparator;
 
     public TokenBindingExtensionPreparatorTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
             TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
@@ -64,7 +65,6 @@ public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest
     }
 
     @Test
-    @Override
     public void testPreparator() {
         context.getConfig().setTokenBindingMajor(majorVersion);
         context.getConfig().setTokenBindingMinor(minorVersion);
@@ -77,12 +77,9 @@ public class TokenBindingExtensionPreparatorTest extends ExtensionPreparatorTest
 
         preparator.prepare();
 
-        assertEquals(majorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message)
-                .getMajorTokenbindingVersion().getValue());
-        assertEquals(minorVersion.getByteValue(), (byte) ((TokenBindingExtensionMessage) message)
-                .getMinorTokenbindingVersion().getValue());
-        assertArrayEquals(keyParameter, ((TokenBindingExtensionMessage) message).getTokenbindingKeyParameters()
-                .getValue());
+        assertEquals(majorVersion.getByteValue(), (byte) message.getMajorTokenbindingVersion().getValue());
+        assertEquals(minorVersion.getByteValue(), (byte) message.getMinorTokenbindingVersion().getValue());
+        assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
     }
 
 }

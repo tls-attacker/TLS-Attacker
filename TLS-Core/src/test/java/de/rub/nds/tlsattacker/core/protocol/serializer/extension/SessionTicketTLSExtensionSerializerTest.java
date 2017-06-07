@@ -22,13 +22,14 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SessionTicketTLSExtensionSerializerTest extends ExtensionSerializerTest {
+public class SessionTicketTLSExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] sessionTicket;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private SessionTicketTLSExtensionMessage message;
 
     /**
      * Constructor for parameterized setup.
@@ -63,15 +64,13 @@ public class SessionTicketTLSExtensionSerializerTest extends ExtensionSerializer
      * SessionTicketTLSExtensionSerializer class
      */
     @Test
-    @Override
     public void testSerializeExtensionContent() {
         message = new SessionTicketTLSExtensionMessage();
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
-        ((SessionTicketTLSExtensionMessage) message).setTicket(sessionTicket);
+        message.setTicket(sessionTicket);
 
-        SessionTicketTLSExtensionSerializer serializer = new SessionTicketTLSExtensionSerializer(
-                (SessionTicketTLSExtensionMessage) message);
+        SessionTicketTLSExtensionSerializer serializer = new SessionTicketTLSExtensionSerializer(message);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

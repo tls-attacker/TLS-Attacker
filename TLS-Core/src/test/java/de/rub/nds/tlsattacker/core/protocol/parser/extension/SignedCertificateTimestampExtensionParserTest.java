@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SignedCertificateTimestampExtensionParserTest extends ExtensionParserTest {
+public class SignedCertificateTimestampExtensionParserTest {
 
     private final ExtensionType extensionType;
     private final int lengthFirstPackage;
@@ -32,6 +32,8 @@ public class SignedCertificateTimestampExtensionParserTest extends ExtensionPars
     private final byte[] secondExpectedBytes;
     private final int lengthSecondPackage;
     private final int startPosition;
+    private SignedCertificateTimestampExtensionParser parser;
+    private SignedCertificateTimestampExtensionMessage message;
 
     public SignedCertificateTimestampExtensionParserTest(ExtensionType extensionType, int lengthFirstPackage,
             byte[] firstTimestamp, byte[] firstExpectedBytes, byte[] secondTimestamp, byte[] secondExpectedBytes,
@@ -51,13 +53,7 @@ public class SignedCertificateTimestampExtensionParserTest extends ExtensionPars
         return SignedCertificateTimestampExtensionHandlerTest.generateData();
     }
 
-    @Override
-    public void setUp() {
-        // Shall be emty, we need the parser two times.
-    }
-
     @Test
-    @Override
     public void testParseExtensionMessageContent() {
         // First extension capture
         parser = new SignedCertificateTimestampExtensionParser(startPosition, firstExpectedBytes);
@@ -65,8 +61,7 @@ public class SignedCertificateTimestampExtensionParserTest extends ExtensionPars
 
         assertArrayEquals(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP.getValue(), message.getExtensionType().getValue());
         assertEquals(lengthFirstPackage, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(firstTimestamp, ((SignedCertificateTimestampExtensionMessage) message).getSignedTimestamp()
-                .getValue());
+        assertArrayEquals(firstTimestamp, message.getSignedTimestamp().getValue());
 
         // Second extension capture
         parser = new SignedCertificateTimestampExtensionParser(startPosition, secondExpectedBytes);
@@ -74,7 +69,6 @@ public class SignedCertificateTimestampExtensionParserTest extends ExtensionPars
 
         assertArrayEquals(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP.getValue(), message.getExtensionType().getValue());
         assertEquals(lengthSecondPackage, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(secondTimestamp, ((SignedCertificateTimestampExtensionMessage) message).getSignedTimestamp()
-                .getValue());
+        assertArrayEquals(secondTimestamp, message.getSignedTimestamp().getValue());
     }
 }

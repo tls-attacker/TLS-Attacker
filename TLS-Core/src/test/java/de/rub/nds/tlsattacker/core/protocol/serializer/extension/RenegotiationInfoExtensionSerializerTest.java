@@ -22,13 +22,14 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class RenegotiationInfoExtensionSerializerTest extends ExtensionSerializerTest {
+public class RenegotiationInfoExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private RenegotiationInfoExtensionMessage message;
 
     public RenegotiationInfoExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
             byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
@@ -45,15 +46,13 @@ public class RenegotiationInfoExtensionSerializerTest extends ExtensionSerialize
     }
 
     @Test
-    @Override
     public void testSerializeExtensionContent() {
         message = new RenegotiationInfoExtensionMessage();
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
-        ((RenegotiationInfoExtensionMessage) message).setRenegotiationInfo(extensionPayload);
+        message.setRenegotiationInfo(extensionPayload);
 
-        RenegotiationInfoExtensionSerializer serializer = new RenegotiationInfoExtensionSerializer(
-                (RenegotiationInfoExtensionMessage) message);
+        RenegotiationInfoExtensionSerializer serializer = new RenegotiationInfoExtensionSerializer(message);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

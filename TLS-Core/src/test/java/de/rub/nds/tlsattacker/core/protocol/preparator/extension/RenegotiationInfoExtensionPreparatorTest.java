@@ -25,13 +25,16 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class RenegotiationInfoExtensionPreparatorTest extends ExtensionPreparatorTest {
+public class RenegotiationInfoExtensionPreparatorTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private TlsContext context;
+    private RenegotiationInfoExtensionMessage message;
+    private RenegotiationInfoExtensionPreparator preparator;
 
     public RenegotiationInfoExtensionPreparatorTest(ExtensionType extensionType, int extensionLength,
             byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
@@ -56,14 +59,12 @@ public class RenegotiationInfoExtensionPreparatorTest extends ExtensionPreparato
     }
 
     @Test
-    @Override
     public void testPreparator() {
         context.getConfig().setRenegotiationInfo(extensionPayload);
         preparator.prepare();
 
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(extensionPayload, ((RenegotiationInfoExtensionMessage) message).getRenegotiationInfo()
-                .getValue());
+        assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
     }
 
 }

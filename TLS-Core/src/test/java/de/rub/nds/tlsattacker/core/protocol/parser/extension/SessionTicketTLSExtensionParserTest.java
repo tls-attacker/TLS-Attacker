@@ -24,13 +24,15 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
+public class SessionTicketTLSExtensionParserTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] sessionTicket;
     private final byte[] expectedBytes;
     private final int startParsing;
+    private SessionTicketTLSExtensionParser parser;
+    private SessionTicketTLSExtensionMessage message;
 
     /**
      * Constructor for parameterized setup.
@@ -63,7 +65,6 @@ public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
     /**
      * Some initial setup.
      */
-    @Override
     @Before
     public void setUp() {
         parser = new SessionTicketTLSExtensionParser(startParsing, expectedBytes);
@@ -74,12 +75,12 @@ public class SessionTicketTLSExtensionParserTest extends ExtensionParserTest {
      * Tests the parseExtensionMessageContent method of the
      * SessionTicketTLSExtensionParser.
      */
-    @Override
+
     @Test
     public void testParseExtensionMessageContent() {
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
-        assertArrayEquals(sessionTicket, ((SessionTicketTLSExtensionMessage) message).getTicket().getValue());
+        assertArrayEquals(sessionTicket, message.getTicket().getValue());
     }
 
 }
