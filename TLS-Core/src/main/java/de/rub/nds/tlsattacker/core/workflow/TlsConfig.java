@@ -340,13 +340,12 @@ public final class TlsConfig implements Serializable {
      * If the WorkflowExecutor should take care of the connection opening
      */
     private boolean workflowExecutorShouldOpen = true;
-    
+
     /**
      * If the WorkflowExecutor should take care of the connection closing
      */
     private boolean workflowExecutorShouldClose = true;
-    
-    
+
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
         return TlsConfigIO.read(stream);

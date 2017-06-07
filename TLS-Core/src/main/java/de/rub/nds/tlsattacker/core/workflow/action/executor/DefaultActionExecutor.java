@@ -54,7 +54,7 @@ public class DefaultActionExecutor extends ActionExecutor {
     @Override
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records) {
         context.setTalkingConnectionEnd(context.getConfig().getConnectionEnd());
-        
+
         if (!proceed) {
             return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
         }
@@ -169,7 +169,7 @@ public class DefaultActionExecutor extends ActionExecutor {
     @Override
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages) {
         context.setTalkingConnectionEnd(context.getConfig().getMyConnectionPeer());
-        
+
         List<AbstractRecord> records = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
         try {
