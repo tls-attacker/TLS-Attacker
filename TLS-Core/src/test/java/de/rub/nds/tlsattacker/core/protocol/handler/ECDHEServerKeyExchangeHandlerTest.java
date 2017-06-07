@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSeri
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import java.math.BigInteger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,9 +88,10 @@ public class ECDHEServerKeyExchangeHandlerTest {
         message.prepareComputations();
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
         message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
+        message.getComputations().setPrivateKey(new BigInteger("12345"));
         handler.adjustTLSContext(message);
-        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getPreMasterSecret());
-        assertArrayEquals(new byte[] { 4, 5, 6 }, context.getMasterSecret());
+        assertNull(context.getPreMasterSecret());
+        assertNull(context.getMasterSecret());
     }
 
     @Test

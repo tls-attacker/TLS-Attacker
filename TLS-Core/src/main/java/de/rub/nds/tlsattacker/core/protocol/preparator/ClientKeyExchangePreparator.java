@@ -24,5 +24,4 @@ public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMes
     public ClientKeyExchangePreparator(TlsContext context, ClientKeyExchangeMessage message) {
         super(context, message);
     }
-
 }

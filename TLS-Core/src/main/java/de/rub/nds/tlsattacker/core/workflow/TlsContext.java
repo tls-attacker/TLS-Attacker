@@ -34,6 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
+import org.bouncycastle.crypto.params.DHPublicKeyParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 
@@ -45,8 +47,12 @@ import org.bouncycastle.crypto.tls.ServerDHParams;
  */
 public class TlsContext {
 
-    // Default values
+    /**
+     * TlsConfig which contains the configurations for everything TLS-Attacker
+     * related
+     */
     private TlsConfig config;
+
     /**
      * master secret established during the handshake
      */
@@ -55,45 +61,42 @@ public class TlsContext {
      * premaster secret established during the handshake
      */
     private byte[] preMasterSecret;
+
     /**
      * client random, including unix time /** client random, including unix time
      */
     private byte[] clientRandom;
+
     /**
      * server random, including unix time
      */
     private byte[] serverRandom;
+
     /**
      * selected cipher suite
      */
-    // Initially no CipherSuite is selected
     private CipherSuite selectedCipherSuite = null;
 
     /**
      * compression algorithm
      */
     private CompressionMethod selectedCompressionMethod;
+
     /**
      * session ID
      */
     private byte[] sessionID;
+
     /**
      * server certificate parsed from the server certificate message
      */
     private Certificate serverCertificate;
+
     /**
      * client certificate parsed from the client certificate message
      */
     private Certificate clientCertificate;
 
-    /**
-     * Server DH parameters
-     */
-    private ServerDHParams serverDHParameters;
-    /**
-     * Server DH Private Key
-     */
-    private DHPrivateKeyParameters serverDHPrivateKeyParameters;
     /**
      * workflow trace containing all the messages exchanged during the
      * communication
@@ -109,9 +112,6 @@ public class TlsContext {
 
     private ConnectionEnd talkingConnectionEnd = ConnectionEnd.CLIENT;
 
-    /**
-     * DTLS Cookie
-     */
     private byte[] dtlsHandshakeCookie;
 
     private ProtocolVersion selectedProtocolVersion;
@@ -157,20 +157,22 @@ public class TlsContext {
     private byte[] signedCertificateTimestamp;
 
     private PublicKey clientPublicKey;
+    private PublicKey clientCertificatePublicKey;
 
-    private PublicKey serverPublicKey;
+    private PublicKey serverCertificatePublicKey;
 
-    /**
-     * EC public key parameters of the server
-     */
-    private ECPublicKeyParameters serverPublicKeyParameters;
-    /**
-     * supported named curves
-     */
+    private ECPublicKeyParameters serverEcPublicKeyParameters;
+
+    private ECPrivateKeyParameters serverEcPrivateKeyParameters;
+
+    private DHPrivateKeyParameters serverDhPrivateKeyParameters;
+
+    private DHPublicKeyParameters serverDhPublicKeyParameters;
+
+    private ServerDHParams serverDHParameters;
+
     private List<NamedCurve> clientNamedCurvesList;
-    /**
-     * supported client point formats
-     */
+
     private List<ECPointFormat> clientPointFormatsList;
 
     private List<ECPointFormat> serverPointFormatsList;
@@ -204,6 +206,22 @@ public class TlsContext {
         clientCertificateTypes = new LinkedList<>();
         lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public DHPublicKeyParameters getServerDhPublicKeyParameters() {
+        return serverDhPublicKeyParameters;
+    }
+
+    public void setServerDhPublicKeyParameters(DHPublicKeyParameters serverDhPublicKeyParameters) {
+        this.serverDhPublicKeyParameters = serverDhPublicKeyParameters;
+    }
+
+    public ECPrivateKeyParameters getServerEcPrivateKeyParameters() {
+        return serverEcPrivateKeyParameters;
+    }
+
+    public void setServerEcPrivateKeyParameters(ECPrivateKeyParameters serverEcPrivateKeyParameters) {
+        this.serverEcPrivateKeyParameters = serverEcPrivateKeyParameters;
     }
 
     public List<NamedCurve> getClientNamedCurvesList() {
@@ -271,12 +289,12 @@ public class TlsContext {
         this.receivedFatalAlert = receivedFatalAlert;
     }
 
-    public ECPublicKeyParameters getServerPublicKeyParameters() {
-        return serverPublicKeyParameters;
+    public ECPublicKeyParameters getServerEcPublicKeyParameters() {
+        return serverEcPublicKeyParameters;
     }
 
     public void setServerECPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
-        this.serverPublicKeyParameters = serverPublicKeyParameters;
+        this.serverEcPublicKeyParameters = serverPublicKeyParameters;
     }
 
     public List<ECPointFormat> getClientPointFormatsList() {
@@ -287,20 +305,20 @@ public class TlsContext {
         this.clientPointFormatsList = clientPointFormatsList;
     }
 
-    public PublicKey getClientPublicKey() {
-        return clientPublicKey;
+    public PublicKey getClientCertificatePublicKey() {
+        return clientCertificatePublicKey;
     }
 
-    public void setClientPublicKey(PublicKey clientPublicKey) {
-        this.clientPublicKey = clientPublicKey;
+    public void setClientCertificatePublicKey(PublicKey clientCertificatePublicKey) {
+        this.clientCertificatePublicKey = clientCertificatePublicKey;
     }
 
-    public PublicKey getServerPublicKey() {
-        return serverPublicKey;
+    public PublicKey getServerCertificatePublicKey() {
+        return serverCertificatePublicKey;
     }
 
-    public void setServerPublicKey(PublicKey serverPublicKey) {
-        this.serverPublicKey = serverPublicKey;
+    public void setServerCertificatePublicKey(PublicKey serverCertificatePublicKey) {
+        this.serverCertificatePublicKey = serverCertificatePublicKey;
     }
 
     public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
@@ -502,12 +520,12 @@ public class TlsContext {
         this.serverDHParameters = serverDHParameters;
     }
 
-    public DHPrivateKeyParameters getServerDHPrivateKeyParameters() {
-        return serverDHPrivateKeyParameters;
+    public DHPrivateKeyParameters getServerDhPrivateKeyParameters() {
+        return serverDhPrivateKeyParameters;
     }
 
-    public void setServerDHPrivateKeyParameters(DHPrivateKeyParameters serverDHPrivateKeyParameters) {
-        this.serverDHPrivateKeyParameters = serverDHPrivateKeyParameters;
+    public void setServerDhPrivateKeyParameters(DHPrivateKeyParameters serverDhPrivateKeyParameters) {
+        this.serverDhPrivateKeyParameters = serverDhPrivateKeyParameters;
     }
 
     public MessageDigestCollector getDigest() {

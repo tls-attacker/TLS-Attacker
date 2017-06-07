@@ -60,14 +60,14 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             tlsContext.setClientCertificate(cert);
             if (cert != null) {
                 LOGGER.debug("Setting ClientPublicKey in Context");
-                tlsContext.setClientPublicKey(parsePublicKey(cert));
+                tlsContext.setClientCertificatePublicKey(parsePublicKey(cert));
             }
         } else {
             LOGGER.debug("Setting ServerCertificate in Context");
             tlsContext.setServerCertificate(cert);
             if (cert != null) {
                 LOGGER.debug("Setting ServerPublicKey in Context");
-                tlsContext.setServerPublicKey(parsePublicKey(cert));
+                tlsContext.setServerCertificatePublicKey(parsePublicKey(cert));
             }
         }
     }

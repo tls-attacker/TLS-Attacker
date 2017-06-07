@@ -30,6 +30,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
@@ -39,16 +40,22 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateParsingException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
@@ -431,8 +438,12 @@ public final class TlsConfig implements Serializable {
             ClassLoader loader = TlsConfig.class.getClassLoader();
             InputStream stream = loader.getResourceAsStream("default.jks");
             setKeyStore(KeystoreHandler.loadKeyStore(stream, "password"));
+            setPrivateKey((PrivateKey) keyStore.getKey(alias, password.toCharArray()));
+            setOurCertificate(JKSLoader.loadTLSCertificate(keyStore, alias));
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load deauflt JKS!");
+        } catch (UnrecoverableKeyException ex) {
+            Logger.getLogger(TlsConfig.class.getName()).log(Level.SEVERE, null, ex);
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
@@ -1041,5 +1052,11 @@ public final class TlsConfig implements Serializable {
 
     public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
         this.addTokenBindingExtension = addTokenBindingExtension;
+    }
+
+    public PublicKey getPublicKey() throws CertificateParsingException {
+        X509CertificateObject certObj = new X509CertificateObject(getOurCertificate().getCertificateAt(0));
+        return certObj.getPublicKey();
+
     }
 }

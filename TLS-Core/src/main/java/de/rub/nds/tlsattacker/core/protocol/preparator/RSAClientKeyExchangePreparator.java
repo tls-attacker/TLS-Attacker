@@ -18,10 +18,17 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 /**
  *
@@ -45,10 +52,11 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
         RSAPublicKey publicKey;
-        if (context.getServerPublicKey() == null || !"RSA".equals(context.getServerPublicKey().getAlgorithm())) {
+        if (context.getServerCertificatePublicKey() == null
+                || !"RSA".equals(context.getServerCertificatePublicKey().getAlgorithm())) {
             publicKey = generateFreshKey();
         } else {
-            publicKey = (RSAPublicKey) context.getServerPublicKey();
+            publicKey = (RSAPublicKey) context.getServerCertificatePublicKey();
         }
 
         int keyByteLength = publicKey.getModulus().bitLength() / 8;
@@ -65,7 +73,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
         byte[] paddedPremasterSecret = msg.getComputations().getPlainPaddedPremasterSecret().getValue();
 
-        clientRandom = context.getClientServerRandom();
         prepareClientRandom(msg);
 
         masterSecret = generateMasterSecret();
@@ -136,6 +143,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private void prepareClientRandom(RSAClientKeyExchangeMessage msg) {
+        clientRandom = context.getClientServerRandom();
         msg.getComputations().setClientRandom(clientRandom);
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
@@ -155,5 +163,41 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private void prepareSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
         msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+    }
+
+    private byte[] decryptPremasterSecret() {
+        try {
+            byte[] encryptedPremasterSecret = msg.getSerializedPublicKey().getValue();
+            RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) context.getConfig().getPrivateKey();
+            Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
+            cipher.init(Cipher.DECRYPT_MODE, rsaKey);
+            return cipher.doFinal(encryptedPremasterSecret);
+        } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchProviderException
+                | NoSuchPaddingException | InvalidKeyException ex) {
+            throw new PreparationException("Could not decrypt PremasterSecret");
+        }
+    }
+
+    @Override
+    public void prepareAfterParse() {
+        // Decrypt premaster secret
+        msg.prepareComputations();
+        byte[] paddedPremasterSecret = decryptPremasterSecret();
+        System.out.println("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
+        RSAPublicKey key = null;
+        try {
+            key = (RSAPublicKey) context.getConfig().getPublicKey();
+        } catch (Exception E) {
+            throw new PreparationException("Could not retrieve publicKey from config");
+        }
+        int keyByteLength = key.getModulus().bitLength() / 8;
+        // the number of random bytes in the pkcs1 message
+        int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
+        premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
+        preparePremasterSecret(msg);
+        prepareClientRandom(msg);
+        masterSecret = generateMasterSecret();
+        System.out.println("Master:" + ArrayConverter.bytesToHexString(masterSecret));
+        prepareMasterSecret(msg);
     }
 }

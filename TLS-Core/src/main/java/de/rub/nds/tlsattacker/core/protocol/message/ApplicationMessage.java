@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -26,8 +24,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ApplicationMessage extends ProtocolMessage {
 
+    private byte[] dataConfig = null;
+
     @ModifiableVariableProperty
-    ModifiableByteArray data;
+    private ModifiableByteArray data;
+
+    public ApplicationMessage(byte[] dataConfig) {
+        super();
+        this.dataConfig = dataConfig;
+        this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
+    }
 
     public ApplicationMessage() {
         super();
@@ -52,6 +58,14 @@ public class ApplicationMessage extends ProtocolMessage {
             this.data = new ModifiableByteArray();
         }
         this.data.setOriginalValue(data);
+    }
+
+    public byte[] getDataConfig() {
+        return dataConfig;
+    }
+
+    public void setDataConfig(byte[] dataConfig) {
+        this.dataConfig = dataConfig;
     }
 
     @Override
