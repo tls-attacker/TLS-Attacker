@@ -78,8 +78,7 @@ public class HandlerFactory {
         try {
             switch (type) {
                 case CERTIFICATE:
-                    return new UnknownHandshakeMessageHandler(context);
-                    // return new CertificateHandler(context);
+                    return new CertificateHandler(context);
                 case CERTIFICATE_REQUEST:
                     return new CertificateRequestHandler(context);
                 case CERTIFICATE_VERIFY:

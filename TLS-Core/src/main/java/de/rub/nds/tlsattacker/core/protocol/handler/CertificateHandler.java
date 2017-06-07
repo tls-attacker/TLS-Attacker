@@ -93,6 +93,9 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     }
 
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
+        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+            lengthBytes = lengthBytes - HandshakeByteLength.EXTENSION_LENGTH;
+        }
         try {
             ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
                     ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));

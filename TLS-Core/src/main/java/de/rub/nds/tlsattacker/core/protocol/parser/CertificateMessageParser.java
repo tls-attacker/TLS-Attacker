@@ -66,8 +66,13 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      *            Message to write in
      */
     private void parseCertificatesLength(CertificateMessage msg) {
-        msg.setCertificatesLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
-        LOGGER.debug("CertificateLength: " + msg.getCertificatesLength().getValue());
+        if (getVersion() != ProtocolVersion.TLS13) {
+            msg.setCertificatesLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
+            LOGGER.debug("CertificatesLength: " + msg.getCertificatesLength().getValue());
+        } else {
+            msg.setCertificatesLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH_TLS13));
+            LOGGER.debug("CertificatesLength: " + msg.getCertificatesLength().getValue());
+        }
     }
 
     /**
@@ -78,9 +83,15 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      *            Message to write in
      */
     private void parseX509CertificateBytes(CertificateMessage msg) {
-        msg.setX509CertificateBytes(parseByteArrayField(msg.getCertificatesLength().getValue()));
-        LOGGER.debug("X509CertificateBytes: "
-                + ArrayConverter.bytesToHexString(msg.getX509CertificateBytes().getValue()));
+        if (getVersion() != ProtocolVersion.TLS13) {
+            msg.setX509CertificateBytes(parseByteArrayField(msg.getCertificatesLength().getValue()));
+            LOGGER.debug("X509CertificateBytes: "
+                    + ArrayConverter.bytesToHexString(msg.getX509CertificateBytes().getValue()));
+        } else {
+            msg.setX509CertificateBytes(parseByteArrayField(msg.getCertificatesLength().getValue() - HandshakeByteLength.EXTENSION_LENGTH));
+            LOGGER.debug("X509CertificateBytes: "
+                    + ArrayConverter.bytesToHexString(msg.getX509CertificateBytes().getValue()));
+        }
     }
 
 }

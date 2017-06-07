@@ -35,14 +35,11 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
     @Override
     public void prepareHandshakeMessageContents() {
+        // TODO for TLS 1.3
         Certificate cert = chooseCert();
         byte[] encodedCert = encodeCert(cert);
         msg.setX509CertificateBytes(encodedCert);
         msg.setCertificatesLength(msg.getX509CertificateBytes().getValue().length);
-        if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-            prepareExtensions();
-            prepareExtensionLength();
-        }
     }
 
     private Certificate chooseCert() {
