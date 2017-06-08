@@ -9,11 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -28,19 +25,19 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public RenegotiationInfoExtensionParser getParser(byte[] message, int pointer) {
         LOGGER.debug("The remegotiation extension handler returned the parser.");
         return new RenegotiationInfoExtensionParser(pointer, message);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(RenegotiationInfoExtensionMessage message) {
+    public RenegotiationInfoExtensionPreparator getPreparator(RenegotiationInfoExtensionMessage message) {
         LOGGER.debug("The renegotiation info extension handler returned the preparator.");
         return new RenegotiationInfoExtensionPreparator(context, message);
     }
 
     @Override
-    public ExtensionSerializer getSerializer(RenegotiationInfoExtensionMessage message) {
+    public RenegotiationInfoExtensionSerializer getSerializer(RenegotiationInfoExtensionMessage message) {
         LOGGER.debug("The renegotiatoin info extension handler returned the serializer.");
         return new RenegotiationInfoExtensionSerializer(message);
     }

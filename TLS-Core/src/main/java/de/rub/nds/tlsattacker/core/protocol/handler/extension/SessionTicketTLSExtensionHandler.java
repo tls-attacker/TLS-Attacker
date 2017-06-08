@@ -9,11 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -40,7 +37,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      * @return
      */
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public SessionTicketTLSExtensionParser getParser(byte[] message, int pointer) {
         LOGGER.debug("The session ticket TLS extension handler returned the parser.");
         return new SessionTicketTLSExtensionParser(pointer, message);
     }
@@ -52,7 +49,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      * @return
      */
     @Override
-    public ExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
+    public SessionTicketTLSExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
         LOGGER.debug("The session ticket TLS extension handler returned the preparator.");
         return new SessionTicketTLSExtensionPreparator(context, message);
     }
@@ -64,7 +61,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      * @return
      */
     @Override
-    public ExtensionSerializer getSerializer(SessionTicketTLSExtensionMessage message) {
+    public SessionTicketTLSExtensionSerializer getSerializer(SessionTicketTLSExtensionMessage message) {
         LOGGER.debug("The extended session ticket TLS extension handler returned the serializer.");
         return new SessionTicketTLSExtensionSerializer(message);
     }

@@ -10,11 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
@@ -28,19 +25,19 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public ExtendedMasterSecretExtensionParser getParser(byte[] message, int pointer) {
         LOGGER.debug("The extended master secret extension handler returned the parser.");
         return new ExtendedMasterSecretExtensionParser(pointer, message);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
+    public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
         LOGGER.debug("The extended master secret extension handler returned the preparator.");
         return new ExtendedMasterSecretExtensionPreparator(context, message);
     }
 
     @Override
-    public ExtensionSerializer getSerializer(ExtendedMasterSecretExtensionMessage message) {
+    public ExtendedMasterSecretExtensionSerializer getSerializer(ExtendedMasterSecretExtensionMessage message) {
         LOGGER.debug("The extended master secret extension handler returned the serializer.");
         return new ExtendedMasterSecretExtensionSerializer(message);
     }

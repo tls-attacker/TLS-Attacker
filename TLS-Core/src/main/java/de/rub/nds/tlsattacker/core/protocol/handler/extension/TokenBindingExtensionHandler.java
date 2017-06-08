@@ -11,11 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.ArrayList;
@@ -31,19 +28,19 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public TokenBindingExtensionParser getParser(byte[] message, int pointer) {
         LOGGER.debug("The token binding extension handler returned the parser.");
         return new TokenBindingExtensionParser(pointer, message);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(TokenBindingExtensionMessage message) {
+    public TokenBindingExtensionPreparator getPreparator(TokenBindingExtensionMessage message) {
         LOGGER.debug("The token binding extension handler returned the preparator.");
         return new TokenBindingExtensionPreparator(context, message);
     }
 
     @Override
-    public ExtensionSerializer getSerializer(TokenBindingExtensionMessage message) {
+    public TokenBindingExtensionSerializer getSerializer(TokenBindingExtensionMessage message) {
         LOGGER.debug("The token binding extension handler returned the serializer.");
         return new TokenBindingExtensionSerializer(message);
     }

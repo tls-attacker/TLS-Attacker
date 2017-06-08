@@ -10,11 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -45,7 +42,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      * @return A SignedCertificateTimestampExtensionParser
      */
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public SignedCertificateTimestampExtensionParser getParser(byte[] message, int pointer) {
         LOGGER.debug("The signed certificate timestamp extension handler returned the parser.");
         return new SignedCertificateTimestampExtensionParser(pointer, message);
     }
@@ -58,7 +55,8 @@ public class SignedCertificateTimestampExtensionHandler extends
      * @return A SignedCertificateTimestampExtensionPreparator
      */
     @Override
-    public ExtensionPreparator getPreparator(SignedCertificateTimestampExtensionMessage message) {
+    public SignedCertificateTimestampExtensionPreparator getPreparator(
+            SignedCertificateTimestampExtensionMessage message) {
         LOGGER.debug("The signed certificate timestamp extension handler returned the preparator.");
         return new SignedCertificateTimestampExtensionPreparator(context, message);
     }
@@ -71,7 +69,8 @@ public class SignedCertificateTimestampExtensionHandler extends
      * @return A SignedCertificateTimestampExtensionSerializer
      */
     @Override
-    public ExtensionSerializer getSerializer(SignedCertificateTimestampExtensionMessage message) {
+    public SignedCertificateTimestampExtensionSerializer getSerializer(
+            SignedCertificateTimestampExtensionMessage message) {
         LOGGER.debug("The signed certificate timestamp extension handler returned the serializer.");
         return new SignedCertificateTimestampExtensionSerializer(message);
     }
