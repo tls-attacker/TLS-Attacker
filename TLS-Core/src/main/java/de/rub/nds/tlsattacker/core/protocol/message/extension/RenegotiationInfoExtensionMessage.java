@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -30,7 +29,7 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getHandler(TlsContext context) {
+    public RenegotiationInfoExtensionHandler getHandler(TlsContext context) {
         return new RenegotiationInfoExtensionHandler(context);
     }
 

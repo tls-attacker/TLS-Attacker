@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
@@ -26,7 +25,7 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getHandler(TlsContext context) {
+    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext context) {
         return new ExtendedMasterSecretExtensionHandler(context);
     }
 

@@ -13,11 +13,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
-//TODO LISTLENGTH ANGEBEN!
 /**
  * ATTENTION! This extension is experimental and only registered until
  * 2018-02-04!
@@ -39,7 +37,7 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getHandler(TlsContext context) {
+    public TokenBindingExtensionHandler getHandler(TlsContext context) {
         return new TokenBindingExtensionHandler(context);
     }
 
