@@ -44,7 +44,6 @@ public class TlsAttackerSocketTest {
     public void setUp() {
     }
 
-    @Test
     public void exampleCode() throws IOException {
         GeneralDelegate delegate = new GeneralDelegate();
         TlsConfig config = TlsConfig.createConfig();
@@ -72,8 +71,7 @@ public class TlsAttackerSocketTest {
         }
         socket.close();
     }
-    
-    @Test
+
     public void exampleStartls() throws IOException {
         GeneralDelegate delegate = new GeneralDelegate();
         TlsConfig config = TlsConfig.createConfig();
@@ -88,7 +86,8 @@ public class TlsAttackerSocketTest {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         config.setWorkflowExecutorShouldClose(false);
         config.setWorkflowExecutorShouldOpen(false);
-        context.setTransportHandler( new SimpleTransportHandler("mail.ruhr-uni-bochum.de", 587, ConnectionEnd.CLIENT, 1000, 1000));
+        context.setTransportHandler(new SimpleTransportHandler("mail.ruhr-uni-bochum.de", 587, ConnectionEnd.CLIENT,
+                1000, 1000));
         context.getTransportHandler().initialize();
         TlsAttackerSocket socket = new TlsAttackerSocket(context);
         byte[] rec = socket.recieveRawBytes();
@@ -115,6 +114,7 @@ public class TlsAttackerSocketTest {
         }
         socket.close();
     }
+
     /**
      * Test of sendRawBytes method, of class TlsAttackerSocket.
      */

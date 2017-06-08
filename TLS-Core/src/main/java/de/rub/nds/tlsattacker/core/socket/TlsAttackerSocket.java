@@ -118,16 +118,14 @@ public class TlsAttackerSocket {
     public String receiveString() throws IOException {
         return new String(receiveBytes());
     }
-    
-    public void send(ProtocolMessage message)
-    {
+
+    public void send(ProtocolMessage message) {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(message);
         executor.sendMessages(messages, new LinkedList<AbstractRecord>());
     }
-    
-    public void close()
-    {
+
+    public void close() {
         AlertMessage closeNotify = new AlertMessage();
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         send(closeNotify);
