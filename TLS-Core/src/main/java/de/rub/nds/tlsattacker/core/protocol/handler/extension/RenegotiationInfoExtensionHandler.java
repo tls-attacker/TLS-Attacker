@@ -26,19 +26,16 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
 
     @Override
     public RenegotiationInfoExtensionParser getParser(byte[] message, int pointer) {
-        LOGGER.debug("The remegotiation extension handler returned the parser.");
         return new RenegotiationInfoExtensionParser(pointer, message);
     }
 
     @Override
     public RenegotiationInfoExtensionPreparator getPreparator(RenegotiationInfoExtensionMessage message) {
-        LOGGER.debug("The renegotiation info extension handler returned the preparator.");
         return new RenegotiationInfoExtensionPreparator(context, message);
     }
 
     @Override
     public RenegotiationInfoExtensionSerializer getSerializer(RenegotiationInfoExtensionMessage message) {
-        LOGGER.debug("The renegotiatoin info extension handler returned the serializer.");
         return new RenegotiationInfoExtensionSerializer(message);
     }
 
@@ -49,7 +46,6 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
-        LOGGER.debug("The renegotiation info extension handler adjusted the TLS context.");
     }
 
 }

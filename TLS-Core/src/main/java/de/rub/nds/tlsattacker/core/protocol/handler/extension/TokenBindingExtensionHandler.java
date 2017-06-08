@@ -29,19 +29,16 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public TokenBindingExtensionParser getParser(byte[] message, int pointer) {
-        LOGGER.debug("The token binding extension handler returned the parser.");
         return new TokenBindingExtensionParser(pointer, message);
     }
 
     @Override
     public TokenBindingExtensionPreparator getPreparator(TokenBindingExtensionMessage message) {
-        LOGGER.debug("The token binding extension handler returned the preparator.");
         return new TokenBindingExtensionPreparator(context, message);
     }
 
     @Override
     public TokenBindingExtensionSerializer getSerializer(TokenBindingExtensionMessage message) {
-        LOGGER.debug("The token binding extension handler returned the serializer.");
         return new TokenBindingExtensionSerializer(message);
     }
 
@@ -57,7 +54,6 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters
                 .toArray(new TokenBindingKeyParameters[tokenbindingKeyParameters.size()]));
-        LOGGER.debug("The token binding extension handler adjusted the TLS context.");
     }
 
 }

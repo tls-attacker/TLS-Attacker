@@ -26,19 +26,16 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
 
     @Override
     public PaddingExtensionParser getParser(byte[] message, int pointer) {
-        LOGGER.debug("The padding extension handler returned the parser.");
         return new PaddingExtensionParser(pointer, message);
     }
 
     @Override
     public PaddingExtensionPreparator getPreparator(PaddingExtensionMessage message) {
-        LOGGER.debug("The padding extensoin handler returned the preparator.");
         return new PaddingExtensionPreparator(context, message);
     }
 
     @Override
     public PaddingExtensionSerializer getSerializer(PaddingExtensionMessage message) {
-        LOGGER.debug("The padding extension handler returned the serializer.");
         return new PaddingExtensionSerializer(message);
     }
 
@@ -53,7 +50,6 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
             LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
         }
         context.setPaddingExtensionLength(message.getPaddingBytes().getValue().length);
-        LOGGER.debug("The padding extension handler adjusted the TLS context.");
 
     }
 

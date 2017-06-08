@@ -26,19 +26,16 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
 
     @Override
     public ExtendedMasterSecretExtensionParser getParser(byte[] message, int pointer) {
-        LOGGER.debug("The extended master secret extension handler returned the parser.");
         return new ExtendedMasterSecretExtensionParser(pointer, message);
     }
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
-        LOGGER.debug("The extended master secret extension handler returned the preparator.");
         return new ExtendedMasterSecretExtensionPreparator(context, message);
     }
 
     @Override
     public ExtendedMasterSecretExtensionSerializer getSerializer(ExtendedMasterSecretExtensionMessage message) {
-        LOGGER.debug("The extended master secret extension handler returned the serializer.");
         return new ExtendedMasterSecretExtensionSerializer(message);
     }
 
@@ -50,7 +47,6 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     @Override
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
         context.setIsExtendedMasterSecretExtension(true);
-        LOGGER.debug("The extended master secret extension handler adjusted the TLS context.");
     }
 
 }

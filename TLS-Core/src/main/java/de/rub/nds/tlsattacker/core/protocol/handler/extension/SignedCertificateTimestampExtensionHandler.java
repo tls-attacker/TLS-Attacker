@@ -43,7 +43,6 @@ public class SignedCertificateTimestampExtensionHandler extends
      */
     @Override
     public SignedCertificateTimestampExtensionParser getParser(byte[] message, int pointer) {
-        LOGGER.debug("The signed certificate timestamp extension handler returned the parser.");
         return new SignedCertificateTimestampExtensionParser(pointer, message);
     }
 
@@ -57,7 +56,6 @@ public class SignedCertificateTimestampExtensionHandler extends
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(
             SignedCertificateTimestampExtensionMessage message) {
-        LOGGER.debug("The signed certificate timestamp extension handler returned the preparator.");
         return new SignedCertificateTimestampExtensionPreparator(context, message);
     }
 
@@ -71,7 +69,6 @@ public class SignedCertificateTimestampExtensionHandler extends
     @Override
     public SignedCertificateTimestampExtensionSerializer getSerializer(
             SignedCertificateTimestampExtensionMessage message) {
-        LOGGER.debug("The signed certificate timestamp extension handler returned the serializer.");
         return new SignedCertificateTimestampExtensionSerializer(message);
     }
 
@@ -89,7 +86,6 @@ public class SignedCertificateTimestampExtensionHandler extends
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
-        LOGGER.debug("The signed certificate timestamp extension handler adjusted the TLS context.");
     }
 
 }
