@@ -143,6 +143,7 @@ public class RecordAEADCipher extends RecordCipher {
                     clientHandshakeTrafficSecret = context.getClientHandshakeTrafficSecret();
                     serverHandshakeTrafficSecret = context.getServerHandshakeTrafficSecret();
                 } else {
+                    context.setUpdateKeys(false);
                     clientHandshakeTrafficSecret = context.getClientApplicationTrafficSecret0();
                     serverHandshakeTrafficSecret = context.getServerApplicationTrafficSecret0();
                 }

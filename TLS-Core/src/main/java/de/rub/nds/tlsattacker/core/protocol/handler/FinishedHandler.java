@@ -64,8 +64,9 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void adjustApplicationTrafficSecrets() {
         MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getSelectedCipherSuite()).getMacAlgorithm();
-        byte[] saltMasterSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), tlsContext.getHandshakeSecret(), HKDFunction.DERIVED, new byte[] {});
-        byte[] masterSecret = HKDFunction.extract(macAlg.getJavaName(), saltMasterSecret, new byte[32]);
+        // byte[] saltMasterSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), tlsContext.getHandshakeSecret(), HKDFunction.DERIVED, new byte[] {});
+        // byte[] masterSecret = HKDFunction.extract(macAlg.getJavaName(), saltMasterSecret, new byte[32]);
+        byte[] masterSecret = HKDFunction.extract(macAlg.getJavaName(), tlsContext.getHandshakeSecret(), new byte[32]);
         byte[] clientApplicationTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), masterSecret,
                         HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().
                         digest(tlsContext.getSelectedProtocolVersion(), tlsContext.getSelectedCipherSuite()));

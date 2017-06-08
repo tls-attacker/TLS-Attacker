@@ -221,7 +221,7 @@ public class WorkflowConfigurationFactory {
         }
         messages.add(new ApplicationMessage(config));
 
-        if (config.getHeartbeatMode() != null) {
+        if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13 && config.getHeartbeatMode() != null) {
             messages.add(new HeartbeatMessage(config));
             workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));

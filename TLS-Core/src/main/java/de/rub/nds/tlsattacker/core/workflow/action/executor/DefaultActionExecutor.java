@@ -83,7 +83,6 @@ public class DefaultActionExecutor extends ActionExecutor {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
             }
             if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13 && context.isUpdateKeys() == true) {
-                context.setUpdateKeys(false);
                 LOGGER.debug("Setting new Cipher in RecordLayer");
                 RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
                 context.getRecordLayer().setRecordCipher(recordCipher);
