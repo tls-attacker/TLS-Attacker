@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
@@ -86,6 +87,8 @@ public class SignedCertificateTimestampExtensionHandler extends
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
+        LOGGER.debug("The context SignedCertificateTimestamp was set to "
+                + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
     }
 
 }

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
@@ -46,6 +48,8 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
+        LOGGER.debug("The context RenegotiationInfo was set to "
+                + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
     }
 
 }

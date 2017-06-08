@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
@@ -76,6 +77,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSessionTicketTLS(message.getTicket().getValue());
+        LOGGER.debug("The context SessionTLS ticket was set to " + ArrayConverter.bytesToHexString(message.getTicket()));
     }
 
 }
