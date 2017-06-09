@@ -79,7 +79,7 @@ public class SessionTicketTLSExtensionPreparatorTest {
      */
     @Test
     public void testPreparator() {
-        context.getConfig().setSessionTLSTicket(new byte[0]);
+        context.getConfig().setTLSSessionTicket(new byte[0]);
         preparator.prepare();
 
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());

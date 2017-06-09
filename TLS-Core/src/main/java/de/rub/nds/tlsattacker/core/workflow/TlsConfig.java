@@ -171,7 +171,7 @@ public final class TlsConfig implements Serializable {
      * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session
      * ticket since we initiate a new connection.
      */
-    private byte[] sessionTLSTicket = new byte[0];
+    private byte[] TLSSessionTicket = new byte[0];
     /**
      * Renegotiation info for the RenegotiationInfo extension. It's an empty
      * info sonce we initiate a new connection.
@@ -982,12 +982,12 @@ public final class TlsConfig implements Serializable {
         this.keyStoreFile = keyStoreFile;
     }
 
-    public byte[] getSessionTLSTicket() {
-        return sessionTLSTicket;
+    public byte[] getTLSSessionTicket() {
+        return TLSSessionTicket;
     }
 
-    public void setSessionTLSTicket(byte[] sessionTLSTicket) {
-        this.sessionTLSTicket = sessionTLSTicket;
+    public void setTLSSessionTicket(byte[] TLSSessionTicket) {
+        this.TLSSessionTicket = TLSSessionTicket;
     }
 
     public byte[] getSignedCertificateTimestamp() {
