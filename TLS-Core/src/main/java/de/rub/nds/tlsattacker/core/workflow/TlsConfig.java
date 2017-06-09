@@ -171,16 +171,19 @@ public final class TlsConfig implements Serializable {
      * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session
      * ticket since we initiate a new connection.
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] TLSSessionTicket = new byte[0];
     /**
      * Renegotiation info for the RenegotiationInfo extension. It's an empty
-     * info sonce we initiate a new connection.
+     * info since we initiate a new connection.
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] renegotiationInfo = new byte[0];
     /**
-     * SignedCertificateTimestamp for the SignedCertificateTimestampExtensin.
+     * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
      * It's an emty timestamp, since the server sends it.
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] signedCertificateTimestamp = new byte[0];
     /**
      * TokenBinding default major version. To be defined later.
