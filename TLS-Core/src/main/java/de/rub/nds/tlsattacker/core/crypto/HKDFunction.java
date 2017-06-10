@@ -37,13 +37,13 @@ public class HKDFunction {
 
     public static final String EARLY_EXPORTER_MASTER_SECRET = "e exp master";
 
-    public static final String CLIENT_HANDSHAKE_TRAFFIC_SECRET = "client handshake traffic secret";
+    public static final String CLIENT_HANDSHAKE_TRAFFIC_SECRET = "c hs traffic";
 
-    public static final String SERVER_HANDSHAKE_TRAFFIC_SECRET = "server handshake traffic secret";
+    public static final String SERVER_HANDSHAKE_TRAFFIC_SECRET = "s hs traffic";
 
-    public static final String CLIENT_APPLICATION_TRAFFIC_SECRET = "client application traffic secret";
+    public static final String CLIENT_APPLICATION_TRAFFIC_SECRET = "c ap traffic";
 
-    public static final String SERVER_APPLICATION_TRAFFIC_SECRET = "server application traffic secret";
+    public static final String SERVER_APPLICATION_TRAFFIC_SECRET = "s ap traffic";
 
     public static final String EXPORTER_MASTER_SECRET = "exp master";
 
@@ -98,9 +98,9 @@ public class HKDFunction {
 
     private static byte[] labelEncoder(byte[] hashValue, String labelIn, int outLen) {
         // Not Right, but for the Tests
-        String label = "TLS 1.3, " + labelIn;
+        // String label = "TLS 1.3, " + labelIn;
         // Right
-        // String label = "tls13 " + labelIn;
+        String label = "tls13 " + labelIn;
         int labelLength = label.getBytes().length;
         int hashValueLength = hashValue.length;
 

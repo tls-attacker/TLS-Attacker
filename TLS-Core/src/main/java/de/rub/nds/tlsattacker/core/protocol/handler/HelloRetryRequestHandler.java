@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRetryRequestParser;
@@ -43,6 +45,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
     @Override
     protected void adjustTLSContext(HelloRetryRequestMessage message) {
         adjustProtocolVersion(message);
+        adjustSelectedCiphersuite(message);
         adjustLastRecordVersion(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
@@ -55,6 +58,12 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         tlsContext.setSelectedProtocolVersion(version);
         LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+    }
+    
+    private void adjustSelectedCiphersuite(HelloRetryRequestMessage message) {
+        CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
+        tlsContext.setSelectedCipherSuite(suite);
+        LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
     }
 
     private void adjustLastRecordVersion(HelloRetryRequestMessage message) {
