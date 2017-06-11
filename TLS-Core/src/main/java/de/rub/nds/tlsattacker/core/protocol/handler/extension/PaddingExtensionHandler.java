@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
@@ -50,8 +51,9 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
         if (message.getPaddingBytes().getValue().length <= 65535) {
             LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
         }
-        context.setPaddingExtensionLength(message.getPaddingBytes().getValue().length);
-        LOGGER.debug("The context PaddingExtension length was set to " + context.getPaddingExtensionLength());
+        context.setPaddingExtensionBytes(message.getPaddingBytes().getValue());
+        LOGGER.debug("The context PaddingExtension bytes were set to "
+                + ArrayConverter.bytesToHexString(context.getPaddingExtensionBytes()));
 
     }
 

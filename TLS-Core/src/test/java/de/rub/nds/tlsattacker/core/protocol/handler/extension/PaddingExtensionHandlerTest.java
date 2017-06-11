@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionPar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,6 @@ import org.junit.Test;
  */
 public class PaddingExtensionHandlerTest {
 
-    private final int extensionLength = 6;
     private final byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };
     private TlsContext context;
     private PaddingExtensionHandler handler;
@@ -48,7 +47,7 @@ public class PaddingExtensionHandlerTest {
         PaddingExtensionMessage msg = new PaddingExtensionMessage();
         msg.setPaddingBytes(extensionPayload);
         handler.adjustTLSContext(msg);
-        assertEquals(context.getPaddingExtensionLength(), extensionLength);
+        assertArrayEquals(context.getPaddingExtensionBytes(), extensionPayload);
     }
 
     /**

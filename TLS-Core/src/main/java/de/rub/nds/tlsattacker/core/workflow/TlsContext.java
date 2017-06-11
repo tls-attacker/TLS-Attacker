@@ -133,9 +133,9 @@ public class TlsContext {
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
 
     /**
-     * This is the length of the padding as used in the padding extension.
+     * These are the padding bytes as used in the padding extension.
      */
-    private int paddingExtensionLength;
+    private byte[] paddingExtensionBytes;
 
     /**
      * This is the session ticket of the SessionTicketTLS extension.
@@ -345,8 +345,12 @@ public class TlsContext {
         this.heartbeatMode = heartbeatMode;
     }
 
-    public int getPaddingExtensionLength() {
-        return paddingExtensionLength;
+    public byte[] getPaddingExtensionBytes() {
+        return paddingExtensionBytes;
+    }
+
+    public void setPaddingExtensionBytes(byte[] paddingExtensionBytes) {
+        this.paddingExtensionBytes = paddingExtensionBytes;
     }
 
     public boolean isExtendedMasterSecretExtension() {
@@ -355,10 +359,6 @@ public class TlsContext {
 
     public void setIsExtendedMasterSecretExtension(boolean isExtendedMasterSecretExtension) {
         this.isExtendedMasterSecretExtension = isExtendedMasterSecretExtension;
-    }
-
-    public void setPaddingExtensionLength(int PaddingExtensionLength) {
-        this.paddingExtensionLength = PaddingExtensionLength;
     }
 
     public List<CompressionMethod> getClientSupportedCompressions() {

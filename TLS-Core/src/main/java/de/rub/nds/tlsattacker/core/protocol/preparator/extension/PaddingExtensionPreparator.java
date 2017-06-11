@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -30,8 +31,9 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
      */
     @Override
     public void prepareExtensionContent() {
-        message.setPaddingBytes(new byte[context.getConfig().getDefaultPaddingExtensionLength()]);
-        LOGGER.debug("Prepared PaddingExtension with " + context.getConfig().getDefaultPaddingExtensionLength()
+        message.setPaddingBytes(context.getConfig().getDefaultPaddingExtensionBytes());
+        LOGGER.debug("Prepared PaddingExtension with "
+                + ArrayConverter.bytesToHexString(context.getConfig().getDefaultPaddingExtensionBytes())
                 + " padding bytes.");
     }
 

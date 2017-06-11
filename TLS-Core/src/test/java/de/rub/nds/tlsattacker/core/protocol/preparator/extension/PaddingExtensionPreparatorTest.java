@@ -44,7 +44,7 @@ public class PaddingExtensionPreparatorTest {
 
     @Test
     public void testPreparator() {
-        context.getConfig().setDefaultPaddingExtensionLength(extensionLength);
+        context.getConfig().setDefaultPaddingExtensionBytes(extensionPayload);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());

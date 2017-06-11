@@ -359,7 +359,7 @@ public final class TlsConfig implements Serializable {
     /**
      * How much padding bytes should be send by default
      */
-    private int defaultPaddingExtensionLength = 6;
+    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
@@ -572,12 +572,12 @@ public final class TlsConfig implements Serializable {
         this.addSessionTicketTLSExtension = addSessionTicketTLSExtension;
     }
 
-    public int getDefaultPaddingExtensionLength() {
-        return defaultPaddingExtensionLength;
+    public byte[] getDefaultPaddingExtensionBytes() {
+        return defaultPaddingExtensionBytes;
     }
 
-    public void setDefaultPaddingExtensionLength(int defaultPaddingExtensionLength) {
-        this.defaultPaddingExtensionLength = defaultPaddingExtensionLength;
+    public void setDefaultPaddingExtensionBytes(byte[] defaultPaddingExtensionBytes) {
+        this.defaultPaddingExtensionBytes = defaultPaddingExtensionBytes;
     }
 
     public List<ClientCertificateType> getClientCertificateTypes() {
