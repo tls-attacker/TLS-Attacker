@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParserTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class RenegotiationInfoExtensionSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return RenegotiationInfoExtensionHandlerTest.generateData();
+        return RenegotiationInfoExtensionParserTest.generateData();
     }
 
     @Test

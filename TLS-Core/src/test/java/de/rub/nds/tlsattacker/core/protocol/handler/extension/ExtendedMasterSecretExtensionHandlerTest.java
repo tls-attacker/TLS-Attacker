@@ -26,7 +26,6 @@ public class ExtendedMasterSecretExtensionHandlerTest {
     private TlsContext context;
     private ExtendedMasterSecretExtensionHandler handler;
 
-
     @Before
     public void setUp() {
         context = new TlsContext();

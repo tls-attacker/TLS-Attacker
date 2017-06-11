@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParserTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
@@ -56,7 +56,7 @@ public class SessionTicketTLSExtensionSerializerTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return SessionTicketTLSExtensionHandlerTest.generateData();
+        return SessionTicketTLSExtensionParserTest.generateData();
     }
 
     /**

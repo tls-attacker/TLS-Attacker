@@ -8,64 +8,27 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-@RunWith(Parameterized.class)
 public class SessionTicketTLSExtensionHandlerTest {
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final byte[] sessionTicket;
-    private final byte[] expectedBytes;
-    private final int startParsing;
+    private final int extensionLength = 0;
+    private final byte[] sessionTicket = new byte[0];
+
     private TlsContext context;
     private SessionTicketTLSExtensionHandler handler;
-
-    /**
-     * Constructor for parameterized setup.
-     *
-     * @param extensionType
-     * @param extensionLength
-     * @param sessionTicket
-     * @param expectedBytes
-     * @param startParsing
-     */
-    public SessionTicketTLSExtensionHandlerTest(ExtensionType extensionType, int extensionLength, byte[] sessionTicket,
-            byte[] expectedBytes, int startParsing) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.sessionTicket = sessionTicket;
-        this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
-    }
-
-    /**
-     * Parameterized set up of the test vector.
-     *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     *         expectedBytes)
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SessionTicketTLSExtensionParserTest.generateData();
-    }
 
     /**
      * Some initial set up.
@@ -95,7 +58,7 @@ public class SessionTicketTLSExtensionHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(expectedBytes, startParsing) instanceof SessionTicketTLSExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0) instanceof SessionTicketTLSExtensionParser);
     }
 
     /**

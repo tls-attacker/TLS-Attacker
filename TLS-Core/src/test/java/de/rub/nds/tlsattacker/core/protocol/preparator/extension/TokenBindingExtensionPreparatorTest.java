@@ -77,6 +77,7 @@ public class TokenBindingExtensionPreparatorTest {
 
         preparator.prepare();
 
+        assertArrayEquals(ExtensionType.TOKEN_BINDING.getValue(), message.getExtensionType().getValue());
         assertEquals(majorVersion.getByteValue(), (byte) message.getMajorTokenbindingVersion().getValue());
         assertEquals(minorVersion.getByteValue(), (byte) message.getMinorTokenbindingVersion().getValue());
         assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());

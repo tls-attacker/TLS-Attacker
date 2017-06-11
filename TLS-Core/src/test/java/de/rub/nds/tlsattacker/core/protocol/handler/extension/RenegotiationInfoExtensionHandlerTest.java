@@ -27,30 +27,12 @@ import org.junit.runners.Parameterized;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-@RunWith(Parameterized.class)
 public class RenegotiationInfoExtensionHandlerTest {
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final byte[] extensionPayload;
-    private final byte[] expectedBytes;
-    private final int startParsing;
+    private final int extensionLength = 1;
+    private final byte[] extensionPayload = new byte[] { 0 };
     private TlsContext context;
     private RenegotiationInfoExtensionHandler handler;
-
-    public RenegotiationInfoExtensionHandlerTest(ExtensionType extensionType, int extensionLength,
-            byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.extensionPayload = extensionPayload;
-        this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return RenegotiationInfoExtensionParserTest.generateData();
-    }
 
     @Before
     public void setUp() {
@@ -69,7 +51,7 @@ public class RenegotiationInfoExtensionHandlerTest {
 
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(expectedBytes, startParsing) instanceof RenegotiationInfoExtensionParser);
+        assertTrue(handler.getParser(new byte[0], 0) instanceof RenegotiationInfoExtensionParser);
     }
 
     @Test

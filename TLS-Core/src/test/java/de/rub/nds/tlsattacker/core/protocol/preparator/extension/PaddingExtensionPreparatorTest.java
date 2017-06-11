@@ -10,45 +10,23 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializerTest;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-@RunWith(Parameterized.class)
 public class PaddingExtensionPreparatorTest {
 
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final byte[] extensionPayload;
-    private final byte[] expectedBytes;
-    private final int startParsing;
+    private final int extensionLength = 6;
+    private final byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };
     private TlsContext context;
     private PaddingExtensionMessage message;
     private PaddingExtensionPreparator preparator;
-
-    public PaddingExtensionPreparatorTest(ExtensionType extensionType, int extensionLength, byte[] extensionPayload,
-            byte[] expectedBytes, int startParsing) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.extensionPayload = extensionPayload;
-        this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return PaddingExtensionSerializerTest.generateData();
-    }
 
     /**
      * Some initial set up.
@@ -69,6 +47,7 @@ public class PaddingExtensionPreparatorTest {
         context.getConfig().setDefaultPaddingExtensionLength(extensionLength);
         preparator.prepare();
 
+        assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
         assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
 

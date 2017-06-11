@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParserTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class SignedCertificateTimestampExtensionSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return SignedCertificateTimestampExtensionHandlerTest.generateData();
+        return SignedCertificateTimestampExtensionParserTest.generateData();
     }
 
     @Test
