@@ -90,7 +90,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         } else if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
             sharedSecret = computeSharedSecretECDH();
         } else {
-            throw new PreparationException("Support only the key exchange group FFDHE2048");
+            throw new PreparationException("Support only the key exchange group FFDHE2048 & ECDH_X25519");
         }
         byte[] handshakeSecret = HKDFunction.extract(macAlg.getJavaName(), saltHandshakeSecret, sharedSecret);
         context.setHandshakeSecret(handshakeSecret);
@@ -110,7 +110,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
      * 
      * @return
      */
-    public byte[] computeSharedSecretDH() {
+    private byte[] computeSharedSecretDH() {
         KSEntry serverKeySahre = context.getServerKSEntry();
         DHParameters dhParams = new DHParameters(new BigInteger(1, context.getConfig().getFixedDHModulus()),
                 new BigInteger(1, context.getConfig().getFixedDHg()));
@@ -136,7 +136,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
      * 
      * @return
      */
-    public byte[] computeSharedSecretECDH() {
+    private byte[] computeSharedSecretECDH() {
         KSEntry serverKeySahre = context.getServerKSEntry();
         byte[] clientPrivateKey = context.getConfig().getKeyShareRandom();
         byte[] serverPublicKey = serverKeySahre.getSerializedPublicKey();

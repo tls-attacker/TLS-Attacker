@@ -12,12 +12,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
 
@@ -29,9 +28,11 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
         int listLength = parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
         if (listLength == getBytesLeft()) {
+            LOGGER.debug("Parse server key share extension");
             msg.setKeyShareListLength(listLength);
             msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
         } else {
+            LOGGER.debug("Parse client key share extension");
             byte[] keyBegin = ArrayConverter.intToBytes(listLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
             msg.setKeyShareListBytes(ArrayConverter.concatenate(keyBegin, parseByteArrayField(msg.getExtensionLength()
                     .getValue() - ExtensionByteLength.KEY_SHARE_LIST_LENGTH)));

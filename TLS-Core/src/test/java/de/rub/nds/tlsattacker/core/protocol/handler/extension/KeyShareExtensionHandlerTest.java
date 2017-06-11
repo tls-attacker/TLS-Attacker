@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -29,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandlerTest {
 
@@ -47,6 +46,7 @@ public class KeyShareExtensionHandlerTest {
 
     /**
      * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
+     * Group: FFDHE2048
      */
     @Test
     public void testAdjustTLSContext1() {
@@ -71,6 +71,7 @@ public class KeyShareExtensionHandlerTest {
 
     /**
      * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
+     * Group: ECDH_X25519
      */
     @Test
     public void testAdjustTLSContext2() {
@@ -89,43 +90,12 @@ public class KeyShareExtensionHandlerTest {
         assertArrayEquals(ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
                 entry.getSerializedPublicKey());
         assertTrue(entry.getGroup() == NamedCurve.ECDH_X25519);
-        assertNotNull(context.getClientHandshakeTrafficSecret());
-        assertNotNull(context.getServerHandshakeTrafficSecret());
-
-        assertTrue(entry.getGroup() != NamedCurve.ECDH_X25519);
-    }
-
-    /**
-     * Test of computeSharedSecretDH method, of class KeyShareExtensionHandler.
-     */
-    @Test
-    public void testComputeSharedSecretDH() {
-        context.setServerKSEntry(new KSEntry(NamedCurve.FFDHE2048, ArrayConverter
-                .hexStringToByteArray("0800000000000000000000")));
-        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        handler = new KeyShareExtensionHandler(context);
-        byte[] sharedSecret = handler.computeSharedSecretDH();
-        int sharedSecretLength = sharedSecret.length;
-        int sharedSecretLength_correct = context.getConfig().getFixedDHModulus().length;
-        byte[] sharedSecret_correct = ArrayConverter.bigIntegerToNullPaddedByteArray(new BigInteger(1, ArrayConverter
-                .hexStringToByteArray("05BD8BC42DC32129EDF82693CC41D91FB6BD07E917BE13AA4D5FF2BF2EE8C25FCC52F8F344E5B715570FECCBA4693AAE9615B46FA13DA4E8A1593B220D134687EE955A7534D0EA15093ADDD04C396CF87A6F3A7589D289B7609FC18B98BF6445105BF3E69C0E01DC652374EEEAB2C4400B6166255176F7E13550890DE85B59ABD8732A362B6BD0B2FFC10882AE8C578401A092E3A711BEA2FDB4ECA7529ABC40C60AF5B208F8001F6E9DEFACB8C50CBF8E0D20F9B802EA25BFC642483905E8DA2AA3788D28C1190AB4B2C261E2EB99B73BCFB867DAE6F4CE3D23EC5F72A8DBAE37980DB1D8ABF7C01C05C9EBE4D8F07A128DB2428E69BFF36D070A52A107565D")),
-                sharedSecretLength_correct);
-        assertTrue(sharedSecretLength == sharedSecretLength_correct);
-        assertArrayEquals(sharedSecret, sharedSecret_correct);
-    }
-
-    /**
-     * Test of computeSharedSecretDH method, of class KeyShareExtensionHandler.
-     */
-    @Test
-    public void testComputeSharedSecretECDH() {
-        context.setServerKSEntry(new KSEntry(NamedCurve.ECDH_X25519, ArrayConverter
-                .hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c")));
-        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        handler = new KeyShareExtensionHandler(context);
-        byte[] sharedSecret = handler.computeSharedSecretECDH();
-        byte[] sharedSecret_correct = ArrayConverter.hexStringToByteArray("0dfa4c5e11a6f606d4b75f138412d85a4b2da0d5f981ffc1d2e8ceff2e00a12c");
-        assertArrayEquals(sharedSecret, sharedSecret_correct);
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("EA2F968FD0A381E4B041E6D8DDBF6DA93DE4CEAC862693D3026323E780DB9FC3"),
+                context.getHandshakeSecret());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("C56CAE0B1A64467A0E3A3337F8636965787C9A741B0DAB63E503076051BCA15C"),
+                context.getClientHandshakeTrafficSecret());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("DBF731F5EE037C4494F24701FF074AD4048451C0E2803BC686AF1F2D18E861F5"),
+                context.getServerHandshakeTrafficSecret());
     }
 
     /**
