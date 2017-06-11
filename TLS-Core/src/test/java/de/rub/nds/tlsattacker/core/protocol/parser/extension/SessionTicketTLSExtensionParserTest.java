@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -59,7 +60,8 @@ public class SessionTicketTLSExtensionParserTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return SessionTicketTLSExtensionHandlerTest.generateData();
+        return Arrays.asList(new Object[][] { { ExtensionType.SESSION_TICKET, 0, new byte[0],
+                ArrayConverter.hexStringToByteArray("00230000"), 0 } });
     }
 
     /**

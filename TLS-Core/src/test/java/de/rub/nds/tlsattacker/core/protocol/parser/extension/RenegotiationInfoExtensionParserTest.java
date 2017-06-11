@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandlerTest;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -45,7 +46,8 @@ public class RenegotiationInfoExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return RenegotiationInfoExtensionHandlerTest.generateData();
+        return Arrays.asList(new Object[][] { { ExtensionType.RENEGOTIATION_INFO, 1, new byte[] { 0 },
+                ArrayConverter.hexStringToByteArray("ff01000100"), 0 } });
     }
 
     @Before

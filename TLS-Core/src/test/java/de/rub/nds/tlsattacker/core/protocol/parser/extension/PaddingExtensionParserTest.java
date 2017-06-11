@@ -8,9 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializerTest;
+import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -34,7 +35,8 @@ public class PaddingExtensionParserTest {
      */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return PaddingExtensionSerializerTest.generateData();
+        return Arrays.asList(new Object[][] { { ExtensionType.PADDING, 6, new byte[] { 0, 0, 0, 0, 0, 0 },
+                ArrayConverter.hexStringToByteArray("00150006000000000000"), 0 } });
     }
 
     private final ExtensionType extensionType;

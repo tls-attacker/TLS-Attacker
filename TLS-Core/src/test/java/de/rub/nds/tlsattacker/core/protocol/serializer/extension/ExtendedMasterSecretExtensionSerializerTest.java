@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParserTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
@@ -27,8 +26,7 @@ public class ExtendedMasterSecretExtensionSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_MASTER_SECRET, 0,
-                ArrayConverter.hexStringToByteArray("00170000"), 0 } });
+        return ExtendedMasterSecretExtensionParserTest.generateData();
     }
 
     private final ExtensionType extensionType;
