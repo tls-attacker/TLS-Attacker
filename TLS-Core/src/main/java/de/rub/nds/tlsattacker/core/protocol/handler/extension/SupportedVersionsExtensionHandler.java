@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.List;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class SupportedVersionsExtensionHandler extends ExtensionHandler<SupportedVersionsExtensionMessage> {
 

@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsE
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class SupportedVersionsExtensionMessage extends ExtensionMessage {
 

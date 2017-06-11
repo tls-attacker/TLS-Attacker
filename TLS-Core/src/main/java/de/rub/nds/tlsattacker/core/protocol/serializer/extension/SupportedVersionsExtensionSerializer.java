@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class SupportedVersionsExtensionSerializer extends ExtensionSerializer<SupportedVersionsExtensionMessage> {
 
@@ -25,8 +25,7 @@ public class SupportedVersionsExtensionSerializer extends ExtensionSerializer<Su
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getSupportedVersionsLength().getValue(),
-                ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH);
+        appendInt(message.getSupportedVersionsLength().getValue(), ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH);
         appendBytes(message.getSupportedVersions().getValue());
         return getAlreadySerialized();
     }
