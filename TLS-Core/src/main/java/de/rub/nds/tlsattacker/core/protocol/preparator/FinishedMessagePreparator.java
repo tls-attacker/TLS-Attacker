@@ -25,7 +25,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- *
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
@@ -49,16 +49,18 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
         if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             try {
                 String algorithm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite()).getMacAlgorithm().getJavaName();
+                Mac mac = Mac.getInstance(algorithm);
                 byte[] finishedKey;
                 LOGGER.debug("Connection End: " + context.getConfig().getConnectionEnd());
                 if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
-                    finishedKey = HKDFunction.deriveSecret(algorithm, context.getServerHandshakeTrafficSecret(), HKDFunction.FINISHED, new byte[] {});
+                    finishedKey = HKDFunction.expandLabel(algorithm, context.getServerHandshakeTrafficSecret(),
+                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
-                    finishedKey = HKDFunction.deriveSecret(algorithm, context.getClientHandshakeTrafficSecret(), HKDFunction.FINISHED, new byte[] {});
+                    finishedKey = HKDFunction.expandLabel(algorithm, context.getClientHandshakeTrafficSecret(),
+                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
                 LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, algorithm);
-                Mac mac = Mac.getInstance(algorithm);
                 mac.init(keySpec);
                 mac.update(context.getDigest().digest(context.getSelectedProtocolVersion(), context.getSelectedCipherSuite()));
                 return mac.doFinal();

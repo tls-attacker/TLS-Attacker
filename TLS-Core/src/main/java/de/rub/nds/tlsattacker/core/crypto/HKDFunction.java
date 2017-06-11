@@ -11,13 +11,16 @@ package de.rub.nds.tlsattacker.core.crypto;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * @author Nurullah Erinola
+ * HKDF functions computation for TLS 1.3
+ * 
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HKDFunction {
 
@@ -53,6 +56,14 @@ public class HKDFunction {
 
     }
 
+    /**
+     * Computes HKDF-Extract output as defined in RFC 5869
+     * 
+     * @param macAlgorithm
+     * @param salt
+     * @param ikm
+     * @return
+     */
     public static byte[] extract(String macAlgorithm, byte[] salt, byte[] ikm) {
         try {
             Mac mac = Mac.getInstance(macAlgorithm);
@@ -63,13 +74,21 @@ public class HKDFunction {
             SecretKeySpec keySpec = new SecretKeySpec(salt, macAlgorithm);
             mac.init(keySpec);
             mac.update(ikm);
-            byte[] out = mac.doFinal();
-            return out;
+            return mac.doFinal();
         } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
     }
 
+    /**
+     * Computes HKDF-Expand output as defined in RFC 5869
+     * 
+     * @param macAlgorithm
+     * @param prk
+     * @param info
+     * @param outLen
+     * @return
+     */
     public static byte[] expand(String macAlgorithm, byte[] prk, byte[] info, int outLen) {
         try {
             Mac mac = Mac.getInstance(macAlgorithm);
@@ -96,35 +115,55 @@ public class HKDFunction {
         }
     }
 
+    /**
+     * Computes the HKDF-Label as defined in TLS 1.3
+     */
     private static byte[] labelEncoder(byte[] hashValue, String labelIn, int outLen) {
-        // Not Right, but for the Tests
-        // String label = "TLS 1.3, " + labelIn;
-        // Right
         String label = "tls13 " + labelIn;
         int labelLength = label.getBytes().length;
         int hashValueLength = hashValue.length;
-
         byte[] result = ArrayConverter.concatenate(ArrayConverter.intToBytes(outLen, 2),
                 ArrayConverter.intToBytes(labelLength, 1), label.getBytes(),
                 ArrayConverter.intToBytes(hashValueLength, 1), hashValue);
         return result;
     }
 
-    public static byte[] deriveSecret(String macAlgorithm, byte[] prk, String labelIn, byte[] hashValue) {
+    /**
+     * Computes Derive-Secret output as defined in TLS 1.3
+     * 
+     * @param macAlgorithm
+     * @param hashAlgorithm
+     * @param prk
+     * @param labelIn
+     * @param toHash
+     * @return
+     */
+    public static byte[] deriveSecret(String macAlgorithm, String hashAlgorithm, byte[] prk, String labelIn,
+            byte[] toHash) {
         try {
+            MessageDigest hashFunction = MessageDigest.getInstance(hashAlgorithm);
+            hashFunction.update(toHash);
+            byte[] hashValue = hashFunction.digest();
             int outLen = Mac.getInstance(macAlgorithm).getMacLength();
-            byte[] info = labelEncoder(hashValue, labelIn, outLen);
-            byte[] result = expand(macAlgorithm, prk, info, outLen);
-            return result;
+            return expandLabel(macAlgorithm, prk, labelIn, hashValue, outLen);
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not initialize HKDF", ex);
         }
     }
 
+    /**
+     * Computes HKDF-Expand-Label output as defined in TLS 1.3
+     * 
+     * @param macAlgorithm
+     * @param prk
+     * @param labelIn
+     * @param hashValue
+     * @param outLen
+     * @return
+     */
     public static byte[] expandLabel(String macAlgorithm, byte[] prk, String labelIn, byte[] hashValue, int outLen) {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
-        byte[] result = expand(macAlgorithm, prk, info, outLen);
-        return result;
+        return expand(macAlgorithm, prk, info, outLen);
     }
 
 }

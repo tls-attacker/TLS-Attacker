@@ -10,13 +10,13 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HKDFunctionTest {
 
@@ -28,59 +28,63 @@ public class HKDFunctionTest {
     public void setUp() {
     }
 
+    /**
+     * Test of extract method, of class HKDFunction
+     */
     @Test
     public void testExtractNoSalt() {
         String macAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256.getMacAlgorithm().getJavaName();
         byte[] salt = {};
-        byte[] ikm = ArrayConverter
-                .hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
+        byte[] ikm = ArrayConverter.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
 
         byte[] result = HKDFunction.extract(macAlgorithm, salt, ikm);
-        byte[] resultCorrect = ArrayConverter
-                .hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
+        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
         assertArrayEquals(result, resultCorrect);
     }
 
+    /**
+     * Test of extract method, of class HKDFunction
+     */
     @Test
     public void testExtractWithSalt() {
         String macAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256.getMacAlgorithm().getJavaName();
-        byte[] salt = ArrayConverter
-                .hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
-        byte[] ikm = ArrayConverter
-                .hexStringToByteArray("c08acc73ba101d7fea86d223de32d9fc4948e145493680594b83b0a109f83649");
+        byte[] salt = ArrayConverter.hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
+        byte[] ikm = ArrayConverter.hexStringToByteArray("c08acc73ba101d7fea86d223de32d9fc4948e145493680594b83b0a109f83649");
 
         byte[] result = HKDFunction.extract(macAlgorithm, salt, ikm);
-        byte[] resultCorrect = ArrayConverter
-                .hexStringToByteArray("31168cad69862a80c6f6bfd42897d0fe23c406a12e652a8d3ae4217694f49844");
+        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("31168cad69862a80c6f6bfd42897d0fe23c406a12e652a8d3ae4217694f49844");
         assertArrayEquals(result, resultCorrect);
     }
 
+    /**
+     * Test of deriveSecret method, of class HKDFunction
+     */
     @Test
     public void testDeriveSecret() {
         String macAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256.getMacAlgorithm().getJavaName();
-        byte[] prk = ArrayConverter
-                .hexStringToByteArray("31168cad69862a80c6f6bfd42897d0fe23c406a12e652a8d3ae4217694f49844");
-        byte[] hashValue = ArrayConverter
-                .hexStringToByteArray("52c04472bdfe929772c98b91cf425f78f47659be9d4a7d68b9e29d162935e9b9");
-        String labelIn = "client handshake traffic secret";
+        String hashAlgorithm = DigestAlgorithm.SHA256.getJavaName();
+        byte[] prk = ArrayConverter.hexStringToByteArray("33AD0A1C607EC03B09E6CD9893680CE210ADF300AA1F2660E1B22E10F170F92A");
+        byte[] toHash = ArrayConverter.hexStringToByteArray("");
+        String labelIn = HKDFunction.DERIVED;
 
-        byte[] result = HKDFunction.deriveSecret(macAlgorithm, prk, labelIn, hashValue);
-        byte[] resultCorrect = ArrayConverter
-                .hexStringToByteArray("6c6f274b1eae09b8bbd2039b7eb56147201a5e19288a3fd504fa52b1178a6e93");
+        byte[] result = HKDFunction.deriveSecret(macAlgorithm, hashAlgorithm, prk, labelIn, toHash);
+        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("6F2615A108C702C5678F54FC9DBAB69716C076189C48250CEBEAC3576C3611BA");
         assertArrayEquals(result, resultCorrect);
     }
 
+    /**
+     * Test of expandLabel method, of class HKDFunction
+     */
     @Test
     public void testExpandLabel() {
         String macAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256.getMacAlgorithm().getJavaName();
-        byte[] prk = ArrayConverter
-                .hexStringToByteArray("b2c2663ed59e833b17c68823516f11f1cb311855045d3ce46bfe8ac8889268d9");
+        byte[] prk = ArrayConverter.hexStringToByteArray("E056D47C7DB9C04BBECE6AC9525163DE72B7D25B6B0899366F8FA741A5C01709");
         byte[] hashValue = ArrayConverter.hexStringToByteArray("");
-        String labelIn = HKDFunction.IV;
-        int outLen = 12;
+        String labelIn = HKDFunction.KEY;
+        int outLen = 16;
 
         byte[] result = HKDFunction.expandLabel(macAlgorithm, prk, labelIn, hashValue, outLen);
-        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("a353bfcdf9695a2a09c2e293");
+        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("04C5DA6EC39FC1653E085FA83E51C6AF");
         assertArrayEquals(result, resultCorrect);
     }
 }

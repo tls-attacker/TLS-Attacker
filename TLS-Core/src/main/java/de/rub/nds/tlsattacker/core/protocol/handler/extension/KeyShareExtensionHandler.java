@@ -22,18 +22,18 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import javax.crypto.Mac;
 import org.bouncycastle.crypto.params.DHParameters;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsDHUtils;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 
@@ -78,10 +78,12 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     private void adjustHandshakeTrafficSecrets() {
         MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite()).getMacAlgorithm();
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(context.getSelectedProtocolVersion(),
+                context.getSelectedCipherSuite());
         // PSK = null
-        byte[] earlySecret = HKDFunction.extract(macAlg.getJavaName(), new byte[] {}, new byte[32]);
-        byte[] saltHandshakeSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), earlySecret, HKDFunction.DERIVED, 
-                ArrayConverter.hexStringToByteArray("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
+        byte[] earlySecret = HKDFunction.extract(macAlg.getJavaName(), new byte[0], new byte[32]);
+        byte[] saltHandshakeSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
+                earlySecret, HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
         byte[] sharedSecret;
         if (context.getServerKSEntry().getGroup() == NamedCurve.FFDHE2048) {
             sharedSecret = computeSharedSecretDH();
@@ -93,20 +95,21 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         byte[] handshakeSecret = HKDFunction.extract(macAlg.getJavaName(), saltHandshakeSecret, sharedSecret);
         context.setHandshakeSecret(handshakeSecret);
         LOGGER.debug("Set handshakeSecret in Context to " + ArrayConverter.bytesToHexString(handshakeSecret));
-        byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), handshakeSecret,
-                HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET,
-                context.getDigest().digest(context.getSelectedProtocolVersion(), context.getSelectedCipherSuite()));
+        byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
+                handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
         context.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
-        LOGGER.debug("Set clientHandshakeTrafficSecret in Context to "
-                + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
-        byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), handshakeSecret,
-                HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET,
-                context.getDigest().digest(context.getSelectedProtocolVersion(), context.getSelectedCipherSuite()));
+        LOGGER.debug("Set clientHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
+        byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
+                handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
         context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
-        LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
-                + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
+        LOGGER.debug("Set serverHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
     }
 
+    /**
+     * Computes the shared secret for FFDHE2048
+     * 
+     * @return
+     */
     public byte[] computeSharedSecretDH() {
         KSEntry serverKeySahre = context.getServerKSEntry();
         DHParameters dhParams = new DHParameters(new BigInteger(1, context.getConfig().getFixedDHModulus()),
@@ -128,7 +131,11 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         }
     }
 
-    // TODO
+    /**
+     * Computes the shared secret for ECDH_X25519
+     * 
+     * @return
+     */
     public byte[] computeSharedSecretECDH() {
         KSEntry serverKeySahre = context.getServerKSEntry();
         byte[] clientPrivateKey = context.getConfig().getKeyShareRandom();

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
@@ -28,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
@@ -64,17 +66,20 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     private void adjustApplicationTrafficSecrets() {
         MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getSelectedCipherSuite()).getMacAlgorithm();
-        byte[] saltMasterSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), tlsContext.getHandshakeSecret(), HKDFunction.DERIVED,
-                        ArrayConverter.hexStringToByteArray("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"));
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(tlsContext.getSelectedProtocolVersion(),
+                tlsContext.getSelectedCipherSuite());
+        byte[] saltMasterSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
+                tlsContext.getHandshakeSecret(), HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
         byte[] masterSecret = HKDFunction.extract(macAlg.getJavaName(), saltMasterSecret, new byte[32]);
-        byte[] clientApplicationTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), masterSecret, 
-                        HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().
-                        digest(tlsContext.getSelectedProtocolVersion(), tlsContext.getSelectedCipherSuite()));
+        byte[] clientApplicationTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(),
+                digestAlgo.getJavaName(), masterSecret, HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET,
+                tlsContext.getDigest().getRawBytes());
         tlsContext.setClientApplicationTrafficSecret0(clientApplicationTrafficSecret);
-        LOGGER.debug("Set clientApplicationTrafficSecret in Context to " + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
-        byte[] serverApplicationTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), masterSecret,
-                        HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest()
-                        .digest(tlsContext.getSelectedProtocolVersion(), tlsContext.getSelectedCipherSuite()));
+        LOGGER.debug("Set clientApplicationTrafficSecret in Context to " + ArrayConverter.
+                bytesToHexString(clientApplicationTrafficSecret));
+        byte[] serverApplicationTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(),
+                digestAlgo.getJavaName(), masterSecret, HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET, 
+                tlsContext.getDigest().getRawBytes());
         tlsContext.setServerApplicationTrafficSecret0(serverApplicationTrafficSecret);
         LOGGER.debug("Set serverApplicationTrafficSecret in Context to " + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
     }
