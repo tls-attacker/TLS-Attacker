@@ -25,8 +25,9 @@ import org.junit.Test;
 public class TokenBindingExtensionPreparatorTest {
 
     private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;
-    private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[]{ TokenBindingKeyParameters.ECDSAP256};
-    private final byte[] keyParameterAsByteArray = new byte[] {TokenBindingKeyParameters.ECDSAP256.getKeyParameterValue()};
+    private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[] { TokenBindingKeyParameters.ECDSAP256 };
+    private final byte[] keyParameterAsByteArray = new byte[] { TokenBindingKeyParameters.ECDSAP256
+            .getKeyParameterValue() };
     private TlsContext context;
     private TokenBindingExtensionMessage message;
     private TokenBindingExtensionPreparator preparator;

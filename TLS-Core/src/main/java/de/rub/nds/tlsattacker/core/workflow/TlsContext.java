@@ -156,7 +156,6 @@ public class TlsContext {
      */
     private byte[] signedCertificateTimestamp;
 
-    private PublicKey clientPublicKey;
     private PublicKey clientCertificatePublicKey;
 
     private PublicKey serverCertificatePublicKey;
