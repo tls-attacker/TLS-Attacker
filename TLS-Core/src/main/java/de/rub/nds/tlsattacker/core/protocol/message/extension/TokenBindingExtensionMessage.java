@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
@@ -25,9 +24,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 public class TokenBindingExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
-    private ModifiableByte majorTokenbindingVersion;
-    @ModifiableVariableProperty
-    private ModifiableByte minorTokenbindingVersion;
+    private ModifiableByteArray tokenbindingVersion;
     @ModifiableVariableProperty
     private ModifiableByteArray tokenbindingKeyParameters;
     private int parameterListLength;
@@ -41,28 +38,17 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
         return new TokenBindingExtensionHandler(context);
     }
 
-    public ModifiableByte getMajorTokenbindingVersion() {
-        return majorTokenbindingVersion;
+    public ModifiableByteArray getTokenbindingVersion() {
+        return tokenbindingVersion;
     }
 
-    public void setMajorTokenbindingVersion(ModifiableByte majorTokenbindingVersion) {
-        this.majorTokenbindingVersion = majorTokenbindingVersion;
+    public void setTokenbindingVersion(ModifiableByteArray tokenbindingVersion) {
+        this.tokenbindingVersion = tokenbindingVersion;
     }
 
-    public void setMajorTokenbindingVersion(byte major) {
-        this.majorTokenbindingVersion = ModifiableVariableFactory.safelySetValue(this.majorTokenbindingVersion, major);
-    }
-
-    public ModifiableByte getMinorTokenbindingVersion() {
-        return minorTokenbindingVersion;
-    }
-
-    public void setMinorTokenbindingVersion(ModifiableByte minorTokenbindingVersion) {
-        this.minorTokenbindingVersion = minorTokenbindingVersion;
-    }
-
-    public void setMinorTokenbindingVersion(byte minor) {
-        this.minorTokenbindingVersion = ModifiableVariableFactory.safelySetValue(this.minorTokenbindingVersion, minor);
+    public void setTokenbindingVersion(byte[] tokenbindingVersion) {
+        this.tokenbindingVersion = ModifiableVariableFactory.safelySetValue(this.tokenbindingVersion,
+                tokenbindingVersion);
     }
 
     public ModifiableByteArray getTokenbindingKeyParameters() {

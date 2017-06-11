@@ -16,43 +16,56 @@ import java.util.Map;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum TokenBindingVersion {
-    ZERO_BYTE((byte) 0),
-    DRAFT_1((byte) 1),
-    DRAFT_2((byte) 2),
-    DRAFT_3((byte) 3),
-    DRAFT_4((byte) 4),
-    DRAFT_5((byte) 5),
-    DRAFT_6((byte) 6),
-    DRAFT_7((byte) 7),
-    DRAFT_8((byte) 8),
-    DRAFT_9((byte) 9),
-    DRAFT_10((byte) 0xA),
-    DRAFT_11((byte) 0xB),
-    DRAFT_12((byte) 0xC),
-    DRAFT_13((byte) 0xD),
-    DRAFT_14((byte) 0xE);
+    DRAFT_1(new byte[] { (byte) 0, (byte) 1 }),
+    DRAFT_2(new byte[] { (byte) 0, (byte) 2 }),
+    DRAFT_3(new byte[] { (byte) 0, (byte) 3 }),
+    DRAFT_4(new byte[] { (byte) 0, (byte) 4 }),
+    DRAFT_5(new byte[] { (byte) 0, (byte) 5 }),
+    DRAFT_6(new byte[] { (byte) 0, (byte) 6 }),
+    DRAFT_7(new byte[] { (byte) 0, (byte) 7 }),
+    DRAFT_8(new byte[] { (byte) 0, (byte) 8 }),
+    DRAFT_9(new byte[] { (byte) 0, (byte) 9 }),
+    DRAFT_10(new byte[] { (byte) 0, (byte) 0xA }),
+    DRAFT_11(new byte[] { (byte) 0, (byte) 0xB }),
+    DRAFT_12(new byte[] { (byte) 0, (byte) 0xC }),
+    DRAFT_13(new byte[] { (byte) 0, (byte) 0xD }),
+    DRAFT_14(new byte[] { (byte) 0, (byte) 0xE });
 
-    private final byte tokenBindingVersion;
+    private final byte[] tokenBindingVersion;
+    public static final int LENGTH = 2;
 
-    private static final Map<Byte, TokenBindingVersion> MAP;
+    private static final Map<Integer, TokenBindingVersion> MAP;
 
     static {
         MAP = new HashMap<>();
         for (TokenBindingVersion c : TokenBindingVersion.values()) {
-            MAP.put(c.tokenBindingVersion, c);
+            MAP.put(valueToInt(c.tokenBindingVersion), c);
         }
     }
 
-    private TokenBindingVersion(byte tokenBindingVersion) {
+    private TokenBindingVersion(byte[] tokenBindingVersion) {
         this.tokenBindingVersion = tokenBindingVersion;
     }
 
-    public byte getByteValue() {
+    public byte[] getByteValue() {
         return tokenBindingVersion;
     }
 
-    public static TokenBindingVersion getExtensionType(byte value) {
-        TokenBindingVersion type = MAP.get(value);
+    public static TokenBindingVersion getExtensionType(byte[] value) {
+        TokenBindingVersion type = MAP.get(valueToInt(value));
         return type;
     }
+
+    private static int valueToInt(byte[] value) {
+        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+    }
+
+    public byte getMajor() {
+        return tokenBindingVersion[0];
+    }
+
+    public byte getMinor() {
+        return tokenBindingVersion[1];
+    }
+
 }

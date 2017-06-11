@@ -189,9 +189,7 @@ public class TlsContext {
 
     private int sequenceNumber = 0;
 
-    private TokenBindingVersion tokenBindingMajorVersion;
-
-    private TokenBindingVersion tokenBindingMinorVersion;
+    private TokenBindingVersion tokenBindingVersion;
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
@@ -584,20 +582,12 @@ public class TlsContext {
         this.renegotiationInfo = renegotiationInfo;
     }
 
-    public TokenBindingVersion getTokenBindingMajorVersion() {
-        return tokenBindingMajorVersion;
+    public TokenBindingVersion getTokenBindingVersion() {
+        return tokenBindingVersion;
     }
 
-    public void setTokenBindingMajorVersion(TokenBindingVersion tokenBindingMajorVersion) {
-        this.tokenBindingMajorVersion = tokenBindingMajorVersion;
-    }
-
-    public TokenBindingVersion getTokenBindingMinorVersion() {
-        return tokenBindingMinorVersion;
-    }
-
-    public void setTokenBindingMinorVersion(TokenBindingVersion tokenBindingMinorVersion) {
-        this.tokenBindingMinorVersion = tokenBindingMinorVersion;
+    public void setTokenBindingVersion(TokenBindingVersion tokenBindingVersion) {
+        this.tokenBindingVersion = tokenBindingVersion;
     }
 
     public List getTokenBindingKeyParameters() {

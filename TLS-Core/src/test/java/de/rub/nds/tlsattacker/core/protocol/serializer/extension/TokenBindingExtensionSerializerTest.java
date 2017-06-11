@@ -28,19 +28,17 @@ public class TokenBindingExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
     private final int extensionLength;
-    private final TokenBindingVersion majorVersion;
-    private final TokenBindingVersion minorVersion;
+    private final TokenBindingVersion tokenbindingVersion;
     private final int parameterLength;
     private final byte[] keyParameter;
     private TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionSerializerTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-            TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
+            TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;
-        this.majorVersion = majorVersion;
-        this.minorVersion = minorVersion;
+        this.tokenbindingVersion = tokenbindingVersion;
         this.parameterLength = parameterLength;
         this.keyParameter = keyParameter;
     }
@@ -57,8 +55,7 @@ public class TokenBindingExtensionSerializerTest {
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
 
-        message.setMajorTokenbindingVersion(majorVersion.getByteValue());
-        message.setMinorTokenbindingVersion(minorVersion.getByteValue());
+        message.setTokenbindingVersion(tokenbindingVersion.getByteValue());
         message.setParameterListLength(parameterLength);
         message.setTokenbindingKeyParameters(keyParameter);
 

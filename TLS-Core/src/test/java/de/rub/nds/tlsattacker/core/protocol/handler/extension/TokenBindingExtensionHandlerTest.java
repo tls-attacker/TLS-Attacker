@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.io.ByteArrayOutputStream;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,8 +29,7 @@ public class TokenBindingExtensionHandlerTest {
 
     private final byte[] extensionBytes = new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 };
 
-    private final TokenBindingVersion majorVersion = TokenBindingVersion.ZERO_BYTE;
-    private final TokenBindingVersion minorVersion = TokenBindingVersion.DRAFT_13;
+    private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;
 
     private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[] {
             TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
@@ -48,14 +46,11 @@ public class TokenBindingExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         TokenBindingExtensionMessage message = new TokenBindingExtensionMessage();
-        message.setMajorTokenbindingVersion(majorVersion.getByteValue());
-        message.setMinorTokenbindingVersion(minorVersion.getByteValue());
+        message.setTokenbindingVersion(tokenbindingVersion.getByteValue());
         message.setTokenbindingKeyParameters(keyParameterByteArrayRepresentation);
         handler.adjustTLSContext(message);
 
-        assertEquals(majorVersion, context.getTokenBindingMajorVersion());
-        assertEquals(minorVersion, context.getTokenBindingMinorVersion());
-
+        assertEquals(tokenbindingVersion, context.getTokenBindingVersion());
         assertArrayEquals(
                 keyParameter,
                 context.getTokenBindingKeyParameters().toArray(

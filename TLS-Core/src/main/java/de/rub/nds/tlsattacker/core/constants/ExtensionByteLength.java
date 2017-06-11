@@ -65,8 +65,12 @@ public class ExtensionByteLength {
     public static final int PADDING_LENGTH = 2;
 
     /**
-     * Length of the uint8 field of the minor and major versions as used by the
-     * token binding extension.
+     * Length of the version field as used by the token binding extension.
      */
-    public static final int TOKENBINDING_VERSION_LENGTH = 1;
+    public static final int TOKENBINDING_VERSION_LENGTH = 2;
+
+    /**
+     * Length of the token binding extension key parameter length field
+     */
+    public static final int TOKENBINDING_KEYPARAMETER_LENGTHFIELD_LENGTH = 1;
 }

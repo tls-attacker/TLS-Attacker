@@ -186,13 +186,9 @@ public final class TlsConfig implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] signedCertificateTimestamp = new byte[0];
     /**
-     * TokenBinding default major version. To be defined later.
+     * TokenBinding default version. To be defined later.
      */
-    private TokenBindingVersion tokenBindingMajor = TokenBindingVersion.ZERO_BYTE;
-    /**
-     * TokenBinding default minor version. To be defined later.
-     */
-    private TokenBindingVersion tokenBindingMinor = TokenBindingVersion.DRAFT_13;
+    private TokenBindingVersion tokenBindingVersion = TokenBindingVersion.DRAFT_13;
     /**
      * Default TokenBinding Key Parameters.
      */
@@ -1025,20 +1021,12 @@ public final class TlsConfig implements Serializable {
         this.addRenegotiationInfoExtension = addRenegotiationInfoExtension;
     }
 
-    public TokenBindingVersion getTokenBindingMajor() {
-        return tokenBindingMajor;
+    public TokenBindingVersion getTokenBindingVersion() {
+        return tokenBindingVersion;
     }
 
-    public void setTokenBindingMajor(TokenBindingVersion tokenBindingMajor) {
-        this.tokenBindingMajor = tokenBindingMajor;
-    }
-
-    public TokenBindingVersion getTokenBindingMinor() {
-        return tokenBindingMinor;
-    }
-
-    public void setTokenBindingMinor(TokenBindingVersion tokenBindingMinor) {
-        this.tokenBindingMinor = tokenBindingMinor;
+    public void setTokenBindingVersion(TokenBindingVersion tokenBindingVersion) {
+        this.tokenBindingVersion = tokenBindingVersion;
     }
 
     public TokenBindingKeyParameters[] getTokenBindingKeyParameters() {

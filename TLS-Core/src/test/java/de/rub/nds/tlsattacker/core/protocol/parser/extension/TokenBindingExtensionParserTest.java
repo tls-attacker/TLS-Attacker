@@ -31,20 +31,18 @@ public class TokenBindingExtensionParserTest {
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
     private final int extensionLength;
-    private final TokenBindingVersion majorVersion;
-    private final TokenBindingVersion minorVersion;
+    private final TokenBindingVersion tokenbindingVersion;
     private final int parameterLength;
     private final byte[] keyParameter;
     private TokenBindingExtensionParser parser;
     private TokenBindingExtensionMessage message;
 
     public TokenBindingExtensionParserTest(ExtensionType extensionType, byte[] extensionBytes, int extensionLength,
-            TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
+            TokenBindingVersion tokenbindingVersion, int parameterLength, byte[] keyParameter) {
         this.extensionType = extensionType;
         this.extensionBytes = extensionBytes;
         this.extensionLength = extensionLength;
-        this.majorVersion = majorVersion;
-        this.minorVersion = minorVersion;
+        this.tokenbindingVersion = tokenbindingVersion;
         this.parameterLength = parameterLength;
         this.keyParameter = keyParameter;
     }
@@ -52,8 +50,7 @@ public class TokenBindingExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.TOKEN_BINDING,
-                new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.ZERO_BYTE,
-                TokenBindingVersion.DRAFT_13, 1,
+                new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.DRAFT_13, 1,
                 new byte[] { TokenBindingKeyParameters.ECDSAP256.getKeyParameterValue() } } });
     }
 
@@ -66,8 +63,7 @@ public class TokenBindingExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(majorVersion.getByteValue(), (byte) message.getMajorTokenbindingVersion().getValue());
-        assertEquals(minorVersion.getByteValue(), (byte) message.getMinorTokenbindingVersion().getValue());
+        assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());
         assertEquals(parameterLength, message.getParameterListLength());
         assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
     }
