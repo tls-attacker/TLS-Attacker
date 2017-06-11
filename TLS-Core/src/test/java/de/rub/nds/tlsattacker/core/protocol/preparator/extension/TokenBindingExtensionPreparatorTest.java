@@ -25,7 +25,8 @@ import org.junit.Test;
 public class TokenBindingExtensionPreparatorTest {
 
     private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;
-    private final byte[] keyParameter = new byte[] { TokenBindingKeyParameters.ECDSAP256.getKeyParameterValue() };
+    private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[]{ TokenBindingKeyParameters.ECDSAP256};
+    private final byte[] keyParameterAsByteArray = new byte[] {TokenBindingKeyParameters.ECDSAP256.getKeyParameterValue()};
     private TlsContext context;
     private TokenBindingExtensionMessage message;
     private TokenBindingExtensionPreparator preparator;
@@ -40,18 +41,13 @@ public class TokenBindingExtensionPreparatorTest {
     @Test
     public void testPreparator() {
         context.getConfig().setTokenBindingVersion(tokenbindingVersion);
-        ArrayList<TokenBindingKeyParameters> keyParameterArray = new ArrayList<>();
-        for (byte kp : keyParameter) {
-            keyParameterArray.add(TokenBindingKeyParameters.getExtensionType(kp));
-        }
-        context.getConfig().setTokenBindingKeyParameters(
-                keyParameterArray.toArray(new TokenBindingKeyParameters[keyParameterArray.size()]));
+        context.getConfig().setTokenBindingKeyParameters(keyParameter);
 
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.TOKEN_BINDING.getValue(), message.getExtensionType().getValue());
         assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());
-        assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
+        assertArrayEquals(keyParameterAsByteArray, message.getTokenbindingKeyParameters().getValue());
     }
 
 }
