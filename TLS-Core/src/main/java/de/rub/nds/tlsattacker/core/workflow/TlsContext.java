@@ -193,7 +193,7 @@ public class TlsContext {
 
     private TokenBindingVersion tokenBindingMinorVersion;
 
-    private TokenBindingKeyParameters[] tokenBindingKeyParameters;
+    private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
     public TlsContext() {
         this(TlsConfig.createConfig());
@@ -600,11 +600,11 @@ public class TlsContext {
         this.tokenBindingMinorVersion = tokenBindingMinorVersion;
     }
 
-    public TokenBindingKeyParameters[] getTokenBindingKeyParameters() {
+    public List getTokenBindingKeyParameters() {
         return tokenBindingKeyParameters;
     }
 
-    public void setTokenBindingKeyParameters(TokenBindingKeyParameters[] tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(List tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 

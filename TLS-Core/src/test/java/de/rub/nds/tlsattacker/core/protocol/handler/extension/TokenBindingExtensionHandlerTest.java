@@ -8,57 +8,36 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensionParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
-import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-@RunWith(Parameterized.class)
 public class TokenBindingExtensionHandlerTest {
 
-    private final ExtensionType extensionType;
-    private final byte[] extensionBytes;
-    private final int extensionLength;
-    private final TokenBindingVersion majorVersion;
-    private final TokenBindingVersion minorVersion;
-    private final int parameterLength;
-    private final byte[] keyParameter;
+    private final byte[] extensionBytes = new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 };
+
+    private final TokenBindingVersion majorVersion = TokenBindingVersion.ZERO_BYTE;
+    private final TokenBindingVersion minorVersion = TokenBindingVersion.DRAFT_13;
+
+    private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[] {
+            TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
+    private final byte[] keyParameterByteArrayRepresentation = new byte[] { 0x01, 0x02 };
     private TlsContext context;
     private TokenBindingExtensionHandler handler;
-
-    public TokenBindingExtensionHandlerTest(ExtensionType extensionType, byte[] extension, int extensionLength,
-            TokenBindingVersion majorVersion, TokenBindingVersion minorVersion, int parameterLength, byte[] keyParameter) {
-        this.extensionType = extensionType;
-        this.extensionBytes = extension;
-        this.extensionLength = extensionLength;
-        this.majorVersion = majorVersion;
-        this.minorVersion = minorVersion;
-        this.parameterLength = parameterLength;
-        this.keyParameter = keyParameter;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return TokenBindingExtensionParserTest.generateData();
-    }
 
     @Before
     public void setUp() {
@@ -71,16 +50,16 @@ public class TokenBindingExtensionHandlerTest {
         TokenBindingExtensionMessage message = new TokenBindingExtensionMessage();
         message.setMajorTokenbindingVersion(majorVersion.getByteValue());
         message.setMinorTokenbindingVersion(minorVersion.getByteValue());
-        message.setTokenbindingKeyParameters(keyParameter);
+        message.setTokenbindingKeyParameters(keyParameterByteArrayRepresentation);
         handler.adjustTLSContext(message);
 
         assertEquals(majorVersion, context.getTokenBindingMajorVersion());
         assertEquals(minorVersion, context.getTokenBindingMinorVersion());
-        ByteArrayOutputStream contextKeyParameters = new ByteArrayOutputStream();
-        for (TokenBindingKeyParameters kp : context.getTokenBindingKeyParameters()) {
-            contextKeyParameters.write(kp.getKeyParameterValue());
-        }
-        assertArrayEquals(keyParameter, contextKeyParameters.toByteArray());
+
+        assertArrayEquals(
+                keyParameter,
+                context.getTokenBindingKeyParameters().toArray(
+                        new TokenBindingKeyParameters[context.getTokenBindingKeyParameters().size()]));
     }
 
     @Test

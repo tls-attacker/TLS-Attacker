@@ -52,8 +52,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
         for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getExtensionType(kp));
         }
-        context.setTokenBindingKeyParameters(tokenbindingKeyParameters
-                .toArray(new TokenBindingKeyParameters[tokenbindingKeyParameters.size()]));
+        context.setTokenBindingKeyParameters(tokenbindingKeyParameters);
     }
 
 }

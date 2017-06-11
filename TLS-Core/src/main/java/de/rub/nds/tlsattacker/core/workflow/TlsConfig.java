@@ -194,10 +194,10 @@ public final class TlsConfig implements Serializable {
      */
     private TokenBindingVersion tokenBindingMinor = TokenBindingVersion.DRAFT_13;
     /**
-     * Default TokenBinding Key Parameters as seen in Google's Chrome
-     * implementation.
+     * Default TokenBinding Key Parameters.
      */
-    private TokenBindingKeyParameters[] tokenBindingKeyParameters = { TokenBindingKeyParameters.ECDSAP256 };
+    private TokenBindingKeyParameters[] tokenBindingKeyParameters = { TokenBindingKeyParameters.RSA2048_PKCS1_5,
+            TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
     /**
      * Default Timeout we wait for TLSMessages
      */
