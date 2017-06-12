@@ -16,8 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- * ATTENTION! This extension is experimental and only registered until
- * 2018-02-04!
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */

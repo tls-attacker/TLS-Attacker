@@ -23,26 +23,20 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class SignedCertificateTimestampExtensionSerializerTest {
+
     private final ExtensionType extensionType;
-    private final int lengthFirstPackage;
-    private final byte[] firstTimestamp;
-    private final byte[] firstExpectedBytes;
-    private final byte[] secondTimestamp;
-    private final byte[] secondExpectedBytes;
-    private final int lengthSecondPackage;
+    private final int extensionLength;
+    private final byte[] timestamp;
+    private final byte[] expectedBytes;
     private final int startPosition;
     private SignedCertificateTimestampExtensionMessage message;
 
-    public SignedCertificateTimestampExtensionSerializerTest(ExtensionType extensionType, int lengthFirstPackage,
-            byte[] firstTimestamp, byte[] firstExpectedBytes, byte[] secondTimestamp, byte[] secondExpectedBytes,
-            int lengthSecondPackage, int startPosition) {
+    public SignedCertificateTimestampExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
+            byte[] timestamp, byte[] expectedBytes, int startPosition) {
         this.extensionType = extensionType;
-        this.lengthFirstPackage = lengthFirstPackage;
-        this.firstTimestamp = firstTimestamp;
-        this.firstExpectedBytes = firstExpectedBytes;
-        this.secondTimestamp = secondTimestamp;
-        this.secondExpectedBytes = secondExpectedBytes;
-        this.lengthSecondPackage = lengthSecondPackage;
+        this.extensionLength = extensionLength;
+        this.timestamp = timestamp;
+        this.expectedBytes = expectedBytes;
         this.startPosition = startPosition;
     }
 
@@ -55,16 +49,11 @@ public class SignedCertificateTimestampExtensionSerializerTest {
     public void testSerializeExtensionContent() {
         message = new SignedCertificateTimestampExtensionMessage();
         message.setExtensionType(extensionType.getValue());
-        message.setExtensionLength(lengthFirstPackage);
-        message.setSignedTimestamp(firstTimestamp);
+        message.setExtensionLength(extensionLength);
+        message.setSignedTimestamp(timestamp);
 
         SignedCertificateTimestampExtensionSerializer serializer = new SignedCertificateTimestampExtensionSerializer(
                 message);
-        assertArrayEquals(firstExpectedBytes, serializer.serialize());
-
-        message.setExtensionLength(lengthSecondPackage);
-        message.setSignedTimestamp(secondTimestamp);
-        assertArrayEquals(secondExpectedBytes, serializer.serialize());
-
+        assertArrayEquals(expectedBytes, serializer.serialize());
     }
 }

@@ -25,7 +25,7 @@ import org.junit.Test;
 public class SessionTicketTLSExtensionHandlerTest {
 
     private final int extensionLength = 0;
-    private final byte[] sessionTicket = new byte[0];
+    private final byte[] sessionTicket = new byte[] { 0x00, 0x01, 0x02 };
 
     private TlsContext context;
     private SessionTicketTLSExtensionHandler handler;
