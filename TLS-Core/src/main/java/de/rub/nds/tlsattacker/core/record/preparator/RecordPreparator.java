@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  * record
  *
  * @author Robert Merget <robert.merget@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordPreparator extends AbstractRecordPreparator<Record> {
 

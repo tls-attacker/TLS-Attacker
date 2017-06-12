@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordPreparatorTest {
 
@@ -54,25 +54,21 @@ public class RecordPreparatorTest {
         context.setEncryptActive(true);
         context.getConfig().setPaddingLength(0);
         context.setClientHandshakeTrafficSecret(ArrayConverter
-                .hexStringToByteArray("6c6f274b1eae09b8bbd2039b7eb56147201a5e19288a3fd504fa52b1178a6e93"));
+                .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
         context.setServerHandshakeTrafficSecret(ArrayConverter
-                .hexStringToByteArray("b2c2663ed59e833b17c68823516f11f1cb311855045d3ce46bfe8ac8889268d9"));
-        context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
+                .hexStringToByteArray("ACC9DB33EE0968FAE7E06DAA34D642B146092CE7F9C9CF47670C66A0A6CE1C8C"));
+        context.getConfig().setConnectionEnd(ConnectionEnd.SERVER);
+        record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         recordCipher = new RecordAEADCipher(context);
         encryptor = new RecordEncryptor(recordCipher, ProtocolVersion.TLS13);
-        record.setCleanProtocolMessageBytes(ArrayConverter
-                .hexStringToByteArray("140000201a5eb0ba5f92f34ed0059d64cedd2a7d208f25f00e28138117fb3974d415776a"));
         preparator = new RecordPreparator(context, record, encryptor, ProtocolMessageType.HANDSHAKE);
         preparator.prepare();
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);
         assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS10.getValue());
         assertTrue(record.getPaddingLength().getValue() == 0);
-        assertArrayEquals(
-                record.getProtocolMessageBytes().getValue(),
-                ArrayConverter
-                        .hexStringToByteArray("161e94818226d7bd6180630804644debc52bdd661034243217ac45a084228c82086baa4893ecfc969624d68e19d88c3e67ccb48bdf"));
-        assertTrue(record.getLength().getValue() == 53);
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"), record
+                .getProtocolMessageBytes().getValue());
     }
 
 }
