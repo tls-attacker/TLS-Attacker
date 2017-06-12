@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  * @param <Message>
  */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
@@ -54,22 +55,21 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     protected void adjustTLSContext(ClientHelloMessage message) {
-        adjustRandomContext(message);
         adjustProtocolVersion(message);
         adjustClientSupportedCipherSuites(message);
         adjustClientSupportedCompressions(message);
         if (isCookieFieldSet(message)) {
             adjustDTLSCookie(message);
         }
-        // Use the right Protocol Version ?
-        if (tlsContext.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            adjustSessionID(message);
-        }
         adjustLastRecordVersion(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
             }
+        }
+        adjustRandomContext(message);
+        if (tlsContext.getHighestClientProtocolVersion() != ProtocolVersion.TLS13) {
+            adjustSessionID(message);
         }
     }
 
@@ -108,8 +108,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustRandomContext(ClientHelloMessage message) {
-        // Use the right Protocol Version ?
-        if (tlsContext.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+        if (tlsContext.getHighestClientProtocolVersion() != ProtocolVersion.TLS13) {
             setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
         } else {
             tlsContext.setClientRandom(message.getRandom().getValue());

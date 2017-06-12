@@ -42,7 +42,6 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     protected void prepareRandom(ProtocolVersion version) {
         byte[] random;
-        // Use the right Version ?
         if (version != ProtocolVersion.TLS13) {
             random = new byte[HandshakeByteLength.RANDOM];
         } else {

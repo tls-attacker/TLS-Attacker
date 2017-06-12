@@ -22,6 +22,7 @@ import java.util.List;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
@@ -35,11 +36,9 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     @Override
     public void prepareHandshakeMessageContents() {
         prepareProtocolVersion(msg);
-        if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            prepareUnixTime();
-        }
         prepareRandom(context.getConfig().getHighestProtocolVersion());
         if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            prepareUnixTime();
             prepareSessionID();
             prepareSessionIDLength();
         } else {
