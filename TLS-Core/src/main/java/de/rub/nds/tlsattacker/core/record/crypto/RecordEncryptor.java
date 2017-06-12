@@ -20,8 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
  * @author Robert Merget <robert.merget@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordEncryptor extends Encryptor<Record> {
 

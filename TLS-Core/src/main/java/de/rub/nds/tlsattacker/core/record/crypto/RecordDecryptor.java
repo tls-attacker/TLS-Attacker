@@ -19,8 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
  * @author Robert Merget <robert.merget@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordDecryptor extends Decryptor<Record> {
 

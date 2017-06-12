@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -24,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Nurullah
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordDecryptorTest {
 
@@ -50,21 +49,18 @@ public class RecordDecryptorTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setClientHandshakeTrafficSecret(ArrayConverter
-                .hexStringToByteArray("6c6f274b1eae09b8bbd2039b7eb56147201a5e19288a3fd504fa52b1178a6e93"));
+                .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
         context.setServerHandshakeTrafficSecret(ArrayConverter
-                .hexStringToByteArray("b2c2663ed59e833b17c68823516f11f1cb311855045d3ce46bfe8ac8889268d9"));
-        context.getConfig().setConnectionEnd(ConnectionEnd.SERVER);
+                .hexStringToByteArray("ACC9DB33EE0968FAE7E06DAA34D642B146092CE7F9C9CF47670C66A0A6CE1C8C"));
+        context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
+        record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"));
         recordCipher = new RecordAEADCipher(context);
         decryptor = new RecordDecryptor(recordCipher, ProtocolVersion.TLS13);
-        record.setProtocolMessageBytes(ArrayConverter
-                .hexStringToByteArray("161e94818226d7bd6180630804644debc52bdd661034243217ac45a084228c82086baa4893ecfc969624d68e19d88c3e67ccb48bdf"));
         decryptor.decrypt(record);
         assertTrue(record.getContentMessageType() == ProtocolMessageType.HANDSHAKE);
-        assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 36);
-        assertArrayEquals(
-                record.getCleanProtocolMessageBytes().getValue(),
-                ArrayConverter
-                        .hexStringToByteArray("140000201a5eb0ba5f92f34ed0059d64cedd2a7d208f25f00e28138117fb3974d415776a"));
+        assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 6);
+        assertArrayEquals(record.getCleanProtocolMessageBytes().getValue(), ArrayConverter
+                .hexStringToByteArray("080000020000"));
     }
 
 }

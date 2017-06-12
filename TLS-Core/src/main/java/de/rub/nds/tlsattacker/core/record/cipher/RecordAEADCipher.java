@@ -25,17 +25,14 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- *
  * @author Robert Merget <robert.merget@rub.de>
- * @author Nurullah Erinola
- * 
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordAEADCipher extends RecordCipher {
 
@@ -85,14 +82,14 @@ public class RecordAEADCipher extends RecordCipher {
     private BulkCipherAlgorithm bulkCipherAlg;
 
     /**
-     * client encryption key
+     * client secret
      */
-    private byte[] clientHandshakeTrafficSecret;
+    private byte[] clientSecret;
 
     /**
-     * server encryption key
+     * server secret
      */
-    private byte[] serverHandshakeTrafficSecret;
+    private byte[] serverSecret;
 
     /**
      * client encryption key
@@ -134,31 +131,31 @@ public class RecordAEADCipher extends RecordCipher {
         ProtocolVersion protocolVersion = context.getSelectedProtocolVersion();
         CipherSuite cipherSuite = context.getSelectedCipherSuite();
         try {
+            bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
+            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
+            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             if (protocolVersion == ProtocolVersion.TLS13) {
-                bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
-                CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-                encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-                decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
                 if (context.isUpdateKeys() == false) {
-                    clientHandshakeTrafficSecret = context.getClientHandshakeTrafficSecret();
-                    serverHandshakeTrafficSecret = context.getServerHandshakeTrafficSecret();
+                    clientSecret = context.getClientHandshakeTrafficSecret();
+                    serverSecret = context.getServerHandshakeTrafficSecret();
                 } else {
                     context.setUpdateKeys(false);
-                    clientHandshakeTrafficSecret = context.getClientApplicationTrafficSecret0();
-                    serverHandshakeTrafficSecret = context.getServerApplicationTrafficSecret0();
+                    clientSecret = context.getClientApplicationTrafficSecret0();
+                    serverSecret = context.getServerApplicationTrafficSecret0();
                 }
                 MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(cipherSuite).getMacAlgorithm();
-                clientWriteKey = HKDFunction.expandLabel(macAlg.getJavaName(), clientHandshakeTrafficSecret,
-                        HKDFunction.KEY, new byte[] {}, cipherAlg.getKeySize());
+                clientWriteKey = HKDFunction.expandLabel(macAlg.getJavaName(), clientSecret, HKDFunction.KEY,
+                        new byte[] {}, cipherAlg.getKeySize());
                 LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(clientWriteKey));
-                serverWriteKey = HKDFunction.expandLabel(macAlg.getJavaName(), serverHandshakeTrafficSecret,
-                        HKDFunction.KEY, new byte[] {}, cipherAlg.getKeySize());
+                serverWriteKey = HKDFunction.expandLabel(macAlg.getJavaName(), serverSecret, HKDFunction.KEY,
+                        new byte[] {}, cipherAlg.getKeySize());
                 LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-                clientWriteIv = HKDFunction.expandLabel(macAlg.getJavaName(), clientHandshakeTrafficSecret,
-                        HKDFunction.IV, new byte[] {}, GCM_IV_LENGTH);
+                clientWriteIv = HKDFunction.expandLabel(macAlg.getJavaName(), clientSecret, HKDFunction.IV,
+                        new byte[] {}, GCM_IV_LENGTH);
                 LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
-                serverWriteIv = HKDFunction.expandLabel(macAlg.getJavaName(), serverHandshakeTrafficSecret,
-                        HKDFunction.IV, new byte[] {}, GCM_IV_LENGTH);
+                serverWriteIv = HKDFunction.expandLabel(macAlg.getJavaName(), serverSecret, HKDFunction.IV,
+                        new byte[] {}, GCM_IV_LENGTH);
                 LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
                 if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
                     encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
