@@ -131,7 +131,7 @@ public class TlsRecordLayer extends RecordLayer {
         } else {
             LOGGER.warn("Not decrypting received non Record:" + record.toString());
             record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
-            
+
         }
     }
 

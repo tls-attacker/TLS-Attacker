@@ -28,6 +28,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
@@ -58,13 +60,14 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class TlsConfig implements Serializable {
 
     /**
-     * Default value for PtocolverionFields
+     * Default value for ProtocolVerionFields
      */
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 
@@ -165,6 +168,33 @@ public final class TlsConfig implements Serializable {
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
     /**
+     * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session
+     * ticket since we initiate a new connection.
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] TLSSessionTicket = new byte[0];
+    /**
+     * Renegotiation info for the RenegotiationInfo extension. It's an empty
+     * info since we initiate a new connection.
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] renegotiationInfo = new byte[0];
+    /**
+     * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
+     * It's an emty timestamp, since the server sends it.
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] signedCertificateTimestamp = new byte[0];
+    /**
+     * TokenBinding default version. To be defined later.
+     */
+    private TokenBindingVersion tokenBindingVersion = TokenBindingVersion.DRAFT_13;
+    /**
+     * Default TokenBinding Key Parameters.
+     */
+    private TokenBindingKeyParameters[] tokenBindingKeyParameters = { TokenBindingKeyParameters.RSA2048_PKCS1_5,
+            TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -221,6 +251,30 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
+    /**
+     * If we generate ClientHello with the Padding extension
+     */
+    private boolean addPaddingExtension = false;
+    /**
+     * If we generate ClientHello with the ExtendedMasterSecret extension
+     */
+    private boolean addExtendedMasterSecretExtension = false;
+    /**
+     * If we generate ClientHello with the SessionTicketTLS extension
+     */
+    private boolean addSessionTicketTLSExtension = false;
+    /**
+     * If we generate ClientHello with SignedCertificateTimestamp extension
+     */
+    private boolean addSignedCertificateTimestampExtension = false;
+    /**
+     * If we generate ClientHello with RenegotiationInfo extension
+     */
+    private boolean addRenegotiationInfoExtension = false;
+    /**
+     * If we generate ClientHello with TokenBinding extension.
+     */
+    private boolean addTokenBindingExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -297,6 +351,11 @@ public final class TlsConfig implements Serializable {
      * How much data we should put into a record by default
      */
     private int defaultMaxRecordData = 1048576;
+
+    /**
+     * How much padding bytes should be send by default
+     */
+    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
@@ -483,6 +542,38 @@ public final class TlsConfig implements Serializable {
 
     public void setHeartbeatMaxPaddingLength(int heartbeatMaxPaddingLength) {
         this.heartbeatMaxPaddingLength = heartbeatMaxPaddingLength;
+    }
+
+    public boolean isAddPaddingExtension() {
+        return addPaddingExtension;
+    }
+
+    public void setAddPaddingExtension(boolean addPaddingExtension) {
+        this.addPaddingExtension = addPaddingExtension;
+    }
+
+    public boolean isAddExtendedMasterSecretExtension() {
+        return addExtendedMasterSecretExtension;
+    }
+
+    public void setAddExtendedMasterSecretExtension(boolean addExtendedMasterSecretExtension) {
+        this.addExtendedMasterSecretExtension = addExtendedMasterSecretExtension;
+    }
+
+    public boolean isAddSessionTicketTLSExtension() {
+        return addSessionTicketTLSExtension;
+    }
+
+    public void setAddSessionTicketTLSExtension(boolean addSessionTicketTLSExtension) {
+        this.addSessionTicketTLSExtension = addSessionTicketTLSExtension;
+    }
+
+    public byte[] getDefaultPaddingExtensionBytes() {
+        return defaultPaddingExtensionBytes;
+    }
+
+    public void setDefaultPaddingExtensionBytes(byte[] defaultPaddingExtensionBytes) {
+        this.defaultPaddingExtensionBytes = defaultPaddingExtensionBytes;
     }
 
     public List<ClientCertificateType> getClientCertificateTypes() {
@@ -890,8 +981,73 @@ public final class TlsConfig implements Serializable {
         this.keyStoreFile = keyStoreFile;
     }
 
+    public byte[] getTLSSessionTicket() {
+        return TLSSessionTicket;
+    }
+
+    public void setTLSSessionTicket(byte[] TLSSessionTicket) {
+        this.TLSSessionTicket = TLSSessionTicket;
+    }
+
+    public byte[] getSignedCertificateTimestamp() {
+        return signedCertificateTimestamp;
+    }
+
+    public void setSignedCertificateTimestamp(byte[] signedCertificateTimestamp) {
+        this.signedCertificateTimestamp = signedCertificateTimestamp;
+    }
+
+    public boolean isAddSignedCertificateTimestampExtension() {
+        return addSignedCertificateTimestampExtension;
+    }
+
+    public void setAddSignedCertificateTimestampExtension(boolean addSignedCertificateTimestampExtension) {
+        this.addSignedCertificateTimestampExtension = addSignedCertificateTimestampExtension;
+    }
+
+    public byte[] getRenegotiationInfo() {
+        return renegotiationInfo;
+    }
+
+    public void setRenegotiationInfo(byte[] renegotiationInfo) {
+        this.renegotiationInfo = renegotiationInfo;
+    }
+
+    public boolean isAddRenegotiationInfoExtension() {
+        return addRenegotiationInfoExtension;
+    }
+
+    public void setAddRenegotiationInfoExtension(boolean addRenegotiationInfoExtension) {
+        this.addRenegotiationInfoExtension = addRenegotiationInfoExtension;
+    }
+
+    public TokenBindingVersion getTokenBindingVersion() {
+        return tokenBindingVersion;
+    }
+
+    public void setTokenBindingVersion(TokenBindingVersion tokenBindingVersion) {
+        this.tokenBindingVersion = tokenBindingVersion;
+    }
+
+    public TokenBindingKeyParameters[] getTokenBindingKeyParameters() {
+        return tokenBindingKeyParameters;
+    }
+
+    public void setTokenBindingKeyParameters(TokenBindingKeyParameters[] tokenBindingKeyParameters) {
+        this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public boolean isAddTokenBindingExtension() {
+        return addTokenBindingExtension;
+    }
+
+    public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
+        this.addTokenBindingExtension = addTokenBindingExtension;
+    }
+
     public PublicKey getPublicKey() throws CertificateParsingException {
         X509CertificateObject certObj = new X509CertificateObject(getOurCertificate().getCertificateAt(0));
         return certObj.getPublicKey();
+
     }
 }

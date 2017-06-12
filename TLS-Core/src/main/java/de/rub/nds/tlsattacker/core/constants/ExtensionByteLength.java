@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 /**
- * @author juraj
+ * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ExtensionByteLength {
 
@@ -58,4 +58,19 @@ public class ExtensionByteLength {
      * SignatureAndHashAlgorithms Extension
      */
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
+
+    /**
+     * Length of the Padding Length field of the Padding Extension
+     */
+    public static final int PADDING_LENGTH = 2;
+
+    /**
+     * Length of the version field as used by the token binding extension.
+     */
+    public static final int TOKENBINDING_VERSION_LENGTH = 2;
+
+    /**
+     * Length of the token binding extension key parameter length field
+     */
+    public static final int TOKENBINDING_KEYPARAMETER_LENGTHFIELD_LENGTH = 1;
 }

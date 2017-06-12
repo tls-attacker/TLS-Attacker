@@ -11,9 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ECPointFormatExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -74,24 +71,30 @@ public class ExtensionParserFactory {
             case ENCRYPT_THEN_MAC:
                 break;
             case EXTENDED_MASTER_SECRET:
+                parser = new ExtendedMasterSecretExtensionParser(pointer, extensionBytes);
                 break;
             case PADDING:
+                parser = new PaddingExtensionParser(pointer, extensionBytes);
                 break;
             case RENEGOTIATION_INFO:
+                parser = new RenegotiationInfoExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_AUTHZ:
                 break;
             case SERVER_CERTIFICATE_TYPE:
                 break;
             case SESSION_TICKET:
+                parser = new SessionTicketTLSExtensionParser(pointer, extensionBytes);
                 break;
             case SIGNED_CERTIFICATE_TIMESTAMP:
+                parser = new SignedCertificateTimestampExtensionParser(pointer, extensionBytes);
                 break;
             case SRP:
                 break;
             case STATUS_REQUEST_V2:
                 break;
             case TOKEN_BINDING:
+                parser = new TokenBindingExtensionParser(pointer, extensionBytes);
                 break;
             case USER_MAPPING:
                 break;
