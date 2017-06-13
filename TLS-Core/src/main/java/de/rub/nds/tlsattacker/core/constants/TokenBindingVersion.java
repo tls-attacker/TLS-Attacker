@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,4 +69,12 @@ public enum TokenBindingVersion {
         return tokenBindingVersion[1];
     }
 
+    public static TokenBindingVersion getRandom() {
+        TokenBindingVersion c = null;
+        while (c == null) {
+            Object[] o = MAP.values().toArray();
+            c = (TokenBindingVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+        }
+        return c;
+    }
 }
