@@ -19,8 +19,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
@@ -50,11 +52,12 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
 
     @Override
     protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
-        if (message.getComputations() != null) {
-            adjustPremasterSecret(message);
-            adjustMasterSecret(message);
-        }
         adjustECParameter(message);
+        if (message.getComputations() != null) {
+            ECPrivateKeyParameters privEcParams = new ECPrivateKeyParameters(message.getComputations().getPrivateKey()
+                    .getValue(), tlsContext.getServerEcPublicKeyParameters().getParameters());
+            tlsContext.setServerEcPrivateKeyParameters(privEcParams);
+        }
     }
 
     private void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
@@ -66,12 +69,6 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
         ECPublicKeyParameters publicKeyParameters = null;
         try {
             publicKeyParameters = ECCUtilsBCWrapper.readECParametersWithPublicKey(is);
-            LOGGER.debug("Parsed the following EC domain parameters: ");
-            LOGGER.debug("  Curve order: {}", publicKeyParameters.getParameters().getCurve().getOrder());
-            LOGGER.debug("  Parameter A: {}", publicKeyParameters.getParameters().getCurve().getA());
-            LOGGER.debug("  Parameter B: {}", publicKeyParameters.getParameters().getCurve().getB());
-            LOGGER.debug("  Base point: {} ", publicKeyParameters.getParameters().getG());
-            LOGGER.debug("  Public key point Q: {} ", publicKeyParameters.getQ());
         } catch (TlsFatalAlert alert) {
             throw new AdjustmentException("Problematic EC parameters, we dont support these yet", alert);
         } catch (IOException ex) {

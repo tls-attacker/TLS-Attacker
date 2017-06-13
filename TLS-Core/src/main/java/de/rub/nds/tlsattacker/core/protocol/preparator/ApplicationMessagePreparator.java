@@ -34,7 +34,11 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
     }
 
     private void prepareData(ApplicationMessage msg) {
-        msg.setData(context.getConfig().getDefaultApplicationMessageData().getBytes());
+        if (msg.getDataConfig() != null) {
+            msg.setData(msg.getDataConfig());
+        } else {
+            msg.setData(context.getConfig().getDefaultApplicationMessageData().getBytes());
+        }
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
 

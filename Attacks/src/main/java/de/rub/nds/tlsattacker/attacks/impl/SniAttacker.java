@@ -51,17 +51,6 @@ public class SniAttacker extends Attacker<SniTestCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        TlsConfig tlsConfig = config.createConfig();
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        List<TLSAction> actions = trace.getTLSActions();
-        ServerNameIndicationExtensionMessage sni = new ServerNameIndicationExtensionMessage();
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameConfig(config.getServerName2().getBytes());
-        pair.setServerNameTypeConfig(NameType.HOST_NAME.getValue());
-        sni.getServerNameList().add(pair);
         throw new UnsupportedOperationException("Work in progress");
     }
 

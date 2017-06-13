@@ -75,12 +75,12 @@ public class WorkflowTypeDelegateTest {
         assertTrue(WorkflowTraceType.FULL.equals(config.getWorkflowTraceType()));
     }
 
-//    @Test
-//    public void testNothingSetNothingChanges() {
-//        TlsConfig config = TlsConfig.createConfig();
-//        TlsConfig config2 = TlsConfig.createConfig();
-//        delegate.applyDelegate(config);
-//        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore"));// little
-//                                                                                // ugly
-//    }
+    @Test
+    public void testNothingSetNothingChanges() {
+        TlsConfig config = TlsConfig.createConfig();
+        TlsConfig config2 = TlsConfig.createConfig();
+        delegate.applyDelegate(config);
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        // ugly
+    }
 }

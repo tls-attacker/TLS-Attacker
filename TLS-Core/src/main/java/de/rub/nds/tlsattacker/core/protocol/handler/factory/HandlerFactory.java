@@ -51,6 +51,9 @@ public class HandlerFactory {
 
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {
+        if (protocolType == null) {
+            return new UnknownHandshakeMessageHandler(context);
+        }
         try {
             switch (protocolType) {
                 case HANDSHAKE:

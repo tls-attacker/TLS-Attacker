@@ -17,6 +17,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.params.DHParameters;
+import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 
@@ -49,9 +50,19 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     protected void adjustTLSContext(DHEServerKeyExchangeMessage message) {
         adjustServerDHParameters(message);
         if (message.getComputations() != null) {
-            adjustPremasterSecret(message);
-            adjustMasterSecret(message);
+            adjustServerDHPrivateParameters(message);
         }
+    }
+
+    /**
+     * TODO Preparators should never change Context fields
+     *
+     * @param context
+     */
+    private void adjustServerDHPrivateParameters(DHEServerKeyExchangeMessage message) {
+        tlsContext.setServerDhPrivateKeyParameters(new DHPrivateKeyParameters(message.getComputations().getPrivateKey()
+                .getValue(), tlsContext.getServerDHParameters().getPublicKey().getParameters()));
+        LOGGER.debug("ServerDHPrivateKeyParameters: " + tlsContext.getServerDhPrivateKeyParameters());
     }
 
     private void adjustServerDHParameters(DHEServerKeyExchangeMessage message) {
@@ -60,6 +71,5 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
         BigInteger pubkey = new BigInteger(1, message.getSerializedPublicKey().getValue());
         ServerDHParams dhParams = new ServerDHParams(new DHPublicKeyParameters(pubkey, parameters));
         tlsContext.setServerDHParameters(dhParams);
-        // tlsContext.setServerPublicKey();
     }
 }
