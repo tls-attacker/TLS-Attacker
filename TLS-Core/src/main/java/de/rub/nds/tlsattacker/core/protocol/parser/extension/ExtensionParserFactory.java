@@ -53,6 +53,7 @@ public class ExtensionParserFactory {
                 parser = new SignatureAndHashAlgorithmsExtensionParser(pointer, extensionBytes);
                 break;
             case STATUS_REQUEST:
+                parser = new CertificateStatusRequestExtensionParser(pointer, extensionBytes);
                 break;
             case TRUNCATED_HMAC:
                 break;

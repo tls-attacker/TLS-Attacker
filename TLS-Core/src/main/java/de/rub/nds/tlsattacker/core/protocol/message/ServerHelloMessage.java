@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
@@ -91,6 +92,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddTokenBindingExtension()) {
             addExtension(new TokenBindingExtensionMessage());
+        }
+        if (tlsConfig.isAddCertificateStatusRequestExtension()) {
+            addExtension(new CertificateStatusRequestExtensionMessage());
         }
     }
 

@@ -190,6 +190,22 @@ public final class TlsConfig implements Serializable {
      */
     private TokenBindingVersion tokenBindingVersion = TokenBindingVersion.DRAFT_13;
     /**
+     * This is the request type of the CertificateStatusRequest extension
+     */
+    private int certificateStatusRequestExtensionRequestType = 1;
+
+    /**
+     * This is the responder ID list of the CertificateStatusRequest extension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] certificateStatusRequestExtensionResponderIDList = new byte[0];
+
+    /**
+     * This is the request extension of the CertificateStatusRequest extension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] certificateStatusRequestExtensionRequestExtension = new byte[0];
+    /**
      * Default TokenBinding Key Parameters.
      */
     private TokenBindingKeyParameters[] tokenBindingKeyParameters = { TokenBindingKeyParameters.RSA2048_PKCS1_5,
@@ -275,6 +291,10 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with TokenBinding extension.
      */
     private boolean addTokenBindingExtension = false;
+    /**
+     * If we generate ClientHello with CertificateStatusRequest extension
+     */
+    private boolean addCertificateStatusRequestExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -1050,4 +1070,39 @@ public final class TlsConfig implements Serializable {
         return certObj.getPublicKey();
 
     }
+
+    public int getCertificateStatusRequestExtensionRequestType() {
+        return certificateStatusRequestExtensionRequestType;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestType(int certificateStatusRequestExtensionRequestType) {
+        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionResponderIDList() {
+        return certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public void setCertificateStatusRequestExtensionResponderIDList(
+            byte[] certificateStatusRequestExtensionResponderIDList) {
+        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionRequestExtension() {
+        return certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestExtension(
+            byte[] certificateStatusRequestExtensionRequestExtension) {
+        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public boolean isAddCertificateStatusRequestExtension() {
+        return addCertificateStatusRequestExtension;
+    }
+
+    public void setAddCertificateStatusRequestExtension(boolean addCertificateStatusRequestExtension) {
+        this.addCertificateStatusRequestExtension = addCertificateStatusRequestExtension;
+    }
+
 }

@@ -156,6 +156,21 @@ public class TlsContext {
      */
     private byte[] signedCertificateTimestamp;
 
+    /**
+     * This is the request type of the CertificateStatusRequest extension
+     */
+    private int certificateStatusRequestExtensionRequestType;
+
+    /**
+     * This is the responder ID list of the CertificateStatusRequest extension
+     */
+    private byte[] certificateStatusRequestExtensionResponderIDList;
+
+    /**
+     * This is the request extension of the CertificateStatusRequest extension
+     */
+    private byte[] certificateStatusRequestExtensionRequestExtension;
+
     private PublicKey clientCertificatePublicKey;
 
     private PublicKey serverCertificatePublicKey;
@@ -595,6 +610,32 @@ public class TlsContext {
 
     public void setTokenBindingKeyParameters(List tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public int getCertificateStatusRequestExtensionRequestType() {
+        return certificateStatusRequestExtensionRequestType;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestType(int certificateStatusRequestExtensionRequestType) {
+        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionResponderIDList() {
+        return certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public void setCertificateStatusRequestExtensionResponderIDList(
+            byte[] certificateStatusRequestExtensionResponderIDList) {
+        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionRequestExtension() {
+        return certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestExtension(
+            byte[] certificateStatusRequestExtensionRequestExtension) {
+        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
 }

@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -38,8 +39,8 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
     }
 
     @Override
-    public ExtensionHandler getHandler(TlsContext context) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public CertificateStatusRequestExtensionHandler getHandler(TlsContext context) {
+        return new CertificateStatusRequestExtensionHandler(context);
     }
 
     public ModifiableInteger getCertificateStatusRequestType() {

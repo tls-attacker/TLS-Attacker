@@ -28,7 +28,7 @@ public class TokenBindingExtensionSerializer extends ExtensionSerializer<TokenBi
         appendBytes(message.getTokenbindingVersion().getValue());
         appendByte((byte) message.getParameterListLength());
         appendBytes(message.getTokenbindingKeyParameters().getValue());
-        LOGGER.debug("Serialized the token binding extension.");
+
         return getAlreadySerialized();
     }
 }

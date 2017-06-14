@@ -6,15 +6,13 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.parser.extension;
+package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParserTest;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +23,7 @@ import org.junit.runners.Parameterized;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 @RunWith(Parameterized.class)
-public class CertificateStatusRequestExtensionParserTest {
+public class CertificateStatusRequestExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
@@ -36,10 +34,10 @@ public class CertificateStatusRequestExtensionParserTest {
     private final byte[] responderIDList;
     private final int requestExtensionLength;
     private final byte[] requestExtension;
-    private CertificateStatusRequestExtensionParser parser;
     private CertificateStatusRequestExtensionMessage message;
+    private CertificateStatusRequestExtensionSerializer serializer;
 
-    public CertificateStatusRequestExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
+    public CertificateStatusRequestExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
             int extensionLength, int startParsing, int certificateStatusRequestType, int responderIDListLength,
             byte[] responderIDList, int requestExtensionLength, byte[] requestExtension) {
         this.extensionType = extensionType;
@@ -53,40 +51,32 @@ public class CertificateStatusRequestExtensionParserTest {
         this.requestExtension = requestExtension;
     }
 
-    /**
-     * Parameterized set up of the test vector.
-     *
-     * @return test vector (extensionType, extensionLength, extensionPayload,
-     *         expectedBytes)
-     */
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {
-                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("000500050100000000"), 5, 0, 1, 0,
-                        new byte[0], 0, new byte[0] },
-                { ExtensionType.STATUS_REQUEST, ArrayConverter.hexStringToByteArray("0005000701000102000103"), 7, 0, 1,
-                        1, new byte[] { 0x02 }, 1, new byte[] { 0x03 } } });
+        return CertificateStatusRequestExtensionParserTest.generateData();
     }
 
     @Before
     public void setUp() {
-
-        parser = new CertificateStatusRequestExtensionParser(startParsing, expectedBytes);
-        message = parser.parse();
+        message = new CertificateStatusRequestExtensionMessage();
+        serializer = new CertificateStatusRequestExtensionSerializer(message);
     }
 
     @Test
-    public void testParseExtensionMessageContent() {
+    public void testSerializeExtensionContent() {
 
-        assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        message.setExtensionType(extensionType.getValue());
+        message.setExtensionLength(extensionLength);
 
-        assertEquals(certificateStatusRequestType, (int) message.getCertificateStatusRequestType().getValue());
+        message.setCertificateStatusRequestType(certificateStatusRequestType);
 
-        assertEquals(responderIDListLength, (int) message.getResponderIDListLength().getValue());
-        assertArrayEquals(responderIDList, message.getResponderIDList().getValue());
+        message.setResponderIDListLength(responderIDListLength);
+        message.setResponderIDList(responderIDList);
 
-        assertEquals(requestExtensionLength, (int) message.getRequestExtensionLength().getValue());
-        assertArrayEquals(requestExtension, message.getRequestExtension().getValue());
+        message.setRequestExtensionLength(requestExtensionLength);
+        message.setRequestExtension(requestExtension);
+
+        assertArrayEquals(expectedBytes, serializer.serialize());
     }
+
 }
