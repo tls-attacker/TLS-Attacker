@@ -73,4 +73,19 @@ public class ExtensionByteLength {
      * Length of the token binding extension key parameter length field
      */
     public static final int TOKENBINDING_KEYPARAMETER_LENGTHFIELD_LENGTH = 1;
+
+    /**
+     * Length of the certificate status request responder id list length field
+     */
+    public static final int CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTHFIELD_LENGTH = 2;
+
+    /**
+     * Length of the certificate status request "request extension" length field
+     */
+    public static final int CERTIFICATE_STATUS_REQUEST_REQUEST_EXTENSION_LENGTHFIELD_LENGTH = 2;
+
+    /**
+     * Length of the certificate status request status type field
+     */
+    public static final int CERTIFICATE_STATUS_REQUEST_STATUS_TYPE_LENGTH = 1;
 }
