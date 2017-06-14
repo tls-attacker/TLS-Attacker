@@ -19,11 +19,17 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -55,8 +61,14 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     @Override
     protected void adjustTLSContext(CertificateMessage message) {
-        Certificate cert = parseCertificate(message.getCertificatesLength().getValue(), message
-                .getX509CertificateBytes().getValue());
+        Certificate cert;
+        if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
+            cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
+                    .getValue());
+        } else {
+            // cert = parseCertificate();
+            cert = null;
+        }
         if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
             LOGGER.debug("Setting ClientCertificate in Context");
             tlsContext.setClientCertificate(cert);
@@ -93,9 +105,6 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     }
 
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-            lengthBytes = lengthBytes - HandshakeByteLength.EXTENSION_LENGTH;
-        }
         try {
             ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
                     ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
@@ -105,5 +114,22 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                     + ArrayConverter.bytesToHexString(bytesToParse, false));
             return null;
         }
+    }
+
+    private byte[] adjustCertificateExtensions(CertificateMessage message) {
+        List<CertificateEntry> certificateEntryList = new LinkedList<>();
+        for (CertificatePair pair : message.getCertificatesList()) {
+            // Parse extensions
+            List<ExtensionMessage> extensionMessages = new LinkedList<>();
+            int pointer = 0;
+            while (pointer < pair.getExtensionsLength().getValue()) {
+            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(), pointer);
+            extensionMessages.add(parser.parse());
+            pointer = parser.getPointer();
+            }
+            // Parse certificate
+            // ksEntryList.add(new CertificateEntry(null, extensionMessages);
+        }
+        return null;
     }
 }

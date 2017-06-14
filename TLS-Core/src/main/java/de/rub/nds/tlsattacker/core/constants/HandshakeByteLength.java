@@ -19,6 +19,11 @@ public class HandshakeByteLength {
     public static final int CERTIFICATE_LENGTH = 3;
 
     /**
+     * certificate request context length field
+     */
+    public static final int CERTIFICATE_REQUEST_CONTEXT_LENGTH = 1;
+
+    /**
      * version field length
      */
     public static final int VERSION = 2;
@@ -33,11 +38,6 @@ public class HandshakeByteLength {
      * certificates)
      */
     public static final int CERTIFICATES_LENGTH = 3;
-    /**
-     * certificates length field (certificate array can include several
-     * certificates with extensions)
-     */
-    public static final int CERTIFICATES_LENGTH_TLS13 = 4;
     /**
      * cipher suite length field length
      */

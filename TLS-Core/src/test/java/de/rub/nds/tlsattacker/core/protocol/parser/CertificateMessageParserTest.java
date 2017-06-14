@@ -75,8 +75,8 @@ public class CertificateMessageParserTest {
         assertArrayEquals(certMessage.getCompleteResultingMessage().getValue(), expectedPart);
         assertTrue(certMessage.getLength().getValue() == length);
         assertTrue(certMessage.getType().getValue() == type.getValue());
-        assertTrue(certMessage.getCertificatesLength().getValue() == certificatesLength);
-        assertArrayEquals(certMessage.getX509CertificateBytes().getValue(), certificateBytes);
+        assertTrue(certMessage.getCertificatesListLength().getValue() == certificatesLength);
+        assertArrayEquals(certMessage.getCertificatesListBytes().getValue(), certificateBytes);
     }
 
 }

@@ -172,6 +172,11 @@ public class TlsContext {
      */
     private byte[] renegotiationInfo;
     /**
+     * This is the requestContext from the CertificateRequest messsage in TLS
+     * 1.3
+     */
+    private byte[] certificateRequestContext;
+    /**
      * This is the timestamp of the SignedCertificateTimestamp extension
      */
     private byte[] signedCertificateTimestamp;
@@ -247,7 +252,7 @@ public class TlsContext {
     public void setClientSupportedProtocolVersions(List<ProtocolVersion> clientSupportedProtocolVersions) {
         this.clientSupportedProtocolVersions = clientSupportedProtocolVersions;
     }
-    
+
     public DHPublicKeyParameters getServerDhPublicKeyParameters() {
         return serverDhPublicKeyParameters;
     }
@@ -671,7 +676,7 @@ public class TlsContext {
     public void setServerKSEntry(KSEntry serverKSEntry) {
         this.serverKSEntry = serverKSEntry;
     }
-    
+
     public byte[] getSessionTicketTLS() {
         return sessionTicketTLS;
     }
@@ -710,6 +715,14 @@ public class TlsContext {
 
     public void setTokenBindingKeyParameters(List tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public byte[] getCertificateRequestContext() {
+        return certificateRequestContext;
+    }
+
+    public void setCertificateRequestContext(byte[] certificateRequestContext) {
+        this.certificateRequestContext = certificateRequestContext;
     }
 
 }

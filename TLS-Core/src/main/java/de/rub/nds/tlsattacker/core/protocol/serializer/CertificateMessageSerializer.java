@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,28 +38,48 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        // TODO for TLS 1.3
-        writeCertificateLength(msg);
-        writeX509Certificate(msg);
+        if (version == ProtocolVersion.TLS13) {
+            writeRequestContextLength(msg);
+            writeRequestContext(msg);
+        }
+        writeCertificatesListLength(msg);
+        wirteCertificatesListBytes(msg);
         return getAlreadySerialized();
+    }
+
+    /**
+     * Writes the RequestContextLength of the CertificateMessage into the final
+     * byte[]
+     */
+    private void writeRequestContextLength(CertificateMessage msg) {
+        appendInt(msg.getRequestContextLength().getValue(), HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH);
+        LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
+    }
+
+    /**
+     * Writes the RequestContext of the CertificateMessage into the final byte[]
+     */
+    private void writeRequestContext(CertificateMessage msg) {
+        appendBytes(msg.getRequestContext().getValue());
+        LOGGER.debug("RequestContext: " + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
     }
 
     /**
      * Writes the CertificateLength of the CertificateMessage into the final
      * byte[]
      */
-    private void writeCertificateLength(CertificateMessage msg) {
-        appendInt(msg.getCertificatesLength().getValue(), HandshakeByteLength.CERTIFICATES_LENGTH);
-        LOGGER.debug("CertificateLength: " + msg.getCertificatesLength().getValue());
+    private void writeCertificatesListLength(CertificateMessage msg) {
+        appendInt(msg.getCertificatesListLength().getValue(), HandshakeByteLength.CERTIFICATES_LENGTH);
+        LOGGER.debug("certificatesListLength: " + msg.getCertificatesListLength().getValue());
     }
 
     /**
-     * Writes the X509Certificate of the CertificateMessage into the final
-     * byte[]
+     * Writes the Certificate of the CertificateMessage into the final byte[]
      */
-    private void writeX509Certificate(CertificateMessage msg) {
-        appendBytes(msg.getX509CertificateBytes().getValue());
-        LOGGER.debug("X509Certificate: " + ArrayConverter.bytesToHexString(msg.getX509CertificateBytes().getValue()));
+    private void wirteCertificatesListBytes(CertificateMessage msg) {
+        appendBytes(msg.getCertificatesListBytes().getValue());
+        LOGGER.debug("certificatesListBytes: "
+                + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
     }
 
 }

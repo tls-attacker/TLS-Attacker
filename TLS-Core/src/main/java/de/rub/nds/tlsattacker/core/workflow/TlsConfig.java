@@ -311,7 +311,7 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with TokenBinding extension.
      */
     private boolean addTokenBindingExtension = false;
-    
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
     /**
@@ -324,6 +324,8 @@ public final class TlsConfig implements Serializable {
      */
     @XmlTransient
     private Certificate ourCertificate;
+
+    private byte[] ourCertificateExtensions;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
@@ -694,6 +696,14 @@ public final class TlsConfig implements Serializable {
 
     public void setOurCertificate(Certificate ourCertificate) {
         this.ourCertificate = ourCertificate;
+    }
+
+    public byte[] getOurCertificateExtensions() {
+        return ourCertificateExtensions;
+    }
+
+    public void setOurCertificateExtensions(byte[] ourCertificateExtensions) {
+        this.ourCertificateExtensions = ourCertificateExtensions;
     }
 
     public ProtocolVersion getHighestProtocolVersion() {
@@ -1076,7 +1086,7 @@ public final class TlsConfig implements Serializable {
     public void setKeyStoreFile(String keyStoreFile) {
         this.keyStoreFile = keyStoreFile;
     }
-    
+
     public int getPaddingLength() {
         return paddingLength;
     }
