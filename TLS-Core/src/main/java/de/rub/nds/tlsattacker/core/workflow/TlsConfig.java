@@ -211,6 +211,11 @@ public final class TlsConfig implements Serializable {
     private TokenBindingKeyParameters[] tokenBindingKeyParameters = { TokenBindingKeyParameters.RSA2048_PKCS1_5,
             TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
     /**
+     * Default ALPN announced protocols
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] applicationLayerProtocolNegotiationAnnouncedProtocols = new byte[0];
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -295,6 +300,10 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with CertificateStatusRequest extension
      */
     private boolean addCertificateStatusRequestExtension = false;
+    /**
+     * If we generate ClientHello with ALPN extension
+     */
+    private boolean addAlpnExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -1103,6 +1112,23 @@ public final class TlsConfig implements Serializable {
 
     public void setAddCertificateStatusRequestExtension(boolean addCertificateStatusRequestExtension) {
         this.addCertificateStatusRequestExtension = addCertificateStatusRequestExtension;
+    }
+
+    public byte[] getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
+        return applicationLayerProtocolNegotiationAnnouncedProtocols;
+    }
+
+    public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
+            byte[] applicationLayerProtocolNegotiationAnnouncedProtocols) {
+        this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
+    }
+
+    public boolean isAddAlpnExtension() {
+        return addAlpnExtension;
+    }
+
+    public void setAddAlpnExtension(boolean addAlpnExtension) {
+        this.addAlpnExtension = addAlpnExtension;
     }
 
 }

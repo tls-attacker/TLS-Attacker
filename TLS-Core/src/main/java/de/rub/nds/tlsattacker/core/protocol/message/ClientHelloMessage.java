@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
@@ -121,6 +122,9 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddCertificateStatusRequestExtension()) {
             addExtension(new CertificateStatusRequestExtensionMessage());
+        }
+        if (tlsConfig.isAddAlpnExtension()) {
+            addExtension(new AlpnExtensionMessage());
         }
     }
 

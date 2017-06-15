@@ -60,6 +60,7 @@ public class ExtensionParserFactory {
             case TRUSTED_CA_KEYS:
                 break;
             case ALPN:
+                parser = new AlpnExtensionParser(pointer, extensionBytes);
                 break;
             case CACHED_INFO:
                 break;

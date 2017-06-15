@@ -207,6 +207,8 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
+    private byte[] applicationLayerProtocolNegotiationAnnouncedProtocols;
+
     public TlsContext() {
         this(TlsConfig.createConfig());
     }
@@ -636,6 +638,15 @@ public class TlsContext {
     public void setCertificateStatusRequestExtensionRequestExtension(
             byte[] certificateStatusRequestExtensionRequestExtension) {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public byte[] getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
+        return applicationLayerProtocolNegotiationAnnouncedProtocols;
+    }
+
+    public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
+            byte[] applicationLayerProtocolNegotiationAnnouncedProtocols) {
+        this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
     }
 
 }

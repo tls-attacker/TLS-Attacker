@@ -88,4 +88,9 @@ public class ExtensionByteLength {
      * Length of the certificate status request status type field
      */
     public static final int CERTIFICATE_STATUS_REQUEST_STATUS_TYPE_LENGTH = 1;
+
+    /**
+     * Length of the application layer protocol extension length field
+     */
+    public static final int ALPN_EXTENSION_LENGTH = 2;
 }
