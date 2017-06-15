@@ -378,7 +378,7 @@ public class TlsContext {
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
-        if (clientSupportedCompressions == null) {
+        if (clientSupportedCiphersuites == null) {
             return null;
         }
         return Collections.unmodifiableList(clientSupportedCiphersuites);
