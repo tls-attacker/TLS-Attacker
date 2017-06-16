@@ -134,7 +134,7 @@ public class TlsClientTest {
      */
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
-        clientCommandConfig.getGeneralDelegate().setLogLevel(Level.DEBUG);
+        clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TlsConfig config = clientCommandConfig.createConfig();
         config.setHost("localhost:" + port);
         config.setTlsTimeout(TIMEOUT);
