@@ -92,8 +92,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
-        tlsContext.setSelectedProtocolVersion(version);
-        LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+        if (version != null) {
+            tlsContext.setSelectedProtocolVersion(version);
+            LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+        } else {
+            LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
+                    + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+        }
     }
 
     private void adjustPRF(ServerHelloMessage message) {
