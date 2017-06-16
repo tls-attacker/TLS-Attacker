@@ -97,7 +97,8 @@ public class WorkflowConfigurationFactory {
         messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         messages.add(new CertificateMessage(config));
-        if (config.getSupportedCiphersuites().get(0).isEphemeral()) {
+        if (!config.getDefaultClientSupportedCiphersuites().isEmpty()
+                && config.getDefaultClientSupportedCiphersuites().get(0).isEphemeral()) {
             addServerKeyExchangeMessage(messages);
         }
         if (config.isClientAuthentication()) {
@@ -113,7 +114,9 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createHandshakeWorkflow() {
         WorkflowTrace workflowTrace = this.createHelloWorkflow();
         List<ProtocolMessage> messages = new LinkedList<>();
-        if (config.isClientAuthentication()) {
+        if (config.getDefaultClientSupportedCiphersuites().isEmpty()) {
+            // Do nothing we are not sure which ciphersuite this is
+        } else if (config.isClientAuthentication()) {
             messages.add(new CertificateMessage(config));
             addClientKeyExchangeMessage(messages);
             messages.add(new CertificateVerifyMessage(config));
@@ -132,7 +135,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getSupportedCiphersuites().get(0);
+        CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
                 messages.add(new RSAClientKeyExchangeMessage(config));
@@ -158,7 +161,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getSupportedCiphersuites().get(0);
+        CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
                 messages.add(new ECDHEServerKeyExchangeMessage(config));

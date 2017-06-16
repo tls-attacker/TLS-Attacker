@@ -12,9 +12,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -25,8 +27,8 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     private byte[] verifyData;
     private final FinishedMessage msg;
 
-    public FinishedMessagePreparator(TlsContext context, FinishedMessage message) {
-        super(context, message);
+    public FinishedMessagePreparator(Chooser chooser, FinishedMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -38,12 +40,13 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     }
 
     private byte[] computeVerifyData() {
-        PRFAlgorithm prfAlgorithm = context.getPRFAlgorithm();
-        byte[] masterSecret = context.getMasterSecret();
-        byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
+        PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
+        byte[] masterSecret = chooser.getMasterSecret();
+        CipherSuite suite = chooser.getSelectedCipherSuite();
+        ProtocolVersion version = chooser.getSelectedProtocolVersion();
+        byte[] handshakeMessageHash = chooser.getDigest().digest(version, suite);
 
-        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+        if (chooser.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
             // TODO put this in seperate config option
             return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
                     handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);

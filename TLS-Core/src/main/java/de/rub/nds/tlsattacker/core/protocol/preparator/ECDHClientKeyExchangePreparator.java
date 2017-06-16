@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -16,16 +15,13 @@ import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -53,8 +49,8 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     private byte[] masterSecret;
     private final ECDHClientKeyExchangeMessage msg;
 
-    public ECDHClientKeyExchangePreparator(TlsContext context, ECDHClientKeyExchangeMessage message) {
-        super(context, message);
+    public ECDHClientKeyExchangePreparator(Chooser chooser, ECDHClientKeyExchangeMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -62,7 +58,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
         AsymmetricCipherKeyPair kp = null;
-        serverEcPublicKey = context.getServerEcPublicKeyParameters();
+        serverEcPublicKey = chooser.getServerEcPublicKeyParameters();
         if (hasServerPublicKeyParameters()) {
             kp = generateFreshKeyPair();
         } else {
@@ -83,7 +79,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         ECCurve curve = clientEcPublicKey.getParameters().getCurve();
         ECPoint point = curve.createPoint(msg.getPublicKeyBaseX().getValue(), msg.getPublicKeyBaseY().getValue());
 
-        List<ECPointFormat> pointFormatList = context.getServerPointFormatsList();
+        List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
         if (pointFormatList == null) {
             pointFormatList = new LinkedList<>();
             pointFormatList.add(ECPointFormat.UNCOMPRESSED);
@@ -112,7 +108,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     }
 
     private ECPublicKeyParameters createECPublicKeyParameters() {
-        Certificate x509Cert = context.getServerCertificate();
+        Certificate x509Cert = chooser.getServerCertificate();
         SubjectPublicKeyInfo keyInfo = x509Cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey)) {
             throw new PreparationException("Invalid KeyType in ServerCertificate");
@@ -134,8 +130,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     }
 
     private void computeMasterSecret(byte[] preMasterSecret, byte[] random) {
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
+        PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
         masterSecret = PseudoRandomFunction.compute(prfAlgorithm, preMasterSecret,
                 PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
     }
@@ -165,13 +160,13 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     }
 
     private void prepareSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKey(serializedPoint);
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        msg.setPublicKey(serializedPoint);
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     private void preparePremasterSecret(ECDHClientKeyExchangeMessage msg) {
@@ -181,7 +176,8 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     }
 
     private void prepareClientRandom(ECDHClientKeyExchangeMessage msg) {
-        random = context.getClientServerRandom();
+        // TODO this is spooky
+        random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientRandom(random);
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
@@ -197,12 +193,12 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     public void prepareAfterParse() {
         try {
             msg.prepareComputations();
-            List<ECPointFormat> pointFormatList = context.getServerPointFormatsList();
+            List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
             ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
             short[] pointFormats = ECCUtilsBCWrapper.convertPointFormats(formatArray);
-            clientEcPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, context
-                    .getServerEcPublicKeyParameters().getParameters(), msg.getSerializedPublicKey().getValue());
-            serverEcPrivateKey = context.getServerEcPrivateKeyParameters();
+            clientEcPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, chooser
+                    .getServerEcPublicKeyParameters().getParameters(), msg.getPublicKey().getValue());
+            serverEcPrivateKey = chooser.getServerEcPrivateKeyParameters();
             computePremasterSecret(clientEcPublicKey, serverEcPrivateKey);
             preparePremasterSecret(msg);
             prepareClientRandom(msg);

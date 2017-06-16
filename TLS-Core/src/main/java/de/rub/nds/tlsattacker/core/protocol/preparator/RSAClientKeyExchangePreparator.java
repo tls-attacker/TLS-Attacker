@@ -17,6 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
@@ -43,8 +46,8 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private byte[] encrypted;
     private final RSAClientKeyExchangeMessage msg;
 
-    public RSAClientKeyExchangePreparator(TlsContext context, RSAClientKeyExchangeMessage message) {
-        super(context, message);
+    public RSAClientKeyExchangePreparator(Chooser chooser, RSAClientKeyExchangeMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -52,11 +55,11 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
         RSAPublicKey publicKey;
-        if (context.getServerCertificatePublicKey() == null
-                || !"RSA".equals(context.getServerCertificatePublicKey().getAlgorithm())) {
+        if (chooser.getServerCertificatePublicKey() == null
+                || !"RSA".equals(chooser.getServerCertificatePublicKey().getAlgorithm())) {
             publicKey = generateFreshKey();
         } else {
-            publicKey = (RSAPublicKey) context.getServerCertificatePublicKey();
+            publicKey = (RSAPublicKey) chooser.getServerCertificatePublicKey();
         }
 
         int keyByteLength = publicKey.getModulus().bitLength() / 8;
@@ -93,20 +96,15 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
         RandomHelper.getRandom().nextBytes(tempPremasterSecret);
-        tempPremasterSecret[0] = context.getSelectedProtocolVersion().getMajor();
-        tempPremasterSecret[1] = context.getSelectedProtocolVersion().getMinor();
+        tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
+        tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
         return tempPremasterSecret;
     }
 
     private byte[] generateMasterSecret() {
-        if (context.getSelectedCipherSuite() == null) {
-            throw new PreparationException("Cannot choose PRF. Selected Ciphersuite is null");
-        }
-        if (context.getSelectedProtocolVersion() == null) {
-            throw new PreparationException("Cannot choose PRF. Selected ProtocolVersion is null");
-        }
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
+        CipherSuite suite = chooser.getSelectedCipherSuite();
+        ProtocolVersion version = chooser.getSelectedProtocolVersion();
+        PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
         return PseudoRandomFunction.compute(prfAlgorithm, msg.getComputations().getPremasterSecret().getValue(),
                 PseudoRandomFunction.MASTER_SECRET_LABEL, msg.getComputations().getClientRandom().getValue(),
                 HandshakeByteLength.MASTER_SECRET);
@@ -143,7 +141,8 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private void prepareClientRandom(RSAClientKeyExchangeMessage msg) {
-        clientRandom = context.getClientServerRandom();
+        // TODO spooky
+        clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientRandom(clientRandom);
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
@@ -156,19 +155,19 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKey(encrypted);
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getSerializedPublicKey().getValue()));
+        msg.setPublicKey(encrypted);
+        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     private byte[] decryptPremasterSecret() {
         try {
-            byte[] encryptedPremasterSecret = msg.getSerializedPublicKey().getValue();
-            RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) context.getConfig().getPrivateKey();
+            byte[] encryptedPremasterSecret = msg.getPublicKey().getValue();
+            RSAPrivateCrtKey rsaKey = (RSAPrivateCrtKey) chooser.getConfig().getPrivateKey();
             Cipher cipher = Cipher.getInstance("RSA/None/NoPadding", "BC");
             cipher.init(Cipher.DECRYPT_MODE, rsaKey);
             return cipher.doFinal(encryptedPremasterSecret);
@@ -186,7 +185,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         System.out.println("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
         RSAPublicKey key = null;
         try {
-            key = (RSAPublicKey) context.getConfig().getPublicKey();
+            key = (RSAPublicKey) chooser.getConfig().getPublicKey();
         } catch (Exception E) {
             throw new PreparationException("Could not retrieve publicKey from config");
         }

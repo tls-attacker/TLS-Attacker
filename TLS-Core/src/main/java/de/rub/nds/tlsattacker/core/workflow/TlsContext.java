@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -83,9 +84,14 @@ public class TlsContext {
     private CompressionMethod selectedCompressionMethod;
 
     /**
-     * session ID
+     * server session ID
      */
-    private byte[] sessionID;
+    private byte[] serverSessionId;
+
+    /**
+     * client session ID
+     */
+    private byte[] clientSessionId;
 
     /**
      * server certificate parsed from the server certificate message
@@ -112,7 +118,7 @@ public class TlsContext {
 
     private ConnectionEnd talkingConnectionEnd = ConnectionEnd.CLIENT;
 
-    private byte[] dtlsHandshakeCookie;
+    private byte[] dtlsCookie;
 
     private ProtocolVersion selectedProtocolVersion;
 
@@ -145,7 +151,7 @@ public class TlsContext {
     /**
      * Is the extended master secret extension present?
      */
-    private boolean isExtendedMasterSecretExtension;
+    private boolean receivedMasterSecretExtension;
 
     /**
      * This is the renegotiation info of the RenegotiationInfo extension.
@@ -164,11 +170,17 @@ public class TlsContext {
 
     private ECPrivateKeyParameters serverEcPrivateKeyParameters;
 
-    private DHPrivateKeyParameters serverDhPrivateKeyParameters;
+    private BigInteger dhGenerator;
 
-    private DHPublicKeyParameters serverDhPublicKeyParameters;
+    private BigInteger dhModulus;
 
-    private ServerDHParams serverDHParameters;
+    private BigInteger serverDhPrivateKey;
+
+    private BigInteger serverDhPublicKey;
+
+    private BigInteger clientDhPrivateKey;
+
+    private BigInteger clientDhPublicKey;
 
     private List<NamedCurve> clientNamedCurvesList;
 
@@ -192,6 +204,10 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
+    private SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm;
+
+    private PRFAlgorithm prfAlgorithm;
+
     public TlsContext() {
         this(TlsConfig.createConfig());
     }
@@ -200,17 +216,62 @@ public class TlsContext {
         digest = new MessageDigestCollector();
         this.config = config;
         // init lastRecordVersion for records
-        clientCertificateTypes = new LinkedList<>();
-        lastRecordVersion = config.getHighestProtocolVersion();
-        selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
-    public DHPublicKeyParameters getServerDhPublicKeyParameters() {
-        return serverDhPublicKeyParameters;
+    public BigInteger getDhGenerator() {
+        return dhGenerator;
     }
 
-    public void setServerDhPublicKeyParameters(DHPublicKeyParameters serverDhPublicKeyParameters) {
-        this.serverDhPublicKeyParameters = serverDhPublicKeyParameters;
+    public void setDhGenerator(BigInteger dhGenerator) {
+        this.dhGenerator = dhGenerator;
+    }
+
+    public BigInteger getDhModulus() {
+        return dhModulus;
+    }
+
+    public void setDhModulus(BigInteger dhModulus) {
+        this.dhModulus = dhModulus;
+    }
+
+    public BigInteger getServerDhPublicKey() {
+        return serverDhPublicKey;
+    }
+
+    public void setServerDhPublicKey(BigInteger serverDhPublicKey) {
+        this.serverDhPublicKey = serverDhPublicKey;
+    }
+
+    public BigInteger getClientDhPrivateKey() {
+        return clientDhPrivateKey;
+    }
+
+    public void setClientDhPrivateKey(BigInteger clientDhPrivateKey) {
+        this.clientDhPrivateKey = clientDhPrivateKey;
+    }
+
+    public BigInteger getClientDhPublicKey() {
+        return clientDhPublicKey;
+    }
+
+    public void setClientDhPublicKey(BigInteger clientDhPublicKey) {
+        this.clientDhPublicKey = clientDhPublicKey;
+    }
+
+    public BigInteger getServerDhPrivateKey() {
+        return serverDhPrivateKey;
+    }
+
+    public void setServerDhPrivateKey(BigInteger serverDhPrivateKey) {
+        this.serverDhPrivateKey = serverDhPrivateKey;
+    }
+
+    public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {
+        return selectedSignatureAndHashAlgorithm;
+    }
+
+    public void setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm) {
+        this.selectedSignatureAndHashAlgorithm = selectedSignatureAndHashAlgorithm;
     }
 
     public ECPrivateKeyParameters getServerEcPrivateKeyParameters() {
@@ -351,18 +412,15 @@ public class TlsContext {
     }
 
     public boolean isExtendedMasterSecretExtension() {
-        return isExtendedMasterSecretExtension;
+        return receivedMasterSecretExtension;
     }
 
-    public void setIsExtendedMasterSecretExtension(boolean isExtendedMasterSecretExtension) {
-        this.isExtendedMasterSecretExtension = isExtendedMasterSecretExtension;
+    public void setReceivedMasterSecretExtension(boolean receivedMasterSecretExtension) {
+        this.receivedMasterSecretExtension = receivedMasterSecretExtension;
     }
 
     public List<CompressionMethod> getClientSupportedCompressions() {
-        if (clientSupportedCompressions == null) {
-            return null;
-        }
-        return Collections.unmodifiableList(clientSupportedCompressions);
+        return clientSupportedCompressions;
     }
 
     public void setClientSupportedCompressions(List<CompressionMethod> clientSupportedCompressions) {
@@ -378,10 +436,7 @@ public class TlsContext {
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
-        if (clientSupportedCompressions == null) {
-            return null;
-        }
-        return Collections.unmodifiableList(clientSupportedCiphersuites);
+        return clientSupportedCiphersuites;
     }
 
     public void setClientSupportedCiphersuites(List<CipherSuite> clientSupportedCiphersuites) {
@@ -389,7 +444,7 @@ public class TlsContext {
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
-        return Collections.unmodifiableList(serverSupportedSignatureAndHashAlgorithms);
+        return serverSupportedSignatureAndHashAlgorithms;
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
@@ -477,12 +532,20 @@ public class TlsContext {
         this.selectedCompressionMethod = selectedCompressionMethod;
     }
 
-    public byte[] getSessionID() {
-        return sessionID;
+    public byte[] getServerSessionId() {
+        return serverSessionId;
     }
 
-    public void setSessionID(byte[] sessionID) {
-        this.sessionID = sessionID;
+    public void setServerSessionId(byte[] serverSessionId) {
+        this.serverSessionId = serverSessionId;
+    }
+
+    public byte[] getClientSessionId() {
+        return clientSessionId;
+    }
+
+    public void setClientSessionId(byte[] clientSessionId) {
+        this.clientSessionId = clientSessionId;
     }
 
     public WorkflowTrace getWorkflowTrace() {
@@ -509,32 +572,16 @@ public class TlsContext {
         this.clientCertificate = clientCertificate;
     }
 
-    public ServerDHParams getServerDHParameters() {
-        return serverDHParameters;
-    }
-
-    public void setServerDHParameters(ServerDHParams serverDHParameters) {
-        this.serverDHParameters = serverDHParameters;
-    }
-
-    public DHPrivateKeyParameters getServerDhPrivateKeyParameters() {
-        return serverDhPrivateKeyParameters;
-    }
-
-    public void setServerDhPrivateKeyParameters(DHPrivateKeyParameters serverDhPrivateKeyParameters) {
-        this.serverDhPrivateKeyParameters = serverDhPrivateKeyParameters;
-    }
-
     public MessageDigestCollector getDigest() {
         return digest;
     }
 
-    public void setDtlsHandshakeCookie(byte[] cookie) {
-        this.dtlsHandshakeCookie = cookie;
+    public byte[] getDtlsCookie() {
+        return dtlsCookie;
     }
 
-    public byte[] getDtlsHandshakeCookie() {
-        return dtlsHandshakeCookie;
+    public void setDtlsCookie(byte[] dtlsCookie) {
+        this.dtlsCookie = dtlsCookie;
     }
 
     public TransportHandler getTransportHandler() {
@@ -553,8 +600,12 @@ public class TlsContext {
         this.recordLayer = recordLayer;
     }
 
-    public PRFAlgorithm getPRFAlgorithm() {
-        return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
+    public PRFAlgorithm getPrfAlgorithm() {
+        return prfAlgorithm;
+    }
+
+    public void setPrfAlgorithm(PRFAlgorithm prfAlgorithm) {
+        this.prfAlgorithm = prfAlgorithm;
     }
 
     public byte[] getSessionTicketTLS() {
@@ -589,11 +640,11 @@ public class TlsContext {
         this.tokenBindingVersion = tokenBindingVersion;
     }
 
-    public List getTokenBindingKeyParameters() {
+    public List<TokenBindingKeyParameters> getTokenBindingKeyParameters() {
         return tokenBindingKeyParameters;
     }
 
-    public void setTokenBindingKeyParameters(List tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
