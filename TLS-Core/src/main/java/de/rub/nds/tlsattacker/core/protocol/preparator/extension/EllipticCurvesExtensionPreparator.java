@@ -9,10 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -24,8 +23,8 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private EllipticCurvesExtensionMessage message;
 
-    public EllipticCurvesExtensionPreparator(TlsContext context, EllipticCurvesExtensionMessage message) {
-        super(context, message);
+    public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
@@ -41,7 +40,7 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private byte[] createEllipticCurveArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (NamedCurve curve : context.getConfig().getNamedCurves()) {
+        for (NamedCurve curve : chooser.getConfig().getNamedCurves()) {
             try {
                 stream.write(curve.getValue());
             } catch (IOException ex) {

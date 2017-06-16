@@ -8,15 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -30,17 +27,19 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     public ECDHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ECDHClientKeyExchangeParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public ECDHClientKeyExchangePreparator getPreparator(ECDHClientKeyExchangeMessage message) {
-        return new ECDHClientKeyExchangePreparator(tlsContext, message);
+        return new ECDHClientKeyExchangePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public ECDHClientKeyExchangeSerializer getSerializer(ECDHClientKeyExchangeMessage message) {
-        return new ECDHClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ECDHClientKeyExchangeSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

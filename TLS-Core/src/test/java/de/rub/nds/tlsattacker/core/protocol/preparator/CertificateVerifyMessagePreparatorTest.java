@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -48,7 +49,7 @@ public class CertificateVerifyMessagePreparatorTest {
     public void setUp() {
         message = new CertificateVerifyMessage();
         context = new TlsContext();
-        preparator = new CertificateVerifyMessagePreparator(context, message);
+        preparator = new CertificateVerifyMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
         RandomHelper.getRandom().setSeed(0);
     }
 

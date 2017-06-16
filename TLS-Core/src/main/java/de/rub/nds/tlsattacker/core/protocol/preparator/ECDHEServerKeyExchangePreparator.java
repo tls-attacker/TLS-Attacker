@@ -19,7 +19,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.SecureRandom;
 
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -30,7 +29,6 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -39,6 +37,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -51,8 +50,8 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     private ECPublicKeyParameters pubEcParams;
     private ECPrivateKeyParameters privEcParams;
 
-    public ECDHEServerKeyExchangePreparator(TlsContext ctx, ECDHEServerKeyExchangeMessage msg) {
-        super(ctx, msg);
+    public ECDHEServerKeyExchangePreparator(Chooser chooser, ECDHEServerKeyExchangeMessage msg) {
+        super(chooser, msg);
         this.msg = msg;
     }
 
@@ -77,7 +76,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         prepareServerRandom(msg);
 
         SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = context.getConfig().getSupportedSignatureAndHashAlgorithms().get(0);
+        signHashAlgo = chooser.getConfig().getSupportedSignatureAndHashAlgorithms().get(0);
         prepareSignatureAlgorithm(msg, signHashAlgo);
         prepareHashAlgorithm(msg, signHashAlgo);
 
@@ -129,7 +128,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     }
 
     private void generatePointFormatList(ECDHEServerKeyExchangeMessage msg) {
-        List<ECPointFormat> sharedPointFormats = new ArrayList<>(context.getConfig().getPointFormats());
+        List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getConfig().getPointFormats());
 
         if (sharedPointFormats.isEmpty()) {
             throw new PreparationException("Don't know which point format to use for ECDHE. "
@@ -138,8 +137,8 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
         List<ECPointFormat> unsupportedFormats = new ArrayList<>();
 
-        if (!context.getConfig().isEnforceSettings()) {
-            List<ECPointFormat> clientPointFormats = context.getClientPointFormatsList();
+        if (!chooser.getConfig().isEnforceSettings()) {
+            List<ECPointFormat> clientPointFormats = chooser.getClientSupportedPointFormats();
             for (ECPointFormat f : sharedPointFormats) {
                 if (!clientPointFormats.contains(f)) {
                     unsupportedFormats.add(f);
@@ -149,7 +148,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
         sharedPointFormats.removeAll(unsupportedFormats);
         if (sharedPointFormats.isEmpty()) {
-            sharedPointFormats = new ArrayList<>(context.getConfig().getPointFormats());
+            sharedPointFormats = new ArrayList<>(chooser.getConfig().getPointFormats());
         }
 
         try {
@@ -160,7 +159,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     }
 
     private void generateNamedCurveList(ECDHEServerKeyExchangeMessage msg) {
-        List<NamedCurve> sharedCurves = new ArrayList<>(context.getConfig().getNamedCurves());
+        List<NamedCurve> sharedCurves = new ArrayList<>(chooser.getConfig().getNamedCurves());
 
         if (sharedCurves.isEmpty()) {
             throw new PreparationException("Don't know which elliptic curves are supported by the "
@@ -168,9 +167,9 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         }
 
         List<NamedCurve> unsupportedCurves = new ArrayList<>();
-        if (!context.getConfig().isEnforceSettings()) {
+        if (!chooser.getConfig().isEnforceSettings()) {
 
-            List<NamedCurve> clientCurves = context.getClientNamedCurvesList();
+            List<NamedCurve> clientCurves = chooser.getClientSupportedNamedCurves();
             for (NamedCurve c : sharedCurves) {
                 if (!clientCurves.contains(c)) {
                     unsupportedCurves.add(c);
@@ -179,7 +178,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
             sharedCurves.removeAll(unsupportedCurves);
             if (sharedCurves.isEmpty()) {
-                sharedCurves = new ArrayList<>(context.getConfig().getNamedCurves());
+                sharedCurves = new ArrayList<>(chooser.getConfig().getNamedCurves());
             }
         }
 
@@ -207,9 +206,9 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
                 }
         }
 
-        ecParams.write(msg.getSerializedPublicKeyLength().getValue());
+        ecParams.write(msg.getPublicKeyLength().getValue());
         try {
-            ecParams.write(msg.getSerializedPublicKey().getValue());
+            ecParams.write(msg.getPublicKey().getValue());
         } catch (IOException ex) {
             throw new PreparationException("Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.", ex);
         }
@@ -221,7 +220,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
     private byte[] generateSignature(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm algorithm) {
         try {
-            PrivateKey key = context.getConfig().getPrivateKey();
+            PrivateKey key = chooser.getConfig().getPrivateKey();
             Signature instance = Signature.getInstance(algorithm.getJavaName());
             instance.initSign(key);
             instance.update(generateSignatureContents(msg));
@@ -242,13 +241,13 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     }
 
     private void prepareClientRandom(ECDHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setClientRandom(context.getClientRandom());
+        msg.getComputations().setClientRandom(chooser.getClientRandom());
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareServerRandom(ECDHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setServerRandom(context.getServerRandom());
+        msg.getComputations().setServerRandom(chooser.getServerRandom());
         LOGGER.debug("ServerRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
     }
@@ -273,17 +272,17 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
         try {
             byte[] serializedPubKey = ECCUtilsBCWrapper.serializeECPoint(formats, pubKey);
-            msg.setSerializedPublicKey(serializedPubKey);
+            msg.setPublicKey(serializedPubKey);
         } catch (IOException ex) {
             throw new PreparationException("Could not serialize EC public key", ex);
         }
 
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     private void prepareCurveType(ECDHEServerKeyExchangeMessage msg) {

@@ -45,7 +45,7 @@ public class MangerAttackServerTest {
         config.setHost(CONNECT);
         List<CipherSuite> ciphersuites = new LinkedList<>();
         ciphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        config.setSupportedCiphersuites(ciphersuites);
+        config.setDefaultClientSupportedCiphersuites(ciphersuites);
 
         RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(config);
 

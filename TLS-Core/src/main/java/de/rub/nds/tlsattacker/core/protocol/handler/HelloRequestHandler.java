@@ -10,14 +10,10 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  * @author Philip Riese <philip.riese@rub.de>
@@ -30,17 +26,19 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
 
     @Override
     public HelloRequestParser getParser(byte[] message, int pointer) {
-        return new HelloRequestParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new HelloRequestParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public HelloRequestPreparator getPreparator(HelloRequestMessage message) {
-        return new HelloRequestPreparator(tlsContext, message);
+        return new HelloRequestPreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public HelloRequestSerializer getSerializer(HelloRequestMessage message) {
-        return new HelloRequestSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new HelloRequestSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

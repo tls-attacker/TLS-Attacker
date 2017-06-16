@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHas
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -63,7 +64,8 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     @Override
     public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(
             SignatureAndHashAlgorithmsExtensionMessage message) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(context, message);
+        return new SignatureAndHashAlgorithmsExtensionPreparator(new DefaultChooser(context, context.getConfig()),
+                message);
     }
 
     @Override

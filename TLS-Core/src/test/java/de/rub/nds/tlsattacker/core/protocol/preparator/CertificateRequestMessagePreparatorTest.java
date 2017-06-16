@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class CertificateRequestMessagePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new CertificateRequestMessage();
-        preparator = new CertificateRequestMessagePreparator(context, message);
+        preparator = new CertificateRequestMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     /**
@@ -55,7 +56,7 @@ public class CertificateRequestMessagePreparatorTest {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
         algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512));
-        context.getConfig().setSupportedSignatureAndHashAlgorithms(algoList);
+        context.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] { 0, 1, 2 }, message.getDistinguishedNames().getValue());
         assertTrue(3 == message.getDistinguishedNamesLength().getValue());

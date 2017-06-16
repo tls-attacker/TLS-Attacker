@@ -14,17 +14,14 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -39,17 +36,19 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     public ClientHelloParser getParser(byte[] message, int pointer) {
-        return new ClientHelloParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ClientHelloParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public ClientHelloPreparator getPreparator(ClientHelloMessage message) {
-        return new ClientHelloPreparator(tlsContext, message);
+        return new ClientHelloPreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public ClientHelloSerializer getSerializer(ClientHelloMessage message) {
-        return new ClientHelloSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ClientHelloSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override
@@ -87,13 +86,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     private void adjustDTLSCookie(ClientHelloMessage message) {
         byte[] dtlsCookie = message.getCookie().getValue();
-        tlsContext.setDtlsHandshakeCookie(dtlsCookie);
+        tlsContext.setDtlsCookie(dtlsCookie);
         LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie));
     }
 
     private void adjustSessionID(ClientHelloMessage message) {
         byte[] sessionId = message.getSessionId().getValue();
-        tlsContext.setSessionID(sessionId);
+        tlsContext.setClientSessionId(sessionId);
         LOGGER.debug("Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
     }
 

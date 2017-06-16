@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
@@ -30,7 +31,8 @@ public class ExtendedMasterSecretExtensionPreparatorTest {
     public void testPreparator() {
         context = new TlsContext();
         message = new ExtendedMasterSecretExtensionMessage();
-        preparator = new ExtendedMasterSecretExtensionPreparator(context, message);
+        preparator = new ExtendedMasterSecretExtensionPreparator(new DefaultChooser(context, context.getConfig()),
+                message);
 
         context.getConfig().setAddExtendedMasterSecretExtension(true);
         preparator.prepare();

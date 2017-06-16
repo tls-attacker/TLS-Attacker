@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.record.preparator;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 /**
@@ -25,8 +25,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private final Record record;
     private final Encryptor encryptor;
 
-    public RecordPreparator(TlsContext context, Record record, Encryptor encryptor, ProtocolMessageType type) {
-        super(context, record, type);
+    public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type) {
+        super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;
     }
@@ -34,8 +34,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     @Override
     public void prepare() {
         record.setContentType(type.getValue());
-        record.setProtocolVersion(context.getSelectedProtocolVersion().getValue());
-        record.setSequenceNumber(BigInteger.valueOf(context.getSequenceNumber()));
+        record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
+        record.setSequenceNumber(BigInteger.valueOf(chooser.getSequenceNumber()));
         encryptor.encrypt(record);
         record.setLength(record.getProtocolMessageBytes().getValue().length);
     }

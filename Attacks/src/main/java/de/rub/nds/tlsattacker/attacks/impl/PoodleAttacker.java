@@ -49,7 +49,7 @@ public class PoodleAttacker extends Attacker {
         TlsConfig tlsConfig = config.createConfig();
         TlsContext context = new TlsContext(tlsConfig);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.SSL3);
-        context.getConfig().setSupportedCiphersuites(getCbcCiphers());
+        context.getConfig().setDefaultClientSupportedCiphersuites(getCbcCiphers());
         context.getConfig().setWorkflowTraceType(WorkflowTraceType.HELLO);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
         executor.executeWorkflow();

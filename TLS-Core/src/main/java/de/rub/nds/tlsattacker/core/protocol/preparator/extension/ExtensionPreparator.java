@@ -11,9 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -24,8 +22,8 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private ExtensionMessage message;
 
-    public ExtensionPreparator(TlsContext context, T message) {
-        super(context, message);
+    public ExtensionPreparator(Chooser chooser, T message) {
+        super(chooser, message);
         this.message = message;
     }
 
@@ -33,7 +31,7 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     public final void prepare() {
         message.setExtensionType(message.getExtensionTypeConstant().getValue());
         prepareExtensionContent();
-        ExtensionSerializer serializer = message.getHandler(context).getSerializer(message);
+        ExtensionSerializer serializer = message.getHandler(chooser.getContext()).getSerializer(message);
         byte[] content = serializer.serializeExtensionContent();
         message.setExtensionLength(content.length);
         message.setExtensionBytes(serializer.serialize());

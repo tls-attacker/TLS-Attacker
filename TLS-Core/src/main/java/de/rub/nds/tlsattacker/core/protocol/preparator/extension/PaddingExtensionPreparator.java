@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,8 +20,8 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
 
     private final PaddingExtensionMessage message;
 
-    public PaddingExtensionPreparator(TlsContext context, PaddingExtensionMessage message) {
-        super(context, message);
+    public PaddingExtensionPreparator(Chooser chooser, PaddingExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
@@ -31,9 +31,9 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
      */
     @Override
     public void prepareExtensionContent() {
-        message.setPaddingBytes(context.getConfig().getDefaultPaddingExtensionBytes());
+        message.setPaddingBytes(chooser.getConfig().getDefaultPaddingExtensionBytes());
         LOGGER.debug("Prepared PaddingExtension with "
-                + ArrayConverter.bytesToHexString(context.getConfig().getDefaultPaddingExtensionBytes())
+                + ArrayConverter.bytesToHexString(chooser.getConfig().getDefaultPaddingExtensionBytes())
                 + " padding bytes.");
     }
 

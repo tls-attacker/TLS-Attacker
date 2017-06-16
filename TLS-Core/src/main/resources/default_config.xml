@@ -32,38 +32,49 @@
         <signatureAlgorithm>RSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
     <fuzzingMode>false</fuzzingMode>
-    <supportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</supportedCiphersuites>
-    <supportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA256</supportedCiphersuites>
-    <supportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DH_DSS_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DH_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DHE_DSS_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DH_DSS_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DH_RSA_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_DHE_RSA_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</supportedCiphersuites>
-    <supportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</supportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DH_DSS_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DH_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_DSS_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DH_DSS_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DH_RSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_128_CBC_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_AES_256_CBC_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_DES_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_CAMELLIA_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_CAMELLIA_256_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_IDEA_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_DES_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_SEED_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_SEED_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA</defaultClientSupportedCiphersuites>
     <supportedCompressionMethods>NULL</supportedCompressionMethods>
     <dynamicWorkflow>false</dynamicWorkflow>
     <pointFormats>UNCOMPRESSED</pointFormats>
@@ -77,6 +88,13 @@
     <sniHostnameFatal>false</sniHostnameFatal>
     <serverPort>4433</serverPort>
     <maxFragmentLength>TWO_9</maxFragmentLength>
+    <TLSSessionTicket></TLSSessionTicket>
+    <defaultRenegotiationInfo></defaultRenegotiationInfo>
+    <defaultSignedCertificateTimestamp></defaultSignedCertificateTimestamp>
+    <defaultTokenBindingVersion>DRAFT_13</defaultTokenBindingVersion>
+    <defaultTokenBindingKeyParameters>ECDSAP256</defaultTokenBindingKeyParameters>
+    <defaultTokenBindingKeyParameters>RSA2048_PKCS1_5</defaultTokenBindingKeyParameters>
+    <defaultTokenBindingKeyParameters>RSA2048_PSS</defaultTokenBindingKeyParameters>
     <tlsTimeout>400</tlsTimeout>
     <timeout>1000</timeout>
     <transportHandlerType>TCP</transportHandlerType>
@@ -88,6 +106,12 @@
     <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
     <addSignatureAndHashAlgrorithmsExtension>false</addSignatureAndHashAlgrorithmsExtension>
+    <addPaddingExtension>false</addPaddingExtension>
+    <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
+    <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
+    <addRenegotiationInfoExtension>false</addRenegotiationInfoExtension>
+    <addTokenBindingExtension>false</addTokenBindingExtension>
     <sessionId></sessionId>
     <updateTimestamps>true</updateTimestamps>
     <distinguishedNames></distinguishedNames>
@@ -120,10 +144,31 @@ B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
     <heartbeatMaxPaddingLength>256</heartbeatMaxPaddingLength>
     <defaultDTLSCookieLength>6</defaultDTLSCookieLength>
     <defaultMaxRecordData>1048576</defaultMaxRecordData>
+    <defaultPaddingExtensionBytes>AAAAAAAA</defaultPaddingExtensionBytes>
     <executorType>TLS</executorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
     <createIndividualRecords>true</createIndividualRecords>
     <recordLayerType>RECORD</recordLayerType>
     <stripWorkflowtracesBeforeSaving>false</stripWorkflowtracesBeforeSaving>
+    <quickReceive>true</quickReceive>
+    <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
+    <defaultSelectedSignatureAndHashAlgorithm>
+        <hashAlgorithm>SHA1</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </defaultSelectedSignatureAndHashAlgorithm>
+    <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
+    <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
+    <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
+    <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
+    <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>
+    <defaultMasterSecret></defaultMasterSecret>
+    <defaultPreMasterSecret></defaultPreMasterSecret>
+    <defaultClientRandom></defaultClientRandom>
+    <defaultServerRandom></defaultServerRandom>
+    <defaultClientSessionId></defaultClientSessionId>
+    <defaultServerSessionId></defaultServerSessionId>
+    <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
+    <defaultDtlsCookie></defaultDtlsCookie>
+    <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
 </tlsConfig>

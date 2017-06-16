@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,7 +32,7 @@ public class UnknownMessagePreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new UnknownMessage();
-        this.preparator = new UnknownMessagePreparator(context, message);
+        this.preparator = new UnknownMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     /**

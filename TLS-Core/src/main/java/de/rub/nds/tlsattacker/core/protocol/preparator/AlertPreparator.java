@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -21,8 +19,8 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
     private final AlertMessage msg;
 
-    public AlertPreparator(TlsContext context, AlertMessage message) {
-        super(context, message);
+    public AlertPreparator(Chooser chooser, AlertMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

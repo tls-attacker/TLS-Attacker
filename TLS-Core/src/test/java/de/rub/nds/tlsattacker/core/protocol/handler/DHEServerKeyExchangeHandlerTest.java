@@ -73,9 +73,9 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        message.setP(BigInteger.TEN.toByteArray());
-        message.setG(BigInteger.ONE.toByteArray());
-        message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
+        message.setModulus(BigInteger.TEN.toByteArray());
+        message.setGenerator(BigInteger.ONE.toByteArray());
+        message.setPublicKey(new byte[] { 0, 1, 2, 3 });
         message.prepareComputations();
         message.getComputations().setPrivateKey(new BigInteger("123"));
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
@@ -88,9 +88,9 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContextWithoutComputations() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        message.setP(BigInteger.TEN.toByteArray());
-        message.setG(BigInteger.ONE.toByteArray());
-        message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
+        message.setModulus(BigInteger.TEN.toByteArray());
+        message.setGenerator(BigInteger.ONE.toByteArray());
+        message.setPublicKey(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
         assertNull(context.getPreMasterSecret());
         assertNull(context.getMasterSecret());

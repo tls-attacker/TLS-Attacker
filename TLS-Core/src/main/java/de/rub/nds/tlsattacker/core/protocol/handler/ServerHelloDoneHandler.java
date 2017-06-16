@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,17 +37,19 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
 
     @Override
     public ServerHelloDoneParser getParser(byte[] message, int pointer) {
-        return new ServerHelloDoneParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ServerHelloDoneParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public ServerHelloDonePreparator getPreparator(ServerHelloDoneMessage message) {
-        return new ServerHelloDonePreparator(tlsContext, message);
+        return new ServerHelloDonePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public ServerHelloDoneSerializer getSerializer(ServerHelloDoneMessage message) {
-        return new ServerHelloDoneSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ServerHelloDoneSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

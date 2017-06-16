@@ -12,18 +12,16 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
@@ -38,17 +36,19 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     @Override
     public CertificateMessageParser getParser(byte[] message, int pointer) {
-        return new CertificateMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new CertificateMessageParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public CertificateMessagePreparator getPreparator(CertificateMessage message) {
-        return new CertificateMessagePreparator(tlsContext, message);
+        return new CertificateMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public CertificateMessageSerializer getSerializer(CertificateMessage message) {
-        return new CertificateMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new CertificateMessageSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,17 +32,19 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     @Override
     public AlertParser getParser(byte[] message, int pointer) {
-        return new AlertParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new AlertParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public AlertPreparator getPreparator(AlertMessage message) {
-        return new AlertPreparator(tlsContext, message);
+        return new AlertPreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public AlertSerializer getSerializer(AlertMessage message) {
-        return new AlertSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new AlertSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

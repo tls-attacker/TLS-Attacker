@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecre
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  *
@@ -31,7 +32,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
-        return new ExtendedMasterSecretExtensionPreparator(context, message);
+        return new ExtendedMasterSecretExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     @Override
@@ -40,13 +41,13 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     }
 
     /**
-     * Adjusts the TlsContext.
+     * Adjusts the Chooser.
      *
      * @param message
      */
     @Override
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
-        context.setIsExtendedMasterSecretExtension(true);
+        context.setReceivedMasterSecretExtension(true);
     }
 
 }

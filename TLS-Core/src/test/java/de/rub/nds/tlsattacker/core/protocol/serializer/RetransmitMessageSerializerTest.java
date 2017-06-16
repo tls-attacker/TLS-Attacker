@@ -8,18 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.RetransmitMessageSerializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParserTest;
-import de.rub.nds.tlsattacker.core.protocol.preparator.RetransmitMessagePreparator;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
@@ -35,7 +28,8 @@ public class RetransmitMessageSerializerTest {
 
     @Before
     public void setUp() {
-        msg = new RetransmitMessage(new byte[] { 6, 6, 6 });
+        msg = new RetransmitMessage();
+        msg.setCompleteResultingMessage(new byte[] { 6, 6, 6 });
         serializer = new RetransmitMessageSerializer(msg, ProtocolVersion.TLS12);
     }
 
@@ -45,8 +39,6 @@ public class RetransmitMessageSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
-        RetransmitMessagePreparator preparator = new RetransmitMessagePreparator(new TlsContext(), msg);
-        preparator.prepare();
         assertArrayEquals(new byte[] { 6, 6, 6 }, serializer.serialize());
     }
 }

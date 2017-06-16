@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
 
     @Override
     public ExtensionPreparator getPreparator(ECPointFormatExtensionMessage message) {
-        return new ECPointFormatExtensionPreparator(context, message);
+        return new ECPointFormatExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     @Override

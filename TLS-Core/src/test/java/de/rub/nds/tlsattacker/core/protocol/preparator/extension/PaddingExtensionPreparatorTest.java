@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -35,7 +36,8 @@ public class PaddingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PaddingExtensionMessage();
-        preparator = new PaddingExtensionPreparator(context, (PaddingExtensionMessage) message);
+        preparator = new PaddingExtensionPreparator(new DefaultChooser(context, context.getConfig()),
+                (PaddingExtensionMessage) message);
     }
 
     /**

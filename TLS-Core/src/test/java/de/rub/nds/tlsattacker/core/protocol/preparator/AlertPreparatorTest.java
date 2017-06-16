@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,7 +35,7 @@ public class AlertPreparatorTest {
     public void setUp() {
         message = new AlertMessage();
         context = new TlsContext();
-        preparator = new AlertPreparator(context, message);
+        preparator = new AlertPreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     /**

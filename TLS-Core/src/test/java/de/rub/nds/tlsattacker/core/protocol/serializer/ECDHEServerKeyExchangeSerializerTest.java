@@ -78,8 +78,8 @@ public class ECDHEServerKeyExchangeSerializerTest {
         msg.setLength(length);
         msg.setType(type.getValue());
         msg.setNamedCurve(namedCurve);
-        msg.setSerializedPublicKey(pubKey);
-        msg.setSerializedPublicKeyLength(pubKeyLength);
+        msg.setPublicKey(pubKey);
+        msg.setPublicKeyLength(pubKeyLength);
         msg.setHashAlgorithm(hashAlgorithm);
         msg.setSignatureAlgorithm(signatureAlgorithm);
         msg.setSignatureLength(sigLength);

@@ -92,8 +92,8 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ECDHE_PARAM_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -104,8 +104,8 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
      *            Message to write in
      */
     private void parseSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     /**

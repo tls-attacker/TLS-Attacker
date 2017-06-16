@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,8 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 import static org.junit.Assert.*;
 
@@ -41,7 +39,7 @@ public class RSAClientKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RSAClientKeyExchangeMessage();
-        preparator = new RSAClientKeyExchangePreparator(context, message);
+        preparator = new RSAClientKeyExchangePreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     /**
@@ -74,7 +72,7 @@ public class RSAClientKeyExchangePreparatorTest {
                 .getComputations().getPadding().getValue().length + 2]);
         assertNotNull(message.getComputations().getMasterSecret().getValue());
         assertEquals(HandshakeByteLength.MASTER_SECRET, message.getComputations().getMasterSecret().getValue().length);
-        assertNotNull(message.getSerializedPublicKeyLength().getValue());
-        assertNotNull(message.getSerializedPublicKey());
+        assertNotNull(message.getPublicKeyLength().getValue());
+        assertNotNull(message.getPublicKey());
     }
 }

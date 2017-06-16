@@ -81,7 +81,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
         ModifiableByteArray pms = new ModifiableByteArray();
         pms.setModification(ByteArrayModificationFactory.explicitValue(msg));
-        cke.setSerializedPublicKey(pms);
+        cke.setPublicKey(pms);
 
         if (numberOfQueries % 100 == 0) {
             LOGGER.debug("Number of queries so far: {}", numberOfQueries);

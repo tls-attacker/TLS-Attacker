@@ -10,14 +10,10 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  * Handler for Heartbeat messages: http://tools.ietf.org/html/rfc6520#page-4
@@ -32,17 +28,19 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 
     @Override
     public HeartbeatMessageParser getParser(byte[] message, int pointer) {
-        return new HeartbeatMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new HeartbeatMessageParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public HeartbeatMessagePreparator getPreparator(HeartbeatMessage message) {
-        return new HeartbeatMessagePreparator(tlsContext, message);
+        return new HeartbeatMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public HeartbeatMessageSerializer getSerializer(HeartbeatMessage message) {
-        return new HeartbeatMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new HeartbeatMessageSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

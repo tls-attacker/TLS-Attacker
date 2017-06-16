@@ -9,15 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  *
@@ -31,17 +27,19 @@ public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage
 
     @Override
     public UnknownMessageParser getParser(byte[] message, int pointer) {
-        return new UnknownMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new UnknownMessageParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public UnknownMessagePreparator getPreparator(UnknownMessage message) {
-        return new UnknownMessagePreparator(tlsContext, message);
+        return new UnknownMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public UnknownMessageSerializer getSerializer(UnknownMessage message) {
-        return new UnknownMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new UnknownMessageSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

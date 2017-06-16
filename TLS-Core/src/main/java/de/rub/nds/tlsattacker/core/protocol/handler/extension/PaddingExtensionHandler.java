@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionPar
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  *
@@ -33,7 +34,7 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
 
     @Override
     public PaddingExtensionPreparator getPreparator(PaddingExtensionMessage message) {
-        return new PaddingExtensionPreparator(context, message);
+        return new PaddingExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     @Override

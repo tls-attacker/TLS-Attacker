@@ -82,14 +82,11 @@ public class DefaultActionExecutor extends ActionExecutor {
             }
         }
         flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
-        // Save Bytes and parse them afterwards
-        byte[] toSendBytes = messageBytesCollector.getRecordBytes();
         try {
             sendData(messageBytesCollector);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        // TODO Parse our messages
         return new MessageActionResult(records, messages);
     }
 
@@ -179,6 +176,7 @@ public class DefaultActionExecutor extends ActionExecutor {
                     records = parseRecords(recievedBytes);
                     List<List<AbstractRecord>> recordGroups = getRecordGroups(records);
                     for (List<AbstractRecord> recordGroup : recordGroups) {
+                        adjustContext(recordGroup);
                         decryptRecords(recordGroup);
                         messages.addAll(parseMessages(recordGroup));
                         if (context.getConfig().isQuickReceive()) {
@@ -331,6 +329,12 @@ public class DefaultActionExecutor extends ActionExecutor {
     private void decryptRecords(List<AbstractRecord> records) {
         for (AbstractRecord record : records) {
             context.getRecordLayer().decryptRecord(record);
+        }
+    }
+
+    private void adjustContext(List<AbstractRecord> recordGroup) {
+        for (AbstractRecord record : recordGroup) {
+            record.adjustContext(context);
         }
     }
 }

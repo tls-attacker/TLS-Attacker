@@ -12,11 +12,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.security.interfaces.RSAPublicKey;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -30,17 +27,19 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
     @Override
     public RSAClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new RSAClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new RSAClientKeyExchangeParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public RSAClientKeyExchangePreparator getPreparator(RSAClientKeyExchangeMessage message) {
-        return new RSAClientKeyExchangePreparator(tlsContext, message);
+        return new RSAClientKeyExchangePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public RSAClientKeyExchangeSerializer getSerializer(RSAClientKeyExchangeMessage message) {
-        return new RSAClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new RSAClientKeyExchangeSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

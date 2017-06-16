@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.SessionResumptionDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
@@ -37,28 +36,6 @@ public class SessionResumptionDelegateTest {
     public void setUp() {
         this.delegate = new SessionResumptionDelegate();
         this.jcommander = new JCommander(delegate);
-    }
-
-    /**
-     * Test of isSessionResumption method, of class SessionResumptionDelegate.
-     */
-    @Test
-    public void testIsSessionResumption() {
-        args = new String[1];
-        args[0] = "-session_resumption";
-        assertFalse(Objects.equals(delegate.isSessionResumption(), Boolean.TRUE));
-        jcommander.parse(args);
-        assertTrue(delegate.isSessionResumption() == true);
-    }
-
-    /**
-     * Test of setSessionResumption method, of class SessionResumptionDelegate.
-     */
-    @Test
-    public void testSetSessionResumption() {
-        assertFalse(Objects.equals(delegate.isSessionResumption(), Boolean.TRUE));
-        delegate.setSessionResumption(true);
-        assertTrue(delegate.isSessionResumption() == true);
     }
 
     /**
@@ -103,18 +80,18 @@ public class SessionResumptionDelegateTest {
     @Test
     public void testApplyDelegate() {
         TlsConfig config = TlsConfig.createConfig();
-        args = new String[3];
+        args = new String[2];
         args[0] = "-session_id";
         args[1] = "00112233445566778899AABBCCDDEEFF";
-        args[2] = "-session_resumption";
         delegate.setSessionID(null);
         jcommander.parse(args);
         delegate.applyDelegate(config);
         byte[] expected = { (byte) 0x00, (byte) 0x11, (byte) 0x22, (byte) 0x33, (byte) 0x44, (byte) 0x55, (byte) 0x66,
                 (byte) 0x77, (byte) 0x88, (byte) 0x99, (byte) 0xAA, (byte) 0xBB, (byte) 0xCC, (byte) 0xDD, (byte) 0xEE,
                 (byte) 0xFF };
-        assertArrayEquals(config.getSessionId(), expected);
-        assertTrue(config.isSessionResumption());
+        assertArrayEquals(config.getDefaultClientSessionId(), expected);
+        assertArrayEquals(config.getDefaultServerSessionId(), expected);
+
     }
 
     @Test

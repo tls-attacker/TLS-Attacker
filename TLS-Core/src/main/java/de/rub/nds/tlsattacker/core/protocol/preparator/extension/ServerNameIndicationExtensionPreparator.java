@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -24,8 +24,8 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
 
     private final ServerNameIndicationExtensionMessage message;
 
-    public ServerNameIndicationExtensionPreparator(TlsContext context, ServerNameIndicationExtensionMessage message) {
-        super(context, message);
+    public ServerNameIndicationExtensionPreparator(Chooser chooser, ServerNameIndicationExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
@@ -33,7 +33,7 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
     public void prepareExtensionContent() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (ServerNamePair pair : message.getServerNameList()) {
-            ServerNamePairPreparator preparator = new ServerNamePairPreparator(context, pair);
+            ServerNamePairPreparator preparator = new ServerNamePairPreparator(chooser, pair);
             preparator.prepare();
             ServerNamePairSerializier serializer = new ServerNamePairSerializier(pair);
             try {

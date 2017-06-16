@@ -88,12 +88,12 @@ public class CiphersuiteDelegateTest {
         assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly",
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
         TlsConfig config = TlsConfig.createConfig();
-        config.setSupportedCiphersuites(null);
+        config.setDefaultClientSupportedCiphersuites(null);
         delegate.applyDelegate(config);
-        assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config.getSupportedCiphersuites()
-                .contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
-        assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly", config.getSupportedCiphersuites()
-                .contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
+        assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config
+                .getDefaultClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
+        assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly", config
+                .getDefaultClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
 
     }
 

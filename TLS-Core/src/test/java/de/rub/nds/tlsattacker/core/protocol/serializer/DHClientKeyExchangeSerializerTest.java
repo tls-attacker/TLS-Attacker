@@ -62,8 +62,8 @@ public class DHClientKeyExchangeSerializerTest {
     public void testSerializeHandshakeMessageContent() {
         DHClientKeyExchangeMessage msg = new DHClientKeyExchangeMessage();
         msg.setCompleteResultingMessage(expectedPart);
-        msg.setSerializedPublicKey(serializedKey);
-        msg.setSerializedPublicKeyLength(serializedKeyLength);
+        msg.setPublicKey(serializedKey);
+        msg.setPublicKeyLength(serializedKeyLength);
         msg.setType(type.getValue());
         msg.setLength(length);
         DHClientKeyExchangeSerializer serializer = new DHClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);

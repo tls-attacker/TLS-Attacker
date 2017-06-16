@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -21,8 +21,8 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
 
     private final ECPointFormatExtensionMessage message;
 
-    public ECPointFormatExtensionPreparator(TlsContext context, ECPointFormatExtensionMessage message) {
-        super(context, message);
+    public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
@@ -39,7 +39,7 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
 
     private byte[] createPointFormatsByteArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ECPointFormat format : context.getConfig().getPointFormats()) {
+        for (ECPointFormat format : chooser.getConfig().getPointFormats()) {
             stream.write(format.getValue());
         }
         return stream.toByteArray();

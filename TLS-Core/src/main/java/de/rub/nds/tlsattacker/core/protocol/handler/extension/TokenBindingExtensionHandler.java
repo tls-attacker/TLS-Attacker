@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.TokenBindingExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TokenBindingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.util.ArrayList;
 
 /**
@@ -34,7 +35,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public TokenBindingExtensionPreparator getPreparator(TokenBindingExtensionMessage message) {
-        return new TokenBindingExtensionPreparator(context, message);
+        return new TokenBindingExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     @Override

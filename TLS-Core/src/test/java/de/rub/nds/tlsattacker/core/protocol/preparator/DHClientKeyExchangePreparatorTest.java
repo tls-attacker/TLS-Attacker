@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,7 +33,7 @@ public class DHClientKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new DHClientKeyExchangeMessage();
-        preparator = new DHClientKeyExchangePreparator(context, message);
+        preparator = new DHClientKeyExchangePreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     /**

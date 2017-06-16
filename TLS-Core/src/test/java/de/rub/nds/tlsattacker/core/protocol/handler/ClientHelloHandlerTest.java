@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -86,11 +85,11 @@ public class ClientHelloHandlerTest {
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
         assertTrue(context.getClientSupportedCompressions().size() == 2);
-        assertArrayEquals(context.getSessionID(), new byte[] { 6, 6, 6 });
+        assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
         assertTrue(context.getClientSupportedCiphersuites().size() == 2);
         assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
         assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
-        assertNull(context.getDtlsHandshakeCookie());
+        assertNull(context.getDtlsCookie());
         assertArrayEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }
 
@@ -109,11 +108,11 @@ public class ClientHelloHandlerTest {
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.DEFLATE));
         assertTrue(context.getClientSupportedCompressions().contains(CompressionMethod.NULL));
         assertTrue(context.getClientSupportedCompressions().size() == 2);
-        assertArrayEquals(context.getSessionID(), new byte[] { 6, 6, 6 });
+        assertArrayEquals(context.getClientSessionId(), new byte[] { 6, 6, 6 });
         assertTrue(context.getClientSupportedCiphersuites().size() == 2);
         assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_SHA));
         assertTrue(context.getClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_NULL_MD5));
-        assertArrayEquals(context.getDtlsHandshakeCookie(), new byte[] { 2, 2, 3 });
+        assertArrayEquals(context.getDtlsCookie(), new byte[] { 2, 2, 3 });
         assertArrayEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }
 

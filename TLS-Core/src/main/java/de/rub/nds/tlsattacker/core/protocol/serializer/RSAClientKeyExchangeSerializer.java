@@ -49,8 +49,8 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
      * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
-        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -58,7 +58,7 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
      * the final byte[]
      */
     private void writeSerializedPublickey(RSAClientKeyExchangeMessage msg) {
-        appendBytes(msg.getSerializedPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        appendBytes(msg.getPublicKey().getValue());
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 }

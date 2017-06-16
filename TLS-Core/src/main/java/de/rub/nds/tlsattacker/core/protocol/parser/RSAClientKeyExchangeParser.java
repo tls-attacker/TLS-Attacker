@@ -57,8 +57,8 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -69,8 +69,8 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
      *            Message to write in
      */
     private void parseSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
 }

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -27,8 +28,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
     private final CertificateMessage msg;
 
-    public CertificateMessagePreparator(TlsContext context, CertificateMessage msg) {
-        super(context, msg);
+    public CertificateMessagePreparator(Chooser chooser, CertificateMessage msg) {
+        super(chooser, msg);
         this.msg = msg;
     }
 
@@ -41,10 +42,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private Certificate chooseCert() {
-        Certificate cert = context.getConfig().getOurCertificate();
+        Certificate cert = chooser.getConfig().getOurCertificate();
         if (cert == null) {
             throw new PreparationException("Cannot prepare CertificateMessage since no certificate is specified for "
-                    + context.getTalkingConnectionEnd().name());
+                    + chooser.getTalkingConnectionEnd().name());
         } else {
             return cert;
         }

@@ -160,7 +160,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         List<CipherSuite> cipherSuites = new LinkedList<>();
         cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
         cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-        config.setSupportedCiphersuites(cipherSuites);
+        config.setDefaultClientSupportedCiphersuites(cipherSuites);
         List<NamedCurve> namedCurves = new LinkedList<>();
         namedCurves.add(namedCurve);
         config.setNamedCurves(namedCurves);

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -24,9 +24,9 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
 
     private final SignatureAndHashAlgorithmsExtensionMessage message;
 
-    public SignatureAndHashAlgorithmsExtensionPreparator(TlsContext context,
+    public SignatureAndHashAlgorithmsExtensionPreparator(Chooser chooser,
             SignatureAndHashAlgorithmsExtensionMessage message) {
-        super(context, message);
+        super(chooser, message);
         this.message = message;
     }
 
@@ -42,7 +42,7 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
 
     private byte[] createSignatureAndHashAlgorithmsArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (SignatureAndHashAlgorithm algo : context.getConfig().getSupportedSignatureAndHashAlgorithms()) {
+        for (SignatureAndHashAlgorithm algo : chooser.getConfig().getSupportedSignatureAndHashAlgorithms()) {
             try {
                 stream.write(algo.getByteValue());
             } catch (IOException ex) {

@@ -76,7 +76,7 @@ public class HelloVerifyRequestHandlerTest {
         HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
         message.setCookie(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
-        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getDtlsHandshakeCookie());
+        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getDtlsCookie());
     }
 
 }

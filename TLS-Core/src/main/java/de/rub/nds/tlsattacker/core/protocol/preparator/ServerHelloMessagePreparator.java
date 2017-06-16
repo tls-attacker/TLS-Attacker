@@ -14,12 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import javax.swing.text.html.parser.DTDConstants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -29,8 +25,8 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     private final ServerHelloMessage msg;
 
-    public ServerHelloMessagePreparator(TlsContext context, ServerHelloMessage message) {
-        super(context, message);
+    public ServerHelloMessagePreparator(Chooser chooser, ServerHelloMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -48,12 +44,13 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     }
 
     private void prepareCipherSuite() {
-        if (context.getConfig().isEnforceSettings()) {
-            msg.setSelectedCipherSuite(context.getConfig().getSupportedCiphersuites().get(0).getByteValue());
+        if (chooser.getConfig().isEnforceSettings()) {
+            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultClientSupportedCiphersuites().get(0)
+                    .getByteValue());
         } else {
             CipherSuite selectedSuite = null;
-            for (CipherSuite suite : context.getConfig().getSupportedCiphersuites()) {
-                if (context.getClientSupportedCiphersuites().contains(suite)) {
+            for (CipherSuite suite : chooser.getConfig().getDefaultClientSupportedCiphersuites()) {
+                if (chooser.getClientSupportedCiphersuites().contains(suite)) {
                     selectedSuite = suite;
                     break;
                 }
@@ -67,12 +64,12 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     }
 
     private void prepareCompressionMethod() {
-        if (context.getConfig().isEnforceSettings()) {
-            msg.setSelectedCompressionMethod(context.getConfig().getSupportedCompressionMethods().get(0).getValue());
+        if (chooser.getConfig().isEnforceSettings()) {
+            msg.setSelectedCompressionMethod(chooser.getConfig().getSupportedCompressionMethods().get(0).getValue());
         } else {
             CompressionMethod selectedCompressionMethod = null;
-            for (CompressionMethod method : context.getConfig().getSupportedCompressionMethods()) {
-                if (context.getClientSupportedCompressions().contains(method)) {
+            for (CompressionMethod method : chooser.getConfig().getSupportedCompressionMethods()) {
+                if (chooser.getClientSupportedCompressions().contains(method)) {
                     selectedCompressionMethod = method;
                     break;
                 }
@@ -86,25 +83,20 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     }
 
     private void prepareSessionID() {
-        if (context.getConfig().getSessionId().length > 0) {
-            msg.setSessionId(context.getConfig().getSessionId());
-        } else {
-            msg.setSessionId(ArrayConverter
-                    .hexStringToByteArray("f727d526b178ecf3218027ccf8bb125d572068220000ba8c0f774ba7de9f5cdb"));
-        }
+        msg.setSessionId(chooser.getServerSessionId());
         LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
     private void prepareProtocolVersion() {
-        ProtocolVersion ourVersion = context.getConfig().getHighestProtocolVersion();
-        ProtocolVersion clientVersion = context.getHighestClientProtocolVersion();
+        ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
+        ProtocolVersion clientVersion = chooser.getHighestClientProtocolVersion();
         int intRepresentationOurVersion = ourVersion.getValue()[0] * 0x100 + ourVersion.getValue()[1];
         int intRepresentationClientVersion = clientVersion.getValue()[0] * 0x100 + clientVersion.getValue()[1];
-        if (context.getConfig().isEnforceSettings()) {
+        if (chooser.getConfig().isEnforceSettings()) {
             msg.setProtocolVersion(ourVersion.getValue());
         } else {
-            if (context.getHighestClientProtocolVersion().isDTLS()
-                    && context.getConfig().getHighestProtocolVersion().isDTLS()) {
+            if (chooser.getHighestClientProtocolVersion().isDTLS()
+                    && chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want dtls
                 if (intRepresentationClientVersion <= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -112,8 +104,8 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
                     msg.setProtocolVersion(clientVersion.getValue());
                 }
             }
-            if (!context.getHighestClientProtocolVersion().isDTLS()
-                    && !context.getConfig().getHighestProtocolVersion().isDTLS()) {
+            if (!chooser.getHighestClientProtocolVersion().isDTLS()
+                    && !chooser.getConfig().getHighestProtocolVersion().isDTLS()) {
                 // We both want tls
                 if (intRepresentationClientVersion >= intRepresentationOurVersion) {
                     msg.setProtocolVersion(ourVersion.getValue());
@@ -121,7 +113,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
                     msg.setProtocolVersion(clientVersion.getValue());
                 }
             } else {
-                if (context.getConfig().isFuzzingMode()) {
+                if (chooser.getConfig().isFuzzingMode()) {
                     msg.setProtocolVersion(ourVersion.getValue());
                 } else {
                     throw new WorkflowExecutionException("TLS/DTLS Mismatch");

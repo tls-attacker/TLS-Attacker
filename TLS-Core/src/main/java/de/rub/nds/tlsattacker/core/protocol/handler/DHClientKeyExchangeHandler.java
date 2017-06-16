@@ -8,17 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  * Handler for DH and DHE ClientKeyExchange messages
@@ -34,17 +29,19 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     public DHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new DHClientKeyExchangeParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public DHClientKeyExchangePreparator getPreparator(DHClientKeyExchangeMessage message) {
-        return new DHClientKeyExchangePreparator(tlsContext, message);
+        return new DHClientKeyExchangePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public DHClientKeyExchangeSerializer getSerializer(DHClientKeyExchangeMessage message) {
-        return new DHClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new DHClientKeyExchangeSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

@@ -13,16 +13,14 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -36,17 +34,19 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public ServerHelloMessagePreparator getPreparator(ServerHelloMessage message) {
-        return new ServerHelloMessagePreparator(tlsContext, message);
+        return new ServerHelloMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public ServerHelloMessageSerializer getSerializer(ServerHelloMessage message) {
-        return new ServerHelloMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ServerHelloMessageSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override
     public ServerHelloParser getParser(byte[] message, int pointer) {
-        return new ServerHelloParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ServerHelloParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
@@ -61,6 +61,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
             }
         }
+        adjustPRF(message);
     }
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
@@ -84,7 +85,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustSelectedSessionID(ServerHelloMessage message) {
         byte[] sessionID = message.getSessionId().getValue();
-        tlsContext.setSessionID(sessionID);
+        tlsContext.setServerSessionId(sessionID);
         LOGGER.debug("Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID, false));
 
     }
@@ -93,5 +94,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         tlsContext.setSelectedProtocolVersion(version);
         LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+    }
+
+    private void adjustPRF(ServerHelloMessage message) {
+        Chooser chooser = new DefaultChooser(tlsContext, tlsContext.getConfig());
+        tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite()));
     }
 }

@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -41,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -146,7 +146,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         byte[] roundMessageData = new byte[config.getTrainMessageSize()];
         RandomHelper.getRandom().nextBytes(roundMessageData);
         HeartbeatMessage sentHbMessage = new HeartbeatMessage(tlsConfig);
-        HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(tlsContext, sentHbMessage);
+        HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(new DefaultChooser(tlsContext,
+                tlsContext.getConfig()), sentHbMessage);
         preparator.prepare();
         byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData,
                 sentHbMessage);
@@ -278,7 +279,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         List<AbstractRecord> records = new ArrayList<>();
         records.add(new Record());
 
-        AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);
+        AlertPreparator preparator = new AlertPreparator(new DefaultChooser(new TlsContext(tlsConfig), tlsConfig),
+                closeNotify);
         preparator.prepare();
         try {
             transportHandler.sendData(recordLayer.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),

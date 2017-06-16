@@ -9,15 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RetransmitMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RetransmitMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -36,12 +32,13 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
 
     @Override
     public RetransmitMessagePreparator getPreparator(RetransmitMessage message) {
-        return new RetransmitMessagePreparator(tlsContext, message);
+        return new RetransmitMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public RetransmitMessageSerializer getSerializer(RetransmitMessage message) {
-        return new RetransmitMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new RetransmitMessageSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

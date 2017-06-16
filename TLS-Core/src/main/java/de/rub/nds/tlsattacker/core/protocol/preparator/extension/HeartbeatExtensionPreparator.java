@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -19,14 +19,14 @@ public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatE
 
     private HeartbeatExtensionMessage message;
 
-    public HeartbeatExtensionPreparator(TlsContext context, HeartbeatExtensionMessage message) {
-        super(context, message);
+    public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setHeartbeatMode(context.getConfig().getHeartbeatMode().getArrayValue());
+        message.setHeartbeatMode(chooser.getConfig().getHeartbeatMode().getArrayValue());
     }
 
 }

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
@@ -37,7 +38,7 @@ public class HelloVerifyRequestPreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new HelloVerifyRequestMessage();
-        this.preparator = new HelloVerifyRequestPreparator(context, message);
+        this.preparator = new HelloVerifyRequestPreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     /**

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -20,17 +20,17 @@ import java.io.ByteArrayOutputStream;
 public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBindingExtensionMessage> {
     private final TokenBindingExtensionMessage message;
 
-    public TokenBindingExtensionPreparator(TlsContext context, TokenBindingExtensionMessage message) {
-        super(context, message);
+    public TokenBindingExtensionPreparator(Chooser chooser, TokenBindingExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setTokenbindingVersion(context.getConfig().getTokenBindingVersion().getByteValue());
-        message.setParameterListLength(context.getConfig().getTokenBindingKeyParameters().length);
+        message.setTokenbindingVersion(chooser.getConfig().getDefaultTokenBindingVersion().getByteValue());
+        message.setParameterListLength(chooser.getConfig().getDefaultTokenBindingKeyParameters().size());
         ByteArrayOutputStream tokenbindingKeyParameters = new ByteArrayOutputStream();
-        for (TokenBindingKeyParameters kp : context.getConfig().getTokenBindingKeyParameters()) {
+        for (TokenBindingKeyParameters kp : chooser.getConfig().getDefaultTokenBindingKeyParameters()) {
             tokenbindingKeyParameters.write(kp.getKeyParameterValue());
         }
         message.setTokenbindingKeyParameters(tokenbindingKeyParameters.toByteArray());

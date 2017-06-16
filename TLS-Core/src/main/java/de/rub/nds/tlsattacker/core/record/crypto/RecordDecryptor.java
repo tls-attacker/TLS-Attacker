@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class RecordDecryptor extends Decryptor<Record> {
 
-    private TlsContext context;
+    private final TlsContext context;
 
     public RecordDecryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);

@@ -63,8 +63,8 @@ public class ECDHClientKeyExchangeSerializerTest {
         ECDHClientKeyExchangeMessage msg = new ECDHClientKeyExchangeMessage();
         msg.setLength(length);
         msg.setType(type.getValue());
-        msg.setSerializedPublicKey(serializedKey);
-        msg.setSerializedPublicKeyLength(serializedKeyLength);
+        msg.setPublicKey(serializedKey);
+        msg.setPublicKeyLength(serializedKeyLength);
         msg.setCompleteResultingMessage(expectedPart);
         ECDHClientKeyExchangeSerializer serializer = new ECDHClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());

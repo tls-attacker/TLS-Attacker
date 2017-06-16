@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMessage> extends
         HandshakeMessagePreparator<ClientKeyExchangeMessage> {
 
-    public ClientKeyExchangePreparator(TlsContext context, ClientKeyExchangeMessage message) {
-        super(context, message);
+    public ClientKeyExchangePreparator(Chooser chooser, ClientKeyExchangeMessage message) {
+        super(chooser, message);
     }
 }

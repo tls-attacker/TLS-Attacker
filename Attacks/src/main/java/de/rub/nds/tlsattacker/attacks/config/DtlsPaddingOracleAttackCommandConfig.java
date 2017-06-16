@@ -119,7 +119,7 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
         List<CipherSuite> cs = new ArrayList<>();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-            config.setSupportedCiphersuites(cs);
+            config.setDefaultClientSupportedCiphersuites(cs);
         }
         return config;
     }

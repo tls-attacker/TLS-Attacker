@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import java.math.BigInteger;
 
 /**
@@ -31,13 +30,13 @@ public class DHEServerComputations extends KeyExchangeComputations {
      * dh modulus used for computations
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger p;
+    private ModifiableBigInteger modulus;
 
     /**
      * dh generator used for computations
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableBigInteger g;
+    private ModifiableBigInteger generator;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray serverRandom;
@@ -57,28 +56,28 @@ public class DHEServerComputations extends KeyExchangeComputations {
         this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
-    public ModifiableBigInteger getP() {
-        return p;
+    public ModifiableBigInteger getModulus() {
+        return modulus;
     }
 
-    public void setP(ModifiableBigInteger p) {
-        this.p = p;
+    public void setModulus(ModifiableBigInteger modulus) {
+        this.modulus = modulus;
     }
 
-    public ModifiableBigInteger getG() {
-        return g;
+    public ModifiableBigInteger getGenerator() {
+        return generator;
     }
 
-    public void setG(ModifiableBigInteger g) {
-        this.g = g;
+    public void setGenerator(ModifiableBigInteger generator) {
+        this.generator = generator;
     }
 
-    public void setP(BigInteger p) {
-        this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
+    public void setModulus(BigInteger modulus) {
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
 
-    public void setG(BigInteger g) {
-        this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
+    public void setGenerator(BigInteger generator) {
+        this.generator = ModifiableVariableFactory.safelySetValue(this.generator, generator);
     }
 
     public ModifiableByteArray getServerRandom() {

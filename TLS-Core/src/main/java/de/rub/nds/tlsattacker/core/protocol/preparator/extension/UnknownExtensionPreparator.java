@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -22,8 +20,8 @@ public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> exten
 
     private UnknownExtensionMessage msg;
 
-    public UnknownExtensionPreparator(TlsContext context, T object) {
-        super(context, object);
+    public UnknownExtensionPreparator(Chooser chooser, T object) {
+        super(chooser, object);
         msg = object;
     }
 

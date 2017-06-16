@@ -9,11 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -23,8 +20,8 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
 
     private final ApplicationMessage msg;
 
-    public ApplicationMessagePreparator(TlsContext context, ApplicationMessage message) {
-        super(context, message);
+    public ApplicationMessagePreparator(Chooser chooser, ApplicationMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -37,7 +34,7 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
         if (msg.getDataConfig() != null) {
             msg.setData(msg.getDataConfig());
         } else {
-            msg.setData(context.getConfig().getDefaultApplicationMessageData().getBytes());
+            msg.setData(chooser.getConfig().getDefaultApplicationMessageData().getBytes());
         }
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }

@@ -9,10 +9,9 @@
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -23,8 +22,8 @@ public class BlobRecordPreparator extends AbstractRecordPreparator {
     private final BlobRecord record;
     private final Encryptor encryptor;
 
-    public BlobRecordPreparator(TlsContext context, BlobRecord record, Encryptor encryptor, ProtocolMessageType type) {
-        super(context, record, type);
+    public BlobRecordPreparator(Chooser chooser, BlobRecord record, Encryptor encryptor, ProtocolMessageType type) {
+        super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;
     }

@@ -46,6 +46,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyPairFromStore;
 import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyStoreFromRsaPem;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  *
@@ -75,7 +76,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         }
         RandomHelper.setRandom(random);
         msg = new ECDHEServerKeyExchangeMessage();
-        preparator = new ECDHEServerKeyExchangePreparator(tlsContext, msg);
+        preparator = new ECDHEServerKeyExchangePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), msg);
     }
 
     @Test
@@ -97,8 +98,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         assertArrayEquals(NamedCurve.SECP384R1.getValue(), msg.getNamedCurve().getValue());
 
         String serializedPubKeyExcpected = "0453E2F98C7D459354029E08404C690D857F921CE4A6AA71C2F114D04D24E033E08CFB5C9B84FA81DB3FB5CA35639AE69BDDC3E657ACD0532EF9C100F0863D9A3145BABBFDD727491991FBDD377C4EEBAE2D5ADDF3C8152824C9B4442E628A8CF3";
-        assertEquals(serializedPubKeyExcpected,
-                ArrayConverter.bytesToRawHexString(msg.getSerializedPublicKey().getValue()));
+        assertEquals(serializedPubKeyExcpected, ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
 
         assertTrue(SignatureAlgorithm.RSA.getValue() == msg.getSignatureAlgorithm().getValue());
         assertTrue(HashAlgorithm.SHA512.getValue() == msg.getHashAlgorithm().getValue());

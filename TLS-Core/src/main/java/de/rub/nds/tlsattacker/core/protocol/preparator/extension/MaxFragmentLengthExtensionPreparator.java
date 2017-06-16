@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -19,14 +19,14 @@ public class MaxFragmentLengthExtensionPreparator extends ExtensionPreparator<Ma
 
     private final MaxFragmentLengthExtensionMessage message;
 
-    public MaxFragmentLengthExtensionPreparator(TlsContext context, MaxFragmentLengthExtensionMessage message) {
-        super(context, message);
+    public MaxFragmentLengthExtensionPreparator(Chooser chooser, MaxFragmentLengthExtensionMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setMaxFragmentLength(context.getConfig().getMaxFragmentLength().getArrayValue());
+        message.setMaxFragmentLength(chooser.getConfig().getMaxFragmentLength().getArrayValue());
     }
 
 }

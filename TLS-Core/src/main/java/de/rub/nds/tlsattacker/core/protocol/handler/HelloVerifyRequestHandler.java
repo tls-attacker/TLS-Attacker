@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSeriali
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,17 +34,19 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     @Override
     public HelloVerifyRequestParser getParser(byte[] message, int pointer) {
-        return new HelloVerifyRequestParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new HelloVerifyRequestParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public HelloVerifyRequestPreparator getPreparator(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestPreparator(tlsContext, message);
+        return new HelloVerifyRequestPreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public HelloVerifyRequestSerializer getSerializer(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new HelloVerifyRequestSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override
@@ -53,7 +56,7 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     private void adjustDTLSCookie(HelloVerifyRequestMessage message) {
         byte[] dtlsCookie = message.getCookie().getValue();
-        tlsContext.setDtlsHandshakeCookie(dtlsCookie);
+        tlsContext.setDtlsCookie(dtlsCookie);
         LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie, false));
     }
 }

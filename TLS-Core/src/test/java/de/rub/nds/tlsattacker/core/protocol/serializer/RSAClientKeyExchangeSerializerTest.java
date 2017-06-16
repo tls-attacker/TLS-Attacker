@@ -64,8 +64,8 @@ public class RSAClientKeyExchangeSerializerTest {
         msg.setCompleteResultingMessage(expectedPart);
         msg.setType(type.getValue());
         msg.setLength(length);
-        msg.setSerializedPublicKey(serializedKey);
-        msg.setSerializedPublicKeyLength(serializedKeyLength);
+        msg.setPublicKey(serializedKey);
+        msg.setPublicKeyLength(serializedKeyLength);
         RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
         assertArrayEquals(expectedPart, serializer.serialize());
     }

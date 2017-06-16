@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -33,8 +34,8 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     private byte[] signature;
     private final CertificateVerifyMessage msg;
 
-    public CertificateVerifyMessagePreparator(TlsContext context, CertificateVerifyMessage message) {
-        super(context, message);
+    public CertificateVerifyMessagePreparator(Chooser chooser, CertificateVerifyMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -48,8 +49,8 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     }
 
     private SignatureAndHashAlgorithm selectSigHashAlgorithm() {
-        PrivateKey key = context.getConfig().getPrivateKey();
-        for (SignatureAndHashAlgorithm algo : context.getConfig().getSupportedSignatureAndHashAlgorithms()) {
+        PrivateKey key = chooser.getConfig().getPrivateKey();
+        for (SignatureAndHashAlgorithm algo : chooser.getConfig().getSupportedSignatureAndHashAlgorithms()) {
             if (algo.getSignatureAlgorithm().getJavaName().equals(key.getAlgorithm())) {
                 return algo;
             }
@@ -60,10 +61,10 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     private byte[] createSignature() {
         try {
-            byte[] rawHandshakeBytes = context.getDigest().getRawBytes();
+            byte[] rawHandshakeBytes = chooser.getDigest().getRawBytes();
             algorithm = selectSigHashAlgorithm();
             Signature tempSignature = Signature.getInstance(algorithm.getJavaName());
-            tempSignature.initSign(context.getConfig().getPrivateKey(), RandomHelper.getBadSecureRandom());
+            tempSignature.initSign(chooser.getConfig().getPrivateKey(), RandomHelper.getBadSecureRandom());
             tempSignature.update(rawHandshakeBytes);
             return tempSignature.sign();
         } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException ex) {

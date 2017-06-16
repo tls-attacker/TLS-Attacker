@@ -67,7 +67,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
-        cke.setSerializedPublicKey(epms);
+        cke.setPublicKey(epms);
         tlsConfig.setWorkflowTrace(trace);
         workflowExecutor.executeWorkflow();
         return trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1);

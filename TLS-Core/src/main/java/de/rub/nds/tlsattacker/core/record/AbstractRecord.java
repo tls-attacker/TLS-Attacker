@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -94,10 +95,12 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
         this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
-    public abstract AbstractRecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor,
+    public abstract AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
             ProtocolMessageType type);
 
     public abstract AbstractRecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version);
 
     public abstract AbstractRecordSerializer getRecordSerializer();
+
+    public abstract void adjustContext(TlsContext context);
 }

@@ -41,6 +41,6 @@ public class TlsConfigIOTest {
         TlsConfig config = TlsConfig.createConfig(stream);
         assertNotNull(config);
         assertNotNull(config.getAlias());
-        assertTrue(config.getSupportedCiphersuites().size() == 1);
+        assertTrue(config.getDefaultClientSupportedCiphersuites().size() == 1);
     }
 }

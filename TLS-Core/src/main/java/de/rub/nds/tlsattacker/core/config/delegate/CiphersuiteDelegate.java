@@ -42,7 +42,8 @@ public class CiphersuiteDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         if (cipherSuites != null) {
-            config.setSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+            config.setDefaultServerSupportedCiphersuites(cipherSuites);
         }
     }
 

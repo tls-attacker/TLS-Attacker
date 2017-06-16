@@ -17,12 +17,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -34,8 +32,8 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     private final HelloMessage msg;
 
-    public HelloMessagePreparator(TlsContext context, HelloMessage message) {
-        super(context, message);
+    public HelloMessagePreparator(Chooser chooser, HelloMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -61,7 +59,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
-                ExtensionHandler handler = extensionMessage.getHandler(context);
+                ExtensionHandler handler = extensionMessage.getHandler(chooser.getContext());
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());

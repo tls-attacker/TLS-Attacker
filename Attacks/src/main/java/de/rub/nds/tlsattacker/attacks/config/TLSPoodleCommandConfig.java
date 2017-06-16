@@ -58,9 +58,9 @@ public class TLSPoodleCommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-            config.setSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
-        for (CipherSuite suite : config.getSupportedCiphersuites()) {
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
             if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -32,7 +33,7 @@ public class ECDHClientKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ECDHClientKeyExchangeMessage();
-        preparator = new ECDHClientKeyExchangePreparator(context, message);
+        preparator = new ECDHClientKeyExchangePreparator(new DefaultChooser(context, context.getConfig()), message);
     }
 
     /**

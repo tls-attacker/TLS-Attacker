@@ -11,9 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -25,8 +23,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     private HandshakeMessageSerializer serializer;
     private final HandshakeMessage msg;
 
-    public HandshakeMessagePreparator(TlsContext context, T message) {
-        super(context, message);
+    public HandshakeMessagePreparator(Chooser chooser, T message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -44,7 +42,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
         // Ugly but only temporary
-        serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(msg);
+        serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
 
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
         if (isDTLS()) {
@@ -68,11 +66,11 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     }
 
     private void prepareMessageSeq(HandshakeMessage msg) {
-        msg.setMessageSeq(context.getSequenceNumber());
+        msg.setMessageSeq(chooser.getSequenceNumber());
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 
     private boolean isDTLS() {
-        return context.getSelectedProtocolVersion().isDTLS();
+        return chooser.getSelectedProtocolVersion().isDTLS();
     }
 }

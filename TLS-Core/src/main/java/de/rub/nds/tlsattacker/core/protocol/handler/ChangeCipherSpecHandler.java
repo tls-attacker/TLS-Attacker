@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
@@ -16,9 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerialize
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -32,17 +31,19 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public ChangeCipherSpecParser getParser(byte[] message, int pointer) {
-        return new ChangeCipherSpecParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ChangeCipherSpecParser(pointer, message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
 
     @Override
     public ChangeCipherSpecPreparator getPreparator(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecPreparator(tlsContext, message);
+        return new ChangeCipherSpecPreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
 
     @Override
     public ChangeCipherSpecSerializer getSerializer(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ChangeCipherSpecSerializer(message,
+                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
 
     @Override

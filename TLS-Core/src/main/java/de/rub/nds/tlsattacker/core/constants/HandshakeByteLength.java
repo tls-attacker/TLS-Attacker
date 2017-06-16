@@ -101,15 +101,15 @@ public class HandshakeByteLength {
     public static final int SIGNATURE_LENGTH = 2;
 
     /**
-     * DH p length
+     * DH modulus length
      */
 
-    public static final int DH_P_LENGTH = 2;
+    public static final int DH_MODULUS_LENGTH = 2;
     /**
-     * DH g length
+     * DH generator length
      */
 
-    public static final int DH_G_LENGTH = 2;
+    public static final int DH_GENERATOR_LENGTH = 2;
     /**
      * DH public key length
      */

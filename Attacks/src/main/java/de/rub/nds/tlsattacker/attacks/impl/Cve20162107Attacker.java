@@ -66,7 +66,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         TlsConfig tlsConfig = config.createConfig();
         List<CipherSuite> suiteList = new LinkedList<>();
         suiteList.add(suite);
-        tlsConfig.setSupportedCiphersuites(suiteList);
+        tlsConfig.setDefaultClientSupportedCiphersuites(suiteList);
         tlsConfig.setEnforceSettings(true);
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
@@ -155,14 +155,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         List<ProtocolVersion> versions = config.getVersions();
         TlsConfig tlsConfig = config.createConfig();
         List<CipherSuite> ciphers = new LinkedList<>();
-        if (tlsConfig.getSupportedCiphersuites().isEmpty()) {
+        if (tlsConfig.getDefaultClientSupportedCiphersuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {
                 if (cs.isCBC()) {
                     ciphers.add(cs);
                 }
             }
         } else {
-            ciphers = tlsConfig.getSupportedCiphersuites();
+            ciphers = tlsConfig.getDefaultClientSupportedCiphersuites();
         }
 
         for (ProtocolVersion version : versions) {

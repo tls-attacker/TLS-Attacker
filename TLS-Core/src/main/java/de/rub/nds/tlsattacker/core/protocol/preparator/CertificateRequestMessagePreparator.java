@@ -12,14 +12,11 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -31,19 +28,19 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
     private byte[] sigHashAlgos;
     private final CertificateRequestMessage msg;
 
-    public CertificateRequestMessagePreparator(TlsContext context, CertificateRequestMessage message) {
-        super(context, message);
+    public CertificateRequestMessagePreparator(Chooser chooser, CertificateRequestMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
-        certTypes = convertClientCertificateTypes(context.getConfig().getClientCertificateTypes());
+        certTypes = convertClientCertificateTypes(chooser.getClientCertificateTypes());
         prepareClientCertificateTypes(certTypes, msg);
         prepareClientCertificateTypesCount(msg);
         prepareDistinguishedNames(msg);
         prepareDistinguishedNamesLength(msg);
-        sigHashAlgos = convertSigAndHashAlgos(context.getConfig().getSupportedSignatureAndHashAlgorithms());
+        sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
         prepareSignatureHashAlgorithms(msg);
         prepareSignatureHashAlgorithmsLength(msg);
     }
@@ -88,7 +85,7 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
     }
 
     private void prepareDistinguishedNames(CertificateRequestMessage msg) {
-        msg.setDistinguishedNames(context.getConfig().getDistinguishedNames());
+        msg.setDistinguishedNames(chooser.getConfig().getDistinguishedNames());
         LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
     }
 

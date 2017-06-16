@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,20 +27,20 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private final HeartbeatMessage msg;
 
-    public HeartbeatMessagePreparator(TlsContext context, HeartbeatMessage message) {
-        super(context, message);
+    public HeartbeatMessagePreparator(Chooser chooser, HeartbeatMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
     private byte[] generatePayload() {
-        byte[] payload = new byte[context.getConfig().getHeartbeatPayloadLength()];
+        byte[] payload = new byte[chooser.getConfig().getHeartbeatPayloadLength()];
         RandomHelper.getRandom().nextBytes(payload);
         return payload;
     }
 
     private byte[] generatePadding() {
-        int min = context.getConfig().getHeartbeatMinPaddingLength();
-        int max = context.getConfig().getHeartbeatMaxPaddingLength();
+        int min = chooser.getConfig().getHeartbeatMinPaddingLength();
+        int max = chooser.getConfig().getHeartbeatMaxPaddingLength();
         if (max < min) { // TODO perhaps check somewhere different
             throw new ConfigurationException(
                     "Heartbeat minimum padding Length is greater than Heartbeat maxmimum padding length");

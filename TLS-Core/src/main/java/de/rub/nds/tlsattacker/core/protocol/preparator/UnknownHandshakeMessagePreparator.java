@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,8 +24,8 @@ public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparato
 
     private final UnknownHandshakeMessage msg;
 
-    public UnknownHandshakeMessagePreparator(TlsContext context, UnknownHandshakeMessage message) {
-        super(context, message);
+    public UnknownHandshakeMessagePreparator(Chooser chooser, UnknownHandshakeMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

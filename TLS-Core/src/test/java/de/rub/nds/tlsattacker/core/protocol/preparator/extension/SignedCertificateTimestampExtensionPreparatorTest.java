@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -41,13 +42,13 @@ public class SignedCertificateTimestampExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SignedCertificateTimestampExtensionMessage();
-        preparator = new SignedCertificateTimestampExtensionPreparator(context,
-                (SignedCertificateTimestampExtensionMessage) message);
+        preparator = new SignedCertificateTimestampExtensionPreparator(
+                new DefaultChooser(context, context.getConfig()), (SignedCertificateTimestampExtensionMessage) message);
     }
 
     @Test
     public void testPreparator() {
-        context.getConfig().setSignedCertificateTimestamp(timestamp);
+        context.getConfig().setDefaultSignedCertificateTimestamp(timestamp);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP.getValue(), message.getExtensionType().getValue());
