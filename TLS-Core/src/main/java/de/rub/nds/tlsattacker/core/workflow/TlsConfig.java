@@ -58,6 +58,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -452,6 +453,20 @@ public final class TlsConfig implements Serializable {
 
     private PRFAlgorithm defaultPRFAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
 
+    private byte defaultAlertDescription = 0;
+
+    private byte defaultAlertLevel = 0;
+
+    private NamedCurve defaultSelectedCurve = NamedCurve.SECP256R1;
+
+    private ECPoint defaultClientEcPublicKey;
+
+    private ECPoint defaultServerEcPublicKey;
+
+    private BigInteger defaultServerEcPrivateKey = new BigInteger("3");
+
+    private BigInteger defaultClientEcPrivateKey = new BigInteger("3");
+
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
         return TlsConfigIO.read(stream);
@@ -511,6 +526,62 @@ public final class TlsConfig implements Serializable {
         defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         defaultServerSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA1));
+    }
+
+    public BigInteger getDefaultServerEcPrivateKey() {
+        return defaultServerEcPrivateKey;
+    }
+
+    public void setDefaultServerEcPrivateKey(BigInteger defaultServerEcPrivateKey) {
+        this.defaultServerEcPrivateKey = defaultServerEcPrivateKey;
+    }
+
+    public BigInteger getDefaultClientEcPrivateKey() {
+        return defaultClientEcPrivateKey;
+    }
+
+    public void setDefaultClientEcPrivateKey(BigInteger defaultClientEcPrivateKey) {
+        this.defaultClientEcPrivateKey = defaultClientEcPrivateKey;
+    }
+
+    public NamedCurve getDefaultSelectedCurve() {
+        return defaultSelectedCurve;
+    }
+
+    public void setDefaultSelectedCurve(NamedCurve defaultSelectedCurve) {
+        this.defaultSelectedCurve = defaultSelectedCurve;
+    }
+
+    public ECPoint getDefaultClientEcPublicKey() {
+        return defaultClientEcPublicKey;
+    }
+
+    public void setDefaultClientEcPublicKey(ECPoint defaultClientEcPublicKey) {
+        this.defaultClientEcPublicKey = defaultClientEcPublicKey;
+    }
+
+    public ECPoint getDefaultServerEcPublicKey() {
+        return defaultServerEcPublicKey;
+    }
+
+    public void setDefaultServerEcPublicKey(ECPoint defaultServerEcPublicKey) {
+        this.defaultServerEcPublicKey = defaultServerEcPublicKey;
+    }
+
+    public byte getDefaultAlertDescription() {
+        return defaultAlertDescription;
+    }
+
+    public void setDefaultAlertDescription(byte defaultAlertDescription) {
+        this.defaultAlertDescription = defaultAlertDescription;
+    }
+
+    public byte getDefaultAlertLevel() {
+        return defaultAlertLevel;
+    }
+
+    public void setDefaultAlertLevel(byte defaultAlertLevel) {
+        this.defaultAlertLevel = defaultAlertLevel;
     }
 
     public BigInteger getDefaultServerDhPublicKey() {

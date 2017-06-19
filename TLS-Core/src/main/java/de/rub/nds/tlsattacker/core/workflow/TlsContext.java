@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -30,15 +29,10 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import java.math.BigInteger;
 import java.security.PublicKey;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.tls.ServerDHParams;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -166,10 +160,6 @@ public class TlsContext {
 
     private PublicKey serverCertificatePublicKey;
 
-    private ECPublicKeyParameters serverEcPublicKeyParameters;
-
-    private ECPrivateKeyParameters serverEcPrivateKeyParameters;
-
     private BigInteger dhGenerator;
 
     private BigInteger dhModulus;
@@ -181,6 +171,16 @@ public class TlsContext {
     private BigInteger clientDhPrivateKey;
 
     private BigInteger clientDhPublicKey;
+
+    private NamedCurve selectedCurve;
+
+    private ECPoint clientEcPublicKey;
+
+    private ECPoint serverEcPublicKey;
+
+    private BigInteger serverEcPrivateKey;
+
+    private BigInteger clientEcPrivateKey;
 
     private List<NamedCurve> clientNamedCurvesList;
 
@@ -215,7 +215,46 @@ public class TlsContext {
     public TlsContext(TlsConfig config) {
         digest = new MessageDigestCollector();
         this.config = config;
-        // init lastRecordVersion for records
+    }
+
+    public BigInteger getServerEcPrivateKey() {
+        return serverEcPrivateKey;
+    }
+
+    public void setServerEcPrivateKey(BigInteger serverEcPrivateKey) {
+        this.serverEcPrivateKey = serverEcPrivateKey;
+    }
+
+    public BigInteger getClientEcPrivateKey() {
+        return clientEcPrivateKey;
+    }
+
+    public void setClientEcPrivateKey(BigInteger clientEcPrivateKey) {
+        this.clientEcPrivateKey = clientEcPrivateKey;
+    }
+
+    public NamedCurve getSelectedCurve() {
+        return selectedCurve;
+    }
+
+    public void setSelectedCurve(NamedCurve selectedCurve) {
+        this.selectedCurve = selectedCurve;
+    }
+
+    public ECPoint getClientEcPublicKey() {
+        return clientEcPublicKey;
+    }
+
+    public void setClientEcPublicKey(ECPoint clientEcPublicKey) {
+        this.clientEcPublicKey = clientEcPublicKey;
+    }
+
+    public ECPoint getServerEcPublicKey() {
+        return serverEcPublicKey;
+    }
+
+    public void setServerEcPublicKey(ECPoint serverEcPublicKey) {
+        this.serverEcPublicKey = serverEcPublicKey;
     }
 
     public BigInteger getDhGenerator() {
@@ -272,14 +311,6 @@ public class TlsContext {
 
     public void setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm) {
         this.selectedSignatureAndHashAlgorithm = selectedSignatureAndHashAlgorithm;
-    }
-
-    public ECPrivateKeyParameters getServerEcPrivateKeyParameters() {
-        return serverEcPrivateKeyParameters;
-    }
-
-    public void setServerEcPrivateKeyParameters(ECPrivateKeyParameters serverEcPrivateKeyParameters) {
-        this.serverEcPrivateKeyParameters = serverEcPrivateKeyParameters;
     }
 
     public List<NamedCurve> getClientNamedCurvesList() {
@@ -345,14 +376,6 @@ public class TlsContext {
 
     public void setReceivedFatalAlert(boolean receivedFatalAlert) {
         this.receivedFatalAlert = receivedFatalAlert;
-    }
-
-    public ECPublicKeyParameters getServerEcPublicKeyParameters() {
-        return serverEcPublicKeyParameters;
-    }
-
-    public void setServerECPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
-        this.serverEcPublicKeyParameters = serverPublicKeyParameters;
     }
 
     public List<ECPointFormat> getClientPointFormatsList() {
