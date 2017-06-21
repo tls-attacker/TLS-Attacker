@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -41,6 +38,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
 
     @Override
     protected void parseHandshakeMessageContent(CertificateMessage msg) {
+        LOGGER.debug("Parsing CertificateMessage");
         parseCertificatesLength(msg);
         parseX509CertificateBytes(msg);
     }

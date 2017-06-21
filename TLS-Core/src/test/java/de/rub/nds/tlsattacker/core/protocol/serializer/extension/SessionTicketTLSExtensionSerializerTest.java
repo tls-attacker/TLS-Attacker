@@ -23,6 +23,15 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class SessionTicketTLSExtensionSerializerTest {
+    /**
+     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
+     *
+     * @return Collection of the parameters
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return SessionTicketTLSExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
@@ -47,16 +56,6 @@ public class SessionTicketTLSExtensionSerializerTest {
         this.sessionTicket = sessionTicket;
         this.expectedBytes = expectedBytes;
         this.startParsing = startParsing;
-    }
-
-    /**
-     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
-     *
-     * @return Collection of the parameters
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SessionTicketTLSExtensionParserTest.generateData();
     }
 
     /**

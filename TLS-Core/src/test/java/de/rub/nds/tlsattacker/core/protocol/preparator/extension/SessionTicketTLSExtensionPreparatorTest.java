@@ -35,7 +35,7 @@ public class SessionTicketTLSExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SessionTicketTLSExtensionMessage();
-        preparator = new SessionTicketTLSExtensionPreparator(context, (SessionTicketTLSExtensionMessage) message);
+        preparator = new SessionTicketTLSExtensionPreparator(context, message);
     }
 
     /**
@@ -47,7 +47,7 @@ public class SessionTicketTLSExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(ticket, message.getTicket().getValue());
     }
 

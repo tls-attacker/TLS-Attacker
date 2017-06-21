@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 /**
  *
@@ -18,17 +18,28 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
  */
 public class ECPointFormatExtensionSerializer extends ExtensionSerializer<ECPointFormatExtensionMessage> {
 
-    private final ECPointFormatExtensionMessage message;
+    private final ECPointFormatExtensionMessage msg;
 
     public ECPointFormatExtensionSerializer(ECPointFormatExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getPointFormatsLength().getValue(), ExtensionByteLength.EC_POINT_FORMATS_LENGTH);
-        appendBytes(message.getPointFormats().getValue());
+        LOGGER.debug("Serializing ECPointFormatExtensionMessage");
+        writePointFormatsLength(msg);
+        writePointFormats(msg);
         return getAlreadySerialized();
+    }
+
+    private void writePointFormatsLength(ECPointFormatExtensionMessage msg) {
+        appendInt(msg.getPointFormatsLength().getValue(), ExtensionByteLength.EC_POINT_FORMATS_LENGTH);
+        LOGGER.debug("PointFormatsLength: " + msg.getPointFormatsLength().getValue());
+    }
+
+    private void writePointFormats(ECPointFormatExtensionMessage msg) {
+        appendBytes(msg.getPointFormats().getValue());
+        LOGGER.debug("PointFormats: " + ArrayConverter.bytesToHexString(msg.getPointFormats().getValue()));
     }
 }

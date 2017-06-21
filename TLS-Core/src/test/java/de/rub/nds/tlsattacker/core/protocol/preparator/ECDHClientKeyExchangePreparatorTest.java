@@ -25,9 +25,11 @@ import org.bouncycastle.asn1.x9.X962NamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -36,9 +38,6 @@ import static org.junit.Assert.*;
  */
 public class ECDHClientKeyExchangePreparatorTest {
 
-    private TlsContext context;
-    private ECDHClientKeyExchangeMessage message;
-    private ECDHClientKeyExchangePreparator preparator;
     private final static String RANDOM = "CAFEBABECAFE";
     private final static byte[] SERVER_PUB_KEY = ArrayConverter
             .hexStringToByteArray("023683c91035ad3815282ce7a4a273678487fa031f802508c2");
@@ -46,6 +45,9 @@ public class ECDHClientKeyExchangePreparatorTest {
             .hexStringToByteArray("81d3ba4e7a54eea7c584cf487bd6bea7dcfc27201f42a543");
     private final static byte[] MASTER_SECRET = ArrayConverter
             .hexStringToByteArray("44569804ebaef0c715a08bfea7272396c74bc75a3e1cf5c68cf6026286c27a1ddfcac31488692f14691fc8de62042004");
+    private TlsContext context;
+    private ECDHClientKeyExchangeMessage message;
+    private ECDHClientKeyExchangePreparator preparator;
 
     public ECDHClientKeyExchangePreparatorTest() {
     }

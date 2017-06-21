@@ -8,16 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -30,24 +28,26 @@ public class ServerHelloDoneParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("0e000000"), 0,
-                ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0 }, });
+        return Arrays.asList(new Object[][] {
+                { ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0,
+                        ProtocolVersion.TLS12 },
+                { ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0,
+                        ProtocolVersion.TLS10 },
+                { ArrayConverter.hexStringToByteArray("0e000000"), HandshakeMessageType.SERVER_HELLO_DONE, 0,
+                        ProtocolVersion.TLS11 } });
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
 
     private HandshakeMessageType type;
     private int length;
+    private ProtocolVersion version;
 
-    public ServerHelloDoneParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length) {
+    public ServerHelloDoneParserTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
+        this.version = version;
     }
 
     /**
@@ -55,9 +55,9 @@ public class ServerHelloDoneParserTest {
      */
     @Test
     public void testParse() {
-        ServerHelloDoneParser parser = new ServerHelloDoneParser(start, message, ProtocolVersion.TLS12);
+        ServerHelloDoneParser parser = new ServerHelloDoneParser(0, message, version);
         ServerHelloDoneMessage msg = parser.parse();
-        assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
+        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());
 

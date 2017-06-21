@@ -54,6 +54,25 @@ public enum ExtensionType {
     CACHED_INFO(new byte[] { (byte) 0, (byte) 25 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
     RENEGOTIATION_INFO(new byte[] { (byte) 0xFF, (byte) 0x01 }),
+    // TODO Grease logic implementation, because the tests fail if the lines
+    // aren't commented
+    // GREASE constants
+    // GREASE_00(new byte[] { (byte) 0x0A, (byte) 0x0A }),
+    // GREASE_01(new byte[] { (byte) 0x1A, (byte) 0x1A }),
+    // GREASE_02(new byte[] { (byte) 0x2A, (byte) 0x2A }),
+    // GREASE_03(new byte[] { (byte) 0x3A, (byte) 0x3A }),
+    // GREASE_04(new byte[] { (byte) 0x4A, (byte) 0x4A }),
+    // GREASE_05(new byte[] { (byte) 0x5A, (byte) 0x5A }),
+    // GREASE_06(new byte[] { (byte) 0x6A, (byte) 0x6A }),
+    // GREASE_07(new byte[] { (byte) 0x7A, (byte) 0x7A }),
+    // GREASE_08(new byte[] { (byte) 0x8A, (byte) 0x8A }),
+    // GREASE_09(new byte[] { (byte) 0x9A, (byte) 0x9A }),
+    // GREASE_10(new byte[] { (byte) 0xAA, (byte) 0xAA }),
+    // GREASE_11(new byte[] { (byte) 0xBA, (byte) 0xBA }),
+    // GREASE_12(new byte[] { (byte) 0xCA, (byte) 0xCA }),
+    // GREASE_13(new byte[] { (byte) 0xDA, (byte) 0xDA }),
+    // GREASE_14(new byte[] { (byte) 0xEA, (byte) 0xEA }),
+    // GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }),
 
     UNKNOWN(new byte[0]);
 

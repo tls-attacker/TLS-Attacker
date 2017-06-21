@@ -8,18 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.RetransmitMessageSerializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RetransmitMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.util.Collection;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
@@ -29,9 +24,6 @@ public class RetransmitMessageSerializerTest {
 
     private RetransmitMessageSerializer serializer;
     private RetransmitMessage msg;
-
-    public RetransmitMessageSerializerTest() {
-    }
 
     @Before
     public void setUp() {

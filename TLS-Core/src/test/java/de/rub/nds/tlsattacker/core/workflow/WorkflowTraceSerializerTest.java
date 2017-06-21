@@ -8,24 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -63,7 +52,7 @@ public class WorkflowTraceSerializerTest {
         WorkflowTrace trace = factory.createFullWorkflow();
         // pick random protocol message and initialize a record with modifiable
         // variable
-        List<AbstractRecord> records = new LinkedList<AbstractRecord>();
+        List<AbstractRecord> records = new LinkedList<>();
         Record record = new Record();
         record.setContentType(new ModifiableByte());
         record.getContentType().setModification(new ByteExplicitValueModification(Byte.MIN_VALUE));

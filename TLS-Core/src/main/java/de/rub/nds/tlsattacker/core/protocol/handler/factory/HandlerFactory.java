@@ -160,4 +160,7 @@ public class HandlerFactory {
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
     }
+
+    private HandlerFactory() {
+    }
 }

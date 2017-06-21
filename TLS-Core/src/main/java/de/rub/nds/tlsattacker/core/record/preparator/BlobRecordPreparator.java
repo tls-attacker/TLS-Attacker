@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
@@ -32,7 +31,12 @@ public class BlobRecordPreparator extends AbstractRecordPreparator {
     @Override
     public void prepare() {
         encryptor.encrypt(record);
+        prepareContentMessageType(record);
+    }
+
+    private void prepareContentMessageType(BlobRecord record) {
         record.setContentMessageType(type);
+        LOGGER.debug("ContentMessageType: " + record.getContentMessageType().getValue());
     }
 
 }

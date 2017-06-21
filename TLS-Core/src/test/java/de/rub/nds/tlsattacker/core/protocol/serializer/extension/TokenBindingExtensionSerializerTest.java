@@ -24,6 +24,10 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class TokenBindingExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return TokenBindingExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final byte[] extensionBytes;
@@ -41,11 +45,6 @@ public class TokenBindingExtensionSerializerTest {
         this.tokenbindingVersion = tokenbindingVersion;
         this.parameterLength = parameterLength;
         this.keyParameter = keyParameter;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return TokenBindingExtensionParserTest.generateData();
     }
 
     @Test

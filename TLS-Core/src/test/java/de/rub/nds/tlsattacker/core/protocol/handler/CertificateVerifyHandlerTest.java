@@ -8,20 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateVerifyHandler;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifyMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -31,9 +26,6 @@ public class CertificateVerifyHandlerTest {
 
     private CertificateVerifyHandler handler;
     private TlsContext context;
-
-    public CertificateVerifyHandlerTest() {
-    }
 
     @Before
     public void setUp() {

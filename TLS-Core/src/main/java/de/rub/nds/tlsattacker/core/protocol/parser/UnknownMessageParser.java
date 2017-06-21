@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -46,6 +44,7 @@ public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> 
 
     @Override
     protected UnknownMessage parseMessageContent() {
+        LOGGER.debug("Parsing UnknownMessage");
         UnknownMessage msg = new UnknownMessage();
         parseCompleteMessage(msg);
         return msg;

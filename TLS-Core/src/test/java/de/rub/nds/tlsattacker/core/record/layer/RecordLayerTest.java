@@ -19,6 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -27,7 +29,8 @@ public class RecordLayerTest {
 
     RecordLayer recordHandler;
 
-    public RecordLayerTest() {
+    @Before
+    public void setUp() {
         TlsConfig config = TlsConfig.createConfig();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createHandshakeWorkflow();

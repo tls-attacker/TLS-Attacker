@@ -8,31 +8,27 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
-import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class HeartbeatMessagePreparatorTest {
+    private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
 
     private TlsContext context;
     private HeartbeatMessage message;
     private HeartbeatMessagePreparator preparator;
-
-    public HeartbeatMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -61,7 +57,5 @@ public class HeartbeatMessagePreparatorTest {
                 .getValue());
         assertTrue(11 == message.getPayloadLength().getValue());
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
 
 }

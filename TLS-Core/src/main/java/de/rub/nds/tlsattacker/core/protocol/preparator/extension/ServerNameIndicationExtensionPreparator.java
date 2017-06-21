@@ -8,13 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -22,17 +24,19 @@ import java.io.IOException;
  */
 public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator<ServerNameIndicationExtensionMessage> {
 
-    private final ServerNameIndicationExtensionMessage message;
+    private final ServerNameIndicationExtensionMessage msg;
+    private ByteArrayOutputStream stream;
 
     public ServerNameIndicationExtensionPreparator(TlsContext context, ServerNameIndicationExtensionMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ServerNamePair pair : message.getServerNameList()) {
+        LOGGER.debug("Preparing ServerNameIndicationExtensionMessage");
+        stream = new ByteArrayOutputStream();
+        for (ServerNamePair pair : msg.getServerNameList()) {
             ServerNamePairPreparator preparator = new ServerNamePairPreparator(context, pair);
             preparator.prepare();
             ServerNamePairSerializier serializer = new ServerNamePairSerializier(pair);
@@ -42,8 +46,18 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
                 throw new PreparationException("Could not write byte[] from ServerNamePair", ex);
             }
         }
-        message.setServerNameListBytes(stream.toByteArray());
-        message.setServerNameListLength(message.getServerNameListBytes().getValue().length);
+        prepareServerNameListBytes(msg);
+        prepareServerNameListLength(msg);
+    }
+
+    private void prepareServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
+        msg.setServerNameListBytes(stream.toByteArray());
+        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
+    }
+
+    private void prepareServerNameListLength(ServerNameIndicationExtensionMessage msg) {
+        msg.setServerNameListLength(msg.getServerNameListBytes().getValue().length);
+        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
     }
 
 }

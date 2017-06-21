@@ -73,7 +73,6 @@ public class RecordBlockCipherTest {
         context.setMasterSecret(new byte[] { 0 });
         context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
         RecordBlockCipher cipher = new RecordBlockCipher(context);
-        System.out.println(ArrayConverter.bytesToHexString(cipher.calculatePadding(9)));
     }
 
     /**

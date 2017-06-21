@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.lang.reflect.Field;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -27,7 +27,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public final class PseudoRandomFunction {
+public class PseudoRandomFunction {
 
     static final Logger LOGGER = LogManager.getLogger("PRF");
 

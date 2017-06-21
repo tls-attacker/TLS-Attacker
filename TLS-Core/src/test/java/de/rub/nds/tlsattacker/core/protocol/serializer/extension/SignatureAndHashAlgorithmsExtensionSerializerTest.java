@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class SignatureAndHashAlgorithmsExtensionSerializerTest {
 
-    public SignatureAndHashAlgorithmsExtensionSerializerTest() {
-    }
-
     @Before
     public void setUp() {
     }

@@ -8,16 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParserTest;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -43,17 +40,18 @@ public class ECDHEServerKeyExchangeSerializerTest {
     private byte[] namedCurve;
     private int pubKeyLength;
     private byte[] pubKey;
-    private byte hashAlgorithm;
-    private byte signatureAlgorithm;
+    private Byte hashAlgorithm;
+    private Byte signatureAlgorithm;
     private int sigLength;
     private byte[] signature;
+    private ProtocolVersion version;
 
-    public ECDHEServerKeyExchangeSerializerTest(byte[] message, int start, byte[] expectedPart,
-            HandshakeMessageType type, int length, byte curveType, byte[] namedCurve, int pubKeyLength, byte[] pubKey,
-            byte hashAlgorithm, byte signatureAlgorithm, int sigLength, byte[] signature) {
+    public ECDHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
+            byte[] namedCurve, int pubKeyLength, byte[] pubKey, Byte hashAlgorithm, Byte signatureAlgorithm,
+            int sigLength, byte[] signature, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
+        this.start = 0;
+        this.expectedPart = message;
         this.type = type;
         this.length = length;
         this.curveType = curveType;
@@ -64,6 +62,7 @@ public class ECDHEServerKeyExchangeSerializerTest {
         this.signatureAlgorithm = signatureAlgorithm;
         this.sigLength = sigLength;
         this.signature = signature;
+        this.version = version;
     }
 
     /**
@@ -80,11 +79,15 @@ public class ECDHEServerKeyExchangeSerializerTest {
         msg.setNamedCurve(namedCurve);
         msg.setSerializedPublicKey(pubKey);
         msg.setSerializedPublicKeyLength(pubKeyLength);
-        msg.setHashAlgorithm(hashAlgorithm);
-        msg.setSignatureAlgorithm(signatureAlgorithm);
+        if (hashAlgorithm != null) {
+            msg.setHashAlgorithm(hashAlgorithm);
+        }
+        if (signatureAlgorithm != null) {
+            msg.setSignatureAlgorithm(signatureAlgorithm);
+        }
         msg.setSignatureLength(sigLength);
         msg.setSignature(signature);
-        ECDHEServerKeyExchangeSerializer serializer = new ECDHEServerKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
+        ECDHEServerKeyExchangeSerializer serializer = new ECDHEServerKeyExchangeSerializer(msg, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

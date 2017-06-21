@@ -8,17 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -28,9 +26,6 @@ public class ECDHClientKeyExchangeHandlerTest {
 
     private ECDHClientKeyExchangeHandler handler;
     private TlsContext context;
-
-    public ECDHClientKeyExchangeHandlerTest() {
-    }
 
     @Before
     public void setUp() {

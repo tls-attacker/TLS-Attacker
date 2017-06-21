@@ -8,11 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,9 +34,6 @@ public class WorkflowInputDelegateTest {
     private String[] args;
     private TemporaryFolder tempFolder;
     private File tempFile;
-
-    public WorkflowInputDelegateTest() {
-    }
 
     @Before
     public void setUp() throws IOException, FileNotFoundException, JAXBException {

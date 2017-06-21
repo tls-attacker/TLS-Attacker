@@ -8,16 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -27,9 +26,6 @@ public class HeartbeatHandlerTest {
 
     private HeartbeatHandler handler;
     private TlsContext context;
-
-    public HeartbeatHandlerTest() {
-    }
 
     @Before
     public void setUp() {
