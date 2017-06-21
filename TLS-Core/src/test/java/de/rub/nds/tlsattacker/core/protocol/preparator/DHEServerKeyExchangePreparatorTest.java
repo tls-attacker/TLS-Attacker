@@ -69,18 +69,8 @@ public class DHEServerKeyExchangePreparatorTest {
         SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1));
         SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.MD5));
         context.getConfig().setSupportedSignatureAndHashAlgorithms(SigAndHashList);
-        // Generate RSA key pair
-        KeyPairGenerator keyGen = null;
-        try {
-            keyGen = KeyPairGenerator.getInstance("RSA");
-        } catch (NoSuchAlgorithmException ex) {
-            throw new PreparationException("Could not generate a new Key", ex);
-        }
-        context.getConfig().setPrivateKey(keyGen.genKeyPair().getPrivate());
         // Test
         preparator.prepareHandshakeMessageContents();
-        System.out.println("" + ArrayConverter.bytesToHexString(message.getGenerator().getValue(), false));
-        System.out.println("" + ArrayConverter.bytesToHexString(message.getModulus().getValue(), false));
 
         assertArrayEquals(
                 ArrayConverter

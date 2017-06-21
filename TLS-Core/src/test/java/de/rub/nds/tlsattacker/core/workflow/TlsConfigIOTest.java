@@ -40,7 +40,6 @@ public class TlsConfigIOTest {
         InputStream stream = TlsConfig.class.getResourceAsStream("/test_config.xml");
         TlsConfig config = TlsConfig.createConfig(stream);
         assertNotNull(config);
-        assertNotNull(config.getAlias());
         assertTrue(config.getDefaultClientSupportedCiphersuites().size() == 1);
     }
 }

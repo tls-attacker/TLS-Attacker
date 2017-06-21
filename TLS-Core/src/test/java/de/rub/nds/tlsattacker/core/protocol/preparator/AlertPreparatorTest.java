@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -47,6 +46,15 @@ public class AlertPreparatorTest {
         preparator.prepare();
         assertTrue(message.getLevel().getValue() == AlertLevel.FATAL.getValue());
         assertTrue(message.getDescription().getValue() == AlertDescription.DECRYPT_ERROR.getValue());
+    }
+
+    @Test
+    public void testPrepareFromDefaultConfig() {
+        context.getConfig().setDefaultAlertDescription((byte) 2);
+        context.getConfig().setDefaultAlertLevel((byte) 2);
+        preparator.prepare();
+        assertTrue(message.getLevel().getValue() == 2);
+        assertTrue(message.getDescription().getValue() == 2);
     }
 
 }

@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
@@ -30,13 +31,8 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.List;
-import org.bouncycastle.crypto.params.DHParameters;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.crypto.tls.ServerDHParams;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -46,42 +42,6 @@ public class DefaultChooser extends Chooser {
 
     public DefaultChooser(TlsContext context, TlsConfig config) {
         super(context, config);
-    }
-
-    @Override
-    public ECPrivateKeyParameters getServerEcPrivateKeyParameters() {
-        if (context.getServerEcPrivateKeyParameters() != null) {
-            return context.getServerEcPrivateKeyParameters();
-        } else {
-            return null; // TODO
-        }
-    }
-
-    @Override
-    public ECPublicKeyParameters getServerEcPublicKeyParameters() {
-        if (context.getServerEcPublicKeyParameters() != null) {
-            return context.getServerEcPublicKeyParameters();
-        } else {
-            return null; // TODO
-        }
-    }
-
-    @Override
-    public PublicKey getClientCertificatePublicKey() {
-        if (context.getClientCertificatePublicKey() != null) {
-            return context.getClientCertificatePublicKey();
-        } else {
-            return null; // TODO
-        }
-    }
-
-    @Override
-    public PublicKey getServerCertificatePublicKey() {
-        if (context.getServerCertificatePublicKey() != null) {
-            return context.getServerCertificatePublicKey();
-        } else {
-            return null; // TODO
-        }
     }
 
     @Override
@@ -476,6 +436,84 @@ public class DefaultChooser extends Chooser {
             return context.getClientDhPublicKey();
         } else {
             return config.getDefaultClientDhPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getServerEcPrivateKey() {
+        if (context.getServerEcPublicKey() != null) {
+            return context.getServerEcPrivateKey();
+        } else {
+            return config.getDefaultServerEcPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getClientEcPrivateKey() {
+        if (context.getClientEcPrivateKey() != null) {
+            return context.getClientEcPrivateKey();
+        } else {
+            return config.getDefaultClientEcPrivateKey();
+        }
+    }
+
+    @Override
+    public NamedCurve getSelectedCurve() {
+        if (context.getSelectedCurve() != null) {
+            return context.getSelectedCurve();
+        } else {
+            return config.getDefaultSelectedCurve();
+        }
+    }
+
+    @Override
+    public ECPoint getClientEcPublicKey() {
+        if (context.getClientEcPublicKey() != null) {
+            return context.getClientEcPublicKey();
+        } else {
+            return config.getDefaultClientEcPublicKey();
+        }
+    }
+
+    @Override
+    public ECPoint getServerEcPublicKey() {
+        if (context.getServerEcPublicKey() != null) {
+            return context.getServerEcPublicKey();
+        } else {
+            return config.getDefaultServerEcPublicKey();
+        }
+    }
+
+    @Override
+    public EllipticCurveType getEcCurveType() {
+        return EllipticCurveType.NAMED_CURVE; // We currentlyo nly support named
+        // curves TODO
+    }
+
+    @Override
+    public BigInteger getRsaModulus() {
+        if (context.getRsaModulus() != null) {
+            return context.getRsaModulus();
+        } else {
+            return config.getDefaultRSAModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getServerRSAPublicKey() {
+        if (context.getServerRSAPublicKey() != null) {
+            return context.getServerRSAPublicKey();
+        } else {
+            return config.getDefaultServerRSAPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getClientRSAPublicKey() {
+        if (context.getClientRSAPublicKey() != null) {
+            return context.getClientRSAPublicKey();
+        } else {
+            return config.getDefaultClientRSAPublicKey();
         }
     }
 }

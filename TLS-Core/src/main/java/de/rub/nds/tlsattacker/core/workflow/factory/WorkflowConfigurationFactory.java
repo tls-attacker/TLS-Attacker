@@ -60,6 +60,10 @@ public class WorkflowConfigurationFactory {
                 return createFullWorkflow();
             case HANDSHAKE:
                 return createHandshakeWorkflow();
+            case RENEGOTIATION:
+                return new WorkflowTrace(); // TODO add real workflow
+            case RESUMPTION:
+                return new WorkflowTrace(); // TODO add real workflow
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }

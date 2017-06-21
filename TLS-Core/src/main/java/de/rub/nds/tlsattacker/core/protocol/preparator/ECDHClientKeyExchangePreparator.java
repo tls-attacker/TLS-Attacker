@@ -16,21 +16,19 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
-import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
-import org.bouncycastle.crypto.util.PublicKeyFactory;
-import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
 /**
@@ -39,10 +37,6 @@ import org.bouncycastle.math.ec.ECPoint;
  */
 public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> {
 
-    private ECPublicKeyParameters serverEcPublicKey;
-    private ECPrivateKeyParameters serverEcPrivateKey;
-    private ECPublicKeyParameters clientEcPublicKey;
-    private ECPrivateKeyParameters clientEcPrivateKey;
     private byte[] serializedPoint;
     private byte[] premasterSecret;
     private byte[] random;
@@ -57,72 +51,53 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        AsymmetricCipherKeyPair kp = null;
-        serverEcPublicKey = chooser.getServerEcPublicKeyParameters();
-        if (hasServerPublicKeyParameters()) {
-            kp = generateFreshKeyPair();
-        } else {
-            // The Server did not send a server key exchange message and we have
-            // to extract
-            // the ec publickey from the certificate
-            serverEcPublicKey = createECPublicKeyParameters();
-            kp = generatePublicKeyFromParameters(serverEcPublicKey);
-        }
+        NamedCurve usedCurve = chooser.getSelectedCurve();
+        ECPoint serverPublicKey = chooser.getServerEcPublicKey();
+        BigInteger privateKey = chooser.getClientEcPrivateKey();
 
-        clientEcPublicKey = (ECPublicKeyParameters) kp.getPublic();
-        clientEcPrivateKey = (ECPrivateKeyParameters) kp.getPrivate();
-
-        // do some ec point modification
-        preparePublicKeyBaseX(msg);
-        preparePublicKeyBaseY(msg);
-
-        ECCurve curve = clientEcPublicKey.getParameters().getCurve();
-        ECPoint point = curve.createPoint(msg.getPublicKeyBaseX().getValue(), msg.getPublicKeyBaseY().getValue());
-
+        // Set everything in computations and reload
+        msg.getComputations().setClientPrivateKey(privateKey);
+        msg.getComputations().setServerPublicKeyX(serverPublicKey.getRawXCoord().toBigInteger());
+        msg.getComputations().setServerPublicKeyY(serverPublicKey.getRawYCoord().toBigInteger());
+        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+        serverPublicKey = ecParams.getCurve().createPoint(msg.getComputations().getServerPublicKeyX().getValue(),
+                msg.getComputations().getServerPublicKeyY().getValue());
+        privateKey = msg.getComputations().getClientPrivateKey().getValue();
+        ECPoint clientPublicKey = ecParams.getCurve().getMultiplier().multiply(ecParams.getG(), privateKey);
+        msg.getComputations().setClientPublicKey(clientPublicKey);
+        premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(new ECPublicKeyParameters(serverPublicKey, ecParams),
+                new ECPrivateKeyParameters(privateKey, ecParams));
+        // Set and update premaster secret
+        msg.getComputations().setPremasterSecret(premasterSecret);
+        premasterSecret = msg.getComputations().getPremasterSecret().getValue();
         List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
-        if (pointFormatList == null) {
-            pointFormatList = new LinkedList<>();
-            pointFormatList.add(ECPointFormat.UNCOMPRESSED);
-        }
-        // TODO i guess some of the intermediate calculated values could be
-        // inserted into computations
+        ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
         try {
-            ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
-            serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, point);
-            prepareEcPointFormat(msg);
-            prepareEcPointEncoded(msg);
-            prepareSerializedPublicKey(msg);
-            prepareSerializedPublicKeyLength(msg);
-            computePremasterSecret(serverEcPublicKey, clientEcPrivateKey);
-            preparePremasterSecret(msg);
-            prepareClientRandom(msg);
-            computeMasterSecret(premasterSecret, random);
-            prepareMasterSecret(msg);
+            serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, clientPublicKey);
         } catch (IOException ex) {
-            throw new PreparationException("EC point serialization failure", ex);
+            throw new PreparationException("Could not serialize clientPublicKey", ex);
         }
+        prepareEcPointFormat(msg);
+        prepareEcPointEncoded(msg);
+        preparePublicKeyBaseX(msg, clientPublicKey);
+        preparePublicKeyBaseY(msg, clientPublicKey);
+        prepareSerializedPublicKey(msg);
+        prepareSerializedPublicKeyLength(msg);
+        preparePremasterSecret(msg);
+        prepareClientRandom(msg);
+        computeMasterSecret(premasterSecret, random);
+        prepareMasterSecret(msg);
     }
 
-    private AsymmetricCipherKeyPair generateFreshKeyPair() {
-        return TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), serverEcPublicKey.getParameters());
-    }
-
-    private ECPublicKeyParameters createECPublicKeyParameters() {
-        Certificate x509Cert = chooser.getServerCertificate();
-        SubjectPublicKeyInfo keyInfo = x509Cert.getCertificateAt(0).getSubjectPublicKeyInfo();
-        if (!keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey)) {
-            throw new PreparationException("Invalid KeyType in ServerCertificate");
-        } else {
-            try {
-                return (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
-            } catch (IOException e) {
-                throw new PreparationException("Problem in parsing public key parameters from certificate", e);
-            }
+    private ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
+        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
+                namedCurve.getValue()));
+        try {
+            return ECCUtilsBCWrapper.readECParameters(new NamedCurve[] { chooser.getSelectedCurve() },
+                    new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
+        } catch (IOException ex) {
+            throw new PreparationException("Failed to generate EC domain parameters", ex);
         }
-    }
-
-    private AsymmetricCipherKeyPair generatePublicKeyFromParameters(ECPublicKeyParameters parameters) {
-        return TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), parameters.getParameters());
     }
 
     private void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
@@ -135,18 +110,14 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
     }
 
-    private void preparePublicKeyBaseX(ECDHClientKeyExchangeMessage msg) {
-        msg.setPublicKeyBaseX(clientEcPublicKey.getQ().getAffineXCoord().toBigInteger());
+    private void preparePublicKeyBaseX(ECDHClientKeyExchangeMessage msg, ECPoint clientPublicKey) {
+        msg.setPublicKeyBaseX(clientPublicKey.getRawXCoord().toBigInteger());
         LOGGER.debug("PublicKeyBaseX: " + msg.getPublicKeyBaseX().getValue());
     }
 
-    private void preparePublicKeyBaseY(ECDHClientKeyExchangeMessage msg) {
-        msg.setPublicKeyBaseY(clientEcPublicKey.getQ().getAffineYCoord().toBigInteger());
+    private void preparePublicKeyBaseY(ECDHClientKeyExchangeMessage msg, ECPoint clientPublicKey) {
+        msg.setPublicKeyBaseY(clientPublicKey.getRawYCoord().toBigInteger());
         LOGGER.debug("PublicKeyBaseY: " + msg.getPublicKeyBaseY().getValue());
-    }
-
-    private boolean hasServerPublicKeyParameters() {
-        return serverEcPublicKey != null;
     }
 
     private void prepareEcPointFormat(ECDHClientKeyExchangeMessage msg) {
@@ -196,10 +167,14 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
             List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
             ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
             short[] pointFormats = ECCUtilsBCWrapper.convertPointFormats(formatArray);
-            clientEcPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, chooser
-                    .getServerEcPublicKeyParameters().getParameters(), msg.getPublicKey().getValue());
-            serverEcPrivateKey = chooser.getServerEcPrivateKeyParameters();
-            computePremasterSecret(clientEcPublicKey, serverEcPrivateKey);
+            ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats,
+                    getDomainParameters(chooser.getEcCurveType(), chooser.getSelectedCurve()), msg.getPublicKey()
+                            .getValue());
+            msg.getComputations().setClientPublicKey(clientPublicKey.getQ());
+
+            BigInteger privatekey = chooser.getServerEcPrivateKey();
+            computePremasterSecret(clientPublicKey,
+                    new ECPrivateKeyParameters(privatekey, clientPublicKey.getParameters()));
             preparePremasterSecret(msg);
             prepareClientRandom(msg);
             computeMasterSecret(premasterSecret, random);

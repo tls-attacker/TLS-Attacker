@@ -31,7 +31,6 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.math.ec.ECPoint;
 
 /**
@@ -156,10 +155,6 @@ public class TlsContext {
      */
     private byte[] signedCertificateTimestamp;
 
-    private PublicKey clientCertificatePublicKey;
-
-    private PublicKey serverCertificatePublicKey;
-
     private BigInteger dhGenerator;
 
     private BigInteger dhModulus;
@@ -181,6 +176,16 @@ public class TlsContext {
     private BigInteger serverEcPrivateKey;
 
     private BigInteger clientEcPrivateKey;
+
+    private BigInteger rsaModulus;
+
+    private BigInteger serverRSAPublicKey;
+
+    private BigInteger clientRSAPublicKey;
+
+    private BigInteger serverRSAPrivateKey;
+
+    private BigInteger clientRSAPrivateKey;
 
     private List<NamedCurve> clientNamedCurvesList;
 
@@ -215,6 +220,30 @@ public class TlsContext {
     public TlsContext(TlsConfig config) {
         digest = new MessageDigestCollector();
         this.config = config;
+    }
+
+    public BigInteger getRsaModulus() {
+        return rsaModulus;
+    }
+
+    public void setRsaModulus(BigInteger rsaModulus) {
+        this.rsaModulus = rsaModulus;
+    }
+
+    public BigInteger getServerRSAPublicKey() {
+        return serverRSAPublicKey;
+    }
+
+    public void setServerRSAPublicKey(BigInteger serverRSAPublicKey) {
+        this.serverRSAPublicKey = serverRSAPublicKey;
+    }
+
+    public BigInteger getClientRSAPublicKey() {
+        return clientRSAPublicKey;
+    }
+
+    public void setClientRSAPublicKey(BigInteger clientRSAPublicKey) {
+        this.clientRSAPublicKey = clientRSAPublicKey;
     }
 
     public BigInteger getServerEcPrivateKey() {
@@ -384,22 +413,6 @@ public class TlsContext {
 
     public void setClientPointFormatsList(List<ECPointFormat> clientPointFormatsList) {
         this.clientPointFormatsList = clientPointFormatsList;
-    }
-
-    public PublicKey getClientCertificatePublicKey() {
-        return clientCertificatePublicKey;
-    }
-
-    public void setClientCertificatePublicKey(PublicKey clientCertificatePublicKey) {
-        this.clientCertificatePublicKey = clientCertificatePublicKey;
-    }
-
-    public PublicKey getServerCertificatePublicKey() {
-        return serverCertificatePublicKey;
-    }
-
-    public void setServerCertificatePublicKey(PublicKey serverCertificatePublicKey) {
-        this.serverCertificatePublicKey = serverCertificatePublicKey;
     }
 
     public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {

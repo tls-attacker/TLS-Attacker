@@ -121,15 +121,21 @@ public class EllipticCurveDelegateTest {
         args[3] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
         TlsConfig config = TlsConfig.createConfig();
         config.setNamedCurves(null);
-        config.setPointFormats(null);
+        config.setDefaultClientSupportedPointFormats(null);
+        config.setDefaultServerSupportedPointFormats(null);
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue("SECP192R1 should get parsed correctly", config.getNamedCurves().contains(NamedCurve.SECP192R1));
         assertTrue("SECP256R1 should get parsed correctly", config.getNamedCurves().contains(NamedCurve.SECP192R1));
         assertTrue("UNCOMPRESSED should get parsed correctly",
-                config.getPointFormats().contains(ECPointFormat.UNCOMPRESSED));
-        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly",
-                config.getPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+                config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
+        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly", config
+                .getDefaultClientSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+        assertTrue("UNCOMPRESSED should get parsed correctly",
+                config.getDefaultServerSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
+        assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly", config
+                .getDefaultServerSupportedPointFormats().contains(ECPointFormat.ANSIX962_COMPRESSED_PRIME));
+
     }
 
     @Test

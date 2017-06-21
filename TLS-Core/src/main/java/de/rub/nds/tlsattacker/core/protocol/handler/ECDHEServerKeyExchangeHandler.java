@@ -15,12 +15,12 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
@@ -54,14 +54,13 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
     protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
         adjustECParameter(message);
         if (message.getComputations() != null) {
-            ECPrivateKeyParameters privEcParams = new ECPrivateKeyParameters(message.getComputations().getPrivateKey()
-                    .getValue(), tlsContext.getServerEcPublicKeyParameters().getParameters());
-            tlsContext.setServerEcPrivateKeyParameters(privEcParams);
+            tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
         }
     }
 
     private void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
-
+        tlsContext.setSelectedCurve(NamedCurve.getNamedCurve(message.getNamedCurve().getValue()));
+        // TODO avoid BC tool
         byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getCurveType().getValue() }, message
                 .getNamedCurve().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
                 message.getPublicKey().getValue());
@@ -74,6 +73,7 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
         } catch (IOException ex) {
             throw new AdjustmentException("EC public key parsing failed", ex);
         }
-        tlsContext.setServerECPublicKeyParameters(publicKeyParameters);
+
+        tlsContext.setServerEcPublicKey(publicKeyParameters.getQ());
     }
 }

@@ -52,7 +52,7 @@ public class DefaultActionExecutorTest {
         executor = new DefaultActionExecutor(context);
         message = new AlertMessage(context.getConfig());
         message.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
-        message.setDescription(AlertDescription.DECODE_ERROR.getValue());
+        message.setDescription(AlertDescription.DECRYPT_ERROR.getValue());
         message.setLevel(AlertLevel.FATAL.getValue());
         record = new Record();
         record.setMaxRecordLengthConfig(32000);

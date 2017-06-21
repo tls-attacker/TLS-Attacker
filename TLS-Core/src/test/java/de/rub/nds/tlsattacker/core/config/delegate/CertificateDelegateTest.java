@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -143,14 +142,8 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[5]));
         TlsConfig config = TlsConfig.createConfig();
-        config.setKeyStore(null);
-        config.setAlias(null);
-        config.setPassword(null);
         config.setOurCertificate(null);
         delegate.applyDelegate(config);
-        assertNotNull("Keystore not set correctly in config", config.getKeyStore());
-        assertTrue("Password not set correctly in config", config.getPassword().equals(args[3]));
-        assertTrue("Alias not set correctly in config", config.getAlias().equals(args[5]));
         assertNotNull("Ceritifcate could not be loaded", config.getOurCertificate());
     }
 
@@ -165,15 +158,8 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
         TlsConfig config = TlsConfig.createConfig();
-        config.setAlias(null);
-        config.setPassword(null);
         config.setOurCertificate(null);
-        assertNotNull("Default keystore should be loaded", config.getKeyStore());
-        config.setKeyStore(null);
         delegate.applyDelegate(config);
-        assertTrue("Password not set correctly in config", config.getPassword().equals(args[1]));
-        assertTrue("Alias not set correctly in config", config.getAlias().equals(args[3]));
-        assertNull("Keystore should not get loaded if not specified", config.getKeyStore());
         assertNull("Certificate should not get loaded if not specified", config.getOurCertificate());
     }
 
@@ -224,7 +210,7 @@ public class CertificateDelegateTest {
         TlsConfig config = TlsConfig.createConfig();
         TlsConfig config2 = TlsConfig.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2));// little
         // ugly
     }
 }

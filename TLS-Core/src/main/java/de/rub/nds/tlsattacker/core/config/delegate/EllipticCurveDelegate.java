@@ -59,7 +59,8 @@ public class EllipticCurveDelegate extends Delegate {
             config.setNamedCurves(namedCurves);
         }
         if (pointFormats != null) {
-            config.setPointFormats(pointFormats);
+            config.setDefaultServerSupportedPointFormats(pointFormats);
+            config.setDefaultClientSupportedPointFormats(pointFormats);
         }
     }
 }

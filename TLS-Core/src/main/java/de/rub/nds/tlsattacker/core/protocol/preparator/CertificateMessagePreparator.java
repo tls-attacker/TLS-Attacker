@@ -9,16 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -35,34 +28,14 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
     @Override
     public void prepareHandshakeMessageContents() {
-        Certificate cert = chooseCert();
-        byte[] encodedCert = encodeCert(cert);
+        byte[] encodedCert = getEncodedCert();
         msg.setX509CertificateBytes(encodedCert);
         msg.setCertificatesLength(msg.getX509CertificateBytes().getValue().length);
     }
 
-    private Certificate chooseCert() {
-        Certificate cert = chooser.getConfig().getOurCertificate();
-        if (cert == null) {
-            throw new PreparationException("Cannot prepare CertificateMessage since no certificate is specified for "
-                    + chooser.getTalkingConnectionEnd().name());
-        } else {
-            return cert;
-        }
-    }
-
-    private byte[] encodeCert(Certificate cert) {
-        ByteArrayOutputStream certByteStream = new ByteArrayOutputStream();
-        try {
-            cert.encode(certByteStream);
-            // the encoded cert is actually Length + Bytes so we strap the
-            // length
-            return Arrays.copyOfRange(certByteStream.toByteArray(), HandshakeByteLength.CERTIFICATES_LENGTH,
-                    certByteStream.toByteArray().length);
-        } catch (IOException ex) {
-            throw new PreparationException(
-                    "Cannot prepare CertificateMessage. An exception Occured while encoding the Certificates", ex);
-        }
+    private byte[] getEncodedCert() {
+        return Arrays.copyOfRange(chooser.getConfig().getOurCertificate(), HandshakeByteLength.CERTIFICATES_LENGTH,
+                chooser.getConfig().getOurCertificate().length);
 
     }
 }

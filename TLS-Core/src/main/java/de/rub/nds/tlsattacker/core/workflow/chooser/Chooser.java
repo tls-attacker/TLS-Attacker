@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
@@ -30,12 +31,8 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.List;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.crypto.tls.ServerDHParams;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -59,14 +56,6 @@ public abstract class Chooser {
     public TlsContext getContext() {
         return context;
     }
-
-    public abstract ECPrivateKeyParameters getServerEcPrivateKeyParameters();
-
-    public abstract ECPublicKeyParameters getServerEcPublicKeyParameters();
-
-    public abstract PublicKey getClientCertificatePublicKey();
-
-    public abstract PublicKey getServerCertificatePublicKey();
 
     public abstract Certificate getServerCertificate();
 
@@ -161,4 +150,23 @@ public abstract class Chooser {
     public abstract BigInteger getDhServerPublicKey();
 
     public abstract BigInteger getDhClientPublicKey();
+
+    public abstract BigInteger getServerEcPrivateKey();
+
+    public abstract BigInteger getClientEcPrivateKey();
+
+    public abstract NamedCurve getSelectedCurve();
+
+    public abstract ECPoint getClientEcPublicKey();
+
+    public abstract ECPoint getServerEcPublicKey();
+
+    public abstract EllipticCurveType getEcCurveType();
+
+    public abstract BigInteger getRsaModulus();
+
+    public abstract BigInteger getServerRSAPublicKey();
+
+    public abstract BigInteger getClientRSAPublicKey();
+
 }

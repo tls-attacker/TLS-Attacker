@@ -11,7 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.io.ByteArrayOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -39,7 +42,13 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
 
     private byte[] createPointFormatsByteArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ECPointFormat format : chooser.getConfig().getPointFormats()) {
+        List<ECPointFormat> pointFormatList;
+        if (chooser.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+            pointFormatList = chooser.getClientSupportedPointFormats();
+        } else {
+            pointFormatList = chooser.getServerSupportedPointFormats();
+        }
+        for (ECPointFormat format : pointFormatList) {
             stream.write(format.getValue());
         }
         return stream.toByteArray();

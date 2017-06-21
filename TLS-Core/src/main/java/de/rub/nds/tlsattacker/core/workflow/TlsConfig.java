@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
@@ -31,33 +30,18 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
-import de.rub.nds.tlsattacker.core.util.JKSLoader;
-import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateParsingException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.math.ec.ECPoint;
 
 /**
@@ -83,23 +67,6 @@ public final class TlsConfig implements Serializable {
      * The Workflow Trace that should be executed
      */
     private WorkflowTrace workflowTrace = null;
-
-    /**
-     * Keystore for storing client / server certificates
-     */
-    @XmlTransient
-    private KeyStore keyStore = null;
-
-    private String keyStoreFile = null;
-
-    /**
-     * Alias for the used key in the Keystore
-     */
-    private String alias = "default";
-    /**
-     * keystore password
-     */
-    private String password = "password";
     /**
      * host to connect
      */
@@ -135,10 +102,6 @@ public final class TlsConfig implements Serializable {
      * If we are a dynamic workflow //TODO implement
      */
     private boolean dynamicWorkflow = false;
-    /**
-     * Supported ECPointFormats by default
-     */
-    private List<ECPointFormat> pointFormats;
     /**
      * Supported namedCurves by default
      */
@@ -288,8 +251,8 @@ public final class TlsConfig implements Serializable {
     /**
      * The Certificate we initialize CertificateMessages with
      */
-    @XmlTransient
-    private Certificate ourCertificate;
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] ourCertificate; // TODO init
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
@@ -316,9 +279,6 @@ public final class TlsConfig implements Serializable {
             "14480301636124364131011109953533209419584138262785800536726427889263750026424833537662211230987987661789535497502943331312908532241011314347509704298395798883527739408059572");
 
     private String defaultApplicationMessageData = "Test";
-
-    @XmlTransient
-    private PrivateKey privateKey = null;
 
     /**
      * If this is set TLS-Attacker only waits for the expected messages in the
@@ -461,11 +421,24 @@ public final class TlsConfig implements Serializable {
 
     private ECPoint defaultClientEcPublicKey;
 
-    private ECPoint defaultServerEcPublicKey;
+    private ECPoint defaultServerEcPublicKey; // TODO
 
     private BigInteger defaultServerEcPrivateKey = new BigInteger("3");
 
     private BigInteger defaultClientEcPrivateKey = new BigInteger("3");
+
+    private BigInteger defaultRSAModulus = new BigInteger(
+            "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");// TODO
+
+    private BigInteger defaultServerRSAPublicKey = new BigInteger("65537");
+
+    private BigInteger defaultClientRSAPublicKey = new BigInteger("65537");
+
+    private BigInteger defaultServerRSAPrivateKey = new BigInteger(
+            "89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713");
+
+    private BigInteger defaultClientRSAPrivateKey = new BigInteger(
+            "89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713");
 
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
@@ -504,19 +477,6 @@ public final class TlsConfig implements Serializable {
         namedCurves.add(NamedCurve.SECP256R1);
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
-        pointFormats = new LinkedList<>();
-        pointFormats.add(ECPointFormat.UNCOMPRESSED);
-        try {
-            ClassLoader loader = TlsConfig.class.getClassLoader();
-            InputStream stream = loader.getResourceAsStream("default.jks");
-            setKeyStore(KeystoreHandler.loadKeyStore(stream, "password"));
-            setPrivateKey((PrivateKey) keyStore.getKey(alias, password.toCharArray()));
-            setOurCertificate(JKSLoader.loadTLSCertificate(keyStore, alias));
-        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
-            throw new ConfigurationException("Could not load deauflt JKS!");
-        } catch (UnrecoverableKeyException ex) {
-            Logger.getLogger(TlsConfig.class.getName()).log(Level.SEVERE, null, ex);
-        }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         defaultTokenBindingKeyParameters = new LinkedList<>();
@@ -526,6 +486,58 @@ public final class TlsConfig implements Serializable {
         defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
         defaultServerSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA1));
+        defaultServerSupportedPointFormats = new LinkedList<>();
+        defaultClientSupportedPointFormats = new LinkedList<>();
+        defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
+        defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
+    }
+
+    public byte[] getOurCertificate() {
+        return ourCertificate;
+    }
+
+    public void setOurCertificate(byte[] ourCertificate) {
+        this.ourCertificate = ourCertificate;
+    }
+
+    public BigInteger getDefaultClientRSAPrivateKey() {
+        return defaultClientRSAPrivateKey;
+    }
+
+    public void setDefaultClientRSAPrivateKey(BigInteger defaultClientRSAPrivateKey) {
+        this.defaultClientRSAPrivateKey = defaultClientRSAPrivateKey;
+    }
+
+    public BigInteger getDefaultServerRSAPrivateKey() {
+        return defaultServerRSAPrivateKey;
+    }
+
+    public void setDefaultServerRSAPrivateKey(BigInteger defaultServerRSAPrivateKey) {
+        this.defaultServerRSAPrivateKey = defaultServerRSAPrivateKey;
+    }
+
+    public BigInteger getDefaultRSAModulus() {
+        return defaultRSAModulus;
+    }
+
+    public void setDefaultRSAModulus(BigInteger defaultRSAModulus) {
+        this.defaultRSAModulus = defaultRSAModulus;
+    }
+
+    public BigInteger getDefaultServerRSAPublicKey() {
+        return defaultServerRSAPublicKey;
+    }
+
+    public void setDefaultServerRSAPublicKey(BigInteger defaultServerRSAPublicKey) {
+        this.defaultServerRSAPublicKey = defaultServerRSAPublicKey;
+    }
+
+    public BigInteger getDefaultClientRSAPublicKey() {
+        return defaultClientRSAPublicKey;
+    }
+
+    public void setDefaultClientRSAPublicKey(BigInteger defaultClientRSAPublicKey) {
+        this.defaultClientRSAPublicKey = defaultClientRSAPublicKey;
     }
 
     public BigInteger getDefaultServerEcPrivateKey() {
@@ -1004,14 +1016,6 @@ public final class TlsConfig implements Serializable {
         this.distinguishedNames = distinguishedNames;
     }
 
-    public Certificate getOurCertificate() {
-        return ourCertificate;
-    }
-
-    public void setOurCertificate(Certificate ourCertificate) {
-        this.ourCertificate = ourCertificate;
-    }
-
     public ProtocolVersion getHighestProtocolVersion() {
         return highestProtocolVersion;
     }
@@ -1168,30 +1172,6 @@ public final class TlsConfig implements Serializable {
         this.workflowTrace = workflowTrace;
     }
 
-    public KeyStore getKeyStore() {
-        return keyStore;
-    }
-
-    public void setKeyStore(KeyStore keyStore) {
-        this.keyStore = keyStore;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getHost() {
         return host;
     }
@@ -1223,14 +1203,6 @@ public final class TlsConfig implements Serializable {
 
     public void setFuzzingMode(boolean fuzzingMode) {
         this.fuzzingMode = fuzzingMode;
-    }
-
-    public List<ECPointFormat> getPointFormats() {
-        return Collections.unmodifiableList(pointFormats);
-    }
-
-    public void setPointFormats(List<ECPointFormat> pointFormats) {
-        this.pointFormats = pointFormats;
     }
 
     public List<NamedCurve> getNamedCurves() {
@@ -1297,28 +1269,12 @@ public final class TlsConfig implements Serializable {
         this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
     }
 
-    public PrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(PrivateKey privateKey) {
-        this.privateKey = privateKey;
-    }
-
     public int getDefaultDTLSCookieLength() {
         return defaultDTLSCookieLength;
     }
 
     public void setDefaultDTLSCookieLength(int defaultDTLSCookieLength) {
         this.defaultDTLSCookieLength = defaultDTLSCookieLength;
-    }
-
-    public String getKeyStoreFile() {
-        return keyStoreFile;
-    }
-
-    public void setKeyStoreFile(String keyStoreFile) {
-        this.keyStoreFile = keyStoreFile;
     }
 
     public byte[] getTLSSessionTicket() {
@@ -1383,10 +1339,5 @@ public final class TlsConfig implements Serializable {
 
     public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
         this.addTokenBindingExtension = addTokenBindingExtension;
-    }
-
-    public PublicKey getPublicKey() throws CertificateParsingException {
-        X509CertificateObject certObj = new X509CertificateObject(getOurCertificate().getCertificateAt(0));
-        return certObj.getPublicKey();
     }
 }

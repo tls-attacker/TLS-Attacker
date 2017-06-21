@@ -8,12 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import java.util.List;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.tls.TlsECCUtils;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -46,5 +51,10 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
     protected void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        adjustClientPublicKey(message);
+    }
+
+    private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {
+        tlsContext.setClientEcPublicKey(message.getComputations().getClientPublicKey());
     }
 }

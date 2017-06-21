@@ -138,7 +138,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     @Override
-    public KeyExchangeComputations getComputations() {
+    public ECDHClientComputations getComputations() {
         return computations;
     }
 

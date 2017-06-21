@@ -28,28 +28,28 @@ import java.util.List;
  * @param <Message>
  */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
-    
+
     public ClientHelloHandler(TlsContext tlsContext) {
         super(tlsContext);
     }
-    
+
     @Override
     public ClientHelloParser getParser(byte[] message, int pointer) {
         return new ClientHelloParser(pointer, message,
                 new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
     }
-    
+
     @Override
     public ClientHelloPreparator getPreparator(ClientHelloMessage message) {
         return new ClientHelloPreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
     }
-    
+
     @Override
     public ClientHelloSerializer getSerializer(ClientHelloMessage message) {
         return new ClientHelloSerializer(message,
                 new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
     }
-    
+
     @Override
     protected void adjustTLSContext(ClientHelloMessage message) {
         adjustRandomContext(message);
@@ -66,54 +66,55 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             }
         }
     }
-    
+
     private boolean isCookieFieldSet(ClientHelloMessage message) {
         return message.getCookie() != null;
     }
-    
+
     private void adjustClientSupportedCipherSuites(ClientHelloMessage message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
         tlsContext.setClientSupportedCiphersuites(suiteList);
         LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
     }
-    
+
     private void adjustClientSupportedCompressions(ClientHelloMessage message) {
         List<CompressionMethod> compressionList = convertCompressionMethods(message.getCompressions().getValue());
         tlsContext.setClientSupportedCompressions(compressionList);
         LOGGER.debug("Set ClientSupportedCompressions in Context to " + compressionList.toString());
     }
-    
+
     private void adjustDTLSCookie(ClientHelloMessage message) {
         byte[] dtlsCookie = message.getCookie().getValue();
         tlsContext.setDtlsCookie(dtlsCookie);
         LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie));
     }
-    
+
     private void adjustSessionID(ClientHelloMessage message) {
         byte[] sessionId = message.getSessionId().getValue();
         tlsContext.setClientSessionId(sessionId);
         LOGGER.debug("Set SessionId in Context to " + ArrayConverter.bytesToHexString(sessionId, false));
     }
-    
+
     private void adjustProtocolVersion(ClientHelloMessage message) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         if (version != null) {
             tlsContext.setHighestClientProtocolVersion(version);
             LOGGER.debug("Set HighestClientProtocolVersion in Context to " + version.name());
         } else {
-            LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined " + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+            LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
+                    + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
         }
     }
-    
+
     private void adjustRandomContext(ClientHelloMessage message) {
         setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
         LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
     }
-    
+
     private void setClientRandomContext(byte[] unixTime, byte[] random) {
         tlsContext.setClientRandom(ArrayConverter.concatenate(unixTime, random));
     }
-    
+
     private List<CompressionMethod> convertCompressionMethods(byte[] bytesToConvert) {
         List<CompressionMethod> list = new LinkedList<>();
         for (byte b : bytesToConvert) {
@@ -126,7 +127,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         }
         return list;
     }
-    
+
     private List<CipherSuite> convertCipherSuites(byte[] bytesToConvert) {
         if (bytesToConvert.length % 2 != 0) {
             LOGGER.warn("Cannot convert:" + ArrayConverter.bytesToHexString(bytesToConvert, false)
@@ -134,7 +135,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             return null;
         }
         List<CipherSuite> list = new LinkedList<>();
-        
+
         for (int i = 0; i < bytesToConvert.length; i = i + 2) {
             byte[] copied = new byte[2];
             copied[0] = bytesToConvert[i];

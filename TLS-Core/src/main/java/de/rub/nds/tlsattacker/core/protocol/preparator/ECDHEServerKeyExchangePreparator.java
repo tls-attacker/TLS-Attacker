@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
@@ -128,7 +129,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     }
 
     private void generatePointFormatList(ECDHEServerKeyExchangeMessage msg) {
-        List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getConfig().getPointFormats());
+        List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getServerSupportedPointFormats());
 
         if (sharedPointFormats.isEmpty()) {
             throw new PreparationException("Don't know which point format to use for ECDHE. "
@@ -148,7 +149,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
         sharedPointFormats.removeAll(unsupportedFormats);
         if (sharedPointFormats.isEmpty()) {
-            sharedPointFormats = new ArrayList<>(chooser.getConfig().getPointFormats());
+            sharedPointFormats = new ArrayList<>(chooser.getConfig().getDefaultServerSupportedPointFormats());
         }
 
         try {
@@ -219,15 +220,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     }
 
     private byte[] generateSignature(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm algorithm) {
-        try {
-            PrivateKey key = chooser.getConfig().getPrivateKey();
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key);
-            instance.update(generateSignatureContents(msg));
-            return instance.sign();
-        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException ex) {
-            throw new PreparationException("Could not generate Signature for ServerKeyExchange Message.", ex);
-        }
+        return SignatureCalculator.generateSignature(algorithm, chooser, generateSignatureContents(msg));
     }
 
     private void prepareSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm signHashAlgo) {

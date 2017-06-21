@@ -10,26 +10,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.interfaces.RSAPrivateCrtKey;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.KeyGenerationParameters;
-import org.bouncycastle.crypto.generators.DHKeyPairGenerator;
-import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
-import org.bouncycastle.crypto.params.DHParameters;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.jcajce.provider.asymmetric.util.DHUtil;
-import org.bouncycastle.util.BigIntegers;
 
 /**
  *
@@ -87,16 +72,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
-        try {
-            RSAPrivateCrtKey rsakey = (RSAPrivateCrtKey) chooser.getConfig().getPrivateKey();
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(rsakey);
-            instance.update(generateToBeSigned());
-            return instance.sign();
-        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException ex) {
-            throw new PreparationException("Could not generate Signature for DHEServerKeyExchange Message.", ex);
-        }
-
+        return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
     }
 
     private void prepareGenerator(DHEServerKeyExchangeMessage msg) {
