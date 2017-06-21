@@ -13,32 +13,18 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.spec.ECFieldFp;
+import java.util.Random;
 
 import org.bouncycastle.asn1.x9.X962NamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.generators.ECKeyPairGenerator;
 import org.bouncycastle.crypto.params.ECDomainParameters;
-import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
-import org.bouncycastle.crypto.params.ECNamedDomainParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsECCUtils;
-import org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util;
-import org.bouncycastle.jce.ECNamedCurveTable;
-import org.bouncycastle.jce.ECPointUtil;
-import org.bouncycastle.jce.spec.ECParameterSpec;
-import org.bouncycastle.jce.spec.ECPublicKeySpec;
-import org.bouncycastle.math.ec.ECPoint;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -69,6 +55,7 @@ public class ECDHClientKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new ECDHClientKeyExchangeMessage();
         preparator = new ECDHClientKeyExchangePreparator(context, message);
+        RandomHelper.setRandom(new Random(0));
     }
 
     /**
