@@ -586,6 +586,10 @@ public enum CipherSuite {
         list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA);
         list.add(TLS_RSA_WITH_SEED_CBC_SHA);
         list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_RSA_WITH_RC4_128_MD5);
+        list.add(TLS_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_ECDHE_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_DHE_DSS_WITH_RC4_128_SHA);
         return list;
     }
 
