@@ -12,8 +12,10 @@ import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -52,47 +54,43 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
     @Override
     public void executeAttack() {
+        // byte[] ms = new byte[48];
+        // byte[] pms = new byte[48];
+        // pms[0] = 3;
+        // pms[1] = 3;
+        // workflowTrace.add(new ChangePreMasterSecretAction(pms));
+        // workflowTrace.add(new ChangeMasterSecretAction(ms));
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public Boolean isVulnerable() {
         TlsConfig tlsConfig = config.createConfig();
-        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);
+        tlsConfig.setTlsTimeout(1000);
+        tlsConfig.setTimeout(1000);
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
-        byte[] ms = new byte[48];
-        byte[] pms = new byte[48];
-        pms[0] = 3;
-        pms[1] = 3;
-        WorkflowTrace workflowTrace = tlsContext.getWorkflowTrace();
+        WorkflowTrace workflowTrace = new WorkflowTrace();
+        workflowTrace.add(new SendAction(new ClientHelloMessage(tlsConfig)));
         List<ProtocolMessage> messageList = new LinkedList<>();
         messageList.add(new ServerHelloMessage(tlsConfig));
         messageList.add(new CertificateMessage(tlsConfig));
         messageList.add(new ServerHelloDoneMessage(tlsConfig));
-        ReceiveAction receiveAction = new ReceiveAction(messageList);
-        workflowTrace.add(receiveAction);
+        workflowTrace.add(new ReceiveAction(messageList));
         messageList = new LinkedList<>();
-        workflowTrace.add(new ChangePreMasterSecretAction(pms));
-        workflowTrace.add(new ChangeMasterSecretAction(ms));
-        ChangeCipherSpecMessage changeCipherSpec1 = new ChangeCipherSpecMessage(tlsConfig);
-        messageList.add(changeCipherSpec1);
-        FinishedMessage fin1 = new FinishedMessage(tlsConfig);
-        messageList.add(fin1);
-        SendAction sendAction = new SendAction(messageList);
-        workflowTrace.add(sendAction);
+        messageList.add(new ChangeCipherSpecMessage());
+        workflowTrace.add(new SendAction(messageList));
         messageList = new LinkedList<>();
-        messageList.add(new ChangeCipherSpecMessage(tlsConfig));
-        messageList.add(new FinishedMessage(tlsConfig));
-        receiveAction = new ReceiveAction(messageList);
-        workflowTrace.add(receiveAction);
+        workflowTrace.add(new ReceiveAction(messageList));
+        tlsConfig.setWorkflowTrace(workflowTrace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
         workflowExecutor.executeWorkflow();
-        if (workflowTrace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Server Finished message found");
+        System.out.println(workflowTrace.toString());
+        if (!workflowTrace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).isEmpty()) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Alert message found");
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Server Finished message found");
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Alert message found");
             return true;
         }
     }
