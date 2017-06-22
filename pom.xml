@@ -40,6 +40,7 @@
         <module>TLS-Core</module>
         <module>TLS-Client</module>
         <module>TLS-Server</module>
+        <module>TLS-Mitm</module>
         <module>Attacks</module>
     </modules>
     <dependencies>
@@ -272,7 +273,7 @@
                 <configuration>
                     <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                 </configuration>
-            </plugin>
+            </plugin>          
         </plugins>
     </reporting>
     
