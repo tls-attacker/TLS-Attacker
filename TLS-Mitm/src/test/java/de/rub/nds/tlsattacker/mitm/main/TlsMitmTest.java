@@ -121,22 +121,14 @@ public class TlsMitmTest {
 
             LOGGER.info("Starting test server");
             new Thread(tlsServer).start();
-            while (!tlsServer.isInitialized())
-                ;
+            while (!tlsServer.isInitialized());
 
             LOGGER.info("Starting test client");
-            // LOGGER.info("... Client running against " + localhost + ":" +
-            // port);
             BasicTlsClient client = new BasicTlsClient();
             Thread t = new Thread(client);
             t.start();
 
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException ex) {
-                java.util.logging.Logger.getLogger(TlsMitmTest.class.getName()).log(java.util.logging.Level.SEVERE,
-                        null, ex);
-            }
+            TimeUnit.SECONDS.sleep(1);
 
             LOGGER.info("Killing client");
             t.interrupt();
@@ -147,11 +139,10 @@ public class TlsMitmTest {
             LOGGER.info("Done.");
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
-                | KeyManagementException ex) {
+                | KeyManagementException | InterruptedException ex) {
             ex.printStackTrace();
             fail();
         }
-
     }
 
     // /**
