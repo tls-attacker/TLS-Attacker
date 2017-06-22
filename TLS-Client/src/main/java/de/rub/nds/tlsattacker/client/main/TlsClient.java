@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  * 
  * @author Robert Merget - robert.merget@rub.de
  */
-public class TLSClient {
+public class TlsClient {
 
     private static final Logger LOGGER = LogManager.getLogger("Client");
 
@@ -44,7 +44,7 @@ public class TLSClient {
             TlsConfig tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
-                TLSClient client = new TLSClient();
+                TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
             } catch (ConfigurationException E) {
                 LOGGER.info("Encountered a ConfigurationException aborting.");
