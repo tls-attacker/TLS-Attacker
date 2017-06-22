@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -272,7 +270,7 @@ public class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the ExtendedMasterSecret extension
      */
-    private boolean addExtendedMasterSecretExtension = false;
+    private boolean addExtendedMasterSecretExtension = true;
     /**
      * If we generate ClientHello with the SessionTicketTLS extension
      */

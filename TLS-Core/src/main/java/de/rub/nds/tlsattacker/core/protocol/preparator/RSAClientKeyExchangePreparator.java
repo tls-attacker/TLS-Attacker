@@ -76,8 +76,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
         prepareClientRandom(msg);
 
-        masterSecret = generateMasterSecret();
-        prepareMasterSecret(msg);
         if (paddedPremasterSecret.length == 0) {
             paddedPremasterSecret = new byte[] { 0 };
         }
@@ -97,20 +95,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         tempPremasterSecret[0] = context.getSelectedProtocolVersion().getMajor();
         tempPremasterSecret[1] = context.getSelectedProtocolVersion().getMinor();
         return tempPremasterSecret;
-    }
-
-    private byte[] generateMasterSecret() {
-        if (context.getSelectedCipherSuite() == null) {
-            throw new PreparationException("Cannot choose PRF. Selected Ciphersuite is null");
-        }
-        if (context.getSelectedProtocolVersion() == null) {
-            throw new PreparationException("Cannot choose PRF. Selected ProtocolVersion is null");
-        }
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
-        return PseudoRandomFunction.compute(prfAlgorithm, msg.getComputations().getPremasterSecret().getValue(),
-                PseudoRandomFunction.MASTER_SECRET_LABEL, msg.getComputations().getClientRandom().getValue(),
-                HandshakeByteLength.MASTER_SECRET);
     }
 
     private RSAPublicKey generateFreshKey() {
@@ -148,12 +132,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.getComputations().setClientRandom(clientRandom);
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    private void prepareMasterSecret(RSAClientKeyExchangeMessage msg) {
-        msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
     }
 
     private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
@@ -197,7 +175,5 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
-        masterSecret = generateMasterSecret();
-        prepareMasterSecret(msg);
     }
 }

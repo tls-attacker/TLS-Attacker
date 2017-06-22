@@ -34,14 +34,4 @@ public abstract class ServerKeyExchangeHandler<Message extends ServerKeyExchange
             LOGGER.debug("Did not set in Context PremasterSecret");
         }
     }
-
-    protected void adjustMasterSecret(ServerKeyExchangeMessage message) {
-        if (message.getComputations().getMasterSecret() != null) {
-            byte[] masterSecret = message.getComputations().getMasterSecret().getValue();
-            tlsContext.setMasterSecret(masterSecret);
-            LOGGER.debug("Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
-        } else {
-            LOGGER.debug("Did not set in Context MasterSecret");
-        }
-    }
 }

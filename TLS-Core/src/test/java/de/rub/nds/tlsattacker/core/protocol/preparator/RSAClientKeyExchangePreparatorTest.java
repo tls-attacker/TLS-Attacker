@@ -8,15 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -67,8 +64,9 @@ public class RSAClientKeyExchangePreparatorTest {
         assertEquals((byte) 0x02, message.getComputations().getPlainPaddedPremasterSecret().getValue()[1]);
         assertEquals((byte) 0x00, message.getComputations().getPlainPaddedPremasterSecret().getValue()[message
                 .getComputations().getPadding().getValue().length + 2]);
-        assertNotNull(message.getComputations().getMasterSecret().getValue());
-        assertEquals(HandshakeByteLength.MASTER_SECRET, message.getComputations().getMasterSecret().getValue().length);
+        // assertNotNull(message.getComputations().getMasterSecret().getValue());
+        // assertEquals(HandshakeByteLength.MASTER_SECRET,
+        // message.getComputations().getMasterSecret().getValue().length);
         assertNotNull(message.getSerializedPublicKeyLength().getValue());
         assertNotNull(message.getSerializedPublicKey());
     }
