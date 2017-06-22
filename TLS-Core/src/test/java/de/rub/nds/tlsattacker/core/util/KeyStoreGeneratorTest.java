@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import java.security.KeyPair;
 import java.security.KeyStore;
 import static org.junit.Assert.assertEquals;
@@ -20,9 +19,6 @@ import org.junit.Test;
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class KeyStoreGeneratorTest {
-
-    public KeyStoreGeneratorTest() {
-    }
 
     /**
      * Test of createRSAKeyPair method, of class KeyStoreGenerator.

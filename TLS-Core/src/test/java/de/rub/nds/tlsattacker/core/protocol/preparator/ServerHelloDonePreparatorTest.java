@@ -8,17 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import java.util.LinkedList;
-import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -29,9 +22,6 @@ public class ServerHelloDonePreparatorTest {
     private TlsContext context;
     private ServerHelloDoneMessage message;
     private ServerHelloDonePreparator preparator;
-
-    public ServerHelloDonePreparatorTest() {
-    }
 
     @Before
     public void setUp() {

@@ -26,6 +26,11 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class ExtendedMasterSecretExtensionParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_MASTER_SECRET, 0,
+                ArrayConverter.hexStringToByteArray("00170000"), 0 } });
+    }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
@@ -42,12 +47,6 @@ public class ExtendedMasterSecretExtensionParserTest {
         this.startParsing = startParsing;
     }
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.EXTENDED_MASTER_SECRET, 0,
-                ArrayConverter.hexStringToByteArray("00170000"), 0 } });
-    }
-
     @Before
     public void setUp() {
         parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes);
@@ -57,7 +56,7 @@ public class ExtendedMasterSecretExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
     }
 
 }

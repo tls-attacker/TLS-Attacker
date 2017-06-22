@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
@@ -16,9 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSeria
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.math.BigInteger;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -28,9 +27,6 @@ public class DHEServerKeyExchangeHandlerTest {
 
     private DHEServerKeyExchangeHandler handler;
     private TlsContext context;
-
-    public DHEServerKeyExchangeHandlerTest() {
-    }
 
     @Before
     public void setUp() {

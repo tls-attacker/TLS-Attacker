@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
@@ -19,9 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndic
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -31,9 +30,6 @@ public class ServerNameIndicationExtensionHandlerTest {
 
     private TlsContext context;
     private ServerNameIndicationExtensionHandler handler;
-
-    public ServerNameIndicationExtensionHandlerTest() {
-    }
 
     @Before
     public void setUp() {

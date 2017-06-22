@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.RetransmitMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,9 +23,6 @@ public class RetransmitMessagePreparatorTest {
     private RetransmitMessage message;
     private TlsContext context;
     private RetransmitMessagePreparator preparator;
-
-    public RetransmitMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {

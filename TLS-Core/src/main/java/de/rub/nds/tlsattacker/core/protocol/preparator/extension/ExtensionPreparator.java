@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -22,23 +21,40 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Preparator<T> {
 
-    private ExtensionMessage message;
+    private final ExtensionMessage msg;
+    private byte[] content;
+    private ExtensionSerializer serializer;
 
     public ExtensionPreparator(TlsContext context, T message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public final void prepare() {
-        message.setExtensionType(message.getExtensionTypeConstant().getValue());
+        prepareExtensionType(msg);
         prepareExtensionContent();
-        ExtensionSerializer serializer = message.getHandler(context).getSerializer(message);
-        byte[] content = serializer.serializeExtensionContent();
-        message.setExtensionLength(content.length);
-        message.setExtensionBytes(serializer.serialize());
+        serializer = msg.getHandler(context).getSerializer(msg);
+        content = serializer.serializeExtensionContent();
+        prepareExtensionLength(msg);
+        prepareExtensionBytes(msg);
     }
 
     public abstract void prepareExtensionContent();
+
+    private void prepareExtensionType(ExtensionMessage msg) {
+        msg.setExtensionType(msg.getExtensionTypeConstant().getValue());
+        LOGGER.debug("ExtensionType: " + ArrayConverter.bytesToHexString(msg.getExtensionType().getValue()));
+    }
+
+    private void prepareExtensionLength(ExtensionMessage msg) {
+        msg.setExtensionLength(content.length);
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionLength().getValue());
+    }
+
+    private void prepareExtensionBytes(ExtensionMessage msg) {
+        msg.setExtensionBytes(serializer.serialize());
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+    }
 
 }

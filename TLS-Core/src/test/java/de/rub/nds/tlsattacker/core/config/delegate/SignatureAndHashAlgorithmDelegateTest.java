@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
@@ -32,9 +31,6 @@ public class SignatureAndHashAlgorithmDelegateTest {
     private SignatureAndHashAlgorithmDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public SignatureAndHashAlgorithmDelegateTest() {
-    }
 
     @Before
     public void setUp() {

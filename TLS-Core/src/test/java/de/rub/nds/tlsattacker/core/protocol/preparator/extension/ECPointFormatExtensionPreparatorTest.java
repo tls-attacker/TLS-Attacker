@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class ECPointFormatExtensionPreparatorTest {
 
-    public ECPointFormatExtensionPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

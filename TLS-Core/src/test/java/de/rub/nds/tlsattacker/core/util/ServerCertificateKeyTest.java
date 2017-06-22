@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.util.ServerCertificateKey;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
@@ -18,9 +17,6 @@ import org.junit.Test;
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class ServerCertificateKeyTest {
-
-    public ServerCertificateKeyTest() {
-    }
 
     /**
      * Test of getServerCertificateKey method, of class ServerCertificateKey.

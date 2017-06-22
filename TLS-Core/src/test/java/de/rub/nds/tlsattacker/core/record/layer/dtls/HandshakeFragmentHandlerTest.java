@@ -8,17 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer.dtls;
 
-import de.rub.nds.tlsattacker.core.record.layer.dtls.HandshakeFragmentHandler;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.List;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.BeforeClass;
-
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */

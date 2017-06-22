@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  *
@@ -31,6 +28,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing HelloVerifyRequestMessage");
         prepareCookie(msg);
         prepareCookieLength(msg);
         // WARN

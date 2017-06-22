@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
  */
 public abstract class CompressionAlgorithm {
 
-    private CompressionMethod method;
+    private final CompressionMethod method;
 
     public CompressionAlgorithm(CompressionMethod method) {
         this.method = method;

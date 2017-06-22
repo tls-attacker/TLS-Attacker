@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class MaxFragmentLengthExtensionPreparatorTest {
 
-    public MaxFragmentLengthExtensionPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

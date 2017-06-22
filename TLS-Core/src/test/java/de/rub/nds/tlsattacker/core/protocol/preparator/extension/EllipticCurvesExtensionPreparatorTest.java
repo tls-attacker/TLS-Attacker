@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class EllipticCurvesExtensionPreparatorTest {
 
-    public EllipticCurvesExtensionPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

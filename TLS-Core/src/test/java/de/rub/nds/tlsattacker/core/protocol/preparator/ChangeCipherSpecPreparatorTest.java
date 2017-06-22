@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,9 +23,6 @@ public class ChangeCipherSpecPreparatorTest {
     private ChangeCipherSpecPreparator preparator;
     private ChangeCipherSpecMessage message;
     private TlsContext context;
-
-    public ChangeCipherSpecPreparatorTest() {
-    }
 
     @Before
     public void setUp() {

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -23,8 +24,13 @@ import static org.junit.Assert.*;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -35,9 +41,6 @@ public class DHEServerKeyExchangePreparatorTest {
     private TlsContext context;
     private DHEServerKeyExchangePreparator preparator;
     private DHEServerKeyExchangeMessage message;
-
-    public DHEServerKeyExchangePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -78,7 +81,6 @@ public class DHEServerKeyExchangePreparatorTest {
         // Test
         preparator.prepareHandshakeMessageContents();
         System.out.println("" + ArrayConverter.bytesToHexString(message.getG().getValue(), false));
-        System.out.println("" + ArrayConverter.bytesToHexString(message.getP().getValue(), false));
 
         assertArrayEquals(
                 ArrayConverter

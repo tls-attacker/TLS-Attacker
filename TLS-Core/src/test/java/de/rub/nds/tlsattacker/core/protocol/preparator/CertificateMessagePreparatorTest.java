@@ -8,17 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import org.bouncycastle.crypto.tls.Certificate;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -30,9 +29,6 @@ public class CertificateMessagePreparatorTest {
     private CertificateMessage message;
     private TlsContext context;
 
-    public CertificateMessagePreparatorTest() {
-    }
-
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -43,6 +39,8 @@ public class CertificateMessagePreparatorTest {
     /**
      * Test of prepareHandshakeMessageContents method, of class
      * CertificateMessagePreparator.
+     * 
+     * @throws java.io.IOException
      */
     @Test
     public void testPrepare() throws IOException {

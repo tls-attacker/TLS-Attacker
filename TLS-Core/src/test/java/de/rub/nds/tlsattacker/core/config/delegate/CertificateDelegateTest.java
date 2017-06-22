@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -44,10 +43,6 @@ public class CertificateDelegateTest {
     private String args[];
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    public CertificateDelegateTest() {
-
-    }
 
     @Before
     public void setUp() {

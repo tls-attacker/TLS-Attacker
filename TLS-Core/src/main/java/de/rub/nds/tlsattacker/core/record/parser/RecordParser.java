@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.record.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.record.Record;
 
 /**
@@ -26,6 +26,7 @@ public class RecordParser extends AbstractRecordParser<Record> {
 
     @Override
     public Record parse() {
+        LOGGER.debug("Parsing Record");
         Record record = new Record();
         parseContentType(record);
         record.setContentMessageType(ProtocolMessageType.getContentType(record.getContentType().getValue()));
@@ -37,17 +38,22 @@ public class RecordParser extends AbstractRecordParser<Record> {
 
     private void parseContentType(Record record) {
         record.setContentType(parseByteField(RecordByteLength.CONTENT_TYPE));
+        LOGGER.debug("ContentType: " + record.getContentType().getValue());
     }
 
     private void parseVersion(Record record) {
         record.setProtocolVersion(parseByteArrayField(RecordByteLength.PROTOCOL_VERSION));
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
     }
 
     private void parseLength(Record record) {
         record.setLength(parseIntField(RecordByteLength.RECORD_LENGTH));
+        LOGGER.debug("Length: " + record.getLength().getValue());
     }
 
     private void parseProtocolMessageBytes(Record record) {
         record.setProtocolMessageBytes(parseByteArrayField(record.getLength().getValue()));
+        LOGGER.debug("ProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 }

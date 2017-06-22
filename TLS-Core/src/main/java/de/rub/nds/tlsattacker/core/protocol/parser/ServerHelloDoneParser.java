@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -38,6 +36,7 @@ public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDon
 
     @Override
     protected void parseHandshakeMessageContent(ServerHelloDoneMessage msg) {
+        LOGGER.debug("Parsing ServerHelloDoneMessage");
         if (msg.getLength().getValue() != 0) {
             LOGGER.warn("Parsed ServerHelloDone with non-zero length! Not parsing payload.");
         }

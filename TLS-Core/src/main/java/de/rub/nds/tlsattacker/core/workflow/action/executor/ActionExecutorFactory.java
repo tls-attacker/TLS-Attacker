@@ -28,4 +28,7 @@ public class ActionExecutorFactory {
                 throw new UnsupportedOperationException("ActionExecutor " + type.name() + " not supported");
         }
     }
+
+    private ActionExecutorFactory() {
+    }
 }

@@ -8,12 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -30,8 +26,10 @@ public class UnknownExtensionParser extends ExtensionParser<UnknownExtensionMess
             // No bytes left for extension data
         } else if (getBytesLeft() < message.getExtensionLength().getValue()) {
             message.setExtensionData(parseByteArrayField(getBytesLeft()));
+            LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
         } else {
             message.setExtensionData(parseByteArrayField(message.getExtensionLength().getValue()));
+            LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(message.getExtensionData().getValue()));
         }
     }
 

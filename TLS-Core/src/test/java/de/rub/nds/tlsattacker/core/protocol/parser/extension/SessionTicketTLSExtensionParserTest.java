@@ -26,6 +26,16 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class SessionTicketTLSExtensionParserTest {
+    /**
+     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
+     *
+     * @return Collection of the parameters
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays.asList(new Object[][] { { ExtensionType.SESSION_TICKET, 0, new byte[0],
+                ArrayConverter.hexStringToByteArray("00230000"), 0 } });
+    }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
@@ -54,17 +64,6 @@ public class SessionTicketTLSExtensionParserTest {
     }
 
     /**
-     * Gets the test vectors of the SessionTicketTLSExtensionHandlerTest class.
-     *
-     * @return Collection of the parameters
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.SESSION_TICKET, 0, new byte[0],
-                ArrayConverter.hexStringToByteArray("00230000"), 0 } });
-    }
-
-    /**
      * Some initial setup.
      */
     @Before
@@ -81,7 +80,7 @@ public class SessionTicketTLSExtensionParserTest {
     @Test
     public void testParseExtensionMessageContent() {
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(sessionTicket, message.getTicket().getValue());
     }
 

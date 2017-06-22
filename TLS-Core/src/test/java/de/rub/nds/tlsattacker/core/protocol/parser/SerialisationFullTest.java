@@ -39,9 +39,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
@@ -57,7 +57,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,7 +72,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 import static org.junit.Assert.fail;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.TemporaryFolder;
 
 /**
@@ -86,9 +84,6 @@ public class SerialisationFullTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    public SerialisationFullTest() {
-    }
 
     @Test
     public void test() throws JAXBException, IOException {
@@ -139,7 +134,7 @@ public class SerialisationFullTest {
         messages.add(new UnknownMessage());
         messages.add(new ServerHelloMessage());
         SendAction action = new SendAction(messages);
-        List<AbstractRecord> records = new LinkedList<AbstractRecord>();
+        List<AbstractRecord> records = new LinkedList<>();
         records.add(new BlobRecord());
         records.add(new Record());
         action.setConfiguredRecords(records);
@@ -151,7 +146,7 @@ public class SerialisationFullTest {
         String line = null;
         StringBuilder builder = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-            builder.append("\n" + line);
+            builder.append("\n").append(line);
         }
         LOGGER.info(builder.toString());
         try {
