@@ -66,8 +66,13 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
                     .getValue());
         } else {
-            // cert = parseCertificate();
-            cert = null;
+            byte[] certificates = new byte [0];
+            int certificatesLength =  0; 
+            for (CertificatePair pair : message.getCertificatesList()) {
+                certificates =  ArrayConverter.concatenate(certificates, pair.getCertificate().getValue());
+                certificatesLength += pair.getCertificateLength().getValue();
+            }
+            cert = parseCertificate(certificatesLength, certificates);
         }
         if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
             LOGGER.debug("Setting ClientCertificate in Context");
@@ -85,11 +90,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             }
         }
         if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-            if (message.getExtensions() != null) {
-                for (ExtensionMessage extension : message.getExtensions()) {
-                    extension.getHandler(tlsContext).adjustTLSContext(extension);
-                }
-            }
+            adjustExtensions(message);
         }
     }
 
@@ -116,20 +117,16 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
         }
     }
 
-    private byte[] adjustCertificateExtensions(CertificateMessage message) {
-        List<CertificateEntry> certificateEntryList = new LinkedList<>();
-        for (CertificatePair pair : message.getCertificatesList()) {
-            // Parse extensions
-            List<ExtensionMessage> extensionMessages = new LinkedList<>();
-            int pointer = 0;
-            while (pointer < pair.getExtensionsLength().getValue()) {
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(), pointer);
-            extensionMessages.add(parser.parse());
-            pointer = parser.getPointer();
+    private void adjustExtensions(CertificateMessage message) {
+        if (message.getCertificatesListAsEntry() != null) {
+            for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
+                if (entry.getExtensions()!= null) {
+                    for (ExtensionMessage extension : entry.getExtensions()) {
+                        extension.getHandler(tlsContext).adjustTLSContext(extension);
+                    }
+                }
             }
-            // Parse certificate
-            // ksEntryList.add(new CertificateEntry(null, extensionMessages);
         }
-        return null;
+        
     }
 }

@@ -62,7 +62,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 try {
                     stream.write(serializer.serialize());
                 } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from KeySharePair", ex);
+                    throw new PreparationException("Could not write byte[] from CertificatePair", ex);
                 }
             }
             msg.setCertificatesListBytes(stream.toByteArray());

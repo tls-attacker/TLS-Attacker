@@ -24,6 +24,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -61,6 +62,9 @@ public class CertificateMessage extends HandshakeMessage {
 
     @HoldsModifiableVariable
     private List<CertificatePair> certificatesList;
+    
+    @HoldsModifiableVariable
+    private List<CertificateEntry> certificatesListAsEntry;
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
@@ -70,11 +74,7 @@ public class CertificateMessage extends HandshakeMessage {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
         if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
             CertificatePair pair = new CertificatePair();
-            if (tlsConfig.getOurCertificate() == null) {
-                throw new CryptoException("No certificate is specified for " + tlsConfig.getConnectionEnd().name());
-            }
-            byte[] cert = encodeCert(tlsConfig.getOurCertificate());
-            pair.setCertificateConfig(cert);
+            pair.setCertificateConfig(tlsConfig.getOurCertificate());
             pair.setExtensionsConfig(tlsConfig.getOurCertificateExtensions());
             addCertificateList(pair);
         }
@@ -118,6 +118,21 @@ public class CertificateMessage extends HandshakeMessage {
         }
         this.certificatesList.add(CertificatePair);
     }
+    
+    public List<CertificateEntry> getCertificatesListAsEntry() {
+        return certificatesListAsEntry;
+    }
+    
+    public void setCertificatesListAsEntry(List<CertificateEntry> certificatesListAsEntry) {
+        this.certificatesListAsEntry = certificatesListAsEntry;
+    }
+    
+    public void addCertificateList(CertificateEntry certificateEntry) {
+        if (this.certificatesListAsEntry == null) {
+            certificatesListAsEntry = new LinkedList<>();
+        }
+        this.certificatesListAsEntry.add(certificateEntry);
+    }
 
     public ModifiableInteger getRequestContextLength() {
         return requestContextLength;
@@ -145,19 +160,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     public boolean hasRequestContext() {
         return requestContextLength.getValue() > 0;
-    }
-
-    private static byte[] encodeCert(Certificate cert) {
-        ByteArrayOutputStream certByteStream = new ByteArrayOutputStream();
-        try {
-            cert.encode(certByteStream);
-            return Arrays.copyOfRange(certByteStream.toByteArray(), HandshakeByteLength.CERTIFICATES_LENGTH
-                    + HandshakeByteLength.CERTIFICATES_LENGTH, certByteStream.toByteArray().length);
-        } catch (IOException ex) {
-            throw new CryptoException(
-                    "Cannot initialize CertificateMessage. An exception Occured while encoding the Certificates", ex);
-        }
-
     }
 
     @Override

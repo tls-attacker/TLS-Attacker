@@ -12,14 +12,18 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import java.util.List;
+import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificatePair {
 
-    private byte[] certificateConfig;
-    private byte[] extensionsConfig;
+    private Certificate certificateConfig;
+
+    private List<ExtensionMessage> extensionsConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray certificate;
@@ -84,19 +88,19 @@ public class CertificatePair {
         this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
     }
 
-    public byte[] getCertificateConfig() {
+    public Certificate getCertificateConfig() {
         return certificateConfig;
     }
 
-    public void setCertificateConfig(byte[] certificateConfig) {
+    public void setCertificateConfig(Certificate certificateConfig) {
         this.certificateConfig = certificateConfig;
     }
 
-    public byte[] getExtensionsConfig() {
+    public List<ExtensionMessage> getExtensionsConfig() {
         return extensionsConfig;
     }
 
-    public void setExtensionsConfig(byte[] extensionsConfig) {
+    public void setExtensionsConfig(List<ExtensionMessage> extensionsConfig) {
         this.extensionsConfig = extensionsConfig;
     }
 }

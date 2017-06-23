@@ -30,6 +30,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
@@ -325,7 +326,7 @@ public final class TlsConfig implements Serializable {
     @XmlTransient
     private Certificate ourCertificate;
 
-    private byte[] ourCertificateExtensions;
+    private List<ExtensionMessage> ourCertificateExtensions;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
@@ -698,11 +699,11 @@ public final class TlsConfig implements Serializable {
         this.ourCertificate = ourCertificate;
     }
 
-    public byte[] getOurCertificateExtensions() {
+    public List<ExtensionMessage> getOurCertificateExtensions() {
         return ourCertificateExtensions;
     }
 
-    public void setOurCertificateExtensions(byte[] ourCertificateExtensions) {
+    public void setOurCertificateExtensions(List<ExtensionMessage> ourCertificateExtensions) {
         this.ourCertificateExtensions = ourCertificateExtensions;
     }
 
