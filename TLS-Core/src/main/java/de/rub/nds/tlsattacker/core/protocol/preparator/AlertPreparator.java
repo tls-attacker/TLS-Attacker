@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -28,6 +26,7 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
     @Override
     protected void prepareProtocolMessageContents() {
+        LOGGER.debug("Preparing AlertMessage");
         prepareLevel(msg);
         prepareDescription(msg);
     }

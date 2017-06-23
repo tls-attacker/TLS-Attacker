@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Parser class for ServerHelloMessages
@@ -61,6 +59,7 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
 
     @Override
     protected void parseHandshakeMessageContent(ServerHelloMessage msg) {
+        LOGGER.debug("Parsing ServerHelloMessage");
         parseProtocolVersion(msg);
         if (getVersion() != ProtocolVersion.TLS13) {
             parseUnixtime(msg);

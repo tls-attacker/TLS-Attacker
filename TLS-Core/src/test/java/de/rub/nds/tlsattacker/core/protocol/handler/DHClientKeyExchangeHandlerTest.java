@@ -8,19 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -30,9 +26,6 @@ public class DHClientKeyExchangeHandlerTest {
 
     private DHClientKeyExchangeHandler handler;
     private TlsContext context;
-
-    public DHClientKeyExchangeHandlerTest() {
-    }
 
     @Before
     public void setUp() {

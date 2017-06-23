@@ -8,20 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -97,7 +93,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         }
         List<SignatureAndHashAlgorithm> list = new LinkedList<>();
 
-        for (int i = 0; i < bytesToConvert.length; i = i + 2) {
+        for (int i = 0; i < bytesToConvert.length; i += 2) {
             byte[] copied = new byte[2];
             copied[0] = bytesToConvert[i];
             copied[1] = bytesToConvert[i + 1];

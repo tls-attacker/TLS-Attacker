@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -33,11 +34,11 @@ import java.security.PublicKey;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 
 /**
@@ -443,7 +444,7 @@ public class TlsContext {
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
-        if (clientSupportedCompressions == null) {
+        if (clientSupportedCiphersuites == null) {
             return null;
         }
         return Collections.unmodifiableList(clientSupportedCiphersuites);

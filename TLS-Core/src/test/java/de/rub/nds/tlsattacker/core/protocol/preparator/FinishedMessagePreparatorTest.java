@@ -8,18 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -27,13 +26,11 @@ import static org.junit.Assert.*;
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class FinishedMessagePreparatorTest {
+    private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
 
     private FinishedMessage message;
     private TlsContext context;
     private FinishedMessagePreparator preparator;
-
-    public FinishedMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -76,5 +73,4 @@ public class FinishedMessagePreparatorTest {
                 ArrayConverter.hexStringToByteArray("B4AB5C21316FD38E3605D62C9022062DA84D83214EBC7BCD4BE6B3DB1971AFCA"));
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
 }

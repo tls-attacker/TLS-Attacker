@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class ExtensionPreparatorFactoryTest {
 
-    public ExtensionPreparatorFactoryTest() {
-    }
-
     @Before
     public void setUp() {
     }

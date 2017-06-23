@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -15,12 +16,12 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
+ * @param <T>
  */
 public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends HelloMessagePreparator<HelloMessage> {
 
@@ -33,6 +34,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
         if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
             prepareUnixTime();

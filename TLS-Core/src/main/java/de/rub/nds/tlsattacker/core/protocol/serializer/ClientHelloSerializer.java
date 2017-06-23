@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
  *
@@ -20,7 +20,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
  */
 public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMessage> {
 
-    private ClientHelloMessage msg;
+    private final ClientHelloMessage msg;
 
     /**
      * Constructor for the ClientHelloSerializer
@@ -37,6 +37,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
+        LOGGER.debug("Serializing ClientHelloMessage");
         writeProtocolVersion();
         if (version != ProtocolVersion.TLS13) {
             writeUnixtime();

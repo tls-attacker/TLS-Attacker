@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,16 +19,22 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
  */
 public class HeartbeatExtensionSerializer extends ExtensionSerializer<HeartbeatExtensionMessage> {
 
-    private final HeartbeatExtensionMessage message;
+    private final HeartbeatExtensionMessage msg;
 
     public HeartbeatExtensionSerializer(HeartbeatExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendBytes(message.getHeartbeatMode().getValue());
+        LOGGER.debug("Serializing HeartbeatExtensionMessage");
+        writeHeartbeatMode(msg);
         return getAlreadySerialized();
+    }
+
+    private void writeHeartbeatMode(HeartbeatExtensionMessage msg) {
+        appendBytes(msg.getHeartbeatMode().getValue());
+        LOGGER.debug("HeartbeatMode: " + ArrayConverter.bytesToHexString(msg.getHeartbeatMode().getValue()));
     }
 }

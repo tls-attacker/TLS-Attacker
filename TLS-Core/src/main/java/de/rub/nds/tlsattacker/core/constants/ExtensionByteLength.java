@@ -90,4 +90,7 @@ public class ExtensionByteLength {
      * Length of the token binding extension key parameter length field
      */
     public static final int TOKENBINDING_KEYPARAMETER_LENGTHFIELD_LENGTH = 1;
+
+    private ExtensionByteLength() {
+    }
 }

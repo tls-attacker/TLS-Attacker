@@ -18,9 +18,6 @@ import static org.junit.Assert.*;
  */
 public class ServerNameIndicationExtensionSerializerTest {
 
-    public ServerNameIndicationExtensionSerializerTest() {
-    }
-
     @Before
     public void setUp() {
     }

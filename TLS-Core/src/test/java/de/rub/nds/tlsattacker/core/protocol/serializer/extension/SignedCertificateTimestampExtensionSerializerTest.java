@@ -23,6 +23,10 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class SignedCertificateTimestampExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return SignedCertificateTimestampExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
@@ -38,11 +42,6 @@ public class SignedCertificateTimestampExtensionSerializerTest {
         this.timestamp = timestamp;
         this.expectedBytes = expectedBytes;
         this.startPosition = startPosition;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return SignedCertificateTimestampExtensionParserTest.generateData();
     }
 
     @Test

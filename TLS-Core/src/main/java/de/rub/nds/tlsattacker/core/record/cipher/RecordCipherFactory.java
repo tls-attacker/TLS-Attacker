@@ -39,4 +39,7 @@ public class RecordCipherFactory {
             return new RecordNullCipher();
         }
     }
+
+    private RecordCipherFactory() {
+    }
 }

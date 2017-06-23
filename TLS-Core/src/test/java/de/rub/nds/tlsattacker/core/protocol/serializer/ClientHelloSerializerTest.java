@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParserTest;
 import java.util.Collection;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -25,11 +24,16 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class ClientHelloSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return ClientHelloParserTest.generateData();
+    }
 
     private byte[] message;
     private int start;
     private byte[] expectedPart;
 
+    private ProtocolVersion version;
     private HandshakeMessageType type;
     private int length;
     private byte[] protocolVersion;
@@ -47,20 +51,16 @@ public class ClientHelloSerializerTest {
     private byte[] cookie;
     private int numberOfExtensions;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return ClientHelloParserTest.generateData();
-    }
-
-    public ClientHelloSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length, byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
+    public ClientHelloSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
+            byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
             int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
             Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
+        this.start = 0;
+        this.expectedPart = message;
         this.type = type;
         this.length = length;
+        this.version = version;
         this.protocolVersion = protocolVersion;
         this.unixtime = unixtime;
         this.random = random;
@@ -106,7 +106,7 @@ public class ClientHelloSerializerTest {
         clientMessage.setUnixTime(unixtime);
         clientMessage.setRandom(random);
         clientMessage.setProtocolVersion(protocolVersion);
-        ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, ProtocolVersion.TLS12);
+        ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 }

@@ -60,7 +60,7 @@ public class RecordPreparatorTest {
         context.getConfig().setConnectionEnd(ConnectionEnd.SERVER);
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         recordCipher = new RecordAEADCipher(context);
-        encryptor = new RecordEncryptor(recordCipher, ProtocolVersion.TLS13);
+        encryptor = new RecordEncryptor(recordCipher, context);
         preparator = new RecordPreparator(context, record, encryptor, ProtocolMessageType.HANDSHAKE);
         preparator.prepare();
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);

@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
  * SerializerClass for ServerHelloMessages
@@ -56,6 +56,7 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
+        LOGGER.debug("Serializing ServerHelloMessage");
         writeProtocolVersion();
         if (version != ProtocolVersion.TLS13) {
             writeUnixtime();

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
@@ -40,6 +41,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing FinishedMessage");
         verifyData = computeVerifyData();
 
         prepareVerifyData(msg);

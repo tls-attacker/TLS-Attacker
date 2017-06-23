@@ -117,6 +117,7 @@ public class TestCertificates {
      *            Alias of the key in the returned KeyStore
      * @param keyPass
      *            Password of the key in the returned KeyStore
+     * @throws java.security.NoSuchAlgorithmException
      */
     public static KeyStore keyStoreFromRsaPem(byte[] rawPemCert, byte[] rawPemKey, String keyAlias, String keyPass)
             throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException,
@@ -148,5 +149,8 @@ public class TestCertificates {
             NoSuchAlgorithmException, InvalidKeySpecException, CertificateException, KeyStoreException {
 
         return keyStoreFromRsaPem(rawPemCert, rawPemKey, keyStoreAlias, keyStorePass);
+    }
+
+    private TestCertificates() {
     }
 }

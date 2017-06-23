@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
-import org.junit.Before;
-import org.junit.Test;
-
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -22,6 +19,8 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -32,10 +31,6 @@ public class RSAClientKeyExchangePreparatorTest {
     private TlsContext context;
     private RSAClientKeyExchangePreparator preparator;
     private RSAClientKeyExchangeMessage message;
-
-    public RSAClientKeyExchangePreparatorTest() {
-
-    }
 
     @Before
     public void setUp() {

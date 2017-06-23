@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for HandshakeMessages
@@ -35,7 +33,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      */
     private final HandshakeMessageType expectedType;
 
-    private ProtocolVersion version;
+    private final ProtocolVersion version;
 
     /**
      * Constructor for the Parser class

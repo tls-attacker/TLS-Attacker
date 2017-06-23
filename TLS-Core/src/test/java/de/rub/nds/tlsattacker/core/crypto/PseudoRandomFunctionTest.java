@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import java.util.Random;
 import mockit.Expectations;
@@ -24,9 +23,6 @@ import org.junit.Test;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class PseudoRandomFunctionTest {
-
-    public PseudoRandomFunctionTest() {
-    }
 
     /**
      * Test of compute method, of class PseudoRandomFunction.

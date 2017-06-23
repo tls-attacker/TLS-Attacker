@@ -8,8 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,17 +20,28 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicati
  */
 public class ServerNameIndicationExtensionSerializer extends ExtensionSerializer<ServerNameIndicationExtensionMessage> {
 
-    private final ServerNameIndicationExtensionMessage message;
+    private final ServerNameIndicationExtensionMessage msg;
 
     public ServerNameIndicationExtensionSerializer(ServerNameIndicationExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getServerNameListLength().getValue(), ExtensionByteLength.SERVER_NAME_LIST_LENGTH);
-        appendBytes(message.getServerNameListBytes().getValue());
+        LOGGER.debug("Serializing ServerNameIndicationExtensionMessage");
+        writeServerNameListLength(msg);
+        writeServerNameListBytes(msg);
         return getAlreadySerialized();
+    }
+
+    private void writeServerNameListLength(ServerNameIndicationExtensionMessage msg) {
+        appendInt(msg.getServerNameListLength().getValue(), ExtensionByteLength.SERVER_NAME_LIST_LENGTH);
+        LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
+    }
+
+    private void writeServerNameListBytes(ServerNameIndicationExtensionMessage msg) {
+        appendBytes(msg.getServerNameListBytes().getValue());
+        LOGGER.debug("ServerNameListBytes: " + ArrayConverter.bytesToHexString(msg.getServerNameListBytes().getValue()));
     }
 }

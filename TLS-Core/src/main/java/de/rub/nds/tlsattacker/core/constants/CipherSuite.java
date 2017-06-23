@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import java.util.Arrays;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -408,6 +407,25 @@ public enum CipherSuite {
     TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384(0x16B9),
     TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA),
     TLS_UNKNOWN_CIPHER(0x9999);
+    // TODO Grease logic implementation, because the tests fail if the lines
+    // aren't commented
+    // GREASE constants
+    // GREASE_00(0x0A0A),
+    // GREASE_01(0x1A1A),
+    // GREASE_02(0x2A2A),
+    // GREASE_03(0x3A3A),
+    // GREASE_04(0x4A4A),
+    // GREASE_05(0x5A5A),
+    // GREASE_06(0x6A6A),
+    // GREASE_07(0x7A7A),
+    // GREASE_08(0x8A8A),
+    // GREASE_09(0x9A9A),
+    // GREASE_10(0xAAAA),
+    // GREASE_11(0xBABA),
+    // GREASE_12(0xCACA),
+    // GREASE_13(0xDADA),
+    // GREASE_14(0xEAEA),
+    // GREASE_15(0xFAFA);
 
     private int value;
 
@@ -570,6 +588,10 @@ public enum CipherSuite {
         list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA);
         list.add(TLS_RSA_WITH_SEED_CBC_SHA);
         list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_RSA_WITH_RC4_128_MD5);
+        list.add(TLS_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_ECDHE_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_DHE_DSS_WITH_RC4_128_SHA);
         return list;
     }
 

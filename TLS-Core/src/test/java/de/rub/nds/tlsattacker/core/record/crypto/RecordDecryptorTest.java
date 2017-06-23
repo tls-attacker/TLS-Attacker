@@ -55,7 +55,7 @@ public class RecordDecryptorTest {
         context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
         record.setProtocolMessageBytes(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"));
         recordCipher = new RecordAEADCipher(context);
-        decryptor = new RecordDecryptor(recordCipher, ProtocolVersion.TLS13);
+        decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
         assertTrue(record.getContentMessageType() == ProtocolMessageType.HANDSHAKE);
         assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 6);

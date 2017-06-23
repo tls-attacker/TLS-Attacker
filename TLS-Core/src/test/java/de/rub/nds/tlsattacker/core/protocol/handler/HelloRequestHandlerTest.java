@@ -8,16 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -27,9 +26,6 @@ public class HelloRequestHandlerTest {
 
     private HelloRequestHandler handler;
     private TlsContext context;
-
-    public HelloRequestHandlerTest() {
-    }
 
     @Before
     public void setUp() {

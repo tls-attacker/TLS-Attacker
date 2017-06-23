@@ -8,11 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * 

@@ -57,7 +57,7 @@ public class RecordEncryptorTest {
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setPaddingLength(0);
         recordCipher = new RecordAEADCipher(context);
-        encryptor = new RecordEncryptor(recordCipher, ProtocolVersion.TLS13);
+        encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertTrue(record.getProtocolMessageBytes().getValue().length == 23);
         assertArrayEquals(record.getProtocolMessageBytes().getValue(), ArrayConverter.

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -15,8 +17,6 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -58,6 +58,7 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing DHClientExchangeMessage");
         kp = null;
         msg.prepareComputations();
         if (!isServerPkKnown()) {

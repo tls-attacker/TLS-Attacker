@@ -8,12 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,9 +22,6 @@ public class HelloRequestPreparatorTest {
     private TlsContext context;
     private HelloRequestMessage message;
     private HelloRequestPreparator preparator;
-
-    public HelloRequestPreparatorTest() {
-    }
 
     @Before
     public void setUp() {

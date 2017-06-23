@@ -26,4 +26,7 @@ public class RecordLayerFactory {
                 throw new UnsupportedOperationException("RecordLayerType: " + type.name() + " not supported!");
         }
     }
+
+    private RecordLayerFactory() {
+    }
 }

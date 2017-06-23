@@ -23,9 +23,6 @@ import org.junit.Test;
  */
 public class ModifiableVariableAnalyzerTest {
 
-    public ModifiableVariableAnalyzerTest() {
-    }
-
     /**
      * Test of getAllModifiableVariableFields method, of class
      * ModifiableVariableAnalyzer.

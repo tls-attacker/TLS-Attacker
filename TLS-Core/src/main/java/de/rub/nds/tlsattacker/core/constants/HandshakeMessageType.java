@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +73,7 @@ public enum HandshakeMessageType {
         return new byte[] { (byte) value };
     }
 
-    public final String getName() {
+    public String getName() {
         return this.name();
     }
 }

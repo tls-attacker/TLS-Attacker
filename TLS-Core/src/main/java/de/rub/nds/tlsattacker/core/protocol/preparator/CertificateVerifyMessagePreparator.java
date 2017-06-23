@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.security.InvalidKeyException;
@@ -40,6 +40,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing CertificateVerifiyMessage");
         algorithm = selectSigHashAlgorithm();
         signature = createSignature();
         prepareSignature(msg);

@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -40,6 +37,7 @@ public class UnknownHandshakeMessageParser extends HandshakeMessageParser<Unknow
 
     @Override
     protected void parseHandshakeMessageContent(UnknownHandshakeMessage msg) {
+        LOGGER.debug("Parsing UnknownHandshakeMessage");
         parseData(msg);
         LOGGER.warn("Parsed UnknownHandshake Message: "
                 + ArrayConverter.bytesToHexString(msg.getData().getValue(), false));
