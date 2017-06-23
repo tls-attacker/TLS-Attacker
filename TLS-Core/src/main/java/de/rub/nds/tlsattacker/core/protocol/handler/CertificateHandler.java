@@ -66,11 +66,13 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
                     .getValue());
         } else {
-            byte[] certificates = new byte [0];
-            int certificatesLength =  0; 
+            byte[] certificates = new byte[0];
+            int certificatesLength = 0;
             for (CertificatePair pair : message.getCertificatesList()) {
-                certificates =  ArrayConverter.concatenate(certificates, pair.getCertificate().getValue());
-                certificatesLength += pair.getCertificateLength().getValue();
+                certificates = ArrayConverter.concatenate(certificates, ArrayConverter.intToBytes(pair
+                        .getCertificateLength().getValue(), HandshakeByteLength.CERTIFICATE_LENGTH), pair
+                        .getCertificate().getValue());
+                certificatesLength += pair.getCertificateLength().getValue() + HandshakeByteLength.CERTIFICATE_LENGTH;
             }
             cert = parseCertificate(certificatesLength, certificates);
         }
@@ -120,13 +122,13 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     private void adjustExtensions(CertificateMessage message) {
         if (message.getCertificatesListAsEntry() != null) {
             for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
-                if (entry.getExtensions()!= null) {
+                if (entry.getExtensions() != null) {
                     for (ExtensionMessage extension : entry.getExtensions()) {
                         extension.getHandler(tlsContext).adjustTLSContext(extension);
                     }
                 }
             }
         }
-        
+
     }
 }

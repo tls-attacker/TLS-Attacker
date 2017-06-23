@@ -131,26 +131,31 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             position = parser.getPointer();
         }
         msg.setCertificatesList(pairList);
-        
+
         List<CertificateEntry> entryList = new LinkedList<>();
         for (CertificatePair pair : msg.getCertificatesList()) {
             List<ExtensionMessage> extensionMessages = new LinkedList<>();
             int pointer = 0;
             while (pointer < pair.getExtensionsLength().getValue()) {
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(), pointer);
-            extensionMessages.add(parser.parse());
-            pointer = parser.getPointer();
+                ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
+                        pointer);
+                extensionMessages.add(parser.parse());
+                pointer = parser.getPointer();
             }
-            Certificate certificate = parseCertificate(pair.getCertificateLength().getValue(), pair.getCertificate().getValue());
+            Certificate certificate = parseCertificate(pair.getCertificateLength().getValue(), pair.getCertificate()
+                    .getValue());
             entryList.add(new CertificateEntry(certificate, extensionMessages));
         }
         msg.setCertificatesListAsEntry(entryList);
+        System.out.println("------------------------> OKEY <----------------------------------");
     }
-    
+
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
         try {
-            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
-                    ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
+            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
+                    .intToBytes(lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
+                            HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter.intToBytes(lengthBytes,
+                    HandshakeByteLength.CERTIFICATE_LENGTH), bytesToParse));
             return Certificate.parse(stream);
         } catch (IOException E) {
             LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
