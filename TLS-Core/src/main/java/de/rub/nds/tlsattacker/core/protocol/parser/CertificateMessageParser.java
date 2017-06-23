@@ -22,13 +22,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
 
@@ -147,7 +146,6 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             entryList.add(new CertificateEntry(certificate, extensionMessages));
         }
         msg.setCertificatesListAsEntry(entryList);
-        System.out.println("------------------------> OKEY <----------------------------------");
     }
 
     private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {

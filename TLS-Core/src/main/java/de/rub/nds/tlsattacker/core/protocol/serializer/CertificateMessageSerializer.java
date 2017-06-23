@@ -12,12 +12,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateMessageSerializer extends HandshakeMessageSerializer<CertificateMessage> {
 

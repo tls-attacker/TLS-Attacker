@@ -13,22 +13,18 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
@@ -53,7 +49,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     protected void adjustTLSContext(ServerHelloMessage message) {
-        // Use the right Protocol Version ?
         adjustSelectedProtocolVersion(message);
         if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             adjustSelectedCompression(message);
@@ -72,9 +67,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13
                 && tlsContext.getTalkingConnectionEnd() != tlsContext.getConfig().getConnectionEnd()) {
-            // System.out.println("Starting to decrypt");
             tlsContext.getRecordLayer().updateDecryptionCipher();
-            // System.out.println("Starting to encrypt");
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setEncryptActive(true);
         }
@@ -87,7 +80,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustServerRandom(ServerHelloMessage message) {
-        // Use the right Protocol Version ?
         if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
             setServerRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
         } else {

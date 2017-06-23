@@ -11,15 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import javax.swing.text.html.parser.DTDConstants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * SerializerClass for ServerHelloMessages
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
 

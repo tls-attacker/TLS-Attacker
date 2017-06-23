@@ -42,6 +42,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class WorkflowConfigurationFactory {
 
@@ -95,12 +96,7 @@ public class WorkflowConfigurationFactory {
             workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
                     messages));
         }
-        return workflowTrace;
-    }
-
-    public WorkflowTrace createHandshakeWorkflow() {
-        WorkflowTrace workflowTrace = this.createHelloWorkflow();
-        List<ProtocolMessage> messages = new LinkedList<>();
+        messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         messages.add(new CertificateMessage(config));
         if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
@@ -123,7 +119,12 @@ public class WorkflowConfigurationFactory {
             messages.add(new FinishedMessage(config));
         }
         workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
-        messages = new LinkedList<>();
+        return workflowTrace;
+    }
+
+    public WorkflowTrace createHandshakeWorkflow() {
+        WorkflowTrace workflowTrace = this.createHelloWorkflow();
+        List<ProtocolMessage>  messages = new LinkedList<>();
         if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             if (config.isClientAuthentication()) {
                 messages.add(new CertificateMessage(config));

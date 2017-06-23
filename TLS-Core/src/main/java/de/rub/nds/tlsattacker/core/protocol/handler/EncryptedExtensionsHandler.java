@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerial
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class EncryptedExtensionsHandler extends HandshakeMessageHandler<EncryptedExtensionsMessage> {
 

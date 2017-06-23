@@ -21,13 +21,12 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 

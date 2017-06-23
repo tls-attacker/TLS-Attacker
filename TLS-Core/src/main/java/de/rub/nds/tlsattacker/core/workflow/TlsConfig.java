@@ -63,6 +63,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  *
  * @author Robert Merget - robert.merget@rub.de
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
