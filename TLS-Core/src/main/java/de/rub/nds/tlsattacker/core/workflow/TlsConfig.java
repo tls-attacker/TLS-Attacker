@@ -265,7 +265,7 @@ public class TlsConfig implements Serializable {
     /**
      * The Type of workflow trace that should be generated
      */
-    private WorkflowTraceType workflowTraceType = WorkflowTraceType.FULL;
+    private WorkflowTraceType workflowTraceType = WorkflowTraceType.HANDSHAKE;
     /**
      * If the Default generated workflowtrace should contain Application data
      * send by servers

@@ -48,6 +48,7 @@ public class RecordEncryptorTest {
     public void testEncrypt() {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+        context.setEncryptActive(true);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
         context.setServerHandshakeTrafficSecret(ArrayConverter

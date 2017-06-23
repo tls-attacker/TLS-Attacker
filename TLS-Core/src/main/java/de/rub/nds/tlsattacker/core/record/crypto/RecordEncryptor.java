@@ -54,21 +54,25 @@ public class RecordEncryptor extends Encryptor<Record> {
             context.setSequenceNumber(context.getSequenceNumber() + 1);
         } else {
             record.setMac(new byte[0]);
-        }       
+        }
         setUnpaddedRecordBytes(record, cleanBytes);
-        byte[] padding, plain;
+        byte[] padding;
         if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
-            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
-                    .getContentMessageType().getArrayValue(), record.getPadding().getValue());
         } else {
             padding = recordCipher.calculatePadding(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes()
-                .getValue().length));
-            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record.getPadding()
-                .getValue(), record.getPaddingLength().getValue());
+                    .getValue().length));
         }
         setPadding(record, padding);
         setPaddingLength(record);
+        byte[] plain;
+        if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13 && context.isEncryptActive()) {
+            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
+                    .getContentMessageType().getArrayValue(), record.getPadding().getValue());
+        } else {
+            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record.getPadding()
+                    .getValue(), record.getPaddingLength().getValue());
+        }
         setPlainRecordBytes(record, plain);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
         setProtocolMessageBytes(record, encrypted);
