@@ -82,7 +82,6 @@ public class DHClientKeyExchangeHandlerTest {
                                 .hexStringToByteArray("c8c9c788adbd9dc72b5dd0635f9e2576e09c87b67e045c026ffa3281069601fd594c07e445947b545a746fcbc094e12427e0286be2199300925a81be02bf5467"));
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-        // message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
         handler.adjustTLSContext(message);
         assertArrayEquals(
                 ArrayConverter
@@ -92,6 +91,5 @@ public class DHClientKeyExchangeHandlerTest {
                 ArrayConverter
                         .hexStringToByteArray("4a0a7f6a0598acb36684359e1a19d848ab03b3ba1167430471166d94dcf8315d1c4290c9d9e40c50ae834df7b4f4bdef"),
                 context.getMasterSecret());
-        // TODO assert master secret was computed correctly
     }
 }

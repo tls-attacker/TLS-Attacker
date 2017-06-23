@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
@@ -70,13 +72,26 @@ public class RSAClientKeyExchangeHandlerTest {
         RSAClientKeyExchangeMessage message = new RSAClientKeyExchangeMessage();
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
-        message.getComputations().setClientRandom(new byte[] { 1, 2, 3 });
-        message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
-        // message.getComputations().setMasterSecret(new byte[] { 4, 5, 6
-        // });//TODO
-        // make sure master secret was computed correclty
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        message.getComputations()
+                .setPremasterSecret(
+                        ArrayConverter
+                                .hexStringToByteArray("0303d3fad5b20109834717bac4e7762e217add183d0c4852ab054f65ba6e93b1ed83ca5c5fa614cd3b810f4766c66feb"));
+        message.getComputations()
+                .setClientRandom(
+                        ArrayConverter
+                                .hexStringToByteArray("a449532975d478abeefcfafa7522b9312bdbd0bb294fe460c4d52bab13a425b7594d0e9508874a67db6d9b8e91db4f38600e88f006bbe58f2b41deb6811c74cc"));
+
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+
         handler.adjustTLSContext(message);
-        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getPreMasterSecret());
-        // assertArrayEquals(new byte[] { 4, 5, 6 }, context.getMasterSecret());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("0303d3fad5b20109834717bac4e7762e217add183d0c4852ab054f65ba6e93b1ed83ca5c5fa614cd3b810f4766c66feb"),
+                context.getPreMasterSecret());
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("FA1D499E795E936751AD43355C26857728E78ABE1C4BCAFA6EF3C90F6D9B9E49DF1ADE262F127EB2A23BB73E142EE122"),
+                context.getMasterSecret());
     }
 }

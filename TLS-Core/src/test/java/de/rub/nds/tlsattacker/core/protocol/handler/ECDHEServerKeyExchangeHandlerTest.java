@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
@@ -80,7 +79,6 @@ public class ECDHEServerKeyExchangeHandlerTest {
         message.setSerializedPublicKeyLength(65);
         message.prepareComputations();
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
-        // message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
         message.getComputations().setPrivateKey(new BigInteger("12345"));
         handler.adjustTLSContext(message);
         assertNull(context.getPreMasterSecret());
