@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;

@@ -270,7 +270,7 @@ public class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the ExtendedMasterSecret extension
      */
-    private boolean addExtendedMasterSecretExtension = true;
+    private boolean addExtendedMasterSecretExtension = false;
     /**
      * If we generate ClientHello with the SessionTicketTLS extension
      */
