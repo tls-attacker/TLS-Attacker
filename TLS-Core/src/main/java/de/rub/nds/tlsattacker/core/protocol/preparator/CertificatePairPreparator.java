@@ -35,13 +35,24 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
 
     @Override
     public void prepare() {
-        pair.setCertificate(encodeCert(pair.getCertificateConfig()));
-        pair.setCertificateLength(pair.getCertificate().getValue().length);
-        prepareExtensions();
-        prepareExtensionLength();
+        LOGGER.debug("Preparing CertificatePair");
+        prepareCertificate(pair);
+        prepareCertificateLength(pair);
+        prepareExtensions(pair);
+        prepareExtensionLength(pair);
     }
-  
-    private void prepareExtensions() {
+
+    private void prepareCertificate(CertificatePair pair) {
+        pair.setCertificate(encodeCert(pair.getCertificateConfig()));
+        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+    }
+
+    private void prepareCertificateLength(CertificatePair pair) {
+        pair.setCertificateLength(pair.getCertificate().getValue().length);
+        LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
+    }
+
+    private void prepareExtensions(CertificatePair pair) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (pair.getExtensionsConfig() != null) {
             for (ExtensionMessage extensionMessage : pair.getExtensionsConfig()) {
@@ -58,11 +69,11 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
     }
 
-    private void prepareExtensionLength() {
+    private void prepareExtensionLength(CertificatePair pair) {
         pair.setExtensionsLength(pair.getExtensions().getValue().length);
         LOGGER.debug("ExtensionLength: " + pair.getExtensionsLength().getValue());
     }
-    
+
     private byte[] encodeCert(Certificate cert) {
         ByteArrayOutputStream certByteStream = new ByteArrayOutputStream();
         try {

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 
@@ -24,11 +25,32 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendInt(pair.getCertificateLength().getValue(), HandshakeByteLength.CERTIFICATE_LENGTH);
-        appendBytes(pair.getCertificate().getValue());
-        appendInt(pair.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        appendBytes(pair.getExtensions().getValue());
+        LOGGER.debug("Serializing CertificatePair");
+        writeCertificateLength(pair);
+        writeCertificate(pair);
+        writeExtensionsLength(pair);
+        writeExtensions(pair);
         return getAlreadySerialized();
+    }
+
+    private void writeCertificateLength(CertificatePair pair) {
+        appendInt(pair.getCertificateLength().getValue(), HandshakeByteLength.CERTIFICATE_LENGTH);
+        LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
+    }
+
+    private void writeCertificate(CertificatePair pair) {
+        appendBytes(pair.getCertificate().getValue());
+        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+    }
+
+    private void writeExtensionsLength(CertificatePair pair) {
+        appendInt(pair.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
+        LOGGER.debug("ExtensionsLength: " + pair.getExtensionsLength().getValue());
+    }
+
+    private void writeExtensions(CertificatePair pair) {
+        appendBytes(pair.getExtensions().getValue());
+        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
     }
 
 }

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 
@@ -22,12 +23,61 @@ public class CertificatePairParser extends Parser<CertificatePair> {
 
     @Override
     public CertificatePair parse() {
+        LOGGER.debug("Parsing CertificatePair");
         CertificatePair pair = new CertificatePair();
-        pair.setCertificateLength(parseIntField(HandshakeByteLength.CERTIFICATE_LENGTH));
-        pair.setCertificate(parseByteArrayField(pair.getCertificateLength().getValue()));
-        pair.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
-        pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));
+        parseCertificateLength(pair);
+        parseCertificate(pair);
+        parseExtensionsLength(pair);
+        parseExtensions(pair);
         return pair;
+    }
+
+    /**
+     * Reads the next bytes as the certificateLength of the CertificatePair and
+     * writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseCertificateLength(CertificatePair pair) {
+        pair.setCertificateLength(parseIntField(HandshakeByteLength.CERTIFICATE_LENGTH));
+        LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the certificate of the CertificatePair and writes
+     * them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseCertificate(CertificatePair pair) {
+        pair.setCertificate(parseByteArrayField(pair.getCertificateLength().getValue()));
+        LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
+    }
+
+    /**
+     * Reads the next bytes as the extensionsLength of the CertificatePair and
+     * writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseExtensionsLength(CertificatePair pair) {
+        pair.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
+        LOGGER.debug("ExtensionsLength: " + pair.getCertificateLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the extensions of the CertificatePair and writes
+     * them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseExtensions(CertificatePair pair) {
+        pair.setExtensions(parseByteArrayField(pair.getExtensionsLength().getValue()));
+        LOGGER.debug("Extensions: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
     }
 
 }
