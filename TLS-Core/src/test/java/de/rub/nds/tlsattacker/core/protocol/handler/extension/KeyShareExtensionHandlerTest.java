@@ -46,35 +46,11 @@ public class KeyShareExtensionHandlerTest {
 
     /**
      * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
-     * Group: FFDHE2048
-     */
-    @Test
-    public void testAdjustTLSContext1() {
-        context.setTalkingConnectionEnd(ConnectionEnd.SERVER);
-        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
-        List<KeySharePair> pairList = new LinkedList<>();
-        KeySharePair pair = new KeySharePair();
-        pair.setKeyShare(ArrayConverter.hexStringToByteArray("11"));
-        pair.setKeyShareType(NamedCurve.FFDHE2048.getValue());
-        pairList.add(pair);
-        msg.setKeyShareList(pairList);
-        handler.adjustTLSContext(msg);
-        assertNotNull(context.getServerKSEntry());
-        KSEntry entry = context.getServerKSEntry();
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("11"), entry.getSerializedPublicKey());
-        assertTrue(entry.getGroup() == NamedCurve.FFDHE2048);
-        assertNotNull(context.getClientHandshakeTrafficSecret());
-        assertNotNull(context.getServerHandshakeTrafficSecret());
-
-    }
-
-    /**
-     * Test of adjustTLSContext method, of class KeyShareExtensionHandler.
      * Group: ECDH_X25519
      */
     @Test
-    public void testAdjustTLSContext2() {
+    public void testAdjustTLSContext() {
+        context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
         context.setTalkingConnectionEnd(ConnectionEnd.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();

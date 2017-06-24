@@ -28,8 +28,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -39,7 +37,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -173,24 +170,19 @@ public class TlsConfig implements Serializable {
      */
     private int paddingLength = 0;
     /**
-     * KeyShare Client
+     * Public key for KeyShareExtension
      */
-    private byte[] keyShare = ArrayConverter
+    private byte[] keySharePublic = ArrayConverter
             .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
     /**
-     * KeyShare Client Type
+     * Key type for KeyShareExtension
      */
     private NamedCurve keyShareType = NamedCurve.ECDH_X25519;
     /**
-     * KeyShare Client random
+     * Private key for KeyShareExtension
      */
-    private byte[] keyShareRandom = ArrayConverter
+    private byte[] keySharePrivate = ArrayConverter
             .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
-    /**
-     * KeyShare Client private exponent
-     */
-    private byte[] keyShareExponent = ArrayConverter
-            .hexStringToByteArray("101010101010101010101010101010101010101010101010101010101010101010101010101010101010");
     /**
      * Hostname in SNI Extension
      */
@@ -473,12 +465,13 @@ public class TlsConfig implements Serializable {
         supportedCompressionMethods.add(CompressionMethod.NULL);
         supportedCompressionMethods.add(CompressionMethod.DEFLATE);
         supportedCiphersuites = new LinkedList<>();
-        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-        supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA384);
+        if (getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+            supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+            supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA384);
+        }
         supportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
         namedCurves.add(NamedCurve.ECDH_X25519);
-        namedCurves.add(NamedCurve.FFDHE2048);
         pointFormats = new LinkedList<>();
         pointFormats.add(ECPointFormat.UNCOMPRESSED);
         try {
@@ -837,20 +830,12 @@ public class TlsConfig implements Serializable {
         this.keyShareType = keyShareType;
     }
 
-    public byte[] getKeyShare() {
-        return keyShare;
+    public byte[] getkeySharePublic() {
+        return keySharePublic;
     }
 
-    public void setkeyShare(byte[] keyShare) {
-        this.keyShare = keyShare;
-    }
-
-    public byte[] getKeyShareExponent() {
-        return keyShareExponent;
-    }
-
-    public void setKeyShareExponent(byte[] keyShareExponent) {
-        this.keyShareExponent = keyShareExponent;
+    public void setkeySharePublic(byte[] keySharePublic) {
+        this.keySharePublic = keySharePublic;
     }
 
     public boolean isDynamicWorkflow() {
@@ -1098,12 +1083,12 @@ public class TlsConfig implements Serializable {
         this.paddingLength = paddingLength;
     }
 
-    public byte[] getKeyShareRandom() {
-        return keyShareRandom;
+    public byte[] getKeySharePrivate() {
+        return keySharePrivate;
     }
 
-    public void setKeyShareRandom(byte[] keyShareRandom) {
-        this.keyShareRandom = keyShareRandom;
+    public void setKeySharePrivate(byte[] keySharePrivate) {
+        this.keySharePrivate = keySharePrivate;
     }
 
     public byte[] getTLSSessionTicket() {

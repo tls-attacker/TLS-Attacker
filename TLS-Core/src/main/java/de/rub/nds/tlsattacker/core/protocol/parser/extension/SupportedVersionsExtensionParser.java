@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 
@@ -22,12 +23,37 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
 
     @Override
     public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
-        msg.setSupportedVersionsLength(parseIntField(ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH));
-        msg.setSupportedVersions(parseByteArrayField(msg.getSupportedVersionsLength().getValue()));
+        LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
+        parseSupportedVersionLength(msg);
+        parseSupportedVersion(msg);
     }
 
     @Override
     protected SupportedVersionsExtensionMessage createExtensionMessage() {
         return new SupportedVersionsExtensionMessage();
+    }
+
+    /**
+     * Reads the next bytes as the supportedVersionLength of the Extension and
+     * writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSupportedVersionLength(SupportedVersionsExtensionMessage msg) {
+        msg.setSupportedVersionsLength(parseIntField(ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH));
+        LOGGER.debug("SupportedVersionsLength: " + msg.getSupportedVersionsLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the supportedVersion of the Extension and writes
+     * them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSupportedVersion(SupportedVersionsExtensionMessage msg) {
+        msg.setSupportedVersions(parseByteArrayField(msg.getSupportedVersionsLength().getValue()));
+        LOGGER.debug("SupportedVersions: " + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
     }
 }

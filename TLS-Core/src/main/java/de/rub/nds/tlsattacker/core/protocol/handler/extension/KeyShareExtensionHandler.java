@@ -24,13 +24,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.crypto.params.DHParameters;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsDHUtils;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -85,12 +80,24 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         byte[] saltHandshakeSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
                 earlySecret, HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
         byte[] sharedSecret;
-        if (context.getServerKSEntry().getGroup() == NamedCurve.FFDHE2048) {
-            sharedSecret = computeSharedSecretDH();
-        } else if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
-            sharedSecret = computeSharedSecretECDH();
+        if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
+                sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
+            } else {
+                throw new PreparationException("Support only the key exchange group ECDH_X25519");
+            }
         } else {
-            throw new PreparationException("Support only the key exchange group FFDHE2048 & ECDH_X25519");
+            int pos = 0;
+            for (KSEntry entry : context.getClientKSEntryList()) {
+                if (entry.getGroup() == NamedCurve.ECDH_X25519) {
+                    pos = context.getClientKSEntryList().indexOf(entry);
+                }
+            }
+            if (context.getClientKSEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
+                sharedSecret = computeSharedSecretECDH(context.getClientKSEntryList().get(pos));
+            } else {
+                throw new PreparationException("Support only the key exchange group ECDH_X25519");
+            }
         }
         byte[] handshakeSecret = HKDFunction.extract(macAlg.getJavaName(), saltHandshakeSecret, sharedSecret);
         context.setHandshakeSecret(handshakeSecret);
@@ -106,43 +113,16 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     }
 
     /**
-     * Computes the shared secret for FFDHE2048
-     * 
-     * @return
-     */
-    private byte[] computeSharedSecretDH() {
-        KSEntry serverKeySahre = context.getServerKSEntry();
-        DHParameters dhParams = new DHParameters(new BigInteger(1, context.getConfig().getFixedDHModulus()),
-                new BigInteger(1, context.getConfig().getFixedDHg()));
-        DHPrivateKeyParameters dhPrivateClient = new DHPrivateKeyParameters(new BigInteger(1, context.getConfig()
-                .getKeyShareExponent()), dhParams);
-        DHPublicKeyParameters dhPublicServer = new DHPublicKeyParameters(new BigInteger(1,
-                serverKeySahre.getSerializedPublicKey()), dhParams);
-        try {
-            byte[] sharedSecret = TlsDHUtils.calculateDHBasicAgreement(dhPublicServer, dhPrivateClient);
-            if (sharedSecret.length != context.getConfig().getFixedDHModulus().length) {
-                return ArrayConverter.bigIntegerToNullPaddedByteArray(new BigInteger(1, sharedSecret), context
-                        .getConfig().getFixedDHModulus().length);
-            } else {
-                return sharedSecret;
-            }
-        } catch (IllegalArgumentException e) {
-            throw new PreparationException("Could not calculate shared secret");
-        }
-    }
-
-    /**
      * Computes the shared secret for ECDH_X25519
      * 
      * @return
      */
-    private byte[] computeSharedSecretECDH() {
-        KSEntry serverKeySahre = context.getServerKSEntry();
-        byte[] clientPrivateKey = context.getConfig().getKeyShareRandom();
-        byte[] serverPublicKey = serverKeySahre.getSerializedPublicKey();
-        Curve25519.clamp(clientPrivateKey);
+    private byte[] computeSharedSecretECDH(KSEntry keyShare) {
+        byte[] privateKey = context.getConfig().getKeySharePrivate();
+        byte[] publicKey = keyShare.getSerializedPublicKey();
+        Curve25519.clamp(privateKey);
         byte[] sharedSecret = new byte[32];
-        Curve25519.curve(sharedSecret, clientPrivateKey, serverPublicKey);
+        Curve25519.curve(sharedSecret, privateKey, publicKey);
         return sharedSecret;
     }
 

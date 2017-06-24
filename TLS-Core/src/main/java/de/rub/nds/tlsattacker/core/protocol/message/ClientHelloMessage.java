@@ -116,7 +116,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddKeyShareExtension() && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
             KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
             KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getKeyShare());
+            pair.setKeyShareConfig(tlsConfig.getkeySharePublic());
             pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
             extension.getKeyShareList().add(pair);
             addExtension(extension);

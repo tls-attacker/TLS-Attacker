@@ -20,36 +20,74 @@ import java.util.List;
  */
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
 
+    private List<KeySharePair> pairList;
+
     public KeyShareExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
     @Override
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
-        int listLength = parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-        if (listLength == getBytesLeft()) {
-            LOGGER.debug("Parse server key share extension");
-            msg.setKeyShareListLength(listLength);
-            msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
+        LOGGER.debug("Parsing KeyShareExtensionMessage");
+        parseKeySahreListLength(msg);
+        if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH == msg
+                .getExtensionLength().getValue()) {
+            LOGGER.debug("Parsing client KeyShareExtensionMessage");
+            parseKeyShareListBytes(msg);
         } else {
-            LOGGER.debug("Parse client key share extension");
-            byte[] keyBegin = ArrayConverter.intToBytes(listLength, ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-            msg.setKeyShareListBytes(ArrayConverter.concatenate(keyBegin, parseByteArrayField(msg.getExtensionLength()
-                    .getValue() - ExtensionByteLength.KEY_SHARE_LIST_LENGTH)));
-            msg.setKeyShareListLength(msg.getKeyShareListBytes().getValue().length);
+            LOGGER.debug("Parsing client KeyShareExtensionMessage");
+            msg.setKeyShareListLength(msg.getExtensionLength().getValue());
+            LOGGER.debug("KeyShareListLength: " + msg.getExtensionLength().getValue());
+            setPointer(getPointer() - ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
+            parseKeyShareListBytes(msg);
         }
         int position = 0;
-        List<KeySharePair> pairList = new LinkedList<>();
+        pairList = new LinkedList<>();
         while (position < msg.getKeyShareListLength().getValue()) {
             KeySharePairParser parser = new KeySharePairParser(position, msg.getKeyShareListBytes().getValue());
             pairList.add(parser.parse());
             position = parser.getPointer();
         }
-        msg.setKeyShareList(pairList);
+        parseKeyShareList(msg);
     }
 
     @Override
     protected KeyShareExtensionMessage createExtensionMessage() {
         return new KeyShareExtensionMessage();
+    }
+
+    /**
+     * Reads the next bytes as the keySahreListLength of the Extension and
+     * writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseKeySahreListLength(KeyShareExtensionMessage msg) {
+        msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
+        LOGGER.debug("KeyShareListLength: " + msg.getKeyShareListLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the keyShareListBytes of the Extension and writes
+     * them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseKeyShareListBytes(KeyShareExtensionMessage msg) {
+        msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
+        LOGGER.debug("KeyShareListBytes: " + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+    }
+
+    /**
+     * Reads the next bytes as the keyShareList of the Extension and writes them
+     * in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseKeyShareList(KeyShareExtensionMessage msg) {
+        msg.setKeyShareList(pairList);
     }
 }

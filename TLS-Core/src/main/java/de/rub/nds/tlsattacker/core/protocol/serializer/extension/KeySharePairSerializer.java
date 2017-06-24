@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
@@ -25,10 +26,26 @@ public class KeySharePairSerializer extends Serializer<KeySharePair> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendBytes(pair.getKeyShareType().getValue());
-        appendInt(pair.getKeyShareLength().getValue(), ExtensionByteLength.KEY_SAHRE_LENGTH);
-        appendBytes(pair.getKeyShare().getValue());
+        LOGGER.debug("Serializing KeySharePair");
+        writeKeyShareType(pair);
+        writeKeyShareLength(pair);
+        writeKeyShare(pair);
         return getAlreadySerialized();
+    }
+
+    private void writeKeyShareType(KeySharePair pair) {
+        appendBytes(pair.getKeyShareType().getValue());
+        LOGGER.debug("KeyShareType: " + ArrayConverter.bytesToHexString(pair.getKeyShareType().getValue()));
+    }
+
+    private void writeKeyShareLength(KeySharePair pair) {
+        appendInt(pair.getKeyShareLength().getValue(), ExtensionByteLength.KEY_SAHRE_LENGTH);
+        LOGGER.debug("KeyShareLength: " + pair.getKeyShareLength().getValue());
+    }
+
+    private void writeKeyShare(KeySharePair pair) {
+        appendBytes(pair.getKeyShare().getValue());
+        LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(pair.getKeyShare().getValue()));
     }
 
 }

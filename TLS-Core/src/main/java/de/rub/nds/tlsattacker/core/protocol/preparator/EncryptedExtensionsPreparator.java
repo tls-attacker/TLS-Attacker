@@ -25,6 +25,7 @@ public class EncryptedExtensionsPreparator extends HandshakeMessagePreparator<En
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing EncryptedExtensionsMessage");
         prepareExtensions();
         prepareExtensionLength();
     }

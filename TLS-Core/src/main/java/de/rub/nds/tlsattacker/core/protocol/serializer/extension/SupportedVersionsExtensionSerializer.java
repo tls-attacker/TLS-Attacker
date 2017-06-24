@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 
@@ -16,17 +17,28 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsE
  */
 public class SupportedVersionsExtensionSerializer extends ExtensionSerializer<SupportedVersionsExtensionMessage> {
 
-    private final SupportedVersionsExtensionMessage message;
+    private final SupportedVersionsExtensionMessage msg;
 
     public SupportedVersionsExtensionSerializer(SupportedVersionsExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getSupportedVersionsLength().getValue(), ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH);
-        appendBytes(message.getSupportedVersions().getValue());
+        LOGGER.debug("Serializing SupportedVersionsExtensionMessage");
+        writeSupportedVersionsLength(msg);
+        writeSupportedVersions(msg);
         return getAlreadySerialized();
+    }
+
+    private void writeSupportedVersionsLength(SupportedVersionsExtensionMessage msg) {
+        appendInt(msg.getSupportedVersionsLength().getValue(), ExtensionByteLength.SUPPORTED_PROTOCOL_VERSIONS_LENGTH);
+        LOGGER.debug("SupportedVersionsLength: " + msg.getSupportedVersionsLength().getValue());
+    }
+
+    private void writeSupportedVersions(SupportedVersionsExtensionMessage msg) {
+        appendBytes(msg.getSupportedVersions().getValue());
+        LOGGER.debug("SupportedVersions: " + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
     }
 }

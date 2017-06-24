@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
@@ -21,17 +22,19 @@ import java.io.IOException;
  */
 public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExtensionMessage> {
 
-    private final KeyShareExtensionMessage message;
+    private final KeyShareExtensionMessage msg;
+    private ByteArrayOutputStream stream;
 
     public KeyShareExtensionPreparator(TlsContext context, KeyShareExtensionMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (KeySharePair pair : message.getKeyShareList()) {
+        LOGGER.debug("Preparing KeyShareExtensionMessage");
+        stream = new ByteArrayOutputStream();
+        for (KeySharePair pair : msg.getKeyShareList()) {
             KeySharePairPreparator preparator = new KeySharePairPreparator(context, pair);
             preparator.prepare();
             KeySharePairSerializer serializer = new KeySharePairSerializer(pair);
@@ -41,8 +44,18 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
                 throw new PreparationException("Could not write byte[] from KeySharePair", ex);
             }
         }
-        message.setKeyShareListBytes(stream.toByteArray());
-        message.setKeyShareListLength(message.getKeyShareListBytes().getValue().length);
+        prepareKeyShareListBytes(msg);
+        prepareKeyShareListLength(msg);
+    }
+
+    private void prepareKeyShareListBytes(KeyShareExtensionMessage msg) {
+        msg.setKeyShareListBytes(stream.toByteArray());
+        LOGGER.debug("KeyShareListBytes: " + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+    }
+
+    private void prepareKeyShareListLength(KeyShareExtensionMessage msg) {
+        msg.setKeyShareListLength(msg.getKeyShareListBytes().getValue().length);
+        LOGGER.debug("KeyShareListBytesLength: " + msg.getKeyShareListLength().getValue());
     }
 
 }

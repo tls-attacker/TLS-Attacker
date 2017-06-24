@@ -41,7 +41,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         prepareProtocolVersion(record);
         prepareSequenceNumber(record);
         if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-            record.setPaddingLength(context.getConfig().getPaddingLength());
+            preparePaddingLength(record);
         }
         encryptor.encrypt(record);
         prepareLength(record);
@@ -75,7 +75,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         record.setLength(record.getProtocolMessageBytes().getValue().length);
         LOGGER.debug("Length: " + record.getLength().getValue());
     }
-    
+
     private void preparePaddingLength(Record record) {
         record.setPaddingLength(context.getConfig().getPaddingLength());
         LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());

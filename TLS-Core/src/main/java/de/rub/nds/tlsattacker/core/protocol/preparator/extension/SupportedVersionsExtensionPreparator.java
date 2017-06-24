@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
@@ -20,21 +21,28 @@ import java.io.IOException;
  */
 public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<SupportedVersionsExtensionMessage> {
 
-    private SupportedVersionsExtensionMessage message;
+    private SupportedVersionsExtensionMessage msg;
 
     public SupportedVersionsExtensionPreparator(TlsContext context, SupportedVersionsExtensionMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        prepareProtocolVersions();
-        message.setSupportedVersionsLength(message.getSupportedVersions().getValue().length);
+        LOGGER.debug("Preparing SupportedVersionsExtensionMessage");
+        prepareProtocolVersions(msg);
+        prepareProtocolVersionsLength(msg);
     }
 
-    private void prepareProtocolVersions() {
-        message.setSupportedVersions(createProtocolVersionArray());
+    private void prepareProtocolVersions(SupportedVersionsExtensionMessage msg) {
+        msg.setSupportedVersions(createProtocolVersionArray());
+        LOGGER.debug("SupportedVersions: " + ArrayConverter.bytesToHexString(msg.getSupportedVersions().getValue()));
+    }
+
+    private void prepareProtocolVersionsLength(SupportedVersionsExtensionMessage msg) {
+        msg.setSupportedVersionsLength(msg.getSupportedVersions().getValue().length);
+        LOGGER.debug("SupportedVersionsLength: " + msg.getSupportedVersionsLength().getValue());
     }
 
     private byte[] createProtocolVersionArray() {

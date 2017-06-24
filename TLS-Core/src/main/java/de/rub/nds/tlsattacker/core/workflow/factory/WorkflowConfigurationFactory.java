@@ -124,7 +124,7 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createHandshakeWorkflow() {
         WorkflowTrace workflowTrace = this.createHelloWorkflow();
-        List<ProtocolMessage>  messages = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             if (config.isClientAuthentication()) {
                 messages.add(new CertificateMessage(config));
