@@ -14,11 +14,9 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 
 /**
- *
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<HelloRetryRequestMessage> {
 
@@ -31,10 +29,11 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing HelloRetryRequestMessage");
         prepareProtocolVersion();
         prepareCipherSuite();
-        prepareExtensionLength();
         prepareExtensions();
+        prepareExtensionLength();
     }
 
     private void prepareProtocolVersion() {
@@ -46,7 +45,7 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
-     
+
     private void prepareCipherSuite() {
         if (context.getConfig().isEnforceSettings()) {
             msg.setSelectedCipherSuite(context.getConfig().getSupportedCiphersuites().get(0).getByteValue());

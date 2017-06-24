@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
@@ -94,6 +95,8 @@ public class HandlerFactory {
                     return new EncryptedExtensionsHandler(context);
                 case FINISHED:
                     return new FinishedHandler(context);
+                case HELLO_RETRY_REQUEST:
+                    return new HelloRetryRequestHandler(context);
                 case HELLO_REQUEST:
                     return new HelloRequestHandler(context);
                 case HELLO_VERIFY_REQUEST:

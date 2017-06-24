@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRequestMessage> {
 
@@ -25,6 +25,7 @@ public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRe
 
     @Override
     protected void parseHandshakeMessageContent(HelloRetryRequestMessage msg) {
+        LOGGER.debug("Parsing HelloRetryRequestMessage");
         parseProtocolVersion(msg);
         parseSelectedCiphersuite(msg);
         if (hasExtensionLengthField(msg)) {
@@ -44,7 +45,7 @@ public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRe
         message.setProtocolVersion(parseByteArrayField(HandshakeByteLength.VERSION));
         LOGGER.debug("ProtocolVersion:" + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
     }
-    
+
     protected void parseSelectedCiphersuite(HelloRetryRequestMessage message) {
         message.setSelectedCipherSuite(parseByteArrayField(HandshakeByteLength.CIPHER_SUITE));
         LOGGER.debug("CipherSuite:" + ArrayConverter.bytesToHexString(message.getSelectedCipherSuite().getValue()));

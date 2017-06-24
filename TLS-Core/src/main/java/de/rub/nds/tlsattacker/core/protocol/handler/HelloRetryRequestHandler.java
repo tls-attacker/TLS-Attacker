@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRetryRequestSerializ
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetryRequestMessage> {
 
@@ -59,7 +59,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
         tlsContext.setSelectedProtocolVersion(version);
         LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
     }
-    
+
     private void adjustSelectedCiphersuite(HelloRetryRequestMessage message) {
         CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         tlsContext.setSelectedCipherSuite(suite);

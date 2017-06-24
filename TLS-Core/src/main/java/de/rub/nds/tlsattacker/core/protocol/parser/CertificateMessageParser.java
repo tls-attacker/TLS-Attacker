@@ -138,7 +138,7 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
             int pointer = 0;
             while (pointer < pair.getExtensionsLength().getValue()) {
                 ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
-                        pointer);
+                        pointer, msg.getHandshakeMessageType());
                 extensionMessages.add(parser.parse());
                 pointer = parser.getPointer();
             }
