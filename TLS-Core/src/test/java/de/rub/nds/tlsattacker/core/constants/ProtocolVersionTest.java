@@ -6,9 +6,8 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.constans;
+package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -16,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Nurullah Erinola
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ProtocolVersionTest {
 
@@ -31,7 +30,7 @@ public class ProtocolVersionTest {
      * Test of gethighestProtocolVersion method, of class ProtocolVersion.
      */
     @Test
-    public void testPrepare1() {
+    public void testGethighestProtocolVersion() {
         List<ProtocolVersion> versions = new LinkedList<>();
         versions.add(ProtocolVersion.TLS10);
         versions.add(ProtocolVersion.TLS11);

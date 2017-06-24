@@ -328,4 +328,12 @@ public class AlgorithmResolverTest {
     public void testUnresolvableMACFallback() {
         AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
     }
+
+    @Test
+    public void testGetHKDFAlgorithm() {
+        CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
+        HKDFAlgorithm result = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
+        HKDFAlgorithm result_correct = HKDFAlgorithm.TLS_HKDF_SHA256;
+        assertTrue(result == result_correct);
+    }
 }
