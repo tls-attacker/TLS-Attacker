@@ -92,6 +92,7 @@ public class ExtensionParserFactory {
                 parser = new SignedCertificateTimestampExtensionParser(pointer, extensionBytes);
                 break;
             case SRP:
+                parser = new SRPExtensionParser(pointer, extensionBytes);
                 break;
             case STATUS_REQUEST_V2:
                 break;

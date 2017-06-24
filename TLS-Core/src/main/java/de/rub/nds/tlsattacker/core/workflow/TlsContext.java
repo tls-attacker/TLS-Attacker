@@ -171,6 +171,11 @@ public class TlsContext {
      */
     private byte[] certificateStatusRequestExtensionRequestExtension;
 
+    /**
+     * This is the user identifier of the SRP extension
+     */
+    private byte[] secureRemotePasswordExtensionIdentifier;
+
     private PublicKey clientCertificatePublicKey;
 
     private PublicKey serverCertificatePublicKey;
@@ -647,6 +652,14 @@ public class TlsContext {
     public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
             byte[] applicationLayerProtocolNegotiationAnnouncedProtocols) {
         this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
+    }
+
+    public byte[] getSecureRemotePasswordExtensionIdentifier() {
+        return secureRemotePasswordExtensionIdentifier;
+    }
+
+    public void setSecureRemotePasswordExtensionIdentifier(byte[] secureRemotePasswordExtensionIdentifier) {
+        this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
     }
 
 }

@@ -216,6 +216,11 @@ public final class TlsConfig implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] applicationLayerProtocolNegotiationAnnouncedProtocols = new byte[0];
     /**
+     * Default SRP Identifier
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] secureRemotePasswordExtensionIdentifier = new byte[0];
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -304,6 +309,10 @@ public final class TlsConfig implements Serializable {
      * If we generate ClientHello with ALPN extension
      */
     private boolean addAlpnExtension = false;
+    /**
+     * If we generate ClientHello with SRP extension
+     */
+    private boolean addSRPExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -1129,6 +1138,22 @@ public final class TlsConfig implements Serializable {
 
     public void setAddAlpnExtension(boolean addAlpnExtension) {
         this.addAlpnExtension = addAlpnExtension;
+    }
+
+    public byte[] getSecureRemotePasswordExtensionIdentifier() {
+        return secureRemotePasswordExtensionIdentifier;
+    }
+
+    public void setSecureRemotePasswordExtensionIdentifier(byte[] secureRemotePasswordExtensionIdentifier) {
+        this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
+    }
+
+    public boolean isAddSRPExtension() {
+        return addSRPExtension;
+    }
+
+    public void setAddSRPExtension(boolean addSRPExtension) {
+        this.addSRPExtension = addSRPExtension;
     }
 
 }

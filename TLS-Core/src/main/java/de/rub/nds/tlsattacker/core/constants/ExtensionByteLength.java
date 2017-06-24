@@ -93,4 +93,9 @@ public class ExtensionByteLength {
      * Length of the application layer protocol extension length field
      */
     public static final int ALPN_EXTENSION_LENGTH = 2;
+
+    /**
+     * Length of the SRP extension identifier length field
+     */
+    public static final int SRP_IDENTIFIER_LENGTH = 1;
 }
