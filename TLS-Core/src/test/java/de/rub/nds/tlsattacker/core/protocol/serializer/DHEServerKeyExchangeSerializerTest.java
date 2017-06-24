@@ -8,17 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParserTest;
-import java.math.BigInteger;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -46,17 +42,18 @@ public class DHEServerKeyExchangeSerializerTest {
     private byte[] g;
     private int serializedKeyLength;
     private byte[] serializedKey;
-    private byte hashAlgo;
-    private byte sigAlgo;
+    private Byte hashAlgo;
+    private Byte sigAlgo;
     private int sigLength;
     private byte[] signature;
+    private ProtocolVersion version;
 
-    public DHEServerKeyExchangeSerializerTest(byte[] message, int start, byte[] expectedPart,
-            HandshakeMessageType type, int length, int pLength, byte[] p, int gLength, byte[] g,
-            int serializedKeyLength, byte[] serializedKey, byte hashAlgo, byte sigAlgo, int sigLength, byte[] signature) {
+    public DHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, int pLength,
+            byte[] p, int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey, Byte hashAlgo,
+            Byte sigAlgo, int sigLength, byte[] signature, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
+        this.start = 0;
+        this.expectedPart = message;
         this.type = type;
         this.length = length;
         this.pLength = pLength;
@@ -69,6 +66,7 @@ public class DHEServerKeyExchangeSerializerTest {
         this.sigAlgo = sigAlgo;
         this.sigLength = sigLength;
         this.signature = signature;
+        this.version = version;
     }
 
     /**
@@ -88,10 +86,14 @@ public class DHEServerKeyExchangeSerializerTest {
         msg.setSerializedPublicKey(serializedKey);
         msg.setSerializedPublicKeyLength(serializedKeyLength);
         msg.setSignature(signature);
-        msg.setSignatureAlgorithm(sigAlgo);
-        msg.setHashAlgorithm(hashAlgo);
+        if (sigAlgo != null) {
+            msg.setSignatureAlgorithm(sigAlgo);
+        }
+        if (hashAlgo != null) {
+            msg.setHashAlgorithm(hashAlgo);
+        }
         msg.setSignatureLength(sigLength);
-        DHEServerKeyExchangeSerializer serializer = new DHEServerKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
+        DHEServerKeyExchangeSerializer serializer = new DHEServerKeyExchangeSerializer(msg, version);
         assertArrayEquals(expectedPart, serializer.serialize());
 
     }

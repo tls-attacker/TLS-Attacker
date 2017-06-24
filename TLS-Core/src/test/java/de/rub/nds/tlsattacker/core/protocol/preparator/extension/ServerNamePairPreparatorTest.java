@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class ServerNamePairPreparatorTest {
 
-    public ServerNamePairPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

@@ -8,41 +8,36 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.DefaultActionExecutor;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparatorTest;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DefaultActionExecutorTest {
+    private static final Logger LOGGER = LogManager.getLogger(DefaultActionExecutorTest.class);
 
     private TlsContext context;
     private DefaultActionExecutor executor;
     private AlertMessage message;
     private Record record;
-
-    public DefaultActionExecutorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -90,7 +85,5 @@ public class DefaultActionExecutorTest {
         MessageActionResult result = executor.receiveMessages(shouldReceive);
         assertEquals(result.getMessageList().get(0), message);
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(DefaultActionExecutorTest.class);
 
 }

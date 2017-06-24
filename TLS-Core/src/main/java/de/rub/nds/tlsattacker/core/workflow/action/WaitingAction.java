@@ -34,7 +34,7 @@ public class WaitingAction extends TLSAction {
     public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
         LOGGER.info("Wating " + time + "ms...");
         try {
-            Thread.currentThread().sleep(time);
+            Thread.sleep(time);
         } catch (InterruptedException ex) {
             Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
         }

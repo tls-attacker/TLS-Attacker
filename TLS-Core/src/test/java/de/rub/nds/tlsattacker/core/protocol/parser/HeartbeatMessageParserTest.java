@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -65,7 +66,7 @@ public class HeartbeatMessageParserTest {
      */
     @Test
     public void testParse() {
-        HeartbeatMessageParser parser = new HeartbeatMessageParser(start, message, ProtocolVersion.TLS12);
+        HeartbeatMessageParser parser = new HeartbeatMessageParser(0, message, ProtocolVersion.TLS12);
         HeartbeatMessage msg = parser.parse();
         assertTrue(heartBeatType == msg.getHeartbeatMessageType().getValue());
         assertTrue(payloadLength == msg.getPayloadLength().getValue());

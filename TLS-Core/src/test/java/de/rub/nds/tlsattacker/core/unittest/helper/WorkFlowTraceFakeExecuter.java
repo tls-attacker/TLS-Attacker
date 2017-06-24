@@ -29,4 +29,7 @@ public class WorkFlowTraceFakeExecuter {
             }
         }
     }
+
+    private WorkFlowTraceFakeExecuter() {
+    }
 }

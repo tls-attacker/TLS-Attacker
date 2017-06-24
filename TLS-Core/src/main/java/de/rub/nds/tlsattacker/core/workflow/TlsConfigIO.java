@@ -30,4 +30,7 @@ class TlsConfigIO {
         TlsConfig config = JAXB.unmarshal(stream, TlsConfig.class);
         return config;
     }
+
+    private TlsConfigIO() {
+    }
 }

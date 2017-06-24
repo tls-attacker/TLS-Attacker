@@ -12,8 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.integer.IntegerAddModification;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -23,7 +22,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
@@ -32,7 +30,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,6 +40,7 @@ import org.junit.Test;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ClientHelloTest {
+    private static final Logger LOGGER = LogManager.getLogger(ClientHelloTest.class);
 
     @BeforeClass
     public static void setUpClass() {
@@ -73,6 +71,8 @@ public class ClientHelloTest {
 
     @Before
     public void setUp() {
+        // TODO constructor cleaning
+        // writer, context, m must be final?
     }
 
     @After
@@ -87,7 +87,7 @@ public class ClientHelloTest {
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
         try {
             m.marshal(cl, writer);
-        } catch (Exception E) {
+        } catch (JAXBException E) {
             E.printStackTrace();
         }
         String xmlString = writer.toString();
@@ -107,7 +107,5 @@ public class ClientHelloTest {
         m.marshal(trace, writer);
         String xmlString = writer.toString();
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(ClientHelloTest.class);
 
 }

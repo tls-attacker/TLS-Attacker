@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -28,7 +26,7 @@ public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequ
 
     @Override
     public void prepareHandshakeMessageContents() {
-
+        LOGGER.debug("Preparing HelloRequestMessage");
     }
 
 }

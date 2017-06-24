@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
@@ -52,14 +53,13 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.experimental.categories.Category;
 
 /**
@@ -70,9 +70,6 @@ public class ParserSerializerStressTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ParserSerializerStressTest.class);
 
-    public ParserSerializerStressTest() {
-    }
-
     @Before
     public void setUp() {
     }
@@ -81,13 +78,13 @@ public class ParserSerializerStressTest {
     @Category(IntegrationTests.class)
     public void testParser() {
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 1000; i++) {
             Random r = new Random(i);
             int random = r.nextInt(20);
             ProtocolMessage message = null;
             byte[] bytesToParse = null;
             try {
-                int length = r.nextInt(10000);
+                int length = r.nextInt(1000);
                 bytesToParse = new byte[length];
                 r.nextBytes(bytesToParse);
                 int start = r.nextInt(100);

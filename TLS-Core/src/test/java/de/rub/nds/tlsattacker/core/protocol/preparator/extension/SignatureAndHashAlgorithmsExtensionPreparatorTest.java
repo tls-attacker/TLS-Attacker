@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class SignatureAndHashAlgorithmsExtensionPreparatorTest {
 
-    public SignatureAndHashAlgorithmsExtensionPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

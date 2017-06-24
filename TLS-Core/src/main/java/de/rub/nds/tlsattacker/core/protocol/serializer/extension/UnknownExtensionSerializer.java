@@ -8,9 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,18 +17,28 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExtensionMessage> {
 
-    private final UnknownExtensionMessage message;
+    private final UnknownExtensionMessage msg;
 
     public UnknownExtensionSerializer(UnknownExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        if (message.getExtensionData() != null) {
-            appendBytes(message.getExtensionData().getValue());
+        LOGGER.debug("Serializing UnknoenExtensionMessage");
+        if (hasExtensionData(msg)) {
+            writeExtensionData(msg);
         }
         return getAlreadySerialized();
+    }
+
+    private boolean hasExtensionData(UnknownExtensionMessage msg) {
+        return msg.getExtensionData() != null;
+    }
+
+    private void writeExtensionData(UnknownExtensionMessage msg) {
+        appendBytes(msg.getExtensionData().getValue());
+        LOGGER.debug("ExtensionData: " + ArrayConverter.bytesToHexString(msg.getExtensionData().getValue()));
     }
 }

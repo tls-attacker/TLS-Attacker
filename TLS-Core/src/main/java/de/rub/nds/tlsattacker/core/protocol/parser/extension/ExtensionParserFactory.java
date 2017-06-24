@@ -114,4 +114,7 @@ public class ExtensionParserFactory {
         }
         return parser;
     }
+
+    private ExtensionParserFactory() {
+    }
 }

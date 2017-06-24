@@ -35,6 +35,15 @@ import org.junit.Test;
 public class MessageDigestCollectorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(MessageDigestCollectorTest.class);
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
     private MessageDigestCollector digest; // TLS10
     private final int testAlgorithm1Length = 16;
     private final int testAlgorithm2Length = 20;
@@ -49,14 +58,6 @@ public class MessageDigestCollectorTest {
     public void constructorTest() {
         LOGGER.info("testConstructors");
         MessageDigestCollector d = new MessageDigestCollector();
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
     }
 
     @Before

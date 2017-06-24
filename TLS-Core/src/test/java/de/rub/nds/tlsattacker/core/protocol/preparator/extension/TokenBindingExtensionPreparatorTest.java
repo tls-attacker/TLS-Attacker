@@ -35,7 +35,7 @@ public class TokenBindingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new TokenBindingExtensionMessage();
-        preparator = new TokenBindingExtensionPreparator(context, (TokenBindingExtensionMessage) message);
+        preparator = new TokenBindingExtensionPreparator(context, message);
     }
 
     @Test

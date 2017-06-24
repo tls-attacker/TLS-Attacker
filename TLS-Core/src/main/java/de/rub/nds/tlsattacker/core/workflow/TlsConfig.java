@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -24,6 +25,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -64,7 +66,19 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class TlsConfig implements Serializable {
+public class TlsConfig implements Serializable {
+    public static TlsConfig createConfig() {
+        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
+        return TlsConfigIO.read(stream);
+    }
+
+    public static TlsConfig createConfig(File f) {
+        return TlsConfigIO.read(f);
+    }
+
+    public static TlsConfig createConfig(InputStream stream) {
+        return TlsConfigIO.read(stream);
+    }
 
     /**
      * Default value for ProtocolVerionFields
@@ -432,19 +446,6 @@ public final class TlsConfig implements Serializable {
      * configured number of messages has been received
      */
     private boolean quickReceive = true;
-
-    public static TlsConfig createConfig() {
-        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
-        return TlsConfigIO.read(stream);
-    }
-
-    public static TlsConfig createConfig(File f) {
-        return TlsConfigIO.read(f);
-    }
-
-    public static TlsConfig createConfig(InputStream stream) {
-        return TlsConfigIO.read(stream);
-    }
 
     private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();

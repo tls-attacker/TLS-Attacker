@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -36,6 +34,7 @@ public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<Server
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
+        LOGGER.debug("Serializing ServerHelloDoneMessage");
         return getAlreadySerialized();
     }
 

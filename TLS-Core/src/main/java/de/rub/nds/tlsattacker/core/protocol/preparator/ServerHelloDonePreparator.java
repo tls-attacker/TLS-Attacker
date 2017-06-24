@@ -26,6 +26,7 @@ public class ServerHelloDonePreparator extends HandshakeMessagePreparator<Server
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing ServerHelloDoneMessage");
 
     }
 

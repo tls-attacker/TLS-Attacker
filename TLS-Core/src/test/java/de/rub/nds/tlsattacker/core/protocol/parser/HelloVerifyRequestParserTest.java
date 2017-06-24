@@ -8,15 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -33,8 +31,6 @@ public class HelloVerifyRequestParserTest {
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
 
     private HandshakeMessageType type;
     private int length;
@@ -43,11 +39,9 @@ public class HelloVerifyRequestParserTest {
     private byte cookieLength;
     private byte[] cookie;
 
-    public HelloVerifyRequestParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length, byte[] protocolVersion, byte cookieLength, byte[] cookie) {
+    public HelloVerifyRequestParserTest(byte[] message, HandshakeMessageType type, int length, byte[] protocolVersion,
+            byte cookieLength, byte[] cookie) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.protocolVersion = protocolVersion;
@@ -60,9 +54,9 @@ public class HelloVerifyRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(start, message, ProtocolVersion.TLS12);
+        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(0, message, ProtocolVersion.TLS12);
         HelloVerifyRequestMessage msg = parser.parse();
-        assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
+        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());
         assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());

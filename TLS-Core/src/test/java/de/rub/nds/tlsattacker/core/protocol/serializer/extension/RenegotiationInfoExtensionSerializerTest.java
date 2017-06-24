@@ -23,6 +23,10 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class RenegotiationInfoExtensionSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return RenegotiationInfoExtensionParserTest.generateData();
+    }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
@@ -38,11 +42,6 @@ public class RenegotiationInfoExtensionSerializerTest {
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
         this.startParsing = startParsing;
-    }
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return RenegotiationInfoExtensionParserTest.generateData();
     }
 
     @Test

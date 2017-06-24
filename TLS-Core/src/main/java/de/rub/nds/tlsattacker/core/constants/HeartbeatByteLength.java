@@ -22,4 +22,7 @@ public class HeartbeatByteLength {
      */
     public static final int PAYLOAD_LENGTH = 2;
 
+    private HeartbeatByteLength() {
+    }
+
 }

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
@@ -15,13 +17,12 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.cert.CertificateParsingException;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
@@ -187,7 +188,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         RSAPublicKey key = null;
         try {
             key = (RSAPublicKey) context.getConfig().getPublicKey();
-        } catch (Exception E) {
+        } catch (CertificateParsingException E) {
             throw new PreparationException("Could not retrieve publicKey from config");
         }
         int keyByteLength = key.getModulus().bitLength() / 8;
@@ -197,7 +198,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
         masterSecret = generateMasterSecret();
-        System.out.println("Master:" + ArrayConverter.bytesToHexString(masterSecret));
         prepareMasterSecret(msg);
     }
 }

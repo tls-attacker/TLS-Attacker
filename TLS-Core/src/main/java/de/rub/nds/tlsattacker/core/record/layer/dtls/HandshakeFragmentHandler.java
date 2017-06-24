@@ -8,19 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer.dtls;
 
-import de.rub.nds.tlsattacker.core.exceptions.MalformedMessageException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
  */

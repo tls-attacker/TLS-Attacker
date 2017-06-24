@@ -35,4 +35,7 @@ public class CipherSuiteFilter {
             }
         }
     }
+
+    private CipherSuiteFilter() {
+    }
 }
