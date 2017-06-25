@@ -86,8 +86,7 @@ public class ECDHClientKeyExchangeHandlerTest {
 
         handler.adjustTLSContext(message);
         assertArrayEquals(
-                ArrayConverter
-                        .hexStringToByteArray("6df5c76b9e4488beb41b9b01f5256999a8980a8e4636e3afa43316cebc2c9829"),
+                ArrayConverter.hexStringToByteArray("6df5c76b9e4488beb41b9b01f5256999a8980a8e4636e3afa43316cebc2c9829"),
                 context.getPreMasterSecret());
         assertArrayEquals(
                 ArrayConverter

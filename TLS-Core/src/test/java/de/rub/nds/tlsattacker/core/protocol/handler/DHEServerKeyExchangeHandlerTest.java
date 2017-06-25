@@ -78,7 +78,7 @@ public class DHEServerKeyExchangeHandlerTest {
         message.prepareComputations();
         message.getComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustTLSContext(message);
-        
+
     }
 
     @Test
