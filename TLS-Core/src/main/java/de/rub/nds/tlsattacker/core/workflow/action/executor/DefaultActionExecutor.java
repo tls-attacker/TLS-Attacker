@@ -170,6 +170,7 @@ public class DefaultActionExecutor extends ActionExecutor {
                 return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
             }
             byte[] recievedBytes = null;
+            boolean shouldContinue = true;
             do {
                 recievedBytes = receiveByteArray();
                 if (recievedBytes.length != 0) {
@@ -201,12 +202,13 @@ public class DefaultActionExecutor extends ActionExecutor {
                             }
                             if (receivedAllConfiguredMessages || receivedFatalAlert) {
                                 LOGGER.debug("Quickreceive active. Stopping listening");
+                                shouldContinue = false;
                                 break;
                             }
                         }
                     }
                 }
-            } while (recievedBytes.length != 0);
+            } while (recievedBytes.length != 0 && shouldContinue);
 
         } catch (IOException ex) {
             LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
