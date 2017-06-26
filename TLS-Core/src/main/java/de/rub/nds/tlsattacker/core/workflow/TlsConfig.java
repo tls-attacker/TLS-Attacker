@@ -485,9 +485,8 @@ public final class TlsConfig implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        defaultClientEcPublicKey = new CustomECPoint(defaultDhModulus, defaultDhModulus);
-        defaultClientEcPublicKey = new CustomECPoint(defaultDhModulus, defaultDhModulus);
-
+        defaultClientEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
+        defaultClientEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
     }
 
     public byte[] getOurCertificate() {
