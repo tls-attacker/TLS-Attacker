@@ -39,13 +39,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
     }
 
     private byte[] generatePadding() {
-        int min = chooser.getConfig().getHeartbeatMinPaddingLength();
-        int max = chooser.getConfig().getHeartbeatMaxPaddingLength();
-        if (max < min) { // TODO perhaps check somewhere different
-            throw new ConfigurationException(
-                    "Heartbeat minimum padding Length is greater than Heartbeat maxmimum padding length");
-        }
-        int paddingLength = RandomHelper.getRandom().nextInt(max - min) + min;
+        int paddingLength = chooser.getConfig().getHeartbeatPaddingLength();
         byte[] padding = new byte[paddingLength];
         RandomHelper.getRandom().nextBytes(padding);
         return padding;

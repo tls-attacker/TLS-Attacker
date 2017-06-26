@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.prng.FixedSecureRandom;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -48,15 +49,16 @@ public class HeartbeatMessagePreparatorTest {
     @Test
     public void testPrepare() {
         context.getConfig().setHeartbeatPayloadLength(11);
-        context.getConfig().setHeartbeatMaxPaddingLength(11);
-        context.getConfig().setHeartbeatMinPaddingLength(5);
+        context.getConfig().setHeartbeatPaddingLength(11);
+        RandomHelper.setRandom(new FixedSecureRandom(ArrayConverter
+                .hexStringToByteArray("F6C92DA33AF01D4FB770AA60B420BB3851D9D47ACB93")));
         preparator.prepare();
         assertTrue(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue() == message.getHeartbeatMessageType().getValue());
         LOGGER.info("padding: " + ArrayConverter.bytesToHexString(message.getPadding().getValue()));
         LOGGER.info("payload: " + ArrayConverter.bytesToHexString(message.getPayload().getValue()));
-
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("F6C92DA33AF01D4FB770"), message.getPadding().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB93"), message.getPayload()
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB93"), message.getPadding()
+                .getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("F6C92DA33AF01D4FB770AA"), message.getPayload()
                 .getValue());
         assertTrue(11 == message.getPayloadLength().getValue());
     }
