@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
@@ -157,9 +158,9 @@ public abstract class Chooser {
 
     public abstract NamedCurve getSelectedCurve();
 
-    public abstract ECPoint getClientEcPublicKey();
+    public abstract CustomECPoint getClientEcPublicKey();
 
-    public abstract ECPoint getServerEcPublicKey();
+    public abstract CustomECPoint getServerEcPublicKey();
 
     public abstract EllipticCurveType getEcCurveType();
 

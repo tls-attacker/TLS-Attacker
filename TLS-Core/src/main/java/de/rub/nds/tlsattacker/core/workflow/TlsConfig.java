@@ -30,6 +30,7 @@ import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import java.io.File;
 import java.io.InputStream;
@@ -413,9 +414,9 @@ public final class TlsConfig implements Serializable {
 
     private NamedCurve defaultSelectedCurve = NamedCurve.SECP256R1;
 
-    private ECPoint defaultClientEcPublicKey;
+    private CustomECPoint defaultClientEcPublicKey;
 
-    private ECPoint defaultServerEcPublicKey; // TODO
+    private CustomECPoint defaultServerEcPublicKey;
 
     private BigInteger defaultServerEcPrivateKey = new BigInteger("3");
 
@@ -484,6 +485,9 @@ public final class TlsConfig implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
+        defaultClientEcPublicKey = new CustomECPoint(defaultDhModulus, defaultDhModulus);
+        defaultClientEcPublicKey = new CustomECPoint(defaultDhModulus, defaultDhModulus);
+
     }
 
     public byte[] getOurCertificate() {
@@ -515,7 +519,11 @@ public final class TlsConfig implements Serializable {
     }
 
     public void setDefaultRSAModulus(BigInteger defaultRSAModulus) {
-        this.defaultRSAModulus = defaultRSAModulus;
+        if (defaultRSAModulus.signum() == 1) {
+            this.defaultRSAModulus = defaultRSAModulus;
+        } else {
+            throw new IllegalArgumentException("Modulus cannot be negative or zero" + defaultRSAModulus.toString());
+        }
     }
 
     public BigInteger getDefaultServerRSAPublicKey() {
@@ -558,19 +566,19 @@ public final class TlsConfig implements Serializable {
         this.defaultSelectedCurve = defaultSelectedCurve;
     }
 
-    public ECPoint getDefaultClientEcPublicKey() {
+    public CustomECPoint getDefaultClientEcPublicKey() {
         return defaultClientEcPublicKey;
     }
 
-    public void setDefaultClientEcPublicKey(ECPoint defaultClientEcPublicKey) {
+    public void setDefaultClientEcPublicKey(CustomECPoint defaultClientEcPublicKey) {
         this.defaultClientEcPublicKey = defaultClientEcPublicKey;
     }
 
-    public ECPoint getDefaultServerEcPublicKey() {
+    public CustomECPoint getDefaultServerEcPublicKey() {
         return defaultServerEcPublicKey;
     }
 
-    public void setDefaultServerEcPublicKey(ECPoint defaultServerEcPublicKey) {
+    public void setDefaultServerEcPublicKey(CustomECPoint defaultServerEcPublicKey) {
         this.defaultServerEcPublicKey = defaultServerEcPublicKey;
     }
 
@@ -983,7 +991,11 @@ public final class TlsConfig implements Serializable {
     }
 
     public void setDefaultDhModulus(BigInteger defaultDhModulus) {
-        this.defaultDhModulus = defaultDhModulus;
+        if (defaultDhModulus.signum() == 1) {
+            this.defaultDhModulus = defaultDhModulus;
+        } else {
+            throw new IllegalArgumentException("Modulus cannot be negative or zero:" + defaultDhModulus.toString());
+        }
     }
 
     public BigInteger getDefaultClientDhPrivateKey() {

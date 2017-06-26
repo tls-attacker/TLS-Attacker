@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
@@ -467,7 +468,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public ECPoint getClientEcPublicKey() {
+    public CustomECPoint getClientEcPublicKey() {
         if (context.getClientEcPublicKey() != null) {
             return context.getClientEcPublicKey();
         } else {
@@ -476,7 +477,7 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public ECPoint getServerEcPublicKey() {
+    public CustomECPoint getServerEcPublicKey() {
         if (context.getServerEcPublicKey() != null) {
             return context.getServerEcPublicKey();
         } else {

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.CurveNameRetriever;
@@ -115,8 +116,10 @@ public class CertificateDelegate extends Delegate {
     private void applyECParameters(TlsConfig config, ECPublicKeyParameters ecParameters) {
         config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
                 .getCurve()));
-        config.setDefaultClientEcPublicKey(ecParameters.getQ());
-        config.setDefaultServerEcPublicKey(ecParameters.getQ());
+        CustomECPoint publicKey = new CustomECPoint(ecParameters.getQ().getRawXCoord().toBigInteger(), ecParameters
+                .getQ().getRawYCoord().toBigInteger());
+        config.setDefaultClientEcPublicKey(publicKey);
+        config.setDefaultServerEcPublicKey(publicKey);
     }
 
     private void applyRSAParameters(TlsConfig config, BigInteger modulus, BigInteger publicKey) {

@@ -16,11 +16,13 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePre
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
@@ -73,7 +75,8 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
         } catch (IOException ex) {
             throw new AdjustmentException("EC public key parsing failed", ex);
         }
-
-        tlsContext.setServerEcPublicKey(publicKeyParameters.getQ());
+        CustomECPoint publicKey = new CustomECPoint(publicKeyParameters.getQ().getRawXCoord().toBigInteger(),
+                publicKeyParameters.getQ().getRawYCoord().toBigInteger());
+        tlsContext.setServerEcPublicKey(publicKey);
     }
 }

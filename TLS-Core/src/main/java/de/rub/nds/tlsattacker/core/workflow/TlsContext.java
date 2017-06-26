@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.List;
@@ -169,9 +170,9 @@ public class TlsContext {
 
     private NamedCurve selectedCurve;
 
-    private ECPoint clientEcPublicKey;
+    private CustomECPoint clientEcPublicKey;
 
-    private ECPoint serverEcPublicKey;
+    private CustomECPoint serverEcPublicKey;
 
     private BigInteger serverEcPrivateKey;
 
@@ -270,19 +271,19 @@ public class TlsContext {
         this.selectedCurve = selectedCurve;
     }
 
-    public ECPoint getClientEcPublicKey() {
+    public CustomECPoint getClientEcPublicKey() {
         return clientEcPublicKey;
     }
 
-    public void setClientEcPublicKey(ECPoint clientEcPublicKey) {
+    public void setClientEcPublicKey(CustomECPoint clientEcPublicKey) {
         this.clientEcPublicKey = clientEcPublicKey;
     }
 
-    public ECPoint getServerEcPublicKey() {
+    public CustomECPoint getServerEcPublicKey() {
         return serverEcPublicKey;
     }
 
-    public void setServerEcPublicKey(ECPoint serverEcPublicKey) {
+    public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
     }
 

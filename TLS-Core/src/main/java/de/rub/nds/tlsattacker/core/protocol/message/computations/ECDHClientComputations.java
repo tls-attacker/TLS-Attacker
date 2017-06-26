@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import java.math.BigInteger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.math.ec.ECPoint;
@@ -26,13 +27,13 @@ public class ECDHClientComputations extends KeyExchangeComputations {
 
     private ModifiableBigInteger clientPrivateKey;
 
-    private ECPoint clientPublicKey;
+    private CustomECPoint clientPublicKey;
 
-    public ECPoint getClientPublicKey() {
+    public CustomECPoint getClientPublicKey() {
         return clientPublicKey;
     }
 
-    public void setClientPublicKey(ECPoint clientPublicKey) {
+    public void setClientPublicKey(CustomECPoint clientPublicKey) {
         this.clientPublicKey = clientPublicKey;
     }
 

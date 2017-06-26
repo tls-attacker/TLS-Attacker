@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.CurveNameRetriever;
@@ -22,6 +23,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.PublicKey;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
@@ -103,10 +105,12 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     private void adjustECParameters(ECPublicKeyParameters ecPublicKeyParameters) {
         tlsContext.setSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters.getParameters()
                 .getCurve()));
+        CustomECPoint publicKey = new CustomECPoint(ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger(),
+                ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
         if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
-            tlsContext.setClientEcPublicKey(ecPublicKeyParameters.getQ());
+            tlsContext.setClientEcPublicKey(publicKey);
         } else {
-            tlsContext.setServerEcPublicKey(ecPublicKeyParameters.getQ());
+            tlsContext.setServerEcPublicKey(publicKey);
         }
     }
 

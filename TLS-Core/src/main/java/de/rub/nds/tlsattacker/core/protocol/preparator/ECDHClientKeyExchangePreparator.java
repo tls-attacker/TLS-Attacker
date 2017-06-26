@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -52,21 +53,26 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
         NamedCurve usedCurve = chooser.getSelectedCurve();
-        ECPoint serverPublicKey = chooser.getServerEcPublicKey();
+        CustomECPoint serverPublicKey = chooser.getServerEcPublicKey();
         BigInteger privateKey = chooser.getClientEcPrivateKey();
 
         // Set everything in computations and reload
         msg.getComputations().setClientPrivateKey(privateKey);
-        msg.getComputations().setServerPublicKeyX(serverPublicKey.getRawXCoord().toBigInteger());
-        msg.getComputations().setServerPublicKeyY(serverPublicKey.getRawYCoord().toBigInteger());
+        msg.getComputations().setServerPublicKeyX(serverPublicKey.getX());
+        msg.getComputations().setServerPublicKeyY(serverPublicKey.getY());
         ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
-        serverPublicKey = ecParams.getCurve().createPoint(msg.getComputations().getServerPublicKeyX().getValue(),
-                msg.getComputations().getServerPublicKeyY().getValue());
+        serverPublicKey = new CustomECPoint(msg.getComputations().getServerPublicKeyX().getValue(), msg
+                .getComputations().getServerPublicKeyY().getValue());
         privateKey = msg.getComputations().getClientPrivateKey().getValue();
         ECPoint clientPublicKey = ecParams.getCurve().getMultiplier().multiply(ecParams.getG(), privateKey);
-        msg.getComputations().setClientPublicKey(clientPublicKey);
-        premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(new ECPublicKeyParameters(serverPublicKey, ecParams),
-                new ECPrivateKeyParameters(privateKey, ecParams));
+        CustomECPoint customClientPublicKey = new CustomECPoint(clientPublicKey.getRawXCoord().toBigInteger(),
+                clientPublicKey.getRawYCoord().toBigInteger());
+        msg.getComputations().setClientPublicKey(customClientPublicKey);
+        premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(
+                new ECPublicKeyParameters(ecParams.getCurve().createPoint(
+                        msg.getComputations().getServerPublicKeyX().getValue(),
+                        msg.getComputations().getServerPublicKeyY().getValue()), ecParams), new ECPrivateKeyParameters(
+                        privateKey, ecParams));
         // Set and update premaster secret
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
@@ -170,7 +176,9 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
             ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats,
                     getDomainParameters(chooser.getEcCurveType(), chooser.getSelectedCurve()), msg.getPublicKey()
                             .getValue());
-            msg.getComputations().setClientPublicKey(clientPublicKey.getQ());
+            CustomECPoint customClientKey = new CustomECPoint(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
+                    clientPublicKey.getQ().getRawYCoord().toBigInteger());
+            msg.getComputations().setClientPublicKey(customClientKey);
 
             BigInteger privatekey = chooser.getServerEcPrivateKey();
             computePremasterSecret(clientPublicKey,
