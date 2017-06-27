@@ -53,8 +53,6 @@ public class ChangeCipherSuiteAction extends TLSAction {
         }
         oldValue = tlsContext.getSelectedCipherSuite();
         tlsContext.setSelectedCipherSuite(newValue);
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Changed CipherSuite from " + oldValue.name() + " to " + newValue.name());
