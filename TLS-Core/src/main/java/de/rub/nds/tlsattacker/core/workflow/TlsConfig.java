@@ -44,7 +44,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -83,11 +82,6 @@ public final class TlsConfig implements Serializable {
      * Which Signature and Hash algorithms we support
      */
     private List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
-    /**
-     * If we are in Fuzzing mode, eg ignore error and try to proceed as good as
-     * possible
-     */
-    private boolean fuzzingMode = false;
     /**
      * Which Ciphersuites we support by default
      */
@@ -353,6 +347,7 @@ public final class TlsConfig implements Serializable {
      */
     private boolean quickReceive = true;
 
+    private boolean stopRecievingAfterFatal = false;
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
      */
@@ -486,7 +481,15 @@ public final class TlsConfig implements Serializable {
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
-        defaultClientEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
+        defaultServerEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
+    }
+
+    public boolean isStopRecievingAfterFatal() {
+        return stopRecievingAfterFatal;
+    }
+
+    public void setStopRecievingAfterFatal(boolean stopRecievingAfterFatal) {
+        this.stopRecievingAfterFatal = stopRecievingAfterFatal;
     }
 
     public byte[] getOurCertificate() {
@@ -1192,14 +1195,6 @@ public final class TlsConfig implements Serializable {
     public void setSupportedSignatureAndHashAlgorithms(
             List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms) {
         this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
-    }
-
-    public boolean isFuzzingMode() {
-        return fuzzingMode;
-    }
-
-    public void setFuzzingMode(boolean fuzzingMode) {
-        this.fuzzingMode = fuzzingMode;
     }
 
     public List<NamedCurve> getNamedCurves() {
