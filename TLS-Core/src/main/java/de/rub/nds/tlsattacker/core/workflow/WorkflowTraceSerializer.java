@@ -56,7 +56,7 @@ public class WorkflowTraceSerializer {
      * @throws JAXBException
      * @throws IOException
      */
-    private static JAXBContext getJAXBContext() throws JAXBException, IOException {
+    private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
                     ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TLSAction.class,
