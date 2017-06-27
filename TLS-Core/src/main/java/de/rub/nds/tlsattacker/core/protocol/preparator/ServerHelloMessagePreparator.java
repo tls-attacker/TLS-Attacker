@@ -113,11 +113,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
                     msg.setProtocolVersion(clientVersion.getValue());
                 }
             } else {
-                if (chooser.getConfig().isFuzzingMode()) {
-                    msg.setProtocolVersion(ourVersion.getValue());
-                } else {
-                    throw new WorkflowExecutionException("TLS/DTLS Mismatch");
-                }
+                msg.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
             }
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
