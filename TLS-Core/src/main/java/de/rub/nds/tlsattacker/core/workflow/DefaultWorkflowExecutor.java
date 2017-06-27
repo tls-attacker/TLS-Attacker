@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
@@ -38,7 +39,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         for (TLSAction action : tlsActions) {
             try {
                 action.execute(context, actionExecutor);
-            } catch (IOException ex) {
+            } catch (IOException | PreparationException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
         }
