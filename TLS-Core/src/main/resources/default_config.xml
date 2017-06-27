@@ -2,11 +2,7 @@
 <tlsConfig>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
     <connectionEnd>CLIENT</connectionEnd>
-    <alias>default</alias>
-    <password>password</password>
     <clientAuthentication>false</clientAuthentication>
-    <sessionResumption>false</sessionResumption>
-    <renegotiation>false</renegotiation>
     <supportedSignatureAndHashAlgorithms>
         <hashAlgorithm>SHA512</hashAlgorithm>
         <signatureAlgorithm>RSA</signatureAlgorithm>
@@ -31,7 +27,6 @@
         <hashAlgorithm>MD5</hashAlgorithm>
         <signatureAlgorithm>RSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
-    <fuzzingMode>false</fuzzingMode>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</defaultClientSupportedCiphersuites>
@@ -77,7 +72,6 @@
     <defaultClientSupportedCiphersuites>TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA</defaultClientSupportedCiphersuites>
     <supportedCompressionMethods>NULL</supportedCompressionMethods>
     <dynamicWorkflow>false</dynamicWorkflow>
-    <pointFormats>UNCOMPRESSED</pointFormats>
     <namedCurves>SECP192R1</namedCurves>
     <namedCurves>SECP256R1</namedCurves>
     <namedCurves>SECP384R1</namedCurves>
@@ -112,39 +106,90 @@
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>false</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
-    <sessionId></sessionId>
     <updateTimestamps>true</updateTimestamps>
+    <ourCertificate>
+00 03 EE 00 03 EB 30 82  03 E7 30 82 02 CF A0 03
+02 01 02 02 09 00 B9 EE  D4 D9 55 A5 9E B3 30 0D
+06 09 2A 86 48 86 F7 0D  01 01 05 05 00 30 70 31
+0B 30 09 06 03 55 04 06  13 02 55 4B 31 16 30 14
+06 03 55 04 0A 0C 0D 4F  70 65 6E 53 53 4C 20 47
+72 6F 75 70 31 22 30 20  06 03 55 04 0B 0C 19 46
+4F 52 20 54 45 53 54 49  4E 47 20 50 55 52 50 4F
+53 45 53 20 4F 4E 4C 59  31 25 30 23 06 03 55 04
+03 0C 1C 4F 70 65 6E 53  53 4C 20 54 65 73 74 20
+49 6E 74 65 72 6D 65 64  69 61 74 65 20 43 41 30
+1E 17 0D 31 31 31 32 30  38 31 34 30 31 34 38 5A
+17 0D 32 31 31 30 31 36  31 34 30 31 34 38 5A 30
+64 31 0B 30 09 06 03 55  04 06 13 02 55 4B 31 16
+30 14 06 03 55 04 0A 0C  0D 4F 70 65 6E 53 53 4C
+20 47 72 6F 75 70 31 22  30 20 06 03 55 04 0B 0C
+19 46 4F 52 20 54 45 53  54 49 4E 47 20 50 55 52
+50 4F 53 45 53 20 4F 4E  4C 59 31 19 30 17 06 03
+55 04 03 0C 10 54 65 73  74 20 53 65 72 76 65 72
+20 43 65 72 74 30 82 01  22 30 0D 06 09 2A 86 48
+86 F7 0D 01 01 01 05 00  03 82 01 0F 00 30 82 01
+0A 02 82 01 01 00 F3 84  F3 92 36 DC B2 46 CA 66
+7A E5 29 C5 F3 49 28 22  D3 B9 FE E0 DE E4 38 CE
+EE 22 1C E9 91 3B 94 D0  72 2F 87 85 59 4B 66 B1
+C5 F5 7A 85 5D C2 0F D3  2E 29 58 36 CC 48 6B A2
+A2 B5 26 CE 67 E2 47 B6  DF 49 D2 3F FA A2 10 B7
+C2 97 44 7E 87 34 6D 6D  F2 8B B4 55 2B D6 21 DE
+53 4B 90 EA FD EA F9 38  35 2B F4 E6 9A 0E F6 BB
+12 AB 87 21 C3 2F BC F4  06 B8 8F 8E 10 07 27 95
+E5 42 CB D1 D5 10 8C 92  AC EE 0F DC 23 48 89 C9
+C6 93 0C 22 02 E7 74 E7  25 00 AB F8 0F 5C 10 B5
+85 3B 66 94 F0 FB 4D 57  06 55 21 22 25 DB F3 AA
+A9 60 BF 4D AA 79 D1 AB  92 48 BA 19 8E 12 EC 68
+D9 C6 BA DF EC 5A 1C D8  43 FE E7 52 C9 CF 02 D0
+C7 7F C9 7E B0 94 E3 53  44 58 0B 2E FD 29 74 B5
+06 9B 5C 44 8D FB 32 75  A4 3A A8 67 7B 87 32 0A
+50 8D E1 A2 13 4A 25 AF  E6 1C B1 25 BF B4 99 A2
+53 D3 A2 02 BF 11 02 03  01 00 01 A3 81 8F 30 81
+8C 30 0C 06 03 55 1D 13  01 01 FF 04 02 30 00 30
+0E 06 03 55 1D 0F 01 01  FF 04 04 03 02 05 E0 30
+2C 06 09 60 86 48 01 86  F8 42 01 0D 04 1F 16 1D
+4F 70 65 6E 53 53 4C 20  47 65 6E 65 72 61 74 65
+64 20 43 65 72 74 69 66  69 63 61 74 65 30 1D 06
+03 55 1D 0E 04 16 04 14  82 BC CF 00 00 13 D1 F7
+39 25 9A 27 E7 AF D2 EF  20 1B 6E AC 30 1F 06 03
+55 1D 23 04 18 30 16 80  14 36 C3 6C 88 E7 95 FE
+B0 BD EC CE 3E 3D 86 AB  21 81 87 DA DA 30 0D 06
+09 2A 86 48 86 F7 0D 01  01 05 05 00 03 82 01 01
+00 A9 BD 4D 57 40 74 FE  96 E9 2B D6 78 FD B3 63
+CC F4 0B 4D 12 CA 5A 74  8D 9B F2 61 E6 FD 06 11
+43 84 FC 17 A0 EC 63 63  36 B9 9E 36 6A B1 02 5A
+6A 5B 3F 6A A1 EA 05 65  AC 7E 40 1A 48 65 88 D1
+39 4D D3 4B 77 E9 C8 BB  2B 9E 5A F4 08 34 39 47
+B9 02 08 31 9A F1 D9 17  C5 E9 A6 A5 96 4B 6D 40
+A9 5B 65 28 CB CB 00 03  82 63 37 D3 AD B1 96 3B
+76 F5 17 16 02 7B BD 53  53 46 72 34 D6 08 64 9D
+BB 43 FB 64 B1 49 07 77  09 61 7A 42 17 11 30 0C
+D9 27 5C F5 71 B6 F0 18  30 F3 7E F1 85 3F 32 7E
+4A AF B3 10 F7 6C C6 85  4B 2D 27 AD 0A 20 5C FB
+8D 19 70 34 B9 75 5F 7C  87 D5 C3 EC 93 13 41 FC
+73 03 B9 8D 1A FE F7 26  86 49 03 A9 C5 82 3F 80
+0D 29 49 B1 8F ED 24 1B  FE CF 58 90 46 E7 A8 87
+D4 1E 79 EF 99 6D 18 9F  3E 8B 82 07 C1 43 C7 E0
+25 B6 F1 D3 00 D7 40 AB  4B 7F 2B 7A 3E A6 99 4C
+54
+</ourCertificate>
     <distinguishedNames></distinguishedNames>
     <enforceSettings>false</enforceSettings>
     <doDTLSRetransmits>false</doDTLSRetransmits>
-    <fixedDHModulus>
-FF FF FF FF FF FF FF FF  C9 0F DA A2 21 68 C2 34
-C4 C6 62 8B 80 DC 1C D1  29 02 4E 08 8A 67 CC 74
-02 0B BE A6 3B 13 9B 22  51 4A 08 79 8E 34 04 DD
-EF 95 19 B3 CD 3A 43 1B  30 2B 0A 6D F2 5F 14 37
-4F E1 35 6D 6D 51 C2 45  E4 85 B5 76 62 5E 7E C6
-F4 4C 42 E9 A6 37 ED 6B  0B FF 5C B6 F4 06 B7 ED
-EE 38 6B FB 5A 89 9F A5  AE 9F 24 11 7C 4B 1F E6
-49 28 66 51 EC E4 5B 3D  C2 00 7C B8 A1 63 BF 05
-98 DA 48 36 1C 55 D3 9A  69 16 3F A8 FD 24 CF 5F
-83 65 5D 23 DC A3 AD 96  1C 62 F3 56 20 85 52 BB
-9E D5 29 07 70 96 96 6D  67 0C 35 4E 4A BC 98 04
-F1 74 6C 08 CA 18 21 7C  32 90 5E 46 2E 36 CE 3B
-E3 9E 77 2C 18 0E 86 03  9B 27 83 A2 EC 07 A2 8F
-B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
-39 95 49 7C EA 95 6A E5  15 D2 26 18 98 FA 05 10
-15 72 8E 5A 8A AC AA 68  FF FF FF FF FF FF FF FF
-</fixedDHModulus>
-    <fixedDHg>02</fixedDHg>
+    <defaultDhGenerator>2</defaultDhGenerator>
+    <defaultDhModulus>15458150092069033378601573800816703249401189342134115050806105600042321586262936062413786779796157671421516779431947968642017250021834283152850968840396649272235097918348324</defaultDhModulus>
+    <defaultServerDhPrivateKey>1234567891234567889123546712839632542648746452354265471</defaultServerDhPrivateKey>
+    <defaultClientDhPrivateKey>1234567891234567889123546712839632542648746452354265471</defaultClientDhPrivateKey>
+    <defaultServerDhPublicKey>14480301636124364131011109953533209419584138262785800536726427889263750026424833537662211230987987661789535497502943331312908532241011314347509704298395798883527739408059572</defaultServerDhPublicKey>
+    <defaultClientDhPublicKey>14480301636124364131011109953533209419584138262785800536726427889263750026424833537662211230987987661789535497502943331312908532241011314347509704298395798883527739408059572</defaultClientDhPublicKey>
     <defaultApplicationMessageData>Test</defaultApplicationMessageData>
     <waitOnlyForExpectedDTLS>true</waitOnlyForExpectedDTLS>
     <clientCertificateTypes>RSA_SIGN</clientCertificateTypes>
     <heartbeatPayloadLength>256</heartbeatPayloadLength>
-    <heartbeatMinPaddingLength>16</heartbeatMinPaddingLength>
-    <heartbeatMaxPaddingLength>256</heartbeatMaxPaddingLength>
+    <heartbeatPaddingLength>256</heartbeatPaddingLength>
     <defaultDTLSCookieLength>6</defaultDTLSCookieLength>
     <defaultMaxRecordData>1048576</defaultMaxRecordData>
-    <defaultPaddingExtensionBytes>AAAAAAAA</defaultPaddingExtensionBytes>
+    <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
     <executorType>TLS</executorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
@@ -152,7 +197,14 @@ B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
     <recordLayerType>RECORD</recordLayerType>
     <stripWorkflowtracesBeforeSaving>false</stripWorkflowtracesBeforeSaving>
     <quickReceive>true</quickReceive>
+    <stopRecievingAfterFatal>false</stopRecievingAfterFatal>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
+    <defaultServerSupportedPointFormats>UNCOMPRESSED</defaultServerSupportedPointFormats>
+    <defaultClientSupportedPointFormats>UNCOMPRESSED</defaultClientSupportedPointFormats>
+    <defaultServerSupportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA1</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </defaultServerSupportedSignatureAndHashAlgorithms>
     <defaultSelectedSignatureAndHashAlgorithm>
         <hashAlgorithm>SHA1</hashAlgorithm>
         <signatureAlgorithm>RSA</signatureAlgorithm>
@@ -171,4 +223,22 @@ B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
     <defaultDtlsCookie></defaultDtlsCookie>
     <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
+    <defaultAlertDescription>0</defaultAlertDescription>
+    <defaultAlertLevel>0</defaultAlertLevel>
+    <defaultSelectedCurve>SECP256R1</defaultSelectedCurve>
+    <defaultClientEcPublicKey>
+        <x>3</x>
+        <y>3</y>
+    </defaultClientEcPublicKey>
+    <defaultServerEcPublicKey>
+        <x>3</x>
+        <y>3</y>
+    </defaultServerEcPublicKey>
+    <defaultServerEcPrivateKey>3</defaultServerEcPrivateKey>
+    <defaultClientEcPrivateKey>3</defaultClientEcPrivateKey>
+    <defaultRSAModulus>145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053</defaultRSAModulus>
+    <defaultServerRSAPublicKey>65537</defaultServerRSAPublicKey>
+    <defaultClientRSAPublicKey>65537</defaultClientRSAPublicKey>
+    <defaultServerRSAPrivateKey>89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713</defaultServerRSAPrivateKey>
+    <defaultClientRSAPrivateKey>89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713</defaultClientRSAPrivateKey>
 </tlsConfig>
