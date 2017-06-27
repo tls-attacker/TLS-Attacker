@@ -68,11 +68,15 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         CustomECPoint customClientPublicKey = new CustomECPoint(clientPublicKey.getRawXCoord().toBigInteger(),
                 clientPublicKey.getRawYCoord().toBigInteger());
         msg.getComputations().setClientPublicKey(customClientPublicKey);
-        premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(
-                new ECPublicKeyParameters(ecParams.getCurve().createPoint(
-                        msg.getComputations().getServerPublicKeyX().getValue(),
-                        msg.getComputations().getServerPublicKeyY().getValue()), ecParams), new ECPrivateKeyParameters(
-                        privateKey, ecParams));
+        try {
+            premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(
+                    new ECPublicKeyParameters(ecParams.getCurve().createPoint(
+                            msg.getComputations().getServerPublicKeyX().getValue(),
+                            msg.getComputations().getServerPublicKeyY().getValue()), ecParams),
+                    new ECPrivateKeyParameters(privateKey, ecParams));
+        } catch (IllegalArgumentException E) {
+            throw new PreparationException("Could not compute premasterSecret.", E);
+        }
         // Set and update premaster secret
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
