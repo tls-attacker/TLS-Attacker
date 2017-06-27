@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlg
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;

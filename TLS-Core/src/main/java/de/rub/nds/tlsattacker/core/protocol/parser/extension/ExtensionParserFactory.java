@@ -102,6 +102,7 @@ public class ExtensionParserFactory {
             case USER_MAPPING:
                 break;
             case USE_SRTP:
+                parser = new SrtpExtensionParser(pointer, extensionBytes);
                 break;
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes);

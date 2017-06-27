@@ -101,4 +101,14 @@ public class ExtensionByteLength {
      * Length of the SRP extension identifier length field
      */
     public static final int SRP_IDENTIFIER_LENGTH = 1;
+    
+    /**
+     * Length of the SRTP extension master key identifier lengthfield length
+     */
+    public static final int SRTP_MASTER_KEY_IDENTIFIER_LENGTHFIELD_LENGTH = 1;
+    
+    /**
+     * Length of the SRTP extension protection profiles lengthfield length
+     */
+    public static final int SRTP_PROTECTION_PROFILES_LENGTHFIELD_LENGTH = 2;
 }

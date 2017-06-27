@@ -16,8 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExten
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;

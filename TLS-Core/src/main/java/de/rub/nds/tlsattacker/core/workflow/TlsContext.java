@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import java.security.PublicKey;
@@ -176,6 +177,16 @@ public class TlsContext {
      * This is the user identifier of the SRP extension
      */
     private byte[] secureRemotePasswordExtensionIdentifier;
+    
+    /**
+     * These are the protection profiles of the SRTP extension
+     */
+    private SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles;
+    
+    /**
+     * This is the master key identifier of the SRTP extension
+     */
+    private byte[] secureRealTimeProtocolMasterKeyIdentifier;
 
     private PublicKey clientCertificatePublicKey;
 
@@ -662,5 +673,23 @@ public class TlsContext {
     public void setSecureRemotePasswordExtensionIdentifier(byte[] secureRemotePasswordExtensionIdentifier) {
         this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
     }
+
+    public SrtpProtectionProfiles[] getSecureRealTimeTransportProtocolProtectionProfiles() {
+        return secureRealTimeTransportProtocolProtectionProfiles;
+    }
+
+    public void setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
+        this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
+    }
+
+    public byte[] getSecureRealTimeProtocolMasterKeyIdentifier() {
+        return secureRealTimeProtocolMasterKeyIdentifier;
+    }
+
+    public void setSecureRealTimeProtocolMasterKeyIdentifier(byte[] secureRealTimeProtocolMasterKeyIdentifier) {
+        this.secureRealTimeProtocolMasterKeyIdentifier = secureRealTimeProtocolMasterKeyIdentifier;
+    }
+    
+    
 
 }

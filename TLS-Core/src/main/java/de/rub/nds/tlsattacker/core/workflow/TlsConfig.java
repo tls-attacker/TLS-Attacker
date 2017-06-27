@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
@@ -235,6 +236,16 @@ public class TlsConfig implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] secureRemotePasswordExtensionIdentifier = new byte[0];
     /**
+     * Default SRTP extension protection profiles
+     * The list contains every protection profile as in RFC 5764
+     */
+    private SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles = new SrtpProtectionProfiles[]{SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32};
+    /**
+     * Default SRTP extension master key identifier
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier= new byte[]{};
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -327,6 +338,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with SRP extension
      */
     private boolean addSRPExtension = false;
+    /**
+     * If we generate ClientHello with SRTP extension
+     */
+    private boolean addSRTPExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -1156,5 +1171,33 @@ public class TlsConfig implements Serializable {
     public void setAddSRPExtension(boolean addSRPExtension) {
         this.addSRPExtension = addSRPExtension;
     }
+
+    public byte[] getSecureRealTimeTransportProtocolMasterKeyIdentifier() {
+        return secureRealTimeTransportProtocolMasterKeyIdentifier;
+    }
+
+    public void setSecureRealTimeTransportProtocolMasterKeyIdentifier(byte[] secureRealTimeTransportProtocolMasterKeyIdentifier) {
+        this.secureRealTimeTransportProtocolMasterKeyIdentifier = secureRealTimeTransportProtocolMasterKeyIdentifier;
+    }
+
+    public boolean isAddSRTPExtension() {
+        return addSRTPExtension;
+    }
+
+    public void setAddSRTPExtension(boolean addSRTPExtension) {
+        this.addSRTPExtension = addSRTPExtension;
+    }
+
+    public SrtpProtectionProfiles[] getSecureRealTimeTransportProtocolProtectionProfiles() {
+        return secureRealTimeTransportProtocolProtectionProfiles;
+    }
+
+    public void setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
+        this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
+    }
+    
+    
+    
+    
 
 }
