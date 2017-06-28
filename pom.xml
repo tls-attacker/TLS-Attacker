@@ -87,12 +87,6 @@
             <version>1.55</version>
         </dependency>
         <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.55</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>com.openpojo</groupId>
             <artifactId>openpojo</artifactId>
             <version>0.8.4</version>
