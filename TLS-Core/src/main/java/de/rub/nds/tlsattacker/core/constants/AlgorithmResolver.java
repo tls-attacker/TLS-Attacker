@@ -82,6 +82,9 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
+        if (cipherSuite.isTLS13()) {
+            return null;
+        }
         String cipher = cipherSuite.toString().toUpperCase();
         if (cipher.contains("TLS_RSA_WITH") || cipher.contains("TLS_RSA_EXPORT")) {
             return KeyExchangeAlgorithm.RSA;
