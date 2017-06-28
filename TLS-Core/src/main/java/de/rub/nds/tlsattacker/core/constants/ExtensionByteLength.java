@@ -111,4 +111,9 @@ public class ExtensionByteLength {
      * Length of the SRTP extension protection profiles lengthfield length
      */
     public static final int SRTP_PROTECTION_PROFILES_LENGTHFIELD_LENGTH = 2;
+
+    /**
+     * Length of the user mapping extension user mapping hint field
+     */
+    public static final int USER_MAPPING_EXTENSION_MAPPINGTYPE_LENGTH = 1;
 }

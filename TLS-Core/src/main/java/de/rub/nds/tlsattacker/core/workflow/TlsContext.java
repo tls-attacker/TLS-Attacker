@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -30,6 +29,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -192,6 +192,11 @@ public class TlsContext {
      * Is the truncated hmac extension present?
      */
     private boolean truncatedHmacExtensionisPresent;
+
+    /**
+     * User mapping extension hint type
+     */
+    private UserMappingExtensionHintType userMappingExtensionHintType;
 
     private PublicKey clientCertificatePublicKey;
 
@@ -702,6 +707,14 @@ public class TlsContext {
 
     public void setTruncatedHmacExtensionisPresent(boolean truncatedHmacExtensionisPresent) {
         this.truncatedHmacExtensionisPresent = truncatedHmacExtensionisPresent;
+    }
+
+    public UserMappingExtensionHintType getUserMappingExtensionHintType() {
+        return userMappingExtensionHintType;
+    }
+
+    public void setUserMappingExtensionHintType(UserMappingExtensionHintType userMappingExtensionHintType) {
+        this.userMappingExtensionHintType = userMappingExtensionHintType;
     }
 
 }

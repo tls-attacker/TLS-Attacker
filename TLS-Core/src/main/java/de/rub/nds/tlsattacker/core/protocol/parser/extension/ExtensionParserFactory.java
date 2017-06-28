@@ -101,6 +101,7 @@ public class ExtensionParserFactory {
                 parser = new TokenBindingExtensionParser(pointer, extensionBytes);
                 break;
             case USER_MAPPING:
+                parser = new UserMappingExtensionParser(pointer, extensionBytes);
                 break;
             case USE_SRTP:
                 parser = new SrtpExtensionParser(pointer, extensionBytes);

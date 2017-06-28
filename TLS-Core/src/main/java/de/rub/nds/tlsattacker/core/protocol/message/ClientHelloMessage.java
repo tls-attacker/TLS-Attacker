@@ -138,6 +138,9 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddTruncatedHmacExtension()) {
             addExtension(new TruncatedHmacExtensionMessage());
         }
+        if (tlsConfig.isAddUserMappingExtension()) {
+            addExtension(new UserMappingExtensionMessage());
+        }
     }
 
     public ModifiableInteger getCompressionLength() {

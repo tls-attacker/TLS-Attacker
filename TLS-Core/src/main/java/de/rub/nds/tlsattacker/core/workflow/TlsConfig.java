@@ -33,6 +33,7 @@ import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
@@ -249,6 +250,10 @@ public class TlsConfig implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[] {};
     /**
+     * Default user mapping extension hint type
+     */
+    private UserMappingExtensionHintType userMappingExtensionHintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -349,6 +354,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with truncated hmac extension
      */
     private boolean addTruncatedHmacExtension = false;
+    /**
+     * If we generate ClientHello with user mapping extension
+     */
+    private boolean addUserMappingExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -1211,6 +1220,22 @@ public class TlsConfig implements Serializable {
 
     public void setAddTruncatedHmacExtension(boolean addTruncatedHmacExtension) {
         this.addTruncatedHmacExtension = addTruncatedHmacExtension;
+    }
+
+    public UserMappingExtensionHintType getUserMappingExtensionHintType() {
+        return userMappingExtensionHintType;
+    }
+
+    public void setUserMappingExtensionHintType(UserMappingExtensionHintType userMappingExtensionHintType) {
+        this.userMappingExtensionHintType = userMappingExtensionHintType;
+    }
+
+    public boolean isAddUserMappingExtension() {
+        return addUserMappingExtension;
+    }
+
+    public void setAddUserMappingExtension(boolean addUserMappingExtension) {
+        this.addUserMappingExtension = addUserMappingExtension;
     }
 
 }

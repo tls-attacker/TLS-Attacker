@@ -112,6 +112,9 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddTruncatedHmacExtension()) {
             addExtension(new TruncatedHmacExtensionMessage());
         }
+        if (tlsConfig.isAddUserMappingExtension()) {
+            addExtension(new UserMappingExtensionMessage());
+        }
     }
 
     public ServerHelloMessage() {
