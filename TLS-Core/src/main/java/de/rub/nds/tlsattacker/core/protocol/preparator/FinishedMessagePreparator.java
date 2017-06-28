@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -50,19 +51,19 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     private byte[] computeVerifyData() {
         if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             try {
-                String algorithm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite()).getMacAlgorithm().getJavaName();
-                Mac mac = Mac.getInstance(algorithm);
+                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite());
+                Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
                 LOGGER.debug("Connection End: " + context.getConfig().getConnectionEnd());
                 if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
-                    finishedKey = HKDFunction.expandLabel(algorithm, context.getServerHandshakeTrafficSecret(),
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, context.getServerHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
-                    finishedKey = HKDFunction.expandLabel(algorithm, context.getClientHandshakeTrafficSecret(),
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, context.getClientHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
                 LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
-                SecretKeySpec keySpec = new SecretKeySpec(finishedKey, algorithm);
+                SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
                 mac.update(context.getDigest().digest(context.getSelectedProtocolVersion(), context.getSelectedCipherSuite()));
                 return mac.doFinal();

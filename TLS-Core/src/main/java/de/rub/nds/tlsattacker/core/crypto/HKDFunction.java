@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -59,19 +60,19 @@ public class HKDFunction {
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
      * 
-     * @param macAlgorithm
+     * @param hkdfAlgortihm
      * @param salt
      * @param ikm
      * @return
      */
-    public static byte[] extract(String macAlgorithm, byte[] salt, byte[] ikm) {
+    public static byte[] extract(HKDFAlgorithm hkdfAlgortihm, byte[] salt, byte[] ikm) {
         try {
-            Mac mac = Mac.getInstance(macAlgorithm);
+            Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
             if (salt == null || salt.length == 0) {
                 salt = new byte[mac.getMacLength()];
                 Arrays.fill(salt, (byte) 0);
             }
-            SecretKeySpec keySpec = new SecretKeySpec(salt, macAlgorithm);
+            SecretKeySpec keySpec = new SecretKeySpec(salt, hkdfAlgortihm.getMacAlgorithm().getJavaName());
             mac.init(keySpec);
             mac.update(ikm);
             return mac.doFinal();
@@ -83,16 +84,16 @@ public class HKDFunction {
     /**
      * Computes HKDF-Expand output as defined in RFC 5869
      * 
-     * @param macAlgorithm
+     * @param hkdfAlgortihm
      * @param prk
      * @param info
      * @param outLen
      * @return
      */
-    public static byte[] expand(String macAlgorithm, byte[] prk, byte[] info, int outLen) {
+    public static byte[] expand(HKDFAlgorithm hkdfAlgortihm, byte[] prk, byte[] info, int outLen) {
         try {
-            Mac mac = Mac.getInstance(macAlgorithm);
-            SecretKeySpec keySpec = new SecretKeySpec(prk, macAlgorithm);
+            Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
+            SecretKeySpec keySpec = new SecretKeySpec(prk, hkdfAlgortihm.getMacAlgorithm().getJavaName());
             mac.init(keySpec);
             byte[] out = new byte[0];
             byte[] ti = new byte[0];
@@ -131,21 +132,21 @@ public class HKDFunction {
     /**
      * Computes Derive-Secret output as defined in TLS 1.3
      * 
-     * @param macAlgorithm
+     * @param hkdfAlgortihm
      * @param hashAlgorithm
      * @param prk
      * @param labelIn
      * @param toHash
      * @return
      */
-    public static byte[] deriveSecret(String macAlgorithm, String hashAlgorithm, byte[] prk, String labelIn,
+    public static byte[] deriveSecret(HKDFAlgorithm hkdfAlgortihm, String hashAlgorithm, byte[] prk, String labelIn,
             byte[] toHash) {
         try {
             MessageDigest hashFunction = MessageDigest.getInstance(hashAlgorithm);
             hashFunction.update(toHash);
             byte[] hashValue = hashFunction.digest();
-            int outLen = Mac.getInstance(macAlgorithm).getMacLength();
-            return expandLabel(macAlgorithm, prk, labelIn, hashValue, outLen);
+            int outLen = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
+            return expandLabel(hkdfAlgortihm, prk, labelIn, hashValue, outLen);
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not initialize HKDF", ex);
         }
@@ -154,16 +155,16 @@ public class HKDFunction {
     /**
      * Computes HKDF-Expand-Label output as defined in TLS 1.3
      * 
-     * @param macAlgorithm
+     * @param hkdfAlgortihm
      * @param prk
      * @param labelIn
      * @param hashValue
      * @param outLen
      * @return
      */
-    public static byte[] expandLabel(String macAlgorithm, byte[] prk, String labelIn, byte[] hashValue, int outLen) {
+    public static byte[] expandLabel(HKDFAlgorithm hkdfAlgortihm, byte[] prk, String labelIn, byte[] hashValue, int outLen) {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
-        return expand(macAlgorithm, prk, info, outLen);
+        return expand(hkdfAlgortihm, prk, info, outLen);
     }
 
 }

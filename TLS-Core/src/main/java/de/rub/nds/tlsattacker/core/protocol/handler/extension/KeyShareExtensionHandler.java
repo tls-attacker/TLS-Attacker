@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -23,9 +22,13 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
+import javax.crypto.Mac;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -72,44 +75,49 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     }
 
     private void adjustHandshakeTrafficSecrets() {
-        MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite()).getMacAlgorithm();
+        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(context.getSelectedProtocolVersion(),
                 context.getSelectedCipherSuite());
         // PSK = null
-        byte[] earlySecret = HKDFunction.extract(macAlg.getJavaName(), new byte[0], new byte[32]);
-        byte[] saltHandshakeSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
-                earlySecret, HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
-        byte[] sharedSecret;
-        if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
-            if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
-                sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
+        try {
+            int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
+            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], new byte[macLength]);
+            byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
+                    HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
+            byte[] sharedSecret;
+            if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+                if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
+                } else {
+                    throw new PreparationException("Support only the key exchange group ECDH_X25519");
+                }
             } else {
-                throw new PreparationException("Support only the key exchange group ECDH_X25519");
-            }
-        } else {
-            int pos = 0;
-            for (KSEntry entry : context.getClientKSEntryList()) {
-                if (entry.getGroup() == NamedCurve.ECDH_X25519) {
-                    pos = context.getClientKSEntryList().indexOf(entry);
+                int pos = 0;
+                for (KSEntry entry : context.getClientKSEntryList()) {
+                    if (entry.getGroup() == NamedCurve.ECDH_X25519) {
+                        pos = context.getClientKSEntryList().indexOf(entry);
+                    }
+                }
+                if (context.getClientKSEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(context.getClientKSEntryList().get(pos));
+                } else {
+                    throw new PreparationException("Support only the key exchange group ECDH_X25519");
                 }
             }
-            if (context.getClientKSEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
-                sharedSecret = computeSharedSecretECDH(context.getClientKSEntryList().get(pos));
-            } else {
-                throw new PreparationException("Support only the key exchange group ECDH_X25519");
-            }
+            byte[] handshakeSecret = HKDFunction.extract(hkdfAlgortihm, saltHandshakeSecret, sharedSecret);
+            context.setHandshakeSecret(handshakeSecret);
+            LOGGER.debug("Set handshakeSecret in Context to " + ArrayConverter.bytesToHexString(handshakeSecret));
+            byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
+                    handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
+            context.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
+            LOGGER.debug("Set clientHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
+            byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
+                        handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
+                context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
+            LOGGER.debug("Set serverHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
+        } catch (NoSuchAlgorithmException ex) {
+            throw new CryptoException(ex);
         }
-        byte[] handshakeSecret = HKDFunction.extract(macAlg.getJavaName(), saltHandshakeSecret, sharedSecret);
-        context.setHandshakeSecret(handshakeSecret);
-        LOGGER.debug("Set handshakeSecret in Context to " + ArrayConverter.bytesToHexString(handshakeSecret));
-        byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
-                handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-        context.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
-        LOGGER.debug("Set clientHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
-        byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(macAlg.getJavaName(), digestAlgo.getJavaName(),
-                handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-        context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
-        LOGGER.debug("Set serverHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
     }
 
     /**

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -144,18 +144,18 @@ public class RecordAEADCipher extends RecordCipher {
                     clientSecret = context.getClientApplicationTrafficSecret0();
                     serverSecret = context.getServerApplicationTrafficSecret0();
                 }
-                MacAlgorithm macAlg = AlgorithmResolver.getHKDFAlgorithm(cipherSuite).getMacAlgorithm();
-                clientWriteKey = HKDFunction.expandLabel(macAlg.getJavaName(), clientSecret, HKDFunction.KEY,
-                        new byte[] {}, cipherAlg.getKeySize());
+                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
+                clientWriteKey = HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
+                        cipherAlg.getKeySize());
                 LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(clientWriteKey));
-                serverWriteKey = HKDFunction.expandLabel(macAlg.getJavaName(), serverSecret, HKDFunction.KEY,
-                        new byte[] {}, cipherAlg.getKeySize());
+                serverWriteKey = HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.KEY, new byte[] {},
+                        cipherAlg.getKeySize());
                 LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-                clientWriteIv = HKDFunction.expandLabel(macAlg.getJavaName(), clientSecret, HKDFunction.IV,
-                        new byte[] {}, GCM_IV_LENGTH);
+                clientWriteIv = HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.IV, new byte[] {},
+                        GCM_IV_LENGTH);
                 LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
-                serverWriteIv = HKDFunction.expandLabel(macAlg.getJavaName(), serverSecret, HKDFunction.IV,
-                        new byte[] {}, GCM_IV_LENGTH);
+                serverWriteIv = HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
+                        GCM_IV_LENGTH);
                 LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
                 if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
                     encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
@@ -229,12 +229,12 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public int getMacLength() {
-        throw new UnsupportedOperationException("Need not a MAC");
+        return 0;
     }
 
     @Override
     public byte[] calculateMac(byte[] data) {
-        throw new UnsupportedOperationException("Need not a MAC");
+        return new byte[] {};
     }
 
     @Override
