@@ -16,10 +16,10 @@ import java.util.Map;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum SrtpProtectionProfiles {
-    SRTP_AES128_CM_HMAC_SHA1_80(new byte[]{0x00, 0x01}),
-    SRTP_AES128_CM_HMAC_SHA1_32(new byte[]{0x00, 0x02}),
-    SRTP_NULL_HMAC_SHA1_80(new byte[]{0x00, 0x05}),
-    SRTP_NULL_HMAC_SHA1_32(new byte[]{0x00, 0x06});
+    SRTP_AES128_CM_HMAC_SHA1_80(new byte[] { 0x00, 0x01 }),
+    SRTP_AES128_CM_HMAC_SHA1_32(new byte[] { 0x00, 0x02 }),
+    SRTP_NULL_HMAC_SHA1_80(new byte[] { 0x00, 0x05 }),
+    SRTP_NULL_HMAC_SHA1_32(new byte[] { 0x00, 0x06 });
 
     private final byte[] srtpProtectionProfiles;
     private static final Map<Integer, SrtpProtectionProfiles> MAP;
@@ -42,25 +42,26 @@ public enum SrtpProtectionProfiles {
     public static SrtpProtectionProfiles getProfileByType(byte[] value) {
         return MAP.get(valueToInt(value));
     }
-    
+
     public static SrtpProtectionProfiles[] getProfilesAsArray(byte[] value) {
-        SrtpProtectionProfiles[] profiles = new SrtpProtectionProfiles[value.length/2];
-        int positionInProfilesArray =0;
-        for (int i =0; i < value.length; i+=2) {
-            profiles[positionInProfilesArray] = SrtpProtectionProfiles.getProfileByType(new byte[]{value[i],value[i+1]});
+        SrtpProtectionProfiles[] profiles = new SrtpProtectionProfiles[value.length / 2];
+        int positionInProfilesArray = 0;
+        for (int i = 0; i < value.length; i += 2) {
+            profiles[positionInProfilesArray] = SrtpProtectionProfiles.getProfileByType(new byte[] { value[i],
+                    value[i + 1] });
             positionInProfilesArray++;
-        }      
+        }
         return profiles;
     }
 
     private static int valueToInt(byte[] value) {
         return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
-    
+
     public byte getMinor() {
         return srtpProtectionProfiles[0];
     }
-    
+
     public byte getMajor() {
         return srtpProtectionProfiles[1];
     }

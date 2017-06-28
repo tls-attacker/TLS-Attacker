@@ -177,16 +177,21 @@ public class TlsContext {
      * This is the user identifier of the SRP extension
      */
     private byte[] secureRemotePasswordExtensionIdentifier;
-    
+
     /**
      * These are the protection profiles of the SRTP extension
      */
     private SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles;
-    
+
     /**
      * This is the master key identifier of the SRTP extension
      */
     private byte[] secureRealTimeProtocolMasterKeyIdentifier;
+
+    /**
+     * Is the truncated hmac extension present?
+     */
+    private boolean truncatedHmacExtensionisPresent;
 
     private PublicKey clientCertificatePublicKey;
 
@@ -678,7 +683,8 @@ public class TlsContext {
         return secureRealTimeTransportProtocolProtectionProfiles;
     }
 
-    public void setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
+    public void setSecureRealTimeTransportProtocolProtectionProfiles(
+            SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
 
@@ -689,7 +695,13 @@ public class TlsContext {
     public void setSecureRealTimeProtocolMasterKeyIdentifier(byte[] secureRealTimeProtocolMasterKeyIdentifier) {
         this.secureRealTimeProtocolMasterKeyIdentifier = secureRealTimeProtocolMasterKeyIdentifier;
     }
-    
-    
+
+    public boolean isTruncatedHmacExtensionisPresent() {
+        return truncatedHmacExtensionisPresent;
+    }
+
+    public void setTruncatedHmacExtensionisPresent(boolean truncatedHmacExtensionisPresent) {
+        this.truncatedHmacExtensionisPresent = truncatedHmacExtensionisPresent;
+    }
 
 }

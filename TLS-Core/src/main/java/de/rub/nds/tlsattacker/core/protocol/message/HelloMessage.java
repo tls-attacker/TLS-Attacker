@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAl
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.LinkedList;
@@ -91,8 +92,9 @@ public abstract class HelloMessage extends HandshakeMessage {
             @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension"),
             @XmlElement(type = SignedCertificateTimestampExtensionMessage.class, name = "SignedCertificateTimestampExtension"),
             @XmlElement(type = SRPExtensionMessage.class, name = "SRPExtension"),
-            @XmlElement(type = SrtpExtensionMessage.class, name="use_SRTP"),
+            @XmlElement(type = SrtpExtensionMessage.class, name = "use_SRTP"),
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
+            @XmlElement(type = TruncatedHmacExtensionMessage.class, name = "TruncatedHmacExtension"),
             @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension") })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;

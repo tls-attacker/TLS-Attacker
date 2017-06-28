@@ -21,31 +21,34 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage> {
-    
+
     public SrtpExtensionHandler(TlsContext context) {
         super(context);
     }
-    
+
     @Override
     public SrtpExtensionParser getParser(byte[] message, int pointer) {
         return new SrtpExtensionParser(pointer, message);
     }
-    
+
     @Override
     public SrtpExtensionPreparator getPreparator(SrtpExtensionMessage message) {
         return new SrtpExtensionPreparator(context, message);
     }
-    
+
     @Override
     public SrtpExtensionSerializer getSerializer(SrtpExtensionMessage message) {
         return new SrtpExtensionSerializer(message);
     }
-    
+
     @Override
     public void adjustTLSContext(SrtpExtensionMessage message) {
-        context.setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles.getProfilesAsArray(message.getSrtpProtectionProfiles().getValue()));
-        LOGGER.debug("Adjusted the TLS context secure realtime transport protocol protection profiles to " + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
+        context.setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles.getProfilesAsArray(message
+                .getSrtpProtectionProfiles().getValue()));
+        LOGGER.debug("Adjusted the TLS context secure realtime transport protocol protection profiles to "
+                + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
         context.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());
-        LOGGER.debug("Adjusted the TLS context secure realtime transport protocol master key identifier to " + ArrayConverter.bytesToHexString(message.getSrtpMki()));
+        LOGGER.debug("Adjusted the TLS context secure realtime transport protocol master key identifier to "
+                + ArrayConverter.bytesToHexString(message.getSrtpMki()));
     }
 }

@@ -68,6 +68,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsConfig implements Serializable {
+
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
         return TlsConfigIO.read(stream);
@@ -236,15 +237,17 @@ public class TlsConfig implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] secureRemotePasswordExtensionIdentifier = new byte[0];
     /**
-     * Default SRTP extension protection profiles
-     * The list contains every protection profile as in RFC 5764
+     * Default SRTP extension protection profiles The list contains every
+     * protection profile as in RFC 5764
      */
-    private SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles = new SrtpProtectionProfiles[]{SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32};
+    private SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles = new SrtpProtectionProfiles[] {
+            SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
+            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32 };
     /**
      * Default SRTP extension master key identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier= new byte[]{};
+    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[] {};
     /**
      * Default Timeout we wait for TLSMessages
      */
@@ -342,6 +345,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with SRTP extension
      */
     private boolean addSRTPExtension = false;
+    /**
+     * If we generate ClientHello with truncated hmac extension
+     */
+    private boolean addTruncatedHmacExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -1176,7 +1183,8 @@ public class TlsConfig implements Serializable {
         return secureRealTimeTransportProtocolMasterKeyIdentifier;
     }
 
-    public void setSecureRealTimeTransportProtocolMasterKeyIdentifier(byte[] secureRealTimeTransportProtocolMasterKeyIdentifier) {
+    public void setSecureRealTimeTransportProtocolMasterKeyIdentifier(
+            byte[] secureRealTimeTransportProtocolMasterKeyIdentifier) {
         this.secureRealTimeTransportProtocolMasterKeyIdentifier = secureRealTimeTransportProtocolMasterKeyIdentifier;
     }
 
@@ -1192,12 +1200,17 @@ public class TlsConfig implements Serializable {
         return secureRealTimeTransportProtocolProtectionProfiles;
     }
 
-    public void setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
+    public void setSecureRealTimeTransportProtocolProtectionProfiles(
+            SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
-    
-    
-    
-    
+
+    public boolean isAddTruncatedHmacExtension() {
+        return addTruncatedHmacExtension;
+    }
+
+    public void setAddTruncatedHmacExtension(boolean addTruncatedHmacExtension) {
+        this.addTruncatedHmacExtension = addTruncatedHmacExtension;
+    }
 
 }

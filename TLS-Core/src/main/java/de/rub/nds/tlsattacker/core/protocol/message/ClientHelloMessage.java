@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -133,6 +134,9 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddSRTPExtension()) {
             addExtension(new SrtpExtensionMessage());
+        }
+        if (tlsConfig.isAddTruncatedHmacExtension()) {
+            addExtension(new TruncatedHmacExtensionMessage());
         }
     }
 

@@ -50,7 +50,8 @@ public class SrtpExtensionMessage extends ExtensionMessage {
     }
 
     public void setSrtpProtectionProfiles(byte[] srtpProtectionProfiles) {
-        this.srtpProtectionProfiles = ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfiles, srtpProtectionProfiles);
+        this.srtpProtectionProfiles = ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfiles,
+                srtpProtectionProfiles);
     }
 
     public ModifiableInteger getSrtpProtectionProfilesLength() {
@@ -60,8 +61,10 @@ public class SrtpExtensionMessage extends ExtensionMessage {
     public void setSrtpProtectionProfilesLength(ModifiableInteger srtpProtectionProfilesLength) {
         this.srtpProtectionProfilesLength = srtpProtectionProfilesLength;
     }
+
     public void setSrtpProtectionProfilesLength(int srtpProtectionProfilesLength) {
-        this.srtpProtectionProfilesLength = ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfilesLength, srtpProtectionProfilesLength);
+        this.srtpProtectionProfilesLength = ModifiableVariableFactory.safelySetValue(this.srtpProtectionProfilesLength,
+                srtpProtectionProfilesLength);
     }
 
     public ModifiableByteArray getSrtpMki() {
@@ -71,7 +74,7 @@ public class SrtpExtensionMessage extends ExtensionMessage {
     public void setSrtpMki(ModifiableByteArray srtpMki) {
         this.srtpMki = srtpMki;
     }
-    
+
     public void setSrtpMki(byte[] srtpMki) {
         this.srtpMki = ModifiableVariableFactory.safelySetValue(this.srtpMki, srtpMki);
     }
@@ -83,7 +86,7 @@ public class SrtpExtensionMessage extends ExtensionMessage {
     public void setSrtpMkiLength(ModifiableInteger srtpMkiLength) {
         this.srtpMkiLength = srtpMkiLength;
     }
-    
+
     public void setSrtpMkiLength(int srtpMkiLength) {
         this.srtpMkiLength = ModifiableVariableFactory.safelySetValue(this.srtpMkiLength, srtpMkiLength);
     }

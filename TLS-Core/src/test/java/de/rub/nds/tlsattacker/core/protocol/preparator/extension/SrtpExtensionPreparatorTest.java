@@ -22,37 +22,38 @@ import org.junit.Test;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SrtpExtensionPreparatorTest {
-    
+
     private TlsContext context;
     private SrtpExtensionPreparator preparator;
     private SrtpExtensionMessage msg;
-    private final SrtpProtectionProfiles[] profiles = new SrtpProtectionProfiles[]{SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32};
+    private final SrtpProtectionProfiles[] profiles = new SrtpProtectionProfiles[] {
+            SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
+            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32 };
     private final int profilesLength = 8;
-    private final byte[] profilesAsBytes = new byte[] {0x00,0x01,0x00,0x02,0x00,0x05,0x00,0x06};
-    private final byte[] mki = new byte[]{};
+    private final byte[] profilesAsBytes = new byte[] { 0x00, 0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x06 };
+    private final byte[] mki = new byte[] {};
     private final int mkiLength = 0;
-    
+
     @Before
     public void setUp() {
         context = new TlsContext();
         msg = new SrtpExtensionMessage();
         preparator = new SrtpExtensionPreparator(context, msg);
     }
-    
+
     @Test
     public void testPreparator() {
         context.getConfig().setSecureRealTimeTransportProtocolProtectionProfiles(profiles);
         context.getConfig().setSecureRealTimeTransportProtocolMasterKeyIdentifier(mki);
-        
+
         preparator.prepare();
-        
+
         assertArrayEquals(ExtensionType.USE_SRTP.getValue(), msg.getExtensionType().getValue());
         assertArrayEquals(profilesAsBytes, msg.getSrtpProtectionProfiles().getValue());
         assertEquals(profilesLength, (int) msg.getSrtpProtectionProfilesLength().getValue());
         assertArrayEquals(mki, msg.getSrtpMki().getValue());
         assertEquals(mkiLength, (int) msg.getSrtpMkiLength().getValue());
-        
+
     }
-    
-    
+
 }

@@ -24,8 +24,8 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class SrtpExtensionSerializerTest {
-    
-        private final ExtensionType extensionType;
+
+    private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
     private final int startParsing;
@@ -36,7 +36,9 @@ public class SrtpExtensionSerializerTest {
     private SrtpExtensionSerializer serializer;
     private SrtpExtensionMessage msg;
 
-    public SrtpExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength, int startParsing, int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength, byte[] srtpMki) {
+    public SrtpExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
+            int startParsing, int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength,
+            byte[] srtpMki) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
@@ -46,30 +48,29 @@ public class SrtpExtensionSerializerTest {
         this.srtpMkiLength = srtpMkiLength;
         this.srtpMki = srtpMki;
     }
-    
-    
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return SrtpExtensionParserTest.generateData();
     }
-    
+
     @Before
-    public void setUp(){
+    public void setUp() {
         msg = new SrtpExtensionMessage();
         serializer = new SrtpExtensionSerializer(msg);
     }
-    
+
     @Test
     public void testSerializeExtensionContent() {
         msg.setExtensionType(extensionType.getValue());
         msg.setExtensionLength(extensionLength);
-        
+
         msg.setSrtpProtectionProfilesLength(srtpProtectionProfilesLength);
         msg.setSrtpProtectionProfiles(srtpProtectionProfiles);
         msg.setSrtpMkiLength(srtpMkiLength);
         msg.setSrtpMki(srtpMki);
-        
+
         assertArrayEquals(expectedBytes, serializer.serialize());
     }
-    
+
 }

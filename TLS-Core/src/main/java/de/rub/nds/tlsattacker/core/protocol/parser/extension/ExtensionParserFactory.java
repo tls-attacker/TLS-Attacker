@@ -56,6 +56,7 @@ public class ExtensionParserFactory {
                 parser = new CertificateStatusRequestExtensionParser(pointer, extensionBytes);
                 break;
             case TRUNCATED_HMAC:
+                parser = new TruncatedHmacExtensionParser(pointer, extensionBytes);
                 break;
             case TRUSTED_CA_KEYS:
                 break;

@@ -19,27 +19,30 @@ import java.io.ByteArrayOutputStream;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMessage> {
-    
+
     private final SrtpExtensionMessage msg;
     private final int protectionProfileLength = 2;
-    
+
     public SrtpExtensionPreparator(TlsContext context, SrtpExtensionMessage message) {
         super(context, message);
         this.msg = message;
     }
-    
+
     @Override
     public void prepareExtensionContent() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        for (SrtpProtectionProfiles profile : context.getConfig().getSecureRealTimeTransportProtocolProtectionProfiles()) {
+        for (SrtpProtectionProfiles profile : context.getConfig()
+                .getSecureRealTimeTransportProtocolProtectionProfiles()) {
             byteStream.write(profile.getMinor());
             byteStream.write(profile.getMajor());
         }
         msg.setSrtpProtectionProfiles(byteStream.toByteArray());
-        LOGGER.debug("Prepared the SRTP extension with protection profiles " + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
+        LOGGER.debug("Prepared the SRTP extension with protection profiles "
+                + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
         msg.setSrtpProtectionProfilesLength(msg.getSrtpProtectionProfiles().getValue().length);
-        LOGGER.debug("Prepared the SRTP extension with protection profiles length " + msg.getSrtpProtectionProfilesLength().getValue());
-        
+        LOGGER.debug("Prepared the SRTP extension with protection profiles length "
+                + msg.getSrtpProtectionProfilesLength().getValue());
+
         if (context.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier().length != 0) {
             msg.setSrtpMki(context.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
             LOGGER.debug("Prepared the SRTP extension with MKI " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
@@ -51,5 +54,5 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
             LOGGER.debug("Prepared the SRTP extension with no MKI, hence the length is 0");
         }
     }
-    
+
 }
