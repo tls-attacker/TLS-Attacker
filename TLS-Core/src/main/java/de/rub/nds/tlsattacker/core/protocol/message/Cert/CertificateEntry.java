@@ -10,27 +10,26 @@ package de.rub.nds.tlsattacker.core.protocol.message.Cert;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.util.List;
-import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateEntry {
 
-    private Certificate certificate;
+    private byte[] certificate;
 
     private List<ExtensionMessage> extensions;
 
-    public CertificateEntry(Certificate certificate, List<ExtensionMessage> extensions) {
+    public CertificateEntry(byte[] certificate, List<ExtensionMessage> extensions) {
         this.certificate = certificate;
         this.extensions = extensions;
     }
 
-    public Certificate getCertificate() {
+    public byte[] getCertificate() {
         return certificate;
     }
 
-    public void setCertificate(Certificate certificate) {
+    public void setCertificate(byte[] certificate) {
         this.certificate = certificate;
     }
 

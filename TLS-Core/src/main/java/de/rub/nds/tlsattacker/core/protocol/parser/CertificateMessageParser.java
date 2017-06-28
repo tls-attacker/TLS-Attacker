@@ -18,11 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -142,24 +139,9 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
                 extensionMessages.add(parser.parse());
                 pointer = parser.getPointer();
             }
-            Certificate certificate = parseCertificate(pair.getCertificateLength().getValue(), pair.getCertificate()
-                    .getValue());
-            entryList.add(new CertificateEntry(certificate, extensionMessages));
+            entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));
         }
         msg.setCertificatesListAsEntry(entryList);
     }
 
-    private Certificate parseCertificate(int lengthBytes, byte[] bytesToParse) {
-        try {
-            ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(ArrayConverter
-                    .intToBytes(lengthBytes + HandshakeByteLength.CERTIFICATES_LENGTH,
-                            HandshakeByteLength.CERTIFICATES_LENGTH), ArrayConverter.intToBytes(lengthBytes,
-                    HandshakeByteLength.CERTIFICATE_LENGTH), bytesToParse));
-            return Certificate.parse(stream);
-        } catch (IOException E) {
-            LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
-                    + ArrayConverter.bytesToHexString(bytesToParse, false));
-            return null;
-        }
-    }
 }

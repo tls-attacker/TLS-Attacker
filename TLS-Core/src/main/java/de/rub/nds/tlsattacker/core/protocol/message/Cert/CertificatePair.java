@@ -14,14 +14,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.util.List;
-import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificatePair {
 
-    private Certificate certificateConfig;
+    private byte[] certificateConfig;
 
     private List<ExtensionMessage> extensionsConfig;
 
@@ -88,11 +87,11 @@ public class CertificatePair {
         this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
     }
 
-    public Certificate getCertificateConfig() {
+    public byte[] getCertificateConfig() {
         return certificateConfig;
     }
 
-    public void setCertificateConfig(Certificate certificateConfig) {
+    public void setCertificateConfig(byte[] certificateConfig) {
         this.certificateConfig = certificateConfig;
     }
 

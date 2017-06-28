@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
@@ -18,8 +17,6 @@ import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -43,7 +40,7 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
     }
 
     private void prepareCertificate(CertificatePair pair) {
-        pair.setCertificate(encodeCert(pair.getCertificateConfig()));
+        pair.setCertificate(pair.getCertificateConfig());
         LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
     }
 
@@ -74,16 +71,4 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         LOGGER.debug("ExtensionLength: " + pair.getExtensionsLength().getValue());
     }
 
-    private byte[] encodeCert(Certificate cert) {
-        ByteArrayOutputStream certByteStream = new ByteArrayOutputStream();
-        try {
-            cert.encode(certByteStream);
-            return Arrays.copyOfRange(certByteStream.toByteArray(), HandshakeByteLength.CERTIFICATES_LENGTH
-                    + HandshakeByteLength.CERTIFICATE_LENGTH, certByteStream.toByteArray().length);
-        } catch (IOException ex) {
-            throw new PreparationException(
-                    "Cannot prepare CertificateMessage. An exception Occured while encoding the Certificates", ex);
-        }
-
-    }
 }
