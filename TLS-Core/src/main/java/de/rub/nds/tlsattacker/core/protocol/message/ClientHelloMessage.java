@@ -216,7 +216,6 @@ public class ClientHelloMessage extends HelloMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        // Compare which parameter for TLS 1.3 ?
         sb.append(super.toString()).append("\n  Protocol Version: ")
                 .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
                 .append("\n  Client Unix Time: ")

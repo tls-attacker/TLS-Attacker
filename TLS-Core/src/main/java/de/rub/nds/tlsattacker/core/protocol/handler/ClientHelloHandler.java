@@ -50,6 +50,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     @Override
     protected void adjustTLSContext(ClientHelloMessage message) {
         adjustProtocolVersion(message);
+        adjustSessionID(message);
         adjustClientSupportedCipherSuites(message);
         adjustClientSupportedCompressions(message);
         if (isCookieFieldSet(message)) {
@@ -62,9 +63,6 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             }
         }
         adjustRandomContext(message);
-        if (tlsContext.getHighestClientProtocolVersion() != ProtocolVersion.TLS13) {
-            adjustSessionID(message);
-        }
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {

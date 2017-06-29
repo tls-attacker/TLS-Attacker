@@ -40,12 +40,9 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareRandom(context.getConfig().getHighestProtocolVersion());
         if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
             prepareUnixTime();
-            prepareSessionID();
-            prepareSessionIDLength();
-        } else {
-            msg.setSessionIdLength(0);
-            LOGGER.debug("SessionIdLength: " + msg.getSessionIdLength().getValue());
         }
+        prepareSessionID();
+        prepareSessionIDLength();
         prepareCompressions(msg);
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);
@@ -59,11 +56,16 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        if (hasSessionID()) {
-            msg.setSessionId(context.getConfig().getSessionId());
+        if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+            if (hasSessionID()) {
+                msg.setSessionId(context.getConfig().getSessionId());
+            } else {
+                msg.setSessionId(context.getSessionID());
+            }
         } else {
-            msg.setSessionId(context.getSessionID());
+            msg.setSessionId(new byte[0]);
         }
+        LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {

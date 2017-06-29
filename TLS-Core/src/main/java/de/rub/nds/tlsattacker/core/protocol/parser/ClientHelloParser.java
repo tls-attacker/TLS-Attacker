@@ -45,9 +45,7 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
         }
         parseRandom(msg);
         parseSessionIDLength(msg);
-        if (getVersion() != ProtocolVersion.TLS13) {
-            parseSessionID(msg);
-        }
+        parseSessionID(msg);
         parseCipherSuiteLength(msg);
         parseCipherSuites(msg);
         parseCompressionLength(msg);

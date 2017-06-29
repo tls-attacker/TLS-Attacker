@@ -44,9 +44,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
         }
         writeRandom();
         writeSessionIDLength();
-        if (version != ProtocolVersion.TLS13) {
-            writeSessionID();
-        }
+        writeSessionID();
         writeCipherSuiteLength(msg);
         writeCipherSuites(msg);
         writeCompressionLength(msg);
