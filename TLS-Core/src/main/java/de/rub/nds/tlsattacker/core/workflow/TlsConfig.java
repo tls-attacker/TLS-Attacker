@@ -198,7 +198,7 @@ public class TlsConfig implements Serializable {
     /**
      * Server port used
      */
-    private int serverPort = 4433;
+    private int port = 443;
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
@@ -790,12 +790,12 @@ public class TlsConfig implements Serializable {
         this.timeout = timeout;
     }
 
-    public int getServerPort() {
-        return serverPort;
+    public int getPort() {
+        return port;
     }
 
-    public void setServerPort(int serverPort) {
-        this.serverPort = serverPort;
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public boolean isSniHostnameFatal() {
