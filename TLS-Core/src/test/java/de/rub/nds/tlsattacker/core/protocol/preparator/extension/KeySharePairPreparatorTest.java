@@ -43,10 +43,11 @@ public class KeySharePairPreparatorTest {
     @Test
     public void testPrepare() {
         pair.setKeyShareTypeConfig(ArrayConverter.hexStringToByteArray("001D"));
-        pair.setKeyShareConfig(ArrayConverter.hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
+        pair.setKeyShareConfig(ArrayConverter
+                .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
         preparator.prepare();
-        assertArrayEquals(pair.getKeyShare().getValue(), ArrayConverter.
-                hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
+        assertArrayEquals(pair.getKeyShare().getValue(),
+                ArrayConverter.hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
         assertTrue(pair.getKeyShareLength().getValue() == 32);
         assertArrayEquals(pair.getKeyShareType().getValue(), ArrayConverter.hexStringToByteArray("001D"));
 

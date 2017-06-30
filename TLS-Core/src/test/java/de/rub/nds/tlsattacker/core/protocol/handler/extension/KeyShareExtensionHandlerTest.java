@@ -56,21 +56,26 @@ public class KeyShareExtensionHandlerTest {
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
         List<KeySharePair> pairList = new LinkedList<>();
         KeySharePair pair = new KeySharePair();
-        pair.setKeyShare(ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"));
+        pair.setKeyShare(ArrayConverter
+                .hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"));
         pair.setKeyShareType(NamedCurve.ECDH_X25519.getValue());
         pairList.add(pair);
         msg.setKeyShareList(pairList);
         handler.adjustTLSContext(msg);
         assertNotNull(context.getServerKSEntry());
         KSEntry entry = context.getServerKSEntry();
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
                 entry.getSerializedPublicKey());
         assertTrue(entry.getGroup() == NamedCurve.ECDH_X25519);
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("EA2F968FD0A381E4B041E6D8DDBF6DA93DE4CEAC862693D3026323E780DB9FC3"),
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("EA2F968FD0A381E4B041E6D8DDBF6DA93DE4CEAC862693D3026323E780DB9FC3"),
                 context.getHandshakeSecret());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("C56CAE0B1A64467A0E3A3337F8636965787C9A741B0DAB63E503076051BCA15C"),
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("C56CAE0B1A64467A0E3A3337F8636965787C9A741B0DAB63E503076051BCA15C"),
                 context.getClientHandshakeTrafficSecret());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("DBF731F5EE037C4494F24701FF074AD4048451C0E2803BC686AF1F2D18E861F5"),
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("DBF731F5EE037C4494F24701FF074AD4048451C0E2803BC686AF1F2D18E861F5"),
                 context.getServerHandshakeTrafficSecret());
     }
 

@@ -41,7 +41,7 @@ public class HelloRetryRequestSerializer extends HandshakeMessageSerializer<Hell
         appendBytes(msg.getProtocolVersion().getValue());
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
-    
+
     protected void writeSelectedCiphersuite() {
         appendBytes(msg.getSelectedCipherSuite().getValue());
         LOGGER.debug("SelectedCipherSuite: " + ArrayConverter.bytesToHexString(msg.getSelectedCipherSuite().getValue()));

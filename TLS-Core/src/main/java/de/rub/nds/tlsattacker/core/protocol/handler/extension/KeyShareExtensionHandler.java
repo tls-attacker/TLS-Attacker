@@ -110,11 +110,13 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
                     handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
             context.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
-            LOGGER.debug("Set clientHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
+            LOGGER.debug("Set clientHandshakeTrafficSecret in Context to "
+                    + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
             byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
-                        handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-                context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
-            LOGGER.debug("Set serverHandshakeTrafficSecret in Context to " + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
+                    handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
+            context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
+            LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
+                    + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }

@@ -35,10 +35,12 @@ public class HKDFunctionTest {
     public void testExtractNoSalt() {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         byte[] salt = {};
-        byte[] ikm = ArrayConverter.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
+        byte[] ikm = ArrayConverter
+                .hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
 
         byte[] result = HKDFunction.extract(hkdfAlgorithm, salt, ikm);
-        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
+        byte[] resultCorrect = ArrayConverter
+                .hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
         assertArrayEquals(result, resultCorrect);
     }
 
@@ -48,11 +50,14 @@ public class HKDFunctionTest {
     @Test
     public void testExtractWithSalt() {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
-        byte[] salt = ArrayConverter.hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
-        byte[] ikm = ArrayConverter.hexStringToByteArray("c08acc73ba101d7fea86d223de32d9fc4948e145493680594b83b0a109f83649");
+        byte[] salt = ArrayConverter
+                .hexStringToByteArray("33ad0a1c607ec03b09e6cd9893680ce210adf300aa1f2660e1b22e10f170f92a");
+        byte[] ikm = ArrayConverter
+                .hexStringToByteArray("c08acc73ba101d7fea86d223de32d9fc4948e145493680594b83b0a109f83649");
 
         byte[] result = HKDFunction.extract(hkdfAlgorithm, salt, ikm);
-        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("31168cad69862a80c6f6bfd42897d0fe23c406a12e652a8d3ae4217694f49844");
+        byte[] resultCorrect = ArrayConverter
+                .hexStringToByteArray("31168cad69862a80c6f6bfd42897d0fe23c406a12e652a8d3ae4217694f49844");
         assertArrayEquals(result, resultCorrect);
     }
 
@@ -63,12 +68,14 @@ public class HKDFunctionTest {
     public void testDeriveSecret() {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
         String hashAlgorithm = DigestAlgorithm.SHA256.getJavaName();
-        byte[] prk = ArrayConverter.hexStringToByteArray("33AD0A1C607EC03B09E6CD9893680CE210ADF300AA1F2660E1B22E10F170F92A");
+        byte[] prk = ArrayConverter
+                .hexStringToByteArray("33AD0A1C607EC03B09E6CD9893680CE210ADF300AA1F2660E1B22E10F170F92A");
         byte[] toHash = ArrayConverter.hexStringToByteArray("");
         String labelIn = HKDFunction.DERIVED;
 
         byte[] result = HKDFunction.deriveSecret(hkdfAlgorithm, hashAlgorithm, prk, labelIn, toHash);
-        byte[] resultCorrect = ArrayConverter.hexStringToByteArray("6F2615A108C702C5678F54FC9DBAB69716C076189C48250CEBEAC3576C3611BA");
+        byte[] resultCorrect = ArrayConverter
+                .hexStringToByteArray("6F2615A108C702C5678F54FC9DBAB69716C076189C48250CEBEAC3576C3611BA");
         assertArrayEquals(result, resultCorrect);
     }
 
@@ -78,7 +85,8 @@ public class HKDFunctionTest {
     @Test
     public void testExpandLabel() {
         HKDFAlgorithm hkdfAlgorithm = HKDFAlgorithm.TLS_HKDF_SHA256;
-        byte[] prk = ArrayConverter.hexStringToByteArray("E056D47C7DB9C04BBECE6AC9525163DE72B7D25B6B0899366F8FA741A5C01709");
+        byte[] prk = ArrayConverter
+                .hexStringToByteArray("E056D47C7DB9C04BBECE6AC9525163DE72B7D25B6B0899366F8FA741A5C01709");
         byte[] hashValue = ArrayConverter.hexStringToByteArray("");
         String labelIn = HKDFunction.KEY;
         int outLen = 16;

@@ -46,12 +46,15 @@ public class KeyShareExtensionPreparatorTest {
         List<KeySharePair> keyShareList = new LinkedList<>();
         KeySharePair pair = new KeySharePair();
         pair.setKeyShareTypeConfig(ArrayConverter.hexStringToByteArray("001D"));
-        pair.setKeyShareConfig(ArrayConverter.hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
+        pair.setKeyShareConfig(ArrayConverter
+                .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
         keyShareList.add(pair);
         message.setKeyShareList(keyShareList);
         preparator.prepare();
-        assertArrayEquals(message.getKeyShareListBytes().getValue(), ArrayConverter
-                .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
+        assertArrayEquals(
+                message.getKeyShareListBytes().getValue(),
+                ArrayConverter
+                        .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
         assertTrue(message.getKeyShareListLength().getValue() == 36);
     }
 

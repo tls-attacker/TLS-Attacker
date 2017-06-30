@@ -37,10 +37,13 @@ public class KeySharePairSerializerTest {
         pair = new KeySharePair();
         pair.setKeyShareLength(32);
         pair.setKeyShareType(ArrayConverter.hexStringToByteArray("001D"));
-        pair.setKeyShare(ArrayConverter.hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
+        pair.setKeyShare(ArrayConverter
+                .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"));
         serializer = new KeySharePairSerializer(pair);
         byte[] result = serializer.serialize();
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
+        assertArrayEquals(
+                ArrayConverter
+                        .hexStringToByteArray("001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
                 result);
     }
 

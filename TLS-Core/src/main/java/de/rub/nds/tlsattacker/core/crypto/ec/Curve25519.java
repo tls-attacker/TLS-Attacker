@@ -1,3 +1,11 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 /* Ported from C to Java by Dmitry Skiba [sahn0], 23/02/08.
  * Original: http://cds.xs4all.nl:8081/ecdh/
  */

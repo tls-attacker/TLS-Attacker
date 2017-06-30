@@ -154,7 +154,7 @@ public abstract class Parser<T> {
     public void setPointer(int pointer) {
         this.pointer = pointer;
     }
-    
+
     /**
      * Returns the position at which the Parser started parsing
      *

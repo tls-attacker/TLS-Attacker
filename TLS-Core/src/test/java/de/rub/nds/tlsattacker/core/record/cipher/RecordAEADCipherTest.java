@@ -48,7 +48,8 @@ public class RecordAEADCipherTest {
         this.cipher = new RecordAEADCipher(context);
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
         byte[] ciphertext = cipher.encrypt(plaintext);
-        byte[] ciphertext_correct = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
+        byte[] ciphertext_correct = ArrayConverter
+                .hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         assertArrayEquals(ciphertext, ciphertext_correct);
     }
 

@@ -30,7 +30,7 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray selectedCipherSuite;
-    
+
     public HelloRetryRequestMessage() {
         super(HandshakeMessageType.HELLO_RETRY_REQUEST);
     }
@@ -50,7 +50,7 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
     public void setProtocolVersion(byte[] array) {
         this.protocolVersion = ModifiableVariableFactory.safelySetValue(this.protocolVersion, array);
     }
-    
+
     public ModifiableByteArray getSelectedCipherSuite() {
         return selectedCipherSuite;
     }
@@ -68,8 +68,7 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Protocol Version: ").append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
                 .append("\n  Selected Cipher Suite: ")
-                .append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()))
-                .append("\n  Extensions: ");
+                .append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue())).append("\n  Extensions: ");
         if (getExtensions() == null) {
             sb.append("null");
         } else {

@@ -61,7 +61,7 @@ public class RecordEncryptorTest {
         encryptor = new RecordEncryptor(recordCipher, context);
         encryptor.encrypt(record);
         assertTrue(record.getProtocolMessageBytes().getValue().length == 23);
-        assertArrayEquals(record.getProtocolMessageBytes().getValue(), ArrayConverter.
-                hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"));
+        assertArrayEquals(record.getProtocolMessageBytes().getValue(),
+                ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"));
     }
 }

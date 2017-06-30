@@ -62,17 +62,21 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     private byte[] createSignature() {
         try {
             byte[] toSigned = context.getDigest().getRawBytes();
-            if(context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-                toSigned = context.getDigest().digest(context.getSelectedProtocolVersion(), context.getSelectedCipherSuite());
-                byte[] string1 = ArrayConverter.hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020");
+            if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+                toSigned = context.getDigest().digest(context.getSelectedProtocolVersion(),
+                        context.getSelectedCipherSuite());
+                byte[] string1 = ArrayConverter
+                        .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020");
                 byte[] string2;
                 if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
-                    string2 = ArrayConverter.hexStringToByteArray("544c5320312e332c20636c69656e7420436572746966696361746556657269667900");
+                    string2 = ArrayConverter
+                            .hexStringToByteArray("544c5320312e332c20636c69656e7420436572746966696361746556657269667900");
                 } else {
-                    string2 = ArrayConverter.hexStringToByteArray("544c5320312e332c2073657276657220436572746966696361746556657269667900");
+                    string2 = ArrayConverter
+                            .hexStringToByteArray("544c5320312e332c2073657276657220436572746966696361746556657269667900");
                 }
                 toSigned = ArrayConverter.concatenate(string1, string2, toSigned);
-            }            
+            }
             algorithm = selectSigHashAlgorithm();
             Signature tempSignature = Signature.getInstance(algorithm.getJavaName());
             tempSignature.initSign(context.getConfig().getPrivateKey(), RandomHelper.getBadSecureRandom());

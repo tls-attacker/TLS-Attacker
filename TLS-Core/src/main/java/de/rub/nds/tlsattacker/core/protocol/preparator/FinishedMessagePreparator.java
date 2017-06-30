@@ -65,7 +65,8 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
                 LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(context.getDigest().digest(context.getSelectedProtocolVersion(), context.getSelectedCipherSuite()));
+                mac.update(context.getDigest().digest(context.getSelectedProtocolVersion(),
+                        context.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
@@ -78,11 +79,13 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
 
             if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
                 // TODO put this in seperate config option
-            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
-                    handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
+                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                        PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,
+                        HandshakeByteLength.VERIFY_DATA);
             } else {
-            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.CLIENT_FINISHED_LABEL,
-                    handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
+                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                        PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessageHash,
+                        HandshakeByteLength.VERIFY_DATA);
             }
         }
     }
