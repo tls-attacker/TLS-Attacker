@@ -14,10 +14,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
@@ -190,7 +190,7 @@ public class DefaultActionExecutor extends ActionExecutor {
                             for (ProtocolMessage message : messages) {
                                 if (message instanceof AlertMessage) {
                                     AlertMessage alert = (AlertMessage) message;
-                                    if (alert.getLevel().getValue().byteValue() == AlertLevel.FATAL.getValue()) {
+                                    if (alert.getLevel().getValue() == AlertLevel.FATAL.getValue()) {
                                         receivedFatalAlert = true;
                                     }
                                 }
@@ -231,7 +231,7 @@ public class DefaultActionExecutor extends ActionExecutor {
     }
 
     private List<ProtocolMessage> parseMessages(List<AbstractRecord> records) {
-        if (records.size() == 0) {
+        if (records.isEmpty()) {
             return new LinkedList<>();
         }
         byte[] cleanProtocolMessageBytes = getCleanBytes(records);
@@ -295,7 +295,7 @@ public class DefaultActionExecutor extends ActionExecutor {
 
     private List<List<AbstractRecord>> getRecordGroups(List<AbstractRecord> records) {
         List<List<AbstractRecord>> returnList = new LinkedList<>();
-        if (records.size() == 0) {
+        if (records.isEmpty()) {
             return returnList;
         }
         List<AbstractRecord> subGroup = new LinkedList<>();

@@ -22,4 +22,7 @@ public class LogLevel {
      * attack.
      */
     public static final Level CONSOLE_OUTPUT = Level.forName("CONSOLE", 150);
+
+    private LogLevel() {
+    }
 }

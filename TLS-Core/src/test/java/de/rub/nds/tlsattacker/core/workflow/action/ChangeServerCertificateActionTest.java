@@ -8,14 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
 import de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -40,9 +38,6 @@ public class ChangeServerCertificateActionTest {
 
     private ActionExecutorMock executor;
     private ChangeServerCertificateAction action;
-
-    public ChangeServerCertificateActionTest() {
-    }
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,

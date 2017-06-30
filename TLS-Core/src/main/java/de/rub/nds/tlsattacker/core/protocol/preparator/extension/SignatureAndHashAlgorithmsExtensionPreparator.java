@@ -8,12 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -22,22 +25,25 @@ import java.io.IOException;
 public class SignatureAndHashAlgorithmsExtensionPreparator extends
         ExtensionPreparator<SignatureAndHashAlgorithmsExtensionMessage> {
 
-    private final SignatureAndHashAlgorithmsExtensionMessage message;
+    private final SignatureAndHashAlgorithmsExtensionMessage msg;
 
     public SignatureAndHashAlgorithmsExtensionPreparator(TlsContext context,
             SignatureAndHashAlgorithmsExtensionMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        prepareSignatureAndHashAlgorithms();
-        message.setSignatureAndHashAlgorithmsLength(message.getSignatureAndHashAlgorithms().getValue().length);
+        LOGGER.debug("Preparing SignatureAndHashAlgorithmsExtensionMessage");
+        prepareSignatureAndHashAlgorithms(msg);
+        prepareSignatureAndHashAlgorithmsLength(msg);
     }
 
-    private void prepareSignatureAndHashAlgorithms() {
-        message.setSignatureAndHashAlgorithms(createSignatureAndHashAlgorithmsArray());
+    private void prepareSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {
+        msg.setSignatureAndHashAlgorithms(createSignatureAndHashAlgorithmsArray());
+        LOGGER.debug("SignatureAndHashAlgorithms: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
     }
 
     private byte[] createSignatureAndHashAlgorithmsArray() {
@@ -50,5 +56,10 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
             }
         }
         return stream.toByteArray();
+    }
+
+    private void prepareSignatureAndHashAlgorithmsLength(SignatureAndHashAlgorithmsExtensionMessage msg) {
+        msg.setSignatureAndHashAlgorithmsLength(msg.getSignatureAndHashAlgorithms().getValue().length);
+        LOGGER.debug("SignatureAndHashAlgorithmsLength: " + msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 }

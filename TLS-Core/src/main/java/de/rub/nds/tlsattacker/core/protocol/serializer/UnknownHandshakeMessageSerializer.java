@@ -8,12 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -21,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerializer<UnknownHandshakeMessage> {
 
-    private UnknownHandshakeMessage msg;
+    private final UnknownHandshakeMessage msg;
 
     /**
      * Constructor for the UnknownHandshakeMessageSerializer
@@ -38,6 +35,7 @@ public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerialize
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
+        LOGGER.debug("Serializing UnknownHandshakeMessage");
         writeData(msg);
         return getAlreadySerialized();
     }

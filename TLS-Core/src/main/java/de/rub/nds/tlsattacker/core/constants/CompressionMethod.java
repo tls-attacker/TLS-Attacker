@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import static de.rub.nds.tlsattacker.core.constants.CipherSuite.getCipherSuite;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.util.HashMap;
 import java.util.LinkedList;

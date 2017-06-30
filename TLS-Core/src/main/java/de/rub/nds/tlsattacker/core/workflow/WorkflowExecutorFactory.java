@@ -24,4 +24,7 @@ public class WorkflowExecutorFactory {
                         + " not yet implemented");
         }
     }
+
+    private WorkflowExecutorFactory() {
+    }
 }

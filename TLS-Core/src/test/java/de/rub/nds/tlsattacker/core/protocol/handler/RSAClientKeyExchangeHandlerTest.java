@@ -8,20 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -31,9 +26,6 @@ public class RSAClientKeyExchangeHandlerTest {
 
     private RSAClientKeyExchangeHandler handler;
     private TlsContext context;
-
-    public RSAClientKeyExchangeHandlerTest() {
-    }
 
     @Before
     public void setUp() {

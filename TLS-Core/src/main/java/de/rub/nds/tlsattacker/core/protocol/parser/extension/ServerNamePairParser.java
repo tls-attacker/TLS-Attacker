@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -18,17 +19,55 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
  */
 public class ServerNamePairParser extends Parser<ServerNamePair> {
 
+    private ServerNamePair pair;
+
     public ServerNamePairParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
     @Override
     public ServerNamePair parse() {
-        ServerNamePair pair = new ServerNamePair();
-        pair.setServerNameType(parseByteField(ExtensionByteLength.SERVER_NAME_TYPE));
-        pair.setServerNameLength(parseIntField(ExtensionByteLength.SERVER_NAME_LENGTH));
-        pair.setServerName(parseByteArrayField(pair.getServerNameLength().getValue()));
+        pair = new ServerNamePair();
+        parseServerNameType(pair);
+        parseServerNameLength(pair);
+        parseServerName(pair);
         return pair;
+    }
+
+    /**
+     * Reads the next bytes as the serverNameType of the Extension and writes
+     * them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseServerNameType(ServerNamePair pair) {
+        pair.setServerNameType(parseByteField(ExtensionByteLength.SERVER_NAME_TYPE));
+        LOGGER.debug("ServerNameType: " + pair.getServerNameType().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the serverNamelength of the Extension and writes
+     * them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseServerNameLength(ServerNamePair pair) {
+        pair.setServerNameLength(parseIntField(ExtensionByteLength.SERVER_NAME_LENGTH));
+        LOGGER.debug("ServerNameLength: " + pair.getServerNameLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the serverName of the Extension and writes them
+     * in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseServerName(ServerNamePair pair) {
+        pair.setServerName(parseByteArrayField(pair.getServerNameLength().getValue()));
+        LOGGER.debug("ServerName: " + ArrayConverter.bytesToHexString(pair.getServerName().getValue()));
     }
 
 }

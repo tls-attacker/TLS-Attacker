@@ -179,4 +179,7 @@ public class HandshakeByteLength {
      * Fragment length
      */
     public static final int DTLS_FRAGMENT_LENGTH = 3;
+
+    private HandshakeByteLength() {
+    }
 }

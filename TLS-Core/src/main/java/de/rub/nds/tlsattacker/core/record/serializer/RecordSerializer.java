@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
 
@@ -25,11 +26,33 @@ public class RecordSerializer extends AbstractRecordSerializer<Record> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendByte(record.getContentMessageType().getValue());
-        appendBytes(record.getProtocolVersion().getValue());
-        appendInt(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
-        appendBytes(record.getProtocolMessageBytes().getValue());
+        LOGGER.debug("Serializing Record");
+        writeContentMessageType(record);
+        writeProtocolVersion(record);
+        writeLength(record);
+        writeProtocolMessageBytes(record);
         return getAlreadySerialized();
+    }
+
+    private void writeContentMessageType(Record record) {
+        appendByte(record.getContentMessageType().getValue());
+        LOGGER.debug("ContentMessageType: " + record.getContentMessageType().getValue());
+    }
+
+    private void writeProtocolVersion(Record record) {
+        appendBytes(record.getProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
+    }
+
+    private void writeLength(Record record) {
+        appendInt(record.getLength().getValue(), RecordByteLength.RECORD_LENGTH);
+        LOGGER.debug("Length: " + record.getLength().getValue());
+    }
+
+    private void writeProtocolMessageBytes(Record record) {
+        appendBytes(record.getProtocolMessageBytes().getValue());
+        LOGGER.debug("ProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 
 }

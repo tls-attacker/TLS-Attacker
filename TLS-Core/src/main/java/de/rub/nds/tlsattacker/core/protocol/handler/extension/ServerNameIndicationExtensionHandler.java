@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndic
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

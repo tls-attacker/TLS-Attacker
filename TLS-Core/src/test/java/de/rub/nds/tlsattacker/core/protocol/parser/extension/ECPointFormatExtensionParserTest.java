@@ -8,15 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -31,7 +30,7 @@ public class ECPointFormatExtensionParserTest {
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000b000403000102"), 0,
                 ArrayConverter.hexStringToByteArray("000b000403000102"), ExtensionType.EC_POINT_FORMATS, 4, 3,
-                new byte[] { 0, 1, 2 } } });
+                new byte[] { 0, 1, 2 } } }); // is the same for TLS10 and TLS11
     }
 
     private byte[] extension;

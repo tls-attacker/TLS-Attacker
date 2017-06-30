@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
@@ -17,11 +17,10 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesE
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -39,7 +38,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
             throw new AdjustmentException("Could not create resonable NamedCurves from CurveBytes");
         }
         List<NamedCurve> curveList = new LinkedList<>();
-        for (int i = 0; i < curveBytes.length; i = i + NamedCurve.LENGTH) {
+        for (int i = 0; i < curveBytes.length; i += NamedCurve.LENGTH) {
             byte[] curve = Arrays.copyOfRange(curveBytes, i, i + NamedCurve.LENGTH);
             NamedCurve namedCurve = NamedCurve.getNamedCurve(curve);
             if (namedCurve == null) {

@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -44,6 +41,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
 
     @Override
     protected void parseHandshakeMessageContent(DHEServerKeyExchangeMessage msg) {
+        LOGGER.debug("Parsing DHEServerKeyExchangeMessage");
         parsepLength(msg);
         parseP(msg);
         parsegLength(msg);
@@ -82,7 +80,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      */
     private void parseP(DHEServerKeyExchangeMessage msg) {
         msg.setP(parseByteArrayField(msg.getpLength().getValue()));
-        LOGGER.debug("P: " + msg.getP().getValue());
+        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getP().getValue()));
     }
 
     /**
@@ -104,7 +102,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      */
     private void parseG(DHEServerKeyExchangeMessage msg) {
         msg.setG(parseByteArrayField(msg.getgLength().getValue()));
-        LOGGER.debug("G: " + msg.getG().getValue());
+        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getG().getValue()));
     }
 
     /**

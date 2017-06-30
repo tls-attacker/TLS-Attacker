@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -29,9 +28,6 @@ public class MaxFragmentLengthDelegateTest {
     private MaxFragmentLengthDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public MaxFragmentLengthDelegateTest() {
-    }
 
     @Before
     public void setUp() {

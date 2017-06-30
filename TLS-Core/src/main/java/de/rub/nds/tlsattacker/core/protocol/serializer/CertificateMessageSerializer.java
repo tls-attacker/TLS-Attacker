@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -39,6 +36,7 @@ public class CertificateMessageSerializer extends HandshakeMessageSerializer<Cer
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
+        LOGGER.debug("Serializing CertificateMessage");
         writeCertificateLength(msg);
         writeX509Certificate(msg);
         return getAlreadySerialized();

@@ -8,20 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ParserResultTest {
-
-    public ParserResultTest() {
-    }
 
     @Before
     public void setUp() {

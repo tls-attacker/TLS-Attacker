@@ -8,12 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -28,11 +26,12 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
 
     @Override
     public final T parse() {
+        LOGGER.debug("Parsing ExtensionMessage");
         T msg = createExtensionMessage();
         parseExtensionType(msg);
         parseExtensionLength(msg);
         parseExtensionMessageContent(msg);
-        msg.setExtensionBytes(getAlreadyParsed());
+        setExtensionBytes(msg);
         return msg;
     }
 
@@ -44,22 +43,24 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
      * Reads the next bytes as the length of the Extension and writes them in
      * the message
      *
-     * @param message
+     * @param msg
      *            Message to write in
      */
-    private void parseExtensionLength(ExtensionMessage message) {
-        message.setExtensionLength(parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH));
+    private void parseExtensionLength(ExtensionMessage msg) {
+        msg.setExtensionLength(parseIntField(ExtensionByteLength.EXTENSIONS_LENGTH));
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionLength().getValue());
     }
 
     /**
      * Reads the next bytes as the type of the Extension and writes it in the
      * message
      *
-     * @param message
+     * @param msg
      *            Message to write in
      */
-    private void parseExtensionType(ExtensionMessage message) {
-        message.setExtensionType(parseByteArrayField(ExtensionByteLength.TYPE));
+    private void parseExtensionType(ExtensionMessage msg) {
+        msg.setExtensionType(parseByteArrayField(ExtensionByteLength.TYPE));
+        LOGGER.debug("ExtensionType: " + ArrayConverter.bytesToHexString(msg.getExtensionType().getValue()));
     }
 
     /**
@@ -73,8 +74,9 @@ public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser
         return message.getExtensionLength().getValue() > 0;
     }
 
-    protected void setExtensionBytes(ExtensionMessage message) {
-        message.setExtensionBytes(getAlreadyParsed());
+    protected void setExtensionBytes(ExtensionMessage msg) {
+        msg.setExtensionBytes(getAlreadyParsed());
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
     }
 
 }

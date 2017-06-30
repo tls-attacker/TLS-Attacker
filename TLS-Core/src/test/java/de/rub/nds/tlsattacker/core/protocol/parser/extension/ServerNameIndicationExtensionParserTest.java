@@ -8,15 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -33,13 +31,13 @@ public class ServerNameIndicationExtensionParserTest {
                                                  // message
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private int sniListLength;
-    private byte[] sniListBytes;
+    private final byte[] extension;
+    private final int start;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final int sniListLength;
+    private final byte[] sniListBytes;
 
     public ServerNameIndicationExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
             ExtensionType type, int extensionLength, int sniListLength, byte[] sniListBytes) {

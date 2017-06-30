@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.tlsattacker.core.protocol.message.extension.*;
 import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
-import org.junit.Test;
-
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
+import org.junit.Test;
 
 /**
  *

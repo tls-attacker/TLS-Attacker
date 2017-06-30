@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -26,21 +27,24 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.ServerDHParams;
 
 /**
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class TlsContext {
 
@@ -129,6 +133,30 @@ public class TlsContext {
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
 
+    /**
+     * These are the padding bytes as used in the padding extension.
+     */
+    private byte[] paddingExtensionBytes;
+
+    /**
+     * This is the session ticket of the SessionTicketTLS extension.
+     */
+    private byte[] sessionTicketTLS;
+
+    /**
+     * Is the extended master secret extension present?
+     */
+    private boolean isExtendedMasterSecretExtension;
+
+    /**
+     * This is the renegotiation info of the RenegotiationInfo extension.
+     */
+    private byte[] renegotiationInfo;
+    /**
+     * This is the timestamp of the SignedCertificateTimestamp extension
+     */
+    private byte[] signedCertificateTimestamp;
+
     private PublicKey clientCertificatePublicKey;
 
     private PublicKey serverCertificatePublicKey;
@@ -160,6 +188,10 @@ public class TlsContext {
     private List<SNIEntry> clientSNIEntryList;
 
     private int sequenceNumber = 0;
+
+    private TokenBindingVersion tokenBindingVersion;
+
+    private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
     public TlsContext() {
         this(TlsConfig.createConfig());
@@ -311,6 +343,22 @@ public class TlsContext {
         this.heartbeatMode = heartbeatMode;
     }
 
+    public byte[] getPaddingExtensionBytes() {
+        return paddingExtensionBytes;
+    }
+
+    public void setPaddingExtensionBytes(byte[] paddingExtensionBytes) {
+        this.paddingExtensionBytes = paddingExtensionBytes;
+    }
+
+    public boolean isExtendedMasterSecretExtension() {
+        return isExtendedMasterSecretExtension;
+    }
+
+    public void setIsExtendedMasterSecretExtension(boolean isExtendedMasterSecretExtension) {
+        this.isExtendedMasterSecretExtension = isExtendedMasterSecretExtension;
+    }
+
     public List<CompressionMethod> getClientSupportedCompressions() {
         if (clientSupportedCompressions == null) {
             return null;
@@ -331,7 +379,7 @@ public class TlsContext {
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
-        if (clientSupportedCompressions == null) {
+        if (clientSupportedCiphersuites == null) {
             return null;
         }
         return Collections.unmodifiableList(clientSupportedCiphersuites);
@@ -509,4 +557,45 @@ public class TlsContext {
     public PRFAlgorithm getPRFAlgorithm() {
         return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
     }
+
+    public byte[] getSessionTicketTLS() {
+        return sessionTicketTLS;
+    }
+
+    public void setSessionTicketTLS(byte[] sessionTicketTLS) {
+        this.sessionTicketTLS = sessionTicketTLS;
+    }
+
+    public byte[] getSignedCertificateTimestamp() {
+        return signedCertificateTimestamp;
+    }
+
+    public void setSignedCertificateTimestamp(byte[] signedCertificateTimestamp) {
+        this.signedCertificateTimestamp = signedCertificateTimestamp;
+    }
+
+    public byte[] getRenegotiationInfo() {
+        return renegotiationInfo;
+    }
+
+    public void setRenegotiationInfo(byte[] renegotiationInfo) {
+        this.renegotiationInfo = renegotiationInfo;
+    }
+
+    public TokenBindingVersion getTokenBindingVersion() {
+        return tokenBindingVersion;
+    }
+
+    public void setTokenBindingVersion(TokenBindingVersion tokenBindingVersion) {
+        this.tokenBindingVersion = tokenBindingVersion;
+    }
+
+    public List getTokenBindingKeyParameters() {
+        return tokenBindingKeyParameters;
+    }
+
+    public void setTokenBindingKeyParameters(List tokenBindingKeyParameters) {
+        this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
 }

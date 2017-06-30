@@ -8,19 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -30,9 +26,6 @@ public class ServerHelloDoneHandlerTest {
 
     private ServerHelloDoneHandler handler;
     private TlsContext context;
-
-    public ServerHelloDoneHandlerTest() {
-    }
 
     @Before
     public void setUp() {
