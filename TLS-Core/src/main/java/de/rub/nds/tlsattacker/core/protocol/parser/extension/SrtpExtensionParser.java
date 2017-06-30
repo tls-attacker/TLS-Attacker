@@ -25,20 +25,19 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
     @Override
     public void parseExtensionMessageContent(SrtpExtensionMessage msg) {
         msg.setSrtpProtectionProfilesLength(parseIntField(ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTHFIELD_LENGTH));
-        LOGGER.debug("The srtp extension parser parsed the srtp protection profiles length of "
+        LOGGER.debug("Parsed the srtp protection profiles length of "
                 + msg.getSrtpProtectionProfilesLength().getValue());
         msg.setSrtpProtectionProfiles(parseByteArrayField(msg.getSrtpProtectionProfilesLength().getValue()));
-        LOGGER.debug("The srtp extension parser parsed the srtp protection profiles "
+        LOGGER.debug("Parsed the srtp protection profiles "
                 + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
         msg.setSrtpMkiLength(parseIntField(ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTHFIELD_LENGTH));
-        LOGGER.debug("The srtp extension parser parsed the srtp mki length of " + msg.getSrtpMkiLength().getValue());
+        LOGGER.debug("Parsed the srtp mki length of " + msg.getSrtpMkiLength().getValue());
         if (msg.getSrtpMkiLength().getValue() != 0) {
             msg.setSrtpMki(parseByteArrayField(msg.getSrtpMkiLength().getValue()));
-            LOGGER.debug("The srtp extension parser parsed the srtp mki "
-                    + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
+            LOGGER.debug("Parsed the srtp mki " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
         } else {
             msg.setSrtpMki(new byte[] {});
-            LOGGER.debug("The srtp extension parser parsed no mki");
+            LOGGER.debug("Parsed no srtp mki");
         }
 
     }

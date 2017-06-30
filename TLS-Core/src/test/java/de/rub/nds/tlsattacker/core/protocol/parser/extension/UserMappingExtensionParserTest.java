@@ -34,11 +34,11 @@ public class UserMappingExtensionParserTest {
     @Before
     public void setUp() {
         parser = new UserMappingExtensionParser(startposition, extensionBytes);
-        message = parser.parse();
     }
 
     @Test
     public void testParseExtensionMessageContent() {
+        message = parser.parse();
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
         assertEquals(hintType.getValue(), (byte) message.getUserMappingType().getValue());

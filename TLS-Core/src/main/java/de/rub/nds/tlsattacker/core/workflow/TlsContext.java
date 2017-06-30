@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -161,7 +162,7 @@ public class TlsContext {
     /**
      * This is the request type of the CertificateStatusRequest extension
      */
-    private int certificateStatusRequestExtensionRequestType;
+    private CertificateStatusRequestType certificateStatusRequestExtensionRequestType;
 
     /**
      * This is the responder ID list of the CertificateStatusRequest extension
@@ -181,7 +182,7 @@ public class TlsContext {
     /**
      * These are the protection profiles of the SRTP extension
      */
-    private SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles;
+    private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
 
     /**
      * This is the master key identifier of the SRTP extension
@@ -191,7 +192,7 @@ public class TlsContext {
     /**
      * Is the truncated hmac extension present?
      */
-    private boolean truncatedHmacExtensionisPresent;
+    private boolean truncatedHmacExtensionIsPresent;
 
     /**
      * User mapping extension hint type
@@ -234,7 +235,7 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
-    private byte[] applicationLayerProtocolNegotiationAnnouncedProtocols;
+    private byte[] AlpnAnnouncedProtocols;
 
     public TlsContext() {
         this(TlsConfig.createConfig());
@@ -641,11 +642,12 @@ public class TlsContext {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
-    public int getCertificateStatusRequestExtensionRequestType() {
+    public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
         return certificateStatusRequestExtensionRequestType;
     }
 
-    public void setCertificateStatusRequestExtensionRequestType(int certificateStatusRequestExtensionRequestType) {
+    public void setCertificateStatusRequestExtensionRequestType(
+            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
         this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
     }
 
@@ -667,13 +669,12 @@ public class TlsContext {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public byte[] getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
-        return applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public byte[] getAlpnAnnouncedProtocols() {
+        return AlpnAnnouncedProtocols;
     }
 
-    public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
-            byte[] applicationLayerProtocolNegotiationAnnouncedProtocols) {
-        this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public void setAlpnAnnouncedProtocols(byte[] AlpnAnnouncedProtocols) {
+        this.AlpnAnnouncedProtocols = AlpnAnnouncedProtocols;
     }
 
     public byte[] getSecureRemotePasswordExtensionIdentifier() {
@@ -684,12 +685,12 @@ public class TlsContext {
         this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
     }
 
-    public SrtpProtectionProfiles[] getSecureRealTimeTransportProtocolProtectionProfiles() {
+    public List<SrtpProtectionProfiles> getSecureRealTimeTransportProtocolProtectionProfiles() {
         return secureRealTimeTransportProtocolProtectionProfiles;
     }
 
     public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
+            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
 
@@ -701,12 +702,12 @@ public class TlsContext {
         this.secureRealTimeProtocolMasterKeyIdentifier = secureRealTimeProtocolMasterKeyIdentifier;
     }
 
-    public boolean isTruncatedHmacExtensionisPresent() {
-        return truncatedHmacExtensionisPresent;
+    public boolean isTruncatedHmacExtensionIsPresent() {
+        return truncatedHmacExtensionIsPresent;
     }
 
-    public void setTruncatedHmacExtensionisPresent(boolean truncatedHmacExtensionisPresent) {
-        this.truncatedHmacExtensionisPresent = truncatedHmacExtensionisPresent;
+    public void setTruncatedHmacExtensionIsPresent(boolean truncatedHmacExtensionIsPresent) {
+        this.truncatedHmacExtensionIsPresent = truncatedHmacExtensionIsPresent;
     }
 
     public UserMappingExtensionHintType getUserMappingExtensionHintType() {

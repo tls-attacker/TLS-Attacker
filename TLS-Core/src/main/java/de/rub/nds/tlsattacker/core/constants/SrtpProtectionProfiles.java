@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,15 +45,14 @@ public enum SrtpProtectionProfiles {
         return MAP.get(valueToInt(value));
     }
 
-    public static SrtpProtectionProfiles[] getProfilesAsArray(byte[] value) {
-        SrtpProtectionProfiles[] profiles = new SrtpProtectionProfiles[value.length / 2];
-        int positionInProfilesArray = 0;
+    public static List<SrtpProtectionProfiles> getProfilesAsArrayList(byte[] value) {
+        List<SrtpProtectionProfiles> profileList = new ArrayList<>(value.length / 2);
+
         for (int i = 0; i < value.length; i += 2) {
-            profiles[positionInProfilesArray] = SrtpProtectionProfiles.getProfileByType(new byte[] { value[i],
-                    value[i + 1] });
-            positionInProfilesArray++;
+            profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[] { value[i], value[i + 1] }));
         }
-        return profiles;
+
+        return profileList;
     }
 
     private static int valueToInt(byte[] value) {

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
@@ -22,7 +23,7 @@ import org.junit.Test;
  */
 public class CertificateStatusRequestExtensionPreparatorTest {
 
-    private final int certificateStatusRequestExtensionRequestType = 1;
+    private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
     private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
     private final int responderIDListLength = 1;
     private final byte[] certificateStatusRequestExtensionRequestExtension = new byte[] { 0x02 };
@@ -50,8 +51,8 @@ public class CertificateStatusRequestExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.STATUS_REQUEST.getValue(), msg.getExtensionType().getValue());
-        assertEquals(certificateStatusRequestExtensionRequestType, (int) msg.getCertificateStatusRequestType()
-                .getValue());
+        assertEquals(certificateStatusRequestExtensionRequestType.getCertificateStatusRequestValue(), (int) msg
+                .getCertificateStatusRequestType().getValue());
         assertEquals(responderIDListLength, (int) msg.getResponderIDListLength().getValue());
         assertArrayEquals(certificateStatusRequestExtensionResponderIDList, msg.getResponderIDList().getValue());
         assertEquals(requestExtensionLength, (int) msg.getRequestExtensionLength().getValue());

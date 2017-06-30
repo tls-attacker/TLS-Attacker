@@ -14,7 +14,11 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import java.util.Arrays;
+import java.util.List;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,9 +31,9 @@ public class SrtpExtensionHandlerTest {
 
     private TlsContext context;
     private SrtpExtensionHandler handler;
-    private final SrtpProtectionProfiles[] profiles = new SrtpProtectionProfiles[] {
+    private final List<SrtpProtectionProfiles> profiles = Arrays.asList(
             SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
-            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32 };
+            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
     private final byte[] profilesAsBytes = new byte[] { 0x00, 0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x06 };
     private final byte[] mki = new byte[] {};
 
@@ -47,7 +51,8 @@ public class SrtpExtensionHandlerTest {
 
         handler.adjustTLSContext(msg);
 
-        assertArrayEquals(profiles, context.getSecureRealTimeTransportProtocolProtectionProfiles());
+        assertThat(profiles, is(context.getSecureRealTimeTransportProtocolProtectionProfiles()));
+
         assertArrayEquals(mki, context.getSecureRealTimeProtocolMasterKeyIdentifier());
     }
 

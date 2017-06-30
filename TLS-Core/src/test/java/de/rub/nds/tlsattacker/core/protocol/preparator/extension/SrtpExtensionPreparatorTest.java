@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import java.util.Arrays;
+import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -26,9 +28,9 @@ public class SrtpExtensionPreparatorTest {
     private TlsContext context;
     private SrtpExtensionPreparator preparator;
     private SrtpExtensionMessage msg;
-    private final SrtpProtectionProfiles[] profiles = new SrtpProtectionProfiles[] {
+    private final List<SrtpProtectionProfiles> profiles = Arrays.asList(
             SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
-            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32 };
+            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
     private final int profilesLength = 8;
     private final byte[] profilesAsBytes = new byte[] { 0x00, 0x01, 0x00, 0x02, 0x00, 0x05, 0x00, 0x06 };
     private final byte[] mki = new byte[] {};

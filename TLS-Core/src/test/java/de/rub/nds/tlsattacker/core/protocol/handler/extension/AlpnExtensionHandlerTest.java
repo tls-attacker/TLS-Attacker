@@ -44,7 +44,7 @@ public class AlpnExtensionHandlerTest {
 
         handler.adjustTLSContext(msg);
 
-        assertArrayEquals(announcedProtocols, context.getApplicationLayerProtocolNegotiationAnnouncedProtocols());
+        assertArrayEquals(announcedProtocols, context.getAlpnAnnouncedProtocols());
     }
 
     @Test

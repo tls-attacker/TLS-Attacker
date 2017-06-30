@@ -25,18 +25,15 @@ public class CertificateStatusRequestExtensionParser extends ExtensionParser<Cer
     @Override
     public void parseExtensionMessageContent(CertificateStatusRequestExtensionMessage msg) {
         msg.setCertificateStatusRequestType(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE_LENGTH));
-        LOGGER.debug("The certificate status request extension parser parsed the status type "
-                + msg.getCertificateStatusRequestType().getValue());
+        LOGGER.debug("Parsed the status type " + msg.getCertificateStatusRequestType().getValue());
         msg.setResponderIDListLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTHFIELD_LENGTH));
         msg.setResponderIDList(parseByteArrayField(msg.getResponderIDListLength().getValue()));
-        LOGGER.debug("The certificate status request extension parser parsed the responder ID list with length "
-                + msg.getResponderIDListLength().getValue() + " and value "
-                + ArrayConverter.bytesToHexString(msg.getResponderIDList()));
+        LOGGER.debug("Parsed the responder ID list with length " + msg.getResponderIDListLength().getValue()
+                + " and value " + ArrayConverter.bytesToHexString(msg.getResponderIDList()));
         msg.setRequestExtensionLength(parseIntField(ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_REQUEST_EXTENSION_LENGTHFIELD_LENGTH));
         msg.setRequestExtension(parseByteArrayField(msg.getRequestExtensionLength().getValue()));
-        LOGGER.debug("The certificate status request extension parser parsed the request extension with length "
-                + msg.getRequestExtensionLength().getValue() + " and value "
-                + ArrayConverter.bytesToHexString(msg.getRequestExtension()));
+        LOGGER.debug("Parsed the request extension with length " + msg.getRequestExtensionLength().getValue()
+                + " and value " + ArrayConverter.bytesToHexString(msg.getRequestExtension()));
 
     }
 

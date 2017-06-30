@@ -92,7 +92,7 @@ public abstract class HelloMessage extends HandshakeMessage {
             @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension"),
             @XmlElement(type = SignedCertificateTimestampExtensionMessage.class, name = "SignedCertificateTimestampExtension"),
             @XmlElement(type = SRPExtensionMessage.class, name = "SRPExtension"),
-            @XmlElement(type = SrtpExtensionMessage.class, name = "use_SRTP"),
+            @XmlElement(type = SrtpExtensionMessage.class, name = "SRTPExtension"),
             @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
             @XmlElement(type = TruncatedHmacExtensionMessage.class, name = "TruncatedHmacExtension"),
             @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension") })

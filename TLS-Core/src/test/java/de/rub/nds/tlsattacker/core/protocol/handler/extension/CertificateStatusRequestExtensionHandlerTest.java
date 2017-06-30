@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
@@ -24,7 +25,7 @@ import org.junit.Test;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class CertificateStatusRequestExtensionHandlerTest {
-    private final int certificateStatusRequestExtensionRequestType = 1;
+    private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
     private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };
     private final byte[] certificateStatusRequestExtensionRequestExtension = new byte[] { 0x02 };
     private TlsContext context;
@@ -39,7 +40,8 @@ public class CertificateStatusRequestExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         CertificateStatusRequestExtensionMessage message = new CertificateStatusRequestExtensionMessage();
-        message.setCertificateStatusRequestType(certificateStatusRequestExtensionRequestType);
+        message.setCertificateStatusRequestType(certificateStatusRequestExtensionRequestType
+                .getCertificateStatusRequestValue());
         message.setResponderIDList(certificateStatusRequestExtensionResponderIDList);
         message.setRequestExtension(certificateStatusRequestExtensionRequestExtension);
 

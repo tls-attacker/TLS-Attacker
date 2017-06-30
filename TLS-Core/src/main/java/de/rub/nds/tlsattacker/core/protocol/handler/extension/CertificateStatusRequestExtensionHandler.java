@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
@@ -43,7 +44,8 @@ public class CertificateStatusRequestExtensionHandler extends
 
     @Override
     public void adjustTLSContext(CertificateStatusRequestExtensionMessage message) {
-        context.setCertificateStatusRequestExtensionRequestType(message.getCertificateStatusRequestType().getValue());
+        context.setCertificateStatusRequestExtensionRequestType(CertificateStatusRequestType
+                .getCertificateStatusRequestType(message.getCertificateStatusRequestType().getValue()));
         LOGGER.debug("Adjusted the Certificate Status Request Type in the TLSContext to "
                 + context.getCertificateStatusRequestExtensionRequestType());
         context.setCertificateStatusRequestExtensionRequestExtension(message.getRequestExtension().getValue());

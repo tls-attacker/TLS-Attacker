@@ -43,8 +43,8 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
 
     @Override
     public void adjustTLSContext(SrtpExtensionMessage message) {
-        context.setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles.getProfilesAsArray(message
-                .getSrtpProtectionProfiles().getValue()));
+        context.setSecureRealTimeTransportProtocolProtectionProfiles(SrtpProtectionProfiles
+                .getProfilesAsArrayList(message.getSrtpProtectionProfiles().getValue()));
         LOGGER.debug("Adjusted the TLS context secure realtime transport protocol protection profiles to "
                 + ArrayConverter.bytesToHexString(message.getSrtpProtectionProfiles()));
         context.setSecureRealTimeProtocolMasterKeyIdentifier(message.getSrtpMki().getValue());

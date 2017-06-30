@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import java.util.Arrays;
+import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +26,7 @@ import org.junit.Test;
 public class TokenBindingExtensionPreparatorTest {
 
     private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;
-    private final TokenBindingKeyParameters[] keyParameter = new TokenBindingKeyParameters[] { TokenBindingKeyParameters.ECDSAP256 };
+    private final List<TokenBindingKeyParameters> keyParameter = Arrays.asList(TokenBindingKeyParameters.ECDSAP256);
     private final byte[] keyParameterAsByteArray = new byte[] { TokenBindingKeyParameters.ECDSAP256
             .getKeyParameterValue() };
     private TlsContext context;

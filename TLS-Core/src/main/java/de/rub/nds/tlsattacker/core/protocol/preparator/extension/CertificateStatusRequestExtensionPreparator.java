@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestExtensionType;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -29,10 +29,11 @@ public class CertificateStatusRequestExtensionPreparator extends
 
     @Override
     public void prepareExtensionContent() {
-        msg.setCertificateStatusRequestType(context.getConfig().getCertificateStatusRequestExtensionRequestType());
+        msg.setCertificateStatusRequestType(context.getConfig().getCertificateStatusRequestExtensionRequestType()
+                .getCertificateStatusRequestValue());
         LOGGER.debug("Prepared the CertificateStatusRequestExtension with request type "
-                + CertificateStatusRequestExtensionType.getCertificateStatusRequestType(msg
-                        .getCertificateStatusRequestType().getValue()));
+                + CertificateStatusRequestType.getCertificateStatusRequestType(msg.getCertificateStatusRequestType()
+                        .getValue()));
         msg.setResponderIDList(context.getConfig().getCertificateStatusRequestExtensionResponderIDList());
         msg.setResponderIDListLength(msg.getResponderIDList().getValue().length);
         LOGGER.debug("Prepared the CertificateStatusRequestExtension with responder ID list "

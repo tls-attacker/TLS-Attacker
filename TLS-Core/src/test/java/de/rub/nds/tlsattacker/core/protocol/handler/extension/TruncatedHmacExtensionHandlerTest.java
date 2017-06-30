@@ -38,7 +38,7 @@ public class TruncatedHmacExtensionHandlerTest {
 
         handler.adjustTLSContext(message);
 
-        assertTrue(context.isTruncatedHmacExtensionisPresent());
+        assertTrue(context.isTruncatedHmacExtensionIsPresent());
     }
 
     @Test

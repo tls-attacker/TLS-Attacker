@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -30,6 +28,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -48,6 +47,7 @@ import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -209,7 +209,7 @@ public class TlsConfig implements Serializable {
     /**
      * This is the request type of the CertificateStatusRequest extension
      */
-    private int certificateStatusRequestExtensionRequestType = 1;
+    private CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
 
     /**
      * This is the responder ID list of the CertificateStatusRequest extension
@@ -225,8 +225,7 @@ public class TlsConfig implements Serializable {
     /**
      * Default TokenBinding Key Parameters.
      */
-    private TokenBindingKeyParameters[] tokenBindingKeyParameters = { TokenBindingKeyParameters.RSA2048_PKCS1_5,
-            TokenBindingKeyParameters.RSA2048_PSS, TokenBindingKeyParameters.ECDSAP256 };
+    private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
     /**
      * Default ALPN announced protocols
      */
@@ -241,9 +240,7 @@ public class TlsConfig implements Serializable {
      * Default SRTP extension protection profiles The list contains every
      * protection profile as in RFC 5764
      */
-    private SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles = new SrtpProtectionProfiles[] {
-            SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32,
-            SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80, SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32 };
+    private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
     /**
      * Default SRTP extension master key identifier
      */
@@ -516,6 +513,15 @@ public class TlsConfig implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+        secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80);
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
+        tokenBindingKeyParameters = new LinkedList<>();
+        tokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PKCS1_5);
+        tokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
+        tokenBindingKeyParameters.add(TokenBindingKeyParameters.ECDSAP256);
     }
 
     public boolean isQuickReceive() {
@@ -1099,11 +1105,11 @@ public class TlsConfig implements Serializable {
         this.tokenBindingVersion = tokenBindingVersion;
     }
 
-    public TokenBindingKeyParameters[] getTokenBindingKeyParameters() {
+    public List<TokenBindingKeyParameters> getTokenBindingKeyParameters() {
         return tokenBindingKeyParameters;
     }
 
-    public void setTokenBindingKeyParameters(TokenBindingKeyParameters[] tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
@@ -1121,11 +1127,12 @@ public class TlsConfig implements Serializable {
 
     }
 
-    public int getCertificateStatusRequestExtensionRequestType() {
+    public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
         return certificateStatusRequestExtensionRequestType;
     }
 
-    public void setCertificateStatusRequestExtensionRequestType(int certificateStatusRequestExtensionRequestType) {
+    public void setCertificateStatusRequestExtensionRequestType(
+            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
         this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
     }
 
@@ -1205,12 +1212,12 @@ public class TlsConfig implements Serializable {
         this.addSRTPExtension = addSRTPExtension;
     }
 
-    public SrtpProtectionProfiles[] getSecureRealTimeTransportProtocolProtectionProfiles() {
-        return secureRealTimeTransportProtocolProtectionProfiles;
+    public List<SrtpProtectionProfiles> getSecureRealTimeTransportProtocolProtectionProfiles() {
+        return Collections.unmodifiableList(secureRealTimeTransportProtocolProtectionProfiles);
     }
 
     public void setSecureRealTimeTransportProtocolProtectionProfiles(
-            SrtpProtectionProfiles[] secureRealTimeTransportProtocolProtectionProfiles) {
+            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
         this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
     }
 
