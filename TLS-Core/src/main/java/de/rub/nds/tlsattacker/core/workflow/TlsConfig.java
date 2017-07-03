@@ -409,6 +409,16 @@ public class TlsConfig implements Serializable {
      */
     private boolean quickReceive = true;
 
+    /**
+     * If the WorkflowExecutor should take care of the connection opening
+     */
+    private boolean workflowExecutorShouldOpen = true;
+
+    /**
+     * If the WorkflowExecutor should take care of the connection closing
+     */
+    private boolean workflowExecutorShouldClose = true;
+
     private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -447,6 +457,22 @@ public class TlsConfig implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+    }
+
+    public boolean isWorkflowExecutorShouldOpen() {
+        return workflowExecutorShouldOpen;
+    }
+
+    public void setWorkflowExecutorShouldOpen(boolean workflowExecutorShouldOpen) {
+        this.workflowExecutorShouldOpen = workflowExecutorShouldOpen;
+    }
+
+    public boolean isWorkflowExecutorShouldClose() {
+        return workflowExecutorShouldClose;
+    }
+
+    public void setWorkflowExecutorShouldClose(boolean workflowExecutorShouldClose) {
+        this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
     public boolean isQuickReceive() {

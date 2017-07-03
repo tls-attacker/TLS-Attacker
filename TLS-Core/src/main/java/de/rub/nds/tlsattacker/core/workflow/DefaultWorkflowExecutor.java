@@ -29,7 +29,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        context.setTransportHandler(createTransportHandler());
+        if (context.getConfig().isWorkflowExecutorShouldOpen()) {
+            context.setTransportHandler(createTransportHandler());
+        }
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getConfig().getRecordLayerType(), context));
         context.getWorkflowTrace().reset();
         ActionExecutor actionExecutor = ActionExecutorFactory.getActionExecutor(context.getConfig().getExecutorType(),
@@ -42,7 +44,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
         }
-        context.getTransportHandler().closeConnection();
+        if (context.getConfig().isWorkflowExecutorShouldClose()) {
+            context.getTransportHandler().closeConnection();
+        }
         if (context.getConfig().isStripWorkflowtracesBeforeSaving()) {
             context.getWorkflowTrace().strip();
         }
