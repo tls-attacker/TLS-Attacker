@@ -64,7 +64,7 @@ public class RSAClientKeyExchangePreparatorTest {
         assertEquals((byte) 0x02, message.getComputations().getPlainPaddedPremasterSecret().getValue()[1]);
         assertEquals((byte) 0x00, message.getComputations().getPlainPaddedPremasterSecret().getValue()[message
                 .getComputations().getPadding().getValue().length + 2]);
-        
+
         assertNotNull(message.getSerializedPublicKeyLength().getValue());
         assertNotNull(message.getSerializedPublicKey());
     }
