@@ -63,8 +63,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
         prepareClientRandom(msg);
 
-        masterSecret = generateMasterSecret();
-        prepareMasterSecret(msg);
         if (paddedPremasterSecret.length == 0) {
             paddedPremasterSecret = new byte[] { 0 };
         }
@@ -82,13 +80,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
         tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
         return tempPremasterSecret;
-    }
-
-    private byte[] generateMasterSecret() {
-        PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
-        return PseudoRandomFunction.compute(prfAlgorithm, msg.getComputations().getPremasterSecret().getValue(),
-                PseudoRandomFunction.MASTER_SECRET_LABEL, msg.getComputations().getClientRandom().getValue(),
-                HandshakeByteLength.MASTER_SECRET);
     }
 
     private RSAPublicKey generateFreshKey() {
@@ -129,12 +120,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareMasterSecret(RSAClientKeyExchangeMessage msg) {
-        msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
-    }
-
     private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
         msg.setPublicKey(encrypted);
         LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getPublicKey().getValue()));
@@ -165,7 +150,5 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
-        masterSecret = generateMasterSecret();
-        prepareMasterSecret(msg);
     }
 }

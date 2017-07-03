@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterS
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 
 /**
  *
@@ -47,7 +48,9 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
      */
     @Override
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
-        context.setReceivedMasterSecretExtension(true);
+        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER || context.getConfig().isEnforceSettings()) {
+            context.setReceivedMasterSecretExtension(true);
+        }
     }
 
 }

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
@@ -72,13 +74,11 @@ public class DHEServerKeyExchangeHandlerTest {
         message.setModulus(BigInteger.TEN.toByteArray());
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] { 0, 1, 2, 3 });
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
-        message.getComputations().setPrivateKey(new BigInteger("123"));
-        message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
-        message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
+        message.getComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustTLSContext(message);
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
+
     }
 
     @Test
@@ -88,7 +88,5 @@ public class DHEServerKeyExchangeHandlerTest {
         message.setGenerator(BigInteger.ONE.toByteArray());
         message.setPublicKey(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
     }
 }

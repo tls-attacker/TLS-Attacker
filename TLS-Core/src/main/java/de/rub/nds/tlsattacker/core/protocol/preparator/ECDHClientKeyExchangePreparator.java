@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -41,7 +38,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
     private byte[] serializedPoint;
     private byte[] premasterSecret;
     private byte[] random;
-    private byte[] masterSecret;
     private final ECDHClientKeyExchangeMessage msg;
 
     public ECDHClientKeyExchangePreparator(Chooser chooser, ECDHClientKeyExchangeMessage message) {
@@ -82,6 +78,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
         List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
         ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
+        premasterSecret = msg.getComputations().getPremasterSecret().getValue();
         try {
             serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, clientPublicKey);
         } catch (IOException ex) {
@@ -95,8 +92,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         prepareSerializedPublicKeyLength(msg);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
-        computeMasterSecret(premasterSecret, random);
-        prepareMasterSecret(msg);
     }
 
     private ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
@@ -112,12 +107,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     private void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
         premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(publicKey, privateKey);
-    }
-
-    private void computeMasterSecret(byte[] preMasterSecret, byte[] random) {
-        PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
-        masterSecret = PseudoRandomFunction.compute(prfAlgorithm, preMasterSecret,
-                PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
     }
 
     private void preparePublicKeyBaseX(ECDHClientKeyExchangeMessage msg, ECPoint clientPublicKey) {
@@ -164,12 +153,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareMasterSecret(ECDHClientKeyExchangeMessage msg) {
-        msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
-    }
-
     @Override
     public void prepareAfterParse() {
         try {
@@ -189,8 +172,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                     new ECPrivateKeyParameters(privatekey, clientPublicKey.getParameters()));
             preparePremasterSecret(msg);
             prepareClientRandom(msg);
-            computeMasterSecret(premasterSecret, random);
-            prepareMasterSecret(msg);
         } catch (IOException ex) {
             throw new PreparationException("Could prepare ECDHClientKeyExchange Message after Parse", ex);
         }

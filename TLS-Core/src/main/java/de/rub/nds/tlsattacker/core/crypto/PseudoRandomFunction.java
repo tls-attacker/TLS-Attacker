@@ -52,6 +52,11 @@ public class PseudoRandomFunction {
     public static final String KEY_EXPANSION_LABEL = "key expansion";
 
     /**
+     * extended master secret
+     */
+    public static final String EXTENDED_MASTER_SECRET_LABEL = "extended master secret";
+
+    /**
      * Computes PRF output of the provided size using the given mac algorithm
      *
      * @param prfAlgorithm

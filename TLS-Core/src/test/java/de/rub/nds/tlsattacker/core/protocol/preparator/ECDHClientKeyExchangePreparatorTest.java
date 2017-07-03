@@ -49,8 +49,6 @@ public class ECDHClientKeyExchangePreparatorTest {
     private final static String RANDOM = "CAFEBABECAFE";
     private final static byte[] PREMASTER_SECRET = ArrayConverter
             .hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
-    private final static byte[] MASTER_SECRET = ArrayConverter
-            .hexStringToByteArray("2E3F42EFE31F5BC16BAACE25A9DE849B2119BCE1E0C71986731AE37F02D18B584A3CC68C27576CA5ACDD1A31A12E3103");
     private TlsContext context;
     private ECDHClientKeyExchangeMessage message;
     private ECDHClientKeyExchangePreparator preparator;
@@ -92,8 +90,6 @@ public class ECDHClientKeyExchangePreparatorTest {
         assertNotNull(message.getPublicKeyBaseX());
         assertNotNull(message.getPublicKeyBaseY());
         assertArrayEquals(PREMASTER_SECRET, message.getComputations().getPremasterSecret().getValue());
-        assertArrayEquals(MASTER_SECRET, message.getComputations().getMasterSecret().getValue());
-        assertEquals(HandshakeByteLength.MASTER_SECRET, message.getComputations().getMasterSecret().getValue().length);
         assertNotNull(message.getPublicKeyLength().getValue());
         assertNotNull(message.getPublicKey());
         assertNotNull(message.getComputations().getClientRandom());

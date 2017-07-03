@@ -51,7 +51,6 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
         prepareClientRandom(msg);
-        prepareMasterSecret(msg);
     }
 
     private BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
@@ -105,13 +104,6 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareMasterSecret(DHClientKeyExchangeMessage msg) {
-        masterSecret = calculateMasterSecret(random, premasterSecret);
-        msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
-    }
-
     @Override
     public void prepareAfterParse() {
         BigInteger privateKey = chooser.getDhServerPrivateKey();
@@ -120,8 +112,6 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         premasterSecret = calculatePremasterSecret(chooser.getDhModulus(), privateKey, clientPublic);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
-        calculateMasterSecret(random, premasterSecret);
-        prepareMasterSecret(msg);
     }
 
     private void setComputationPrivateKey(DHClientKeyExchangeMessage msg) {

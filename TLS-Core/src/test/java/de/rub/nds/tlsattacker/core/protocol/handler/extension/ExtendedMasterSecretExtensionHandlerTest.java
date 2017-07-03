@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecre
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,11 +37,14 @@ public class ExtendedMasterSecretExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
+        context.setTalkingConnectionEnd(ConnectionEnd.CLIENT);
 
         handler.adjustTLSContext(msg);
 
+        assertFalse(context.isExtendedMasterSecretExtension());
+        context.setTalkingConnectionEnd(ConnectionEnd.SERVER);
+        handler.adjustTLSContext(msg);
         assertTrue(context.isExtendedMasterSecretExtension());
-
     }
 
     @Test

@@ -21,25 +21,10 @@ import java.io.Serializable;
 public class KeyExchangeComputations extends ModifiableVariableHolder implements Serializable {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    protected ModifiableByteArray masterSecret;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     protected ModifiableByteArray premasterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     protected ModifiableByteArray clientRandom;
-
-    public ModifiableByteArray getMasterSecret() {
-        return masterSecret;
-    }
-
-    public void setMasterSecret(ModifiableByteArray masterSecret) {
-        this.masterSecret = masterSecret;
-    }
-
-    public void setMasterSecret(byte[] value) {
-        this.masterSecret = ModifiableVariableFactory.safelySetValue(this.masterSecret, value);
-    }
 
     public ModifiableByteArray getPremasterSecret() {
         return premasterSecret;
