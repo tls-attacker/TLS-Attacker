@@ -84,8 +84,10 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server ECDH-parameters
         context.setSelectedCurve(NamedCurve.SECP192R1);
-        context.setServerEcPublicKey(new CustomECPoint(new BigInteger("1336698681267683560144780033483217462176613397209956026562"), new BigInteger("4390496211885670837594012513791855863576256216444143941964")));
-        
+        context.setServerEcPublicKey(new CustomECPoint(new BigInteger(
+                "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
+                "4390496211885670837594012513791855863576256216444143941964")));
+
         preparator.prepare();
         assertNotNull(message.getPublicKeyBaseX());
         assertNotNull(message.getPublicKeyBaseY());
@@ -98,6 +100,6 @@ public class ECDHClientKeyExchangePreparatorTest {
         assertArrayEquals(
                 ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
                         ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientRandom()
-                .getValue());
+                        .getValue());
     }
 }
