@@ -136,7 +136,8 @@ public class TlsClientTest {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TlsConfig config = clientCommandConfig.createConfig();
-        config.setHost("localhost:" + port);
+        config.setHost("localhost");
+        config.setPort(port);
         config.setTlsTimeout(TIMEOUT);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
@@ -197,7 +198,8 @@ public class TlsClientTest {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
         TlsConfig config = clientCommandConfig.createConfig();
-        config.setHost("localhost:" + port);
+        config.setHost("localhost");
+        config.setPort(port);
         config.setTlsTimeout(TIMEOUT);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
