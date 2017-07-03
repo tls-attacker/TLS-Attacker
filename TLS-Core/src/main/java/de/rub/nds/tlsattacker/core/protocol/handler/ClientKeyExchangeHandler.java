@@ -46,7 +46,6 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
             LOGGER.debug("Calculating ExtendedMasterSecret");
             byte[] sessionHash = tlsContext.getDigest().digest(tlsContext.getSelectedProtocolVersion(),
                     tlsContext.getSelectedCipherSuite());
-            System.out.println(ArrayConverter.bytesToHexString(sessionHash));
             byte[] extendedMasterSecret = PseudoRandomFunction.compute(prfAlgorithm, tlsContext.getPreMasterSecret(),
                     PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL, sessionHash, HandshakeByteLength.MASTER_SECRET);
             return extendedMasterSecret;
