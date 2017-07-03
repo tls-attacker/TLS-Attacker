@@ -47,7 +47,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
      */
     @Override
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
-        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
+        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER || context.getConfig().isEnforceSettings()) {
             context.setIsExtendedMasterSecretExtension(true);
         }
     }
