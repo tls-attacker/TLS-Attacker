@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
@@ -17,16 +18,22 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatExtensionMessage> {
 
-    private HeartbeatExtensionMessage message;
+    private final HeartbeatExtensionMessage msg;
 
     public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message) {
         super(chooser, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setHeartbeatMode(chooser.getConfig().getHeartbeatMode().getArrayValue());
+        LOGGER.debug("Preparing HeartbeatExtensionMessage");
+        prepareHeartbeatMode(msg);
+    }
+
+    private void prepareHeartbeatMode(HeartbeatExtensionMessage msg) {
+        msg.setHeartbeatMode(chooser.getConfig().getHeartbeatMode().getArrayValue());
+        LOGGER.debug("HeartbeatMode: " + ArrayConverter.bytesToHexString(msg.getHeartbeatMode().getValue()));
     }
 
 }

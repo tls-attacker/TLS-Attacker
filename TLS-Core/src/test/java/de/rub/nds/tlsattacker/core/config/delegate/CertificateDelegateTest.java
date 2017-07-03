@@ -44,10 +44,6 @@ public class CertificateDelegateTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-    public CertificateDelegateTest() {
-
-    }
-
     @Before
     public void setUp() {
         delegate = new CertificateDelegate();

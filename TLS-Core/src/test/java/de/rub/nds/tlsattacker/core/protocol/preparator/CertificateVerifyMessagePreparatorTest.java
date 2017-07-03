@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -28,22 +31,20 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateVerifyMessagePreparatorTest {
+    private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
 
     private CertificateVerifyMessage message;
     private TlsContext context;
     private CertificateVerifyMessagePreparator preparator;
-
-    public CertificateVerifyMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -101,7 +102,5 @@ public class CertificateVerifyMessagePreparatorTest {
         // TODO
         preparator.prepare();
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
 
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
@@ -28,9 +27,6 @@ public class TransportHandlerDelegateTest {
     private TransportHandlerDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public TransportHandlerDelegateTest() {
-    }
 
     @Before
     public void setUp() {

@@ -17,22 +17,21 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.prng.FixedSecureRandom;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class HeartbeatMessagePreparatorTest {
+    private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
 
     private TlsContext context;
     private HeartbeatMessage message;
     private HeartbeatMessagePreparator preparator;
-
-    public HeartbeatMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -62,7 +61,5 @@ public class HeartbeatMessagePreparatorTest {
                 .getValue());
         assertTrue(11 == message.getPayloadLength().getValue());
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
 
 }

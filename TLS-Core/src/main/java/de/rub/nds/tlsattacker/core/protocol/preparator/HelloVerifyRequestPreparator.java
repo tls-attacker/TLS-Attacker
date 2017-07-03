@@ -28,6 +28,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing HelloVerifyRequestMessage");
         prepareCookie(msg);
         prepareCookieLength(msg);
         // WARN

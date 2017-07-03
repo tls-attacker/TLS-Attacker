@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
@@ -22,22 +22,20 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerHelloMessagePreparatorTest {
+    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessagePreparatorTest.class);
 
     private ServerHelloMessage message;
     private TlsContext context;
     private ServerHelloMessagePreparator preparator;
-
-    public ServerHelloMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -57,19 +55,7 @@ public class ServerHelloMessagePreparatorTest {
         List<CipherSuite> suiteList = new LinkedList<>();
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS12);
         suiteList.add(CipherSuite.TLS_DHE_DSS_WITH_AES_256_CBC_SHA256);
-        suiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);// use
-                                                                                 // an
-                                                                                 // unusual
-                                                                                 // CipherSuite
-                                                                                 // to
-                                                                                 // make
-                                                                                 // sure
-                                                                                 // that
-                                                                                 // this
-                                                                                 // test
-                                                                                 // works
-                                                                                 // as
-                                                                                 // expected
+        suiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         suiteList.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_GCM_SHA256);
         context.setClientSupportedCiphersuites(suiteList);
         List<CipherSuite> ourSuiteList = new LinkedList<>();
@@ -96,7 +82,5 @@ public class ServerHelloMessagePreparatorTest {
         assertTrue(message.getExtensionBytes().getValue().length == 0);
         assertTrue(0 == message.getExtensionsLength().getValue());
     }
-
-    private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessagePreparatorTest.class);
 
 }

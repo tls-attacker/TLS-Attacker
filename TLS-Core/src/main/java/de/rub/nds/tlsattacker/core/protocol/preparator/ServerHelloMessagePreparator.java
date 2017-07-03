@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -20,6 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @param <T>
  */
 public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends HelloMessagePreparator<HelloMessage> {
 
@@ -32,6 +34,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
         prepareUnixTime();
         prepareRandom();

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 
@@ -23,12 +24,25 @@ public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtension
 
     @Override
     public void parseExtensionMessageContent(HeartbeatExtensionMessage msg) {
-        msg.setHeartbeatMode(parseByteArrayField(ExtensionByteLength.HEARTBEAT_MODE_LENGTH));
+        LOGGER.debug("Parsing HeartbeatExtensionMessage");
+        parseHeartbeatMode(msg);
     }
 
     @Override
     protected HeartbeatExtensionMessage createExtensionMessage() {
         return new HeartbeatExtensionMessage();
+    }
+
+    /**
+     * Reads the next bytes as the HeartbeatMode of the Extension and writes
+     * them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseHeartbeatMode(HeartbeatExtensionMessage msg) {
+        msg.setHeartbeatMode(parseByteArrayField(ExtensionByteLength.HEARTBEAT_MODE_LENGTH));
+        LOGGER.debug("HeartbeatMode: " + ArrayConverter.bytesToHexString(msg.getHeartbeatMode().getValue()));
     }
 
 }

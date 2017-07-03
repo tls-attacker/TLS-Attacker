@@ -28,6 +28,10 @@ public class PaddingExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray paddingBytes;
 
+    public PaddingExtensionMessage() {
+        super(ExtensionType.PADDING);
+    }
+
     public ModifiableByteArray getPaddingBytes() {
         return paddingBytes;
     }
@@ -38,10 +42,6 @@ public class PaddingExtensionMessage extends ExtensionMessage {
 
     public void setPaddingBytes(byte[] array) {
         this.paddingBytes = ModifiableVariableFactory.safelySetValue(paddingBytes, array);
-    }
-
-    public PaddingExtensionMessage() {
-        super(ExtensionType.PADDING);
     }
 
     @Override

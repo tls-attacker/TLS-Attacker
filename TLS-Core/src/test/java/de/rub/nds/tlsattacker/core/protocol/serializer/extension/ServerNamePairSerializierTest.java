@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -23,9 +22,6 @@ public class ServerNamePairSerializierTest {
 
     private ServerNamePairSerializier serializer;
     private ServerNamePair pair;
-
-    public ServerNamePairSerializierTest() {
-    }
 
     @Before
     public void setUp() {

@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -22,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<DHEServerKeyExchangeMessage> {
 
-    private DHEServerKeyExchangeMessage msg;
+    private final DHEServerKeyExchangeMessage msg;
 
     /**
      * Constructor for the DHServerKeyExchangeSerializer
@@ -39,6 +36,7 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
+        LOGGER.debug("Serializing DHEServerKeyExchangeMessage");
         writePLength(msg);
         writeP(msg);
         writeGLength(msg);

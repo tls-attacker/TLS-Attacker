@@ -8,20 +8,49 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.util.Random;
+import org.bouncycastle.asn1.x9.X962NamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.jce.ECPointUtil;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Malena Ebert - malena-rub@ebert.li
  */
 public class ECDHClientKeyExchangePreparatorTest {
 
+    private final static String RANDOM = "CAFEBABECAFE";
+    private final static byte[] PREMASTER_SECRET = ArrayConverter
+            .hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
+    private final static byte[] MASTER_SECRET = ArrayConverter
+            .hexStringToByteArray("2E3F42EFE31F5BC16BAACE25A9DE849B2119BCE1E0C71986731AE37F02D18B584A3CC68C27576CA5ACDD1A31A12E3103");
     private TlsContext context;
     private ECDHClientKeyExchangeMessage message;
     private ECDHClientKeyExchangePreparator preparator;
@@ -34,15 +63,41 @@ public class ECDHClientKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new ECDHClientKeyExchangeMessage();
         preparator = new ECDHClientKeyExchangePreparator(new DefaultChooser(context, context.getConfig()), message);
+        RandomHelper.setRandom(new Random(0));
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class
      * ECDHClientKeyExchangePreparator.
+     *
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.NoSuchProviderException
+     * @throws java.security.InvalidAlgorithmParameterException
      */
     @Test
-    public void testPrepare() {
-        // TODO
+    public void testPrepare() throws NoSuchAlgorithmException, NoSuchProviderException,
+            InvalidAlgorithmParameterException {
+        // prepare context
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
+        // set server ECDH-parameters
+        context.setSelectedCurve(NamedCurve.SECP192R1);
+        context.setServerEcPublicKey(new CustomECPoint(new BigInteger("1336698681267683560144780033483217462176613397209956026562"), new BigInteger("4390496211885670837594012513791855863576256216444143941964")));
+        
+        preparator.prepare();
+        assertNotNull(message.getPublicKeyBaseX());
+        assertNotNull(message.getPublicKeyBaseY());
+        assertArrayEquals(PREMASTER_SECRET, message.getComputations().getPremasterSecret().getValue());
+        assertArrayEquals(MASTER_SECRET, message.getComputations().getMasterSecret().getValue());
+        assertEquals(HandshakeByteLength.MASTER_SECRET, message.getComputations().getMasterSecret().getValue().length);
+        assertNotNull(message.getPublicKeyLength().getValue());
+        assertNotNull(message.getPublicKey());
+        assertNotNull(message.getComputations().getClientRandom());
+        assertArrayEquals(
+                ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
+                        ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientRandom()
+                .getValue());
     }
-
 }

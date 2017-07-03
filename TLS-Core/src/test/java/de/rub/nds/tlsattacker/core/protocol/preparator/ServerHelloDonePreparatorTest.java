@@ -24,9 +24,6 @@ public class ServerHelloDonePreparatorTest {
     private ServerHelloDoneMessage message;
     private ServerHelloDonePreparator preparator;
 
-    public ServerHelloDonePreparatorTest() {
-    }
-
     @Before
     public void setUp() {
         this.context = new TlsContext();

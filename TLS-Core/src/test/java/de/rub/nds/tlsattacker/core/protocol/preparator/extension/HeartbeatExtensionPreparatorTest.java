@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class HeartbeatExtensionPreparatorTest {
 
-    public HeartbeatExtensionPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

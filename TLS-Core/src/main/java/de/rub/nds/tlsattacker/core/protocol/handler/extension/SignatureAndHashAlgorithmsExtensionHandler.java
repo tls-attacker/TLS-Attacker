@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
@@ -43,7 +43,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
             throw new AdjustmentException(
                     "Cannot adjust ClientSupportedSignature and Hash algorithms to a resonable Value");
         }
-        for (int i = 0; i < signatureAndHashBytes.length; i = i + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
+        for (int i = 0; i < signatureAndHashBytes.length; i += HandshakeByteLength.SIGNATURE_HASH_ALGORITHM) {
             byte[] algoBytes = Arrays.copyOfRange(signatureAndHashBytes, i, i
                     + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
             SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);

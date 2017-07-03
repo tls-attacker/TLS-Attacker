@@ -26,7 +26,7 @@ public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequ
 
     @Override
     public void prepareHandshakeMessageContents() {
-
+        LOGGER.debug("Preparing HelloRequestMessage");
     }
 
 }

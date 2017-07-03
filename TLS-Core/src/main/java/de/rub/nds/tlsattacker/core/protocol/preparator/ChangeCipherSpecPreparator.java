@@ -30,6 +30,7 @@ public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<Change
 
     @Override
     protected void prepareProtocolMessageContents() {
+        LOGGER.debug("Preparing ChangeCipherSpecMessage");
         prepareCcsProtocolType(msg);
     }
 

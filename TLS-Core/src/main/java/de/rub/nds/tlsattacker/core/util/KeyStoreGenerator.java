@@ -122,4 +122,7 @@ public class KeyStoreGenerator {
         }
     }
 
+    private KeyStoreGenerator() {
+    }
+
 }

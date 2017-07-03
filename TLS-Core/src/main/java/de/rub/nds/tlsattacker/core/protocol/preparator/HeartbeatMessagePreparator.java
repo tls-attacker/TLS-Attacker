@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
@@ -47,6 +49,7 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     @Override
     protected void prepareProtocolMessageContents() {
+        LOGGER.debug("Preparing HeartbeatMessage");
         // TODO currently only requests supported
         prepareHeartbeatMessageType(msg);
         preparePayload(msg);

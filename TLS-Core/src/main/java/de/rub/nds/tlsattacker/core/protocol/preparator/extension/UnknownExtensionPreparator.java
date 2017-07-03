@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> extends ExtensionPreparator<T> {
 
-    private UnknownExtensionMessage msg;
+    private final UnknownExtensionMessage msg;
 
     public UnknownExtensionPreparator(Chooser chooser, T object) {
         super(chooser, object);

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -97,7 +98,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
         }
         List<SignatureAndHashAlgorithm> list = new LinkedList<>();
 
-        for (int i = 0; i < bytesToConvert.length; i = i + 2) {
+        for (int i = 0; i < bytesToConvert.length; i += 2) {
             byte[] copied = new byte[2];
             copied[0] = bytesToConvert[i];
             copied[1] = bytesToConvert[i + 1];

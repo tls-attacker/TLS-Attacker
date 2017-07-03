@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 /**
  *
@@ -18,17 +18,28 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
  */
 public class EllipticCurvesExtensionSerializer extends ExtensionSerializer<EllipticCurvesExtensionMessage> {
 
-    private final EllipticCurvesExtensionMessage message;
+    private final EllipticCurvesExtensionMessage msg;
 
     public EllipticCurvesExtensionSerializer(EllipticCurvesExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getSupportedCurvesLength().getValue(), ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES_LENGTH);
-        appendBytes(message.getSupportedCurves().getValue());
+        LOGGER.debug("Serializing EllipticCurvesExtensionMessage");
+        writeSupportedCurvesLength(msg);
+        writeSupportedCurves(msg);
         return getAlreadySerialized();
+    }
+
+    private void writeSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
+        appendInt(msg.getSupportedCurvesLength().getValue(), ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES_LENGTH);
+        LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
+    }
+
+    private void writeSupportedCurves(EllipticCurvesExtensionMessage msg) {
+        appendBytes(msg.getSupportedCurves().getValue());
+        LOGGER.debug("SupportedCurves: " + ArrayConverter.bytesToHexString(msg.getSupportedCurves().getValue()));
     }
 }

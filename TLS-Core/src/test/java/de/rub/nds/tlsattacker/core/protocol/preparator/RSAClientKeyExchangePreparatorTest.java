@@ -20,6 +20,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -30,10 +32,6 @@ public class RSAClientKeyExchangePreparatorTest {
     private TlsContext context;
     private RSAClientKeyExchangePreparator preparator;
     private RSAClientKeyExchangeMessage message;
-
-    public RSAClientKeyExchangePreparatorTest() {
-
-    }
 
     @Before
     public void setUp() {

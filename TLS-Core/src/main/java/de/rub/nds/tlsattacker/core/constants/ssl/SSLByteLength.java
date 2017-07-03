@@ -30,4 +30,7 @@ public class SSLByteLength {
     public static final int CERTIFICATE_TYPE = 1;
 
     public static final int CERTIFICATE_LENGTH = 2;
+
+    private SSLByteLength() {
+    }
 }

@@ -12,14 +12,16 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -27,12 +29,11 @@ import static org.junit.Assert.*;
  */
 public class FinishedMessagePreparatorTest {
 
+    private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
+
     private FinishedMessage message;
     private TlsContext context;
     private FinishedMessagePreparator preparator;
-
-    public FinishedMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -55,9 +56,8 @@ public class FinishedMessagePreparatorTest {
         LOGGER.info(ArrayConverter.bytesToHexString(message.getVerifyData().getValue(), false));
         assertArrayEquals(ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"), message.getVerifyData()
                 .getValue());// TODO Did not check if this is calculated
-                             // correctly, just made sure it is set
+        // correctly, just made sure it is set
 
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
 }

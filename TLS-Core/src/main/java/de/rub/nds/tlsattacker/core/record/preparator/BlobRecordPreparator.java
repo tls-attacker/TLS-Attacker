@@ -31,7 +31,12 @@ public class BlobRecordPreparator extends AbstractRecordPreparator {
     @Override
     public void prepare() {
         encryptor.encrypt(record);
+        prepareContentMessageType(record);
+    }
+
+    private void prepareContentMessageType(BlobRecord record) {
         record.setContentMessageType(type);
+        LOGGER.debug("ContentMessageType: " + record.getContentMessageType().getValue());
     }
 
 }

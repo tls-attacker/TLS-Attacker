@@ -14,9 +14,6 @@ package de.rub.nds.tlsattacker.core.constants;
  */
 public class AlertByteLength {
 
-    private AlertByteLength() {
-    }
-
     /**
      * certificate length field
      */
@@ -26,4 +23,7 @@ public class AlertByteLength {
      * version field length
      */
     public static final int DESCRIPTION_LENGTH = 1;
+
+    private AlertByteLength() {
+    }
 }

@@ -23,9 +23,6 @@ public class RetransmitMessageSerializerTest {
     private RetransmitMessageSerializer serializer;
     private RetransmitMessage msg;
 
-    public RetransmitMessageSerializerTest() {
-    }
-
     @Before
     public void setUp() {
         msg = new RetransmitMessage();

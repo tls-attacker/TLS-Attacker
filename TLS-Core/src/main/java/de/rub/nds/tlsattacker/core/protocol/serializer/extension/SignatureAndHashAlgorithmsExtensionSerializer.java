@@ -8,8 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -18,18 +21,30 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAl
 public class SignatureAndHashAlgorithmsExtensionSerializer extends
         ExtensionSerializer<SignatureAndHashAlgorithmsExtensionMessage> {
 
-    private final SignatureAndHashAlgorithmsExtensionMessage message;
+    private final SignatureAndHashAlgorithmsExtensionMessage msg;
 
     public SignatureAndHashAlgorithmsExtensionSerializer(SignatureAndHashAlgorithmsExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(message.getSignatureAndHashAlgorithmsLength().getValue(),
-                ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS_LENGTH);
-        appendBytes(message.getSignatureAndHashAlgorithms().getValue());
+        LOGGER.debug("Serializing SigantureAndHashAlgorithmsExtensionMessage");
+        writeSignatureAndHashAlgorithmsLength(msg);
+        writeSignatureAndHashAlgorithms(msg);
         return getAlreadySerialized();
+    }
+
+    private void writeSignatureAndHashAlgorithmsLength(SignatureAndHashAlgorithmsExtensionMessage msg) {
+        appendInt(msg.getSignatureAndHashAlgorithmsLength().getValue(),
+                ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS_LENGTH);
+        LOGGER.debug("SignatureAndHashAlgorithmsLength: " + msg.getSignatureAndHashAlgorithmsLength().getValue());
+    }
+
+    private void writeSignatureAndHashAlgorithms(SignatureAndHashAlgorithmsExtensionMessage msg) {
+        appendBytes(msg.getSignatureAndHashAlgorithms().getValue());
+        LOGGER.debug("SignatureAndHashAlgorithms: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithms().getValue()));
     }
 }

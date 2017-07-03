@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -27,9 +26,6 @@ public class GeneralDelegateTest {
     private GeneralDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public GeneralDelegateTest() {
-    }
 
     @Before
     public void setUp() {

@@ -26,6 +26,7 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
     @Override
     protected void prepareProtocolMessageContents() {
+        LOGGER.debug("Preparing AlertMessage");
         prepareLevel(msg);
         prepareDescription(msg);
     }

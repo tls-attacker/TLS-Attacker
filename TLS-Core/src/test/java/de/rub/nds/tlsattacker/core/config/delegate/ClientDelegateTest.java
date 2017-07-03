@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
@@ -28,9 +27,6 @@ public class ClientDelegateTest {
     private ClientDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public ClientDelegateTest() {
-    }
 
     @Before
     public void setUp() {

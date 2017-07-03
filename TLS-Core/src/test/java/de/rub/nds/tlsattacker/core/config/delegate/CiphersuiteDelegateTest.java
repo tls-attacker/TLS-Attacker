@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -28,9 +27,6 @@ public class CiphersuiteDelegateTest {
     private CiphersuiteDelegate delegate;
     private JCommander jcommander;
     private String args[];
-
-    public CiphersuiteDelegateTest() {
-    }
 
     @Before
     public void setUp() {

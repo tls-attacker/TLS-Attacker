@@ -8,15 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -29,21 +26,21 @@ public class ChangeCipherSpecParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { new byte[] { 0x01 }, 0, new byte[] { 0x01 }, (byte) 1 },
-                { new byte[] { 0x05 }, 0, new byte[] { 0x05 }, (byte) 5 } });
+        return Arrays.asList(new Object[][] { { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS12 },
+                { new byte[] { 0x05 }, (byte) 5, ProtocolVersion.TLS12 },
+                { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS10 },
+                { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS11 } });
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
+    private ProtocolVersion version;
 
     private byte ccsType;
 
-    public ChangeCipherSpecParserTest(byte[] message, int start, byte[] expectedPart, byte ccsType) {
+    public ChangeCipherSpecParserTest(byte[] message, byte ccsType, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
         this.ccsType = ccsType;
+        this.version = version;
     }
 
     /**
@@ -51,9 +48,9 @@ public class ChangeCipherSpecParserTest {
      */
     @Test
     public void testParse() {
-        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(start, message, ProtocolVersion.TLS12);
+        ChangeCipherSpecParser parser = new ChangeCipherSpecParser(0, message, version);
         ChangeCipherSpecMessage ccsMessagee = parser.parse();
-        assertArrayEquals(expectedPart, ccsMessagee.getCompleteResultingMessage().getValue());
+        assertArrayEquals(message, ccsMessagee.getCompleteResultingMessage().getValue());
         assertTrue(ccsType == ccsMessagee.getCcsProtocolType().getValue());
     }
 

@@ -17,9 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -29,9 +29,6 @@ public class ClientHelloHandlerTest {
 
     private ClientHelloHandler handler;
     private TlsContext context;
-
-    public ClientHelloHandlerTest() {
-    }
 
     @Before
     public void setUp() {

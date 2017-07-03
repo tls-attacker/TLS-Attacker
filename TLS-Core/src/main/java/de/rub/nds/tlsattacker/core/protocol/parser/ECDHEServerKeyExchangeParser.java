@@ -8,15 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -45,6 +42,7 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
 
     @Override
     protected void parseHandshakeMessageContent(ECDHEServerKeyExchangeMessage msg) {
+        LOGGER.debug("Parsing ECDHEServerKeyExchangeMessage");
         parseCurveType(msg);
         parseNamedCurve(msg);
         parseSerializedPublicKeyLength(msg);

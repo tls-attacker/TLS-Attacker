@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,9 +24,6 @@ public class UnknownMessagePreparatorTest {
     private TlsContext context;
     private UnknownMessage message;
     private UnknownMessagePreparator preparator;
-
-    public UnknownMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {

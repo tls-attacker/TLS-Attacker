@@ -29,9 +29,6 @@ public class SessionResumptionDelegateTest {
     private JCommander jcommander;
     private String[] args;
 
-    public SessionResumptionDelegateTest() {
-    }
-
     @Before
     public void setUp() {
         this.delegate = new SessionResumptionDelegate();

@@ -49,7 +49,7 @@ public class SessionTicketTLSExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(ticket, message.getTicket().getValue());
     }
 

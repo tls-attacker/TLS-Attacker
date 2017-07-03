@@ -11,18 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.params.DHParameters;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsDHUtils;
 import org.bouncycastle.util.BigIntegers;
 
 /**
@@ -44,6 +36,7 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing DHClientExchangeMessage");
         msg.prepareComputations();
         setComputationGenerator(msg);
         setComputationModulus(msg);
@@ -96,7 +89,7 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
 
     private void preparePublicKey(DHClientKeyExchangeMessage msg) {
         msg.setPublicKey(clientPublicKey.toByteArray());
-        LOGGER.debug("PublicKey: " + msg.getPublicKey().getValue());
+        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private void preparePublicKeyLength(DHClientKeyExchangeMessage msg) {
@@ -133,7 +126,7 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
 
     private void setComputationPrivateKey(DHClientKeyExchangeMessage msg) {
         msg.getComputations().setPrivateKey(chooser.getDhClientPrivateKey());
-        LOGGER.debug("Computation PrivateKey: " + msg.getComputations().getPrivateKey().toString());
+        LOGGER.debug("Computation PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
     }
 
     private void setComputationServerPublicKey(DHClientKeyExchangeMessage msg) {

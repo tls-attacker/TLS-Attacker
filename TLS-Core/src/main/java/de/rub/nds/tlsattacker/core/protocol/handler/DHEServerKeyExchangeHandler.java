@@ -15,6 +15,10 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSeria
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.math.BigInteger;
+import org.bouncycastle.crypto.params.DHParameters;
+import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
+import org.bouncycastle.crypto.params.DHPublicKeyParameters;
+import org.bouncycastle.crypto.tls.ServerDHParams;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

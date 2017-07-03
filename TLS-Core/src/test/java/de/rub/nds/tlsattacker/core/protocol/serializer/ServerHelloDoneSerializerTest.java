@@ -8,16 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParserTest;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -39,14 +36,15 @@ public class ServerHelloDoneSerializerTest {
 
     private HandshakeMessageType type;
     private int length;
+    private ProtocolVersion version;
 
-    public ServerHelloDoneSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length) {
+    public ServerHelloDoneSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
+        this.start = 0;
+        this.expectedPart = message;
         this.type = type;
         this.length = length;
+        this.version = version;
     }
 
     /**
@@ -59,7 +57,7 @@ public class ServerHelloDoneSerializerTest {
         msg.setCompleteResultingMessage(expectedPart);
         msg.setType(type.getValue());
         msg.setLength(length);
-        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg, ProtocolVersion.TLS12);
+        ServerHelloDoneSerializer serializer = new ServerHelloDoneSerializer(msg, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

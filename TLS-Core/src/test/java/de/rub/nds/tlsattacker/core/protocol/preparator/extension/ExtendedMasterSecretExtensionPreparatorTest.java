@@ -38,7 +38,7 @@ public class ExtendedMasterSecretExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.EXTENDED_MASTER_SECRET.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
     }
 

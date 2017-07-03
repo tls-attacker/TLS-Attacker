@@ -32,7 +32,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
- * @param <Message>
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 

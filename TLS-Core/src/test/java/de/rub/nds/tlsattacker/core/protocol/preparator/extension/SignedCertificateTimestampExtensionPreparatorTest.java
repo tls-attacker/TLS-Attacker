@@ -52,7 +52,7 @@ public class SignedCertificateTimestampExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP.getValue(), message.getExtensionType().getValue());
-        assertEquals(packageLength, (int) message.getExtensionLength().getValue());
+        assertEquals(packageLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(timestamp, message.getSignedTimestamp().getValue());
     }
 }

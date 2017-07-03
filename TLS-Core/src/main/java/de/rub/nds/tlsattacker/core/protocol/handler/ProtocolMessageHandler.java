@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
@@ -46,6 +47,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * Prepare message for sending. This method invokes before and after method
      * hooks.
      *
+     * @param message
      * @return message in bytes
      */
     public byte[] prepareMessage(Message message) {

@@ -166,7 +166,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
         masterSecret = generateMasterSecret();
-        System.out.println("Master:" + ArrayConverter.bytesToHexString(masterSecret));
         prepareMasterSecret(msg);
     }
 }

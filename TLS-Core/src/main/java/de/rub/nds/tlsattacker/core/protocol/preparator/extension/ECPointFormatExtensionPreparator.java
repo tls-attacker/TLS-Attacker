@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import java.io.ByteArrayOutputStream;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -22,22 +22,23 @@ import java.util.List;
  */
 public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPointFormatExtensionMessage> {
 
-    private final ECPointFormatExtensionMessage message;
+    private final ECPointFormatExtensionMessage msg;
 
     public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message) {
         super(chooser, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-
-        preparePointFormats();
-        message.setPointFormatsLength(message.getPointFormats().getValue().length);
+        LOGGER.debug("Preparing ECPointFormatExtensionMessage");
+        preparePointFormats(msg);
+        preparePointFormatsLength(msg);
     }
 
-    private void preparePointFormats() {
-        message.setPointFormats(createPointFormatsByteArray());
+    private void preparePointFormats(ECPointFormatExtensionMessage msg) {
+        msg.setPointFormats(createPointFormatsByteArray());
+        LOGGER.debug("PointFormats: " + ArrayConverter.bytesToHexString(msg.getPointFormats().getValue()));
     }
 
     private byte[] createPointFormatsByteArray() {
@@ -52,6 +53,11 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
             stream.write(format.getValue());
         }
         return stream.toByteArray();
+    }
+
+    private void preparePointFormatsLength(ECPointFormatExtensionMessage msg) {
+        msg.setPointFormatsLength(msg.getPointFormats().getValue().length);
+        LOGGER.debug("PointFormatsLength: " + msg.getPointFormatsLength().getValue());
     }
 
 }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.VerifyDelegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -26,9 +25,6 @@ public class VerifyDelegateTest {
     private VerifyDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public VerifyDelegateTest() {
-    }
 
     @Before
     public void setUp() {

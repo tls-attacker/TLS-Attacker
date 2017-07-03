@@ -8,9 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -26,10 +29,26 @@ public class ServerNamePairSerializier extends Serializer<ServerNamePair> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendByte(pair.getServerNameType().getValue());
-        appendInt(pair.getServerNameLength().getValue(), ExtensionByteLength.SERVER_NAME_LENGTH);
-        appendBytes(pair.getServerName().getValue());
+        LOGGER.debug("Serializing ServerNamePair");
+        writeServerNameType(pair);
+        writeServerNameLength(pair);
+        writeServerName(pair);
         return getAlreadySerialized();
+    }
+
+    private void writeServerNameType(ServerNamePair pair) {
+        appendByte(pair.getServerNameType().getValue());
+        LOGGER.debug("ServerNameType: " + pair.getServerNameType().getValue());
+    }
+
+    private void writeServerNameLength(ServerNamePair pair) {
+        appendInt(pair.getServerNameLength().getValue(), ExtensionByteLength.SERVER_NAME_LENGTH);
+        LOGGER.debug("ServerNameLength: " + pair.getServerNameLength().getValue());
+    }
+
+    private void writeServerName(ServerNamePair pair) {
+        appendBytes(pair.getServerName().getValue());
+        LOGGER.debug("ServerName: " + ArrayConverter.bytesToHexString(pair.getServerName().getValue()));
     }
 
 }

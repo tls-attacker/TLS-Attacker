@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
@@ -21,21 +22,23 @@ import java.io.IOException;
  */
 public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<EllipticCurvesExtensionMessage> {
 
-    private EllipticCurvesExtensionMessage message;
+    private final EllipticCurvesExtensionMessage msg;
 
     public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message) {
         super(chooser, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        prepareEllipticCurves();
-        message.setSupportedCurvesLength(message.getSupportedCurves().getValue().length);
+        LOGGER.debug("Preparing EllipticCurvesExtensionMessage");
+        prepareEllipticCurves(msg);
+        prepareSupportedCurvesLength(msg);
     }
 
-    private void prepareEllipticCurves() {
-        message.setSupportedCurves(createEllipticCurveArray());
+    private void prepareEllipticCurves(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedCurves(createEllipticCurveArray());
+        LOGGER.debug("SupportedCurves: " + ArrayConverter.bytesToHexString(msg.getSupportedCurves().getValue()));
     }
 
     private byte[] createEllipticCurveArray() {
@@ -48,5 +51,10 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
             }
         }
         return stream.toByteArray();
+    }
+
+    private void prepareSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedCurvesLength(msg.getSupportedCurves().getValue().length);
+        LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
     }
 }

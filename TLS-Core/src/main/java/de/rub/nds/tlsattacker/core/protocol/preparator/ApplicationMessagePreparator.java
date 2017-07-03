@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -27,6 +28,7 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
 
     @Override
     protected void prepareProtocolMessageContents() {
+        LOGGER.debug("Preparing ApplicationMessage");
         prepareData(msg);
     }
 

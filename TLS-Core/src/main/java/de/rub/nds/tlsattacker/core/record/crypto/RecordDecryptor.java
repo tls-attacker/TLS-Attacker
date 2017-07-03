@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -15,8 +16,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -33,17 +32,23 @@ public class RecordDecryptor extends Decryptor<Record> {
 
     @Override
     public void decrypt(Record record) {
+        LOGGER.debug("Decrypting Record");
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         byte[] decrypted = recordCipher.decrypt(encrypted);
         record.setPlainRecordBytes(decrypted);
+        LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
         if (recordCipher.isUsePadding()) {
             LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(decrypted));
             int paddingLength = parsePaddingLength(decrypted);
             record.setPaddingLength(paddingLength);
+            LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
             byte[] unpadded = parseUnpadded(decrypted, paddingLength);
             record.setUnpaddedRecordBytes(unpadded);
+            LOGGER.debug("UnpaddedRecordBytes: "
+                    + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
             byte[] padding = parsePadding(decrypted, paddingLength);
             record.setPadding(padding);
+            LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
             LOGGER.debug("Unpadded data:  {}", ArrayConverter.bytesToHexString(unpadded));
         } else {
             record.setUnpaddedRecordBytes(decrypted);

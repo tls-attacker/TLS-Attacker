@@ -44,7 +44,7 @@ public class RenegotiationInfoExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.RENEGOTIATION_INFO.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
     }
 

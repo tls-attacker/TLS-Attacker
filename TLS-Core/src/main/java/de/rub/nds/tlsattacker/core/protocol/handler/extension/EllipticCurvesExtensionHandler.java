@@ -38,7 +38,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
             throw new AdjustmentException("Could not create resonable NamedCurves from CurveBytes");
         }
         List<NamedCurve> curveList = new LinkedList<>();
-        for (int i = 0; i < curveBytes.length; i = i + NamedCurve.LENGTH) {
+        for (int i = 0; i < curveBytes.length; i += NamedCurve.LENGTH) {
             byte[] curve = Arrays.copyOfRange(curveBytes, i, i + NamedCurve.LENGTH);
             NamedCurve namedCurve = NamedCurve.getNamedCurve(curve);
             if (namedCurve == null) {

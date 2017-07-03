@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -16,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
@@ -210,8 +212,7 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] masterSecret = tlsContext.getMasterSecret();
             byte[] seed = ArrayConverter.concatenate(tlsContext.getServerRandom(), tlsContext.getClientRandom());
 
-            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
-                    tlsContext.getSelectedCipherSuite());
+            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
             byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                     PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
             LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
@@ -262,15 +263,13 @@ public final class RecordBlockCipher extends RecordCipher {
                 decryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
                 encryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
                 try {
-                    encryptCipher.init(Cipher.ENCRYPT_MODE,
-                            new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()), encryptIv);
-                    decryptCipher.init(Cipher.DECRYPT_MODE,
-                            new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
-
+                    encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
+                    decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIv);
                     readMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
                     writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
                 } catch (InvalidAlgorithmParameterException | InvalidKeyException E) {
-                    throw new UnsupportedOperationException(E);
+                    throw new UnsupportedOperationException("Unsupported Ciphersuite:"
+                            + tlsContext.getSelectedCipherSuite().name(), E);
                 }
             }
             if (offset != keyBlock.length) {

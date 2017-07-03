@@ -18,9 +18,6 @@ import static org.junit.Assert.*;
  */
 public class ExtensionSerialiszerFactoryTest {
 
-    public ExtensionSerialiszerFactoryTest() {
-    }
-
     @Before
     public void setUp() {
     }

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
@@ -33,10 +34,31 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
 
     @Override
     public void prepare() {
-        record.setContentType(type.getValue());
-        record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
-        record.setSequenceNumber(BigInteger.valueOf(chooser.getSequenceNumber()));
+        LOGGER.debug("Preparing Record");
+        prepareContentType(record);
+        prepareProtocolVersion(record);
+        prepareSequenceNumber(record);
         encryptor.encrypt(record);
+        prepareLength(record);
+    }
+
+    private void prepareContentType(Record record) {
+        record.setContentType(type.getValue());
+        LOGGER.debug("ContentType: " + type.getValue());
+    }
+
+    private void prepareProtocolVersion(Record record) {
+        record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
+    }
+
+    private void prepareSequenceNumber(Record record) {
+        record.setSequenceNumber(BigInteger.valueOf(chooser.getSequenceNumber()));
+        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
+    }
+
+    private void prepareLength(Record record) {
         record.setLength(record.getProtocolMessageBytes().getValue().length);
+        LOGGER.debug("Length: " + record.getLength().getValue());
     }
 }

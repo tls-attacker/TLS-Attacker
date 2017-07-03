@@ -8,20 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestMessageParser;
-import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -52,8 +46,6 @@ public class CertificateRequestMessageParserTest {
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
 
     private HandshakeMessageType type;
     private int length;
@@ -69,8 +61,6 @@ public class CertificateRequestMessageParserTest {
             HandshakeMessageType type, int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength,
             byte[] sigHashAlgs, int distinguishedNamesLength, byte[] disitinguishedNames) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.certTypesCount = certTypesCount;
@@ -87,10 +77,9 @@ public class CertificateRequestMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateRequestMessageParser parser = new CertificateRequestMessageParser(start, message,
-                ProtocolVersion.TLS12);
+        CertificateRequestMessageParser parser = new CertificateRequestMessageParser(0, message, ProtocolVersion.TLS12);
         CertificateRequestMessage msg = parser.parse();
-        assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
+        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());
         assertTrue(msg.getClientCertificateTypesCount().getValue() == certTypesCount);

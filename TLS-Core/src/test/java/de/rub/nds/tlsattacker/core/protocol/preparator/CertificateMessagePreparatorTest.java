@@ -14,9 +14,10 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.IOException;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -28,9 +29,6 @@ public class CertificateMessagePreparatorTest {
     private CertificateMessage message;
     private TlsContext context;
 
-    public CertificateMessagePreparatorTest() {
-    }
-
     @Before
     public void setUp() {
         context = new TlsContext();
@@ -41,6 +39,8 @@ public class CertificateMessagePreparatorTest {
     /**
      * Test of prepareHandshakeMessageContents method, of class
      * CertificateMessagePreparator.
+     * 
+     * @throws java.io.IOException
      */
     @Test
     public void testPrepare() throws IOException {

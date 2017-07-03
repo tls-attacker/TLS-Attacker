@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestMessagePreparator;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
@@ -18,9 +17,9 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.util.LinkedList;
 import java.util.List;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -31,9 +30,6 @@ public class CertificateRequestMessagePreparatorTest {
     private CertificateRequestMessagePreparator preparator;
     private CertificateRequestMessage message;
     private TlsContext context;
-
-    public CertificateRequestMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {

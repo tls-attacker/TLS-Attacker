@@ -8,16 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.CompressionDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -28,9 +27,6 @@ public class CompressionDelegateTest {
     private CompressionDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public CompressionDelegateTest() {
-    }
 
     @Before
     public void setUp() {

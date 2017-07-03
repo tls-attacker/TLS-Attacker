@@ -35,7 +35,8 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
 
     @Override
     public void prepareHandshakeMessageContents() {
-        certTypes = convertClientCertificateTypes(chooser.getClientCertificateTypes());
+        LOGGER.debug("Preparing CertificateRequestMessage");
+        certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
         prepareClientCertificateTypes(certTypes, msg);
         prepareClientCertificateTypesCount(msg);
         prepareDistinguishedNames(msg);

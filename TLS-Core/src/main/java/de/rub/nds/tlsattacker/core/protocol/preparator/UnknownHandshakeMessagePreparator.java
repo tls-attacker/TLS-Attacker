@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -31,6 +32,7 @@ public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparato
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing UnknownHandshakeMessage");
         prepareData(msg);
     }
 

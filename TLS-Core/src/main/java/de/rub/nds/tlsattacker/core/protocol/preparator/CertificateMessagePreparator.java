@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.Arrays;
+import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -28,6 +29,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing CertificateMessage");
         byte[] encodedCert = getEncodedCert();
         msg.setX509CertificateBytes(encodedCert);
         msg.setCertificatesLength(msg.getX509CertificateBytes().getValue().length);

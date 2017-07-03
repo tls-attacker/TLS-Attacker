@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 
@@ -23,13 +24,38 @@ public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatE
 
     @Override
     public void parseExtensionMessageContent(ECPointFormatExtensionMessage msg) {
-        msg.setPointFormatsLength(parseIntField(ExtensionByteLength.EC_POINT_FORMATS_LENGTH));
-        msg.setPointFormats(parseByteArrayField(msg.getPointFormatsLength().getValue()));
+        LOGGER.debug("Parsing ECPointFormatExtensionMessage");
+        parsePointFormatsLength(msg);
+        parsePointFormat(msg);
     }
 
     @Override
     protected ECPointFormatExtensionMessage createExtensionMessage() {
         return new ECPointFormatExtensionMessage();
+    }
+
+    /**
+     * Reads the next bytes as the PointFormatsLength of the Extension and
+     * writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parsePointFormatsLength(ECPointFormatExtensionMessage msg) {
+        msg.setPointFormatsLength(parseIntField(ExtensionByteLength.EC_POINT_FORMATS_LENGTH));
+        LOGGER.debug("PointFormatsLength: " + msg.getPointFormatsLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the PointFormat of the Extension and writes them
+     * in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parsePointFormat(ECPointFormatExtensionMessage msg) {
+        msg.setPointFormats(parseByteArrayField(msg.getPointFormatsLength().getValue()));
+        LOGGER.debug("PointFormats: " + ArrayConverter.bytesToHexString(msg.getPointFormats().getValue()));
     }
 
 }

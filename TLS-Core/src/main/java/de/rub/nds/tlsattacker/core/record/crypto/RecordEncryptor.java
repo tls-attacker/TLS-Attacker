@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +32,7 @@ public class RecordEncryptor extends Encryptor<Record> {
 
     @Override
     public void encrypt(Record record) {
+        LOGGER.debug("Encrypting Record:");
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         if (recordCipher.isUseMac()) {
             byte[] toBeMaced = new byte[0];
@@ -48,20 +49,52 @@ public class RecordEncryptor extends Encryptor<Record> {
                 throw new CryptoException("Could not create ToBeMaced Data", E);
             }
             byte[] mac = recordCipher.calculateMac(toBeMaced);
-            record.setMac(mac);
+            setMac(record, mac);
             context.setSequenceNumber(context.getSequenceNumber() + 1);
         } else {
             record.setMac(new byte[0]);
         }
-        record.setUnpaddedRecordBytes(ArrayConverter.concatenate(cleanBytes, record.getMac().getValue()));
+        setUnpaddedRecordBytes(record, cleanBytes);
         byte[] padding = recordCipher.calculatePadding(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes()
                 .getValue().length));
-        record.setPadding(padding);
-        record.setPaddingLength(record.getPadding().getValue().length);
+        setPadding(record, padding);
+        setPaddingLength(record);
         byte[] plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record.getPadding()
                 .getValue(), record.getPaddingLength().getValue());
-        record.setPlainRecordBytes(plain);
+        setPlainRecordBytes(record, plain);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
+        setProtocolMessageBytes(record, encrypted);
+    }
+
+    private void setMac(Record record, byte[] mac) {
+        record.setMac(mac);
+        LOGGER.debug("MAC: " + ArrayConverter.bytesToHexString(record.getMac().getValue()));
+    }
+
+    private void setUnpaddedRecordBytes(Record record, byte[] cleanBytes) {
+        record.setUnpaddedRecordBytes(ArrayConverter.concatenate(cleanBytes, record.getMac().getValue()));
+        LOGGER.debug("UnpaddedRecordBytes: "
+                + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
+    }
+
+    private void setPadding(Record record, byte[] padding) {
+        record.setPadding(padding);
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
+    }
+
+    private void setPaddingLength(Record record) {
+        record.setPaddingLength(record.getPadding().getValue().length);
+        LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+    }
+
+    private void setPlainRecordBytes(Record record, byte[] plain) {
+        record.setPlainRecordBytes(plain);
+        LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
+    }
+
+    private void setProtocolMessageBytes(Record record, byte[] encrypted) {
         record.setProtocolMessageBytes(encrypted);
+        LOGGER.debug("ProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 }

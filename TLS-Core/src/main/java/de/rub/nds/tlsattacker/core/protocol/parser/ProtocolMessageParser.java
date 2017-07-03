@@ -8,12 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for ProtocolMessages
@@ -24,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends Parser<T> {
 
-    private ProtocolVersion version;
+    private final ProtocolVersion version;
 
     /**
      * Constructor for the Parser class
