@@ -8,8 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.socket;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.layer.BlobRecordLayer;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
@@ -23,6 +28,7 @@ import java.net.Socket;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Handler;
 import java.util.logging.Logger;
 import org.apache.logging.log4j.Level;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -37,11 +43,24 @@ import static org.junit.Assert.*;
  */
 public class TlsAttackerSocketTest {
 
+    private TlsAttackerSocket socket;
+
+    private TlsContext context;
+
+    private FakeTransportHandler transportHandler;
+
     public TlsAttackerSocketTest() {
     }
 
     @Before
     public void setUp() {
+        context = new TlsContext();
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        transportHandler = new FakeTransportHandler();
+        context.setTransportHandler(transportHandler);
+        socket = new TlsAttackerSocket(context);
+        context.setRecordLayer(new TlsRecordLayer(context));
+
     }
 
     /**
@@ -49,7 +68,8 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testSendRawBytes() throws Exception {
-
+        socket.sendRawBytes(new byte[]{1, 2, 3});
+        assertArrayEquals(new byte[]{1, 2, 3}, transportHandler.getSendByte());
     }
 
     /**
@@ -57,13 +77,21 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testRecieveRawBytes() throws Exception {
+        transportHandler.setFetchableByte(new byte[]{1, 2, 3});
+        byte[] received = socket.recieveRawBytes();
+        assertArrayEquals(new byte[]{1, 2, 3}, received);
     }
 
     /**
      * Test of send method, of class TlsAttackerSocket.
+     *
+     * @throws java.io.IOException
      */
     @Test
-    public void testSend_String() {
+    public void testSend_String() throws IOException {
+        socket.send("test");
+        byte[] sentBytes = transportHandler.getSendByte();
+        assertArrayEquals(sentBytes, ArrayConverter.concatenate(new byte[]{0x17,0x03,0x03,0x00,0x04},"test".getBytes()));
     }
 
     /**
@@ -71,6 +99,9 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testSend_byteArr() {
+        socket.send(new byte[]{0,1,2,3});
+        byte[] sentBytes = transportHandler.getSendByte();
+        assertArrayEquals(sentBytes, new byte[]{0x17,0x03,0x03,0x00,0x04,0,1,2,3});
     }
 
     /**
@@ -78,6 +109,9 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testReceiveBytes() throws Exception {
+        transportHandler.setFetchableByte(new byte[]{0x17,0x03,0x03,0x00,0x03,8,8,8});
+        byte[] receivedBytes =socket.receiveBytes();
+        assertArrayEquals(receivedBytes,new byte[]{8,8,8});
     }
 
     /**
@@ -85,6 +119,9 @@ public class TlsAttackerSocketTest {
      */
     @Test
     public void testReceiveString() throws Exception {
+        transportHandler.setFetchableByte(ArrayConverter.concatenate(new byte[]{0x17,0x03,0x03,0x00,0x04},"test".getBytes()));
+        String receivedString =socket.receiveString();
+        assertEquals("test",receivedString);
     }
 
 }
