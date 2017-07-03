@@ -75,7 +75,7 @@
     <sniHostname>localhost</sniHostname>
     <sniType>HOST_NAME</sniType>
     <sniHostnameFatal>false</sniHostnameFatal>
-    <serverPort>4433</serverPort>
+    <port>443</port>
     <maxFragmentLength>TWO_9</maxFragmentLength>
     <tlsTimeout>400</tlsTimeout>
     <timeout>1000</timeout>
