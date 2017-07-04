@@ -98,6 +98,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
+
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 

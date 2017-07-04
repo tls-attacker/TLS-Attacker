@@ -73,7 +73,6 @@ public class DHClientKeyExchangePreparatorTest {
         assertArrayEquals(ArrayConverter.hexStringToByteArray(DH_G), message.getG().getByteArray());
         assertArrayEquals(ArrayConverter.hexStringToByteArray(DH_M), message.getP().getByteArray());
         assertArrayEquals(PREMASTERSECRET, message.getComputations().getPremasterSecret().getValue());
-        assertArrayEquals(MASTERSECRET, message.getComputations().getMasterSecret().getValue());
         assertNotNull(message.getSerializedPublicKeyLength().getValue());
         assertNotNull(message.getSerializedPublicKey());
         assertNotNull(message.getComputations().getClientRandom());
