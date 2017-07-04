@@ -42,7 +42,6 @@ public class ReceiveAction extends MessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Receiving Messages...");
-        tlsContext.setTalkingConnectionEnd(tlsContext.getConfig().getMyConnectionPeer());
         MessageActionResult result = executor.receiveMessages(configuredMessages);
         actualRecords.addAll(result.getRecordList());
         actualMessages.addAll(result.getMessageList());

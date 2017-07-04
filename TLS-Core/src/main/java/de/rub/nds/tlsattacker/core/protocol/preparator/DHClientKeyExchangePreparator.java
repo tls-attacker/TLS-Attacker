@@ -85,7 +85,6 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         prepareSerializedPublicKey(msg);
         prepareSerializedPublicKeyLength(msg);
         prepareClientRandom(msg);
-        prepareMasterSecret(msg);
     }
 
     private AsymmetricCipherKeyPair getParamsFromCertificate() {
@@ -122,15 +121,6 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         } catch (IllegalArgumentException e) {
             throw new PreparationException("Could not calculate PremasterSecret");
         }
-
-    }
-
-    private byte[] calculateMasterSecret(byte[] random, byte[] premasterSecret) {
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
-        masterSecret = PseudoRandomFunction.compute(prfAlgorithm, premasterSecret,
-                PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
-        return masterSecret;
 
     }
 
@@ -183,13 +173,6 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareMasterSecret(DHClientKeyExchangeMessage msg) {
-        masterSecret = calculateMasterSecret(random, premasterSecret);
-        msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
-    }
-
     @Override
     public void prepareAfterParse() {
 
@@ -200,7 +183,5 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         premasterSecret = calculatePremasterSecret(serverDhPrivate, clientDhPublic);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
-        calculateMasterSecret(random, premasterSecret);
-        prepareMasterSecret(msg);
     }
 }

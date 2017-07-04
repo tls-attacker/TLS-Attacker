@@ -36,6 +36,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
         while (position < msg.getServerNameListLength().getValue()) {
             ServerNamePairParser parser = new ServerNamePairParser(position, msg.getServerNameListBytes().getValue());
             pairList.add(parser.parse());
+            position = parser.getPointer();
         }
         parseServerNameList(msg);
     }

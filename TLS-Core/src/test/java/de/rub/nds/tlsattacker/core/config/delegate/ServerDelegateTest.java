@@ -63,13 +63,13 @@ public class ServerDelegateTest {
     @Test
     public void testApplyDelegate() {
         TlsConfig config = TlsConfig.createConfig();
-        config.setServerPort(1);
+        config.setPort(1);
         args = new String[2];
         args[0] = "-port";
         args[1] = "1234";
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.getServerPort() == 1234);
+        assertTrue(config.getPort() == 1234);
         assertTrue(config.getConnectionEnd() == ConnectionEnd.SERVER);
     }
 

@@ -36,7 +36,7 @@ public class ServerDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         if (port != null) {
-            config.setServerPort(port);
+            config.setPort(port);
         }
         config.setConnectionEnd(ConnectionEnd.SERVER);
     }

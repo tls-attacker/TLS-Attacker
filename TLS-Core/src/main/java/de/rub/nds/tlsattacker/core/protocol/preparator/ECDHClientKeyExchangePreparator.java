@@ -10,12 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
@@ -23,9 +19,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
@@ -100,8 +93,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
             computePremasterSecret(serverEcPublicKey, clientEcPrivateKey);
             preparePremasterSecret(msg);
             prepareClientRandom(msg);
-            computeMasterSecret(premasterSecret, random);
-            prepareMasterSecret(msg);
         } catch (IOException ex) {
             throw new PreparationException("EC point serialization failure", ex);
         }
@@ -131,13 +122,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     private void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
         premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(publicKey, privateKey);
-    }
-
-    private void computeMasterSecret(byte[] preMasterSecret, byte[] random) {
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
-        masterSecret = PseudoRandomFunction.compute(prfAlgorithm, preMasterSecret,
-                PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
     }
 
     private void preparePublicKeyBaseX(ECDHClientKeyExchangeMessage msg) {
@@ -187,12 +171,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareMasterSecret(ECDHClientKeyExchangeMessage msg) {
-        msg.getComputations().setMasterSecret(masterSecret);
-        LOGGER.debug("MasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getMasterSecret().getValue()));
-    }
-
     @Override
     public void prepareAfterParse() {
         try {
@@ -206,8 +184,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
             computePremasterSecret(clientEcPublicKey, serverEcPrivateKey);
             preparePremasterSecret(msg);
             prepareClientRandom(msg);
-            computeMasterSecret(premasterSecret, random);
-            prepareMasterSecret(msg);
         } catch (IOException ex) {
             throw new PreparationException("Could prepare ECDHClientKeyExchange Message after Parse", ex);
         }
