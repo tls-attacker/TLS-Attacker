@@ -227,10 +227,9 @@ public class TlsConfig implements Serializable {
      */
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
     /**
-     * Default ALPN announced protocols
+     * Default ALPN announced protocols It's HTTP/2 0x68 0x32 as of RFC7540
      */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] applicationLayerProtocolNegotiationAnnouncedProtocols = new byte[0];
+    private String applicationLayerProtocolNegotiationAnnouncedProtocols = "h2";
     /**
      * Default SRP Identifier
      */
@@ -1162,12 +1161,12 @@ public class TlsConfig implements Serializable {
         this.addCertificateStatusRequestExtension = addCertificateStatusRequestExtension;
     }
 
-    public byte[] getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
+    public String getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
         return applicationLayerProtocolNegotiationAnnouncedProtocols;
     }
 
     public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
-            byte[] applicationLayerProtocolNegotiationAnnouncedProtocols) {
+            String applicationLayerProtocolNegotiationAnnouncedProtocols) {
         this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
     }
 

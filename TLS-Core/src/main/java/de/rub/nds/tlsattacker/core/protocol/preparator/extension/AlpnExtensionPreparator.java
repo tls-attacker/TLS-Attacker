@@ -27,7 +27,8 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
 
     @Override
     public void prepareExtensionContent() {
-        msg.setAlpnAnnouncedProtocols(context.getConfig().getApplicationLayerProtocolNegotiationAnnouncedProtocols());
+        msg.setAlpnAnnouncedProtocols(context.getConfig().getApplicationLayerProtocolNegotiationAnnouncedProtocols()
+                .getBytes());
         LOGGER.debug("Prepared the ALPN Extension with announced protocols "
                 + ArrayConverter.bytesToHexString(msg.getAlpnAnnouncedProtocols()));
         msg.setAlpnExtensionLength(msg.getAlpnAnnouncedProtocols().getValue().length);

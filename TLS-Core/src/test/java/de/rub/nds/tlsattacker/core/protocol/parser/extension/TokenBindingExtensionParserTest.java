@@ -27,6 +27,7 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class TokenBindingExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ExtensionType.TOKEN_BINDING,
@@ -56,14 +57,14 @@ public class TokenBindingExtensionParserTest {
     @Before
     public void setUp() {
         parser = new TokenBindingExtensionParser(0, extensionBytes);
-        message = parser.parse();
     }
 
     @Test
     public void testParseExtensionMessageContent() {
+        message = parser.parse();
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());
-        assertEquals(parameterLength, message.getParameterListLength());
+        assertEquals(parameterLength, (int) message.getParameterListLength().getValue());
         assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
     }
 

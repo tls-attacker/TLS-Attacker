@@ -26,8 +26,8 @@ public class AlpnExtensionPreparatorTest {
     private TlsContext context;
     private AlpnExtensionPreparator preparator;
     private AlpnExtensionMessage msg;
-    private final byte[] announcedProtocols = ArrayConverter.hexStringToByteArray("02683208687474702f312e31");
-    private final int announcedProtocolsLength = 12;
+    private final String announcedProtocols = "h2";
+    private final int announcedProtocolsLength = 2;
 
     @Before
     public void setUp() {
@@ -44,7 +44,7 @@ public class AlpnExtensionPreparatorTest {
 
         assertArrayEquals(ExtensionType.ALPN.getValue(), msg.getExtensionType().getValue());
         assertEquals(announcedProtocolsLength, (int) msg.getAlpnExtensionLength().getValue());
-        assertArrayEquals(announcedProtocols, msg.getAlpnAnnouncedProtocols().getValue());
+        assertArrayEquals(announcedProtocols.getBytes(), msg.getAlpnAnnouncedProtocols().getValue());
     }
 
 }
