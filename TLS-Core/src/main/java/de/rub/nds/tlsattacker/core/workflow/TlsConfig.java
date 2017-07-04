@@ -83,7 +83,7 @@ public class TlsConfig implements Serializable {
     /**
      * Default value for ProtocolVerionFields
      */
-    private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS13;
+    private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 
     /**
      * Indicates which ConnectionEnd we are
@@ -266,7 +266,7 @@ public class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the ECPointFormat extension
      */
-    private boolean addECPointFormatExtension = false;
+    private boolean addECPointFormatExtension = true;
     /**
      * If we generate ClientHello with the EllipticCurve extension
      */
@@ -286,7 +286,7 @@ public class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
-    private boolean addSignatureAndHashAlgrorithmsExtension = true;
+    private boolean addSignatureAndHashAlgrorithmsExtension = false;
     /**
      * If we generate ClientHello with the SupportedVersion extension
      */
@@ -457,21 +457,15 @@ public class TlsConfig implements Serializable {
                 HashAlgorithm.SHA1));
         supportedSignatureAndHashAlgorithms
                 .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA256));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA384));
         supportedCompressionMethods = new LinkedList<>();
         supportedCompressionMethods.add(CompressionMethod.NULL);
-        supportedCompressionMethods.add(CompressionMethod.DEFLATE);
         supportedCiphersuites = new LinkedList<>();
-        if (getHighestProtocolVersion() == ProtocolVersion.TLS13) {
-            supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
-            supportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA384);
-        }
         supportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
-        namedCurves.add(NamedCurve.ECDH_X25519);
+        namedCurves.add(NamedCurve.SECP192R1);
+        namedCurves.add(NamedCurve.SECP256R1);
+        namedCurves.add(NamedCurve.SECP384R1);
+        namedCurves.add(NamedCurve.SECP521R1);
         pointFormats = new LinkedList<>();
         pointFormats.add(ECPointFormat.UNCOMPRESSED);
         try {
