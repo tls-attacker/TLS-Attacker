@@ -60,7 +60,7 @@ public class ExtensionByteLength {
     /**
      * KeyShare length in the KeySahreExtension
      */
-    public static final int KEY_SAHRE_LENGTH = 2;
+    public static final int KEY_SHARE_LENGTH = 2;
     /**
      * KeyShareListLength in the KeySahreExtension
      */

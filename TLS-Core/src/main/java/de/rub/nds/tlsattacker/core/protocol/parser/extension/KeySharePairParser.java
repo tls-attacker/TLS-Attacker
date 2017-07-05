@@ -54,7 +54,7 @@ public class KeySharePairParser extends Parser<KeySharePair> {
      *            Message to write in
      */
     private void parseKeyShareLength(KeySharePair pair) {
-        pair.setKeyShareLength(parseIntField(ExtensionByteLength.KEY_SAHRE_LENGTH));
+        pair.setKeyShareLength(parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH));
         LOGGER.debug("ServerNameLength: " + pair.getKeyShareLength().getValue());
     }
 

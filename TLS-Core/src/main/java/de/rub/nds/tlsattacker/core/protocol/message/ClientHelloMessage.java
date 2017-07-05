@@ -109,11 +109,10 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
-        if (tlsConfig.isAddSupportedVersionsExtension()
-                && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsConfig.isAddSupportedVersionsExtension()) {
             addExtension(new SupportedVersionsExtensionMessage());
         }
-        if (tlsConfig.isAddKeyShareExtension() && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsConfig.isAddKeyShareExtension()) {
             KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
             KeySharePair pair = new KeySharePair();
             pair.setKeyShareConfig(tlsConfig.getkeySharePublic());

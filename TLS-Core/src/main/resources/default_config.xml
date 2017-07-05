@@ -88,8 +88,6 @@
     <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
     <addSignatureAndHashAlgrorithmsExtension>false</addSignatureAndHashAlgrorithmsExtension>
-    <addSupportedVersionsExtension>true</addSupportedVersionsExtension>
-    <addKeyShareExtension>true</addKeyShareExtension>
     <sessionId></sessionId>
     <updateTimestamps>true</updateTimestamps>
     <distinguishedNames></distinguishedNames>

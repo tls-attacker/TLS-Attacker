@@ -61,9 +61,9 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     private byte[] createSignature() {
         try {
-            byte[] toSigned = context.getDigest().getRawBytes();
+            byte[] toBeSigned = context.getDigest().getRawBytes();
             if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-                toSigned = context.getDigest().digest(context.getSelectedProtocolVersion(),
+                toBeSigned = context.getDigest().digest(context.getSelectedProtocolVersion(),
                         context.getSelectedCipherSuite());
                 byte[] string1 = ArrayConverter
                         .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020");
@@ -75,12 +75,12 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
                     string2 = ArrayConverter
                             .hexStringToByteArray("544c5320312e332c2073657276657220436572746966696361746556657269667900");
                 }
-                toSigned = ArrayConverter.concatenate(string1, string2, toSigned);
+                toBeSigned = ArrayConverter.concatenate(string1, string2, toBeSigned);
             }
             algorithm = selectSigHashAlgorithm();
             Signature tempSignature = Signature.getInstance(algorithm.getJavaName());
             tempSignature.initSign(context.getConfig().getPrivateKey(), RandomHelper.getBadSecureRandom());
-            tempSignature.update(toSigned);
+            tempSignature.update(toBeSigned);
             return tempSignature.sign();
         } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new PreparationException("Could not create Signature!", ex);

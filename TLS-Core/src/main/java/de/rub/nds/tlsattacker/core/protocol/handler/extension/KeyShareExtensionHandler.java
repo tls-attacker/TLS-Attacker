@@ -89,7 +89,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
                 } else {
-                    throw new PreparationException("Support only the key exchange group ECDH_X25519");
+                    throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
                 }
             } else {
                 int pos = 0;
@@ -101,7 +101,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 if (context.getClientKSEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getClientKSEntryList().get(pos));
                 } else {
-                    throw new PreparationException("Support only the key exchange group ECDH_X25519");
+                    throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
                 }
             }
             byte[] handshakeSecret = HKDFunction.extract(hkdfAlgortihm, saltHandshakeSecret, sharedSecret);

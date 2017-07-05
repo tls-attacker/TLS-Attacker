@@ -290,11 +290,11 @@ public class TlsConfig implements Serializable {
     /**
      * If we generate ClientHello with the SupportedVersion extension
      */
-    private boolean addSupportedVersionsExtension = true;
+    private boolean addSupportedVersionsExtension = false;
     /**
      * If we generate ClientHello with the KeyShare extension
      */
-    private boolean addKeyShareExtension = true;
+    private boolean addKeyShareExtension = false;
     /**
      * If we generate ClientHello with the Padding extension
      */

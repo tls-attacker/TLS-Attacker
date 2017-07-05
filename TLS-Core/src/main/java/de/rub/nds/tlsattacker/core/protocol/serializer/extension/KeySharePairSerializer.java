@@ -39,7 +39,7 @@ public class KeySharePairSerializer extends Serializer<KeySharePair> {
     }
 
     private void writeKeyShareLength(KeySharePair pair) {
-        appendInt(pair.getKeyShareLength().getValue(), ExtensionByteLength.KEY_SAHRE_LENGTH);
+        appendInt(pair.getKeyShareLength().getValue(), ExtensionByteLength.KEY_SHARE_LENGTH);
         LOGGER.debug("KeyShareLength: " + pair.getKeyShareLength().getValue());
     }
 

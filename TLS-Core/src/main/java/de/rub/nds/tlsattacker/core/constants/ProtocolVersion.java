@@ -27,7 +27,8 @@ public enum ProtocolVersion {
     TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
     TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
     TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
-    TLS13(new byte[] { (byte) 0x7F, (byte) 0x14 }),
+    TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }),
+    TLS13_DRAFT20(new byte[] { (byte) 0x7F, (byte) 0x14 }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
@@ -133,7 +134,7 @@ public enum ProtocolVersion {
      * @param list
      * @return
      */
-    public static ProtocolVersion gethighestProtocolVersion(List<ProtocolVersion> list) {
+    public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = list.get(0);
         for (ProtocolVersion pv : list) {
             if (ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
@@ -141,5 +142,15 @@ public enum ProtocolVersion {
             }
         }
         return highestProtocolVersion;
+    }
+    
+    /**
+     * Return true, if protocol version TLS 1.3
+     * 
+     * @param version
+     * @return
+     */
+    public static boolean isTLS13(ProtocolVersion version) {
+        return version == ProtocolVersion.TLS13_DRAFT20;
     }
 }

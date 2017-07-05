@@ -75,7 +75,7 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
-        if (tlsConfig.isAddKeyShareExtension() && tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsConfig.isAddKeyShareExtension()) {
             addExtension(new KeyShareExtensionMessage());
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
