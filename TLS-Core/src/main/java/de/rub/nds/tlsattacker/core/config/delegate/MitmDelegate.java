@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
- * @author Lucas Hartmann <firstname.lastname@rub.de>
+ * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class MitmDelegate extends Delegate {
 

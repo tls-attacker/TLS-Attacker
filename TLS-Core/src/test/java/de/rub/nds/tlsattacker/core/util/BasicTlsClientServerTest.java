@@ -33,7 +33,7 @@ import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 
 /**
  * 
- * @author Lucas Hartmann <firstname.lastname@rub.de>
+ * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class BasicTlsClientServerTest {
 
