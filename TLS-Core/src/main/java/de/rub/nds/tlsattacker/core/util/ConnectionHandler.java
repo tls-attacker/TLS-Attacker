@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.client;
+package de.rub.nds.tlsattacker.core.util;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
