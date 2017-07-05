@@ -273,7 +273,7 @@
                 <configuration>
                     <configLocation>${main.basedir}/checkstyle.xml</configLocation>
                 </configuration>
-            </plugin>          
+            </plugin>
         </plugins>
     </reporting>
     
