@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.crypto;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -95,10 +97,10 @@ public class HKDFunction {
             Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
             SecretKeySpec keySpec = new SecretKeySpec(prk, hkdfAlgortihm.getMacAlgorithm().getJavaName());
             mac.init(keySpec);
-            byte[] out = new byte[0];
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
             byte[] ti = new byte[0];
             int i = 1;
-            while (out.length < outLen) {
+            while (stream.toByteArray().length < outLen) {
                 mac.update(ti);
                 mac.update(info);
                 if (Integer.toHexString(i).length() % 2 != 0) {
@@ -107,11 +109,11 @@ public class HKDFunction {
                     mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
                 }
                 ti = mac.doFinal();
-                out = ArrayConverter.concatenate(out, ti);
+                stream.write(ti);
                 i++;
             }
-            return Arrays.copyOfRange(out, 0, outLen);
-        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+            return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new CryptoException(ex);
         }
     }
