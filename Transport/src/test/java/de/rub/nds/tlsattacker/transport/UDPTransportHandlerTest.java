@@ -32,7 +32,7 @@ public class UDPTransportHandlerTest {
     public void testSendData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
             UDPTransportHandler udpTH = new UDPTransportHandler(localhost.getHostName(), testSocket.getLocalPort(),
-                    ConnectionEnd.CLIENT, 400);
+                    ConnectionEndType.CLIENT, 400);
             testSocket.setSoTimeout(1000);
 
             udpTH.initialize();
@@ -56,7 +56,7 @@ public class UDPTransportHandlerTest {
     public void testFetchData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
             UDPTransportHandler udpTH = new UDPTransportHandler(localhost.getHostName(), testSocket.getLocalPort(),
-                    ConnectionEnd.CLIENT, 400);
+                    ConnectionEndType.CLIENT, 400);
 
             udpTH.initialize();
             testSocket.connect(localhost, udpTH.getLocalPort());

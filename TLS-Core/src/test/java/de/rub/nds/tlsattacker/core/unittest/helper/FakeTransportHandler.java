@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 
@@ -24,7 +24,7 @@ public class FakeTransportHandler extends TransportHandler {
     private byte[] sendByte;
 
     public FakeTransportHandler() {
-        super(null, 0, ConnectionEnd.CLIENT, 0);
+        super(null, 0, ConnectionEndType.CLIENT, 0);
     }
 
     public byte[] getSendByte() {
