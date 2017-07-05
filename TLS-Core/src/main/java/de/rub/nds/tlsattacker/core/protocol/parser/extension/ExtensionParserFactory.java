@@ -66,6 +66,7 @@ public class ExtensionParserFactory {
             case CACHED_INFO:
                 break;
             case CERT_TYPE:
+                parser = new CertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
             case CLIENT_AUTHZ:
                 break;
