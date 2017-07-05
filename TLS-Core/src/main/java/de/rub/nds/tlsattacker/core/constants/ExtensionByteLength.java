@@ -116,4 +116,14 @@ public class ExtensionByteLength {
      * Length of the user mapping extension user mapping hint field
      */
     public static final int USER_MAPPING_EXTENSION_MAPPINGTYPE_LENGTH = 1;
+
+    /**
+     * Length of the certificate_type certificate_types length field
+     */
+    public static final int CERTIFICATE_TYPE_EXTENSION_TYPES_LENGTHFIELD_LENGTH = 1;
+
+    /**
+     * Length of the certificate_type type field
+     */
+    public static final int CERTIFICATE_TYPE_EXTENSION_TYPE_LENGTH = 1;
 }

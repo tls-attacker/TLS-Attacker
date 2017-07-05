@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -47,7 +48,6 @@ import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -250,6 +250,10 @@ public class TlsConfig implements Serializable {
      */
     private UserMappingExtensionHintType userMappingExtensionHintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
     /**
+     * Default certificate type extension desired types
+     */
+    private List<CertificateType> certificateTypeDesiredTypes;
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -354,6 +358,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with user mapping extension
      */
     private boolean addUserMappingExtension = false;
+    /**
+     * If we generate ClientHello with certificate type extension
+     */
+    private boolean addCertificateTypeExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -522,15 +530,21 @@ public class TlsConfig implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
+
         tokenBindingKeyParameters = new LinkedList<>();
         tokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PKCS1_5);
         tokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
         tokenBindingKeyParameters.add(TokenBindingKeyParameters.ECDSAP256);
+
+        certificateTypeDesiredTypes = new LinkedList<>();
+        certificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
+        certificateTypeDesiredTypes.add(CertificateType.X509);
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1268,6 +1282,22 @@ public class TlsConfig implements Serializable {
 
     public void setAddUserMappingExtension(boolean addUserMappingExtension) {
         this.addUserMappingExtension = addUserMappingExtension;
+    }
+
+    public List<CertificateType> getCertificateTypeDesiredTypes() {
+        return certificateTypeDesiredTypes;
+    }
+
+    public void setCertificateTypeDesiredTypes(List<CertificateType> certificateTypeDesiredTypes) {
+        this.certificateTypeDesiredTypes = certificateTypeDesiredTypes;
+    }
+
+    public boolean isAddCertificateTypeExtension() {
+        return addCertificateTypeExtension;
+    }
+
+    public void setAddCertificateTypeExtension(boolean addCertificateTypeExtension) {
+        this.addCertificateTypeExtension = addCertificateTypeExtension;
     }
 
 }

@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -236,6 +237,8 @@ public class TlsContext {
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
     private byte[] AlpnAnnouncedProtocols;
+
+    private List<CertificateType> certificateTypeDesiredTypes;
 
     public TlsContext() {
         this(TlsConfig.createConfig());
@@ -716,6 +719,14 @@ public class TlsContext {
 
     public void setUserMappingExtensionHintType(UserMappingExtensionHintType userMappingExtensionHintType) {
         this.userMappingExtensionHintType = userMappingExtensionHintType;
+    }
+
+    public List<CertificateType> getCertificateTypeDesiredTypes() {
+        return certificateTypeDesiredTypes;
+    }
+
+    public void setCertificateTypeDesiredTypes(List<CertificateType> certificateTypeDesiredTypes) {
+        this.certificateTypeDesiredTypes = certificateTypeDesiredTypes;
     }
 
 }

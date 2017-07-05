@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
@@ -80,6 +81,7 @@ public abstract class HelloMessage extends HandshakeMessage {
     @XmlElements(value = {
             @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
             @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),
+            @XmlElement(type = CertificateTypeExtensionMessage.class, name = "CertificateTypeExtension"),
             @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
             @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
