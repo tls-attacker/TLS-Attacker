@@ -85,7 +85,7 @@ public class WorkflowTraceSerializerTest {
     public void TestWrite() {
         try {
             WorkflowTrace trace = new WorkflowTrace();
-            trace.add(new SendAction(new ClientHelloMessage(Config.createConfig())));
+            trace.addTlsAction(new SendAction(new ClientHelloMessage(Config.createConfig())));
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
             Assert.assertTrue(f.exists());

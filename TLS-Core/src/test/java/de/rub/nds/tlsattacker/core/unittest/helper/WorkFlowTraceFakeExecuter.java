@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class WorkFlowTraceFakeExecuter {
     public static void execute(WorkflowTrace trace) {
-        List<TLSAction> actionList = trace.getTLSActions();
+        List<TLSAction> actionList = trace.getTlsActions();
         for (TLSAction action : actionList) {
 
             if (action instanceof MessageAction) {

@@ -293,7 +293,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(), tlsContext);
         recordLayer = tlsContext.getRecordLayer();
         trace = tlsContext.getWorkflowTrace();
-        actionList = trace.getTLSActions();
+        actionList = trace.getTlsActions();
         modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
         modifiedMacArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C },
                 0));

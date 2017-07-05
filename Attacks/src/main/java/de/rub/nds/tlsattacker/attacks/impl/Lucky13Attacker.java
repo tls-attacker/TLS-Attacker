@@ -69,7 +69,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                 if (results.get(p) == null) {
                     results.put(p, new LinkedList<Long>());
                 }
-                // remove the first 20% of measurements
+                // removeTlsAction the first 20% of measurements
                 if (i > config.getMeasurements() / 5) {
                     results.get(p).add(lastResult);
                 }
@@ -128,11 +128,11 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);
-        trace.add(action);
+        trace.addTlsAction(action);
         action.getConfiguredRecords().add(record);
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

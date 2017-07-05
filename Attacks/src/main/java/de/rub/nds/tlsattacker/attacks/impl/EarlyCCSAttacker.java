@@ -49,8 +49,8 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         // byte[] pms = new byte[48];
         // pms[0] = 3;
         // pms[1] = 3;
-        // workflowTrace.add(new ChangePreMasterSecretAction(pms));
-        // workflowTrace.add(new ChangeMasterSecretAction(ms));
+        // workflowTrace.addTlsAction(new ChangePreMasterSecretAction(pms));
+        // workflowTrace.addTlsAction(new ChangeMasterSecretAction(ms));
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -61,17 +61,17 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         tlsConfig.setTimeout(1000);
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowTrace workflowTrace = new WorkflowTrace();
-        workflowTrace.add(new SendAction(new ClientHelloMessage(tlsConfig)));
+        workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
         List<ProtocolMessage> messageList = new LinkedList<>();
         messageList.add(new ServerHelloMessage(tlsConfig));
         messageList.add(new CertificateMessage(tlsConfig));
         messageList.add(new ServerHelloDoneMessage(tlsConfig));
-        workflowTrace.add(new ReceiveAction(messageList));
+        workflowTrace.addTlsAction(new ReceiveAction(messageList));
         messageList = new LinkedList<>();
         messageList.add(new ChangeCipherSpecMessage());
-        workflowTrace.add(new SendAction(messageList));
+        workflowTrace.addTlsAction(new SendAction(messageList));
         messageList = new LinkedList<>();
-        workflowTrace.add(new ReceiveAction(messageList));
+        workflowTrace.addTlsAction(new ReceiveAction(messageList));
         tlsConfig.setWorkflowTrace(workflowTrace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);

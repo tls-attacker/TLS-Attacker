@@ -70,9 +70,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.setConfiguredRecords(new LinkedList<AbstractRecord>());
         sendAction.getConfiguredRecords().add(record);
-        trace.add(sendAction);
+        trace.addTlsAction(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
 
         try {
             workflowExecutor.executeWorkflow();

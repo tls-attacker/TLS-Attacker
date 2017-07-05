@@ -209,15 +209,15 @@ public class TlsClientTest {
         config.setWorkflowTrace(new WorkflowTrace());
 
         WorkflowTrace trace = config.getWorkflowTrace();
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
                         config)));
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
                 tlsContext);

@@ -37,7 +37,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         context.getWorkflowTrace().reset();
         ActionExecutor actionExecutor = ActionExecutorFactory.getActionExecutor(context.getConfig().getExecutorType(),
                 context);
-        List<TLSAction> tlsActions = context.getWorkflowTrace().getTLSActions();
+        List<TLSAction> tlsActions = context.getWorkflowTrace().getTlsActions();
         for (TLSAction action : tlsActions) {
             try {
                 action.execute(context, actionExecutor);

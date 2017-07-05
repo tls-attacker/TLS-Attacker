@@ -68,16 +68,16 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         protocolMessages.add(new ServerHelloMessage(config));
         protocolMessages.add(new CertificateMessage(config));
         protocolMessages.add(new ServerHelloDoneMessage(config));
-        tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
         protocolMessages = new LinkedList<>();
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(config);
         protocolMessages.add(cke);
         protocolMessages.add(new ChangeCipherSpecMessage(config));
-        tlsContext.getWorkflowTrace().add(new SendAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new SendAction(protocolMessages));
 
         protocolMessages = new LinkedList<>();
         protocolMessages.add(new AlertMessage(config));
-        tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
 
         ModifiableByteArray pms = new ModifiableByteArray();
         pms.setModification(ByteArrayModificationFactory.explicitValue(msg));

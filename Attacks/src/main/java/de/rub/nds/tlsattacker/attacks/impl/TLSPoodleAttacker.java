@@ -65,8 +65,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.getConfiguredRecords().add(r);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(new SendAction(applicationMessage));
-        trace.add(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new SendAction(applicationMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
