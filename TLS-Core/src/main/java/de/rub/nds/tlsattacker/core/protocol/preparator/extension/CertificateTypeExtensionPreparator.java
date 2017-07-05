@@ -29,6 +29,7 @@ public class CertificateTypeExtensionPreparator extends ExtensionPreparator<Cert
     public void prepareExtensionContent() {
         msg.setCertificateTypes(CertificateType.toByteArray(context.getConfig().getCertificateTypeDesiredTypes()));
         msg.setCertificateTypesLength(msg.getCertificateTypes().getValue().length);
+        msg.setIsClientMessage(context.getConfig().isCertificateTypeExtensionMessageState());
     }
 
 }

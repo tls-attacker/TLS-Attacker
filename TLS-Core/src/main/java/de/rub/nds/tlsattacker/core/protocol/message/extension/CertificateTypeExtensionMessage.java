@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -26,6 +27,8 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage {
     private ModifiableInteger certificateTypesLength;
     @ModifiableVariableProperty
     private ModifiableByteArray certificateTypes;
+    @ModifiableVariableProperty
+    private ModifiableBoolean isClientMessage;
 
     public CertificateTypeExtensionMessage() {
         super(ExtensionType.CERT_TYPE);
@@ -61,4 +64,15 @@ public class CertificateTypeExtensionMessage extends ExtensionMessage {
         this.certificateTypes = ModifiableVariableFactory.safelySetValue(this.certificateTypes, certificateTypes);
     }
 
+    public ModifiableBoolean getIsClientMessage() {
+        return isClientMessage;
+    }
+
+    public void setIsClientMessage(ModifiableBoolean isClientMessage) {
+        this.isClientMessage = isClientMessage;
+    }
+
+    public void setIsClientMessage(boolean isClientMessage) {
+        this.isClientMessage = ModifiableVariableFactory.safelySetValue(this.isClientMessage, isClientMessage);
+    }
 }

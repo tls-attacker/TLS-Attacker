@@ -259,6 +259,10 @@ public class TlsConfig implements Serializable {
      */
     private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
     /**
+     * Default state for the certificate type extension message. State "client"
+     */
+    private boolean certificateTypeExtensionMessageState = true;
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -1329,6 +1333,14 @@ public class TlsConfig implements Serializable {
 
     public void setAddClientAuthzExtension(boolean addClientAuthzExtension) {
         this.addClientAuthzExtension = addClientAuthzExtension;
+    }
+
+    public boolean isCertificateTypeExtensionMessageState() {
+        return certificateTypeExtensionMessageState;
+    }
+
+    public void setCertificateTypeExtensionMessageState(boolean certificateTypeExtensionMessageState) {
+        this.certificateTypeExtensionMessageState = certificateTypeExtensionMessageState;
     }
 
 }

@@ -26,9 +26,13 @@ public class CertificateTypeExtensionSerializer extends ExtensionSerializer<Cert
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(msg.getCertificateTypesLength().getValue(),
-                ExtensionByteLength.CERTIFICATE_TYPE_EXTENSION_TYPES_LENGTHFIELD_LENGTH);
-        appendBytes(msg.getCertificateTypes().getValue());
+        if (msg.getIsClientMessage().getValue()) {
+            appendInt(msg.getCertificateTypesLength().getValue(),
+                    ExtensionByteLength.CERTIFICATE_TYPE_EXTENSION_TYPES_LENGTHFIELD_LENGTH);
+            appendBytes(msg.getCertificateTypes().getValue());
+        } else {
+            appendBytes(msg.getCertificateTypes().getValue());
+        }
 
         return getAlreadySerialized();
     }

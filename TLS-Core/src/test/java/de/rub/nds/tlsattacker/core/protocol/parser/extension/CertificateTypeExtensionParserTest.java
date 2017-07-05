@@ -35,28 +35,30 @@ public class CertificateTypeExtensionParserTest {
     private final int startParsing;
     private final int certificateTypesLength;
     private final List<CertificateType> certificateTypes;
+    private final boolean isClientState;
     private CertificateTypeExtensionParser parser;
     private CertificateTypeExtensionMessage msg;
 
     public CertificateTypeExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
-            int startParsing, int certificateTypesLength, List<CertificateType> certificateTypes) {
+            int startParsing, int certificateTypesLength, List<CertificateType> certificateTypes, boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
         this.startParsing = startParsing;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
+        this.isClientState = isClientState;
     }
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
                 { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("0009000100"), 1, 0, 1,
-                        Arrays.asList(CertificateType.X509) },
+                        Arrays.asList(CertificateType.X509), false },
                 { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("000900020100"), 2, 0, 1,
-                        Arrays.asList(CertificateType.X509) },
+                        Arrays.asList(CertificateType.X509), true },
                 { ExtensionType.CERT_TYPE, ArrayConverter.hexStringToByteArray("00090003020100"), 3, 0, 2,
-                        Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509) } });
+                        Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509), true } });
     }
 
     @Before

@@ -33,17 +33,20 @@ public class CertificateTypeExtensionSerializerTest {
     private final int startParsing;
     private final int certificateTypesLength;
     private final List<CertificateType> certificateTypes;
+    private final boolean isClientState;
     private CertificateTypeExtensionSerializer serializer;
     private CertificateTypeExtensionMessage msg;
 
     public CertificateTypeExtensionSerializerTest(ExtensionType extensionType, byte[] expectedBytes,
-            int extensionLength, int startParsing, int certificateTypesLength, List<CertificateType> certificateTypes) {
+            int extensionLength, int startParsing, int certificateTypesLength, List<CertificateType> certificateTypes,
+            boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
         this.startParsing = startParsing;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
+        this.isClientState = isClientState;
     }
 
     @Parameterized.Parameters
@@ -63,6 +66,7 @@ public class CertificateTypeExtensionSerializerTest {
         msg.setExtensionLength(extensionLength);
         msg.setCertificateTypes(CertificateType.toByteArray(certificateTypes));
         msg.setCertificateTypesLength(certificateTypesLength);
+        msg.setIsClientMessage(isClientState);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }
