@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
-import de.rub.nds.tlsattacker.core.config.TlsConfigIO;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.ConfigIO;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,16 +31,16 @@ public class TlsConfigIOTest {
     @Test
     public void testReadWriteRead() throws IOException {
         File f = folder.newFile();
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfigIO.write(config, f);
-        config = TlsConfigIO.read(f);
+        Config config = Config.createConfig();
+        ConfigIO.write(config, f);
+        config = ConfigIO.read(f);
         assertNotNull(config);
     }
 
     @Test
     public void testIncompleteConfig() {
-        InputStream stream = TlsConfig.class.getResourceAsStream("/test_config.xml");
-        TlsConfig config = TlsConfig.createConfig(stream);
+        InputStream stream = Config.class.getResourceAsStream("/test_config.xml");
+        Config config = Config.createConfig(stream);
         assertNotNull(config);
         assertNotNull(config.getAlias());
         assertTrue(config.getSupportedCiphersuites().size() == 1);

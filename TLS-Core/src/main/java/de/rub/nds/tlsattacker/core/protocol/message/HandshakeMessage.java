@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -55,7 +55,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.handshakeMessageType = handshakeMessageType;
     }
 
-    public HandshakeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+    public HandshakeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;

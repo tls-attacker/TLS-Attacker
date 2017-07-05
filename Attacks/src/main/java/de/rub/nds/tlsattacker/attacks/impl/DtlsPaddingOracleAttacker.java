@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparato
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -67,7 +67,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private WorkflowExecutor workflowExecutor;
 
     private WorkflowTrace trace;
-    private final TlsConfig tlsConfig;
+    private final Config tlsConfig;
 
     public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config) {
         super(config, false);

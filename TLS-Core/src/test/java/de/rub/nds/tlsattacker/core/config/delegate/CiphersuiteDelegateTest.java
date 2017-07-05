@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.assertTrue;
@@ -83,7 +83,7 @@ public class CiphersuiteDelegateTest {
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly",
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setSupportedCiphersuites(null);
         delegate.applyDelegate(config);
         assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config.getSupportedCiphersuites()
@@ -95,8 +95,8 @@ public class CiphersuiteDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

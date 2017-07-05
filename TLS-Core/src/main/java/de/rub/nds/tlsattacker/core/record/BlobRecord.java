@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.preparator.BlobRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.record.serializer.BlobRecordSerializer;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
@@ -32,7 +32,7 @@ public class BlobRecord extends AbstractRecord {
     public BlobRecord() {
     }
 
-    public BlobRecord(TlsConfig config) {
+    public BlobRecord(Config config) {
         super(config);
     }
 

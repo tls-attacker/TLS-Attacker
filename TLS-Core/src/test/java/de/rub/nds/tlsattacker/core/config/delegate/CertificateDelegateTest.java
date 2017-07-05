@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -137,7 +137,7 @@ public class CertificateDelegateTest {
         assertTrue("Keystore parameter gets not parsed correctly", delegate.getKeystore().equals(args[1]));
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[5]));
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setKeyStore(null);
         config.setAlias(null);
         config.setPassword(null);
@@ -159,7 +159,7 @@ public class CertificateDelegateTest {
         jcommander.parse(args);
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setAlias(null);
         config.setPassword(null);
         config.setOurCertificate(null);
@@ -182,7 +182,7 @@ public class CertificateDelegateTest {
         args[4] = "-alias";
         args[5] = "default";
         jcommander.parse(args);
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         delegate.applyDelegate(config);
     }
 
@@ -196,7 +196,7 @@ public class CertificateDelegateTest {
         args[4] = "-alias";
         args[5] = "notthecorrectalias";
         jcommander.parse(args);
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         delegate.applyDelegate(config);
     }
 
@@ -210,14 +210,14 @@ public class CertificateDelegateTest {
         args[4] = "-alias";
         args[5] = "default";
         jcommander.parse(args);
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         delegate.applyDelegate(config);
     }
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

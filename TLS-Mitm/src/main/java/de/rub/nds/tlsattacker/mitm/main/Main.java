@@ -16,7 +16,7 @@ import com.beust.jcommander.ParameterException;
 
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.mitm.config.MitmCommandConfig;
 
 /**
@@ -39,7 +39,7 @@ public class Main {
                 return;
             }
             // Cmd was parsable
-            TlsConfig tlsConfig = null;
+            Config tlsConfig = null;
             try {
                 LOGGER.debug("Creating and launching mitm.");
                 tlsConfig = config.createConfig();

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -49,7 +49,7 @@ public class WorkflowTraceSerializerTest {
     // TODO Test all messages with all modifiable variables
     @Test
     public void testWriteRead() throws Exception {
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(TlsConfig.createConfig());
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(Config.createConfig());
         WorkflowTrace trace = factory.createFullWorkflow();
         // pick random protocol message and initialize a record with modifiable
         // variable
@@ -85,7 +85,7 @@ public class WorkflowTraceSerializerTest {
     public void TestWrite() {
         try {
             WorkflowTrace trace = new WorkflowTrace();
-            trace.add(new SendAction(new ClientHelloMessage(TlsConfig.createConfig())));
+            trace.add(new SendAction(new ClientHelloMessage(Config.createConfig())));
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
             Assert.assertTrue(f.exists());

@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -43,9 +43,9 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
-    TlsConfig config;
+    Config config;
 
-    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, TlsConfig config) {
+    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, Config config) {
         this.publicKey = (RSAPublicKey) pubKey;
         this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), 8);
         this.config = config;

@@ -39,7 +39,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 
 /**
@@ -51,10 +51,10 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 public class TlsContext {
 
     /**
-     * TlsConfig which contains the configurations for everything TLS-Attacker
+     * Config which contains the configurations for everything TLS-Attacker
      * related
      */
-    private TlsConfig config;
+    private Config config;
 
     /**
      * master secret established during the handshake
@@ -196,10 +196,10 @@ public class TlsContext {
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
     public TlsContext() {
-        this(TlsConfig.createConfig());
+        this(Config.createConfig());
     }
 
-    public TlsContext(TlsConfig config) {
+    public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
         // init lastRecordVersion for records
@@ -424,7 +424,7 @@ public class TlsContext {
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
-    public TlsConfig getConfig() {
+    public Config getConfig() {
         return config;
     }
 

@@ -42,7 +42,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates;
 import static de.rub.nds.tlsattacker.core.util.JKSLoader.loadTLSCertificate;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyPairFromStore;
 import static de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates.keyStoreFromRsaPem;
@@ -109,7 +109,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
 
     private void loadTestVectorsToContext() throws IOException {
 
-        TlsConfig config = tlsContext.getConfig();
+        Config config = tlsContext.getConfig();
 
         String cert = "-----BEGIN CERTIFICATE-----\n"
                 + "MIICTjCCAbegAwIBAgIJAKhSc+/gmfTlMA0GCSqGSIb3DQEBCwUAMEAxCzAJBgNV\n"

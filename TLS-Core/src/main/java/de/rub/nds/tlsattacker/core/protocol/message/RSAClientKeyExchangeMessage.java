@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,7 +29,7 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @XmlElement
     protected RSAClientComputations computations;
 
-    public RSAClientKeyExchangeMessage(TlsConfig tlsConfig) {
+    public RSAClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
     }
 

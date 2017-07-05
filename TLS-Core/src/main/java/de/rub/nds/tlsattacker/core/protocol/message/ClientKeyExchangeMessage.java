@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 /**
  *
@@ -37,7 +37,7 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
         super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 
-    public ClientKeyExchangeMessage(TlsConfig tlsConfig) {
+    public ClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_KEY_EXCHANGE);
     }
 

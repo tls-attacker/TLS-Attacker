@@ -16,21 +16,21 @@ import javax.xml.bind.JAXB;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-class TlsConfigIO {
-    public static void write(TlsConfig config, File f) {
+class ConfigIO {
+    public static void write(Config config, File f) {
         JAXB.marshal(config, f);
     }
 
-    public static TlsConfig read(File f) {
-        TlsConfig config = JAXB.unmarshal(f, TlsConfig.class);
+    public static Config read(File f) {
+        Config config = JAXB.unmarshal(f, Config.class);
         return config;
     }
 
-    public static TlsConfig read(InputStream stream) {
-        TlsConfig config = JAXB.unmarshal(stream, TlsConfig.class);
+    public static Config read(InputStream stream) {
+        Config config = JAXB.unmarshal(stream, Config.class);
         return config;
     }
 
-    private TlsConfigIO() {
+    private ConfigIO() {
     }
 }

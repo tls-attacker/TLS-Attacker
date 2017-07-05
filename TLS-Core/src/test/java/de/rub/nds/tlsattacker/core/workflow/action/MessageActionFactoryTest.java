@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionOne() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         MessageAction action = MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
@@ -61,7 +61,7 @@ public class MessageActionFactoryTest {
      */
     @Test
     public void testCreateActionMultiple() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ArbitraryMessage());
         messages.add(new AlertMessage(config));

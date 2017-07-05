@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandle
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -46,7 +46,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super();
     }
 
-    public ECDHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
+    public ECDHEServerKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 

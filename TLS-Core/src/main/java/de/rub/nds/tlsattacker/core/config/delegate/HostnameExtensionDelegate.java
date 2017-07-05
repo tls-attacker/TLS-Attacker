@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 /**
  *
@@ -32,7 +32,7 @@ public class HostnameExtensionDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         if (sniHostname != null) {
             config.setAddServerNameIndicationExtension(true);
             config.setSniHostname(sniHostname);

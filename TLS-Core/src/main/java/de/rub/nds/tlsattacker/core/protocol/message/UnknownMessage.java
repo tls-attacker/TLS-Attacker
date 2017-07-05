@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -30,7 +30,7 @@ public class UnknownMessage extends ProtocolMessage {
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }
 
-    public UnknownMessage(TlsConfig config) {
+    public UnknownMessage(Config config) {
         super();
         protocolMessageType = ProtocolMessageType.UNKNOWN;
     }

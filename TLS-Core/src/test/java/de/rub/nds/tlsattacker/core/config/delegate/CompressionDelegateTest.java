@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.*;
@@ -78,7 +78,7 @@ public class CompressionDelegateTest {
         args[0] = "-compression";
         args[1] = "NULL,DEFLATE";
         jcommander.parse(args);
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setSupportedCompressionMethods(null);
         delegate.applyDelegate(config);
         assertTrue("NULL should get parsed correctly",
@@ -90,8 +90,8 @@ public class CompressionDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.state;
 
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
@@ -20,6 +20,6 @@ import org.junit.Test;
 public class TlsConfigTest {
     @Test
     public void testReadFromResource() {
-        assertNotNull(TlsConfig.createConfig());
+        assertNotNull(Config.createConfig());
     }
 }

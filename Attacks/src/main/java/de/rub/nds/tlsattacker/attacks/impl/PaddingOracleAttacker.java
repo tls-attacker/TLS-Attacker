@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -45,7 +45,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttacker.class);
 
     private final List<ProtocolMessage> lastMessages;
-    private final TlsConfig tlsConfig;
+    private final Config tlsConfig;
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig config) {
         super(config, false);

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.converters.SignatureAndHashAlgorithmConverter;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         if (signatureAndHashAlgorithms != null) {
             config.setAddSignatureAndHashAlgrorithmsExtension(true);
             config.setSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);

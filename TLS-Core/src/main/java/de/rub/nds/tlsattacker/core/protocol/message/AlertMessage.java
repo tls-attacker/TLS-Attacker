@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -48,7 +48,7 @@ public class AlertMessage extends ProtocolMessage {
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }
 
-    public AlertMessage(TlsConfig tlsConfig) {
+    public AlertMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }

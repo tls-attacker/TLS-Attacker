@@ -52,7 +52,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -137,7 +137,7 @@ public class TlsClientTest {
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
-        TlsConfig config = clientCommandConfig.createConfig();
+        Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
         config.setTlsTimeout(TIMEOUT);
@@ -156,7 +156,7 @@ public class TlsClientTest {
 
     }
 
-    private void testProtocolCompatibility(List<String> serverList, TlsConfig config, PublicKeyAlgorithm algorithm) {
+    private void testProtocolCompatibility(List<String> serverList, Config config, PublicKeyAlgorithm algorithm) {
         LOGGER.info(config.getHighestProtocolVersion());
         for (CipherSuite cs : CipherSuite.getImplemented()) {
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
@@ -176,7 +176,7 @@ public class TlsClientTest {
         }
     }
 
-    private boolean testExecuteWorkflow(TlsConfig config) {
+    private boolean testExecuteWorkflow(Config config) {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(config);
 
@@ -199,7 +199,7 @@ public class TlsClientTest {
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
-        TlsConfig config = clientCommandConfig.createConfig();
+        Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
         config.setTlsTimeout(TIMEOUT);

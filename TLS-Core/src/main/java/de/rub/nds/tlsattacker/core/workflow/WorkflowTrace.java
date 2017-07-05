@@ -47,8 +47,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A wrapper class over a list of protocol configuredMessages maintained in the
- * TLS context.
+ * A wrapper class over a list of protocol configuredMessages.
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */

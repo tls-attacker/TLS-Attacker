@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.security.Security;
@@ -41,7 +41,7 @@ public class MangerAttackServerTest {
 
         Security.addProvider(new BouncyCastleProvider());
 
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setHost(CONNECT);
         List<CipherSuite> ciphersuites = new LinkedList<>();
         ciphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

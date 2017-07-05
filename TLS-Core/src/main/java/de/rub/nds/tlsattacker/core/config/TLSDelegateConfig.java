@@ -60,18 +60,18 @@ public abstract class TLSDelegateConfig {
         return generalDelegate;
     }
 
-    public TlsConfig createConfig() {
-        TlsConfig config = null;
+    public Config createConfig() {
+        Config config = null;
         if (defaultConfig != null) {
             File configFile = new File(defaultConfig);
             if (configFile.exists()) {
-                config = TlsConfig.createConfig(configFile);
+                config = Config.createConfig(configFile);
             } else {
                 LOGGER.warn("Could not find default Config File");
-                config = TlsConfig.createConfig();
+                config = Config.createConfig();
             }
         } else {
-            config = TlsConfig.createConfig();
+            config = Config.createConfig();
         }
         for (Delegate delegate : getDelegateList()) {
             delegate.applyDelegate(config);

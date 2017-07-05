@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
@@ -96,8 +96,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
+    public Config createConfig() {
+        Config config = super.createConfig();
         if (config.getWorkflowTrace() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }

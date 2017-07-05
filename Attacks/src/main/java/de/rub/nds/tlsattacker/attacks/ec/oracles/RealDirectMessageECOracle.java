@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.config.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -45,7 +45,7 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class RealDirectMessageECOracle extends ECOracle {
 
-    private final TlsConfig config;
+    private final Config config;
 
     private Point checkPoint;
 
@@ -53,7 +53,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     private final ECComputer computer;
 
-    public RealDirectMessageECOracle(TlsConfig config, Curve curve) {
+    public RealDirectMessageECOracle(Config config, Curve curve) {
         this.config = config;
         this.curve = curve;
         this.computer = new ECComputer();
