@@ -70,7 +70,11 @@ public class ServerHelloMessage extends HelloMessage {
             addExtension(new MaxFragmentLengthExtensionMessage());
         }
         if (tlsConfig.isAddServerNameIndicationExtension()) {
-            addExtension(new ServerNameIndicationExtensionMessage());
+            ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
+            ServerNamePair pair = new ServerNamePair();
+            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes());
+            extension.getServerNameList().add(pair);
+            addExtension(extension);
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());

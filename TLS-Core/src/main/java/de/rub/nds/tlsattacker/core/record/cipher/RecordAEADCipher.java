@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
@@ -50,11 +51,6 @@ public class RecordAEADCipher extends RecordCipher {
      * iv length in byte
      */
     public static final int GCM_IV_LENGTH = 12;
-
-    /**
-     * noncelength in byte
-     */
-    public static final int TLS13_NONCE_LENGTH = 8;
 
     /**
      * cipher for encryption
@@ -175,8 +171,9 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public byte[] encrypt(byte[] data) {
         try {
-            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberEnc, TLS13_NONCE_LENGTH);
-            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - TLS13_NONCE_LENGTH], sequenceNumberByte);
+            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberEnc, RecordByteLength.SEQUENCE_NUMBER);
+            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
+                    sequenceNumberByte);
             if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
                 byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
@@ -203,8 +200,9 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public byte[] decrypt(byte[] data) {
         try {
-            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberDec, TLS13_NONCE_LENGTH);
-            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - TLS13_NONCE_LENGTH], sequenceNumberByte);
+            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberDec, RecordByteLength.SEQUENCE_NUMBER);
+            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
+                    sequenceNumberByte);
             if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
                 byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
