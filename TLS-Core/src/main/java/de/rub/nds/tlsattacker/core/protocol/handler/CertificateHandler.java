@@ -17,10 +17,12 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSeriali
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
@@ -59,15 +61,20 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
                     .getValue());
         } else {
-            byte[] certificates = new byte[0];
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
             int certificatesLength = 0;
-            for (CertificatePair pair : message.getCertificatesList()) {
-                certificates = ArrayConverter.concatenate(certificates, ArrayConverter.intToBytes(pair
-                        .getCertificateLength().getValue(), HandshakeByteLength.CERTIFICATE_LENGTH), pair
-                        .getCertificate().getValue());
-                certificatesLength += pair.getCertificateLength().getValue() + HandshakeByteLength.CERTIFICATE_LENGTH;
+            try {
+                for (CertificatePair pair : message.getCertificatesList()) {
+                    stream.write(ArrayConverter.intToBytes(pair.getCertificateLength().getValue(),
+                            HandshakeByteLength.CERTIFICATE_LENGTH));
+                    stream.write(pair.getCertificate().getValue());
+                    certificatesLength += pair.getCertificateLength().getValue()
+                            + HandshakeByteLength.CERTIFICATE_LENGTH;
+                }
+            } catch (IOException ex) {
+                throw new AdjustmentException("Could not concatenate certificates bytes", ex);
             }
-            cert = parseCertificate(certificatesLength, certificates);
+            cert = parseCertificate(certificatesLength, stream.toByteArray());
         }
         if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
             LOGGER.debug("Setting ClientCertificate in Context");
