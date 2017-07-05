@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -50,8 +50,8 @@ public class RecordBlockCipherTest {
                     && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
-                for (ConnectionEnd end : ConnectionEnd.values()) {
-                    context.getConfig().setConnectionEnd(end);
+                for (ConnectionEndType end : ConnectionEndType.values()) {
+                    context.getConfig().setConnectionEndType(end);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
                         if (version == ProtocolVersion.SSL2 || version == ProtocolVersion.SSL3) {
                             continue;
@@ -71,7 +71,7 @@ public class RecordBlockCipherTest {
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
-        context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
+        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
         RecordBlockCipher cipher = new RecordBlockCipher(context);
     }
 

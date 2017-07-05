@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -46,7 +46,7 @@ public class ClientDelegate extends Delegate {
                 throw new ConfigurationException("Could not parse provided host: " + host);
             }
         }
-        config.setConnectionEnd(ConnectionEnd.CLIENT);
+        config.setConnectionEndType(ConnectionEndType.CLIENT);
     }
 
 }

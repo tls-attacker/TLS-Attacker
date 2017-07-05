@@ -43,7 +43,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         Certificate cert = context.getConfig().getOurCertificate();
         if (cert == null) {
             throw new PreparationException("Cannot prepare CertificateMessage since no certificate is specified for "
-                    + context.getTalkingConnectionEnd().name());
+                    + context.getTalkingConnectionEndType().name());
         } else {
             return cert;
         }

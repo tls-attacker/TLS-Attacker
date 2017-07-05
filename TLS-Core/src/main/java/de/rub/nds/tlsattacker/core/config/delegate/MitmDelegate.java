@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -39,7 +39,7 @@ public class MitmDelegate extends Delegate {
         if (port != null) {
             config.setPort(port);
         }
-        config.setConnectionEnd(ConnectionEnd.SERVER);
+        config.setConnectionEndType(ConnectionEndType.SERVER);
     }
 
 }

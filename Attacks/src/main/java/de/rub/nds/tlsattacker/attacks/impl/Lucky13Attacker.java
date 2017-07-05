@@ -8,27 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -38,6 +17,24 @@ import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
  * Executes the Lucky13 attack test
