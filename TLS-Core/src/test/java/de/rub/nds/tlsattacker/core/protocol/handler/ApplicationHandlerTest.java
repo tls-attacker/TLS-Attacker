@@ -8,20 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -31,10 +26,6 @@ public class ApplicationHandlerTest {
 
     private ApplicationHandler handler;
     private TlsContext context;
-
-    public ApplicationHandlerTest() {
-
-    }
 
     @Before
     public void setUp() {

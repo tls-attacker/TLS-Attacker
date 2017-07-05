@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 
@@ -23,8 +24,15 @@ public class BlobRecordParser extends AbstractRecordParser<BlobRecord> {
 
     @Override
     public BlobRecord parse() {
+        LOGGER.debug("Parsing BlobRecord");
         BlobRecord record = new BlobRecord();
-        record.setProtocolMessageBytes(parseByteArrayField(getBytesLeft()));
+        parseProtocolMessageBytes(record);
         return record;
+    }
+
+    private void parseProtocolMessageBytes(BlobRecord record) {
+        record.setProtocolMessageBytes(parseByteArrayField(getBytesLeft()));
+        LOGGER.debug("ProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 }

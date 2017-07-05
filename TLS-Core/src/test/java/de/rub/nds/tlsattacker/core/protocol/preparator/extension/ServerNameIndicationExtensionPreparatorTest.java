@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class ServerNameIndicationExtensionPreparatorTest {
 
-    public ServerNameIndicationExtensionPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

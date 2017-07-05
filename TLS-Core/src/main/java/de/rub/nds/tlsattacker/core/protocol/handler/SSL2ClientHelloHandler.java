@@ -8,15 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**

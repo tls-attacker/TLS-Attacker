@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -29,9 +28,6 @@ public class ProtocolVersionDelegateTest {
     private ProtocolVersionDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public ProtocolVersionDelegateTest() {
-    }
 
     @Before
     public void setUp() {

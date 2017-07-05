@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -40,6 +37,7 @@ public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessa
 
     @Override
     protected HeartbeatMessage parseMessageContent() {
+        LOGGER.debug("Parsing HeartbeatMessage");
         HeartbeatMessage msg = new HeartbeatMessage();
         parseHeartbeatMessageType(msg);
         parsePayloadLength(msg);

@@ -8,16 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import java.util.Arrays;
-import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.Test;
 
 /**
  *
@@ -26,9 +20,6 @@ import org.junit.runners.Parameterized;
 public class UnknownMessageParserTest {
 
     private UnknownMessageParser parser;
-
-    public UnknownMessageParserTest() {
-    }
 
     /**
      * Test of parse method, of class UnknownMessageParser.

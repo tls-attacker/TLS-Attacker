@@ -8,7 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHEServerKeyExchangePreparator;
@@ -16,9 +17,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSeria
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.math.BigInteger;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -28,9 +29,6 @@ public class DHEServerKeyExchangeHandlerTest {
 
     private DHEServerKeyExchangeHandler handler;
     private TlsContext context;
-
-    public DHEServerKeyExchangeHandlerTest() {
-    }
 
     @Before
     public void setUp() {
@@ -76,13 +74,11 @@ public class DHEServerKeyExchangeHandlerTest {
         message.setP(BigInteger.TEN.toByteArray());
         message.setG(BigInteger.ONE.toByteArray());
         message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
-        message.getComputations().setPrivateKey(new BigInteger("123"));
-        message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
-        message.getComputations().setMasterSecret(new byte[] { 4, 5, 6 });
+        message.getComputations().setPrivateKey(BigInteger.ZERO);
         handler.adjustTLSContext(message);
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
+
     }
 
     @Test
@@ -92,7 +88,5 @@ public class DHEServerKeyExchangeHandlerTest {
         message.setG(BigInteger.ONE.toByteArray());
         message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
-        assertNull(context.getPreMasterSecret());
-        assertNull(context.getMasterSecret());
     }
 }

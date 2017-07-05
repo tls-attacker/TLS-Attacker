@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 
 /**
@@ -24,7 +25,14 @@ public class BlobRecordSerializer extends AbstractRecordSerializer<BlobRecord> {
 
     @Override
     protected byte[] serializeBytes() {
-        appendBytes(record.getProtocolMessageBytes().getValue());
+        LOGGER.debug("Serializing BlobRecord");
+        writeProtocolMessageBytes(record);
         return getAlreadySerialized();
+    }
+
+    private void writeProtocolMessageBytes(BlobRecord record) {
+        appendBytes(record.getProtocolMessageBytes().getValue());
+        LOGGER.debug("ProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 }

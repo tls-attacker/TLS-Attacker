@@ -8,16 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -44,8 +42,6 @@ public class UnknownHandshakeMessageParserTest {
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
 
     private HandshakeMessageType type;
     private int length;
@@ -54,8 +50,6 @@ public class UnknownHandshakeMessageParserTest {
     public UnknownHandshakeMessageParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
             int length, byte[] data) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.data = data;
@@ -66,9 +60,9 @@ public class UnknownHandshakeMessageParserTest {
      */
     @Test
     public void testParse() {
-        UnknownHandshakeMessageParser parser = new UnknownHandshakeMessageParser(start, message, ProtocolVersion.TLS12);
+        UnknownHandshakeMessageParser parser = new UnknownHandshakeMessageParser(0, message, ProtocolVersion.TLS12);
         UnknownHandshakeMessage msg = parser.parse();
-        assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
+        assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());
         assertArrayEquals(data, msg.getData().getValue());

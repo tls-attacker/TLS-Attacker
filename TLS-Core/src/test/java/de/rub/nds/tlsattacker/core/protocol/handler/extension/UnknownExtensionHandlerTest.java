@@ -8,15 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -26,9 +25,6 @@ public class UnknownExtensionHandlerTest {
 
     private UnknownExtensionHandler handler;
     private TlsContext context;
-
-    public UnknownExtensionHandlerTest() {
-    }
 
     @Before
     public void setUp() {

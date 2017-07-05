@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -20,9 +19,6 @@ import static org.junit.Assert.*;
 public class SerializerTest {
 
     private SerializerImpl serializer;
-
-    public SerializerTest() {
-    }
 
     @Before
     public void setUp() {

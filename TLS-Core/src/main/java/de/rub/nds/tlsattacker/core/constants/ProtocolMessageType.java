@@ -8,19 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

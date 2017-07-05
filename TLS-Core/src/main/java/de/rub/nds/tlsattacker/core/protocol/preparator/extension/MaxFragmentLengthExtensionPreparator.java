@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -26,6 +28,7 @@ public class MaxFragmentLengthExtensionPreparator extends ExtensionPreparator<Ma
 
     @Override
     public void prepareExtensionContent() {
+        LOGGER.debug("Preparing MaxFragmentLengthExtensionMessage");
         message.setMaxFragmentLength(context.getConfig().getMaxFragmentLength().getArrayValue());
     }
 

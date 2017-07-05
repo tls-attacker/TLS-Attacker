@@ -8,18 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -36,6 +35,7 @@ public class RecordBlockCipherTest {
     public void setUp() {
         context = new TlsContext();
         Security.addProvider(new BouncyCastleProvider());
+        UnlimitedStrengthEnabler.enable();
     }
 
     @Test
@@ -73,7 +73,6 @@ public class RecordBlockCipherTest {
         context.setMasterSecret(new byte[] { 0 });
         context.getConfig().setConnectionEnd(ConnectionEnd.CLIENT);
         RecordBlockCipher cipher = new RecordBlockCipher(context);
-        System.out.println(ArrayConverter.bytesToHexString(cipher.calculatePadding(9)));
     }
 
     /**

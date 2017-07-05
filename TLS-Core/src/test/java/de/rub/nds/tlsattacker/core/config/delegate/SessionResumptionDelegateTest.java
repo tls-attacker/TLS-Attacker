@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.SessionResumptionDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
@@ -29,9 +28,6 @@ public class SessionResumptionDelegateTest {
     private SessionResumptionDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public SessionResumptionDelegateTest() {
-    }
 
     @Before
     public void setUp() {

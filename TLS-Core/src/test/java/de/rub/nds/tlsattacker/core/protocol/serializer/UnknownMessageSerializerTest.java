@@ -8,16 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
-import java.util.Collection;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
@@ -27,9 +22,6 @@ public class UnknownMessageSerializerTest {
 
     private UnknownMessage msg;
     private UnknownMessageSerializer serializer;
-
-    public UnknownMessageSerializerTest() {
-    }
 
     @Before
     public void setUp() {

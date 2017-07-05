@@ -8,16 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParserTest;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -42,16 +39,18 @@ public class DHClientKeyExchangeSerializerTest {
 
     private int serializedKeyLength;
     private byte[] serializedKey;
+    ProtocolVersion version;
 
-    public DHClientKeyExchangeSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length, int serializedKeyLength, byte[] serializedKey) {
+    public DHClientKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length,
+            int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
+        this.start = 0;
+        this.expectedPart = message;
         this.type = type;
         this.length = length;
         this.serializedKeyLength = serializedKeyLength;
         this.serializedKey = serializedKey;
+        this.version = version;
     }
 
     /**
@@ -66,7 +65,7 @@ public class DHClientKeyExchangeSerializerTest {
         msg.setSerializedPublicKeyLength(serializedKeyLength);
         msg.setType(type.getValue());
         msg.setLength(length);
-        DHClientKeyExchangeSerializer serializer = new DHClientKeyExchangeSerializer(msg, ProtocolVersion.TLS12);
+        DHClientKeyExchangeSerializer serializer = new DHClientKeyExchangeSerializer(msg, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionParser;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -28,8 +28,11 @@ public class HeartbeatExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000f000101"), 0,
-                ArrayConverter.hexStringToByteArray("000f000101"), ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } });
+        return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("000f000101"),
+                ExtensionType.HEARTBEAT, 1, new byte[] { 1 } } }); // is the
+                                                                   // same for
+                                                                   // TLS10 and
+                                                                   // TLS11
     }
 
     private byte[] extension;
@@ -39,11 +42,10 @@ public class HeartbeatExtensionParserTest {
     private int extensionLength;
     private byte[] heartbeatMode;
 
-    public HeartbeatExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
-            int extensionLength, byte[] heartbeatMode) {
+    public HeartbeatExtensionParserTest(byte[] extension, ExtensionType type, int extensionLength, byte[] heartbeatMode) {
         this.extension = extension;
-        this.start = start;
-        this.completeExtension = completeExtension;
+        this.start = 0;
+        this.completeExtension = extension;
         this.type = type;
         this.extensionLength = extensionLength;
         this.heartbeatMode = heartbeatMode;

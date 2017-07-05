@@ -8,12 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -30,6 +27,7 @@ public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownM
 
     @Override
     protected void prepareProtocolMessageContents() {
+        LOGGER.debug("Preparing UnknownMessage");
         prepareCompleteResultingMessage(msg);
     }
 

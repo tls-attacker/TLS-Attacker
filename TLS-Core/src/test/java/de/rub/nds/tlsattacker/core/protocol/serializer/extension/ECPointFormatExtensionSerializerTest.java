@@ -18,9 +18,6 @@ import static org.junit.Assert.*;
  */
 public class ECPointFormatExtensionSerializerTest {
 
-    public ECPointFormatExtensionSerializerTest() {
-    }
-
     @Before
     public void setUp() {
     }

@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
@@ -51,17 +51,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      * Prepare message for sending. This method invokes before and after method
      * hooks.
      *
+     * @param message
      * @return message in bytes
      */
     public byte[] prepareMessage(Message message) {
         Preparator preparator = getPreparator(message);
         preparator.prepare();
-        try {
-            adjustTLSContext(message);
-        } catch (AdjustmentException E) {
-            LOGGER.warn("Could not adjust TLSContext");
-            LOGGER.debug(E);
-        }
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);
@@ -69,6 +64,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
             if (((HandshakeMessage) message).getIncludeInDigest()) {
                 tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
             }
+        }
+        try {
+            adjustTLSContext(message);
+        } catch (AdjustmentException E) {
+            LOGGER.warn("Could not adjust TLSContext");
+            LOGGER.debug(E);
         }
         return message.getCompleteResultingMessage().getValue();
     }
@@ -85,6 +86,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
+        if (parsedMessage instanceof HandshakeMessage) {
+            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
+                tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
+            }
+        }
         try {
             prepareAfterParse(parsedMessage);
             adjustTLSContext(parsedMessage);
@@ -92,11 +98,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
-        if (parsedMessage instanceof HandshakeMessage) {
-            if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
-                tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
-            }
-        }
+
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 

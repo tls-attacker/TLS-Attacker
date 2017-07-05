@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -24,6 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -64,7 +64,19 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class TlsConfig implements Serializable {
+public class TlsConfig implements Serializable {
+    public static TlsConfig createConfig() {
+        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
+        return TlsConfigIO.read(stream);
+    }
+
+    public static TlsConfig createConfig(File f) {
+        return TlsConfigIO.read(f);
+    }
+
+    public static TlsConfig createConfig(InputStream stream) {
+        return TlsConfigIO.read(stream);
+    }
 
     /**
      * Default value for ProtocolVerionFields
@@ -162,7 +174,7 @@ public final class TlsConfig implements Serializable {
     /**
      * Server port used
      */
-    private int serverPort = 4433;
+    private int port = 443;
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
@@ -395,18 +407,15 @@ public final class TlsConfig implements Serializable {
      */
     private boolean quickReceive = true;
 
-    public static TlsConfig createConfig() {
-        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
-        return TlsConfigIO.read(stream);
-    }
+    /**
+     * If the WorkflowExecutor should take care of the connection opening
+     */
+    private boolean workflowExecutorShouldOpen = true;
 
-    public static TlsConfig createConfig(File f) {
-        return TlsConfigIO.read(f);
-    }
-
-    public static TlsConfig createConfig(InputStream stream) {
-        return TlsConfigIO.read(stream);
-    }
+    /**
+     * If the WorkflowExecutor should take care of the connection closing
+     */
+    private boolean workflowExecutorShouldClose = true;
 
     private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
@@ -446,6 +455,22 @@ public final class TlsConfig implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+    }
+
+    public boolean isWorkflowExecutorShouldOpen() {
+        return workflowExecutorShouldOpen;
+    }
+
+    public void setWorkflowExecutorShouldOpen(boolean workflowExecutorShouldOpen) {
+        this.workflowExecutorShouldOpen = workflowExecutorShouldOpen;
+    }
+
+    public boolean isWorkflowExecutorShouldClose() {
+        return workflowExecutorShouldClose;
+    }
+
+    public void setWorkflowExecutorShouldClose(boolean workflowExecutorShouldClose) {
+        this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
     public boolean isQuickReceive() {
@@ -736,12 +761,12 @@ public final class TlsConfig implements Serializable {
         this.timeout = timeout;
     }
 
-    public int getServerPort() {
-        return serverPort;
+    public int getPort() {
+        return port;
     }
 
-    public void setServerPort(int serverPort) {
-        this.serverPort = serverPort;
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public boolean isSniHostnameFatal() {

@@ -8,18 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -38,6 +35,7 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing CertificateRequestMessage");
         certTypes = convertClientCertificateTypes(context.getConfig().getClientCertificateTypes());
         prepareClientCertificateTypes(certTypes, msg);
         prepareClientCertificateTypesCount(msg);

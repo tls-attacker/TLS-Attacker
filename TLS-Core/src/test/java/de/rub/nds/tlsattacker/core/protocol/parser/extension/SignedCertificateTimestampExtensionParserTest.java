@@ -24,24 +24,6 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class SignedCertificateTimestampExtensionParserTest {
-
-    private final ExtensionType extensionType;
-    private final int extensionLength;
-    private final byte[] timestamp;
-    private final byte[] expectedBytes;
-    private final int startPosition;
-    private SignedCertificateTimestampExtensionParser parser;
-    private SignedCertificateTimestampExtensionMessage message;
-
-    public SignedCertificateTimestampExtensionParserTest(ExtensionType extensionType, int extensionLength,
-            byte[] timestamp, byte[] expectedBytes, int startPosition) {
-        this.extensionType = extensionType;
-        this.extensionLength = extensionLength;
-        this.timestamp = timestamp;
-        this.expectedBytes = expectedBytes;
-        this.startPosition = startPosition;
-    }
-
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
@@ -72,6 +54,23 @@ public class SignedCertificateTimestampExtensionParserTest {
                                 + "7ef710d303"), 0 } });
     }
 
+    private final ExtensionType extensionType;
+    private final int extensionLength;
+    private final byte[] timestamp;
+    private final byte[] expectedBytes;
+    private final int startPosition;
+    private SignedCertificateTimestampExtensionParser parser;
+    private SignedCertificateTimestampExtensionMessage message;
+
+    public SignedCertificateTimestampExtensionParserTest(ExtensionType extensionType, int extensionLength,
+            byte[] timestamp, byte[] expectedBytes, int startPosition) {
+        this.extensionType = extensionType;
+        this.extensionLength = extensionLength;
+        this.timestamp = timestamp;
+        this.expectedBytes = expectedBytes;
+        this.startPosition = startPosition;
+    }
+
     @Test
     public void testParseExtensionMessageContent() {
 
@@ -79,7 +78,7 @@ public class SignedCertificateTimestampExtensionParserTest {
         message = parser.parse();
 
         assertArrayEquals(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP.getValue(), message.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
+        assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(timestamp, message.getSignedTimestamp().getValue());
 
     }

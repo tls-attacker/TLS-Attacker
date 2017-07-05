@@ -17,9 +17,6 @@ import org.junit.Test;
  */
 public class UnknownExtensionPreparatorTest {
 
-    public UnknownExtensionPreparatorTest() {
-    }
-
     @Before
     public void setUp() {
     }

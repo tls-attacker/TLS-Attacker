@@ -8,30 +8,27 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FinishedMessagePreparatorTest {
+    private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
 
     private FinishedMessage message;
     private TlsContext context;
     private FinishedMessagePreparator preparator;
-
-    public FinishedMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {
@@ -57,5 +54,4 @@ public class FinishedMessagePreparatorTest {
 
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
 }

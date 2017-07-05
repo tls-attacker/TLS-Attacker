@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 
@@ -23,8 +24,10 @@ public class BlobDecryptor extends Decryptor<BlobRecord> {
 
     @Override
     public void decrypt(BlobRecord record) {
+        LOGGER.debug("Decrypting BlobRecord");
         byte[] decrypted = recordCipher.decrypt(record.getProtocolMessageBytes().getValue());
         record.setCleanProtocolMessageBytes(decrypted);
+        LOGGER.debug("CleanProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getCleanProtocolMessageBytes().getValue()));
     }
-
 }
