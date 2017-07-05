@@ -26,6 +26,8 @@ import sun.security.ssl.SSLSocketImpl;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import java.net.ConnectException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * BasicTlsClient for integration tests.
@@ -35,7 +37,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
  * TLS1.2 and TLS_RSA_WITH_AES_128_CBC_SHA.
  * 
  * @author Robert Merget <robert.merget@rub.de>
- * @author Lucas Hartmann <firstname.lastname@rub.de>
  */
 public class BasicTlsClient extends Thread {
 
@@ -46,6 +47,7 @@ public class BasicTlsClient extends Thread {
     private final String serverHost;
     private final int serverPort;
     private final String serverPrettyName;
+    private boolean retryConnect;
 
     private volatile boolean finished = false;
 
@@ -57,6 +59,7 @@ public class BasicTlsClient extends Thread {
         this.serverPort = serverPort;
         this.serverPrettyName = serverHost + ":" + serverPort;
         this.tlsVersion = version;
+        this.retryConnect = true;
     }
 
     public BasicTlsClient() throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException,
@@ -64,16 +67,34 @@ public class BasicTlsClient extends Thread {
         this("127.0.0.1", 4433, ProtocolVersion.TLS12, CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
     }
 
+    public void setRetryConnect(boolean retryConnect) {
+        this.retryConnect = retryConnect;
+    }
+
     @Override
     public void run() {
         SSLSocket socket = null;
         try {
-            LOGGER.debug("Connecting to " + serverPrettyName);
-            socket = getFreshSocket(tlsVersion);
-            LOGGER.debug("Closing session with " + serverPrettyName);
+            LOGGER.info("Connecting to " + serverPrettyName);
+            if (retryConnect) {
+                while (true) {
+                    try {
+                        socket = getFreshSocket(tlsVersion);
+                    } catch (ConnectException x) {
+                        LOGGER.info("retry: connect to " + serverPrettyName);
+                        TimeUnit.MILLISECONDS.sleep(10);
+                        continue;
+                    }
+                    break;
+                }
+            } else {
+                socket = getFreshSocket(tlsVersion);
+            }
+
             socket.getSession().invalidate();
+            LOGGER.info("Closing session with " + serverPrettyName);
             socket.close();
-            LOGGER.debug("Closed (" + serverPrettyName + ")");
+            LOGGER.info("Closed (" + serverPrettyName + ")");
         } catch (InterruptedException | IOException ex) {
             LOGGER.error(ex);
         } catch (Exception ex) {
@@ -88,7 +109,7 @@ public class BasicTlsClient extends Thread {
                 LOGGER.debug(e);
             }
             finished = true;
-            LOGGER.debug("Shutdown complete");
+            LOGGER.info("Shutdown complete");
         }
     }
 

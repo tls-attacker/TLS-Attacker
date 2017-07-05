@@ -86,7 +86,7 @@ public class TlsClientTest {
     }
 
     @Test
-    // @Category(IntegrationTests.class)
+    @Category(IntegrationTests.class)
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
             TimeHelper.setProvider(new FixedTimeProvider(0));

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,10 +33,7 @@ import de.rub.nds.modifiablevariable.util.BadRandom;
  * @author Juraj Somorovsky <juraj.somorovsky@ru.de>
  */
 public class BasicTlsServer extends Thread {
-    // TODO should be in core package
-    // TODO should be clean
-    // TODO contains the BouncyCastle provider and will probably not work as a
-    // standalone server once moved to core
+
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsServer.class);
 
     private String[] cipherSuites = null;
