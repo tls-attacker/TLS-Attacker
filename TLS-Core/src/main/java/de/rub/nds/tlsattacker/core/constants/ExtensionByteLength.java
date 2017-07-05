@@ -126,4 +126,9 @@ public class ExtensionByteLength {
      * Length of the certificate_type type field
      */
     public static final int CERTIFICATE_TYPE_EXTENSION_TYPE_LENGTH = 1;
+
+    /**
+     * Length of the client authz extension length field
+     */
+    public static final int CLIENT_AUTHZ_EXTENSION_FORMAT_LIST_LENGTHFIELD_LENGTH = 1;
 }

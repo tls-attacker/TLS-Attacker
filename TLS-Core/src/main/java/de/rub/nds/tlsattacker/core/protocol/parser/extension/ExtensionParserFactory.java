@@ -69,6 +69,7 @@ public class ExtensionParserFactory {
                 parser = new CertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
             case CLIENT_AUTHZ:
+                parser = new ClientAuthzExtensionParser(pointer, extensionBytes);
                 break;
             case CLIENT_CERTIFICATE_TYPE:
                 break;

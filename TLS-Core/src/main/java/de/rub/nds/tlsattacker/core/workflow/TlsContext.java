@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -199,6 +200,11 @@ public class TlsContext {
      * User mapping extension hint type
      */
     private UserMappingExtensionHintType userMappingExtensionHintType;
+
+    /**
+     * Client authz extension data format list
+     */
+    private List<AuthzDataFormat> clientAuthzDataFormatList;
 
     private PublicKey clientCertificatePublicKey;
 
@@ -727,6 +733,14 @@ public class TlsContext {
 
     public void setCertificateTypeDesiredTypes(List<CertificateType> certificateTypeDesiredTypes) {
         this.certificateTypeDesiredTypes = certificateTypeDesiredTypes;
+    }
+
+    public List<AuthzDataFormat> getClientAuthzDataFormatList() {
+        return clientAuthzDataFormatList;
+    }
+
+    public void setClientAuthzDataFormatList(List<AuthzDataFormat> clientAuthzDataFormatList) {
+        this.clientAuthzDataFormatList = clientAuthzDataFormatList;
     }
 
 }

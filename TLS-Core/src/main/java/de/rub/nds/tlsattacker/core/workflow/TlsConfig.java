@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
@@ -254,6 +255,10 @@ public class TlsConfig implements Serializable {
      */
     private List<CertificateType> certificateTypeDesiredTypes;
     /**
+     * Default client authz extension data format list
+     */
+    private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -362,6 +367,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with certificate type extension
      */
     private boolean addCertificateTypeExtension = false;
+    /**
+     * If we generate ClientHello with client authz extension
+     */
+    private boolean addClientAuthzExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -545,6 +554,12 @@ public class TlsConfig implements Serializable {
         certificateTypeDesiredTypes = new LinkedList<>();
         certificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
         certificateTypeDesiredTypes.add(CertificateType.X509);
+
+        clientAuthzExtensionDataFormat = new LinkedList<>();
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT);
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION);
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT_URL);
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION_URL);
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1298,6 +1313,22 @@ public class TlsConfig implements Serializable {
 
     public void setAddCertificateTypeExtension(boolean addCertificateTypeExtension) {
         this.addCertificateTypeExtension = addCertificateTypeExtension;
+    }
+
+    public List<AuthzDataFormat> getClientAuthzExtensionDataFormat() {
+        return clientAuthzExtensionDataFormat;
+    }
+
+    public void setClientAuthzExtensionDataFormat(List<AuthzDataFormat> clientAuthzExtensionDataFormat) {
+        this.clientAuthzExtensionDataFormat = clientAuthzExtensionDataFormat;
+    }
+
+    public boolean isAddClientAuthzExtension() {
+        return addClientAuthzExtension;
+    }
+
+    public void setAddClientAuthzExtension(boolean addClientAuthzExtension) {
+        this.addClientAuthzExtension = addClientAuthzExtension;
     }
 
 }
