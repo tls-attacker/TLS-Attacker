@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.TlsConfig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.logging.log4j.Level;
 import static org.junit.Assert.assertFalse;

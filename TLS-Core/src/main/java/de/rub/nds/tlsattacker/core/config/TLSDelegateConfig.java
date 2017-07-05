@@ -8,17 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
-import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.ECCurve;
+import com.beust.jcommander.Parameter;
+
+import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 
 /**
  *

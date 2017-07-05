@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.config.converters.NamedCurveConverter;
 import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.TlsConfig;
 import java.util.Collections;
 import java.util.List;
 

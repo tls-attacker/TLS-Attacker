@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.ModifiableVariableAnalyzer;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.TlsConfig;
 import java.lang.reflect.Field;
 import java.util.List;
 import static org.junit.Assert.assertFalse;

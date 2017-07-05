@@ -6,8 +6,9 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.workflow;
+package de.rub.nds.tlsattacker.core.state;
 
+import de.rub.nds.tlsattacker.core.config.TlsConfig;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 

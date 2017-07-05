@@ -6,8 +6,10 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.workflow;
+package de.rub.nds.tlsattacker.core.config;
 
+import de.rub.nds.tlsattacker.core.config.TlsConfigIO;
+import de.rub.nds.tlsattacker.core.config.TlsConfig;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
