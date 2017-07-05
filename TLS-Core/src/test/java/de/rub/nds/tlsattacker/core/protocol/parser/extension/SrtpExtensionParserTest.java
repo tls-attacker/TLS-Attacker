@@ -63,11 +63,12 @@ public class SrtpExtensionParserTest {
     @Before
     public void setUp() {
         parser = new SrtpExtensionParser(startParsing, expectedBytes);
-        msg = parser.parse();
     }
 
     @Test
     public void testParseExtensionMessageContent() {
+        msg = parser.parse();
+
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
 

@@ -69,7 +69,6 @@ public class SessionTicketTLSExtensionParserTest {
     @Before
     public void setUp() {
         parser = new SessionTicketTLSExtensionParser(startParsing, expectedBytes);
-        message = parser.parse();
     }
 
     /**
@@ -79,6 +78,8 @@ public class SessionTicketTLSExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
+        message = parser.parse();
+
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(sessionTicket, message.getTicket().getValue());

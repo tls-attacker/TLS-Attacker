@@ -55,11 +55,11 @@ public class AlpnExtensionParserTest {
     @Before
     public void setUp() {
         parser = new AlpnExtensionParser(startParsing, expectedBytes);
-        message = parser.parse();
     }
 
     @Test
     public void testParseExtensionMessageContent() {
+        message = parser.parse();
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (int) message.getExtensionLength().getValue());
 

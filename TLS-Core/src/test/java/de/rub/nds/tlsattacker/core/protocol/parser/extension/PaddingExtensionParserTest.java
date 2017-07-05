@@ -58,13 +58,12 @@ public class PaddingExtensionParserTest {
 
     @Before
     public void setUp() {
-
         parser = new PaddingExtensionParser(startParsing, expectedBytes);
-        message = parser.parse();
     }
 
     @Test
     public void testParseExtensionMessageContent() {
+        message = parser.parse();
 
         assertArrayEquals(ExtensionType.PADDING.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());

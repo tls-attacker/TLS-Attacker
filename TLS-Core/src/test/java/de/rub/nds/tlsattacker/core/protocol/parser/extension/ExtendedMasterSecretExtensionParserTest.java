@@ -50,11 +50,12 @@ public class ExtendedMasterSecretExtensionParserTest {
     @Before
     public void setUp() {
         parser = new ExtendedMasterSecretExtensionParser(startParsing, expectedBytes);
-        message = parser.parse();
     }
 
     @Test
     public void testParseExtensionMessageContent() {
+        message = parser.parse();
+
         assertArrayEquals(extensionType.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
     }
