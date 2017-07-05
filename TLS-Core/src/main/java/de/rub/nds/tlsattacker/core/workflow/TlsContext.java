@@ -9,7 +9,10 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -20,18 +23,15 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
-import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.security.PublicKey;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -114,7 +114,7 @@ public class TlsContext {
 
     private TransportHandler transportHandler;
 
-    private ConnectionEnd talkingConnectionEnd = ConnectionEnd.CLIENT;
+    private ConnectionEndType talkingConnectionEndType = ConnectionEndType.CLIENT;
 
     private byte[] dtlsHandshakeCookie;
 
@@ -461,12 +461,12 @@ public class TlsContext {
         this.highestClientProtocolVersion = highestClientProtocolVersion;
     }
 
-    public ConnectionEnd getTalkingConnectionEnd() {
-        return talkingConnectionEnd;
+    public ConnectionEndType getTalkingConnectionEndType() {
+        return talkingConnectionEndType;
     }
 
-    public void setTalkingConnectionEnd(ConnectionEnd talkingConnectionEnd) {
-        this.talkingConnectionEnd = talkingConnectionEnd;
+    public void setTalkingConnectionEndType(ConnectionEndType talkingConnectionEndType) {
+        this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
     public TlsConfig getConfig() {

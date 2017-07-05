@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -70,7 +70,7 @@ public class ServerDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.getPort() == 1234);
-        assertTrue(config.getConnectionEnd() == ConnectionEnd.SERVER);
+        assertTrue(config.getConnectionEndType() == ConnectionEndType.SERVER);
     }
 
     @Test
@@ -81,9 +81,9 @@ public class ServerDelegateTest {
         List<String> excludeFields = new LinkedList<>();
         excludeFields.add("keyStore");
         excludeFields.add("ourCertificate");
-        excludeFields.add("connectionEnd"); // If the server delegate is
-                                            // chosen
-                                            // we change the conntection end
+        excludeFields.add("connectionEndType"); // If the server delegate is
+        // chosen
+        // we change the conntection end
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, excludeFields));// little
                                                                                    // ugly
                                                                                    // todo
