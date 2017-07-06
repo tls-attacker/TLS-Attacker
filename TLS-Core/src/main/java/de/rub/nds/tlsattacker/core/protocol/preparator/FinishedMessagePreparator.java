@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -48,7 +47,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
         ProtocolVersion version = chooser.getSelectedProtocolVersion();
         byte[] handshakeMessageHash = chooser.getDigest().digest(version, suite);
 
-        if (chooser.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+        if (chooser.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
             // TODO put this in seperate config option
             return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
                     handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);

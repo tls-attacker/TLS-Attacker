@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -116,7 +116,7 @@ public class RecordStreamCipher extends RecordCipher {
             serverWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
             offset += keySize;
             LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-            if (tlsContext.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
                 decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
                 try {

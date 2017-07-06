@@ -59,7 +59,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -209,15 +209,15 @@ public class TlsClientTest {
         config.setWorkflowTrace(new WorkflowTrace());
 
         WorkflowTrace trace = config.getWorkflowTrace();
-        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, new ClientHelloMessage(
-                config)));
-        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new ServerHelloMessage(
-                config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
+        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+                new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
-        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT,
+        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
                         config)));
-        trace.add(MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER,
+        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
                 tlsContext);

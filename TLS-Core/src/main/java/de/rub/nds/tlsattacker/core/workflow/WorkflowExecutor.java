@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.File;
@@ -80,7 +79,7 @@ public abstract class WorkflowExecutor {
         String host = context.getConfig().getHost();
         int port = context.getConfig().getPort();
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, context.getConfig()
-                .getConnectionEnd(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
+                .getConnectionEndType(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
                 .getConfig().getTransportHandlerType());
         try {
 

@@ -27,13 +27,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
-import java.security.PublicKey;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -232,8 +230,8 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public ConnectionEnd getTalkingConnectionEnd() {
-        return context.getTalkingConnectionEnd();
+    public ConnectionEndType getTalkingConnectionEnd() {
+        return context.getTalkingConnectionEndType();
     }
 
     @Override

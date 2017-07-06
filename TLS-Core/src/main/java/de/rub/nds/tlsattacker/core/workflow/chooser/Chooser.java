@@ -27,13 +27,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
-import java.security.PublicKey;
 import java.util.List;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -102,7 +100,7 @@ public abstract class Chooser {
 
     public abstract ProtocolVersion getHighestClientProtocolVersion();
 
-    public abstract ConnectionEnd getTalkingConnectionEnd();
+    public abstract ConnectionEndType getTalkingConnectionEnd();
 
     public abstract byte[] getMasterSecret();
 

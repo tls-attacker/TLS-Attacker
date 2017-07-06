@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -20,7 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.security.InvalidAlgorithmParameterException;
@@ -168,7 +166,7 @@ public final class RecordBlockCipher extends RecordCipher {
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
             }
-            if (tlsContext.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
                         decryptIv);
             } else {
@@ -243,7 +241,7 @@ public final class RecordBlockCipher extends RecordCipher {
                 offset += decryptCipher.getBlockSize();
                 LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
             }
-            if (tlsContext.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 encryptIv = new IvParameterSpec(clientWriteIv);
                 decryptIv = new IvParameterSpec(serverWriteIv);
                 encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());

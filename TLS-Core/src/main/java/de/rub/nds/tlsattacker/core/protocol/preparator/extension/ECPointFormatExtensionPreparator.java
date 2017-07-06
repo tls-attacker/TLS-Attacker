@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
     private byte[] createPointFormatsByteArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         List<ECPointFormat> pointFormatList;
-        if (chooser.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (chooser.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
             pointFormatList = chooser.getClientSupportedPointFormats();
         } else {
             pointFormatList = chooser.getServerSupportedPointFormats();

@@ -39,14 +39,14 @@ public class SimpleTransportHandler extends TransportHandler {
 
     private int tlsTimeout;
 
-    public SimpleTransportHandler(String hostname, int port, ConnectionEnd end, int socketTimeout, int tlsTimeout) {
+    public SimpleTransportHandler(String hostname, int port, ConnectionEndType end, int socketTimeout, int tlsTimeout) {
         super(hostname, port, end, socketTimeout);
         this.tlsTimeout = tlsTimeout;
     }
 
     @Override
     public void initialize() throws IOException {
-        if (end == ConnectionEnd.SERVER) {
+        if (end == ConnectionEndType.SERVER) {
             serverSocket = new ServerSocket(port);
             LOGGER.info("Starting ServerTransportHandler on Port:" + port);
             isServer = true;

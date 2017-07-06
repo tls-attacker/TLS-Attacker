@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -63,7 +63,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
         if (cert != null) {
             adjustPublicKeyParameters(cert);
         }
-        if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             LOGGER.debug("Setting ClientCertificate in Context");
             tlsContext.setClientCertificate(cert);
         } else {
@@ -82,7 +82,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 adjustECParameters(ecParameters);
             } else if (CertificateUtils.hasRSAParameters(cert)) {
                 tlsContext.setRsaModulus(CertificateUtils.extractRSAModulus(cert));
-                if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     tlsContext.setClientRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
                 } else {
                     tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
@@ -96,7 +96,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     private void adjustDHParameters(DHPublicKeyParameters dhPublicKeyParameters) {
         tlsContext.setDhGenerator(dhPublicKeyParameters.getParameters().getG());
         tlsContext.setDhModulus(dhPublicKeyParameters.getParameters().getP());
-        if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.setClientDhPublicKey(dhPublicKeyParameters.getY());
         } else {
             tlsContext.setServerDhPublicKey(dhPublicKeyParameters.getY());
@@ -108,7 +108,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 .getCurve()));
         CustomECPoint publicKey = new CustomECPoint(ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger(),
                 ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
-        if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.setClientEcPublicKey(publicKey);
         } else {
             tlsContext.setServerEcPublicKey(publicKey);
