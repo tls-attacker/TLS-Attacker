@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -29,6 +27,7 @@ public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<Change
 
     @Override
     protected void prepareProtocolMessageContents() {
+        LOGGER.debug("Preparing ChangeCipherSpecMessage");
         prepareCcsProtocolType(msg);
     }
 

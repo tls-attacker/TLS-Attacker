@@ -14,8 +14,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
@@ -30,7 +28,7 @@ public class UDPTransportHandler extends TransportHandler {
 
     private long responseNanos = -1;
 
-    public UDPTransportHandler(String hostname, int port, ConnectionEnd end, int timeout) {
+    public UDPTransportHandler(String hostname, int port, ConnectionEndType end, int timeout) {
         super(hostname, port, end, timeout);
         this.socketTimeout = timeout;
     }

@@ -27,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public final class MessageDigestCollector {
+public class MessageDigestCollector {
 
     private static final Logger LOGGER = LogManager.getLogger("MessageDigest");
 

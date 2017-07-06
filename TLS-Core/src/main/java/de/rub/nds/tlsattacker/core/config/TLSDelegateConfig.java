@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.math.ec.ECCurve;
 
 /**
  *
@@ -25,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class TLSDelegateConfig {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Config");
+    protected static final Logger LOGGER = LogManager.getLogger(TLSDelegateConfig.class.getName());
 
     private final List<Delegate> delegateList;
     private final GeneralDelegate generalDelegate;

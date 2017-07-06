@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -27,9 +26,6 @@ public class WorkflowTypeDelegateTest {
     private WorkflowTypeDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public WorkflowTypeDelegateTest() {
-    }
 
     @Before
     public void setUp() {

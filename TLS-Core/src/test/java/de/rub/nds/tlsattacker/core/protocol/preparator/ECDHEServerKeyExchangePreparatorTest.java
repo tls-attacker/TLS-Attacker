@@ -58,9 +58,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private BadRandom random;
     private ECDHEServerKeyExchangeMessage msg;
     private ECDHEServerKeyExchangePreparator preparator;
-
-    public ECDHEServerKeyExchangePreparatorTest() {
-    }
+    private ECDHEServerKeyExchangeMessage message;
 
     @Before
     public void setUp() throws IOException {

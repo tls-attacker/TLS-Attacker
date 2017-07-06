@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
@@ -28,9 +27,6 @@ public class HeartbeatDelegateTest {
     private HeartbeatDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public HeartbeatDelegateTest() {
-    }
 
     @Before
     public void setUp() {

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
@@ -16,9 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignatureAndHashAlg
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignatureAndHashAlgorithmsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -28,9 +27,6 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
     private SignatureAndHashAlgorithmsExtensionHandler handler;
     private TlsContext context;
-
-    public SignatureAndHashAlgorithmsExtensionHandlerTest() {
-    }
 
     @Before
     public void setUp() {
@@ -57,7 +53,7 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
         msg.setSignatureAndHashAlgorithms(new byte[] { 99, 99 });
         handler.adjustTLSContext(msg);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 0);
+        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
     }
 
     /**

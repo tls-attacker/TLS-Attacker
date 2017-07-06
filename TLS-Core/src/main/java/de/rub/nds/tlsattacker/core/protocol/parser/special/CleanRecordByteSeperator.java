@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.special;
 
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.List;
 
 /**

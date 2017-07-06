@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * An abstract Parser class for HandshakeMessages
@@ -29,7 +27,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      */
     private final HandshakeMessageType expectedType;
 
-    private ProtocolVersion version;
+    private final ProtocolVersion version;
 
     /**
      * Constructor for the Parser class

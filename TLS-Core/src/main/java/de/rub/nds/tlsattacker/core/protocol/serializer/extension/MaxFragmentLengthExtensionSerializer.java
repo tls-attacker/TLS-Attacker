@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,16 +19,22 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthE
  */
 public class MaxFragmentLengthExtensionSerializer extends ExtensionSerializer<MaxFragmentLengthExtensionMessage> {
 
-    private final MaxFragmentLengthExtensionMessage message;
+    private final MaxFragmentLengthExtensionMessage msg;
 
     public MaxFragmentLengthExtensionSerializer(MaxFragmentLengthExtensionMessage message) {
         super(message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendBytes(message.getMaxFragmentLength().getValue());
+        LOGGER.debug("Serializing MaxFragmentLengthExtensionMessage");
+        writeMaxFragmentLength(msg);
         return getAlreadySerialized();
+    }
+
+    private void writeMaxFragmentLength(MaxFragmentLengthExtensionMessage msg) {
+        appendBytes(msg.getMaxFragmentLength().getValue());
+        LOGGER.debug("MaxFragmentLength: " + ArrayConverter.bytesToHexString(msg.getMaxFragmentLength().getValue()));
     }
 }

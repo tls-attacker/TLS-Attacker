@@ -18,9 +18,6 @@ import static org.junit.Assert.*;
  */
 public class MaxFragmentLengthExtensionSerializerTest {
 
-    public MaxFragmentLengthExtensionSerializerTest() {
-    }
-
     @Before
     public void setUp() {
     }

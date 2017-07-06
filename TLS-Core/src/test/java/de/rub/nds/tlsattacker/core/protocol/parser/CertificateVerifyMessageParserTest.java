@@ -8,16 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParser;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -46,8 +44,6 @@ public class CertificateVerifyMessageParserTest {
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
 
     private HandshakeMessageType type;
     private int length;
@@ -59,8 +55,6 @@ public class CertificateVerifyMessageParserTest {
     public CertificateVerifyMessageParserTest(byte[] message, int start, byte[] expectedPart,
             HandshakeMessageType type, int length, byte[] sigHashAlgo, int signatureLength, byte[] signature) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.sigHashAlgo = sigHashAlgo;
@@ -73,12 +67,11 @@ public class CertificateVerifyMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateVerifyMessageParser parser = new CertificateVerifyMessageParser(start, message,
-                ProtocolVersion.TLS12);
+        CertificateVerifyMessageParser parser = new CertificateVerifyMessageParser(0, message, ProtocolVersion.TLS12);
         CertificateVerifyMessage certVerifyMessage = parser.parse();
         assertTrue(certVerifyMessage.getLength().getValue() == length);
         assertTrue(certVerifyMessage.getType().getValue() == type.getValue());
-        assertArrayEquals(expectedPart, certVerifyMessage.getCompleteResultingMessage().getValue());
+        assertArrayEquals(message, certVerifyMessage.getCompleteResultingMessage().getValue());
         assertArrayEquals(sigHashAlgo, certVerifyMessage.getSignatureHashAlgorithm().getValue());
         assertTrue(signatureLength == certVerifyMessage.getSignatureLength().getValue());
         assertArrayEquals(signature, certVerifyMessage.getSignature().getValue());

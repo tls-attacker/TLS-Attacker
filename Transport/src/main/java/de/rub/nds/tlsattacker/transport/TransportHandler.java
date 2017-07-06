@@ -27,13 +27,13 @@ public abstract class TransportHandler {
 
     protected boolean measuringTiming;
 
-    protected ConnectionEnd end;
+    protected ConnectionEndType end;
 
     protected String hostname;
 
     protected int port;
 
-    public TransportHandler(String hostname, int port, ConnectionEnd end, int socketTimeout) {
+    public TransportHandler(String hostname, int port, ConnectionEndType end, int socketTimeout) {
         this.end = end;
         this.socketTimeout = socketTimeout;
         this.hostname = hostname;

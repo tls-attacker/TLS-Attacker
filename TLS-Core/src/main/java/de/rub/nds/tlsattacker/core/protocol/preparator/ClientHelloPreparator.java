@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -33,6 +33,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     @Override
     public void prepareHandshakeMessageContents() {
+        LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
         prepareUnixTime();
         prepareRandom();

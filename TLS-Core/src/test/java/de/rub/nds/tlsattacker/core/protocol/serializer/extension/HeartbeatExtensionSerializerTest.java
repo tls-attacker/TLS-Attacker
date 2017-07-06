@@ -18,9 +18,6 @@ import static org.junit.Assert.*;
  */
 public class HeartbeatExtensionSerializerTest {
 
-    public HeartbeatExtensionSerializerTest() {
-    }
-
     @Before
     public void setUp() {
     }

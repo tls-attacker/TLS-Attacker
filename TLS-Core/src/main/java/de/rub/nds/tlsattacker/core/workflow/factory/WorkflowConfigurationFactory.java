@@ -8,31 +8,31 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -77,7 +77,8 @@ public class WorkflowConfigurationFactory {
         }
         messages.add(clientHello);
 
-        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
+                messages));
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
 
@@ -86,13 +87,13 @@ public class WorkflowConfigurationFactory {
             messages = new LinkedList<>();
 
             messages.add(helloVerifyRequestMessage);
-            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER,
-                    messages));
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(),
+                    ConnectionEndType.SERVER, messages));
             clientHello = new ClientHelloMessage(config);
             messages = new LinkedList<>();
             messages.add(clientHello);
-            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
-                    messages));
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(),
+                    ConnectionEndType.CLIENT, messages));
         }
         messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
@@ -106,7 +107,8 @@ public class WorkflowConfigurationFactory {
         }
 
         messages.add(new ServerHelloDoneMessage(config));
-        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                messages));
         return workflowTrace;
     }
 
@@ -122,11 +124,13 @@ public class WorkflowConfigurationFactory {
         }
         messages.add(new ChangeCipherSpecMessage(config));
         messages.add(new FinishedMessage(config));
-        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
+                messages));
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(config));
         messages.add(new FinishedMessage(config));
-        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
+        workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                messages));
         return workflowTrace;
 
     }
@@ -194,23 +198,23 @@ public class WorkflowConfigurationFactory {
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.isServerSendsApplicationData()) {
             messages.add(new ApplicationMessage(config));
-            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER,
-                    messages));
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(),
+                    ConnectionEndType.SERVER, messages));
             messages = new LinkedList<>();
         }
         messages.add(new ApplicationMessage(config));
 
         if (config.isAddHeartbeatExtension()) {
             messages.add(new HeartbeatMessage(config));
-            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
-                    messages));
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(),
+                    ConnectionEndType.CLIENT, messages));
             messages = new LinkedList<>();
             messages.add(new HeartbeatMessage(config));
-            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER,
-                    messages));
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(),
+                    ConnectionEndType.SERVER, messages));
         } else {
-            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT,
-                    messages));
+            workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEndType(),
+                    ConnectionEndType.CLIENT, messages));
         }
         return workflowTrace;
     }

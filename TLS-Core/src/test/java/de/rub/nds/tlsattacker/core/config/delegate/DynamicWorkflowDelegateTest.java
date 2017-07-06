@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config.delegate;
 
-import de.rub.nds.tlsattacker.core.config.delegate.DynamicWorkflowDelegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -25,9 +24,6 @@ public class DynamicWorkflowDelegateTest {
     private DynamicWorkflowDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-
-    public DynamicWorkflowDelegateTest() {
-    }
 
     @Before
     public void setUp() {

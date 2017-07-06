@@ -8,12 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -39,6 +36,7 @@ public class ApplicationMessageParser extends ProtocolMessageParser<ApplicationM
 
     @Override
     protected ApplicationMessage parseMessageContent() {
+        LOGGER.debug("Parsing ApplicationMessage");
         ApplicationMessage msg = new ApplicationMessage();
         parseData(msg);
         return msg;

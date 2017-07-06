@@ -6,10 +6,8 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.client;
+package de.rub.nds.tlsattacker.core.util;
 
-import de.rub.nds.modifiablevariable.util.BadRandom;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -18,8 +16,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import javax.net.ssl.KeyManager;
@@ -30,44 +26,20 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import de.rub.nds.modifiablevariable.util.BadRandom;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@ru.de>
  */
-public class TLSServer extends Thread {
-    // TODO should be in core package
-    // TODO should be clean
-    // TODO contains the BouncyCastle provider and will probably not work as a
-    // standalone
-    // server once moved to core
-    private static final Logger LOGGER = LogManager.getLogger("TLSServer");
+public class BasicTlsServer extends Thread {
 
-    private static final String PATH_TO_JKS = "eckey192.jks";
-
-    private static final String JKS_PASSWORD = "password";
-
-    private static final String PROTOCOL = "TLS";
-
-    private static final int PORT = 55443;
-
-    public static KeyStore readKeyStore(String keystorePath, String password) throws KeyStoreException, IOException,
-            NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException, KeyManagementException {
-        KeyStore keyStore = KeyStore.getInstance("JKS");
-        try (FileInputStream fis = new FileInputStream(keystorePath)) {
-            keyStore.load(fis, password.toCharArray());
-        }
-        return keyStore;
-    }
+    private static final Logger LOGGER = LogManager.getLogger(BasicTlsServer.class);
 
     private String[] cipherSuites = null;
-
     private final int port;
-
     private final SSLContext sslContext;
-
     private ServerSocket serverSocket;
-
     private boolean shutdown;
 
     /**
@@ -75,9 +47,11 @@ public class TLSServer extends Thread {
      */
     private volatile boolean initialized;
 
-    public TLSServer(KeyStore keyStore, String password, String protocol, int port) throws KeyStoreException,
+    public BasicTlsServer(KeyStore keyStore, String password, String protocol, int port) throws KeyStoreException,
             IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException,
             KeyManagementException {
+
+        this.port = port;
 
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance("SunX509");
         keyManagerFactory.init(keyStore, password.toCharArray());
@@ -99,9 +73,6 @@ public class TLSServer extends Thread {
                 LOGGER.debug(" " + c);
             }
         }
-
-        this.port = port;
-        LOGGER.debug("SSL Server successfully initialized!");
     }
 
     @Override
@@ -110,7 +81,7 @@ public class TLSServer extends Thread {
             preSetup();
             while (!shutdown) {
                 try {
-                    LOGGER.debug("|| waiting for connections...\n");
+                    LOGGER.info("Listening on port " + port + "...\n");
                     final Socket socket = serverSocket.accept();
 
                     ConnectionHandler ch = new ConnectionHandler(socket);
@@ -131,7 +102,7 @@ public class TLSServer extends Thread {
             } catch (IOException e) {
                 LOGGER.debug(e);
             }
-            LOGGER.debug("|| shutdown complete");
+            LOGGER.info("Shutdown complete");
         }
     }
 
@@ -144,13 +115,13 @@ public class TLSServer extends Thread {
         // ((SSLServerSocket)
         // serverSocket).setEnabledCipherSuites(cipherSuites);
         // }
-        LOGGER.debug("|| presetup successful");
+        LOGGER.debug("Presetup successful");
         initialized = true;
     }
 
     public void shutdown() {
         this.shutdown = true;
-        LOGGER.debug("shutdown signal received");
+        LOGGER.debug("Shutdown signal received");
     }
 
     public String[] getCipherSuites() {

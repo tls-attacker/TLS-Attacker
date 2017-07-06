@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Delegate {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Config");
+    protected static final Logger LOGGER = LogManager.getLogger(Delegate.class.getName());
 
     public abstract void applyDelegate(TlsConfig config) throws ConfigurationException;
 }

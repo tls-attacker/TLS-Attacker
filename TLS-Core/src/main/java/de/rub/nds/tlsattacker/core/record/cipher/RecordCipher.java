@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,16 +17,16 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class RecordCipher {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Cipher");
+    protected static final Logger LOGGER = LogManager.getLogger(RecordCipher.class.getName());
 
     /**
      * minimalRecordLength an encrypted record should have
      */
     private int minimalEncryptedRecordLength;
 
-    private boolean usePadding;
+    private final boolean usePadding;
 
-    private boolean useMac;
+    private final boolean useMac;
 
     public RecordCipher(int minimalEncryptedRecordLength, boolean usePadding, boolean useMac) {
         this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;

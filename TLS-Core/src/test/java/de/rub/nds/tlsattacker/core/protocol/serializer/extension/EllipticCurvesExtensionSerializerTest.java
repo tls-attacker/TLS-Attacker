@@ -18,9 +18,6 @@ import static org.junit.Assert.*;
  */
 public class EllipticCurvesExtensionSerializerTest {
 
-    public EllipticCurvesExtensionSerializerTest() {
-    }
-
     @Before
     public void setUp() {
     }

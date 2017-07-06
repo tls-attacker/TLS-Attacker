@@ -8,20 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
@@ -78,18 +76,10 @@ public abstract class WorkflowExecutor {
     }
 
     protected final TransportHandler createTransportHandler() throws ConfigurationException {
-        String[] hp = context.getConfig().getHost().split(":");
-        String host = hp[0];
-        int port;
-        if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
-            port = context.getConfig().getServerPort();
-        } else if (hp.length == 1) {
-            port = 443;
-        } else {
-            port = Integer.parseInt(hp[1]);
-        }
+        String host = context.getConfig().getHost();
+        int port = context.getConfig().getPort();
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, context.getConfig()
-                .getConnectionEnd(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
+                .getConnectionEndType(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
                 .getConfig().getTransportHandlerType());
         try {
 

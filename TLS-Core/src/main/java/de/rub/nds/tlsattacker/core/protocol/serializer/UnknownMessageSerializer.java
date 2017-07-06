@@ -8,12 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -21,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownMessage> {
 
-    private UnknownMessage msg;
+    private final UnknownMessage msg;
 
     /**
      * Constructor for the UnknownMessageSerializer
@@ -38,6 +35,7 @@ public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownM
 
     @Override
     public byte[] serializeProtocolMessageContent() {
+        LOGGER.debug("Serializing UnknownMessage");
         writeCompleteResultinMessage(msg);
         return getAlreadySerialized();
     }

@@ -13,8 +13,8 @@ package de.rub.nds.tlsattacker.transport;
  */
 public class TransportHandlerFactory {
 
-    public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEnd end, int tlsTimeout,
-            int socketTimeout, TransportHandlerType type) {
+    public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEndType end,
+            int tlsTimeout, int socketTimeout, TransportHandlerType type) {
         switch (type) {
             case TCP:
                 return new SimpleTransportHandler(hostname, port, end, socketTimeout, tlsTimeout);

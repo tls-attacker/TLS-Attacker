@@ -10,16 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ECPointFormatExtensionPreparatorTest {
-
-    public ECPointFormatExtensionPreparatorTest() {
-    }
 
     @Before
     public void setUp() {

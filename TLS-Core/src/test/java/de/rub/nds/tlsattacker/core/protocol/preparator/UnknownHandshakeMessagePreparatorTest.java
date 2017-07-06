@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -24,9 +23,6 @@ public class UnknownHandshakeMessagePreparatorTest {
     private TlsContext context;
     private UnknownHandshakeMessage message;
     private UnknownHandshakeMessagePreparator preparator;
-
-    public UnknownHandshakeMessagePreparatorTest() {
-    }
 
     @Before
     public void setUp() {

@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -20,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> extends ExtensionPreparator<T> {
 
-    private UnknownExtensionMessage msg;
+    private final UnknownExtensionMessage msg;
 
     public UnknownExtensionPreparator(TlsContext context, T object) {
         super(context, object);

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -36,9 +36,9 @@ public class ServerDelegate extends Delegate {
     @Override
     public void applyDelegate(TlsConfig config) {
         if (port != null) {
-            config.setServerPort(port);
+            config.setPort(port);
         }
-        config.setConnectionEnd(ConnectionEnd.SERVER);
+        config.setConnectionEndType(ConnectionEndType.SERVER);
     }
 
 }

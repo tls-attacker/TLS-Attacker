@@ -8,15 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.AlertParserTest;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParserTest;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -26,6 +23,10 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class HeartbeatMessageSerializerTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return HeartbeatMessageParserTest.generateData();
+    }
 
     private byte[] message;
     private int start;
@@ -35,11 +36,6 @@ public class HeartbeatMessageSerializerTest {
     private int payloadLength;
     private byte[] payload;
     private byte[] padding;
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return HeartbeatMessageParserTest.generateData();
-    }
 
     public HeartbeatMessageSerializerTest(byte[] message, int start, byte[] expectedPart, byte heartBeatType,
             int payloadLength, byte[] payload, byte[] padding) {

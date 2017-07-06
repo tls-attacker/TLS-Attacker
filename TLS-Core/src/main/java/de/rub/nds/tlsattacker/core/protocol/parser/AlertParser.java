@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.tlsattacker.core.constants.AlertByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -38,6 +36,7 @@ public class AlertParser extends ProtocolMessageParser<AlertMessage> {
 
     @Override
     protected AlertMessage parseMessageContent() {
+        LOGGER.debug("Parsing AlertMessage");
         AlertMessage msg = new AlertMessage();
         parseLevel(msg);
         parseDescription(msg);

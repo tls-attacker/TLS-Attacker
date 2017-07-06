@@ -8,8 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -17,16 +20,22 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  */
 public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatExtensionMessage> {
 
-    private HeartbeatExtensionMessage message;
+    private final HeartbeatExtensionMessage msg;
 
     public HeartbeatExtensionPreparator(TlsContext context, HeartbeatExtensionMessage message) {
         super(context, message);
-        this.message = message;
+        this.msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setHeartbeatMode(context.getConfig().getHeartbeatMode().getArrayValue());
+        LOGGER.debug("Preparing HeartbeatExtensionMessage");
+        prepareHeartbeatMode(msg);
+    }
+
+    private void prepareHeartbeatMode(HeartbeatExtensionMessage msg) {
+        msg.setHeartbeatMode(context.getConfig().getHeartbeatMode().getArrayValue());
+        LOGGER.debug("HeartbeatMode: " + ArrayConverter.bytesToHexString(msg.getHeartbeatMode().getValue()));
     }
 
 }
