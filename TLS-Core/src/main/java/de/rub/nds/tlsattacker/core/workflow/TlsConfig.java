@@ -263,6 +263,10 @@ public class TlsConfig implements Serializable {
      */
     private boolean certificateTypeExtensionMessageState = true;
     /**
+     * Default sever authz extension data format list
+     */
+    private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -375,6 +379,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with client authz extension
      */
     private boolean addClientAuthzExtension = false;
+    /**
+     * If we generate ClientHello with server authz extension
+     */
+    private boolean addServerAuthzExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -564,6 +572,12 @@ public class TlsConfig implements Serializable {
         clientAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION);
         clientAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT_URL);
         clientAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION_URL);
+
+        serverAuthzExtensionDataFormat = new LinkedList<>();
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT);
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION);
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT_URL);
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION_URL);
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1341,6 +1355,22 @@ public class TlsConfig implements Serializable {
 
     public void setCertificateTypeExtensionMessageState(boolean certificateTypeExtensionMessageState) {
         this.certificateTypeExtensionMessageState = certificateTypeExtensionMessageState;
+    }
+
+    public List<AuthzDataFormat> getServerAuthzExtensionDataFormat() {
+        return serverAuthzExtensionDataFormat;
+    }
+
+    public void setServerAuthzExtensionDataFormat(List<AuthzDataFormat> serverAuthzExtensionDataFormat) {
+        this.serverAuthzExtensionDataFormat = serverAuthzExtensionDataFormat;
+    }
+
+    public boolean isAddServerAuthzExtension() {
+        return addServerAuthzExtension;
+    }
+
+    public void setAddServerAuthzExtension(boolean addServerAuthzExtension) {
+        this.addServerAuthzExtension = addServerAuthzExtension;
     }
 
 }

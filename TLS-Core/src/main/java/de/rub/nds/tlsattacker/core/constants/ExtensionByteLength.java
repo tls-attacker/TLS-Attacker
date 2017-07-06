@@ -131,4 +131,9 @@ public class ExtensionByteLength {
      * Length of the client authz extension length field
      */
     public static final int CLIENT_AUTHZ_EXTENSION_FORMAT_LIST_LENGTHFIELD_LENGTH = 1;
+
+    /**
+     * Length of the server authz extension length field
+     */
+    public static final int SERVER_AUTHZ_EXTENSION_FORMAT_LIST_LENGTHFIELD_LENGTH = 1;
 }

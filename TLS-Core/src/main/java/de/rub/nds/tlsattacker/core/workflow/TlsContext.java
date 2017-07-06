@@ -206,6 +206,11 @@ public class TlsContext {
      */
     private List<AuthzDataFormat> clientAuthzDataFormatList;
 
+    /**
+     * Server authz extension data format list
+     */
+    private List<AuthzDataFormat> serverAuthzDataFormatList;
+
     private PublicKey clientCertificatePublicKey;
 
     private PublicKey serverCertificatePublicKey;
@@ -741,6 +746,14 @@ public class TlsContext {
 
     public void setClientAuthzDataFormatList(List<AuthzDataFormat> clientAuthzDataFormatList) {
         this.clientAuthzDataFormatList = clientAuthzDataFormatList;
+    }
+
+    public List<AuthzDataFormat> getServerAuthzDataFormatList() {
+        return serverAuthzDataFormatList;
+    }
+
+    public void setServerAuthzDataFormatList(List<AuthzDataFormat> serverAuthzDataFormatList) {
+        this.serverAuthzDataFormatList = serverAuthzDataFormatList;
     }
 
 }

@@ -85,6 +85,7 @@ public class ExtensionParserFactory {
                 parser = new RenegotiationInfoExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_AUTHZ:
+                parser = new ServerAuthzExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_CERTIFICATE_TYPE:
                 break;
