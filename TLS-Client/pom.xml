@@ -22,7 +22,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tlsattacker.client.main.TLSClient</mainClass>
+                            <mainClass>de.rub.nds.tlsattacker.client.main.TlsClient</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
