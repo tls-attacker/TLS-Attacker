@@ -131,7 +131,7 @@ public class RecordAEADCipher extends RecordCipher {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            if (protocolVersion == ProtocolVersion.TLS13) {
+            if (protocolVersion.isTLS13()) {
                 if (context.isUpdateKeys() == false) {
                     clientSecret = context.getClientHandshakeTrafficSecret();
                     serverSecret = context.getServerHandshakeTrafficSecret();

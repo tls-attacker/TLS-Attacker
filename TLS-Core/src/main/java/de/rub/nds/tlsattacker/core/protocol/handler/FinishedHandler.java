@@ -53,7 +53,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     protected void adjustTLSContext(FinishedMessage message) {
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13)  {
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
                 adjustApplicationTrafficSecrets();
             } else {

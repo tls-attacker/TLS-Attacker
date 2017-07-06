@@ -72,7 +72,7 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
-        if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
             CertificatePair pair = new CertificatePair();
             pair.setCertificateConfig(encodeCert(tlsConfig.getOurCertificate()));
             // Extentions can be added via if statements ? (as ClientHello and

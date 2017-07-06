@@ -36,16 +36,16 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
-        if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
             prepareUnixTime();
         }
         prepareRandom(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()));
-        if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
             prepareSessionID();
             prepareSessionIDLength();
         }
         prepareCipherSuite();
-        if (ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
             prepareCompressionMethod();
         }
         prepareExtensions();

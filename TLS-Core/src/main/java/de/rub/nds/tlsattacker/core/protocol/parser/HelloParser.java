@@ -78,10 +78,10 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
      *            Message to write in
      */
     protected void parseRandom(HelloMessage message) {
-        if (getVersion() != ProtocolVersion.TLS13) {
-            message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
-        } else {
+        if (getVersion().isTLS13()) {
             message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM_TLS13));
+        } else {
+            message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
         }
         LOGGER.debug("Random:" + ArrayConverter.bytesToHexString(message.getRandom().getValue()));
     }

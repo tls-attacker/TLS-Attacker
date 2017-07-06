@@ -40,7 +40,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateMessage");
-        if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (context.getSelectedProtocolVersion().isTLS13()) {
             prepareRequestContext(msg);
             prepareRequestContextLength(msg);
         }
@@ -49,11 +49,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private void prepareCertificateListBytes(CertificateMessage msg) {
-        if (context.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
-            Certificate cert = chooseCert();
-            byte[] encodedCert = encodeCert(cert);
-            msg.setCertificatesListBytes(encodedCert);
-        } else {
+        if (context.getSelectedProtocolVersion().isTLS13()) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             for (CertificatePair pair : msg.getCertificatesList()) {
                 CertificatePairPreparator preparator = new CertificatePairPreparator(context, pair);
@@ -66,6 +62,10 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 }
             }
             msg.setCertificatesListBytes(stream.toByteArray());
+        } else {
+            Certificate cert = chooseCert();
+            byte[] encodedCert = encodeCert(cert);
+            msg.setCertificatesListBytes(encodedCert);
         }
         LOGGER.debug("CertificatesListBytes: "
                 + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));

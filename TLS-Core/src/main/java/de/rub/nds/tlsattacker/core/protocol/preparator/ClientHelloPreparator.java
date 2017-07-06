@@ -38,7 +38,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
         prepareRandom(context.getConfig().getHighestProtocolVersion());
-        if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+        if (!context.getConfig().getHighestProtocolVersion().isTLS13()) {
             prepareUnixTime();
         }
         prepareSessionID();
@@ -56,14 +56,15 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+        if (context.getConfig().getHighestProtocolVersion().isTLS13()) {
+            msg.setSessionId(new byte[0]);
+        } else {
+            msg.setSessionId(new byte[0]);
             if (hasSessionID()) {
                 msg.setSessionId(context.getConfig().getSessionId());
             } else {
                 msg.setSessionId(context.getSessionID());
             }
-        } else {
-            msg.setSessionId(new byte[0]);
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
@@ -95,19 +96,19 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareProtocolVersion(ClientHelloMessage msg) {
-        if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
-        } else {
+        if (context.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        } else {
+            msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
-        if (context.getConfig().getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
-        } else {
+        if (context.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
+        } else {
+            msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
         }
         LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }

@@ -136,16 +136,16 @@ public class ServerHelloMessage extends HelloMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Protocol Version: ").append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
-        if (ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
             sb.append("\n  Server Unix Time: ").append(
                     new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
         }
         sb.append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()));
-        if (ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
             sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
         }
         sb.append("\n  Selected Cipher Suite: ").append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()));
-        if (ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()) != ProtocolVersion.TLS13) {
+        if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
             sb.append("\n  Selected Compression Method: ").append(
                     CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()));
         }

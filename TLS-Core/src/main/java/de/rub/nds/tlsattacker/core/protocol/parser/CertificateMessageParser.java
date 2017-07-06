@@ -47,13 +47,13 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     @Override
     protected void parseHandshakeMessageContent(CertificateMessage msg) {
         LOGGER.debug("Parsing CertificateMessage");
-        if (getVersion() == ProtocolVersion.TLS13) {
+        if (getVersion().isTLS13()) {
             parseRequestContextLength(msg);
             parseRequestContextBytes(msg);
         }
         parseCertificatesListLength(msg);
         parseCertificateListBytes(msg);
-        if (getVersion() == ProtocolVersion.TLS13) {
+        if (getVersion().isTLS13()) {
             parseCertificateList(msg);
         }
     }

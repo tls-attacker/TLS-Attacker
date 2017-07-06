@@ -39,7 +39,7 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing ClientHelloMessage");
         writeProtocolVersion();
-        if (version != ProtocolVersion.TLS13) {
+        if (!version.isTLS13()) {
             writeUnixtime();
         }
         writeRandom();

@@ -49,7 +49,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     }
 
     private byte[] computeVerifyData() {
-        if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (context.getSelectedProtocolVersion().isTLS13()) {
             try {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());

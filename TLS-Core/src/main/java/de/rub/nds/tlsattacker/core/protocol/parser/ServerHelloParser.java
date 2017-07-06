@@ -61,16 +61,16 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
     protected void parseHandshakeMessageContent(ServerHelloMessage msg) {
         LOGGER.debug("Parsing ServerHelloMessage");
         parseProtocolVersion(msg);
-        if (getVersion() != ProtocolVersion.TLS13) {
+        if (!getVersion().isTLS13()) {
             parseUnixtime(msg);
         }
         parseRandom(msg);
-        if (getVersion() != ProtocolVersion.TLS13) {
+        if (!getVersion().isTLS13()) {
             parseSessionIDLength(msg);
             parseSessionID(msg);
         }
         parseSelectedCiphersuite(msg);
-        if (getVersion() != ProtocolVersion.TLS13) {
+        if (!getVersion().isTLS13()) {
             parseSelectedComressionMethod(msg);
         }
         if (hasExtensionLengthField(msg)) {

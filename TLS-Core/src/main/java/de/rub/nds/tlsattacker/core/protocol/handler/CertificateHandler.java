@@ -57,10 +57,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     @Override
     protected void adjustTLSContext(CertificateMessage message) {
         Certificate cert;
-        if (tlsContext.getSelectedProtocolVersion() != ProtocolVersion.TLS13) {
-            cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
-                    .getValue());
-        } else {
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             int certificatesLength = 0;
             try {
@@ -75,6 +72,9 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 throw new AdjustmentException("Could not concatenate certificates bytes", ex);
             }
             cert = parseCertificate(certificatesLength, stream.toByteArray());
+        } else {
+            cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
+                    .getValue());
         }
         if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
             LOGGER.debug("Setting ClientCertificate in Context");
@@ -91,7 +91,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 tlsContext.setServerCertificatePublicKey(parsePublicKey(cert));
             }
         }
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
             adjustExtensions(message);
         }
     }

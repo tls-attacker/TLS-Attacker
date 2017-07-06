@@ -57,7 +57,7 @@ public class RecordEncryptor extends Encryptor<Record> {
         }
         setUnpaddedRecordBytes(record, cleanBytes);
         byte[] padding;
-        if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (context.getSelectedProtocolVersion().isTLS13()) {
             padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
         } else {
             padding = recordCipher.calculatePadding(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes()
@@ -66,7 +66,7 @@ public class RecordEncryptor extends Encryptor<Record> {
         setPadding(record, padding);
         setPaddingLength(record);
         byte[] plain;
-        if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13 && context.isEncryptActive()) {
+        if (context.getSelectedProtocolVersion().isTLS13() && context.isEncryptActive()) {
             plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
                     .getContentMessageType().getArrayValue(), record.getPadding().getValue());
         } else {

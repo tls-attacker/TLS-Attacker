@@ -40,7 +40,7 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
         LOGGER.debug("Parsing ClientHelloMessage");
         parseProtocolVersion(msg);
-        if (getVersion() != ProtocolVersion.TLS13) {
+        if (!getVersion().isTLS13()) {
             parseUnixtime(msg);
         }
         parseRandom(msg);

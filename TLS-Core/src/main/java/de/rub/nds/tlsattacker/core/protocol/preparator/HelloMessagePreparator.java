@@ -34,10 +34,10 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     protected void prepareRandom(ProtocolVersion version) {
         byte[] random;
-        if (version != ProtocolVersion.TLS13) {
-            random = new byte[HandshakeByteLength.RANDOM];
-        } else {
+        if (version.isTLS13()) {
             random = new byte[HandshakeByteLength.RANDOM_TLS13];
+        } else {
+            random = new byte[HandshakeByteLength.RANDOM];
         }
         RandomHelper.getRandom().nextBytes(random);
         msg.setRandom(random);

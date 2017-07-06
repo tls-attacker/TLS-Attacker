@@ -99,16 +99,7 @@ public class WorkflowConfigurationFactory {
         messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
         messages.add(new CertificateMessage(config));
-        if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
-            if (config.getSupportedCiphersuites().get(0).isEphemeral()) {
-                addServerKeyExchangeMessage(messages);
-            }
-            if (config.isClientAuthentication()) {
-                CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
-                messages.add(certRequest);
-            }
-            messages.add(new ServerHelloDoneMessage(config));
-        } else {
+        if (config.getHighestProtocolVersion().isTLS13()) {
             messages.add(new EncryptedExtensionsMessage(config));
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
@@ -117,6 +108,15 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateMessage(config));
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
+        } else {
+            if (config.getSupportedCiphersuites().get(0).isEphemeral()) {
+                addServerKeyExchangeMessage(messages);
+            }
+            if (config.isClientAuthentication()) {
+                CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
+                messages.add(certRequest);
+            }
+            messages.add(new ServerHelloDoneMessage(config));
         }
         workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.SERVER, messages));
         return workflowTrace;
@@ -125,7 +125,12 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createHandshakeWorkflow() {
         WorkflowTrace workflowTrace = this.createHelloWorkflow();
         List<ProtocolMessage> messages = new LinkedList<>();
-        if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+        if (config.getHighestProtocolVersion().isTLS13()) {
+            if (config.isClientAuthentication()) {
+                messages.add(new CertificateMessage(config));
+                messages.add(new CertificateVerifyMessage(config));
+            }
+        } else {
             if (config.isClientAuthentication()) {
                 messages.add(new CertificateMessage(config));
                 addClientKeyExchangeMessage(messages);
@@ -134,15 +139,10 @@ public class WorkflowConfigurationFactory {
                 addClientKeyExchangeMessage(messages);
             }
             messages.add(new ChangeCipherSpecMessage(config));
-        } else {
-            if (config.isClientAuthentication()) {
-                messages.add(new CertificateMessage(config));
-                messages.add(new CertificateVerifyMessage(config));
-            }
         }
         messages.add(new FinishedMessage(config));
         workflowTrace.add(MessageActionFactory.createAction(config.getConnectionEnd(), ConnectionEnd.CLIENT, messages));
-        if (config.getHighestProtocolVersion() != ProtocolVersion.TLS13) {
+        if (!config.getHighestProtocolVersion().isTLS13()) {
             messages = new LinkedList<>();
             messages.add(new ChangeCipherSpecMessage(config));
             messages.add(new FinishedMessage(config));
