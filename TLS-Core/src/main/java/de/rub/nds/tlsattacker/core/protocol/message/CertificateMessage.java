@@ -75,8 +75,9 @@ public class CertificateMessage extends HandshakeMessage {
         if (tlsConfig.getHighestProtocolVersion() == ProtocolVersion.TLS13) {
             CertificatePair pair = new CertificatePair();
             pair.setCertificateConfig(encodeCert(tlsConfig.getOurCertificate()));
-            pair.setExtensionsConfig(tlsConfig.getOurCertificateExtensions());
-            addCertificateList(pair);
+            // Extentions can be added via if statements ? (as ClientHello and
+            // ServerHello). For this message no extension is currently
+            // implemented.
         }
     }
 

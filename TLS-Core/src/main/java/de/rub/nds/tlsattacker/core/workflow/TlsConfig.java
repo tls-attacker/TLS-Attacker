@@ -333,8 +333,6 @@ public class TlsConfig implements Serializable {
     @XmlTransient
     private Certificate ourCertificate;
 
-    private List<ExtensionMessage> ourCertificateExtensions;
-
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
 
@@ -712,14 +710,6 @@ public class TlsConfig implements Serializable {
 
     public void setOurCertificate(Certificate ourCertificate) {
         this.ourCertificate = ourCertificate;
-    }
-
-    public List<ExtensionMessage> getOurCertificateExtensions() {
-        return ourCertificateExtensions;
-    }
-
-    public void setOurCertificateExtensions(List<ExtensionMessage> ourCertificateExtensions) {
-        this.ourCertificateExtensions = ourCertificateExtensions;
     }
 
     public ProtocolVersion getHighestProtocolVersion() {

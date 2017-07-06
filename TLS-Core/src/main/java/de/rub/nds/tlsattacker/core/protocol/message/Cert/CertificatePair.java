@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -101,5 +102,12 @@ public class CertificatePair {
 
     public void setExtensionsConfig(List<ExtensionMessage> extensionsConfig) {
         this.extensionsConfig = extensionsConfig;
+    }
+
+    public void addExtensionConfig(ExtensionMessage extension) {
+        if (this.extensionsConfig == null) {
+            extensionsConfig = new LinkedList<>();
+        }
+        this.extensionsConfig.add(extension);
     }
 }
