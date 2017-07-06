@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.constants.CertificateVerifiyConstants;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -63,19 +64,25 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
         try {
             byte[] toBeSigned = context.getDigest().getRawBytes();
             if (context.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
-                toBeSigned = context.getDigest().digest(context.getSelectedProtocolVersion(),
-                        context.getSelectedCipherSuite());
-                byte[] string1 = ArrayConverter
-                        .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020");
-                byte[] string2;
                 if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
-                    string2 = ArrayConverter
-                            .hexStringToByteArray("544c5320312e332c20636c69656e7420436572746966696361746556657269667900");
+                    toBeSigned = ArrayConverter
+                            .concatenate(
+                                    ArrayConverter
+                                            .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                                    CertificateVerifiyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
+                                    new byte[] { (byte) 0x00 },
+                                    context.getDigest().digest(context.getSelectedProtocolVersion(),
+                                            context.getSelectedCipherSuite()));
                 } else {
-                    string2 = ArrayConverter
-                            .hexStringToByteArray("544c5320312e332c2073657276657220436572746966696361746556657269667900");
+                    toBeSigned = ArrayConverter
+                            .concatenate(
+                                    ArrayConverter
+                                            .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                                    CertificateVerifiyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
+                                    new byte[] { (byte) 0x00 },
+                                    context.getDigest().digest(context.getSelectedProtocolVersion(),
+                                            context.getSelectedCipherSuite()));
                 }
-                toBeSigned = ArrayConverter.concatenate(string1, string2, toBeSigned);
             }
             algorithm = selectSigHashAlgorithm();
             Signature tempSignature = Signature.getInstance(algorithm.getJavaName());
