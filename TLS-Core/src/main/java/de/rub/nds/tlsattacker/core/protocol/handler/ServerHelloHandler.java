@@ -56,7 +56,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
-        adjustLastRecordVersion(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
@@ -64,12 +63,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
             setRecordCipher();
-        }
-        if (tlsContext.getSelectedProtocolVersion().isTLS13()
-                && tlsContext.getTalkingConnectionEnd() != tlsContext.getConfig().getConnectionEnd()) {
-            tlsContext.getRecordLayer().updateDecryptionCipher();
-            tlsContext.getRecordLayer().updateEncryptionCipher();
-            tlsContext.setEncryptActive(true);
+            if (tlsContext.getTalkingConnectionEnd() != tlsContext.getConfig().getConnectionEnd()) {
+                tlsContext.getRecordLayer().updateDecryptionCipher();
+                tlsContext.getRecordLayer().updateEncryptionCipher();
+                tlsContext.setEncryptActive(true);
+            }
         }
     }
 
@@ -110,12 +108,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         tlsContext.setSelectedProtocolVersion(version);
         LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
-    }
-
-    private void adjustLastRecordVersion(ServerHelloMessage message) {
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
-        tlsContext.setLastRecordVersion(version);
-        LOGGER.debug("Set LastRecordVersion in Context to " + version.name());
     }
 
     private void setRecordCipher() {

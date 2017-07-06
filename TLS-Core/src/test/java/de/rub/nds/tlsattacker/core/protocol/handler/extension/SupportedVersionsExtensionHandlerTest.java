@@ -49,7 +49,6 @@ public class SupportedVersionsExtensionHandlerTest {
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientSupportedProtocolVersions().size() == 2);
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS13.getValue());
-        assertEquals(context.getLastRecordVersion().getValue(), ProtocolVersion.TLS13.getValue());
     }
 
     /**

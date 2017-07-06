@@ -56,7 +56,6 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         if (isCookieFieldSet(message)) {
             adjustDTLSCookie(message);
         }
-        adjustLastRecordVersion(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
@@ -147,9 +146,4 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         return list;
     }
 
-    private void adjustLastRecordVersion(ClientHelloMessage message) {
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
-        tlsContext.setLastRecordVersion(version);
-        LOGGER.debug("Set LastRecordVersion in Context to " + version.name());
-    }
 }
