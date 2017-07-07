@@ -58,16 +58,16 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing ServerHelloMessage");
         writeProtocolVersion();
-        if (!version.isTLS13()) {
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
             writeUnixtime();
         }
         writeRandom();
-        if (!version.isTLS13()) {
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
             writeSessionIDLength();
             writeSessionID();
         }
         writeSelectedCiphersuite();
-        if (!version.isTLS13()) {
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
             writeSelectedComressionMethod();
         }
         if (hasExtensionLengthField()) {

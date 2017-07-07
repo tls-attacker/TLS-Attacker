@@ -44,7 +44,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     public ClientHelloSerializer getSerializer(ClientHelloMessage message) {
-        return new ClientHelloSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ClientHelloSerializer(message, tlsContext.getConfig().getHighestProtocolVersion());
     }
 
     @Override
