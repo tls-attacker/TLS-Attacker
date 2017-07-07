@@ -20,7 +20,8 @@ public enum SignatureAlgorithm {
     ANONYMOUS((byte) 0),
     RSA((byte) 1),
     DSA((byte) 2),
-    ECDSA((byte) 3);
+    ECDSA((byte) 3),
+    RSA_PSS((byte) 8);
 
     private byte value;
 

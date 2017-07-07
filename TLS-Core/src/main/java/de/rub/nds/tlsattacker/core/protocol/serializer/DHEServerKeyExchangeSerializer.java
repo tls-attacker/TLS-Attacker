@@ -44,8 +44,7 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
-            writeHashAlgorithm(msg);
-            writeSignatureAlgorithm(msg);
+            writeSignatureAndHashAlgorithm(msg);
         }
         writeSignatureLength(msg);
         writeSignature(msg);
@@ -105,21 +104,13 @@ public class DHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the Hashalgorithm of the DHEServerKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SignatureAndHashalgorithm of the DHEServerKeyExchangeMessage
+     * into the final byte[]
      */
-    private void writeHashAlgorithm(DHEServerKeyExchangeMessage msg) {
-        appendByte(msg.getHashAlgorithm().getValue());
-        LOGGER.debug("HaslAlgorithm: " + msg.getHashAlgorithm().getValue());
-    }
-
-    /**
-     * Writes the SignatureAlgorithm of the DHEServerKeyExchangeMessage into the
-     * final byte[]
-     */
-    private void writeSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
-        appendByte(msg.getSignatureAlgorithm().getValue());
-        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
+    private void writeSignatureAndHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
+        LOGGER.debug("SignatureAndHaslAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     private boolean isTLS12() {
