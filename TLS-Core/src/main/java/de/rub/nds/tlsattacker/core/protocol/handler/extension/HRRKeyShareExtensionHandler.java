@@ -15,6 +15,10 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HRRKeyShareExte
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
+ * This handler processes the KeyShare extensions in HelloRetryRequest message,
+ * as defined in
+ * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
+ * 
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HRRKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExtensionMessage> {
