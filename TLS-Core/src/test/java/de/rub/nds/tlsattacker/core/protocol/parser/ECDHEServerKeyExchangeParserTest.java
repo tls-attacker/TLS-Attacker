@@ -40,8 +40,7 @@ public class ECDHEServerKeyExchangeParserTest {
                                 65,
                                 ArrayConverter
                                         .hexStringToByteArray("04a0da435d1657c12c86a3d232b2c94dfc11989074e5d5813cd46a6cbc63ade1b56dbacfb858c4a4e41188be99bb9d013aec89533b673d1b8d5784387dc0643544"),
-                                (byte) 0x06,
-                                (byte) 0x03,
+                                ArrayConverter.hexStringToByteArray("0603"),
                                 71,
                                 ArrayConverter
                                         .hexStringToByteArray("3045022100ca55fbccc20be69f6ed60d14c97a317efe2c36ba0eb2a6fc4428b83f2228ea14022036d5fc5aa9528b184e12ec628b018a314b7990f0fd894054833c04c093d2599e"),
@@ -56,7 +55,6 @@ public class ECDHEServerKeyExchangeParserTest {
                                 65,
                                 ArrayConverter
                                         .hexStringToByteArray("0462989820753dec2474c1b2740b6c5e27a30b93ea0641983b8b40a6308c1b85a3430f573fd4100a2fe5874f4f4678001448a80c99963e659635b7068f32d6825a"),
-                                null,
                                 null,
                                 256,
                                 ArrayConverter
@@ -73,7 +71,6 @@ public class ECDHEServerKeyExchangeParserTest {
                                 ArrayConverter
                                         .hexStringToByteArray("0462989820753dec2474c1b2740b6c5e27a30b93ea0641983b8b40a6308c1b85a3430f573fd4100a2fe5874f4f4678001448a80c99963e659635b7068f32d6825a"),
                                 null,
-                                null,
                                 256,
                                 ArrayConverter
                                         .hexStringToByteArray("afe942247469eb778cd0d979cabbeee237fe9de4d37dae2790f7ee5dc8e47b1187210217fe531b877f923850e972982bfca428ee73ed9d55f8b4b30f3869bf2c9d6e2d65961f06dbdcbcb04649ea1146c57746908c97f71982a702cfe56cb750ee157f0673b3acfb61aba25fe01e15e955975af64f7a85db4eadaedcb535c3450bf266da7022f00bf4cc017f4403b908de90bdcc36968837ba3f0891df24b8a7a93c74a3cbdc621e5b5a75b0485f8a156ca46c988bc9f88502a6a254bc08ceba610560633564866a7966c7743424c0f27ab2efaee8b524efb38b05712cb21b90ffc5e6061a5455fcdfda49ab9631da0c02a850b64d39cc9b134c362eb2a43520"),
@@ -88,15 +85,14 @@ public class ECDHEServerKeyExchangeParserTest {
     private byte[] namedCurve;
     private int pubKeyLength;
     private byte[] pubKey;
-    private Byte hashAlgorithm;
-    private Byte signatureAlgorithm;
+    private byte[] signatureAndHashAlgo;
     private int sigLength;
     private byte[] signature;
     private ProtocolVersion version;
 
     public ECDHEServerKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
-            byte[] namedCurve, int pubKeyLength, byte[] pubKey, Byte hashAlgorithm, Byte signatureAlgorithm,
-            int sigLength, byte[] signature, ProtocolVersion version) {
+            byte[] namedCurve, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
+            byte[] signature, ProtocolVersion version) {
         this.message = message;
         this.type = type;
         this.length = length;
@@ -104,8 +100,7 @@ public class ECDHEServerKeyExchangeParserTest {
         this.namedCurve = namedCurve;
         this.pubKeyLength = pubKeyLength;
         this.pubKey = pubKey;
-        this.hashAlgorithm = hashAlgorithm;
-        this.signatureAlgorithm = signatureAlgorithm;
+        this.signatureAndHashAlgo = signatureAndHashAlgo;
         this.sigLength = sigLength;
         this.signature = signature;
         this.version = version;
@@ -126,16 +121,11 @@ public class ECDHEServerKeyExchangeParserTest {
         assertArrayEquals(namedCurve, msg.getNamedCurve().getValue());
         assertTrue(pubKeyLength == msg.getSerializedPublicKeyLength().getValue());
         assertArrayEquals(pubKey, msg.getSerializedPublicKey().getValue());
-        Byte tempSigAlg = null;
-        if (msg.getSignatureAlgorithm() != null && msg.getSignatureAlgorithm().getValue() != null) {
-            tempSigAlg = msg.getSignatureAlgorithm().getValue();
+        byte[] tempSignatureAndHashAlgo = null;
+        if (msg.getSignatureAndHashAlgorithm() != null && msg.getSignatureAndHashAlgorithm().getValue() != null) {
+            tempSignatureAndHashAlgo = msg.getSignatureAndHashAlgorithm().getValue();
         }
-        assertTrue(signatureAlgorithm == tempSigAlg);
-        Byte tempHashAlgo = null;
-        if (msg.getHashAlgorithm() != null && msg.getHashAlgorithm().getValue() != null) {
-            tempHashAlgo = msg.getHashAlgorithm().getValue();
-        }
-        assertTrue(hashAlgorithm == tempHashAlgo);
+        assertArrayEquals(signatureAndHashAlgo, tempSignatureAndHashAlgo);
         assertTrue(sigLength == msg.getSignatureLength().getValue());
         assertArrayEquals(signature, msg.getSignature().getValue());
     }

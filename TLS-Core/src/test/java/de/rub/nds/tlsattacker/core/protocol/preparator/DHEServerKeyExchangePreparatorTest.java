@@ -94,8 +94,8 @@ public class DHEServerKeyExchangePreparatorTest {
                 .getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("AABBCCDD"), message.getComputations().getServerRandom()
                 .getValue());
-        assertTrue(SignatureAlgorithm.RSA.getValue() == message.getSignatureAlgorithm().getValue());
-        assertTrue(HashAlgorithm.SHA1.getValue() == message.getHashAlgorithm().getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("0201"), message.getSignatureAndHashAlgorithm()
+                .getValue());
         assertNotNull(message.getSignature().getValue());
         assertNotNull(message.getSignatureLength().getValue());
     }

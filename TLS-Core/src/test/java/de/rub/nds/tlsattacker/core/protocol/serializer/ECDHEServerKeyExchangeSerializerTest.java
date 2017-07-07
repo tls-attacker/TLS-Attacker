@@ -40,15 +40,14 @@ public class ECDHEServerKeyExchangeSerializerTest {
     private byte[] namedCurve;
     private int pubKeyLength;
     private byte[] pubKey;
-    private Byte hashAlgorithm;
-    private Byte signatureAlgorithm;
+    private byte[] signatureAndHashAlgo;
     private int sigLength;
     private byte[] signature;
     private ProtocolVersion version;
 
     public ECDHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
-            byte[] namedCurve, int pubKeyLength, byte[] pubKey, Byte hashAlgorithm, Byte signatureAlgorithm,
-            int sigLength, byte[] signature, ProtocolVersion version) {
+            byte[] namedCurve, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
+            byte[] signature, ProtocolVersion version) {
         this.message = message;
         this.start = 0;
         this.expectedPart = message;
@@ -58,8 +57,7 @@ public class ECDHEServerKeyExchangeSerializerTest {
         this.namedCurve = namedCurve;
         this.pubKeyLength = pubKeyLength;
         this.pubKey = pubKey;
-        this.hashAlgorithm = hashAlgorithm;
-        this.signatureAlgorithm = signatureAlgorithm;
+        this.signatureAndHashAlgo = signatureAndHashAlgo;
         this.sigLength = sigLength;
         this.signature = signature;
         this.version = version;
@@ -79,11 +77,8 @@ public class ECDHEServerKeyExchangeSerializerTest {
         msg.setNamedCurve(namedCurve);
         msg.setSerializedPublicKey(pubKey);
         msg.setSerializedPublicKeyLength(pubKeyLength);
-        if (hashAlgorithm != null) {
-            msg.setHashAlgorithm(hashAlgorithm);
-        }
-        if (signatureAlgorithm != null) {
-            msg.setSignatureAlgorithm(signatureAlgorithm);
+        if (signatureAndHashAlgo != null) {
+            msg.setSignatureAndHashAlgorithm(signatureAndHashAlgo);
         }
         msg.setSignatureLength(sigLength);
         msg.setSignature(signature);
