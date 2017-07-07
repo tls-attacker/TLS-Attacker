@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
+ * Test cases from: https://tools.ietf.org/html/rfc7748#section-6.1
+ * 
  * @author Nurullah Erinola
  */
 public class Curve25519Test {
@@ -58,13 +60,13 @@ public class Curve25519Test {
     public void test2() {
 
         byte[] privateA = ArrayConverter
-                .hexStringToByteArray("0cc3d0a7806ef6bcdf69be30c68555977b51e0f5edbf1d1cc7b28eead93b34b4");
+                .hexStringToByteArray("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a");
         byte[] privateB = ArrayConverter
-                .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
+                .hexStringToByteArray("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb");
         byte[] publicA = new byte[32];
         byte[] publicB = new byte[32];
         byte[] result = ArrayConverter
-                .hexStringToByteArray("0dfa4c5e11a6f606d4b75f138412d85a4b2da0d5f981ffc1d2e8ceff2e00a12c");
+                .hexStringToByteArray("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
 
         byte[] sharedSecretA = new byte[32];
         byte[] sharedSecretB = new byte[32];
