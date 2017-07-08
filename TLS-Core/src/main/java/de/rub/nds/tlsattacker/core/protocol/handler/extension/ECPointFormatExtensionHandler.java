@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
                 LOGGER.warn("Unknown ECPointFormat:" + b);
             }
         }
-        if (context.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             context.setClientPointFormatsList(formatList);
         } else {
             context.setServerPointFormatsList(formatList);

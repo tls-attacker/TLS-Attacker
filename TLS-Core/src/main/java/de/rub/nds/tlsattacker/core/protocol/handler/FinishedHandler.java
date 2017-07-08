@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 
@@ -54,7 +54,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     @Override
     protected void adjustTLSContext(FinishedMessage message) {
         if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
-            if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
+            if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                 adjustApplicationTrafficSecrets();
             } else {
                 tlsContext.setUpdateKeys(true);

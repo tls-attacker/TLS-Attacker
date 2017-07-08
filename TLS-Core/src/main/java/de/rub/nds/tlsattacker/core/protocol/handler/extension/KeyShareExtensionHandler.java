@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionPa
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
@@ -55,7 +55,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionSerializer getSerializer(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionSerializer(message, context.getConfig().getConnectionEnd());
+        return new KeyShareExtensionSerializer(message, context.getConfig().getConnectionEndType());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 LOGGER.warn("Unknown KS Type:" + ArrayConverter.bytesToHexString(pair.getKeyShareType().getValue()));
             }
         }
-        if (context.getTalkingConnectionEnd() == ConnectionEnd.SERVER) {
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             // The server has only one key
             context.setServerKSEntry(ksEntryList.get(0));
             adjustHandshakeTrafficSecrets();
@@ -89,7 +89,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
-            if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+            if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
                 } else {

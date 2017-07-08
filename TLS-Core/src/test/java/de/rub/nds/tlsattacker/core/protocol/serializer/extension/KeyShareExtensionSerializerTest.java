@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParserTest;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class KeyShareExtensionSerializerTest {
         msg.setExtensionLength(extensionLength);
         msg.setKeyShareListBytes(keyShareList);
         msg.setKeyShareListLength(keyShareListLength);
-        KeyShareExtensionSerializer serializer = new KeyShareExtensionSerializer(msg, ConnectionEnd.CLIENT);
+        KeyShareExtensionSerializer serializer = new KeyShareExtensionSerializer(msg, ConnectionEndType.CLIENT);
         assertArrayEquals(completeExtension, serializer.serialize());
     }
 

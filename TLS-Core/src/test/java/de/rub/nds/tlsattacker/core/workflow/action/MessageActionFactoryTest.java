@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.After;
@@ -41,17 +41,17 @@ public class MessageActionFactoryTest {
     @Test
     public void testCreateActionOne() {
         TlsConfig config = TlsConfig.createConfig();
-        MessageAction action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT,
+        MessageAction action = MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory
-                .createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, new AlertMessage(config));
+        action = MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+                new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory
-                .createAction(ConnectionEnd.SERVER, ConnectionEnd.CLIENT, new AlertMessage(config));
+        action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.CLIENT,
+                new AlertMessage(config));
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory
-                .createAction(ConnectionEnd.SERVER, ConnectionEnd.SERVER, new AlertMessage(config));
+        action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.SERVER,
+                new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.getConfiguredMessages().size() == 1);
     }
@@ -65,13 +65,14 @@ public class MessageActionFactoryTest {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new ArbitraryMessage());
         messages.add(new AlertMessage(config));
-        MessageAction action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.CLIENT, messages);
+        MessageAction action = MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+                messages);
         assertEquals(action.getClass(), SendAction.class);
-        action = MessageActionFactory.createAction(ConnectionEnd.CLIENT, ConnectionEnd.SERVER, messages);
+        action = MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(ConnectionEnd.SERVER, ConnectionEnd.CLIENT, messages);
+        action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), ReceiveAction.class);
-        action = MessageActionFactory.createAction(ConnectionEnd.SERVER, ConnectionEnd.SERVER, messages);
+        action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.getConfiguredMessages().size() == 2);
     }

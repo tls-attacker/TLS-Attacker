@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -19,9 +19,9 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExtensionMessage> {
 
     private final KeyShareExtensionMessage msg;
-    private final ConnectionEnd connection;
+    private final ConnectionEndType connection;
 
-    public KeyShareExtensionSerializer(KeyShareExtensionMessage message, ConnectionEnd connection) {
+    public KeyShareExtensionSerializer(KeyShareExtensionMessage message, ConnectionEndType connection) {
         super(message);
         this.msg = message;
         this.connection = connection;
@@ -30,7 +30,7 @@ public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExt
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing KeyShareExtensionMessage");
-        if (connection == ConnectionEnd.CLIENT) {
+        if (connection == ConnectionEndType.CLIENT) {
             writeKeyShareListLength(msg);
         }
         writeKeyShareListBytes(msg);

@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -86,9 +86,9 @@ public class TlsConfig implements Serializable {
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 
     /**
-     * Indicates which ConnectionEnd we are
+     * Indicates which ConnectionEndType we are
      */
-    private ConnectionEnd connectionEnd = ConnectionEnd.CLIENT;
+    private ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
 
     /**
      * The Workflow Trace that should be executed
@@ -869,16 +869,16 @@ public class TlsConfig implements Serializable {
         this.supportedCompressionMethods = supportedCompressionMethods;
     }
 
-    public ConnectionEnd getConnectionEnd() {
-        return connectionEnd;
+    public ConnectionEndType getConnectionEndType() {
+        return connectionEndType;
     }
 
-    public void setConnectionEnd(ConnectionEnd connectionEnd) {
-        this.connectionEnd = connectionEnd;
+    public void setConnectionEndType(ConnectionEndType connectionEndType) {
+        this.connectionEndType = connectionEndType;
     }
 
-    public ConnectionEnd getMyConnectionPeer() {
-        return connectionEnd == ConnectionEnd.CLIENT ? ConnectionEnd.SERVER : ConnectionEnd.CLIENT;
+    public ConnectionEndType getMyConnectionPeer() {
+        return connectionEndType == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER : ConnectionEndType.CLIENT;
     }
 
     public WorkflowTrace getWorkflowTrace() {

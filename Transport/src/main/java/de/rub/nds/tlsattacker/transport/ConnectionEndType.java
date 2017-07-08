@@ -13,11 +13,11 @@ package de.rub.nds.tlsattacker.transport;
  * 
  * @author juraj
  */
-public enum ConnectionEnd {
+public enum ConnectionEndType {
 
     CLIENT,
     SERVER;
-    public ConnectionEnd getPeer() {
+    public ConnectionEndType getPeer() {
         if (this == CLIENT) {
             return SERVER;
         } else {

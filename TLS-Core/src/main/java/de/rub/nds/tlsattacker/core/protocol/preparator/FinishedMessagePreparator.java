@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
@@ -54,8 +54,8 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
-                LOGGER.debug("Connection End: " + context.getConfig().getConnectionEnd());
-                if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+                LOGGER.debug("Connection End: " + context.getConfig().getConnectionEndType());
+                if (context.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
                     finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, context.getServerHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
@@ -77,7 +77,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
             byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
                     context.getSelectedCipherSuite());
 
-            if (context.getConfig().getConnectionEnd() == ConnectionEnd.SERVER) {
+            if (context.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
                 // TODO put this in seperate config option
                 return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                         PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,

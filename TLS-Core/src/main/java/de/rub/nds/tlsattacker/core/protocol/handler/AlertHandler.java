@@ -41,7 +41,7 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     @Override
     protected void adjustTLSContext(AlertMessage message) {
-        if (tlsContext.getTalkingConnectionEnd() == tlsContext.getConfig().getConnectionEnd()
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getConfig().getConnectionEndType()
                 && AlertLevel.FATAL.getValue() == message.getLevel().getValue()) {
             LOGGER.debug("Setting received Fatal Alert in Context");
             tlsContext.setReceivedFatalAlert(true);

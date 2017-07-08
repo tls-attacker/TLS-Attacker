@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
@@ -76,7 +76,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
                     .getValue());
         }
-        if (tlsContext.getTalkingConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             LOGGER.debug("Setting ClientCertificate in Context");
             tlsContext.setClientCertificate(cert);
             if (cert != null) {

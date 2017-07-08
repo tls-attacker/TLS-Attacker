@@ -40,6 +40,7 @@
         <module>TLS-Core</module>
         <module>TLS-Client</module>
         <module>TLS-Server</module>
+        <module>TLS-Mitm</module>
         <module>Attacks</module>
     </modules>
     <dependencies>

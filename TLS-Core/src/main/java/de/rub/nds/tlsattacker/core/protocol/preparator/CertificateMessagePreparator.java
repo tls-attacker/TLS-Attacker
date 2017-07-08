@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -72,7 +72,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private void prepareRequestContext(CertificateMessage msg) {
-        if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+        if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
             msg.setRequestContext(context.getCertificateRequestContext());
         } else {
             msg.setRequestContext(new byte[0]);
@@ -89,7 +89,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         Certificate cert = context.getConfig().getOurCertificate();
         if (cert == null) {
             throw new PreparationException("Cannot prepare CertificateMessage since no certificate is specified for "
-                    + context.getTalkingConnectionEnd().name());
+                    + context.getTalkingConnectionEndType().name());
         } else {
             return cert;
         }

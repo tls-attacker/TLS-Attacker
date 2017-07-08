@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -64,7 +64,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
         try {
             byte[] toBeSigned = context.getDigest().getRawBytes();
             if (context.getSelectedProtocolVersion().isTLS13()) {
-                if (context.getConfig().getConnectionEnd() == ConnectionEnd.CLIENT) {
+                if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
                     toBeSigned = ArrayConverter
                             .concatenate(
                                     ArrayConverter

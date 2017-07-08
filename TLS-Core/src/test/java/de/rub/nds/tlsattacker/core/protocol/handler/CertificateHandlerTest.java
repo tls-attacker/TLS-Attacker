@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -74,7 +74,7 @@ public class CertificateHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        context.setTalkingConnectionEnd(ConnectionEnd.CLIENT);
+        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         CertificateMessage message = new CertificateMessage();
         message.setCertificatesListBytes(ArrayConverter
@@ -85,7 +85,7 @@ public class CertificateHandlerTest {
         assertNotNull(context.getClientCertificatePublicKey());
         assertNull(context.getServerCertificate());
         context = new TlsContext();
-        context.setTalkingConnectionEnd(ConnectionEnd.SERVER);
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         handler = new CertificateHandler(context);
         handler.adjustTLSContext(message);
@@ -97,7 +97,7 @@ public class CertificateHandlerTest {
 
     @Test
     public void testAdjustTLSContextWithUnparsableCertificate() {
-        context.setTalkingConnectionEnd(ConnectionEnd.CLIENT);
+        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         CertificateMessage message = new CertificateMessage();
         message.setCertificatesListBytes(new byte[] { 0, 1, 2, 3, 4 });
@@ -105,7 +105,7 @@ public class CertificateHandlerTest {
         handler.adjustTLSContext(message);
         assertNull(context.getClientCertificate());
         assertNull(context.getServerCertificate());
-        context.setTalkingConnectionEnd(ConnectionEnd.SERVER);
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         message.setCertificatesListBytes(new byte[] { 0, 1, 2, 3, 4 });
         handler.adjustTLSContext(message);
