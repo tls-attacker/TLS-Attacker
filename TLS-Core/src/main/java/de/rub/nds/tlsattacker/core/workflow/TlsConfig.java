@@ -172,6 +172,7 @@ public class TlsConfig implements Serializable {
     /**
      * Public key for KeyShareExtension
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] keySharePublic = ArrayConverter
             .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
     /**
@@ -181,6 +182,7 @@ public class TlsConfig implements Serializable {
     /**
      * Private key for KeyShareExtension
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] keySharePrivate = ArrayConverter
             .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
     /**
@@ -340,8 +342,7 @@ public class TlsConfig implements Serializable {
 
     private boolean doDTLSRetransmits = false;
     /**
-     * Fixed DH modulus used in Server Key Exchange OR KeyShare Extension in
-     * ClientHello/ServerHello
+     * Fixed DH modulus used in Server Key Exchange
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] fixedDHModulus = ArrayConverter
@@ -353,8 +354,7 @@ public class TlsConfig implements Serializable {
                     + "7c32905e462e36ce3be39e772c180e86039b2783a2ec07a28fb5c55df06f4c52c9de2bcbf695"
                     + "5817183995497cea956ae515d2261898fa051015728e5a8aacaa68ffffffffffffffff");
     /**
-     * Fixed DH g value used in Server Key Exchange OR KeyShare Extension in
-     * ClientHello/ServerHello
+     * Fixed DH g value used in Server Key Exchange
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] fixedDHg = { 0x02 };
@@ -491,9 +491,6 @@ public class TlsConfig implements Serializable {
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
         supportedVersions.add(ProtocolVersion.TLS13);
-        supportedVersions.add(ProtocolVersion.TLS12);
-        supportedVersions.add(ProtocolVersion.TLS11);
-        supportedVersions.add(ProtocolVersion.TLS10);
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
