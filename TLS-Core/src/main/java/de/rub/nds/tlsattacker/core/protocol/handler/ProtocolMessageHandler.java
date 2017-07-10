@@ -90,7 +90,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         try {
             prepareAfterParse(parsedMessage);
             adjustTLSContext(parsedMessage);
-        } catch (AdjustmentException E) {
+        } catch (AdjustmentException | UnsupportedOperationException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
