@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -142,7 +143,7 @@ public class HandlerFactory {
         // a
         // server
         // keyexchangeHandler
-        CipherSuite cs = context.getSelectedCipherSuite();
+        CipherSuite cs = new DefaultChooser(context, context.getConfig()).getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case ECDHE_ECDSA:
