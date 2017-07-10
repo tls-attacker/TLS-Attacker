@@ -51,7 +51,6 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         NamedCurve usedCurve = chooser.getSelectedCurve();
         CustomECPoint serverPublicKey = chooser.getServerEcPublicKey();
         BigInteger privateKey = chooser.getClientEcPrivateKey();
-
         // Set everything in computations and reload
         msg.getComputations().setClientPrivateKey(privateKey);
         msg.getComputations().setServerPublicKeyX(serverPublicKey.getX());
@@ -71,7 +70,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                             msg.getComputations().getServerPublicKeyY().getValue()), ecParams),
                     new ECPrivateKeyParameters(privateKey, ecParams));
         } catch (IllegalArgumentException E) {
-            throw new PreparationException("Could not compute premasterSecret.", E);
+            premasterSecret = chooser.getPreMasterSecret();
         }
         // Set and update premaster secret
         msg.getComputations().setPremasterSecret(premasterSecret);
