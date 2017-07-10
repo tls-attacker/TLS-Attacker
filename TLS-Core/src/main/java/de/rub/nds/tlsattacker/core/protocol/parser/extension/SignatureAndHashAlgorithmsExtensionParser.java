@@ -42,7 +42,7 @@ public class SignatureAndHashAlgorithmsExtensionParser extends
      *            Message to write in
      */
     private void parseSignatureAndHashAlgorithmsLength(SignatureAndHashAlgorithmsExtensionMessage msg) {
-        msg.setSignatureAndHashAlgorithmsLength(parseIntField(ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS_LENGTH));
+        msg.setSignatureAndHashAlgorithmsLength(parseIntField(ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS));
         LOGGER.debug("SignatureAndHashAlgorithmsLength: " + msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 

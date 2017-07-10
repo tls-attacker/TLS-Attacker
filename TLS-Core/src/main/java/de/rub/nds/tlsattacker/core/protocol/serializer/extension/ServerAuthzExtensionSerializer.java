@@ -26,8 +26,7 @@ public class ServerAuthzExtensionSerializer extends ExtensionSerializer<ServerAu
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(msg.getAuthzFormatListLength().getValue(),
-                ExtensionByteLength.SERVER_AUTHZ_EXTENSION_FORMAT_LIST_LENGTHFIELD_LENGTH);
+        appendInt(msg.getAuthzFormatListLength().getValue(), ExtensionByteLength.SERVER_AUTHZ_FORMAT_LIST_LENGTH);
         appendBytes(msg.getAuthzFormatList().getValue());
 
         return getAlreadySerialized();

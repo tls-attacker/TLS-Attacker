@@ -29,12 +29,12 @@ public class CertificateStatusRequestExtensionSerializer extends
     @Override
     public byte[] serializeExtensionContent() {
         appendBytes(intToBytes(message.getCertificateStatusRequestType().getValue(),
-                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE_LENGTH));
+                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE));
         appendBytes(intToBytes(message.getResponderIDListLength().getValue(),
-                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTHFIELD_LENGTH));
+                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_RESPONDER_ID_LIST_LENGTH));
         appendBytes(message.getResponderIDList().getValue());
         appendBytes(intToBytes(message.getRequestExtensionLength().getValue(),
-                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_REQUEST_EXTENSION_LENGTHFIELD_LENGTH));
+                ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_REQUEST_EXTENSION_LENGTH));
         appendBytes(message.getRequestExtension().getValue());
 
         return getAlreadySerialized();

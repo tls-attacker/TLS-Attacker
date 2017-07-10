@@ -23,7 +23,7 @@ public class ServerAuthzExtensionParser extends ExtensionParser<ServerAuthzExten
 
     @Override
     public void parseExtensionMessageContent(ServerAuthzExtensionMessage msg) {
-        msg.setAuthzFormatListLength(parseIntField(ExtensionByteLength.SERVER_AUTHZ_EXTENSION_FORMAT_LIST_LENGTHFIELD_LENGTH));
+        msg.setAuthzFormatListLength(parseIntField(ExtensionByteLength.SERVER_AUTHZ_FORMAT_LIST_LENGTH));
         msg.setAuthzFormatList(parseByteArrayField(msg.getAuthzFormatListLength().getValue()));
     }
 

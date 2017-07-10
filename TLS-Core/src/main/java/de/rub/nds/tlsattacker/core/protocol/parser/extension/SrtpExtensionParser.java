@@ -24,13 +24,13 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
 
     @Override
     public void parseExtensionMessageContent(SrtpExtensionMessage msg) {
-        msg.setSrtpProtectionProfilesLength(parseIntField(ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTHFIELD_LENGTH));
+        msg.setSrtpProtectionProfilesLength(parseIntField(ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTH));
         LOGGER.debug("Parsed the srtp protection profiles length of "
                 + msg.getSrtpProtectionProfilesLength().getValue());
         msg.setSrtpProtectionProfiles(parseByteArrayField(msg.getSrtpProtectionProfilesLength().getValue()));
         LOGGER.debug("Parsed the srtp protection profiles "
                 + ArrayConverter.bytesToHexString(msg.getSrtpProtectionProfiles()));
-        msg.setSrtpMkiLength(parseIntField(ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTHFIELD_LENGTH));
+        msg.setSrtpMkiLength(parseIntField(ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTH));
         LOGGER.debug("Parsed the srtp mki length of " + msg.getSrtpMkiLength().getValue());
         if (msg.getSrtpMkiLength().getValue() != 0) {
             msg.setSrtpMki(parseByteArrayField(msg.getSrtpMkiLength().getValue()));

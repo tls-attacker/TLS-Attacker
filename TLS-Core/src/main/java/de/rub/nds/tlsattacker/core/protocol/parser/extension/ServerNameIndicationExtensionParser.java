@@ -54,7 +54,7 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
      *            Message to write in
      */
     private void parseServerNameListLength(ServerNameIndicationExtensionMessage msg) {
-        msg.setServerNameListLength(parseIntField(ExtensionByteLength.SERVER_NAME_LIST_LENGTH));
+        msg.setServerNameListLength(parseIntField(ExtensionByteLength.SERVER_NAME_LIST));
         LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
     }
 

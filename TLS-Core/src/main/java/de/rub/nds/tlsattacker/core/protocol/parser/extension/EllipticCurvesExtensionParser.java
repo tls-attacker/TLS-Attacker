@@ -42,7 +42,7 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
      *            Message to write in
      */
     private void parseSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
-        msg.setSupportedCurvesLength(parseIntField(ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES_LENGTH));
+        msg.setSupportedCurvesLength(parseIntField(ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES));
         LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
     }
 

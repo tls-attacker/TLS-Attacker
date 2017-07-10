@@ -26,10 +26,9 @@ public class SrtpExtensionSerializer extends ExtensionSerializer<SrtpExtensionMe
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(msg.getSrtpProtectionProfilesLength().getValue(),
-                ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTHFIELD_LENGTH);
+        appendInt(msg.getSrtpProtectionProfilesLength().getValue(), ExtensionByteLength.SRTP_PROTECTION_PROFILES_LENGTH);
         appendBytes(msg.getSrtpProtectionProfiles().getValue());
-        appendInt(msg.getSrtpMkiLength().getValue(), ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTHFIELD_LENGTH);
+        appendInt(msg.getSrtpMkiLength().getValue(), ExtensionByteLength.SRTP_MASTER_KEY_IDENTIFIER_LENGTH);
         if (msg.getSrtpMkiLength().getValue() != 0) {
             appendBytes(msg.getSrtpMki().getValue());
         }

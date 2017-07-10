@@ -26,8 +26,7 @@ public class ClientAuthzExtensionSerializer extends ExtensionSerializer<ClientAu
 
     @Override
     public byte[] serializeExtensionContent() {
-        appendInt(msg.getAuthzFormatListLength().getValue(),
-                ExtensionByteLength.CLIENT_AUTHZ_EXTENSION_FORMAT_LIST_LENGTHFIELD_LENGTH);
+        appendInt(msg.getAuthzFormatListLength().getValue(), ExtensionByteLength.CLIENT_AUTHZ_FORMAT_LIST_LENGTH);
         appendBytes(msg.getAuthzFormatList().getValue());
 
         return getAlreadySerialized();
