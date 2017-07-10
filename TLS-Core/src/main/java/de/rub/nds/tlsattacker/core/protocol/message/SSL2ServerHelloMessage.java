@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
@@ -59,10 +60,12 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableByteArray sessionID;
 
     public SSL2ServerHelloMessage() {
+        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
     public SSL2ServerHelloMessage(TlsConfig config) {
         super();
+        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
     @Override
