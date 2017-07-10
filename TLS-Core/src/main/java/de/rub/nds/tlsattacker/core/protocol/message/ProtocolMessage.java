@@ -70,7 +70,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isRequired() {
-        if (required == null) {
+        if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;
         }
         return required.getValue();
@@ -81,7 +81,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isGoingToBeSent() {
-        if (goingToBeSent == null) {
+        if (goingToBeSent == null || goingToBeSent.getValue() == null) {
             return GOING_TO_BE_SENT_DEFAULT;
         }
         return goingToBeSent.getValue();
