@@ -238,7 +238,11 @@ public class WorkflowTrace implements Serializable {
     }
 
     public ProtocolMessage getFirstConfiguredSendMessageOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllConfiguredSendMessages(), type).get(0);
+        List<ProtocolMessage> list = filterMessageList(getAllConfiguredSendMessages(), type);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
     }
 
     public HandshakeMessage getFirstConfiguredSendMessageOfType(HandshakeMessageType type) {
@@ -259,7 +263,12 @@ public class WorkflowTrace implements Serializable {
     }
 
     public HandshakeMessage getFirstActuallySendMessageOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllActuallySentMessages()), type).get(0);
+        List<HandshakeMessage> list = filterMessageList(filterHandshakeMessagesFromList(getAllActuallySentMessages()),
+                type);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
     }
 
     public List<ProtocolMessage> getActualReceivedProtocolMessagesOfType(ProtocolMessageType type) {
