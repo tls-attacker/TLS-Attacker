@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
+ * This extension is defined in RFC6520
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class HeartbeatExtensionMessage extends ExtensionMessage {

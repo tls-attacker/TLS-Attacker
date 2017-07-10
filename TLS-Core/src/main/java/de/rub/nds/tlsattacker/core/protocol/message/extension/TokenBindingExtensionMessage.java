@@ -17,7 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ * This extension is defined in draft-ietf-tokbind-negotiation
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class TokenBindingExtensionMessage extends ExtensionMessage {

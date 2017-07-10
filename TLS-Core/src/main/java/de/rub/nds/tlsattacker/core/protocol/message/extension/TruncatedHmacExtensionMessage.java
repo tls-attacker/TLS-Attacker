@@ -13,7 +13,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExten
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- * This is a binary extension, which means that no extension data is used.
+ * This is a binary extension, which means that no extension data is used. This
+ * extension is defined in RFC6066
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */

@@ -18,7 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandl
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ * This extension is defined in RFC5764
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SrtpExtensionMessage extends ExtensionMessage {

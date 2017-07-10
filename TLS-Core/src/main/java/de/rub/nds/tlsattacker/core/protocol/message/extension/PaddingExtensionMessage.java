@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHa
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ *This extension is defined in RFC7685
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class PaddingExtensionMessage extends ExtensionMessage {

@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ *This extension is defined in RFC5878
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class ClientAuthzExtensionMessage extends ExtensionMessage {

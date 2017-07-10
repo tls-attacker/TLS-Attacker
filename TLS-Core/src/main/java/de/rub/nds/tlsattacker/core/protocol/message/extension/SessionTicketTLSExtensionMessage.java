@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ *This extension is defined in RFC4507
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SessionTicketTLSExtensionMessage extends ExtensionMessage {

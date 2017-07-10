@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandle
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ *This extension is defined in RFC5054
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SRPExtensionMessage extends ExtensionMessage {

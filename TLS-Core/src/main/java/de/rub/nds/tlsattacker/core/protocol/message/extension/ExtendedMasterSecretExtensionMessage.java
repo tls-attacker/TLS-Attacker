@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 /**
  * This is the extended_master_secret message. There is no need for any data,
  * the presence of this extension is enough.
+ * 
+ * This extension is defined in RFC7627
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */

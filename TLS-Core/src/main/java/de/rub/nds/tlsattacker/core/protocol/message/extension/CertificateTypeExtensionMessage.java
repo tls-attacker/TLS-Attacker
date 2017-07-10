@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ *This extension is defined in RFC6091
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class CertificateTypeExtensionMessage extends ExtensionMessage {
