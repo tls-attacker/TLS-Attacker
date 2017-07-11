@@ -97,6 +97,7 @@ public class ExtensionParserFactory {
                 parser = new ServerAuthzExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_CERTIFICATE_TYPE:
+                parser = new ServerCertificateTypeExtensionParser(pointer, typeBytes);
                 break;
             case SESSION_TICKET:
                 parser = new SessionTicketTLSExtensionParser(pointer, extensionBytes);

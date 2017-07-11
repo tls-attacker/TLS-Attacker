@@ -284,6 +284,10 @@ public class TlsConfig implements Serializable {
      */
     private List<CertificateType> clientCertificateTypeDesiredTypes;
     /**
+     * Default server certificate type extension desired types
+     */
+    private List<CertificateType> serverCertificateTypeDesiredTypes;
+    /**
      * Default client authz extension data format list
      */
     private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
@@ -429,6 +433,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with client certificate type extension
      */
     private boolean addClientCertificateTypeExtension = false;
+    /**
+     * If we generate ClientHello with server certificate type extension
+     */
+    private boolean addServerCertificateTypeExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -633,6 +641,10 @@ public class TlsConfig implements Serializable {
         clientCertificateTypeDesiredTypes.add(CertificateType.X509);
         clientCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
 
+        serverCertificateTypeDesiredTypes = new LinkedList<>();
+        serverCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
+        serverCertificateTypeDesiredTypes.add(CertificateType.X509);
+        serverCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1506,6 +1518,22 @@ public class TlsConfig implements Serializable {
 
     public void setAddClientCertificateTypeExtension(boolean addClientCertificateTypeExtension) {
         this.addClientCertificateTypeExtension = addClientCertificateTypeExtension;
+    }
+
+    public List<CertificateType> getServerCertificateTypeDesiredTypes() {
+        return serverCertificateTypeDesiredTypes;
+    }
+
+    public void setServerCertificateTypeDesiredTypes(List<CertificateType> serverCertificateTypeDesiredTypes) {
+        this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
+    }
+
+    public boolean isAddServerCertificateTypeExtension() {
+        return addServerCertificateTypeExtension;
+    }
+
+    public void setAddServerCertificateTypeExtension(boolean addServerCertificateTypeExtension) {
+        this.addServerCertificateTypeExtension = addServerCertificateTypeExtension;
     }
 
 }

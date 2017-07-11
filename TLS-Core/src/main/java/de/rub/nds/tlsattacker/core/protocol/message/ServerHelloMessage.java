@@ -40,6 +40,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
@@ -135,6 +136,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddClientCertificateTypeExtension()) {
             addExtension(new ClientCertificateTypeExtensionMessage());
+        }
+        if (tlsConfig.isAddServerCertificateTypeExtension()) {
+            addExtension(new ServerCertificateTypeExtensionMessage());
         }
     }
 
