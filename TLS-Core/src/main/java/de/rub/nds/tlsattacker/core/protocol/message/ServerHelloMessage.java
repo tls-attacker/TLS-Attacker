@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
@@ -131,6 +132,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddServerAuthzExtension()) {
             addExtension(new ServerAuthzExtensionMessage());
+        }
+        if (tlsConfig.isAddClientCertificateTypeExtension()) {
+            addExtension(new ClientCertificateTypeExtensionMessage());
         }
     }
 

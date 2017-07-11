@@ -280,6 +280,10 @@ public class TlsConfig implements Serializable {
      */
     private List<CertificateType> certificateTypeDesiredTypes;
     /**
+     * Default client certificate type extension desired types
+     */
+    private List<CertificateType> clientCertificateTypeDesiredTypes;
+    /**
      * Default client authz extension data format list
      */
     private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
@@ -291,6 +295,11 @@ public class TlsConfig implements Serializable {
      * Default sever authz extension data format list
      */
     private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
+    /**
+     * Default state for the client certificate type extension message. State
+     * "client"
+     */
+    private boolean clientCertificateTypeExtensionMessageState = true;
     /**
      * Default Timeout we wait for TLSMessages
      */
@@ -416,6 +425,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with server authz extension
      */
     private boolean addServerAuthzExtension = false;
+    /**
+     * If we generate ClientHello with client certificate type extension
+     */
+    private boolean addClientCertificateTypeExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -614,6 +627,12 @@ public class TlsConfig implements Serializable {
 
         supportedVersions = new LinkedList<>();
         supportedVersions.add(ProtocolVersion.TLS13);
+
+        clientCertificateTypeDesiredTypes = new LinkedList<>();
+        clientCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
+        clientCertificateTypeDesiredTypes.add(CertificateType.X509);
+        clientCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
+
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1463,6 +1482,30 @@ public class TlsConfig implements Serializable {
 
     public void setAddServerAuthzExtension(boolean addServerAuthzExtension) {
         this.addServerAuthzExtension = addServerAuthzExtension;
+    }
+
+    public List<CertificateType> getClientCertificateTypeDesiredTypes() {
+        return clientCertificateTypeDesiredTypes;
+    }
+
+    public void setClientCertificateTypeDesiredTypes(List<CertificateType> clientCertificateTypeDesiredTypes) {
+        this.clientCertificateTypeDesiredTypes = clientCertificateTypeDesiredTypes;
+    }
+
+    public boolean isClientCertificateTypeExtensionMessageState() {
+        return clientCertificateTypeExtensionMessageState;
+    }
+
+    public void setClientCertificateTypeExtensionMessageState(boolean clientCertificateTypeExtensionMessageState) {
+        this.clientCertificateTypeExtensionMessageState = clientCertificateTypeExtensionMessageState;
+    }
+
+    public boolean isAddClientCertificateTypeExtension() {
+        return addClientCertificateTypeExtension;
+    }
+
+    public void setAddClientCertificateTypeExtension(boolean addClientCertificateTypeExtension) {
+        this.addClientCertificateTypeExtension = addClientCertificateTypeExtension;
     }
 
 }

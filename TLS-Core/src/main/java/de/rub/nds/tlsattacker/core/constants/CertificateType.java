@@ -19,7 +19,8 @@ import java.util.Map;
  */
 public enum CertificateType {
     X509((byte) 0),
-    OPEN_PGP((byte) 1);
+    OPEN_PGP((byte) 1),
+    RAW_PUBLIC_KEY((byte) 2);
 
     private final byte value;
     private static final Map<Byte, CertificateType> MAP;

@@ -80,6 +80,7 @@ public class ExtensionParserFactory {
                 parser = new ClientAuthzExtensionParser(pointer, extensionBytes);
                 break;
             case CLIENT_CERTIFICATE_TYPE:
+                parser = new ClientCertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
             case ENCRYPT_THEN_MAC:
                 break;

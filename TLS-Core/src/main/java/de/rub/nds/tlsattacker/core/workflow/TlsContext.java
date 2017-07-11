@@ -292,6 +292,8 @@ public class TlsContext {
 
     private List<CertificateType> certificateTypeDesiredTypes;
 
+    private List<CertificateType> clientCertificateTypeDesiredTypes;
+
     public TlsContext() {
         this(TlsConfig.createConfig());
     }
@@ -883,6 +885,14 @@ public class TlsContext {
 
     public void setCertificateRequestContext(byte[] certificateRequestContext) {
         this.certificateRequestContext = certificateRequestContext;
+    }
+
+    public List<CertificateType> getClientCertificateTypeDesiredTypes() {
+        return clientCertificateTypeDesiredTypes;
+    }
+
+    public void setClientCertificateTypeDesiredTypes(List<CertificateType> clientCertificateTypeDesiredTypes) {
+        this.clientCertificateTypeDesiredTypes = clientCertificateTypeDesiredTypes;
     }
 
 }
