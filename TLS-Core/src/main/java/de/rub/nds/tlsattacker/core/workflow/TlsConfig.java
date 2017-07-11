@@ -437,6 +437,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with server certificate type extension
      */
     private boolean addServerCertificateTypeExtension = false;
+    /**
+     * If we generate ClientHello with encrypt then mac extension
+     */
+    private boolean addEncryptThenMacExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -1534,6 +1538,14 @@ public class TlsConfig implements Serializable {
 
     public void setAddServerCertificateTypeExtension(boolean addServerCertificateTypeExtension) {
         this.addServerCertificateTypeExtension = addServerCertificateTypeExtension;
+    }
+
+    public boolean isAddEncryptThenMacExtension() {
+        return addEncryptThenMacExtension;
+    }
+
+    public void setAddEncryptThenMacExtension(boolean addEncryptThenMacExtension) {
+        this.addEncryptThenMacExtension = addEncryptThenMacExtension;
     }
 
 }

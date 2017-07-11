@@ -83,6 +83,7 @@ public class ExtensionParserFactory {
                 parser = new ClientCertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
             case ENCRYPT_THEN_MAC:
+                parser = new EncryptThenMacExtensionParser(pointer, extensionBytes);
                 break;
             case EXTENDED_MASTER_SECRET:
                 parser = new ExtendedMasterSecretExtensionParser(pointer, extensionBytes);

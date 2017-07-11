@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
@@ -139,6 +140,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddServerCertificateTypeExtension()) {
             addExtension(new ServerCertificateTypeExtensionMessage());
+        }
+        if (tlsConfig.isAddEncryptThenMacExtension()) {
+            addExtension(new EncryptThenMacExtensionMessage());
         }
     }
 

@@ -223,6 +223,11 @@ public class TlsContext {
     private boolean truncatedHmacExtensionIsPresent;
 
     /**
+     * Is the encrypt then mac extension present?
+     */
+    private boolean encryptThenMacExtensionIsPresent;
+
+    /**
      * User mapping extension hint type
      */
     private UserMappingExtensionHintType userMappingExtensionHintType;
@@ -903,6 +908,14 @@ public class TlsContext {
 
     public void setServerCertificateTypeDesiredTypes(List<CertificateType> serverCertificateTypeDesiredTypes) {
         this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
+    }
+
+    public boolean isEncryptThenMacExtensionIsPresent() {
+        return encryptThenMacExtensionIsPresent;
+    }
+
+    public void setEncryptThenMacExtensionIsPresent(boolean encryptThenMacExtensionIsPresent) {
+        this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
     }
 
 }
