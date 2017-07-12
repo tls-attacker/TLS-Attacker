@@ -211,17 +211,17 @@ public class ClientHelloMessage extends HelloMessage {
             sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
         }
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append("\n  Supported Cipher Suites: ")
-                    .append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append("\n  Supported Cipher Suites: ").append(
+                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
         }
         if (getCompressions() != null && getCompressions().getValue() != null) {
-            sb.
-                    append("\n  Supported Compression Methods: ")
+            sb.append("\n  Supported Compression Methods: ")
                     .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
         }
-        for(ExtensionMessage extension : getExtensions())
-        {
-            sb.append(extension.toString()).append("\n");
+        if (getExtensions() != null) {
+            for (ExtensionMessage extension : getExtensions()) {
+                sb.append(extension.toString()).append("\n");
+            }
         }
         return sb.toString();
     }

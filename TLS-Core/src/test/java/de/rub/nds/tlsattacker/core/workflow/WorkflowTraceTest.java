@@ -521,9 +521,9 @@ public class WorkflowTraceTest {
         trace.add(new ReceiveAction());
         trace.add(new SendAction());
         trace.add(new ChangeCipherSuiteAction());
-        assertEquals(new SendAction(), trace.getLastAction());
+        assertEquals(new SendAction(), trace.getLastMessageAction());
         trace.add(new ReceiveAction());
-        assertEquals(new ReceiveAction(), trace.getLastAction());
+        assertEquals(new ReceiveAction(), trace.getLastMessageAction());
     }
 
     /**
@@ -535,7 +535,8 @@ public class WorkflowTraceTest {
         trace.add(new ReceiveAction(new ApplicationMessage()));
         trace.add(new SendAction(new ApplicationMessage()));
         trace.add(new ReceiveAction(new ClientHelloMessage()));
-        assertEquals(trace.getLastConfiguredReceiveMesssage(), new ClientHelloMessage());
+        assertEquals(trace.getLastConfiguredReceiveMesssage().toCompactString(),
+                new ClientHelloMessage().toCompactString());
     }
 
     /**

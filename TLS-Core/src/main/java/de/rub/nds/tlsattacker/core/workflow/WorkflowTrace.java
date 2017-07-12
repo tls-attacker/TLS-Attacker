@@ -398,15 +398,17 @@ public class WorkflowTrace implements Serializable {
     public ProtocolMessage getLastConfiguredReceiveMesssage() {
         List<ProtocolMessage> messages = getAllConfiguredReceivingMessages();
         if (messages.size() > 0) {
-            return messages.get(0);
+            return messages.get(messages.size() - 1);
         }
         return null;
     }
 
     public ProtocolMessage getLastConfiguredSendMesssage() {
-        List<ProtocolMessage> clientMessages = getAllConfiguredSendMessages();
-        int size = clientMessages.size();
-        return clientMessages.get(size - 1);
+        List<ProtocolMessage> messages = getAllConfiguredSendMessages();
+        if (messages.size() > 0) {
+            return messages.get(messages.size() - 1);
+        }
+        return null;
     }
 
     public boolean containsConfiguredReceivedProtocolMessage(ProtocolMessageType type) {
