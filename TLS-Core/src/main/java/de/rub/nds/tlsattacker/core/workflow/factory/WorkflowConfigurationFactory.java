@@ -114,7 +114,7 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (config.getDefaultServerSupportedCiphersuites().get(0).isEphemeral()) {
+            if (config.getDefaultClientSupportedCiphersuites().get(0).isEphemeral()) {
                 addServerKeyExchangeMessage(messages);
             }
             if (config.isClientAuthentication()) {
