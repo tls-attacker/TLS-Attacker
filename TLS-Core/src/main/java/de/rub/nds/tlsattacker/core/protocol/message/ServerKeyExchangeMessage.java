@@ -25,15 +25,10 @@ import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     /**
-     * hash algorithm
+     * signature and hash algorithm
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte hashAlgorithm;
-    /**
-     * signature algorithm
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte signatureAlgorithm;
+    private ModifiableByteArray signatureAndHashAlgorithm;
     /**
      * signature length
      */
@@ -68,28 +63,17 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     public abstract void prepareComputations();
 
-    public ModifiableVariable<Byte> getHashAlgorithm() {
-        return hashAlgorithm;
+    public ModifiableByteArray getSignatureAndHashAlgorithm() {
+        return signatureAndHashAlgorithm;
     }
 
-    public void setHashAlgorithm(ModifiableByte hashAlgorithm) {
-        this.hashAlgorithm = hashAlgorithm;
+    public void setSignatureAndHashAlgorithm(ModifiableByteArray signatureAndHashAlgorithm) {
+        this.signatureAndHashAlgorithm = signatureAndHashAlgorithm;
     }
 
-    public void setHashAlgorithm(byte algorithm) {
-        this.hashAlgorithm = ModifiableVariableFactory.safelySetValue(this.hashAlgorithm, algorithm);
-    }
-
-    public ModifiableVariable<Byte> getSignatureAlgorithm() {
-        return signatureAlgorithm;
-    }
-
-    public void setSignatureAlgorithm(ModifiableByte signatureAlgorithm) {
-        this.signatureAlgorithm = signatureAlgorithm;
-    }
-
-    public void setSignatureAlgorithm(byte algorithm) {
-        this.signatureAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureAlgorithm, algorithm);
+    public void setSignatureAndHashAlgorithm(byte[] signatureAndHashAlgorithm) {
+        this.signatureAndHashAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithm,
+                signatureAndHashAlgorithm);
     }
 
     public ModifiableInteger getSignatureLength() {

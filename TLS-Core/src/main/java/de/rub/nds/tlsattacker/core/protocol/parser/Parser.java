@@ -146,6 +146,16 @@ public abstract class Parser<T> {
     }
 
     /**
+     * Set the current position of the pointer in the array
+     * 
+     * @param pointer
+     *            The new position of the pointer in the array
+     */
+    public void setPointer(int pointer) {
+        this.pointer = pointer;
+    }
+
+    /**
      * Returns the position at which the Parser started parsing
      *
      * @return

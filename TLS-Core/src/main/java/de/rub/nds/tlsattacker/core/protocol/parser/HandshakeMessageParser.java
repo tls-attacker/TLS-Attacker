@@ -8,10 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An abstract Parser class for HandshakeMessages
@@ -106,5 +112,68 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
     private void parseMessageSequence(T msg) {
         msg.setMessageSeq(parseIntField(HandshakeByteLength.DTLS_MESSAGE_SEQUENCE));
         LOGGER.debug("MessageSequence:" + msg.getMessageSeq().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the ExtensionLength and writes them in the
+     * message
+     *
+     * @param message
+     *            Message to write in
+     */
+    protected void parseExtensionLength(T message) {
+        message.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
+        LOGGER.debug("ExtensionLength:" + message.getExtensionsLength().getValue());
+    }
+
+    /**
+     * Reads the next bytes as the ExtensionBytes and writes them in the message
+     * and adds parsed Extensions to the message
+     *
+     * @param message
+     *            Message to write in
+     */
+    protected void parseExtensionBytes(T message) {
+        byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
+        message.setExtensionBytes(extensionBytes);
+        LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
+        List<ExtensionMessage> extensionMessages = new LinkedList<>();
+        int pointer = 0;
+        while (pointer < extensionBytes.length) {
+            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer,
+                    message.getHandshakeMessageType());
+            extensionMessages.add(parser.parse());
+            pointer = parser.getPointer();
+        }
+        message.setExtensions(extensionMessages);
+    }
+
+    /**
+     * Checks if the message has an ExtensionLength field, by checking if the
+     * value specified in the length field is big enough to allow it.
+     *
+     * @param message
+     *            Message to check
+     * @return True if the message has an Extension field
+     */
+    protected boolean hasExtensionLengthField(T message) {
+        return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
+                + HandshakeByteLength.MESSAGE_LENGTH_FIELD > getPointer() - getStartPoint();
+    }
+
+    /**
+     * Checks if the ExtensionsLengthField has a value greater than Zero, eg. if
+     * there are Extensions present.
+     *
+     * @param message
+     *            Message to check
+     * @return True if the message has Extensions
+     */
+    protected boolean hasExtensions(T message) {
+        return message.getExtensionsLength().getValue() > 0;
+    }
+
+    protected ProtocolVersion getVersion() {
+        return version;
     }
 }

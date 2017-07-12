@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 
@@ -45,6 +46,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class TlsContext {
 
@@ -53,7 +55,26 @@ public class TlsContext {
      * related
      */
     private TlsConfig config;
-
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] handshakeSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientHandshakeTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverHandshakeTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientApplicationTrafficSecret0;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverApplicationTrafficSecret0;
     /**
      * master secret established during the handshake
      */
@@ -153,6 +174,11 @@ public class TlsContext {
      */
     private byte[] renegotiationInfo;
     /**
+     * This is the requestContext from the CertificateRequest messsage in TLS
+     * 1.3
+     */
+    private byte[] certificateRequestContext;
+    /**
      * This is the timestamp of the SignedCertificateTimestamp extension
      */
     private byte[] signedCertificateTimestamp;
@@ -179,6 +205,12 @@ public class TlsContext {
 
     private boolean receivedFatalAlert = false;
 
+    private boolean encryptActive = false;
+    /**
+     * TLS 1.3, update keys for application data
+     */
+    private boolean updateKeys = false;
+
     private List<ClientCertificateType> clientCertificateTypes;
 
     private byte[] distinguishedNames;
@@ -187,7 +219,16 @@ public class TlsContext {
 
     private List<SNIEntry> clientSNIEntryList;
 
+    private List<KSEntry> clientKSEntryList;
+
+    private KSEntry serverKSEntry;
+
     private int sequenceNumber = 0;
+
+    /**
+     * supported protocol versions
+     */
+    private List<ProtocolVersion> clientSupportedProtocolVersions;
 
     private TokenBindingVersion tokenBindingVersion;
 
@@ -204,6 +245,14 @@ public class TlsContext {
         clientCertificateTypes = new LinkedList<>();
         lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public List<ProtocolVersion> getClientSupportedProtocolVersions() {
+        return clientSupportedProtocolVersions;
+    }
+
+    public void setClientSupportedProtocolVersions(List<ProtocolVersion> clientSupportedProtocolVersions) {
+        this.clientSupportedProtocolVersions = clientSupportedProtocolVersions;
     }
 
     public DHPublicKeyParameters getServerDhPublicKeyParameters() {
@@ -285,6 +334,22 @@ public class TlsContext {
 
     public void setReceivedFatalAlert(boolean receivedFatalAlert) {
         this.receivedFatalAlert = receivedFatalAlert;
+    }
+
+    public boolean isEncryptActive() {
+        return encryptActive;
+    }
+
+    public void setEncryptActive(boolean encryptActive) {
+        this.encryptActive = encryptActive;
+    }
+
+    public boolean isUpdateKeys() {
+        return updateKeys;
+    }
+
+    public void setUpdateKeys(boolean updateKeys) {
+        this.updateKeys = updateKeys;
     }
 
     public ECPublicKeyParameters getServerEcPublicKeyParameters() {
@@ -558,6 +623,62 @@ public class TlsContext {
         return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
     }
 
+    public byte[] getClientHandshakeTrafficSecret() {
+        return clientHandshakeTrafficSecret;
+    }
+
+    public void setClientHandshakeTrafficSecret(byte[] clientHandshakeTrafficSecret) {
+        this.clientHandshakeTrafficSecret = clientHandshakeTrafficSecret;
+    }
+
+    public byte[] getServerHandshakeTrafficSecret() {
+        return serverHandshakeTrafficSecret;
+    }
+
+    public void setServerHandshakeTrafficSecret(byte[] serverHandshakeTrafficSecret) {
+        this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
+    }
+
+    public byte[] getClientApplicationTrafficSecret0() {
+        return clientApplicationTrafficSecret0;
+    }
+
+    public void setClientApplicationTrafficSecret0(byte[] clientApplicationTrafficSecret0) {
+        this.clientApplicationTrafficSecret0 = clientApplicationTrafficSecret0;
+    }
+
+    public byte[] getServerApplicationTrafficSecret0() {
+        return serverApplicationTrafficSecret0;
+    }
+
+    public void setServerApplicationTrafficSecret0(byte[] serverApplicationTrafficSecret0) {
+        this.serverApplicationTrafficSecret0 = serverApplicationTrafficSecret0;
+    }
+
+    public byte[] getHandshakeSecret() {
+        return handshakeSecret;
+    }
+
+    public void setHandshakeSecret(byte[] handshakeSecret) {
+        this.handshakeSecret = handshakeSecret;
+    }
+
+    public List<KSEntry> getClientKSEntryList() {
+        return clientKSEntryList;
+    }
+
+    public void setClientKSEntryList(List<KSEntry> clientKSEntryList) {
+        this.clientKSEntryList = clientKSEntryList;
+    }
+
+    public KSEntry getServerKSEntry() {
+        return serverKSEntry;
+    }
+
+    public void setServerKSEntry(KSEntry serverKSEntry) {
+        this.serverKSEntry = serverKSEntry;
+    }
+
     public byte[] getSessionTicketTLS() {
         return sessionTicketTLS;
     }
@@ -596,6 +717,14 @@ public class TlsContext {
 
     public void setTokenBindingKeyParameters(List tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public byte[] getCertificateRequestContext() {
+        return certificateRequestContext;
+    }
+
+    public void setCertificateRequestContext(byte[] certificateRequestContext) {
+        this.certificateRequestContext = certificateRequestContext;
     }
 
 }

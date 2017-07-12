@@ -54,10 +54,27 @@ public class ExtensionByteLength {
      */
     public static final int SERVER_NAME_LIST_LENGTH = 2;
     /**
+     * KeyShareType length in the KeySahreExtension
+     */
+    public static final int KEY_SHARE_TYPE = 2;
+    /**
+     * KeyShare length in the KeySahreExtension
+     */
+    public static final int KEY_SHARE_LENGTH = 2;
+    /**
+     * KeyShareListLength in the KeySahreExtension
+     */
+    public static final int KEY_SHARE_LIST_LENGTH = 2;
+    /**
      * Length of the Signature and HashAlgorithm Length field of the
      * SignatureAndHashAlgorithms Extension
      */
     public static final int SIGNATURE_AND_HASH_ALGORITHMS_LENGTH = 2;
+    /**
+     * Supported Protocol Versions length field of the
+     * SupportedVersionsExtension message
+     */
+    public static final int SUPPORTED_PROTOCOL_VERSIONS_LENGTH = 1;
 
     /**
      * Length of the Padding Length field of the Padding Extension

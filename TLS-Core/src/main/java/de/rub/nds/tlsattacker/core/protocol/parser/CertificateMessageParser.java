@@ -13,10 +13,18 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
 
@@ -39,13 +47,44 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
     @Override
     protected void parseHandshakeMessageContent(CertificateMessage msg) {
         LOGGER.debug("Parsing CertificateMessage");
-        parseCertificatesLength(msg);
-        parseX509CertificateBytes(msg);
+        if (getVersion().isTLS13()) {
+            parseRequestContextLength(msg);
+            parseRequestContextBytes(msg);
+        }
+        parseCertificatesListLength(msg);
+        parseCertificateListBytes(msg);
+        if (getVersion().isTLS13()) {
+            parseCertificateList(msg);
+        }
     }
 
     @Override
     protected CertificateMessage createHandshakeMessage() {
         return new CertificateMessage();
+    }
+
+    /**
+     * Reads the next bytes as the RequestContextLength and writes them in the
+     * message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseRequestContextLength(CertificateMessage msg) {
+        msg.setRequestContextLength(parseIntField(HandshakeByteLength.CERTIFICATE_REQUEST_CONTEXT_LENGTH));
+        LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength());
+    }
+
+    /**
+     * Reads the next bytes as the requestContextBytes and writes them in the
+     * message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseRequestContextBytes(CertificateMessage msg) {
+        msg.setRequestContext(parseByteArrayField(msg.getRequestContextLength().getValue()));
+        LOGGER.debug("RequestContextBytes: " + ArrayConverter.bytesToHexString(msg.getRequestContext()));
     }
 
     /**
@@ -55,22 +94,54 @@ public class CertificateMessageParser extends HandshakeMessageParser<Certificate
      * @param msg
      *            Message to write in
      */
-    private void parseCertificatesLength(CertificateMessage msg) {
-        msg.setCertificatesLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
-        LOGGER.debug("CertificateLength: " + msg.getCertificatesLength().getValue());
+    private void parseCertificatesListLength(CertificateMessage msg) {
+        msg.setCertificatesListLength(parseIntField(HandshakeByteLength.CERTIFICATES_LENGTH));
+        LOGGER.debug("CertificatesListLength: " + msg.getCertificatesListLength());
     }
 
     /**
-     * Reads the next bytes as the X509CertificateBytes and writes them in the
+     * Reads the next bytes as the CertificateBytes and writes them in the
      * message
      *
      * @param msg
      *            Message to write in
      */
-    private void parseX509CertificateBytes(CertificateMessage msg) {
-        msg.setX509CertificateBytes(parseByteArrayField(msg.getCertificatesLength().getValue()));
-        LOGGER.debug("X509CertificateBytes: "
-                + ArrayConverter.bytesToHexString(msg.getX509CertificateBytes().getValue()));
+    private void parseCertificateListBytes(CertificateMessage msg) {
+        msg.setCertificatesListBytes(parseByteArrayField(msg.getCertificatesListLength().getValue()));
+        LOGGER.debug("CertificatesListBytes: " + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes()));
+    }
+
+    /**
+     * Reads the bytes from the CertificateListBytes and writes them in the
+     * CertificateList
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseCertificateList(CertificateMessage msg) {
+        int position = 0;
+        List<CertificatePair> pairList = new LinkedList<>();
+        while (position < msg.getCertificatesListLength().getValue()) {
+            CertificatePairParser parser = new CertificatePairParser(position, msg.getCertificatesListBytes()
+                    .getValue());
+            pairList.add(parser.parse());
+            position = parser.getPointer();
+        }
+        msg.setCertificatesList(pairList);
+
+        List<CertificateEntry> entryList = new LinkedList<>();
+        for (CertificatePair pair : msg.getCertificatesList()) {
+            List<ExtensionMessage> extensionMessages = new LinkedList<>();
+            int pointer = 0;
+            while (pointer < pair.getExtensionsLength().getValue()) {
+                ExtensionParser parser = ExtensionParserFactory.getExtensionParser(pair.getExtensions().getValue(),
+                        pointer, msg.getHandshakeMessageType());
+                extensionMessages.add(parser.parse());
+                pointer = parser.getPointer();
+            }
+            entryList.add(new CertificateEntry(pair.getCertificate().getValue(), extensionMessages));
+        }
+        msg.setCertificatesListAsEntry(entryList);
     }
 
 }

@@ -80,8 +80,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         preparePrivateKey(msg);
         // TODO this should not be here
         selectedSignatureHashAlgo = context.getConfig().getSupportedSignatureAndHashAlgorithms().get(0);
-        prepareSignatureAlgorithm(msg);
-        prepareHashAlgorithm(msg);
+        prepareSignatureAndHashAlgorithm(msg);
         prepareClientRandom(msg);
         prepareServerRandom(msg);
         signature = generateSignature(selectedSignatureHashAlgo);
@@ -160,14 +159,10 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         LOGGER.debug("G used for Computations: " + msg.getComputations().getG().getValue().toString(16));
     }
 
-    private void prepareSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setSignatureAlgorithm(selectedSignatureHashAlgo.getSignatureAlgorithm().getValue());
-        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
-    }
-
-    private void prepareHashAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setHashAlgorithm(selectedSignatureHashAlgo.getHashAlgorithm().getValue());
-        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
+    private void prepareSignatureAndHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+        msg.setSignatureAndHashAlgorithm(selectedSignatureHashAlgo.getByteValue());
+        LOGGER.debug("SignatureAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     private void prepareClientRandom(DHEServerKeyExchangeMessage msg) {

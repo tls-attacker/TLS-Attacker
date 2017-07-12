@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
 
@@ -39,7 +40,9 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
         LOGGER.debug("Parsing ClientHelloMessage");
         parseProtocolVersion(msg);
-        parseUnixtime(msg);
+        if (!getVersion().isTLS13()) {
+            parseUnixtime(msg);
+        }
         parseRandom(msg);
         parseSessionIDLength(msg);
         parseSessionID(msg);

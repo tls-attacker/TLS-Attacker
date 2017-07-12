@@ -18,10 +18,13 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
@@ -46,14 +49,24 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     protected void adjustTLSContext(ServerHelloMessage message) {
-        adjustSelectedCiphersuite(message);
-        adjustSelectedCompression(message);
         adjustSelectedProtocolVersion(message);
-        adjustSelectedSessionID(message);
+        if (!tlsContext.getSelectedProtocolVersion().isTLS13()) {
+            adjustSelectedCompression(message);
+            adjustSelectedSessionID(message);
+        }
+        adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
+            }
+        }
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+            setRecordCipher();
+            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getConfig().getConnectionEndType()) {
+                tlsContext.getRecordLayer().updateDecryptionCipher();
+                tlsContext.getRecordLayer().updateEncryptionCipher();
+                tlsContext.setEncryptActive(true);
             }
         }
     }
@@ -65,9 +78,16 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustServerRandom(ServerHelloMessage message) {
-        byte[] random = ArrayConverter.concatenate(message.getUnixTime().getValue(), message.getRandom().getValue());
-        tlsContext.setServerRandom(random);
-        LOGGER.debug("Set ServerRandom in Context to " + ArrayConverter.bytesToHexString(random));
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+            tlsContext.setServerRandom(message.getRandom().getValue());
+        } else {
+            setServerRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        }
+        LOGGER.debug("Set ServerRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getServerRandom()));
+    }
+
+    private void setServerRandomContext(byte[] unixTime, byte[] random) {
+        tlsContext.setServerRandom(ArrayConverter.concatenate(unixTime, random));
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {
@@ -88,5 +108,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         tlsContext.setSelectedProtocolVersion(version);
         LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+    }
+
+    private void setRecordCipher() {
+        LOGGER.debug("Setting new Cipher in RecordLayer");
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
     }
 }

@@ -94,6 +94,14 @@ public class SerialisationFullTest {
         config.setAddMaxFragmentLengthExtenstion(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddExtendedMasterSecretExtension(true);
+        config.setAddKeyShareExtension(true);
+        config.setAddPaddingExtension(true);
+        config.setAddSessionTicketTLSExtension(true);
+        config.setAddSignedCertificateTimestampExtension(true);
+        config.setAddSupportedVersionsExtension(true);
+        config.setAddTokenBindingExtension(true);
+
         WorkflowTrace trace = new WorkflowConfigurationFactory(config).createFullWorkflow();
         trace.add(new ChangeCipherSuiteAction(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         trace.add(new ChangeClientCertificateAction(Certificate.EMPTY_CHAIN));

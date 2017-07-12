@@ -57,8 +57,13 @@ public class SignatureAndHashAlgorithm implements Serializable {
             throw new ConfigurationException("SignatureAndHashAlgorithm always consists of two bytes, but found "
                     + ArrayConverter.bytesToHexString(value));
         }
-        hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[0]);
-        signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[1]);
+        if (value[0] == (byte) 8) {
+            hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[1]);
+            signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[0]);
+        } else {
+            hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[0]);
+            signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[1]);
+        }
     }
 
     public SignatureAndHashAlgorithm(SignatureAlgorithm sigAlgorithm, HashAlgorithm hashAlgorithm) {
@@ -67,7 +72,11 @@ public class SignatureAndHashAlgorithm implements Serializable {
     }
 
     public byte[] getByteValue() {
-        return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };
+        if (signatureAlgorithm == SignatureAlgorithm.RSA_PSS) {
+            return new byte[] { signatureAlgorithm.getValue(), hashAlgorithm.getValue() };
+        } else {
+            return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };
+        }
     }
 
     public SignatureAlgorithm getSignatureAlgorithm() {

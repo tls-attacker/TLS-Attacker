@@ -8,10 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
+import de.rub.nds.tlsattacker.core.protocol.serializer.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -20,6 +26,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 
@@ -33,10 +40,49 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateMessage");
-        Certificate cert = chooseCert();
-        byte[] encodedCert = encodeCert(cert);
-        msg.setX509CertificateBytes(encodedCert);
-        msg.setCertificatesLength(msg.getX509CertificateBytes().getValue().length);
+        if (context.getSelectedProtocolVersion().isTLS13()) {
+            prepareRequestContext(msg);
+            prepareRequestContextLength(msg);
+        }
+        prepareCertificateListBytes(msg);
+        msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
+    }
+
+    private void prepareCertificateListBytes(CertificateMessage msg) {
+        if (context.getSelectedProtocolVersion().isTLS13()) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            for (CertificatePair pair : msg.getCertificatesList()) {
+                CertificatePairPreparator preparator = new CertificatePairPreparator(context, pair);
+                preparator.prepare();
+                CertificatePairSerializer serializer = new CertificatePairSerializer(pair);
+                try {
+                    stream.write(serializer.serialize());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write byte[] from CertificatePair", ex);
+                }
+            }
+            msg.setCertificatesListBytes(stream.toByteArray());
+        } else {
+            Certificate cert = chooseCert();
+            byte[] encodedCert = encodeCert(cert);
+            msg.setCertificatesListBytes(encodedCert);
+        }
+        LOGGER.debug("CertificatesListBytes: "
+                + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
+    }
+
+    private void prepareRequestContext(CertificateMessage msg) {
+        if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            msg.setRequestContext(context.getCertificateRequestContext());
+        } else {
+            msg.setRequestContext(new byte[0]);
+        }
+        LOGGER.debug("RequestContext: " + ArrayConverter.bytesToHexString(msg.getRequestContext().getValue()));
+    }
+
+    private void prepareRequestContextLength(CertificateMessage msg) {
+        msg.setRequestContextLength(msg.getRequestContext().getValue().length);
+        LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
     }
 
     private Certificate chooseCert() {

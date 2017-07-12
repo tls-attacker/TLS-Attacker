@@ -139,6 +139,7 @@ public class AlgorithmResolverTest {
                 .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
         assertTrue(AlgorithmResolver
                 .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
+        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_AES_128_GCM_SHA256) == null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -327,5 +328,13 @@ public class AlgorithmResolverTest {
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACFallback() {
         AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
+    }
+
+    @Test
+    public void testGetHKDFAlgorithm() {
+        CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
+        HKDFAlgorithm result = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
+        HKDFAlgorithm result_correct = HKDFAlgorithm.TLS_HKDF_SHA256;
+        assertTrue(result == result_correct);
     }
 }

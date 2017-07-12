@@ -21,9 +21,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -75,7 +77,9 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
             @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
+            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+            @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     @HoldsModifiableVariable
     protected List<ProtocolMessage> configuredMessages;
     @XmlElementWrapper
@@ -103,7 +107,9 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
             @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat") })
+            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+            @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> actualMessages;
 
     @HoldsModifiableVariable
