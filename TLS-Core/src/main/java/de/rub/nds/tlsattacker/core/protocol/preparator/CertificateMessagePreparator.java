@@ -60,7 +60,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
                 }
             }
             msg.setCertificatesListBytes(stream.toByteArray());
-        } else { 
+        } else {
             byte[] encodedCert = getEncodedCert();
             msg.setCertificatesListBytes(encodedCert);
         }

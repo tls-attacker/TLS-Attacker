@@ -57,7 +57,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
                                 ArrayConverter
                                         .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020"),
                                 CertificateVerifiyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
-                                new byte[]{(byte) 0x00},
+                                new byte[] { (byte) 0x00 },
                                 chooser.getDigest().digest(chooser.getSelectedProtocolVersion(),
                                         chooser.getSelectedCipherSuite()));
             } else {
@@ -66,7 +66,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
                                 ArrayConverter
                                         .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020"),
                                 CertificateVerifiyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
-                                new byte[]{(byte) 0x00},
+                                new byte[] { (byte) 0x00 },
                                 chooser.getDigest().digest(chooser.getSelectedProtocolVersion(),
                                         chooser.getSelectedCipherSuite()));
             }

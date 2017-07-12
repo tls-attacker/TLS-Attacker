@@ -357,7 +357,7 @@ public class TlsConfig implements Serializable {
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPaddingExtensionBytes = new byte[]{0, 0, 0, 0, 0, 0};
+    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
@@ -406,7 +406,7 @@ public class TlsConfig implements Serializable {
      * If the WorkflowExecutor should take care of the connection closing
      */
     private boolean workflowExecutorShouldClose = true;
-    
+
     private boolean stopRecievingAfterFatal = false;
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
@@ -494,9 +494,9 @@ public class TlsConfig implements Serializable {
             "89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713");
 
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
-    
+
     private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
-    
+
     private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -515,6 +515,8 @@ public class TlsConfig implements Serializable {
         supportedCompressionMethods.add(CompressionMethod.NULL);
         defaultClientSupportedCiphersuites = new LinkedList<>();
         defaultClientSupportedCiphersuites.addAll(CipherSuite.getImplemented());
+        defaultServerSupportedCiphersuites = new LinkedList<>();
+        defaultServerSupportedCiphersuites.addAll(CipherSuite.getImplemented());
         namedCurves = new LinkedList<>();
         namedCurves.add(NamedCurve.SECP192R1);
         namedCurves.add(NamedCurve.SECP256R1);
@@ -554,7 +556,7 @@ public class TlsConfig implements Serializable {
     public void setDefaultServerHandshakeTrafficSecret(byte[] defaultServerHandshakeTrafficSecret) {
         this.defaultServerHandshakeTrafficSecret = defaultServerHandshakeTrafficSecret;
     }
-    
+
     public byte[] getKeySharePublic() {
         return keySharePublic;
     }

@@ -48,7 +48,8 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
 
     private void prepareCipherSuite() {
         if (chooser.getConfig().isEnforceSettings()) {
-            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultServerSupportedCiphersuites().get(0).getByteValue());
+            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultServerSupportedCiphersuites().get(0)
+                    .getByteValue());
         } else {
             CipherSuite selectedSuite = null;
             for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCiphersuites()) {

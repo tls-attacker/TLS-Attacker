@@ -518,33 +518,27 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public byte[] getCertificateRequestContext() {
-        if(context.getCertificateRequestContext() != null)
-        {
+        if (context.getCertificateRequestContext() != null) {
             return context.getCertificateRequestContext();
-        }else 
-        {
+        } else {
             return config.getDefaultCertificateRequestContext();
         }
     }
 
     @Override
     public byte[] getServerHandshakeTrafficSecret() {
-        if(context.getServerHandshakeTrafficSecret() != null)
-        {
+        if (context.getServerHandshakeTrafficSecret() != null) {
             return context.getServerHandshakeTrafficSecret();
-        } else 
-        {
+        } else {
             return config.getDefaultClientHandshakeTrafficSecret();
         }
     }
-    
+
     @Override
     public byte[] getClientHandshakeTrafficSecret() {
-        if(context.getClientHandshakeTrafficSecret() != null)
-        {
+        if (context.getClientHandshakeTrafficSecret() != null) {
             return context.getClientHandshakeTrafficSecret();
-        } else 
-        {
+        } else {
             return config.getDefaultClientHandshakeTrafficSecret();
         }
     }

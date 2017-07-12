@@ -88,7 +88,9 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
         } else {
             LOGGER.debug("Setting ServerCertificate in Context");
             tlsContext.setServerCertificate(cert);
-            adjustPublicKeyParameters(cert);
+            if (cert != null) {
+                adjustPublicKeyParameters(cert);
+            }
         }
         if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
             adjustExtensions(message);
