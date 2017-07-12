@@ -49,7 +49,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
                 .getExtensionType(message.getTokenbindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
         for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
-            tokenbindingKeyParameters.add(TokenBindingKeyParameters.getExtensionType(kp));
+            tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters);
     }
