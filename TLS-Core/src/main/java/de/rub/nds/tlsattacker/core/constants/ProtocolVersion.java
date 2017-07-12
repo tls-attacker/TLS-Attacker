@@ -8,9 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +27,9 @@ public enum ProtocolVersion {
     TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
     TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
     TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
+    TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }),
+    TLS13_DRAFT20(new byte[] { (byte) 0x7F, (byte) 0x14 }),
+    TLS13_DRAFT21(new byte[] { (byte) 0x7F, (byte) 0x15 }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
@@ -59,6 +66,26 @@ public enum ProtocolVersion {
             return null;
         }
         return MAP.get(i);
+    }
+
+    public static List<ProtocolVersion> getProtocolVersions(byte[] values) {
+        List<ProtocolVersion> versions = new LinkedList<>();
+        if (values.length % 2 != 0) {
+            throw new UnknownProtocolVersionException("Last ProtocolVersion are unknown!");
+        }
+        int pointer = 0;
+        while (pointer < values.length) {
+            byte[] version = new byte[2];
+            version[0] = values[pointer];
+            version[1] = values[pointer + 1];
+            if (version == null) {
+                throw new UnknownProtocolVersionException("Unknown ProtocolVersion!");
+            } else {
+                versions.add(getProtocolVersion(version));
+            }
+            pointer += 2;
+        }
+        return versions;
     }
 
     public static ProtocolVersion getRandom() {
@@ -102,4 +129,28 @@ public enum ProtocolVersion {
                 + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
     }
 
+    /**
+     * Return the highest protcol version.
+     * 
+     * @param list
+     * @return
+     */
+    public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
+        ProtocolVersion highestProtocolVersion = list.get(0);
+        for (ProtocolVersion pv : list) {
+            if (ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
+                highestProtocolVersion = pv;
+            }
+        }
+        return highestProtocolVersion;
+    }
+
+    /**
+     * Return true, if protocol version TLS 1.3
+     * 
+     * @return
+     */
+    public boolean isTLS13() {
+        return this == TLS13 || this == TLS13_DRAFT20 || this == TLS13_DRAFT21;
+    }
 }

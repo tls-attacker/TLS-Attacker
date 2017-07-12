@@ -19,6 +19,11 @@ public class HandshakeByteLength {
     public static final int CERTIFICATE_LENGTH = 3;
 
     /**
+     * certificate request context length field
+     */
+    public static final int CERTIFICATE_REQUEST_CONTEXT_LENGTH = 1;
+
+    /**
      * version field length
      */
     public static final int VERSION = 2;
@@ -64,6 +69,11 @@ public class HandshakeByteLength {
      * random length
      */
     public static final int RANDOM = 28;
+
+    /**
+     * random length for TLS 1.3
+     */
+    public static final int RANDOM_TLS13 = 32;
 
     /**
      * length of the session id length field indicating the session id length

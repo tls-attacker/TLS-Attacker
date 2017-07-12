@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,7 @@ import org.junit.Test;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class FinishedMessagePreparatorTest {
 
@@ -58,6 +60,23 @@ public class FinishedMessagePreparatorTest {
                 .getValue());// TODO Did not check if this is calculated
         // correctly, just made sure it is set
 
+    }
+
+    /**
+     * Test of prepareHandshakeMessageContents method for TLS 1.3, of class
+     * FinishedMessagePreparator.
+     */
+    @Test
+    public void testPrepareTLS13() {
+        context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setClientHandshakeTrafficSecret(ArrayConverter
+                .hexStringToByteArray("2E9C9DD264A15D3C1EEC604A7C862934486764F94E35C0BA7E0B9494EAC06E82"));
+        context.getDigest().setRawBytes(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"));
+        preparator.prepare();
+        assertArrayEquals(message.getVerifyData().getValue(),
+                ArrayConverter.hexStringToByteArray("B4AB5C21316FD38E3605D62C9022062DA84D83214EBC7BCD4BE6B3DB1971AFCA"));
     }
 
 }

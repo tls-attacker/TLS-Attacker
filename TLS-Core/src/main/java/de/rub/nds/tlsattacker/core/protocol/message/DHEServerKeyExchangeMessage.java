@@ -139,14 +139,11 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         } else {
             sb.append("null");
         }
-        sb.append("\n  Signature Algorithm: ");
+        sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getHashAlgorithm() != null) {
-            sb.append(HashAlgorithm.getHashAlgorithm(this.getHashAlgorithm().getValue())).append(" ");
-        }
-        if (this.getSignatureAlgorithm() != null) {
-            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.getSignatureAlgorithm().getValue()));
+        if (this.getSignatureAndHashAlgorithm() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         }
         sb.append("\n  Signature: ");
         if (this.getSignature() != null) {

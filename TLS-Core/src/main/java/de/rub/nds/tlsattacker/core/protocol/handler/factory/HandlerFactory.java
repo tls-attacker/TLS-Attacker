@@ -25,10 +25,12 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
@@ -90,8 +92,12 @@ public class HandlerFactory {
                     return new ClientHelloHandler(context);
                 case CLIENT_KEY_EXCHANGE:
                     return getClientKeyExchangeHandler(context);
+                case ENCRYPTED_EXTENSIONS:
+                    return new EncryptedExtensionsHandler(context);
                 case FINISHED:
                     return new FinishedHandler(context);
+                case HELLO_RETRY_REQUEST:
+                    return new HelloRetryRequestHandler(context);
                 case HELLO_REQUEST:
                     return new HelloRequestHandler(context);
                 case HELLO_VERIFY_REQUEST:

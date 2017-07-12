@@ -13,13 +13,14 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- *
  * @author Robert Merget <robert.merget@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordEncryptor extends Encryptor<Record> {
 
@@ -55,12 +56,23 @@ public class RecordEncryptor extends Encryptor<Record> {
             record.setMac(new byte[0]);
         }
         setUnpaddedRecordBytes(record, cleanBytes);
-        byte[] padding = recordCipher.calculatePadding(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes()
-                .getValue().length));
+        byte[] padding;
+        if (context.getSelectedProtocolVersion().isTLS13()) {
+            padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
+        } else {
+            padding = recordCipher.calculatePadding(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes()
+                    .getValue().length));
+        }
         setPadding(record, padding);
         setPaddingLength(record);
-        byte[] plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record.getPadding()
-                .getValue(), record.getPaddingLength().getValue());
+        byte[] plain;
+        if (context.getSelectedProtocolVersion().isTLS13() && context.isEncryptActive()) {
+            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
+                    .getContentMessageType().getArrayValue(), record.getPadding().getValue());
+        } else {
+            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record.getPadding()
+                    .getValue(), record.getPaddingLength().getValue());
+        }
         setPlainRecordBytes(record, plain);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
         setProtocolMessageBytes(record, encrypted);

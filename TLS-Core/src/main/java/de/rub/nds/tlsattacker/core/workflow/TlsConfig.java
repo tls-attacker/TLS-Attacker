@@ -31,6 +31,9 @@ import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.util.JKSLoader;
+import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import java.io.File;
@@ -50,10 +53,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  * @author Robert Merget - robert.merget@rub.de
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TlsConfig implements Serializable {
+
     public static TlsConfig createConfig() {
         InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
         return TlsConfigIO.read(stream);
@@ -121,9 +126,33 @@ public class TlsConfig implements Serializable {
      */
     private List<NamedCurve> defaultClientNamedCurves;
     /**
+     * Supported ProtocolVersions by default
+     */
+    private List<ProtocolVersion> supportedVersions;
+    /**
      * Which heartBeat mode we are in
      */
     private HeartbeatMode heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
+    /**
+     * Padding length for TLS 1.3 messages
+     */
+    private int paddingLength = 0;
+    /**
+     * Public key for KeyShareExtension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] keySharePublic = ArrayConverter
+            .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
+    /**
+     * Key type for KeyShareExtension
+     */
+    private NamedCurve keyShareType = NamedCurve.ECDH_X25519;
+    /**
+     * Private key for KeyShareExtension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] keySharePrivate = ArrayConverter
+            .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
     /**
      * Hostname in SNI Extension
      */
@@ -228,6 +257,14 @@ public class TlsConfig implements Serializable {
      */
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
     /**
+     * If we generate ClientHello with the SupportedVersion extension
+     */
+    private boolean addSupportedVersionsExtension = false;
+    /**
+     * If we generate ClientHello with the KeyShare extension
+     */
+    private boolean addKeyShareExtension = false;
+    /**
      * If we generate ClientHello with the Padding extension
      */
     private boolean addPaddingExtension = false;
@@ -320,7 +357,7 @@ public class TlsConfig implements Serializable {
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+    private byte[] defaultPaddingExtensionBytes = new byte[]{0, 0, 0, 0, 0, 0};
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
@@ -369,6 +406,7 @@ public class TlsConfig implements Serializable {
      * If the WorkflowExecutor should take care of the connection closing
      */
     private boolean workflowExecutorShouldClose = true;
+    
     private boolean stopRecievingAfterFatal = false;
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
@@ -423,6 +461,9 @@ public class TlsConfig implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultDtlsCookie = new byte[0];
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultCertificateRequestContext = new byte[0];
+
     private PRFAlgorithm defaultPRFAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
 
     private byte defaultAlertDescription = 0;
@@ -452,6 +493,10 @@ public class TlsConfig implements Serializable {
     private BigInteger defaultClientRSAPrivateKey = new BigInteger(
             "89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713");
 
+    private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
+    
+    private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
+    
     private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -477,6 +522,53 @@ public class TlsConfig implements Serializable {
         namedCurves.add(NamedCurve.SECP521R1);
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+        supportedVersions = new LinkedList<>();
+        supportedVersions.add(ProtocolVersion.TLS13);
+        defaultTokenBindingKeyParameters = new LinkedList<>();
+        defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.ECDSAP256);
+        defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PKCS1_5);
+        defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
+        defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
+        defaultServerSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA1));
+        defaultServerSupportedPointFormats = new LinkedList<>();
+        defaultClientSupportedPointFormats = new LinkedList<>();
+        defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
+        defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
+        defaultClientEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
+        defaultServerEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
+    }
+
+    public byte[] getDefaultClientHandshakeTrafficSecret() {
+        return defaultClientHandshakeTrafficSecret;
+    }
+
+    public void setDefaultClientHandshakeTrafficSecret(byte[] defaultClientHandshakeTrafficSecret) {
+        this.defaultClientHandshakeTrafficSecret = defaultClientHandshakeTrafficSecret;
+    }
+
+    public byte[] getDefaultServerHandshakeTrafficSecret() {
+        return defaultServerHandshakeTrafficSecret;
+    }
+
+    public void setDefaultServerHandshakeTrafficSecret(byte[] defaultServerHandshakeTrafficSecret) {
+        this.defaultServerHandshakeTrafficSecret = defaultServerHandshakeTrafficSecret;
+    }
+    
+    public byte[] getKeySharePublic() {
+        return keySharePublic;
+    }
+
+    public void setKeySharePublic(byte[] keySharePublic) {
+        this.keySharePublic = keySharePublic;
+    }
+
+    public byte[] getDefaultCertificateRequestContext() {
+        return defaultCertificateRequestContext;
+    }
+
+    public void setDefaultCertificateRequestContext(byte[] defaultCertificateRequestContext) {
+        this.defaultCertificateRequestContext = defaultCertificateRequestContext;
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -493,19 +585,6 @@ public class TlsConfig implements Serializable {
 
     public void setWorkflowExecutorShouldClose(boolean workflowExecutorShouldClose) {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
-        defaultTokenBindingKeyParameters = new LinkedList<>();
-        defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.ECDSAP256);
-        defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PKCS1_5);
-        defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
-        defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
-        defaultServerSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA1));
-        defaultServerSupportedPointFormats = new LinkedList<>();
-        defaultClientSupportedPointFormats = new LinkedList<>();
-        defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        defaultClientEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
-        defaultServerEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
     }
 
     public boolean isStopRecievingAfterFatal() {
@@ -1152,6 +1231,22 @@ public class TlsConfig implements Serializable {
         this.sniHostname = SniHostname;
     }
 
+    public NamedCurve getKeyShareType() {
+        return keyShareType;
+    }
+
+    public void setKeyShareType(NamedCurve keyShareType) {
+        this.keyShareType = keyShareType;
+    }
+
+    public byte[] getkeySharePublic() {
+        return keySharePublic;
+    }
+
+    public void setkeySharePublic(byte[] keySharePublic) {
+        this.keySharePublic = keySharePublic;
+    }
+
     public boolean isDynamicWorkflow() {
         return dynamicWorkflow;
     }
@@ -1229,6 +1324,14 @@ public class TlsConfig implements Serializable {
         this.namedCurves = namedCurves;
     }
 
+    public List<ProtocolVersion> getSupportedVersions() {
+        return Collections.unmodifiableList(supportedVersions);
+    }
+
+    public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
+        this.supportedVersions = supportedVersions;
+    }
+
     public HeartbeatMode getHeartbeatMode() {
         return heartbeatMode;
     }
@@ -1285,12 +1388,44 @@ public class TlsConfig implements Serializable {
         this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
     }
 
+    public boolean isAddSupportedVersionsExtension() {
+        return addSupportedVersionsExtension;
+    }
+
+    public void setAddSupportedVersionsExtension(boolean addSupportedVersionsExtension) {
+        this.addSupportedVersionsExtension = addSupportedVersionsExtension;
+    }
+
+    public boolean isAddKeyShareExtension() {
+        return addKeyShareExtension;
+    }
+
+    public void setAddKeyShareExtension(boolean addKeyShareExtension) {
+        this.addKeyShareExtension = addKeyShareExtension;
+    }
+
     public int getDefaultDTLSCookieLength() {
         return defaultDTLSCookieLength;
     }
 
     public void setDefaultDTLSCookieLength(int defaultDTLSCookieLength) {
         this.defaultDTLSCookieLength = defaultDTLSCookieLength;
+    }
+
+    public int getPaddingLength() {
+        return paddingLength;
+    }
+
+    public void setPaddingLength(int paddingLength) {
+        this.paddingLength = paddingLength;
+    }
+
+    public byte[] getKeySharePrivate() {
+        return keySharePrivate;
+    }
+
+    public void setKeySharePrivate(byte[] keySharePrivate) {
+        this.keySharePrivate = keySharePrivate;
     }
 
     public byte[] getTLSSessionTicket() {

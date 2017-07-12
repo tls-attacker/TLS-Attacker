@@ -26,6 +26,7 @@ import java.util.List;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
@@ -52,19 +53,19 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     protected void adjustTLSContext(ClientHelloMessage message) {
-        adjustRandomContext(message);
         adjustProtocolVersion(message);
+        adjustSessionID(message);
         adjustClientSupportedCipherSuites(message);
         adjustClientSupportedCompressions(message);
         if (isCookieFieldSet(message)) {
             adjustDTLSCookie(message);
         }
-        adjustSessionID(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 extension.getHandler(tlsContext).adjustTLSContext(extension);
             }
         }
+        adjustRandomContext(message);
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {
@@ -107,7 +108,11 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustRandomContext(ClientHelloMessage message) {
-        setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        if (tlsContext.getHighestClientProtocolVersion().isTLS13()) {
+            tlsContext.setClientRandom(message.getRandom().getValue());
+        } else {
+            setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        }
         LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
     }
 
@@ -149,4 +154,5 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         }
         return list;
     }
+
 }

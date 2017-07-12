@@ -168,4 +168,9 @@ public abstract class Chooser {
 
     public abstract BigInteger getClientRSAPublicKey();
 
+    public abstract byte[] getCertificateRequestContext();
+    
+    public abstract byte[] getServerHandshakeTrafficSecret();
+    
+    public abstract byte[] getClientHandshakeTrafficSecret();
 }

@@ -73,8 +73,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
         SignatureAndHashAlgorithm signHashAlgo;
         signHashAlgo = chooser.getConfig().getSupportedSignatureAndHashAlgorithms().get(0);
-        prepareSignatureAlgorithm(msg, signHashAlgo);
-        prepareHashAlgorithm(msg, signHashAlgo);
+        prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
 
         byte[] signature = generateSignature(msg, signHashAlgo);
         prepareSignature(msg, signature);
@@ -218,14 +217,11 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         return SignatureCalculator.generateSignature(algorithm, chooser, generateSignatureContents(msg));
     }
 
-    private void prepareSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm signHashAlgo) {
-        msg.setSignatureAlgorithm(signHashAlgo.getSignatureAlgorithm().getValue());
-        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
-    }
-
-    private void prepareHashAlgorithm(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm signHashAlgo) {
-        msg.setHashAlgorithm(signHashAlgo.getHashAlgorithm().getValue());
-        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
+    private void prepareSignatureAndHashAlgorithm(ECDHEServerKeyExchangeMessage msg,
+            SignatureAndHashAlgorithm signHashAlgo) {
+        msg.setSignatureAndHashAlgorithm(signHashAlgo.getByteValue());
+        LOGGER.debug("SignatureAndHashAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     private void prepareClientRandom(ECDHEServerKeyExchangeMessage msg) {

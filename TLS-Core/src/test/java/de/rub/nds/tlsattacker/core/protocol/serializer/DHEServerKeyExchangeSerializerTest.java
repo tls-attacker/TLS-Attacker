@@ -42,15 +42,14 @@ public class DHEServerKeyExchangeSerializerTest {
     private byte[] g;
     private int serializedKeyLength;
     private byte[] serializedKey;
-    private Byte hashAlgo;
-    private Byte sigAlgo;
+    private byte[] signatureAndHashAlgo;
     private int sigLength;
     private byte[] signature;
     private ProtocolVersion version;
 
     public DHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, int pLength,
-            byte[] p, int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey, Byte hashAlgo,
-            Byte sigAlgo, int sigLength, byte[] signature, ProtocolVersion version) {
+            byte[] p, int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey,
+            byte[] signatureAndHashAlgo, int sigLength, byte[] signature, ProtocolVersion version) {
         this.message = message;
         this.start = 0;
         this.expectedPart = message;
@@ -62,8 +61,7 @@ public class DHEServerKeyExchangeSerializerTest {
         this.g = g;
         this.serializedKeyLength = serializedKeyLength;
         this.serializedKey = serializedKey;
-        this.hashAlgo = hashAlgo;
-        this.sigAlgo = sigAlgo;
+        this.signatureAndHashAlgo = signatureAndHashAlgo;
         this.sigLength = sigLength;
         this.signature = signature;
         this.version = version;
@@ -86,11 +84,8 @@ public class DHEServerKeyExchangeSerializerTest {
         msg.setPublicKey(serializedKey);
         msg.setPublicKeyLength(serializedKeyLength);
         msg.setSignature(signature);
-        if (sigAlgo != null) {
-            msg.setSignatureAlgorithm(sigAlgo);
-        }
-        if (hashAlgo != null) {
-            msg.setHashAlgorithm(hashAlgo);
+        if (signatureAndHashAlgo != null) {
+            msg.setSignatureAndHashAlgorithm(signatureAndHashAlgo);
         }
         msg.setSignatureLength(sigLength);
         DHEServerKeyExchangeSerializer serializer = new DHEServerKeyExchangeSerializer(msg, version);

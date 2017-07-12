@@ -49,8 +49,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
-            parseHashAlgorithm(msg);
-            parseSignatureAlgorithm(msg);
+            parseSignatureAndHashAlgorithm(msg);
         }
         parseSignatureLength(msg);
         parseSignature(msg);
@@ -152,26 +151,16 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     }
 
     /**
-     * Reads the next bytes as the HashAlgorithm and writes them in the message
+     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in
+     * the message
      *
      * @param msg
      *            Message to write in
      */
-    private void parseHashAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
-        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
-    }
-
-    /**
-     * Reads the next bytes as the SignatureAlgorithm and writes them in the
-     * message
-     *
-     * @param msg
-     *            Message to write in
-     */
-    private void parseSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
-        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
+    private void parseSignatureAndHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+        msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
+        LOGGER.debug("SignatureAndHashAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**

@@ -515,4 +515,37 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultClientRSAPublicKey();
         }
     }
+
+    @Override
+    public byte[] getCertificateRequestContext() {
+        if(context.getCertificateRequestContext() != null)
+        {
+            return context.getCertificateRequestContext();
+        }else 
+        {
+            return config.getDefaultCertificateRequestContext();
+        }
+    }
+
+    @Override
+    public byte[] getServerHandshakeTrafficSecret() {
+        if(context.getServerHandshakeTrafficSecret() != null)
+        {
+            return context.getServerHandshakeTrafficSecret();
+        } else 
+        {
+            return config.getDefaultClientHandshakeTrafficSecret();
+        }
+    }
+    
+    @Override
+    public byte[] getClientHandshakeTrafficSecret() {
+        if(context.getClientHandshakeTrafficSecret() != null)
+        {
+            return context.getClientHandshakeTrafficSecret();
+        } else 
+        {
+            return config.getDefaultClientHandshakeTrafficSecret();
+        }
+    }
 }

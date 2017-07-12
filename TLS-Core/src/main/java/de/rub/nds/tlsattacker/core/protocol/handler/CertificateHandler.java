@@ -18,11 +18,15 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.CurveNameRetriever;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -32,6 +36,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
@@ -41,8 +46,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     @Override
     public CertificateMessageParser getParser(byte[] message, int pointer) {
-        return new CertificateMessageParser(pointer, message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
+        return new CertificateMessageParser(pointer, message, tlsContext.getSelectedProtocolVersion());
     }
 
     @Override
@@ -58,10 +62,25 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     @Override
     protected void adjustTLSContext(CertificateMessage message) {
-        Certificate cert = parseCertificate(message.getCertificatesLength().getValue(), message
-                .getX509CertificateBytes().getValue());
-        if (cert != null) {
-            adjustPublicKeyParameters(cert);
+        Certificate cert;
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            int certificatesLength = 0;
+            try {
+                for (CertificatePair pair : message.getCertificatesList()) {
+                    stream.write(ArrayConverter.intToBytes(pair.getCertificateLength().getValue(),
+                            HandshakeByteLength.CERTIFICATE_LENGTH));
+                    stream.write(pair.getCertificate().getValue());
+                    certificatesLength += pair.getCertificateLength().getValue()
+                            + HandshakeByteLength.CERTIFICATE_LENGTH;
+                }
+            } catch (IOException ex) {
+                throw new AdjustmentException("Could not concatenate certificates bytes", ex);
+            }
+            cert = parseCertificate(certificatesLength, stream.toByteArray());
+        } else {
+            cert = parseCertificate(message.getCertificatesListLength().getValue(), message.getCertificatesListBytes()
+                    .getValue());
         }
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             LOGGER.debug("Setting ClientCertificate in Context");
@@ -69,6 +88,10 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
         } else {
             LOGGER.debug("Setting ServerCertificate in Context");
             tlsContext.setServerCertificate(cert);
+            adjustPublicKeyParameters(cert);
+        }
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+            adjustExtensions(message);
         }
     }
 
@@ -125,5 +148,18 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                     + ArrayConverter.bytesToHexString(bytesToParse, false));
             return null;
         }
+    }
+
+    private void adjustExtensions(CertificateMessage message) {
+        if (message.getCertificatesListAsEntry() != null) {
+            for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
+                if (entry.getExtensions() != null) {
+                    for (ExtensionMessage extension : entry.getExtensions()) {
+                        extension.getHandler(tlsContext).adjustTLSContext(extension);
+                    }
+                }
+            }
+        }
+
     }
 }

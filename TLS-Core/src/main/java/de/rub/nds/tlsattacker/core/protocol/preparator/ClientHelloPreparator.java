@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import java.util.List;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
@@ -36,8 +37,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
-        prepareUnixTime();
-        prepareRandom();
+        prepareRandom(chooser.getConfig().getHighestProtocolVersion());
+        if (!chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+            prepareUnixTime();
+        }
         prepareSessionID();
         prepareSessionIDLength();
         prepareCompressions(msg);
@@ -53,7 +56,12 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        msg.setSessionId(chooser.getClientSessionId());
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+            msg.setSessionId(new byte[0]);
+        } else {
+            msg.setSessionId(chooser.getClientSessionId());
+        }
+        LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
     private byte[] convertCompressions(List<CompressionMethod> compressionList) {
@@ -83,12 +91,20 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareProtocolVersion(ClientHelloMessage msg) {
-        msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+            msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
+        } else {
+            msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
+        }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
-        msg.setCompressions(convertCompressions(chooser.getConfig().getSupportedCompressionMethods()));
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
+            msg.setCompressions(CompressionMethod.NULL.getArrayValue());
+        } else {
+            msg.setCompressions(convertCompressions(chooser.getConfig().getSupportedCompressionMethods()));
+        }
         LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
 

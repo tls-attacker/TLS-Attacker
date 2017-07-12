@@ -42,8 +42,7 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
-            writeHashAlgorithm(msg);
-            writeSignatureAlgorithm(msg);
+            writeSignatureAndHashAlgorithm(msg);
         }
         writeSignatureLength(msg);
         writeSignature(msg);
@@ -95,21 +94,13 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
     }
 
     /**
-     * Writes the HashAlgorithm of the ECDHEServerKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SignatureAndHashAlgorithm of the ECDHEServerKeyExchangeMessage
+     * into the final byte[]
      */
-    private void writeHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
-        appendByte(msg.getHashAlgorithm().getValue());
-        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
-    }
-
-    /**
-     * Writes the SignatureAlgorithm of the ECDHEServerKeyExchangeMessage into
-     * the final byte[]
-     */
-    private void writeSignatureAlgorithm(ECDHEServerKeyExchangeMessage msg) {
-        appendByte(msg.getSignatureAlgorithm().getValue());
-        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
+    private void writeSignatureAndHashAlgorithm(ECDHEServerKeyExchangeMessage msg) {
+        appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
+        LOGGER.debug("SignatureAndHaslAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**
