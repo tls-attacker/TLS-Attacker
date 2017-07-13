@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
@@ -33,6 +34,9 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
     
     @HoldsModifiableVariable
     private List<CachedObject> cachedInfo;
+    
+    @ModifiableVariableProperty
+    private ModifiableByteArray cachedInfoBytes;
     
     public CachedInfoExtensionMessage() {
         super(ExtensionType.CACHED_INFO);
@@ -73,4 +77,16 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
 public void setIsClientState(boolean isClientState) {
         this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
     }
+
+    public ModifiableByteArray getCachedInfoBytes() {
+        return cachedInfoBytes;
+    }
+
+    public void setCachedInfoBytes(ModifiableByteArray cachedInfoBytes) {
+        this.cachedInfoBytes = cachedInfoBytes;
+    }
+    public void setCachedInfoBytes(byte[] cachedInfoBytes) {
+        this.cachedInfoBytes = ModifiableVariableFactory.safelySetValue(this.cachedInfoBytes, cachedInfoBytes);
+    }
+
 }
