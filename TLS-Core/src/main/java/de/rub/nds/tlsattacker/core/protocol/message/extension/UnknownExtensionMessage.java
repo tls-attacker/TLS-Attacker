@@ -75,10 +75,7 @@ public class UnknownExtensionMessage extends ExtensionMessage {
 
     @Override
     public String toString() {
-        return "UnknownExtensionMessage{ extensionData="
-                + ArrayConverter.bytesToHexString(getExtensionType().getValue(), false) + " extensionLength="
-                + getExtensionLength().getValue() + " extensionData="
-                + ArrayConverter.bytesToHexString(extensionData.getValue(), false) + '}';
+        return "UnknownExtensionMessage";
     }
 
     @Override

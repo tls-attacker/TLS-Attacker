@@ -85,17 +85,19 @@ public class CertificateDelegate extends Delegate {
                 }
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 cert.encode(stream);
-                config.setOurCertificate(stream.toByteArray());
                 try {
                     if (CertificateUtils.hasDHParameters(cert)) {
                         DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
                         applyDHParameters(config, dhParameters);
+                        config.setDefaultDsaCertificate(stream.toByteArray());// TODO
                     } else if (CertificateUtils.hasECParameters(cert)) {
                         ECPublicKeyParameters ecParameters = CertificateUtils.extractECPublicKeyParameters(cert);
                         applyECParameters(config, ecParameters);
+                        config.setDefaultEcCertificate(stream.toByteArray());
                     } else if (CertificateUtils.hasRSAParameters(cert)) {
                         applyRSAParameters(config, CertificateUtils.extractRSAModulus(cert),
                                 CertificateUtils.extractRSAPublicKey(cert));
+                        config.setDefaultRsaCertificate(stream.toByteArray());
                     }
                 } catch (IOException E) {
                     throw new ConfigurationException("Could not load private Key from Keystore", E);

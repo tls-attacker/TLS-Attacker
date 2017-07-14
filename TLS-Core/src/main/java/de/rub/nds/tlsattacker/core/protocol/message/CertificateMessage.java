@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -73,7 +74,8 @@ public class CertificateMessage extends HandshakeMessage {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
         if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
             CertificatePair pair = new CertificatePair();
-            pair.setCertificateConfig(tlsConfig.getOurCertificate());
+            // TODO ugly
+            pair.setCertificateConfig(new DefaultChooser(null, tlsConfig).getCertificateBytes());
             // Extentions can be added via if statements ? (as ClientHello and
             // ServerHello). For this message no extension is currently
             // implemented.

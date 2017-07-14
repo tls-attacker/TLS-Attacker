@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -41,24 +42,6 @@ public class DefaultChooser extends Chooser {
 
     public DefaultChooser(TlsContext context, TlsConfig config) {
         super(context, config);
-    }
-
-    @Override
-    public Certificate getServerCertificate() {
-        if (context.getServerCertificate() != null) {
-            return context.getServerCertificate();
-        } else {
-            return null; // TODO
-        }
-    }
-
-    @Override
-    public Certificate getClientCertificate() {
-        if (context.getClientCertificate() != null) {
-            return context.getClientCertificate();
-        } else {
-            return null; // TODO
-        }
     }
 
     @Override
@@ -541,5 +524,29 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getDefaultClientHandshakeTrafficSecret();
         }
+    }
+
+    @Override
+    public byte[] getCertificateBytes() {
+        switch (AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite())) {
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECMQV_ECDSA:
+            case CECPQ1_ECDSA:
+                return config.getDefaultEcCertificate();
+            case DHE_RSA:
+            case DH_RSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
+            case RSA:
+            case SRP_SHA_RSA:
+                return config.getDefaultRsaCertificate();
+            case DHE_DSS:
+            case DH_DSS:
+            case SRP_SHA_DSS:
+                return config.getDefaultDsaCertificate();
+        }
+        LOGGER.warn("Could not choose correct Certificate base on KeyExchangeAlgorithm. Selected ");
+        return config.getDefaultRsaCertificate();
     }
 }

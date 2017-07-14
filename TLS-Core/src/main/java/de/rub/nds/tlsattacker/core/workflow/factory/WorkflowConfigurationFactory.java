@@ -190,7 +190,6 @@ public class WorkflowConfigurationFactory {
         CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
         switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
             case RSA:
-                messages.add(new ECDHEServerKeyExchangeMessage(config));
                 break;
             case ECDHE_ECDSA:
             case ECDH_ECDSA:

@@ -31,6 +31,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**
@@ -38,6 +40,8 @@ import org.bouncycastle.crypto.tls.Certificate;
  * @author Robert Merget <robert.merget@rub.de>
  */
 public abstract class Chooser {
+
+    protected static final Logger LOGGER = LogManager.getLogger(Chooser.class.getName());
 
     protected final TlsContext context;
 
@@ -55,10 +59,6 @@ public abstract class Chooser {
     public TlsContext getContext() {
         return context;
     }
-
-    public abstract Certificate getServerCertificate();
-
-    public abstract Certificate getClientCertificate();
 
     public abstract List<ECPointFormat> getClientSupportedPointFormats();
 
@@ -173,4 +173,6 @@ public abstract class Chooser {
     public abstract byte[] getServerHandshakeTrafficSecret();
 
     public abstract byte[] getClientHandshakeTrafficSecret();
+
+    public abstract byte[] getCertificateBytes();
 }

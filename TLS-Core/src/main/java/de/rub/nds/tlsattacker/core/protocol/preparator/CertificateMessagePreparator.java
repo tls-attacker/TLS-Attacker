@@ -9,10 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -61,7 +64,9 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             }
             msg.setCertificatesListBytes(stream.toByteArray());
         } else {
-            byte[] encodedCert = getEncodedCert();
+            byte[] certBytes = getEncodedCert();
+            byte[] encodedCert = Arrays.copyOfRange(certBytes, HandshakeByteLength.CERTIFICATES_LENGTH,
+                    certBytes.length);
             msg.setCertificatesListBytes(encodedCert);
         }
         LOGGER.debug("CertificatesListBytes: "
@@ -86,8 +91,25 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private byte[] getEncodedCert() {
-        return Arrays.copyOfRange(chooser.getConfig().getOurCertificate(), HandshakeByteLength.CERTIFICATES_LENGTH,
-                chooser.getConfig().getOurCertificate().length);
-
+        switch (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite())) {
+            case ECDHE_ECDSA:
+            case ECDH_ECDSA:
+            case ECMQV_ECDSA:
+            case CECPQ1_ECDSA:
+                return chooser.getConfig().getDefaultEcCertificate();
+            case DHE_RSA:
+            case DH_RSA:
+            case ECDH_RSA:
+            case ECDHE_RSA:
+            case RSA:
+            case SRP_SHA_RSA:
+                return chooser.getConfig().getDefaultRsaCertificate();
+            case DHE_DSS:
+            case DH_DSS:
+            case SRP_SHA_DSS:
+                return chooser.getConfig().getDefaultDsaCertificate();
+        }
+        LOGGER.warn("Could not choose correct Certificate base on KeyExchangeAlgorithm. Selected ");
+        return chooser.getConfig().getDefaultRsaCertificate();
     }
 }
