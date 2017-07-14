@@ -148,6 +148,21 @@ public class ExtensionByteLength {
      */
     public static final int SERVER_AUTHZ_FORMAT_LIST_LENGTH = 1;
 
+    /**
+     * Length of the cached information extension length field
+     */
+    public static final int CACHED_INFO_LENGTH = 2;
+
+    /**
+     * Length of the CachedInfoType
+     */
+    public static final int CACHED_INFO_TYPE = 1;
+
+    /**
+     * Length of the Cached Info extension hash value length
+     */
+    public static final int CACHED_INFO_HASH_LENGTH = 1;
+
     private ExtensionByteLength() {
     }
 }

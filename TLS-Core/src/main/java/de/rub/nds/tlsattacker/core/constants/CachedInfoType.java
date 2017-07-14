@@ -16,16 +16,16 @@ import java.util.Map;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum CachedInfoType {
-    CERT((byte)1),
-    CERT_REQ((byte)2);
-    
+    CERT((byte) 1),
+    CERT_REQ((byte) 2);
+
     private final byte value;
     private static final Map<Byte, CachedInfoType> MAP;
 
     private CachedInfoType(byte value) {
         this.value = value;
     }
-    
+
     static {
         MAP = new HashMap<>();
         for (CachedInfoType cit : CachedInfoType.values()) {
@@ -36,7 +36,7 @@ public enum CachedInfoType {
     public byte getValue() {
         return value;
     }
-    
+
     public static CachedInfoType getEnumByByte(byte value) {
         return MAP.get(value);
     }

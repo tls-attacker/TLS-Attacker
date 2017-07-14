@@ -8,10 +8,41 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+
 /**
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class CachedObjectParser {
-    
+public class CachedObjectParser extends Parser<CachedObject> {
+
+    private CachedObject cachedObject;
+    private final boolean isClientState;
+
+    public CachedObjectParser(int startposition, byte[] array, boolean isClientState) {
+        super(startposition, array);
+        this.isClientState = isClientState;
+    }
+
+    @Override
+    public CachedObject parse() {
+        cachedObject = new CachedObject();
+
+        if (isClientState) {
+            cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
+            cachedObject.setHashValueLength(parseIntField(ExtensionByteLength.CACHED_INFO_HASH_LENGTH));
+            cachedObject.setHashValue(parseByteArrayField(cachedObject.getHashValueLength().getValue()));
+            cachedObject.setIsClientState(isClientState);
+        } else {
+            cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
+            cachedObject.setHashValue(new byte[] {});
+            cachedObject.setHashValueLength(0);
+            cachedObject.setIsClientState(isClientState);
+        }
+
+        return cachedObject;
+    }
+
 }

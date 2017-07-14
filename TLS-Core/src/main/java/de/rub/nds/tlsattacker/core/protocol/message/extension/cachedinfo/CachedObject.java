@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
@@ -25,11 +26,23 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
     @ModifiableVariableProperty
     private ModifiableBoolean isClientState;
     @ModifiableVariableProperty
-    private ModifiableByteArray cachedInformationType;
-    @ModifiableVariableProperty // Hash Value Length 1 Byte
+    private ModifiableByte cachedInformationType;
+    @ModifiableVariableProperty
+    // Hash Value Length 1 Byte
     private ModifiableInteger hashValueLength;
     @ModifiableVariableProperty
     private ModifiableByteArray hashValue;
+
+    public CachedObject(boolean isClientState, byte cachedInformationType, int hashValueLength, byte[] hashValue) {
+        this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
+        this.cachedInformationType = ModifiableVariableFactory.safelySetValue(this.cachedInformationType,
+                cachedInformationType);
+        this.hashValueLength = ModifiableVariableFactory.safelySetValue(this.hashValueLength, hashValueLength);
+        this.hashValue = ModifiableVariableFactory.safelySetValue(this.hashValue, hashValue);
+    }
+
+    public CachedObject() {
+    }
 
     public ModifiableBoolean getIsClientState() {
         return isClientState;
@@ -38,21 +51,22 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
     public void setIsClientState(ModifiableBoolean isClientState) {
         this.isClientState = isClientState;
     }
-    
+
     public void setIsClientState(boolean isClientState) {
         this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
     }
 
-    public ModifiableByteArray getCachedInformationType() {
+    public ModifiableByte getCachedInformationType() {
         return cachedInformationType;
     }
 
-    public void setCachedInformationType(ModifiableByteArray cachedInformationType) {
+    public void setCachedInformationType(ModifiableByte cachedInformationType) {
         this.cachedInformationType = cachedInformationType;
     }
-    
-    public void setCachedInformationType(byte[] cachedInformationType) {
-        this.cachedInformationType = ModifiableVariableFactory.safelySetValue(this.cachedInformationType, cachedInformationType);
+
+    public void setCachedInformationType(byte cachedInformationType) {
+        this.cachedInformationType = ModifiableVariableFactory.safelySetValue(this.cachedInformationType,
+                cachedInformationType);
     }
 
     public ModifiableInteger getHashValueLength() {
@@ -62,7 +76,7 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
     public void setHashValueLength(ModifiableInteger hashValueLength) {
         this.hashValueLength = hashValueLength;
     }
-    
+
     public void setHashValueLength(int hashValueLength) {
         this.hashValueLength = ModifiableVariableFactory.safelySetValue(this.hashValueLength, hashValueLength);
     }
@@ -74,9 +88,9 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
     public void setHashValue(ModifiableByteArray hashValue) {
         this.hashValue = hashValue;
     }
-     public void setHashValue(byte[] hashValue) {
+
+    public void setHashValue(byte[] hashValue) {
         this.hashValue = ModifiableVariableFactory.safelySetValue(this.hashValue, hashValue);
     }
-    
 
 }

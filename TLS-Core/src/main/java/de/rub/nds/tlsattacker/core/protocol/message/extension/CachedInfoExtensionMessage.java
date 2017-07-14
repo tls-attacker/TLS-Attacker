@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.List;
 
 /**
+ * RFC7924
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
@@ -28,16 +29,16 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
     private ModifiableInteger cachedInfoLength;
-    
+
     @ModifiableVariableProperty
     private ModifiableBoolean isClientState;
-    
+
     @HoldsModifiableVariable
     private List<CachedObject> cachedInfo;
-    
+
     @ModifiableVariableProperty
     private ModifiableByteArray cachedInfoBytes;
-    
+
     public CachedInfoExtensionMessage() {
         super(ExtensionType.CACHED_INFO);
     }
@@ -54,7 +55,7 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
     public void setCachedInfoLength(ModifiableInteger cachedInfoLength) {
         this.cachedInfoLength = cachedInfoLength;
     }
-    
+
     public void setCachedInfoLength(int cachedInfoLength) {
         this.cachedInfoLength = ModifiableVariableFactory.safelySetValue(this.cachedInfoLength, cachedInfoLength);
     }
@@ -74,7 +75,8 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
     public void setIsClientState(ModifiableBoolean isClientState) {
         this.isClientState = isClientState;
     }
-public void setIsClientState(boolean isClientState) {
+
+    public void setIsClientState(boolean isClientState) {
         this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
     }
 
@@ -85,6 +87,7 @@ public void setIsClientState(boolean isClientState) {
     public void setCachedInfoBytes(ModifiableByteArray cachedInfoBytes) {
         this.cachedInfoBytes = cachedInfoBytes;
     }
+
     public void setCachedInfoBytes(byte[] cachedInfoBytes) {
         this.cachedInfoBytes = ModifiableVariableFactory.safelySetValue(this.cachedInfoBytes, cachedInfoBytes);
     }
