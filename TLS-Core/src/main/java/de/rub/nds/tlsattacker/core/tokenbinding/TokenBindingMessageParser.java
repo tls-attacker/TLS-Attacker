@@ -20,7 +20,8 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
 
     private final TokenBindingKeyParameters keyParameter;
 
-    public TokenBindingMessageParser(int pointer, byte[] array, ProtocolVersion version, TokenBindingKeyParameters keyParameter) {
+    public TokenBindingMessageParser(int pointer, byte[] array, ProtocolVersion version,
+            TokenBindingKeyParameters keyParameter) {
         super(pointer, array, version);
         this.keyParameter = keyParameter;
     }
@@ -29,6 +30,7 @@ public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindin
     protected TokenBindingMessage parseMessageContent() {
         TokenBindingMessage message = new TokenBindingMessage();
         message.setTokenbindingType(parseByteField(TokenBindingLength.BINDING_TYPE));
+        message.setKeyParameter(parseByteField(TokenBindingLength.KEY_PARAMETER));
         message.setKeyLength(TokenBindingLength.KEY);
         if (keyParameter == TokenBindingKeyParameters.ECDSAP256) {
             message.setPointLength(parseIntField(TokenBindingLength.POINT));

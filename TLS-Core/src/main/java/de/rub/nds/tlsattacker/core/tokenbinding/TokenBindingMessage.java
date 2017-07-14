@@ -26,7 +26,10 @@ public class TokenBindingMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte tokenbindingType;
-    
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
+    private ModifiableByte keyParameter;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger keyLength;
 
@@ -47,16 +50,16 @@ public class TokenBindingMessage extends ProtocolMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray point;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger signatureLength;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.SIGNATURE)
     private ModifiableByteArray signature;
-    
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger extensionLength;
-    
+
     @ModifiableVariableProperty
     private ModifiableByteArray extensionBytes;
 
@@ -108,7 +111,8 @@ public class TokenBindingMessage extends ProtocolMessage {
     }
 
     public void setPublicExponentLength(int publicExponentLength) {
-        this.publicExponentLength = ModifiableVariableFactory.safelySetValue(this.publicExponentLength, publicExponentLength);
+        this.publicExponentLength = ModifiableVariableFactory.safelySetValue(this.publicExponentLength,
+                publicExponentLength);
     }
 
     public ModifiableByteArray getPublicExponent() {
@@ -170,7 +174,19 @@ public class TokenBindingMessage extends ProtocolMessage {
     public void setTokenbindingType(byte tokenbindingType) {
         this.tokenbindingType = ModifiableVariableFactory.safelySetValue(this.tokenbindingType, tokenbindingType);
     }
-    
+
+    public ModifiableByte getKeyParameter() {
+        return keyParameter;
+    }
+
+    public void setKeyParameter(ModifiableByte keyParameter) {
+        this.keyParameter = keyParameter;
+    }
+
+    public void setKeyParameter(byte keyParameter) {
+        this.keyParameter = ModifiableVariableFactory.safelySetValue(this.keyParameter, keyParameter);
+    }
+
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
     }
@@ -178,7 +194,7 @@ public class TokenBindingMessage extends ProtocolMessage {
     public void setSignatureLength(ModifiableInteger signatureLength) {
         this.signatureLength = signatureLength;
     }
-    
+
     public void setSignatureLength(int signatureLength) {
         this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
@@ -190,7 +206,7 @@ public class TokenBindingMessage extends ProtocolMessage {
     public void setSignature(ModifiableByteArray signature) {
         this.signature = signature;
     }
-    
+
     public void setSignature(byte[] signature) {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
@@ -202,7 +218,7 @@ public class TokenBindingMessage extends ProtocolMessage {
     public void setExtensionLength(ModifiableInteger extensionLength) {
         this.extensionLength = extensionLength;
     }
-    
+
     public void setExtensionLength(int extensionLength) {
         this.extensionLength = ModifiableVariableFactory.safelySetValue(this.extensionLength, extensionLength);
     }
@@ -214,7 +230,7 @@ public class TokenBindingMessage extends ProtocolMessage {
     public void setExtensionBytes(ModifiableByteArray extensionBytes) {
         this.extensionBytes = extensionBytes;
     }
-    
+
     public void setExtensionBytes(byte[] extensionbytes) {
         this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionbytes);
     }

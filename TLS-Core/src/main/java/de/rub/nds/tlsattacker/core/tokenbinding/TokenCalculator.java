@@ -32,6 +32,5 @@ public class TokenCalculator {
                 context.getSelectedCipherSuite());
         return PseudoRandomFunction.compute(algorithm, masterSecret, label, clientServerRandom, length);
     }
-    
-    
+
 }

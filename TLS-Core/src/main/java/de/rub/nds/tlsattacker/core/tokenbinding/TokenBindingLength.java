@@ -16,13 +16,15 @@ public class TokenBindingLength {
 
     private TokenBindingLength() {
     }
-    
+
+    public final static int KEY_PARAMETER = 1;
+
     public final static int MODULUS = 2;
-    
+
     public final static int PUBLIC_EXPONENT = 1;
-    
+
     public final static int POINT = 1;
-    
+
     public final static int KEY = 2;
 
     public final static int BINDING_TYPE = 1;

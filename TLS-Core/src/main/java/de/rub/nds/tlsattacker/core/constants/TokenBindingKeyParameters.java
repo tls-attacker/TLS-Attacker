@@ -39,7 +39,7 @@ public enum TokenBindingKeyParameters {
         return type;
     }
 
-    public byte getKeyParameterValue() {
+    public byte getValue() {
         return keyParameterValue;
     }
 

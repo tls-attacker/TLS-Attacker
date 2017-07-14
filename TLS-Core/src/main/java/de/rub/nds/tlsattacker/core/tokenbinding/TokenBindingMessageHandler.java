@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBindingMessage>{
+public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBindingMessage> {
 
     public TokenBindingMessageHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -24,7 +24,8 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
 
     @Override
     public TokenBindingMessageParser getParser(byte[] message, int pointer) {
-        return new TokenBindingMessageParser(pointer, message, tlsContext.getSelectedProtocolVersion(), tlsContext.getTokenBindingKeyParameters().get(0));
+        return new TokenBindingMessageParser(pointer, message, tlsContext.getSelectedProtocolVersion(), tlsContext
+                .getTokenBindingKeyParameters().get(0));
     }
 
     @Override
@@ -39,7 +40,7 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
 
     @Override
     protected void adjustTLSContext(TokenBindingMessage message) {
-        
+
     }
-    
+
 }

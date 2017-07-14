@@ -31,7 +31,7 @@ public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBi
         message.setParameterListLength(chooser.getConfig().getDefaultTokenBindingKeyParameters().size());
         ByteArrayOutputStream tokenbindingKeyParameters = new ByteArrayOutputStream();
         for (TokenBindingKeyParameters kp : chooser.getConfig().getDefaultTokenBindingKeyParameters()) {
-            tokenbindingKeyParameters.write(kp.getKeyParameterValue());
+            tokenbindingKeyParameters.write(kp.getValue());
         }
         message.setTokenbindingKeyParameters(tokenbindingKeyParameters.toByteArray());
     }
