@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -157,6 +158,10 @@ public class TlsContext {
     private MaxFragmentLength maxFragmentLength;
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
+
+    private boolean isCachedInfoExtensionClientState;
+
+    private List<CachedObject> cachedInfoExtensionObjects;
 
     /**
      * These are the padding bytes as used in the padding extension.
@@ -916,6 +921,22 @@ public class TlsContext {
 
     public void setEncryptThenMacExtensionIsPresent(boolean encryptThenMacExtensionIsPresent) {
         this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
+    }
+
+    public boolean isIsCachedInfoExtensionClientState() {
+        return isCachedInfoExtensionClientState;
+    }
+
+    public void setIsCachedInfoExtensionClientState(boolean isCachedInfoExtensionClientState) {
+        this.isCachedInfoExtensionClientState = isCachedInfoExtensionClientState;
+    }
+
+    public List<CachedObject> getCachedInfoExtensionObjects() {
+        return cachedInfoExtensionObjects;
+    }
+
+    public void setCachedInfoExtensionObjects(List<CachedObject> cachedInfoExtensionObjects) {
+        this.cachedInfoExtensionObjects = cachedInfoExtensionObjects;
     }
 
 }

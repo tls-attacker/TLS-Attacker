@@ -35,6 +35,8 @@ import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
@@ -305,6 +307,14 @@ public class TlsConfig implements Serializable {
      */
     private boolean clientCertificateTypeExtensionMessageState = true;
     /**
+     * Default state for the cached info extension message. State "client"
+     */
+    private boolean cachedInfoExtensionIsClientState = true;
+    /**
+     * Default cached objects for the cached info extension
+     */
+    private List<CachedObject> cachedObjectList;
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -441,6 +451,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with encrypt then mac extension
      */
     private boolean addEncryptThenMacExtension = false;
+    /**
+     * If we generate ClientHello with cached info extension
+     */
+    private boolean addCachedInfoExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -649,6 +663,8 @@ public class TlsConfig implements Serializable {
         serverCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
         serverCertificateTypeDesiredTypes.add(CertificateType.X509);
         serverCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
+
+        cachedObjectList = new LinkedList<>();
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1546,6 +1562,30 @@ public class TlsConfig implements Serializable {
 
     public void setAddEncryptThenMacExtension(boolean addEncryptThenMacExtension) {
         this.addEncryptThenMacExtension = addEncryptThenMacExtension;
+    }
+
+    public boolean isCachedInfoExtensionIsClientState() {
+        return cachedInfoExtensionIsClientState;
+    }
+
+    public void setCachedInfoExtensionIsClientState(boolean cachedInfoExtensionIsClientState) {
+        this.cachedInfoExtensionIsClientState = cachedInfoExtensionIsClientState;
+    }
+
+    public List<CachedObject> getCachedObjectList() {
+        return cachedObjectList;
+    }
+
+    public void setCachedObjectList(List<CachedObject> cachedObjectList) {
+        this.cachedObjectList = cachedObjectList;
+    }
+
+    public boolean isAddCachedInfoExtension() {
+        return addCachedInfoExtension;
+    }
+
+    public void setAddCachedInfoExtension(boolean addCachedInfoExtension) {
+        this.addCachedInfoExtension = addCachedInfoExtension;
     }
 
 }

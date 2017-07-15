@@ -72,6 +72,7 @@ public class ExtensionParserFactory {
                 parser = new AlpnExtensionParser(pointer, extensionBytes);
                 break;
             case CACHED_INFO:
+                parser = new CachedInfoExtensionParser(pointer, extensionBytes);
                 break;
             case CERT_TYPE:
                 parser = new CertificateTypeExtensionParser(pointer, extensionBytes);

@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
@@ -143,6 +144,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddEncryptThenMacExtension()) {
             addExtension(new EncryptThenMacExtensionMessage());
+        }
+        if (tlsConfig.isAddCachedInfoExtension()) {
+            addExtension(new CachedInfoExtensionMessage());
         }
     }
 
