@@ -28,8 +28,7 @@ public class TokenBindingExtensionPreparatorTest {
 
     private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;
     private List<TokenBindingKeyParameters> keyParameters;
-    private final byte[] keyParameterAsByteArray = new byte[] { TokenBindingKeyParameters.ECDSAP256
-            .getKeyParameterValue() };
+    private final byte[] keyParameterAsByteArray = new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() };
     private TlsContext context;
     private TokenBindingExtensionMessage message;
     private TokenBindingExtensionPreparator preparator;
