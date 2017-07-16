@@ -108,10 +108,10 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustRandomContext(ClientHelloMessage message) {
-        if (tlsContext.getHighestClientProtocolVersion().isTLS13()) {
-            tlsContext.setClientRandom(message.getRandom().getValue());
-        } else {
+        if (message.getUnixTime() != null && message.getUnixTime().getValue() != null) {
             setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
+        } else {
+            tlsContext.setClientRandom(message.getRandom().getValue());
         }
         LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
     }
