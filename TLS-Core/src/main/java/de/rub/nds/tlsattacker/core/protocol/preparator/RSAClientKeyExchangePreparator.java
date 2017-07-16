@@ -148,6 +148,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         // the number of random bytes in the pkcs1 message
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
         premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
+        LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }
