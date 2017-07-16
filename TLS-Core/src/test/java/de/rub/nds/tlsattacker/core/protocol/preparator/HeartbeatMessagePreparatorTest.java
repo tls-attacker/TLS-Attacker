@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.prng.FixedSecureRandom;
+import org.junit.After;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -39,6 +40,11 @@ public class HeartbeatMessagePreparatorTest {
         this.message = new HeartbeatMessage();
         this.preparator = new HeartbeatMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
         RandomHelper.getRandom().setSeed(0);
+    }
+
+    @After
+    public void cleanUp() {
+        RandomHelper.setRandom(null);
     }
 
     /**
