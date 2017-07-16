@@ -55,7 +55,7 @@ public class ChangeCipherSuiteAction extends TLSAction {
         tlsContext.setSelectedCipherSuite(newValue);
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
-        LOGGER.info("Changed CipherSuite from " + oldValue.name() + " to " + newValue.name());
+        LOGGER.info("Changed CipherSuite from " + (oldValue == null ? null : oldValue.name()) + " to " + newValue.name());
         setExecuted(true);
     }
 
