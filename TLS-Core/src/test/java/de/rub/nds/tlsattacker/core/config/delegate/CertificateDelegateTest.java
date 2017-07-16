@@ -20,9 +20,11 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -48,6 +50,7 @@ public class CertificateDelegateTest {
     public void setUp() {
         delegate = new CertificateDelegate();
         jcommander = new JCommander(delegate);
+        Security.addProvider(new BouncyCastleProvider());
 
     }
 
@@ -138,9 +141,11 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[5]));
         TlsConfig config = TlsConfig.createConfig();
-        config.setOurCertificate(null);
+        config.setDefaultRsaCertificate(null);
+        config.setDefaultDsaCertificate(null);
+        config.setDefaultEcCertificate(null);
         delegate.applyDelegate(config);
-        assertNotNull("Ceritifcate could not be loaded", config.getOurCertificate());
+        assertNotNull("Ceritifcate could not be loaded", config.getDefaultRsaCertificate());
     }
 
     @Test
@@ -154,9 +159,9 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
         TlsConfig config = TlsConfig.createConfig();
-        config.setOurCertificate(null);
+        config.setDefaultRsaCertificate(null);
         delegate.applyDelegate(config);
-        assertNull("Certificate should not get loaded if not specified", config.getOurCertificate());
+        assertNull("Certificate should not get loaded if not specified", config.getDefaultRsaCertificate());
     }
 
     @Test(expected = ConfigurationException.class)

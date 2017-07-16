@@ -65,9 +65,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             msg.setCertificatesListBytes(stream.toByteArray());
         } else {
             byte[] certBytes = getEncodedCert();
-            byte[] encodedCert = Arrays.copyOfRange(certBytes, HandshakeByteLength.CERTIFICATES_LENGTH,
-                    certBytes.length);
-            msg.setCertificatesListBytes(encodedCert);
+            msg.setCertificatesListBytes(certBytes);
         }
         LOGGER.debug("CertificatesListBytes: "
                 + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
