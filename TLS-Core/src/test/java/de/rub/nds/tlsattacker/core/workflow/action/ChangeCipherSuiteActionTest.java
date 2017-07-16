@@ -70,12 +70,11 @@ public class ChangeCipherSuiteActionTest {
     }
 
     @Test
-    public void testNoOld()
-    {
+    public void testNoOld() {
         tlsContext.setSelectedCipherSuite(null);
         action.execute(tlsContext, null);
     }
-   
+
     /**
      * Test of getOldValue method, of class ChangeCipherSuiteAction.
      */
