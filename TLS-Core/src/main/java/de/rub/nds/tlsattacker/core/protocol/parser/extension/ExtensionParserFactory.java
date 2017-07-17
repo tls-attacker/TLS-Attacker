@@ -35,6 +35,7 @@ public class ExtensionParserFactory {
         ExtensionParser parser = null;
         switch (type) {
             case CLIENT_CERTIFICATE_URL:
+                parser = new ClientCertificateUrlExtensionParser(pointer, extensionBytes);
                 break;
             case EC_POINT_FORMATS:
                 parser = new ECPointFormatExtensionParser(pointer, extensionBytes);
@@ -67,6 +68,7 @@ public class ExtensionParserFactory {
                 parser = new TruncatedHmacExtensionParser(pointer, extensionBytes);
                 break;
             case TRUSTED_CA_KEYS:
+                parser = new TrustedCaIndicationExtensionParser(pointer, extensionBytes);
                 break;
             case ALPN:
                 parser = new AlpnExtensionParser(pointer, extensionBytes);

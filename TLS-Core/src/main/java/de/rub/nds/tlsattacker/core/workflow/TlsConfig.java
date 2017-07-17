@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
@@ -51,6 +52,7 @@ import java.security.PublicKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateParsingException;
+import java.util.AbstractList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -302,6 +304,10 @@ public class TlsConfig implements Serializable {
      */
     private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
     /**
+     * Default trusted ca indication extension trusted cas
+     */
+    private List<TrustedAuthority> trustedCaIndicationExtensionAuthorties;
+    /**
      * Default state for the client certificate type extension message. State
      * "client"
      */
@@ -455,6 +461,14 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with cached info extension
      */
     private boolean addCachedInfoExtension = false;
+    /**
+     * If we generate ClientHello with client certificate url extension
+     */
+    private boolean addClientCertificateUrlExtension = false;
+    /**
+     * If we generate ClientHello with trusted ca indication extension
+     */
+    private boolean addTrustedCaIndicationExtension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -665,6 +679,7 @@ public class TlsConfig implements Serializable {
         serverCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
 
         cachedObjectList = new LinkedList<>();
+        trustedCaIndicationExtensionAuthorties = new LinkedList<>();
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1586,6 +1601,30 @@ public class TlsConfig implements Serializable {
 
     public void setAddCachedInfoExtension(boolean addCachedInfoExtension) {
         this.addCachedInfoExtension = addCachedInfoExtension;
+    }
+
+    public boolean isAddClientCertificateUrlExtension() {
+        return addClientCertificateUrlExtension;
+    }
+
+    public void setAddClientCertificateUrlExtension(boolean addClientCertificateUrlExtension) {
+        this.addClientCertificateUrlExtension = addClientCertificateUrlExtension;
+    }
+
+    public List<TrustedAuthority> getTrustedCaIndicationExtensionAuthorties() {
+        return trustedCaIndicationExtensionAuthorties;
+    }
+
+    public void setTrustedCaIndicationExtensionAuthorties(List<TrustedAuthority> trustedCaIndicationExtensionAuthorties) {
+        this.trustedCaIndicationExtensionAuthorties = trustedCaIndicationExtensionAuthorties;
+    }
+
+    public boolean isAddTrustedCaIndicationExtension() {
+        return addTrustedCaIndicationExtension;
+    }
+
+    public void setAddTrustedCaIndicationExtension(boolean addTrustedCaIndicationExtension) {
+        this.addTrustedCaIndicationExtension = addTrustedCaIndicationExtension;
     }
 
 }

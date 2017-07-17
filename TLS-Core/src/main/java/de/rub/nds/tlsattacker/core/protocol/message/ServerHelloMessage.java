@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
@@ -48,6 +49,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -147,6 +149,12 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddCachedInfoExtension()) {
             addExtension(new CachedInfoExtensionMessage());
+        }
+        if (tlsConfig.isAddClientCertificateUrlExtension()) {
+            addExtension(new ClientCertificateUrlExtensionMessage());
+        }
+        if (tlsConfig.isAddTrustedCaIndicationExtension()) {
+            addExtension(new TrustedCaIndicationExtensionMessage());
         }
     }
 

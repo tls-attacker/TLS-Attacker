@@ -163,6 +163,26 @@ public class ExtensionByteLength {
      */
     public static final int CACHED_INFO_HASH_LENGTH = 1;
 
+    /**
+     * Length of the trusted ca indication authority type length
+     */
+    public static final int TRUSTED_AUTHORITY_TYPE = 1;
+
+    /**
+     * Length of the trusted ca indication sha1 hash length
+     */
+    public static final int TRUSTED_AUTHORITY_HASH = 20;
+
+    /**
+     * Length of the trusted ca indication distinguished name lengthfield
+     */
+    public static final int TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH = 2;
+
+    /**
+     * Length of the trusted ca indication trusted authority list
+     */
+    public static final int TRUSTED_AUTHORITY_LIST_LENGTH = 2;
+
     private ExtensionByteLength() {
     }
 }

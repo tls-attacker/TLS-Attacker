@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -233,6 +234,11 @@ public class TlsContext {
     private boolean encryptThenMacExtensionIsPresent;
 
     /**
+     * Is the client certificate url extension present?
+     */
+    private boolean clientCertificateUrlExtensionIsPresent;
+
+    /**
      * User mapping extension hint type
      */
     private UserMappingExtensionHintType userMappingExtensionHintType;
@@ -305,6 +311,8 @@ public class TlsContext {
     private List<CertificateType> serverCertificateTypeDesiredTypes;
 
     private List<CertificateType> clientCertificateTypeDesiredTypes;
+
+    private List<TrustedAuthority> trustedCaIndicationExtensionCas;
 
     public TlsContext() {
         this(TlsConfig.createConfig());
@@ -939,4 +947,19 @@ public class TlsContext {
         this.cachedInfoExtensionObjects = cachedInfoExtensionObjects;
     }
 
+    public boolean isClientCertificateUrlExtensionIsPresent() {
+        return clientCertificateUrlExtensionIsPresent;
+    }
+
+    public void setClientCertificateUrlExtensionIsPresent(boolean clientCertificateUrlExtensionIsPresent) {
+        this.clientCertificateUrlExtensionIsPresent = clientCertificateUrlExtensionIsPresent;
+    }
+
+    public List<TrustedAuthority> getTrustedCaIndicationExtensionCas() {
+        return trustedCaIndicationExtensionCas;
+    }
+
+    public void setTrustedCaIndicationExtensionCas(List<TrustedAuthority> trustedCaIndicationExtensionCas) {
+        this.trustedCaIndicationExtensionCas = trustedCaIndicationExtensionCas;
+    }
 }
