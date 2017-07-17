@@ -62,6 +62,8 @@ public class WorkflowConfigurationFactory {
                 return createFullWorkflow();
             case HANDSHAKE:
                 return createHandshakeWorkflow();
+            case SHORT_HELLO:
+                return createShortHello();
             case RENEGOTIATION:
                 return new WorkflowTrace(); // TODO add real workflow
             case RESUMPTION:
@@ -241,5 +243,14 @@ public class WorkflowConfigurationFactory {
                     ConnectionEndType.CLIENT, messages));
         }
         return workflowTrace;
+    }
+
+    private WorkflowTrace createShortHello() {
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.add(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+        trace.add(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                new ServerHelloMessage(config)));
+        return trace;
     }
 }

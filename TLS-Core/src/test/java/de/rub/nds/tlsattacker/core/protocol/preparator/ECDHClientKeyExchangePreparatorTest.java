@@ -85,6 +85,7 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.setServerEcPublicKey(new CustomECPoint(new BigInteger(
                 "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
                 "4390496211885670837594012513791855863576256216444143941964")));
+        context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
 
         preparator.prepare();
         assertNotNull(message.getPublicKeyBaseX());

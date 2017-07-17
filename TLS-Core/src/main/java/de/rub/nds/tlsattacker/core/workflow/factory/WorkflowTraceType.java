@@ -17,6 +17,7 @@ public enum WorkflowTraceType {
     FULL,
     HANDSHAKE,
     HELLO,
+    SHORT_HELLO,
     RESUMPTION,
     RENEGOTIATION;
 }

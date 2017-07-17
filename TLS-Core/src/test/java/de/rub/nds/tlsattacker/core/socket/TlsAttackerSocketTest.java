@@ -19,8 +19,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * //TODO
- *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TlsAttackerSocketTest {

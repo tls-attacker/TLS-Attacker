@@ -206,10 +206,13 @@ public class DefaultActionExecutor extends ActionExecutor {
                                 }
                             }
                             boolean receivedAllConfiguredMessages = true;
-                            if (messages.size() != expectedMessages.size() && context.getConfig().isEarlyStop()) {
+                            if (messages.size() != expectedMessages.size() && !context.getConfig().isEarlyStop()) {
                                 receivedAllConfiguredMessages = false;
                             } else {
-                                for (int i = 0; i < messages.size(); i++) {
+                                for (int i = 0; i < expectedMessages.size(); i++) {
+                                    if (i >= messages.size()) {
+                                        receivedAllConfiguredMessages = false;
+                                    }
                                     if (!expectedMessages.get(i).getClass().equals(messages.get(i).getClass())) {
                                         receivedAllConfiguredMessages = false;
                                     }
