@@ -25,7 +25,6 @@ public abstract class ModifiableVariableHolder implements Serializable {
 
     protected static final Logger LOGGER = LogManager.getLogger(ModifiableVariableHolder.class.getName());
 
-    
     /**
      * Lists all the modifiable variables declared in the class
      * 

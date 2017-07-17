@@ -35,8 +35,10 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         LOGGER.debug("Preparing CertificatePair");
         prepareCertificate(pair);
         prepareCertificateLength(pair);
-        prepareExtensions(pair);
-        prepareExtensionLength(pair);
+        if (pair.getExtensionsConfig() != null) {
+            prepareExtensions(pair);
+            prepareExtensionLength(pair);
+        }
     }
 
     private void prepareCertificate(CertificatePair pair) {
@@ -61,8 +63,8 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
                     throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
                 }
             }
+            pair.setExtensions(stream.toByteArray());
         }
-        pair.setExtensions(stream.toByteArray());
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
     }
 

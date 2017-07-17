@@ -20,9 +20,13 @@ import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -46,27 +50,22 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
             prepareRequestContextLength(msg);
         }
         prepareCertificateListBytes(msg);
-        msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
     }
 
     private void prepareCertificateListBytes(CertificateMessage msg) {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            for (CertificatePair pair : msg.getCertificatesList()) {
-                CertificatePairPreparator preparator = new CertificatePairPreparator(chooser, pair);
-                preparator.prepare();
-                CertificatePairSerializer serializer = new CertificatePairSerializer(pair);
-                try {
-                    stream.write(serializer.serialize());
-                } catch (IOException ex) {
-                    throw new PreparationException("Could not write byte[] from CertificatePair", ex);
-                }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        for (CertificatePair pair : msg.getCertificatesList()) {
+            CertificatePairPreparator preparator = new CertificatePairPreparator(chooser, pair);
+            preparator.prepare();
+            CertificatePairSerializer serializer = new CertificatePairSerializer(pair);
+            try {
+                stream.write(serializer.serialize());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write byte[] from CertificatePair", ex);
             }
-            msg.setCertificatesListBytes(stream.toByteArray());
-        } else {
-            byte[] certBytes = getEncodedCert();
-            msg.setCertificatesListBytes(certBytes);
         }
+        msg.setCertificatesListBytes(stream.toByteArray());
+        msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
         LOGGER.debug("CertificatesListBytes: "
                 + ArrayConverter.bytesToHexString(msg.getCertificatesListBytes().getValue()));
     }

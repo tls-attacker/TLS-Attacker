@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -72,14 +73,25 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage(TlsConfig tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
-        if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
+        certificatesList = new LinkedList<>();
+        try {
+            Certificate cert = getCertificate(tlsConfig);
+            for (org.bouncycastle.asn1.x509.Certificate singleCert : cert.getCertificateList()) {
+                CertificatePair pair = new CertificatePair();
+                pair.setCertificateConfig(singleCert.getEncoded());
+                certificatesList.add(pair);
+            }
+        } catch (IOException ex) {
+            LOGGER.warn("Could not parse configured Certificate into a real Certificate. Just sending bytes as they are (with added Length field)");
             CertificatePair pair = new CertificatePair();
-            // TODO ugly
-            pair.setCertificateConfig(new DefaultChooser(null, tlsConfig).getCertificateBytes());
-            // Extentions can be added via if statements ? (as ClientHello and
-            // ServerHello). For this message no extension is currently
-            // implemented.
+            pair.setCertificateConfig(new DefaultChooser(new TlsContext(), tlsConfig).getCertificateBytes());
+            certificatesList.add(pair);
         }
+    }
+
+    private Certificate getCertificate(TlsConfig config) throws IOException {
+        return Certificate.parse(new ByteArrayInputStream(new DefaultChooser(new TlsContext(), config)
+                .getCertificateBytes()));
     }
 
     public ModifiableInteger getCertificatesListLength() {
