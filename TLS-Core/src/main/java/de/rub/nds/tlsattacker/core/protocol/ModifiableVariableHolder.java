@@ -15,12 +15,17 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public abstract class ModifiableVariableHolder implements Serializable {
 
+    protected static final Logger LOGGER = LogManager.getLogger(ModifiableVariableHolder.class.getName());
+
+    
     /**
      * Lists all the modifiable variables declared in the class
      * 
