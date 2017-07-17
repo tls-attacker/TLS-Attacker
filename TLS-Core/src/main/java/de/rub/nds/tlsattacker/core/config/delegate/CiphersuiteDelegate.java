@@ -44,6 +44,9 @@ public class CiphersuiteDelegate extends Delegate {
         if (cipherSuites != null) {
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
             config.setDefaultServerSupportedCiphersuites(cipherSuites);
+            if (cipherSuites.size() > 0) {
+                config.setDefaultSelectedCipherSuite(cipherSuites.get(0));
+            }
         }
     }
 

@@ -8,19 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.Security;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemReader;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,6 +40,5 @@ public class TlsConfigTest {
         Certificate cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultRsaCertificate()));
         cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultEcCertificate()));
         cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultDsaCertificate()));
-
     }
 }

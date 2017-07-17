@@ -475,15 +475,17 @@ public class TlsConfig implements Serializable {
 
     private byte defaultAlertLevel = 0;
 
-    private NamedCurve defaultSelectedCurve = NamedCurve.SECP256R1;
+    private NamedCurve defaultSelectedCurve = NamedCurve.SECP192R1;
 
     private CustomECPoint defaultClientEcPublicKey;
 
     private CustomECPoint defaultServerEcPublicKey;
 
-    private BigInteger defaultServerEcPrivateKey = new BigInteger("3");
+    private BigInteger defaultServerEcPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
-    private BigInteger defaultClientEcPrivateKey = new BigInteger("3");
+    private BigInteger defaultClientEcPrivateKey = new BigInteger(
+            "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
     private BigInteger defaultRSAModulus = new BigInteger(
             1,
@@ -510,7 +512,7 @@ public class TlsConfig implements Serializable {
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
-    private CustomECPoint defaultTokenBindingECPublicKey = null; // TODO
+    private CustomECPoint defaultTokenBindingECPublicKey = null;
 
     private BigInteger defaultTokenBindingRsaPublicKey = new BigInteger("65537");
 
@@ -562,8 +564,12 @@ public class TlsConfig implements Serializable {
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
-        defaultClientEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
-        defaultServerEcPublicKey = new CustomECPoint(new BigInteger("3"), new BigInteger("3"));
+        defaultClientEcPublicKey = new CustomECPoint(new BigInteger(
+                "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
+                "3142682168214624565874993023364886040439474355932713162721"));
+        defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
+                "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
+                "3142682168214624565874993023364886040439474355932713162721"));
     }
 
     public CustomECPoint getDefaultTokenBindingECPublicKey() {
