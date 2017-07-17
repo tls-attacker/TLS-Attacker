@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.bouncycastle.math.ec.ECCurve;
 
 /**
  * This ActionExecutor tries to perform Actions in a way that imitates a TLS
@@ -205,7 +206,7 @@ public class DefaultActionExecutor extends ActionExecutor {
                                 }
                             }
                             boolean receivedAllConfiguredMessages = true;
-                            if (messages.size() != expectedMessages.size()) {
+                            if (messages.size() != expectedMessages.size() && context.getConfig().isEarlyStop()) {
                                 receivedAllConfiguredMessages = false;
                             } else {
                                 for (int i = 0; i < messages.size(); i++) {

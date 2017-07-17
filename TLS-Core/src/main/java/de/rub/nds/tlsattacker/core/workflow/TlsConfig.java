@@ -311,6 +311,12 @@ public class TlsConfig implements Serializable {
 
     private boolean enforceSettings = false;
 
+    /**
+     * Stop as soon as all configured messages are received and dont wait for
+     * more
+     */
+    private boolean earlyStop = false;
+
     private boolean doDTLSRetransmits = false;
 
     private BigInteger defaultDhGenerator = new BigInteger("2");
@@ -570,6 +576,14 @@ public class TlsConfig implements Serializable {
         defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
                 "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
                 "3142682168214624565874993023364886040439474355932713162721"));
+    }
+
+    public boolean isEarlyStop() {
+        return earlyStop;
+    }
+
+    public void setEarlyStop(boolean earlyStop) {
+        this.earlyStop = earlyStop;
     }
 
     public CustomECPoint getDefaultTokenBindingECPublicKey() {
