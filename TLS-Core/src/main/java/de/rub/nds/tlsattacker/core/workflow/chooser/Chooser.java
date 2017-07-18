@@ -78,19 +78,13 @@ public abstract class Chooser {
 
     public abstract List<ClientCertificateType> getClientCertificateTypes();
 
-    public abstract boolean isReceivedFatalAlert();
-
     public abstract MaxFragmentLength getMaxFragmentLength();
 
     public abstract HeartbeatMode getHeartbeatMode();
 
-    public abstract byte[] getPaddingExtensionBytes();
-
     public abstract boolean isExtendedMasterSecretExtension();
 
     public abstract List<CompressionMethod> getClientSupportedCompressions();
-
-    public abstract int getSequenceNumber();
 
     public abstract List<CipherSuite> getClientSupportedCiphersuites();
 
@@ -118,13 +112,9 @@ public abstract class Chooser {
 
     public abstract byte[] getServerSessionId();
 
-    public abstract MessageDigestCollector getDigest();
-
     public abstract byte[] getDtlsCookie();
 
     public abstract TransportHandler getTransportHandler();
-
-    public abstract RecordLayer getRecordLayer();
 
     public abstract PRFAlgorithm getPRFAlgorithm();
 

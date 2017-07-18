@@ -63,8 +63,8 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
                 LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(chooser.getDigest().digest(chooser.getSelectedProtocolVersion(),
-                        chooser.getSelectedCipherSuite()));
+                mac.update(chooser.getContext().getDigest()
+                        .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
@@ -72,8 +72,8 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
         } else {
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
             byte[] masterSecret = chooser.getMasterSecret();
-            byte[] handshakeMessageHash = chooser.getDigest().digest(chooser.getSelectedProtocolVersion(),
-                    chooser.getSelectedCipherSuite());
+            byte[] handshakeMessageHash = chooser.getContext().getDigest()
+                    .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
 
             if (chooser.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
                 // TODO put this in seperate config option

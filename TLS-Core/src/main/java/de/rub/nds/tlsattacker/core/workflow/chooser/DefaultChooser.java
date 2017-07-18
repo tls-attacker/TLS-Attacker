@@ -126,11 +126,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public boolean isReceivedFatalAlert() {
-        return context.isReceivedFatalAlert();
-    }
-
-    @Override
     public MaxFragmentLength getMaxFragmentLength() {
         if (context.getMaxFragmentLength() != null) {
             return context.getMaxFragmentLength();
@@ -149,15 +144,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getPaddingExtensionBytes() {
-        if (context.getPaddingExtensionBytes() != null) {
-            return context.getPaddingExtensionBytes();
-        } else {
-            return config.getDefaultPaddingExtensionBytes();
-        }
-    }
-
-    @Override
     public boolean isExtendedMasterSecretExtension() {
         return context.isExtendedMasterSecretExtension();
     }
@@ -169,11 +155,6 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getDefaultClientSupportedCompressionMethods();
         }
-    }
-
-    @Override
-    public int getSequenceNumber() {
-        return context.getSequenceNumber();
     }
 
     @Override
@@ -290,11 +271,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public MessageDigestCollector getDigest() {
-        return context.getDigest();
-    }
-
-    @Override
     public byte[] getDtlsCookie() {
         if (context.getDtlsCookie() != null) {
             return context.getDtlsCookie();
@@ -306,11 +282,6 @@ public class DefaultChooser extends Chooser {
     @Override
     public TransportHandler getTransportHandler() {
         return context.getTransportHandler();
-    }
-
-    @Override
-    public RecordLayer getRecordLayer() {
-        return context.getRecordLayer();
     }
 
     @Override

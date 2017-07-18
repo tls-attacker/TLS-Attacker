@@ -72,7 +72,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     }
 
     private void prepareMessageSeq(HandshakeMessage msg) {
-        msg.setMessageSeq(chooser.getSequenceNumber());
+        msg.setMessageSeq(chooser.getContext().getSequenceNumber());
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 

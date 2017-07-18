@@ -67,7 +67,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareSequenceNumber(Record record) {
-        record.setSequenceNumber(BigInteger.valueOf(chooser.getSequenceNumber()));
+        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getSequenceNumber()));
         LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 
