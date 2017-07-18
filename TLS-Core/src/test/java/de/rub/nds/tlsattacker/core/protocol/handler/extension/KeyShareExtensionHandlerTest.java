@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
@@ -18,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
