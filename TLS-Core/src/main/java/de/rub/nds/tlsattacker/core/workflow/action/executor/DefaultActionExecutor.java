@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
@@ -23,11 +22,11 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import static de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.math.ec.ECCurve;
 
 /**
  * This ActionExecutor tries to perform Actions in a way that imitates a TLS
