@@ -35,7 +35,7 @@ public class HRRKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExt
 
     @Override
     public HRRKeyShareExtensionPreparator getPreparator(HRRKeyShareExtensionMessage message) {
-        return new HRRKeyShareExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new HRRKeyShareExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

@@ -32,18 +32,16 @@ public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<Unkn
 
     @Override
     public UnknownHandshakeMessageParser getParser(byte[] message, int pointer) {
-        return new UnknownHandshakeMessageParser(pointer, message, new DefaultChooser(tlsContext,
-                tlsContext.getConfig()).getLastRecordVersion());
+        return new UnknownHandshakeMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public UnknownHandshakeMessagePreparator getPreparator(UnknownHandshakeMessage message) {
-        return new UnknownHandshakeMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new UnknownHandshakeMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public UnknownHandshakeMessageSerializer getSerializer(UnknownHandshakeMessage message) {
-        return new UnknownHandshakeMessageSerializer(message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new UnknownHandshakeMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

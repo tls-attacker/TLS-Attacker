@@ -34,7 +34,7 @@ public class AlertPreparatorTest {
     public void setUp() {
         message = new AlertMessage();
         context = new TlsContext();
-        preparator = new AlertPreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new AlertPreparator(context.getChooser(), message);
     }
 
     /**

@@ -32,13 +32,12 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
 
     @Override
     public RetransmitMessagePreparator getPreparator(RetransmitMessage message) {
-        return new RetransmitMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new RetransmitMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public RetransmitMessageSerializer getSerializer(RetransmitMessage message) {
-        return new RetransmitMessageSerializer(message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new RetransmitMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

@@ -32,19 +32,17 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
 
     @Override
     public DHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHEServerKeyExchangeParser(pointer, message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
+        return new DHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public DHEServerKeyExchangePreparator getPreparator(DHEServerKeyExchangeMessage message) {
-        return new DHEServerKeyExchangePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new DHEServerKeyExchangePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public DHEServerKeyExchangeSerializer getSerializer(DHEServerKeyExchangeMessage message) {
-        return new DHEServerKeyExchangeSerializer(message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new DHEServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

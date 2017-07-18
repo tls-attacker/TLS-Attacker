@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -82,31 +83,8 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     private void prepareRequestContextLength(CertificateMessage msg) {
         msg.setRequestContextLength(msg.getRequestContext().getValue().length);
         LOGGER.debug("RequestContextLength: " + msg.getRequestContextLength().getValue());
-        byte[] encodedCert = getEncodedCert();
+        byte[] encodedCert = CertificateByteChooser.chooseCertificateType(chooser);
         msg.setCertificatesListBytes(encodedCert);
         msg.setCertificatesListLength(msg.getCertificatesListBytes().getValue().length);
-    }
-
-    private byte[] getEncodedCert() {
-        switch (AlgorithmResolver.getKeyExchangeAlgorithm(chooser.getSelectedCipherSuite())) {
-            case ECDHE_ECDSA:
-            case ECDH_ECDSA:
-            case ECMQV_ECDSA:
-            case CECPQ1_ECDSA:
-                return chooser.getConfig().getDefaultEcCertificate();
-            case DHE_RSA:
-            case DH_RSA:
-            case ECDH_RSA:
-            case ECDHE_RSA:
-            case RSA:
-            case SRP_SHA_RSA:
-                return chooser.getConfig().getDefaultRsaCertificate();
-            case DHE_DSS:
-            case DH_DSS:
-            case SRP_SHA_DSS:
-                return chooser.getConfig().getDefaultDsaCertificate();
-        }
-        LOGGER.warn("Could not choose correct Certificate base on KeyExchangeAlgorithm. Selected ");
-        return chooser.getConfig().getDefaultRsaCertificate();
     }
 }

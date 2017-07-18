@@ -36,7 +36,7 @@ public class KeyShareExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new KeyShareExtensionMessage();
-        preparator = new KeyShareExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new KeyShareExtensionPreparator(context.getChooser(), message);
     }
 
     /**

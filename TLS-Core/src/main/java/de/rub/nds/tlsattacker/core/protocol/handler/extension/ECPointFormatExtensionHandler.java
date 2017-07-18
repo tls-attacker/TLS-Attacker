@@ -58,7 +58,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
 
     @Override
     public ExtensionPreparator getPreparator(ECPointFormatExtensionMessage message) {
-        return new ECPointFormatExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new ECPointFormatExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

@@ -113,7 +113,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddKeyShareExtension()) {
             KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
             KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getkeySharePublic());
+            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
             pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
             extension.getKeyShareList().add(pair);
             addExtension(extension);

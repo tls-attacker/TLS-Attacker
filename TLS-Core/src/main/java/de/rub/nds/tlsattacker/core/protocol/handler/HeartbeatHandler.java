@@ -28,19 +28,17 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 
     @Override
     public HeartbeatMessageParser getParser(byte[] message, int pointer) {
-        return new HeartbeatMessageParser(pointer, message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
+        return new HeartbeatMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public HeartbeatMessagePreparator getPreparator(HeartbeatMessage message) {
-        return new HeartbeatMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new HeartbeatMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public HeartbeatMessageSerializer getSerializer(HeartbeatMessage message) {
-        return new HeartbeatMessageSerializer(message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new HeartbeatMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

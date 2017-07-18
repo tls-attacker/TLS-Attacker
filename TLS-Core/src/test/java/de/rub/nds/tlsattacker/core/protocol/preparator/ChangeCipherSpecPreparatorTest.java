@@ -29,7 +29,7 @@ public class ChangeCipherSpecPreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new ChangeCipherSpecMessage();
-        preparator = new ChangeCipherSpecPreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new ChangeCipherSpecPreparator(context.getChooser(), message);
     }
 
     /**

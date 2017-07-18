@@ -51,7 +51,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      */
     @Override
     public SessionTicketTLSExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
-        return new SessionTicketTLSExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new SessionTicketTLSExtensionPreparator(context.getChooser(), message);
     }
 
     /**

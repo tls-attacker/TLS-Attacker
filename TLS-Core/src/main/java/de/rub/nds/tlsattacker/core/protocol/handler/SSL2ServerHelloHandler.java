@@ -30,13 +30,12 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
 
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        return new SSL2ServerHelloParser(message, pointer,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new SSL2ServerHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public ProtocolMessagePreparator getPreparator(SSL2ServerHelloMessage message) {
-        return new SSL2ServerHelloPreparator(message, new DefaultChooser(tlsContext, tlsContext.getConfig()));
+        return new SSL2ServerHelloPreparator(message, tlsContext.getChooser());
     }
 
     @Override

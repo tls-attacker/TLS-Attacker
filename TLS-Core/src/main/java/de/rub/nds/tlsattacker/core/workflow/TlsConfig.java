@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
@@ -530,6 +531,8 @@ public class TlsConfig implements Serializable {
     private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
             "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
+    private ChooserType chooserType = ChooserType.DEFAULT;
+
     private TlsConfig() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -576,6 +579,14 @@ public class TlsConfig implements Serializable {
         defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
                 "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
                 "3142682168214624565874993023364886040439474355932713162721"));
+    }
+
+    public ChooserType getChooserType() {
+        return chooserType;
+    }
+
+    public void setChooserType(ChooserType chooserType) {
+        this.chooserType = chooserType;
     }
 
     public boolean isEarlyStop() {
@@ -1348,14 +1359,6 @@ public class TlsConfig implements Serializable {
 
     public void setKeyShareType(NamedCurve keyShareType) {
         this.keyShareType = keyShareType;
-    }
-
-    public byte[] getkeySharePublic() {
-        return keySharePublic;
-    }
-
-    public void setkeySharePublic(byte[] keySharePublic) {
-        this.keySharePublic = keySharePublic;
     }
 
     public boolean isDynamicWorkflow() {

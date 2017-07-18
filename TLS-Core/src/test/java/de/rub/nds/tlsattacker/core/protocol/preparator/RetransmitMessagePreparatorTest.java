@@ -29,7 +29,7 @@ public class RetransmitMessagePreparatorTest {
     public void setUp() {
         message = new RetransmitMessage(new byte[] { 0, 1, 2, 3 });
         context = new TlsContext();
-        preparator = new RetransmitMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new RetransmitMessagePreparator(context.getChooser(), message);
     }
 
     /**

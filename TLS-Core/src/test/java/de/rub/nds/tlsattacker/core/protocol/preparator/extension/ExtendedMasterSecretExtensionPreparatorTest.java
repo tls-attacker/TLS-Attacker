@@ -31,8 +31,7 @@ public class ExtendedMasterSecretExtensionPreparatorTest {
     public void testPreparator() {
         context = new TlsContext();
         message = new ExtendedMasterSecretExtensionMessage();
-        preparator = new ExtendedMasterSecretExtensionPreparator(new DefaultChooser(context, context.getConfig()),
-                message);
+        preparator = new ExtendedMasterSecretExtensionPreparator(context.getChooser(), message);
 
         context.getConfig().setAddExtendedMasterSecretExtension(true);
         preparator.prepare();

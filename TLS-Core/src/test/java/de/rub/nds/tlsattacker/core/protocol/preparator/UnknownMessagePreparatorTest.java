@@ -29,7 +29,7 @@ public class UnknownMessagePreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new UnknownMessage();
-        this.preparator = new UnknownMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
+        this.preparator = new UnknownMessagePreparator(context.getChooser(), message);
     }
 
     /**

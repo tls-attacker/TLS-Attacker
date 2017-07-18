@@ -50,7 +50,7 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
 
     @Override
     public ServerNameIndicationExtensionPreparator getPreparator(ServerNameIndicationExtensionMessage message) {
-        return new ServerNameIndicationExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new ServerNameIndicationExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

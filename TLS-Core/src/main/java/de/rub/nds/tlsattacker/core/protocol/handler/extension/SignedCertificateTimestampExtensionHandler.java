@@ -58,8 +58,7 @@ public class SignedCertificateTimestampExtensionHandler extends
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(
             SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionPreparator(new DefaultChooser(context, context.getConfig()),
-                message);
+        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message);
     }
 
     /**

@@ -33,7 +33,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
-        return new ExtendedMasterSecretExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new ExtendedMasterSecretExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

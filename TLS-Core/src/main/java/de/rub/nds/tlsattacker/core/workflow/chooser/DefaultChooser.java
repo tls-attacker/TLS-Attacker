@@ -22,17 +22,14 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.util.List;
-import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -40,7 +37,7 @@ import org.bouncycastle.crypto.tls.Certificate;
  */
 public class DefaultChooser extends Chooser {
 
-    public DefaultChooser(TlsContext context, TlsConfig config) {
+    DefaultChooser(TlsContext context, TlsConfig config) {
         super(context, config);
     }
 
@@ -495,29 +492,5 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getDefaultClientHandshakeTrafficSecret();
         }
-    }
-
-    @Override
-    public byte[] getCertificateBytes() {
-        switch (AlgorithmResolver.getKeyExchangeAlgorithm(getSelectedCipherSuite())) {
-            case ECDHE_ECDSA:
-            case ECDH_ECDSA:
-            case ECMQV_ECDSA:
-            case CECPQ1_ECDSA:
-                return config.getDefaultEcCertificate();
-            case DHE_RSA:
-            case DH_RSA:
-            case ECDH_RSA:
-            case ECDHE_RSA:
-            case RSA:
-            case SRP_SHA_RSA:
-                return config.getDefaultRsaCertificate();
-            case DHE_DSS:
-            case DH_DSS:
-            case SRP_SHA_DSS:
-                return config.getDefaultDsaCertificate();
-        }
-        LOGGER.warn("Could not choose correct Certificate base on KeyExchangeAlgorithm. Selected ");
-        return config.getDefaultRsaCertificate();
     }
 }

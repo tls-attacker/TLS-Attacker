@@ -34,7 +34,7 @@ public class KeySharePairPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         pair = new KeySharePair();
-        preparator = new KeySharePairPreparator(new DefaultChooser(context, context.getConfig()), pair);
+        preparator = new KeySharePairPreparator(context.getChooser(), pair);
 
     }
 

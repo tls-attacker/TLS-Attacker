@@ -38,7 +38,7 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
 
     @Override
     public SupportedVersionsExtensionPreparator getPreparator(SupportedVersionsExtensionMessage message) {
-        return new SupportedVersionsExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new SupportedVersionsExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

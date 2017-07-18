@@ -146,8 +146,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         byte[] roundMessageData = new byte[config.getTrainMessageSize()];
         RandomHelper.getRandom().nextBytes(roundMessageData);
         HeartbeatMessage sentHbMessage = new HeartbeatMessage(tlsConfig);
-        HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(new DefaultChooser(tlsContext,
-                tlsContext.getConfig()), sentHbMessage);
+        HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(tlsContext.getChooser(), sentHbMessage);
         preparator.prepare();
         byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData,
                 sentHbMessage);
@@ -279,8 +278,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         List<AbstractRecord> records = new ArrayList<>();
         records.add(new Record());
 
-        AlertPreparator preparator = new AlertPreparator(new DefaultChooser(new TlsContext(tlsConfig), tlsConfig),
-                closeNotify);
+        AlertPreparator preparator = new AlertPreparator(tlsContext.getChooser(), closeNotify);
         preparator.prepare();
         try {
             transportHandler.sendData(recordLayer.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),

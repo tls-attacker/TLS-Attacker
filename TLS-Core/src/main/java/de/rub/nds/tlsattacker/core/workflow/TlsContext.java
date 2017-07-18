@@ -40,9 +40,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.List;
+import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.math.ec.ECPoint;
 
@@ -266,6 +269,9 @@ public class TlsContext {
 
     private PRFAlgorithm prfAlgorithm;
 
+    @XmlTransient
+    private Chooser chooser;
+
     public TlsContext() {
         this(TlsConfig.createConfig());
     }
@@ -277,6 +283,13 @@ public class TlsContext {
         clientCertificateTypes = new LinkedList<>();
         lastRecordVersion = config.getHighestProtocolVersion();
         selectedProtocolVersion = config.getHighestProtocolVersion();
+    }
+
+    public Chooser getChooser() {
+        if (chooser == null) {
+            chooser = ChooserFactory.getChooser(config.getChooserType(), this);
+        }
+        return chooser;
     }
 
     public List<ProtocolVersion> getClientSupportedProtocolVersions() {
