@@ -43,6 +43,8 @@ public enum ExtensionType {
     TOKEN_BINDING(new byte[] { (byte) 0, (byte) 24 }),
     CACHED_INFO(new byte[] { (byte) 0, (byte) 25 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
+    KEY_SHARE(new byte[] { (byte) 0, (byte) 40 }),
+    SUPPORTED_VERSIONS(new byte[] { (byte) 0, (byte) 43 }),
     RENEGOTIATION_INFO(new byte[] { (byte) 0xFF, (byte) 0x01 }),
     // TODO Grease logic implementation, because the tests fail if the lines
     // aren't commented

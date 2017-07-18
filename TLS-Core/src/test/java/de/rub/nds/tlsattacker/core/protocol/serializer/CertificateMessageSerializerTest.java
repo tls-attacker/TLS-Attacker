@@ -60,8 +60,8 @@ public class CertificateMessageSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         CertificateMessage message = new CertificateMessage();
-        message.setCertificatesLength(certificatesLength);
-        message.setX509CertificateBytes(certificateBytes);
+        message.setCertificatesListLength(certificatesLength);
+        message.setCertificatesListBytes(certificateBytes);
         message.setLength(length);
         message.setType(type.getValue());
         CertificateMessageSerializer serializer = new CertificateMessageSerializer(message, version);

@@ -16,9 +16,18 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
- *
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  * @author Robert Merget - robert.merget@rub.de
  */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
@@ -40,18 +49,44 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     }
 
     private byte[] computeVerifyData() {
-        PRFAlgorithm prfAlgorithm = context.getPRFAlgorithm();
-        byte[] masterSecret = context.getMasterSecret();
-        byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
-
-        if (context.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
-            // TODO put this in seperate config option
-            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.SERVER_FINISHED_LABEL,
-                    handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
+        if (context.getSelectedProtocolVersion().isTLS13()) {
+            try {
+                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite());
+                Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
+                byte[] finishedKey;
+                LOGGER.debug("Connection End: " + context.getConfig().getConnectionEndType());
+                if (context.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, context.getServerHandshakeTrafficSecret(),
+                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                } else {
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, context.getClientHandshakeTrafficSecret(),
+                            HKDFunction.FINISHED, new byte[0], mac.getMacLength());
+                }
+                LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
+                SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
+                mac.init(keySpec);
+                mac.update(context.getDigest().digest(context.getSelectedProtocolVersion(),
+                        context.getSelectedCipherSuite()));
+                return mac.doFinal();
+            } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+                throw new CryptoException(ex);
+            }
         } else {
-            return PseudoRandomFunction.compute(prfAlgorithm, masterSecret, PseudoRandomFunction.CLIENT_FINISHED_LABEL,
-                    handshakeMessageHash, HandshakeByteLength.VERIFY_DATA);
+            PRFAlgorithm prfAlgorithm = context.getPRFAlgorithm();
+            byte[] masterSecret = context.getMasterSecret();
+            byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
+                    context.getSelectedCipherSuite());
+
+            if (context.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
+                // TODO put this in seperate config option
+                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                        PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,
+                        HandshakeByteLength.VERIFY_DATA);
+            } else {
+                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                        PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessageHash,
+                        HandshakeByteLength.VERIFY_DATA);
+            }
         }
     }
 

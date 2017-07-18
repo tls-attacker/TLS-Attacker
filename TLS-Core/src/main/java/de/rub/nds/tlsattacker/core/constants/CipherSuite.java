@@ -200,6 +200,11 @@ public enum CipherSuite {
     TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256(0xC4),
     TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256(0xC5),
     TLS_EMPTY_RENEGOTIATION_INFO_SCSV(0xFF),
+    TLS_AES_128_GCM_SHA256(0x1301),
+    TLS_AES_256_GCM_SHA384(0x1302),
+    TLS_CHACHA20_POLY1305_SHA256(0x1303),
+    TLS_AES_128_CCM_SHA256(0x1304),
+    TLS_AES_128_CCM_8_SHA256(0x1305),
     TLS_FALLBACK_SCSV(0x5600),
     TLS_ECDH_ECDSA_WITH_NULL_SHA(0xC001),
     TLS_ECDH_ECDSA_WITH_RC4_128_SHA(0xC002),
@@ -601,5 +606,14 @@ public enum CipherSuite {
             }
         }
         return notImplemented;
+    }
+
+    /**
+     * Returns true if the cipher suite a TLS 1.3 cipher suite
+     *
+     * @return
+     */
+    public boolean isTLS13() {
+        return this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00;
     }
 }

@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessa
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
@@ -48,6 +49,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
@@ -81,6 +83,9 @@ public class ServerHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
+        }
+        if (tlsConfig.isAddKeyShareExtension()) {
+            addExtension(new KeyShareExtensionMessage());
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
@@ -162,16 +167,21 @@ public class ServerHelloMessage extends HelloMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\n  Protocol Version: ").append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
-                .append("\n  Server Unix Time: ")
-                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000))
-                .append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()))
-                .append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()))
-                .append("\n  Selected Cipher Suite: ")
-                .append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()))
-                .append("\n  Selected Compression Method: ")
-                .append(CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()))
-                .append("\n  Extensions: ");
+        sb.append("\n  Protocol Version: ").append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            sb.append("\n  Server Unix Time: ").append(
+                    new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+        }
+        sb.append("\n  Server Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+        if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        }
+        sb.append("\n  Selected Cipher Suite: ").append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue()));
+        if (!ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()).isTLS13()) {
+            sb.append("\n  Selected Compression Method: ").append(
+                    CompressionMethod.getCompressionMethod(selectedCompressionMethod.getValue()));
+        }
+        sb.append("\n  Extensions: ");
         if (getExtensions() == null) {
             sb.append("null");
         } else {

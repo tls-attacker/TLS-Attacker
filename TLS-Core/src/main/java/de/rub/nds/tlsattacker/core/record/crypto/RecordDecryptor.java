@@ -13,13 +13,15 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.Arrays;
 
 /**
- *
  * @author Robert Merget <robert.merget@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordDecryptor extends Decryptor<Record> {
 
@@ -39,21 +41,37 @@ public class RecordDecryptor extends Decryptor<Record> {
         LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
         if (recordCipher.isUsePadding()) {
             LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(decrypted));
-            int paddingLength = parsePaddingLength(decrypted);
-            record.setPaddingLength(paddingLength);
-            LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
-            byte[] unpadded = parseUnpadded(decrypted, paddingLength);
-            record.setUnpaddedRecordBytes(unpadded);
-            LOGGER.debug("UnpaddedRecordBytes: "
-                    + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
-            byte[] padding = parsePadding(decrypted, paddingLength);
-            record.setPadding(padding);
-            LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
-            LOGGER.debug("Unpadded data:  {}", ArrayConverter.bytesToHexString(unpadded));
+
+            if (!context.getSelectedProtocolVersion().isTLS13()) {
+                int paddingLength = parsePaddingLength(decrypted);
+                record.setPaddingLength(paddingLength);
+                LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+                byte[] unpadded = parseUnpadded(decrypted, paddingLength);
+                record.setUnpaddedRecordBytes(unpadded);
+                LOGGER.debug("UnpaddedRecordBytes: "
+                        + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
+                byte[] padding = parsePadding(decrypted, paddingLength);
+                record.setPadding(padding);
+                LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
+                LOGGER.debug("Unpadded data:  {}", ArrayConverter.bytesToHexString(unpadded));
+            } else {
+                byte[] unpadded = parseUnpaddedTLS13(decrypted);
+                byte contentMessageType = parseContentMessageType(unpadded);
+                record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
+                byte[] unpaddedAndWithoutType = Arrays.copyOf(unpadded, unpadded.length - 1);
+                record.setUnpaddedRecordBytes(unpaddedAndWithoutType);
+                LOGGER.debug("UnpaddedRecordBytes: "
+                        + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
+                byte[] padding = parsePadding(decrypted, decrypted.length - unpadded.length);
+                record.setPadding(padding);
+                LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
+                record.setPaddingLength(padding.length);
+                LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+            }
         } else {
-            record.setUnpaddedRecordBytes(decrypted);
             record.setPaddingLength(0);
             record.setPadding(new byte[0]);
+            record.setUnpaddedRecordBytes(decrypted);
         }
         byte[] cleanBytes;
         if (recordCipher.isUseMac()) {
@@ -89,6 +107,17 @@ public class RecordDecryptor extends Decryptor<Record> {
         return Arrays.copyOf(decrypted, paddingStart);
     }
 
+    private byte[] parseUnpaddedTLS13(byte[] decrypted) {
+        if (decrypted.length == 0) {
+            throw new CryptoException("Could not extract padding.");
+        }
+        int i = decrypted.length - 1;
+        while (i >= 0 && decrypted[i] == 0) {
+            --i;
+        }
+        return Arrays.copyOf(decrypted, i + 1);
+    }
+
     private byte[] parsePadding(byte[] decrypted, int paddingLength) {
         int paddingStart = decrypted.length - paddingLength - 1;
         if (paddingStart > decrypted.length) {
@@ -106,5 +135,12 @@ public class RecordDecryptor extends Decryptor<Record> {
 
     private byte[] removeMac(byte[] unpadded) {
         return Arrays.copyOf(unpadded, (unpadded.length - recordCipher.getMacLength()));
+    }
+
+    private byte parseContentMessageType(byte[] unpadded) {
+        if (unpadded.length == 0) {
+            throw new CryptoException("Could not extract content tpye of message.");
+        }
+        return unpadded[unpadded.length - 1];
     }
 }

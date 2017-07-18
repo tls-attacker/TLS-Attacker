@@ -79,14 +79,13 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-debug-jdk15on</artifactId>
+            <artifactId>bcpkix-jdk15on</artifactId>
             <version>1.55</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15on</artifactId>
+            <artifactId>bcprov-debug-jdk15on</artifactId>
             <version>1.55</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.openpojo</groupId>

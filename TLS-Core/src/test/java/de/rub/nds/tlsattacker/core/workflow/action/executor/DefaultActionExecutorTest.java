@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,6 +65,7 @@ public class DefaultActionExecutorTest {
      */
     @Test
     public void testSendMessages() {
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         protocolMessages.add(message);
         List<AbstractRecord> records = new LinkedList<>();

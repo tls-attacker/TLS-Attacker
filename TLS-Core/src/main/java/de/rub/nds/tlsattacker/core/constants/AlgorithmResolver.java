@@ -82,6 +82,9 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
+        if (cipherSuite.isTLS13()) {
+            return null;
+        }
         String cipher = cipherSuite.toString().toUpperCase();
         if (cipher.contains("TLS_RSA_WITH") || cipher.contains("TLS_RSA_EXPORT")) {
             return KeyExchangeAlgorithm.RSA;
@@ -298,6 +301,23 @@ public class AlgorithmResolver {
             return result;
         } else {
             throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
+                    + " is not supported yet");
+        }
+    }
+
+    public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
+        HKDFAlgorithm result = null;
+        String cipher = cipherSuite.toString();
+        if (cipher.endsWith("SHA256")) {
+            result = HKDFAlgorithm.TLS_HKDF_SHA256;
+        } else if (cipher.endsWith("SHA384")) {
+            result = HKDFAlgorithm.TLS_HKDF_SHA384;
+        }
+        if (result != null) {
+            LOGGER.debug("Using the following HKDF Algorithm: {}", result);
+            return result;
+        } else {
+            throw new UnsupportedOperationException("The HKDF algorithm for cipher suite " + cipherSuite
                     + " is not supported yet");
         }
     }
