@@ -37,7 +37,7 @@ public class RSAClientKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RSAClientKeyExchangeMessage();
-        preparator = new RSAClientKeyExchangePreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new RSAClientKeyExchangePreparator(context.getChooser(), message);
     }
 
     /**

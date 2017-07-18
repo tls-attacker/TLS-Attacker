@@ -36,19 +36,17 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
 
     @Override
     public ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHEServerKeyExchangeParser(pointer, message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
+        return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ECDHEServerKeyExchangePreparator getPreparator(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ECDHEServerKeyExchangeSerializer getSerializer(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangeSerializer(message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new ECDHEServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

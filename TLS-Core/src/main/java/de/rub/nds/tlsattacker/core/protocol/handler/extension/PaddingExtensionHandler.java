@@ -34,7 +34,7 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
 
     @Override
     public PaddingExtensionPreparator getPreparator(PaddingExtensionMessage message) {
-        return new PaddingExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new PaddingExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

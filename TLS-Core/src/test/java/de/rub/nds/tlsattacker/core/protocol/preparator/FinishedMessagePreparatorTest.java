@@ -41,7 +41,7 @@ public class FinishedMessagePreparatorTest {
     public void setUp() {
         message = new FinishedMessage();
         context = new TlsContext();
-        preparator = new FinishedMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new FinishedMessagePreparator(context.getChooser(), message);
     }
 
     /**

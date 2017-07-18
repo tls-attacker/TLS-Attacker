@@ -38,7 +38,7 @@ public class ClientHelloPreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new ClientHelloMessage();
-        this.preparator = new ClientHelloPreparator(new DefaultChooser(context, context.getConfig()), message);
+        this.preparator = new ClientHelloPreparator(context.getChooser(), message);
     }
 
     // TODO Test with extensions

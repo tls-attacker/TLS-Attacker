@@ -41,7 +41,7 @@ public class ServerHelloMessagePreparatorTest {
     public void setUp() {
         this.message = new ServerHelloMessage();
         this.context = new TlsContext();
-        this.preparator = new ServerHelloMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
+        this.preparator = new ServerHelloMessagePreparator(context.getChooser(), message);
     }
 
     /**

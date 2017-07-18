@@ -29,7 +29,7 @@ public class ApplicationMessagePreparatorTest {
     public void setUp() {
         message = new ApplicationMessage();
         context = new TlsContext();
-        preparator = new ApplicationMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new ApplicationMessagePreparator(context.getChooser(), message);
     }
 
     /**

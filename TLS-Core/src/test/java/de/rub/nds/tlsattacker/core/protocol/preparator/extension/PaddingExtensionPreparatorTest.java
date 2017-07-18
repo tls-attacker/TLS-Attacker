@@ -36,8 +36,7 @@ public class PaddingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PaddingExtensionMessage();
-        preparator = new PaddingExtensionPreparator(new DefaultChooser(context, context.getConfig()),
-                (PaddingExtensionMessage) message);
+        preparator = new PaddingExtensionPreparator(context.getChooser(), (PaddingExtensionMessage) message);
     }
 
     /**

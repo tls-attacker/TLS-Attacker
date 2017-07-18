@@ -9,11 +9,13 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.math.BigInteger;
 import java.security.Security;
@@ -42,7 +44,7 @@ public class SignatureCalculatorTest {
     @Test
     public void testGenerateRSASignature() {
         byte[] signature = SignatureCalculator.generateSignature(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA1), new DefaultChooser(new TlsContext(), TlsConfig.createConfig()), new byte[] { 0,
+                HashAlgorithm.SHA1), ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext()), new byte[] { 0,
                 12, 3 });
         System.out.println(ArrayConverter.bytesToHexString(signature));
     }

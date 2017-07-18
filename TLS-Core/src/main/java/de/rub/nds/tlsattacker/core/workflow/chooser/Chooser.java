@@ -163,6 +163,4 @@ public abstract class Chooser {
     public abstract byte[] getServerHandshakeTrafficSecret();
 
     public abstract byte[] getClientHandshakeTrafficSecret();
-
-    public abstract byte[] getCertificateBytes();
 }

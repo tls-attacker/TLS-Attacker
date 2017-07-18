@@ -8,28 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.math.BigInteger;
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +36,7 @@ public class DHEServerKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new DHEServerKeyExchangeMessage();
-        preparator = new DHEServerKeyExchangePreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new DHEServerKeyExchangePreparator(context.getChooser(), message);
     }
 
     /**

@@ -14,6 +14,8 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
@@ -84,14 +86,13 @@ public class CertificateMessage extends HandshakeMessage {
         } catch (IOException ex) {
             LOGGER.warn("Could not parse configured Certificate into a real Certificate. Just sending bytes as they are (with added Length field)");
             CertificatePair pair = new CertificatePair();
-            pair.setCertificateConfig(new DefaultChooser(new TlsContext(), tlsConfig).getCertificateBytes());
+            pair.setCertificateConfig(CertificateByteChooser.chooseCertificateType(tlsConfig));
             certificatesList.add(pair);
         }
     }
 
-    private Certificate getCertificate(TlsConfig config) throws IOException {
-        return Certificate.parse(new ByteArrayInputStream(new DefaultChooser(new TlsContext(), config)
-                .getCertificateBytes()));
+    private Certificate getCertificate(TlsConfig tlsConfig) throws IOException {
+        return Certificate.parse(new ByteArrayInputStream(CertificateByteChooser.chooseCertificateType(tlsConfig)));
     }
 
     public ModifiableInteger getCertificatesListLength() {

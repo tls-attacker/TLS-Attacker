@@ -70,8 +70,8 @@ public class BlobRecordLayer extends RecordLayer {
         records = seperator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
-            AbstractRecordPreparator preparator = record.getRecordPreparator(
-                    new DefaultChooser(context, context.getConfig()), encryptor, contentType);
+            AbstractRecordPreparator preparator = record.getRecordPreparator(context.getChooser(), encryptor,
+                    contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {

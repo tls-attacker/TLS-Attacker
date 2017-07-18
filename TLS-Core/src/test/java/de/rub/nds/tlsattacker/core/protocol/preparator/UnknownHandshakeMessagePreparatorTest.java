@@ -29,8 +29,7 @@ public class UnknownHandshakeMessagePreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new UnknownHandshakeMessage();
-        this.preparator = new UnknownHandshakeMessagePreparator(new DefaultChooser(context, context.getConfig()),
-                message);
+        this.preparator = new UnknownHandshakeMessagePreparator(context.getChooser(), message);
     }
 
     /**

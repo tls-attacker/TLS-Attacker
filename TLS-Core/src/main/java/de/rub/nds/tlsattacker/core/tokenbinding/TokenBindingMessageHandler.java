@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 
 /**
  *
@@ -30,7 +29,7 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
 
     @Override
     public TokenbindingMessagePreparator getPreparator(TokenBindingMessage message) {
-        return new TokenbindingMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new TokenbindingMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
 
     @Override
     public MaxFragmentLengthExtensionPreparator getPreparator(MaxFragmentLengthExtensionMessage message) {
-        return new MaxFragmentLengthExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new MaxFragmentLengthExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

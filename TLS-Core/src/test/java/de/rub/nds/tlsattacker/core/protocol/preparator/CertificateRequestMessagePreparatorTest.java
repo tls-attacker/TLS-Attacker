@@ -35,7 +35,7 @@ public class CertificateRequestMessagePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new CertificateRequestMessage();
-        preparator = new CertificateRequestMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new CertificateRequestMessagePreparator(context.getChooser(), message);
     }
 
     /**

@@ -66,7 +66,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
 
         RandomHelper.setRandom(random);
         msg = new ECDHEServerKeyExchangeMessage();
-        preparator = new ECDHEServerKeyExchangePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), msg);
+        preparator = new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), msg);
     }
 
     @After

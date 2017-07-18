@@ -37,7 +37,7 @@ public class CertificateMessagePreparatorTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         message = new CertificateMessage(context.getConfig());
-        preparator = new CertificateMessagePreparator(new DefaultChooser(context, context.getConfig()), message);
+        preparator = new CertificateMessagePreparator(context.getChooser(), message);
     }
 
     /**

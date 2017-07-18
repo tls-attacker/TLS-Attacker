@@ -37,19 +37,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public ServerHelloMessagePreparator getPreparator(ServerHelloMessage message) {
-        return new ServerHelloMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new ServerHelloMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ServerHelloMessageSerializer getSerializer(ServerHelloMessage message) {
-        return new ServerHelloMessageSerializer(message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new ServerHelloMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public ServerHelloParser getParser(byte[] message, int pointer) {
-        return new ServerHelloParser(pointer, message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getLastRecordVersion());
+        return new ServerHelloParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
@@ -122,7 +120,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustPRF(ServerHelloMessage message) {
-        Chooser chooser = new DefaultChooser(tlsContext, tlsContext.getConfig());
+        Chooser chooser = tlsContext.getChooser();
         tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
                 chooser.getSelectedCipherSuite()));
     }

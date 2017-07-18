@@ -51,7 +51,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionPreparator getPreparator(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionPreparator(new DefaultChooser(context, context.getConfig()), message);
+        return new KeyShareExtensionPreparator(context.getChooser(), message);
     }
 
     @Override

@@ -37,8 +37,7 @@ public class TokenBindingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new TokenBindingExtensionMessage();
-        preparator = new TokenBindingExtensionPreparator(new DefaultChooser(context, context.getConfig()),
-                (TokenBindingExtensionMessage) message);
+        preparator = new TokenBindingExtensionPreparator(context.getChooser(), (TokenBindingExtensionMessage) message);
         keyParameters = new LinkedList<>();
         keyParameters.add(TokenBindingKeyParameters.ECDSAP256);
     }

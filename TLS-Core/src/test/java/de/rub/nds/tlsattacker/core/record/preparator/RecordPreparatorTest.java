@@ -62,8 +62,7 @@ public class RecordPreparatorTest {
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         recordCipher = new RecordAEADCipher(context);
         encryptor = new RecordEncryptor(recordCipher, context);
-        preparator = new RecordPreparator(new DefaultChooser(context, context.getConfig()), record, encryptor,
-                ProtocolMessageType.HANDSHAKE);
+        preparator = new RecordPreparator(context.getChooser(), record, encryptor, ProtocolMessageType.HANDSHAKE);
         preparator.prepare();
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);

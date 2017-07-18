@@ -51,13 +51,12 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     @Override
     public CertificateMessagePreparator getPreparator(CertificateMessage message) {
-        return new CertificateMessagePreparator(new DefaultChooser(tlsContext, tlsContext.getConfig()), message);
+        return new CertificateMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public CertificateMessageSerializer getSerializer(CertificateMessage message) {
-        return new CertificateMessageSerializer(message,
-                new DefaultChooser(tlsContext, tlsContext.getConfig()).getSelectedProtocolVersion());
+        return new CertificateMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -162,6 +161,5 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 }
             }
         }
-
     }
 }

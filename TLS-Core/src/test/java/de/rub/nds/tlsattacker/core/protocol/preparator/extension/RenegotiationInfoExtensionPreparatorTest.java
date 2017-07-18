@@ -33,7 +33,7 @@ public class RenegotiationInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RenegotiationInfoExtensionMessage();
-        preparator = new RenegotiationInfoExtensionPreparator(new DefaultChooser(context, context.getConfig()),
+        preparator = new RenegotiationInfoExtensionPreparator(context.getChooser(),
                 (RenegotiationInfoExtensionMessage) message);
 
     }

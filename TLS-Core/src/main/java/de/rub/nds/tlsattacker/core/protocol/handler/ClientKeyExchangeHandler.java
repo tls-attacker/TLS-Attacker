@@ -43,20 +43,19 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
     }
 
     protected byte[] calculateMasterSecret(ClientKeyExchangeMessage message) {
-        Chooser defaultChooser = new DefaultChooser(tlsContext, tlsContext.getConfig());
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(defaultChooser.getSelectedProtocolVersion(),
-                defaultChooser.getSelectedCipherSuite());
+        Chooser chooser = tlsContext.getChooser();
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
         if (tlsContext.isExtendedMasterSecretExtension()) {
             LOGGER.debug("Calculating ExtendedMasterSecret");
-            byte[] sessionHash = tlsContext.getDigest().digest(defaultChooser.getSelectedProtocolVersion(),
-                    defaultChooser.getSelectedCipherSuite());
-            byte[] extendedMasterSecret = PseudoRandomFunction.compute(prfAlgorithm,
-                    defaultChooser.getPreMasterSecret(), PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL,
-                    sessionHash, HandshakeByteLength.MASTER_SECRET);
+            byte[] sessionHash = tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite());
+            byte[] extendedMasterSecret = PseudoRandomFunction.compute(prfAlgorithm, chooser.getPreMasterSecret(),
+                    PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL, sessionHash, HandshakeByteLength.MASTER_SECRET);
             return extendedMasterSecret;
         } else {
             LOGGER.debug("Calculating MasterSecret");
-            byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, defaultChooser.getPreMasterSecret(),
+            byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, chooser.getPreMasterSecret(),
                     PseudoRandomFunction.MASTER_SECRET_LABEL, message.getComputations().getClientRandom().getValue(),
                     HandshakeByteLength.MASTER_SECRET);
             return masterSecret;
