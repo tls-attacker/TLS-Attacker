@@ -119,10 +119,8 @@ public class WorkflowConfigurationFactory {
             }
             messages.add(new ServerHelloDoneMessage(config));
         }
-
         workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
                 ConnectionEndType.SERVER, messages));
-
         return workflowTrace;
     }
 
@@ -145,15 +143,15 @@ public class WorkflowConfigurationFactory {
             messages.add(new ChangeCipherSpecMessage(config));
         }
         messages.add(new FinishedMessage(config));
-
         workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
                 ConnectionEndType.CLIENT, messages));
-        messages = new LinkedList<>();
-        messages.add(new ChangeCipherSpecMessage(config));
-        messages.add(new FinishedMessage(config));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.SERVER, messages));
-
+        if (!config.getHighestProtocolVersion().isTLS13()) {
+            messages = new LinkedList<>();
+            messages.add(new ChangeCipherSpecMessage(config));
+            messages.add(new FinishedMessage(config));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
+                    ConnectionEndType.SERVER, messages));
+        }
         return workflowTrace;
 
     }
