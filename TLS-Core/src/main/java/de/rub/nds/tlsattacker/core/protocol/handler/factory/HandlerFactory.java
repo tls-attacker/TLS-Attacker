@@ -38,7 +38,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

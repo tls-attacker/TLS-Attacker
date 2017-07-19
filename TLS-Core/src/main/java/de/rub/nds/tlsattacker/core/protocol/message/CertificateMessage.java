@@ -14,21 +14,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.crypto.tls.Certificate;
 
@@ -69,7 +68,7 @@ public class CertificateMessage extends HandshakeMessage {
         super(HandshakeMessageType.CERTIFICATE);
     }
 
-    public CertificateMessage(TlsConfig tlsConfig) {
+    public CertificateMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
         if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
             CertificatePair pair = new CertificatePair();

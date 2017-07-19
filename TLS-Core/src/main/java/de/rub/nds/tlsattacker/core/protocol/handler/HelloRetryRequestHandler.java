@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRetryRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRetryRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRetryRequestSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * This handler processes the HelloRetryRequest messages, as defined in

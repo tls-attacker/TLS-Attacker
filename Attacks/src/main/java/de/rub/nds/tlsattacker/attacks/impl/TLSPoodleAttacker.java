@@ -18,8 +18,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -49,7 +49,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
@@ -65,8 +65,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.getConfiguredRecords().add(r);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(new SendAction(applicationMessage));
-        trace.add(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new SendAction(applicationMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

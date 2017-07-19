@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
- * @author Lucas Hartmann <firstname.lastname@rub.de>
+ * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class MitmDelegate extends Delegate {
 
@@ -34,7 +34,7 @@ public class MitmDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         if (port != null) {
             config.setPort(port);
         }

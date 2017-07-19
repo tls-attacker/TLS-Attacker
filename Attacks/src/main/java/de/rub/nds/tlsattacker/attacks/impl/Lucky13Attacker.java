@@ -27,8 +27,8 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -69,7 +69,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
                 if (results.get(p) == null) {
                     results.put(p, new LinkedList<Long>());
                 }
-                // remove the first 20% of measurements
+                // removeTlsAction the first 20% of measurements
                 if (i > config.getMeasurements() / 5) {
                     results.get(p).add(lastResult);
                 }
@@ -119,7 +119,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     }
 
     public void executeAttackRound(Record record) {
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
@@ -128,11 +128,11 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);
-        trace.add(action);
+        trace.addTlsAction(action);
         action.getConfiguredRecords().add(record);
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

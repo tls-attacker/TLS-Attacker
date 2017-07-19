@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifyMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
@@ -34,7 +34,7 @@ public class ClientDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         if (host != null) {
             String[] parsedHost = host.split(":");
             if (parsedHost.length == 1) {

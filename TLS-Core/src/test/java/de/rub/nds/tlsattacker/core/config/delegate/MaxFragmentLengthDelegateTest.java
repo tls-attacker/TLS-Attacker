@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.util.Objects;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.assertFalse;
@@ -72,7 +72,7 @@ public class MaxFragmentLengthDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         args = new String[2];
         args[0] = "-max_fragment_length";
         args[1] = "4";
@@ -86,8 +86,8 @@ public class MaxFragmentLengthDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

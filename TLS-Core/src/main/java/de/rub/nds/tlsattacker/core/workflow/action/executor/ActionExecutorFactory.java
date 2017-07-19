@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *

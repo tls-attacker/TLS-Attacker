@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.assertFalse;
@@ -72,7 +72,7 @@ public class TransportHandlerDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         args = new String[2];
         args[0] = "-transport_handler_type";
         args[1] = "UDP";
@@ -85,8 +85,8 @@ public class TransportHandlerDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly
