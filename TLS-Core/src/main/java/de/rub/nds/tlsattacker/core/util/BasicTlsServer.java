@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,8 +27,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.modifiablevariable.util.BadRandom;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@ru.de>

@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ssl.SSLByteLength;
+import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -41,8 +41,8 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
         message.setSessionIDLength(message.getSessionID().getValue().length);
         message.setChallengeLength(message.getChallenge().getValue().length);
         message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
-        int length = SSLByteLength.CHALLENGE_LENGTH + SSLByteLength.CIPHERSUITE_LENGTH + SSLByteLength.MESSAGE_TYPE
-                + SSLByteLength.SESSIONID_LENGTH;
+        int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
+                + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionID().getValue().length;

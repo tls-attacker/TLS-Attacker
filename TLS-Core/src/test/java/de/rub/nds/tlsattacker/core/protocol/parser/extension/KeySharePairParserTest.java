@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;

@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.tlsattacker.util.FixedTimeProvider;
+import de.rub.nds.tlsattacker.util.TimeHelper;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -23,13 +26,9 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
-import de.rub.nds.tlsattacker.util.TimeHelper;
-import de.rub.nds.tlsattacker.util.FixedTimeProvider;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 
 /**
  * 

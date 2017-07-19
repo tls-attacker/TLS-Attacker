@@ -19,7 +19,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.SecureRandom;
 
 import org.bouncycastle.math.ec.ECPoint;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
