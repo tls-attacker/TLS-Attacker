@@ -13,7 +13,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 

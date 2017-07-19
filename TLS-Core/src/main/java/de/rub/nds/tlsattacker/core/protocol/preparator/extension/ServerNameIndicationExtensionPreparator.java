@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairS
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
 
 /**
  *
