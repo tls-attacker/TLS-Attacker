@@ -28,7 +28,7 @@ $ java -jar TLS-Client.jar -connect [host:port]
 or as a server with:
 
 ```bash
-$ java -jar TLS-Server-2.0Beta2.jar -connect [host:port]
+$ java -jar TLS-Server.jar -port [port]
 ```
 
 TLS-Attacker also ships with some example Attacks on TLS to show you how easy it is to implement an Attack with TLS-Attacker.
@@ -40,13 +40,13 @@ Although these example Applications are very powerful in itself, TLS-Attacker un
 
 ## Code Structure
 TLS-Attacker consists of several (maven) projects:
-- Transport: Transport utilities for TCP and UDP.
 - TLS-Core: The protocol stack and heart of TLS-Attacker
+- Transport: Transport utilities for TCP and UDP.
 - Utils: A collection of utility classes
 - TLS-Client: The client example Application
 - TLS-Server: The server example Application
 - Attacks: Implementation of some well-known attacks and vulnerability Tests.
-
+- TLS-Mitm: A prototype MitM Workflows
 //TODO exchange graphic with the updated version
 ![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
 
@@ -54,12 +54,12 @@ You can find more information about these modules in the Wiki.
 
 ## Supported Standards and Cipher Suites
 Currently, the following features are supported:
-- TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346) and 1.2 (RFC-5246)
+- TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346) 1.2 (RFC-5246) and 1.3 (draft-ietf-tls-tls13-21)
 - DTLS 1.2 (RFC-6347)
 - SSL 2 (Client/Server Hello)
 - (EC)DH and RSA key exchange algorithms
-- AES CBC cipher suites
-- Extensions: EC, EC point format, Heartbeat, Max fragment length, SNI, Signature and Hash algorithms
+- CBC- and Streamciphers
+- Extensions: TODO ADD EXTENSIONS HERE
 - TLS client and server
 
 ## Usage
@@ -89,22 +89,22 @@ $ java -jar Attacks.jar padding_oracle -connect localhost:4433
 
 In case you are a more experienced developer, you can create your own TLS message flow. By writing Java code. For example:
 ```java
-TLSConfig config = TlsConfig.createConfig();
+Config config = Config.createConfig();
 WorkflowTrace trace = new WorkflowTrace();
 trace.add(new SendAction(new ClientHelloMessage()));
-trace.add(new ReceiveAction(messages.add(new ServerHelloMessage())));
-trace.add(new ReceiveAction(messages.add(new ServerHelloDoneMessage()));
+trace.add(new ReceiveAction(new ServerHelloMessage())));
 trace.add(new SendAction(new FinishedMessage()));
 config.setWorkflowTrace(trace);
-TlsContext context = new TlsContext(tlsConfig);
+TlsContext context = new TlsContext(config);
 DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
+executor.execute();
 
 ```
 TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a List of Actions which are then executed one after the other.
 Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the Framework does not stop here and implements alot of different other Actions
-which can be used to execute even more Arbitrary message flows. A list of currently implemented Actions with explanations can be found //TODO ADD REFERENCE.
+which can be used to execute even more Arbitrary message flows. A list of currently implemented Actions with explanations can be found in the Wiki.
 
-I know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
+we know many of you hate Java. Therefore, you can also use an XML structure and run your customized TLS protocol from XML:
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
@@ -144,12 +144,11 @@ $ java -jar TLS-Client.jar -connect [host]:[port] -workflow_input config.xml
 
 Some Actions require context, or configuration to be executed correctly. For exmaple, if TLS-Attacker tries to send a client hello message, it needs to know which values to
 put into the message like which ciphersuites or which protocol version to put. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
-Values which are determined at runtime are stored in the TlsContext. You can specify your own config file from command line. Note that if you dont explicitly define a default value in the config file, TLS-Attacker fills
-this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found here.//TODO ADD REFERENCE
-
+Values which are determined at runtime are stored in the TlsContext. When a value which is normally selected from the current connection state is missing(because a message was not received yet), the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you dont explicitly define a default value in the config file, TLS-Attacker fills
+this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the wiki.
 
 ## Modifiable Variables
-TLS-Attacker uses the concept of Modifiable variables to allow runtime Modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found here. //TODO add ref
+TLS-Attacker uses the concept of Modifiable variables to allow runtime Modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/RUB-NDS/ModifiableVariable. 
 
 ```java
 ModifiableInteger i = new ModifiableInteger();
@@ -217,10 +216,13 @@ Further examples on attacks and further explanations on TLS-Attacker can be foun
 The following people have contributed code to the TLS-Attacker Project:
 - Florian Pfützenreuter: DTLS 1.2
 - Felix Lange: EAP-TLS
-- Philip Riese: Server implementation, TLS Man-in-the-Middle handling //TODO mitm is no longer in here
+- Philip Riese: Server implementation, TLS Man-in-the-Middle Prototype
 - Christian Mainka: Design support and many implementation suggestions.
+- Matthias Terlinde: More TLS-Extensions
+- Nurullah Erinola: TLS 1.3 Support
+- Lucas Hartmann: TLS-MitM Workflows
 
-Further contributions pull requests are welcome.
+Further contributions and pull requests are welcome.
 
 ## TLS-Attacker Projects
 The basic concepts behind TLS-Attacker and several attacks are described in the following paper:
