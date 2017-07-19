@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;

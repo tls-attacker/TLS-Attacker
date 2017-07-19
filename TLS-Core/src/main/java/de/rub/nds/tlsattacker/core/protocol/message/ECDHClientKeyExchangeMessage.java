@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -64,7 +64,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         super();
     }
 
-    public ECDHClientKeyExchangeMessage(TlsConfig tlsConfig) {
+    public ECDHClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
     }
 

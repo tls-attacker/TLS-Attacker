@@ -23,8 +23,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -47,7 +47,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     @Override
     public void executeAttack() {
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getNamedCurves().get(0));
         Curve curve = CurveFactory.getNamedCurve(tlsConfig.getNamedCurves().get(0).name());
         RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
@@ -76,7 +76,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     private WorkflowTrace executeProtocolFlow() {
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(config.createConfig());
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);

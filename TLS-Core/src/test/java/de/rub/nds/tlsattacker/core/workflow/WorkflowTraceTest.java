@@ -8,8 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 
 /**
@@ -21,7 +20,7 @@ public class WorkflowTraceTest {
     WorkflowTrace trace;
 
     public WorkflowTraceTest() {
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(TlsConfig.createConfig());
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(Config.createConfig());
         trace = factory.createFullWorkflow();
     }
 

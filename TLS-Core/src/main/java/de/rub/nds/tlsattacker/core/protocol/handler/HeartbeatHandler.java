@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HeartbeatMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * Handler for Heartbeat messages: http://tools.ietf.org/html/rfc6520#page-4

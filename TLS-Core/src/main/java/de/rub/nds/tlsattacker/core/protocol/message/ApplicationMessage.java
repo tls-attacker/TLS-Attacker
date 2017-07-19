@@ -14,8 +14,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -40,7 +40,7 @@ public class ApplicationMessage extends ProtocolMessage {
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
 
-    public ApplicationMessage(TlsConfig tlsConfig) {
+    public ApplicationMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
