@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
@@ -53,7 +54,8 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (pair.getExtensionsConfig() != null) {
             for (ExtensionMessage extensionMessage : pair.getExtensionsConfig()) {
-                ExtensionHandler handler = extensionMessage.getHandler(context);
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(context,
+                        extensionMessage.getExtensionTypeConstant());
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());

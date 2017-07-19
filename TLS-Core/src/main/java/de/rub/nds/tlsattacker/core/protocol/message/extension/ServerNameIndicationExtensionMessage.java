@@ -15,9 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,11 +71,6 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 
     public void setServerNameList(List<ServerNamePair> serverNameList) {
         this.serverNameList = serverNameList;
-    }
-
-    @Override
-    public ServerNameIndicationExtensionHandler getHandler(TlsContext context) {
-        return new ServerNameIndicationExtensionHandler(context);
     }
 
     @Override

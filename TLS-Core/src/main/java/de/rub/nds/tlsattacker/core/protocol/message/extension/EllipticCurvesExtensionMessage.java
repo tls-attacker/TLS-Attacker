@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -53,10 +51,5 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
     public void setSupportedCurves(ModifiableByteArray supportedCurves) {
         this.supportedCurves = supportedCurves;
-    }
-
-    @Override
-    public EllipticCurvesExtensionHandler getHandler(TlsContext context) {
-        return new EllipticCurvesExtensionHandler(context);
     }
 }

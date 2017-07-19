@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
@@ -34,7 +36,8 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
     public final void prepare() {
         prepareExtensionType(msg);
         prepareExtensionContent();
-        serializer = msg.getHandler(context).getSerializer(msg);
+        ExtensionHandler handler = HandlerFactory.getExtensionHandler(context, msg.getExtensionTypeConstant());
+        serializer = handler.getSerializer(msg);
         content = serializer.serializeExtensionContent();
         prepareExtensionLength(msg);
         prepareExtensionBytes(msg);
