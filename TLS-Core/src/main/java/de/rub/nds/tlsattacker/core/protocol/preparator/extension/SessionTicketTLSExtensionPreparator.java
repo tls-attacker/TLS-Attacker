@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
@@ -27,8 +28,9 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
      * @param message
      *            A SessionTicketTLSExtensionMessage
      */
-    public SessionTicketTLSExtensionPreparator(TlsContext context, SessionTicketTLSExtensionMessage message) {
-        super(context, message);
+    public SessionTicketTLSExtensionPreparator(TlsContext context, SessionTicketTLSExtensionMessage message,
+            SessionTicketTLSExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.message = message;
     }
 

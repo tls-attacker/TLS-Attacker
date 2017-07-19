@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -61,7 +62,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant());
+                        extension.getExtensionTypeConstant(), HandshakeMessageType.SERVER_HELLO);
                 handler.adjustTLSContext(extension);
             }
         }

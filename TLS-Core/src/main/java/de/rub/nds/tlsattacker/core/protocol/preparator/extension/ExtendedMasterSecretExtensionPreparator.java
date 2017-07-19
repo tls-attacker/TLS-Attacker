@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
@@ -17,8 +18,9 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  */
 public class ExtendedMasterSecretExtensionPreparator extends ExtensionPreparator<ExtendedMasterSecretExtensionMessage> {
 
-    public ExtendedMasterSecretExtensionPreparator(TlsContext context, ExtendedMasterSecretExtensionMessage message) {
-        super(context, message);
+    public ExtendedMasterSecretExtensionPreparator(TlsContext context, ExtendedMasterSecretExtensionMessage message,
+            ExtendedMasterSecretExtensionSerializer serializer) {
+        super(context, message, serializer);
     }
 
     /**

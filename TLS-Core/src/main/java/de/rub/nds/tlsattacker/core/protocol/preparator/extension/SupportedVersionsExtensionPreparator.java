@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,8 +24,9 @@ public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<Su
 
     private SupportedVersionsExtensionMessage msg;
 
-    public SupportedVersionsExtensionPreparator(TlsContext context, SupportedVersionsExtensionMessage message) {
-        super(context, message);
+    public SupportedVersionsExtensionPreparator(TlsContext context, SupportedVersionsExtensionMessage message,
+            SupportedVersionsExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.msg = message;
     }
 

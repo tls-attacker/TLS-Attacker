@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
@@ -20,8 +21,9 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
 
     private final PaddingExtensionMessage message;
 
-    public PaddingExtensionPreparator(TlsContext context, PaddingExtensionMessage message) {
-        super(context, message);
+    public PaddingExtensionPreparator(TlsContext context, PaddingExtensionMessage message,
+            PaddingExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.message = message;
     }
 

@@ -33,7 +33,7 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
 
     @Override
     public RenegotiationInfoExtensionPreparator getPreparator(RenegotiationInfoExtensionMessage message) {
-        return new RenegotiationInfoExtensionPreparator(context, message);
+        return new RenegotiationInfoExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override

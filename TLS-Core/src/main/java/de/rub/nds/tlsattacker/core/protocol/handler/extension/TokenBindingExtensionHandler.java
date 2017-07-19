@@ -34,7 +34,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public TokenBindingExtensionPreparator getPreparator(TokenBindingExtensionMessage message) {
-        return new TokenBindingExtensionPreparator(context, message);
+        return new TokenBindingExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override

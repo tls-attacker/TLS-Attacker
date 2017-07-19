@@ -62,7 +62,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     @Override
     public SignatureAndHashAlgorithmsExtensionPreparator getPreparator(
             SignatureAndHashAlgorithmsExtensionMessage message) {
-        return new SignatureAndHashAlgorithmsExtensionPreparator(context, message);
+        return new SignatureAndHashAlgorithmsExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override

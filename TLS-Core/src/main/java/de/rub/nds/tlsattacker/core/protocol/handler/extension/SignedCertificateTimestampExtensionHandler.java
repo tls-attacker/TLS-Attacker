@@ -57,7 +57,7 @@ public class SignedCertificateTimestampExtensionHandler extends
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(
             SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionPreparator(context, message);
+        return new SignedCertificateTimestampExtensionPreparator(context, message, getSerializer(message));
     }
 
     /**

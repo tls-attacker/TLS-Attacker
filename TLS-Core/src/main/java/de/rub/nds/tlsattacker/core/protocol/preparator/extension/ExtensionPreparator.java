@@ -25,19 +25,18 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private final ExtensionMessage msg;
     private byte[] content;
-    private ExtensionSerializer serializer;
+    private final ExtensionSerializer<T> serializer;
 
-    public ExtensionPreparator(TlsContext context, T message) {
+    public ExtensionPreparator(TlsContext context, T message, ExtensionSerializer<T> serializer) {
         super(context, message);
         this.msg = message;
+        this.serializer = serializer;
     }
 
     @Override
     public final void prepare() {
         prepareExtensionType(msg);
         prepareExtensionContent();
-        ExtensionHandler handler = HandlerFactory.getExtensionHandler(context, msg.getExtensionTypeConstant());
-        serializer = handler.getSerializer(msg);
         content = serializer.serializeExtensionContent();
         prepareExtensionLength(msg);
         prepareExtensionBytes(msg);

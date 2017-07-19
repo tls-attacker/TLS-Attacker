@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
@@ -35,7 +36,7 @@ public class TokenBindingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new TokenBindingExtensionMessage();
-        preparator = new TokenBindingExtensionPreparator(context, message);
+        preparator = new TokenBindingExtensionPreparator(context, message, new TokenBindingExtensionSerializer(message));
     }
 
     @Test

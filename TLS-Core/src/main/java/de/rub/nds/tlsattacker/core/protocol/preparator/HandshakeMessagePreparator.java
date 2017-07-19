@@ -86,7 +86,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(context,
-                        extensionMessage.getExtensionTypeConstant());
+                        extensionMessage.getExtensionTypeConstant(), msg.getHandshakeMessageType());
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());

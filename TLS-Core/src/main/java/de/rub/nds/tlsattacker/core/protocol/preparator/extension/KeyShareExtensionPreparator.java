@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeySharePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
@@ -25,8 +26,9 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     private final KeyShareExtensionMessage msg;
     private ByteArrayOutputStream stream;
 
-    public KeyShareExtensionPreparator(TlsContext context, KeyShareExtensionMessage message) {
-        super(context, message);
+    public KeyShareExtensionPreparator(TlsContext context, KeyShareExtensionMessage message,
+            KeyShareExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.msg = message;
     }
 

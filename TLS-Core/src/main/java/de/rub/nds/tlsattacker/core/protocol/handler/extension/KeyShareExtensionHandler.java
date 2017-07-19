@@ -50,7 +50,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionPreparator getPreparator(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionPreparator(context, message);
+        return new KeyShareExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override

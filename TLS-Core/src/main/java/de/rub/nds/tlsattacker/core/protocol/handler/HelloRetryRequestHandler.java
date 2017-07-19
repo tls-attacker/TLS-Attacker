@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
@@ -54,7 +55,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant());
+                        extension.getExtensionTypeConstant(), HandshakeMessageType.HELLO_RETRY_REQUEST);
                 handler.adjustTLSContext(extension);
             }
         }

@@ -9,20 +9,21 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T>
  */
-public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> extends ExtensionPreparator<T> {
+public class UnknownExtensionPreparator extends ExtensionPreparator<UnknownExtensionMessage> {
 
     private final UnknownExtensionMessage msg;
 
-    public UnknownExtensionPreparator(TlsContext context, T object) {
-        super(context, object);
-        msg = object;
+    public UnknownExtensionPreparator(TlsContext context, UnknownExtensionMessage msg,
+            UnknownExtensionSerializer serializer) {
+        super(context, msg, serializer);
+        this.msg = msg;
     }
 
     @Override
