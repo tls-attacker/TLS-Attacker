@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import de.rub.nds.tlsattacker.core.constants.ssl.SSLByteLength;
+import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
@@ -27,14 +27,14 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer {
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendInt(message.getMessageLength().getValue(), SSLByteLength.LENGTH);
+        appendInt(message.getMessageLength().getValue(), SSL2ByteLength.LENGTH);
         appendByte(message.getType().getValue());
         appendByte(message.getSessionIdHit().getValue());
         appendByte(message.getCertificateType().getValue());
         appendBytes(message.getProtocolVersion().getValue());
-        appendInt(message.getCertificateLength().getValue(), SSLByteLength.CERTIFICATE_LENGTH);
-        appendInt(message.getCiphersuitesLength().getValue(), SSLByteLength.CIPHERSUITE_LENGTH);
-        appendInt(message.getSessionIDLength().getValue(), SSLByteLength.SESSIONID_LENGTH);
+        appendInt(message.getCertificateLength().getValue(), SSL2ByteLength.CERTIFICATE_LENGTH);
+        appendInt(message.getCiphersuitesLength().getValue(), SSL2ByteLength.CIPHERSUITE_LENGTH);
+        appendInt(message.getSessionIDLength().getValue(), SSL2ByteLength.SESSIONID_LENGTH);
         appendBytes(message.getCertificate().getValue());
         appendBytes(message.getCipherSuites().getValue());
         appendBytes(message.getSessionID().getValue());
