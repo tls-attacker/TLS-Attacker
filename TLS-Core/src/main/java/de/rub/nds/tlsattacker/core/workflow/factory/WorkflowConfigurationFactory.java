@@ -120,7 +120,6 @@ public class WorkflowConfigurationFactory {
             messages.add(new ServerHelloDoneMessage(config));
         }
 
-        messages.add(new ServerHelloDoneMessage(config));
         workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
                 ConnectionEndType.SERVER, messages));
 
