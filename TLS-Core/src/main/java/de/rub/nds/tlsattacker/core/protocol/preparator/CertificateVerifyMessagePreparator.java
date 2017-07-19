@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.constants.CertificateVerifiyConstants;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -23,6 +25,7 @@ import java.security.SignatureException;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparator<CertificateVerifyMessage> {
 
@@ -58,11 +61,32 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
 
     private byte[] createSignature() {
         try {
-            byte[] rawHandshakeBytes = context.getDigest().getRawBytes();
+            byte[] toBeSigned = context.getDigest().getRawBytes();
+            if (context.getSelectedProtocolVersion().isTLS13()) {
+                if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    toBeSigned = ArrayConverter
+                            .concatenate(
+                                    ArrayConverter
+                                            .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                                    CertificateVerifiyConstants.CLIENT_CERTIFICATE_VERIFY.getBytes(),
+                                    new byte[] { (byte) 0x00 },
+                                    context.getDigest().digest(context.getSelectedProtocolVersion(),
+                                            context.getSelectedCipherSuite()));
+                } else {
+                    toBeSigned = ArrayConverter
+                            .concatenate(
+                                    ArrayConverter
+                                            .hexStringToByteArray("20202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020202020"),
+                                    CertificateVerifiyConstants.SERVER_CERTIFICATE_VERIFY.getBytes(),
+                                    new byte[] { (byte) 0x00 },
+                                    context.getDigest().digest(context.getSelectedProtocolVersion(),
+                                            context.getSelectedCipherSuite()));
+                }
+            }
             algorithm = selectSigHashAlgorithm();
             Signature tempSignature = Signature.getInstance(algorithm.getJavaName());
             tempSignature.initSign(context.getConfig().getPrivateKey(), RandomHelper.getBadSecureRandom());
-            tempSignature.update(rawHandshakeBytes);
+            tempSignature.update(toBeSigned);
             return tempSignature.sign();
         } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new PreparationException("Could not create Signature!", ex);

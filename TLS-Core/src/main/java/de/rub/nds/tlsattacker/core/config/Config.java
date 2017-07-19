@@ -1,6 +1,6 @@
 /**
  * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
+ * 
  * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -26,10 +28,9 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
@@ -62,6 +63,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  *
  * @author Robert Merget - robert.merget@rub.de
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -157,9 +159,33 @@ public class Config implements Serializable {
      */
     private List<NamedCurve> namedCurves;
     /**
+     * Supported ProtocolVersions by default
+     */
+    private List<ProtocolVersion> supportedVersions;
+    /**
      * Which heartBeat mode we are in
      */
     private HeartbeatMode heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
+    /**
+     * Padding length for TLS 1.3 messages
+     */
+    private int paddingLength = 0;
+    /**
+     * Public key for KeyShareExtension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] keySharePublic = ArrayConverter
+            .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
+    /**
+     * Key type for KeyShareExtension
+     */
+    private NamedCurve keyShareType = NamedCurve.ECDH_X25519;
+    /**
+     * Private key for KeyShareExtension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] keySharePrivate = ArrayConverter
+            .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
     /**
      * Hostname in SNI Extension
      */
@@ -234,7 +260,7 @@ public class Config implements Serializable {
     /**
      * The Type of workflow trace that should be generated
      */
-    private WorkflowTraceType workflowTraceType;
+    private WorkflowTraceType workflowTraceType = WorkflowTraceType.HANDSHAKE;
     /**
      * If the Default generated workflowtrace should contain Application data
      * send by servers
@@ -264,6 +290,14 @@ public class Config implements Serializable {
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
     private boolean addSignatureAndHashAlgrorithmsExtension = false;
+    /**
+     * If we generate ClientHello with the SupportedVersion extension
+     */
+    private boolean addSupportedVersionsExtension = false;
+    /**
+     * If we generate ClientHello with the KeyShare extension
+     */
+    private boolean addKeyShareExtension = false;
     /**
      * If we generate ClientHello with the Padding extension
      */
@@ -456,6 +490,8 @@ public class Config implements Serializable {
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
+        supportedVersions = new LinkedList<>();
+        supportedVersions.add(ProtocolVersion.TLS13);
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -794,6 +830,22 @@ public class Config implements Serializable {
         this.sniHostname = SniHostname;
     }
 
+    public NamedCurve getKeyShareType() {
+        return keyShareType;
+    }
+
+    public void setKeyShareType(NamedCurve keyShareType) {
+        this.keyShareType = keyShareType;
+    }
+
+    public byte[] getkeySharePublic() {
+        return keySharePublic;
+    }
+
+    public void setkeySharePublic(byte[] keySharePublic) {
+        this.keySharePublic = keySharePublic;
+    }
+
     public boolean isDynamicWorkflow() {
         return dynamicWorkflow;
     }
@@ -927,6 +979,14 @@ public class Config implements Serializable {
         this.namedCurves = namedCurves;
     }
 
+    public List<ProtocolVersion> getSupportedVersions() {
+        return Collections.unmodifiableList(supportedVersions);
+    }
+
+    public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
+        this.supportedVersions = supportedVersions;
+    }
+
     public HeartbeatMode getHeartbeatMode() {
         return heartbeatMode;
     }
@@ -983,6 +1043,22 @@ public class Config implements Serializable {
         this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
     }
 
+    public boolean isAddSupportedVersionsExtension() {
+        return addSupportedVersionsExtension;
+    }
+
+    public void setAddSupportedVersionsExtension(boolean addSupportedVersionsExtension) {
+        this.addSupportedVersionsExtension = addSupportedVersionsExtension;
+    }
+
+    public boolean isAddKeyShareExtension() {
+        return addKeyShareExtension;
+    }
+
+    public void setAddKeyShareExtension(boolean addKeyShareExtension) {
+        this.addKeyShareExtension = addKeyShareExtension;
+    }
+
     public PrivateKey getPrivateKey() {
         return privateKey;
     }
@@ -1005,6 +1081,22 @@ public class Config implements Serializable {
 
     public void setKeyStoreFile(String keyStoreFile) {
         this.keyStoreFile = keyStoreFile;
+    }
+
+    public int getPaddingLength() {
+        return paddingLength;
+    }
+
+    public void setPaddingLength(int paddingLength) {
+        this.paddingLength = paddingLength;
+    }
+
+    public byte[] getKeySharePrivate() {
+        return keySharePrivate;
+    }
+
+    public void setKeySharePrivate(byte[] keySharePrivate) {
+        this.keySharePrivate = keySharePrivate;
     }
 
     public byte[] getTLSSessionTicket() {

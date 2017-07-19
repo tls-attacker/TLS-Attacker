@@ -8,10 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  *
@@ -73,4 +79,27 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     private boolean isDTLS() {
         return context.getSelectedProtocolVersion().isDTLS();
     }
+
+    protected void prepareExtensions() {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (msg.getExtensions() != null) {
+            for (ExtensionMessage extensionMessage : msg.getExtensions()) {
+                ExtensionHandler handler = extensionMessage.getHandler(context);
+                handler.getPreparator(extensionMessage).prepare();
+                try {
+                    stream.write(extensionMessage.getExtensionBytes().getValue());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
+                }
+            }
+        }
+        msg.setExtensionBytes(stream.toByteArray());
+        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+    }
+
+    protected void prepareExtensionLength() {
+        msg.setExtensionsLength(msg.getExtensionBytes().getValue().length);
+        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
+    }
+
 }

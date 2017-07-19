@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  * @param <T>
  */
 public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends HelloMessagePreparator<HelloMessage> {
@@ -35,12 +36,18 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
-        prepareUnixTime();
-        prepareRandom();
-        prepareSessionID();
-        prepareSessionIDLength();
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+            prepareUnixTime();
+        }
+        prepareRandom(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()));
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+            prepareSessionID();
+            prepareSessionIDLength();
+        }
         prepareCipherSuite();
-        prepareCompressionMethod();
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+            prepareCompressionMethod();
+        }
         prepareExtensions();
         prepareExtensionLength();
     }

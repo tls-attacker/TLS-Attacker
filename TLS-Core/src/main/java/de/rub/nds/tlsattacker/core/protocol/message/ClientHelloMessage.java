@@ -30,6 +30,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
@@ -43,6 +47,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement
@@ -97,11 +102,23 @@ public class ClientHelloMessage extends HelloMessage {
             ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
             pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes());
+            pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
             extension.getServerNameList().add(pair);
             addExtension(extension);
         }
         if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
+        }
+        if (tlsConfig.isAddSupportedVersionsExtension()) {
+            addExtension(new SupportedVersionsExtensionMessage());
+        }
+        if (tlsConfig.isAddKeyShareExtension()) {
+            KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
+            KeySharePair pair = new KeySharePair();
+            pair.setKeyShareConfig(tlsConfig.getkeySharePublic());
+            pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
+            extension.getKeyShareList().add(pair);
+            addExtension(extension);
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
@@ -208,11 +225,14 @@ public class ClientHelloMessage extends HelloMessage {
                 .append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()))
                 .append("\n  Supported Compression Methods: ")
                 .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
-        // Some ExtensionsTypes are not supported yet, so avoiding the
-        // NULLPointerException needs to be done
-        /**
-         * for (ExtensionMessage e : extensions) { sb.append(e.toString()); }
-         */
+        sb.append("\n  Extensions: ");
+        if (getExtensions() == null) {
+            sb.append("null");
+        } else {
+            for (ExtensionMessage e : getExtensions()) {
+                sb.append(e.toString());
+            }
+        }
         return sb.toString();
     }
 

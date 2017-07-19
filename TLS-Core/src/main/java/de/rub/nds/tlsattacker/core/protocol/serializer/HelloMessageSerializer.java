@@ -41,40 +41,6 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
     }
 
     /**
-     * Checks if the message has an ExtensionsLength field
-     * 
-     * @return True if the message has an ExtensionLength field
-     */
-    protected boolean hasExtensionLengthField() {
-        return msg.getExtensionsLength() != null;
-    }
-
-    /**
-     * Writes the ExtensionLength field of the message into the final byte[]
-     */
-    protected void writeExtensionLength() {
-        appendInt(msg.getExtensionsLength().getValue(), HandshakeByteLength.EXTENSION_LENGTH);
-        LOGGER.debug("ExtensionLength: " + msg.getExtensionsLength().getValue());
-    }
-
-    /**
-     * Checks if the message has Extensions
-     * 
-     * @return True if the message has Extensions
-     */
-    protected boolean hasExtensions() {
-        return msg.getExtensionBytes() != null;
-    }
-
-    /**
-     * Writes the ExtensionBytes of the message into the final byte[]
-     */
-    protected void writeExtensionBytes() {
-        appendBytes(msg.getExtensionBytes().getValue());
-        LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
-    }
-
-    /**
      * Writes the ProtocolVersion of the message into the final byte[]
      */
     protected void writeProtocolVersion() {

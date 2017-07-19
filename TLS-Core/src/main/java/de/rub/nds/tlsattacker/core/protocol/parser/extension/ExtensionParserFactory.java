@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +23,8 @@ public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger("ExtensionParserFactory");
 
-    public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer) {
+    public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
+            HandshakeMessageType handshakeMessageType) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
             throw new PreparationException("Could not retrieve Parser for ExtensionBytes");
         }
@@ -51,6 +53,12 @@ public class ExtensionParserFactory {
                 break;
             case SIGNATURE_AND_HASH_ALGORITHMS:
                 parser = new SignatureAndHashAlgorithmsExtensionParser(pointer, extensionBytes);
+                break;
+            case SUPPORTED_VERSIONS:
+                parser = new SupportedVersionsExtensionParser(pointer, extensionBytes);
+                break;
+            case KEY_SHARE:
+                parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType);
                 break;
             case STATUS_REQUEST:
                 break;
@@ -110,6 +118,20 @@ public class ExtensionParserFactory {
             parser = new UnknownExtensionParser(pointer, extensionBytes);
         }
         return parser;
+    }
+
+    private static ExtensionParser getKeyShareParser(byte[] extensionBytes, int pointer, HandshakeMessageType type) {
+        switch (type) {
+            case HELLO_RETRY_REQUEST:
+                return new HRRKeyShareExtensionParser(pointer, extensionBytes);
+            case CLIENT_HELLO:
+                return new KeyShareExtensionParser(pointer, extensionBytes);
+            case SERVER_HELLO:
+                return new KeyShareExtensionParser(pointer, extensionBytes);
+            default:
+                throw new UnsupportedOperationException("KeyShareExtension for following " + type
+                        + " message NOT supported yet.");
+        }
     }
 
     private ExtensionParserFactory() {

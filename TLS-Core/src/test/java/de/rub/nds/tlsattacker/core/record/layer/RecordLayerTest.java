@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -38,6 +39,7 @@ public class RecordLayerTest {
         config.setRecordLayerType(RecordLayerType.RECORD);
         TlsContext context = new TlsContext(config);
         context.setRecordLayer(new TlsRecordLayer(context));
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         recordHandler = context.getRecordLayer();
     }
 

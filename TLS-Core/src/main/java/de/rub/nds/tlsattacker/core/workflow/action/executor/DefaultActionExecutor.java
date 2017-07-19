@@ -19,6 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -81,6 +83,13 @@ public class DefaultActionExecutor extends ActionExecutor {
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
+            }
+            if (context.getSelectedProtocolVersion().isTLS13() && context.isUpdateKeys() == true) {
+                LOGGER.debug("Setting new Cipher in RecordLayer");
+                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
+                context.getRecordLayer().setRecordCipher(recordCipher);
+                context.getRecordLayer().updateDecryptionCipher();
+                context.getRecordLayer().updateEncryptionCipher();
             }
         }
         flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);

@@ -27,16 +27,16 @@ public class RecordSerializer extends AbstractRecordSerializer<Record> {
     @Override
     protected byte[] serializeBytes() {
         LOGGER.debug("Serializing Record");
-        writeContentMessageType(record);
+        writeContentType(record);
         writeProtocolVersion(record);
         writeLength(record);
         writeProtocolMessageBytes(record);
         return getAlreadySerialized();
     }
 
-    private void writeContentMessageType(Record record) {
-        appendByte(record.getContentMessageType().getValue());
-        LOGGER.debug("ContentMessageType: " + record.getContentMessageType().getValue());
+    private void writeContentType(Record record) {
+        appendByte(record.getContentType().getValue());
+        LOGGER.debug("ContentType: " + record.getContentType().getValue());
     }
 
     private void writeProtocolVersion(Record record) {

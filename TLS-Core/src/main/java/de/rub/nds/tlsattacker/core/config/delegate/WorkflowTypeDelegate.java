@@ -41,23 +41,5 @@ public class WorkflowTypeDelegate extends Delegate {
         if (workflowTraceType != null) {
             config.setWorkflowTraceType(workflowTraceType);
         }
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace;
-        if (config.getWorkflowTrace() == null && config.getWorkflowTraceType() != null) {
-            switch (config.getWorkflowTraceType()) {
-                case FULL:
-                    trace = factory.createFullWorkflow();
-                    break;
-                case HANDSHAKE:
-                    trace = factory.createHandshakeWorkflow();
-                    break;
-                case HELLO:
-                    trace = factory.createHelloWorkflow();
-                    break;
-                default:
-                    throw new ConfigurationException("not supported workflow type: " + config.getWorkflowTraceType());
-            }
-            config.setWorkflowTrace(trace);
-        }
     }
 }

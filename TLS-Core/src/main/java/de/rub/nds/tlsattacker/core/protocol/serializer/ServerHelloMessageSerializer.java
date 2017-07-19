@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
  * SerializerClass for ServerHelloMessages
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
 
@@ -57,12 +58,18 @@ public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerH
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing ServerHelloMessage");
         writeProtocolVersion();
-        writeUnixtime();
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+            writeUnixtime();
+        }
         writeRandom();
-        writeSessionIDLength();
-        writeSessionID();
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+            writeSessionIDLength();
+            writeSessionID();
+        }
         writeSelectedCiphersuite();
-        writeSelectedComressionMethod();
+        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+            writeSelectedComressionMethod();
+        }
         if (hasExtensionLengthField()) {
             writeExtensionLength();
             if (hasExtensions()) {
