@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.ssl.SSLByteLength;
+import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 
 /**
@@ -25,14 +25,14 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
     @Override
     protected SSL2ServerHelloMessage parseMessageContent() {
         SSL2ServerHelloMessage message = new SSL2ServerHelloMessage();
-        message.setMessageLength(parseIntField(SSLByteLength.LENGTH));
-        message.setType(parseByteField(SSLByteLength.MESSAGE_TYPE));
-        message.setSessionIdHit(parseByteField(SSLByteLength.SESSION_ID_HIT));
-        message.setCertificateType(parseByteField(SSLByteLength.CERTIFICATE_TYPE));
-        message.setProtocolVersion(parseByteArrayField(SSLByteLength.VERSION));
-        message.setCertificateLength(parseIntField(SSLByteLength.CERTIFICATE_LENGTH));
-        message.setCiphersuitesLength(parseIntField(SSLByteLength.CIPHERSUITE_LENGTH));
-        message.setSessionIDLength(parseIntField(SSLByteLength.SESSIONID_LENGTH));
+        message.setMessageLength(parseIntField(SSL2ByteLength.LENGTH));
+        message.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));
+        message.setSessionIdHit(parseByteField(SSL2ByteLength.SESSION_ID_HIT));
+        message.setCertificateType(parseByteField(SSL2ByteLength.CERTIFICATE_TYPE));
+        message.setProtocolVersion(parseByteArrayField(SSL2ByteLength.VERSION));
+        message.setCertificateLength(parseIntField(SSL2ByteLength.CERTIFICATE_LENGTH));
+        message.setCiphersuitesLength(parseIntField(SSL2ByteLength.CIPHERSUITE_LENGTH));
+        message.setSessionIDLength(parseIntField(SSL2ByteLength.SESSIONID_LENGTH));
         message.setCertificate(parseByteArrayField(message.getCertificateLength().getValue()));
         message.setCipherSuites(parseByteArrayField(message.getCiphersuitesLength().getValue()));
         message.setSessionID(parseByteArrayField(message.getSessionIDLength().getValue()));

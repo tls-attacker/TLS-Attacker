@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

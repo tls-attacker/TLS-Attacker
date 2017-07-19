@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
