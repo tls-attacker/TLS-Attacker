@@ -51,6 +51,7 @@ public class WinshockCommandConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(clientDelegate);
+        setExecuteAttack(true);
     }
 
     public Integer getSignatureLength() {
