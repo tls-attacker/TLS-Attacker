@@ -101,7 +101,6 @@ public class DefaultActionExecutor extends ActionExecutor {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        // TODO Parse our messages
         return new MessageActionResult(records, messages);
     }
 
@@ -136,6 +135,7 @@ public class DefaultActionExecutor extends ActionExecutor {
         while (recordLength < length) {
             if (position >= records.size()) {
                 if (context.getConfig().isCreateRecordsDynamically()) {
+                    LOGGER.trace("Creating new Record");
                     records.add(context.getRecordLayer().getFreshRecord());
                 } else {
                     return toFillList;
