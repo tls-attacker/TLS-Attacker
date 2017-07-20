@@ -63,6 +63,11 @@ public class Cve20162107CommandConfig extends AttackConfig {
     }
 
     @Override
+    public boolean isExecuteAttack() {
+        return false;
+    }
+
+    @Override
     public Config createConfig() {
         Config config = super.createConfig();
         if (cipherSuiteDelegate.getCipherSuites() == null) {

@@ -51,7 +51,6 @@ public class WinshockCommandConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(clientDelegate);
-        setExecuteAttack(true);
     }
 
     public Integer getSignatureLength() {
@@ -68,6 +67,11 @@ public class WinshockCommandConfig extends AttackConfig {
 
     public void setSignature(BigInteger signature) {
         this.signature = signature;
+    }
+
+    @Override
+    public boolean isExecuteAttack() {
+        return true;
     }
 
 }

@@ -107,6 +107,11 @@ public class Lucky13CommandConfig extends AttackConfig {
     }
 
     @Override
+    public boolean isExecuteAttack() {
+        return false;
+    }
+
+    @Override
     public Config createConfig() {
         Config config = super.createConfig();
         if (ciphersuiteDelegate.getCipherSuites() == null) {

@@ -78,6 +78,11 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         return config;
     }
 
+    @Override
+    public boolean isExecuteAttack() {
+        return false;
+    }
+
     public enum Type {
 
         FULL,
