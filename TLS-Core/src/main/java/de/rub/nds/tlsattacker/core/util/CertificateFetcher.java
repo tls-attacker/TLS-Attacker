@@ -33,11 +33,15 @@ public class CertificateFetcher {
     public static PublicKey fetchServerPublicKey(Config config) {
         X509CertificateObject cert;
         try {
-            cert = new X509CertificateObject(fetchServerCertificate(config).getCertificateAt(0));
+            Certificate fetchedServerCertificate = fetchServerCertificate(config);
+            if (fetchedServerCertificate != null && fetchedServerCertificate.getLength() > 0) {
+                cert = new X509CertificateObject(fetchedServerCertificate.getCertificateAt(0));
+                return cert.getPublicKey();
+            }
         } catch (CertificateParsingException ex) {
             throw new WorkflowExecutionException("Could not get public key from server certificate", ex);
         }
-        return cert.getPublicKey();
+        return null;
     }
 
     public static Certificate fetchServerCertificate(Config config) {
