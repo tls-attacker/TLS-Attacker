@@ -57,53 +57,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     @Override
     public void executeAttack() {
-        String[] paddingStrings = config.getPaddings().split(",");
-        int[] paddings = new int[paddingStrings.length];
-        for (int i = 0; i < paddingStrings.length; i++) {
-            paddings[i] = Integer.parseInt(paddingStrings[i]);
-        }
-        for (int i = 0; i < config.getMeasurements(); i++) {
-            LOGGER.info("Starting round {}", i);
-            for (int p : paddings) {
-                Record record = createRecordWithPadding(p);
-                executeAttackRound(record);
-                if (results.get(p) == null) {
-                    results.put(p, new LinkedList<Long>());
-                }
-                // removeTlsAction the first 20% of measurements
-                if (i > config.getMeasurements() / 5) {
-                    results.get(p).add(lastResult);
-                }
-            }
-        }
-
-        StringBuilder medians = new StringBuilder();
-        for (int padding : paddings) {
-            List<Long> rp = results.get(padding);
-            Collections.sort(rp);
-            LOGGER.info("Padding: {}", padding);
-            long median = rp.get(rp.size() / 2);
-            LOGGER.info("Median: {}", median);
-            medians.append(median).append(",");
-        }
-        LOGGER.info("Medians: {}", medians);
-
-        if (config.getMonaFile() != null) {
-            StringBuilder commands = new StringBuilder();
-            for (int i = 0; i < paddings.length - 1; i++) {
-                for (int j = i + 1; j < paddings.length; j++) {
-                    String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
-                    String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
-                    createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
-                    String command = "java -jar ReportingTool.jar --inputFile=" + fileName + " --name=lucky13-"
-                            + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
-                    LOGGER.info("Run mona timing lib with: " + command);
-                    commands.append(command);
-                    commands.append(System.getProperty("line.separator"));
-                }
-            }
-            LOGGER.info("All commands at once: \n{}", commands);
-        }
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private void createMonaFile(String fileName, String[] delimiters, List<Long> result1, List<Long> result2) {
@@ -177,7 +131,56 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
+        String[] paddingStrings = config.getPaddings().split(",");
+        int[] paddings = new int[paddingStrings.length];
+        for (int i = 0; i < paddingStrings.length; i++) {
+            paddings[i] = Integer.parseInt(paddingStrings[i]);
+        }
+        for (int i = 0; i < config.getMeasurements(); i++) {
+            LOGGER.info("Starting round {}", i);
+            for (int p : paddings) {
+                Record record = createRecordWithPadding(p);
+                executeAttackRound(record);
+                if (results.get(p) == null) {
+                    results.put(p, new LinkedList<Long>());
+                }
+                // removeTlsAction the first 20% of measurements
+                if (i > config.getMeasurements() / 5) {
+                    results.get(p).add(lastResult);
+                }
+            }
+        }
+
+        StringBuilder medians = new StringBuilder();
+        for (int padding : paddings) {
+            List<Long> rp = results.get(padding);
+            Collections.sort(rp);
+            LOGGER.info("Padding: {}", padding);
+            long median = rp.get(rp.size() / 2);
+            LOGGER.info("Median: {}", median);
+            medians.append(median).append(",");
+        }
+        LOGGER.info("Medians: {}", medians);
+
+        if (config.getMonaFile() != null) {
+            StringBuilder commands = new StringBuilder();
+            for (int i = 0; i < paddings.length - 1; i++) {
+                for (int j = i + 1; j < paddings.length; j++) {
+                    String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
+                    String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
+                    createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
+                    String command = "java -jar ReportingTool.jar --inputFile=" + fileName + " --name=lucky13-"
+                            + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
+                    LOGGER.info("Run mona timing lib with: " + command);
+                    commands.append(command);
+                    commands.append(System.getProperty("line.separator"));
+                }
+            }
+            LOGGER.info("All commands at once: \n{}", commands);
+        }
+        // A Security analyst has to manually check if an implementation is
+        // vulnerable
+        return null;
     }
 
 }
