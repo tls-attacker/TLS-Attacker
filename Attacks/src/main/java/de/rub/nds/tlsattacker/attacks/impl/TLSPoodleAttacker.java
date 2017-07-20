@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +54,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
@@ -70,7 +72,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         recordList.add(r);
         sendAction.setConfiguredRecords(recordList);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.addTlsAction(new SendAction(applicationMessage));
+        trace.addTlsAction(sendAction);
         trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
