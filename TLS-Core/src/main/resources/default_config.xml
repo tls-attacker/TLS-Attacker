@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<tlsConfig>
+<Config>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
     <connectionEndType>CLIENT</connectionEndType>
     <alias>default</alias>
@@ -126,4 +126,4 @@ B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
     <createIndividualRecords>true</createIndividualRecords>
     <recordLayerType>RECORD</recordLayerType>
     <stripWorkflowtracesBeforeSaving>false</stripWorkflowtracesBeforeSaving>
-</tlsConfig>
+</Config>
