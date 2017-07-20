@@ -61,6 +61,11 @@ public class HeartbleedCommandConfig extends AttackConfig {
     }
 
     @Override
+    public boolean isExecuteAttack() {
+        return false;
+    }
+
+    @Override
     public Config createConfig() {
         Config config = super.createConfig();
         config.setAddHeartbeatExtension(true);

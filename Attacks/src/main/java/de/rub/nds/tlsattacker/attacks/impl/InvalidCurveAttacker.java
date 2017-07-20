@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,6 +78,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = config.createConfig();
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(config.createConfig());
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);

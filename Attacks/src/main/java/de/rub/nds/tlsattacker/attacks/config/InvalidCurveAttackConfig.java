@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
@@ -78,16 +79,21 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @ParametersDelegate
     private final ProtocolVersionDelegate protocolVersionDelegate;
 
+    @ParametersDelegate
+    private final AttackDelegate attackDelegate;
+
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
+        attackDelegate = new AttackDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
+        addDelegate(attackDelegate);
     }
 
     public BigInteger getPremasterSecret() {
@@ -152,6 +158,11 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     public void setServerType(ICEAttacker.ServerType serverType) {
         this.serverType = serverType;
+    }
+
+    @Override
+    public boolean isExecuteAttack() {
+        return attackDelegate.isExecuteAttack();
     }
 
     @Override

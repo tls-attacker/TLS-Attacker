@@ -51,7 +51,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public void executeAttack() {
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
@@ -78,6 +78,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         RSAPublicKey publicKey;
         Config tlsConfig = config.createConfig();
         publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        if (publicKey == null) {
+            LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
+            return null;
+        }
         LOGGER.info("Fetched the following server public key: " + publicKey);
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();

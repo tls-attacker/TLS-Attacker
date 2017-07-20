@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 
 /**
  * Executes the Lucky13 attack test
@@ -56,6 +57,80 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     @Override
     public void executeAttack() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    private void createMonaFile(String fileName, String[] delimiters, List<Long> result1, List<Long> result2) {
+        try (FileWriter fw = new FileWriter(fileName)) {
+            for (int i = 0; i < result1.size(); i++) {
+                fw.write(Integer.toString(i * 2));
+                fw.write(delimiters[0] + result1.get(i) + System.getProperty("line.separator"));
+                fw.write(Integer.toString(i * 2 + 1));
+                fw.write(delimiters[1] + result2.get(i) + System.getProperty("line.separator"));
+            }
+        } catch (IOException ex) {
+            LOGGER.debug(ex);
+        }
+    }
+
+    public void executeAttackRound(Record record) {
+        Config tlsConfig = config.createConfig();
+        TlsContext tlsContext = new TlsContext(tlsConfig);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
+                tlsContext);
+
+        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        // Client
+        ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
+        SendAction action = new SendAction(applicationMessage);
+        trace.addTlsAction(action);
+        List<AbstractRecord> configuredRecords = new LinkedList<>();
+        configuredRecords.add(record);
+        action.setConfiguredRecords(configuredRecords);
+        // Server
+        AlertMessage alertMessage = new AlertMessage(tlsConfig);
+        trace.addTlsAction(new ReceiveAction(alertMessage));
+        try {
+            workflowExecutor.executeWorkflow();
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.info("Not possible to finalize the defined workflow.");
+            LOGGER.debug(ex);
+        }
+        lastResult = tlsContext.getTransportHandler().getLastMeasurement();
+
+    }
+
+    private Record createRecordWithPadding(int p) {
+        byte[] padding = createPaddingBytes(p);
+        int recordLength = config.getBlockSize() * config.getBlocks();
+        if (recordLength < padding.length) {
+            throw new ConfigurationException("Padding too large");
+        }
+        int messageSize = recordLength - padding.length;
+        byte[] message = new byte[messageSize];
+        byte[] plain = ArrayConverter.concatenate(message, padding);
+        return createRecordWithPlainData(plain);
+    }
+
+    private Record createRecordWithPlainData(byte[] plain) {
+        Record r = new Record();
+        ModifiableByteArray plainData = new ModifiableByteArray();
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
+        plainData.setModification(modifier);
+        r.setPlainRecordBytes(plainData);
+        return r;
+    }
+
+    private byte[] createPaddingBytes(int padding) {
+        byte[] paddingBytes = new byte[padding + 1];
+        for (int i = 0; i < paddingBytes.length; i++) {
+            paddingBytes[i] = (byte) padding;
+        }
+        return paddingBytes;
+    }
+
+    @Override
+    public Boolean isVulnerable() {
         String[] paddingStrings = config.getPaddings().split(",");
         int[] paddings = new int[paddingStrings.length];
         for (int i = 0; i < paddingStrings.length; i++) {
@@ -103,78 +178,9 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             }
             LOGGER.info("All commands at once: \n{}", commands);
         }
-    }
-
-    private void createMonaFile(String fileName, String[] delimiters, List<Long> result1, List<Long> result2) {
-        try (FileWriter fw = new FileWriter(fileName)) {
-            for (int i = 0; i < result1.size(); i++) {
-                fw.write(Integer.toString(i * 2));
-                fw.write(delimiters[0] + result1.get(i) + System.getProperty("line.separator"));
-                fw.write(Integer.toString(i * 2 + 1));
-                fw.write(delimiters[1] + result2.get(i) + System.getProperty("line.separator"));
-            }
-        } catch (IOException ex) {
-            LOGGER.debug(ex);
-        }
-    }
-
-    public void executeAttackRound(Record record) {
-        Config tlsConfig = config.createConfig();
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
-
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        // Client
-        ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
-        SendAction action = new SendAction(applicationMessage);
-        trace.addTlsAction(action);
-        action.getConfiguredRecords().add(record);
-        // Server
-        AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.addTlsAction(new ReceiveAction(alertMessage));
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow.");
-            LOGGER.debug(ex);
-        }
-        lastResult = tlsContext.getTransportHandler().getLastMeasurement();
-
-    }
-
-    private Record createRecordWithPadding(int p) {
-        byte[] padding = createPaddingBytes(p);
-        int recordLength = config.getBlockSize() * config.getBlocks();
-        if (recordLength < padding.length) {
-            throw new ConfigurationException("Padding too large");
-        }
-        int messageSize = recordLength - padding.length;
-        byte[] message = new byte[messageSize];
-        byte[] plain = ArrayConverter.concatenate(message, padding);
-        return createRecordWithPlainData(plain);
-    }
-
-    private Record createRecordWithPlainData(byte[] plain) {
-        Record r = new Record();
-        ModifiableByteArray plainData = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
-        plainData.setModification(modifier);
-        r.setPlainRecordBytes(plainData);
-        return r;
-    }
-
-    private byte[] createPaddingBytes(int padding) {
-        byte[] paddingBytes = new byte[padding + 1];
-        for (int i = 0; i < paddingBytes.length; i++) {
-            paddingBytes[i] = (byte) padding;
-        }
-        return paddingBytes;
-    }
-
-    @Override
-    public Boolean isVulnerable() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
+        // A Security analyst has to manually check if an implementation is
+        // vulnerable
+        return null;
     }
 
 }

@@ -46,6 +46,11 @@ public class EarlyCCSCommandConfig extends AttackConfig {
     }
 
     @Override
+    public boolean isExecuteAttack() {
+        return false;
+    }
+
+    @Override
     public Config createConfig() {
         return super.createConfig();
     }

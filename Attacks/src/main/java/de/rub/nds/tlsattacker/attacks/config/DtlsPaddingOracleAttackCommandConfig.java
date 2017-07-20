@@ -108,6 +108,11 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
     }
 
     @Override
+    public boolean isExecuteAttack() {
+        return true;
+    }
+
+    @Override
     public Config createConfig() {
         Config config = super.createConfig();
         config.setTransportHandlerType(TransportHandlerType.UDP);
