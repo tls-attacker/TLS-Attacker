@@ -51,7 +51,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public void executeAttack() {
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
