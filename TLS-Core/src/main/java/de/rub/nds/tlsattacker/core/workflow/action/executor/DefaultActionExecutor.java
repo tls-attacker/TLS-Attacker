@@ -61,6 +61,7 @@ public class DefaultActionExecutor extends ActionExecutor {
             return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
         }
         if (records == null) {
+            LOGGER.trace("No Records Specified, creating emtpy list");
             records = new LinkedList<>();
         }
         int recordPosition = 0;
