@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 
 /**
  * Executes the Lucky13 attack test
@@ -129,7 +130,9 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);
         trace.addTlsAction(action);
-        action.getConfiguredRecords().add(record);
+        List<AbstractRecord> configuredRecords = new LinkedList<>();
+        configuredRecords.add(record);
+        action.setConfiguredRecords(configuredRecords);
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ReceiveAction(alertMessage));
