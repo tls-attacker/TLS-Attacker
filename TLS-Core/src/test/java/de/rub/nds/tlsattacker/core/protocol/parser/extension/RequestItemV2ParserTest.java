@@ -22,37 +22,41 @@ import org.junit.Test;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class RequestItemV2ParserTest {
-    
+
     private final int startParsing = 0;
     private final int requestType = 1;
     private final int requestLength = 21;
     private final int responderIdLength = 0x0b;
-    private final List<ResponderId> responderIdList = Arrays.asList(new ResponderId(3, new byte[]{0x01, 0x02, 0x03}), new ResponderId(4, new byte[]{0x04, 0x05, 0x06, 0x07}));
+    private final List<ResponderId> responderIdList = Arrays.asList(
+            new ResponderId(3, new byte[] { 0x01, 0x02, 0x03 }), new ResponderId(4,
+                    new byte[] { 0x04, 0x05, 0x06, 0x07 }));
     private final int requestExtensionLength = 6;
     private final byte[] requestExtension = hexStringToByteArray("010203040506");
     private final byte[] parsingBytes = hexStringToByteArray("010015000B00030102030004040506070006010203040506");
-    
+    private final byte[] responderIdBytes = hexStringToByteArray("0003010203000404050607");
+
     @Test
     public void testParser() {
         RequestItemV2Parser parser = new RequestItemV2Parser(startParsing, parsingBytes);
         RequestItemV2 item = parser.parse();
-        
+
         assertEquals(requestType, (int) item.getRequestType().getValue());
         assertEquals(requestLength, (int) item.getRequestLength().getValue());
         assertEquals(responderIdLength, (int) item.getResponderIdListLength().getValue());
+        assertArrayEquals(responderIdBytes, item.getResponderIdListBytes().getValue());
         assertResponderIdList(responderIdList, item.getResponderIdList());
         assertEquals(requestExtensionLength, (int) item.getRequestExtensionsLength().getValue());
         assertArrayEquals(requestExtension, item.getRequestExtensions().getValue());
-        
+
     }
-    
+
     public static void assertResponderIdList(List<ResponderId> listExpected, List<ResponderId> listActual) {
         ResponderId itemExpected;
         ResponderId itemActual;
         for (int i = 0; i < listExpected.size(); i++) {
             itemExpected = listExpected.get(i);
             itemActual = listActual.get(i);
-            
+
             assertEquals(itemExpected.getIdLength().getValue(), itemActual.getIdLength().getValue());
             assertArrayEquals(itemExpected.getId().getValue(), itemActual.getId().getValue());
         }

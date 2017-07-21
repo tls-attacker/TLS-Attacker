@@ -1,0 +1,46 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
+
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RequestItemV2Serializer;
+import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+
+/**
+ *
+ * @author Matthias Terlinde <matthias.terlinde@rub.de>
+ */
+public class CertificateStatusRequestV2ExtensionPreparator extends
+        ExtensionPreparator<CertificateStatusRequestV2ExtensionMessage> {
+
+    private final CertificateStatusRequestV2ExtensionMessage msg;
+
+    public CertificateStatusRequestV2ExtensionPreparator(TlsContext context,
+            CertificateStatusRequestV2ExtensionMessage message) {
+        super(context, message);
+        msg = message;
+    }
+
+    @Override
+    public void prepareExtensionContent() {
+        msg.setStatusRequestList(context.getConfig().getStatusRequestV2RequestList());
+        int listLength = 0;
+        byte[] itemAsBytes;
+
+        for (RequestItemV2 item : msg.getStatusRequestList()) {
+            RequestItemV2Serializer serializer = new RequestItemV2Serializer(item);
+            itemAsBytes = serializer.serialize();
+            listLength += itemAsBytes.length;
+        }
+
+        msg.setStatusRequestListLength(listLength);
+    }
+
+}

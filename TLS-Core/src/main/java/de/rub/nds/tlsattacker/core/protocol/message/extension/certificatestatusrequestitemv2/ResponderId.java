@@ -23,35 +23,35 @@ public class ResponderId {
     ModifiableInteger idLength;
     @ModifiableVariableProperty
     ModifiableByteArray id;
-    
+
     public ResponderId(int idLength, byte[] id) {
         this.idLength = safelySetValue(this.idLength, idLength);
         this.id = safelySetValue(this.id, id);
     }
-    
+
     public ResponderId() {
     }
-    
+
     public ModifiableInteger getIdLength() {
         return idLength;
     }
-    
+
     public void setIdLength(ModifiableInteger idLength) {
         this.idLength = idLength;
     }
-    
+
     public void setIdLength(int idLength) {
         this.idLength = safelySetValue(this.idLength, idLength);
     }
-    
+
     public ModifiableByteArray getId() {
         return id;
     }
-    
+
     public void setId(ModifiableByteArray id) {
         this.id = id;
     }
-    
+
     public void setId(byte[] id) {
         this.id = safelySetValue(this.id, id);
     }

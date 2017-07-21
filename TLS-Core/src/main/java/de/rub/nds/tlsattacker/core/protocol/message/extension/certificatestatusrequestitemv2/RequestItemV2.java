@@ -24,7 +24,7 @@ public class RequestItemV2 {
 
     @ModifiableVariableProperty
     ModifiableInteger requestType;
-    @ModifiableVariableProperty 
+    @ModifiableVariableProperty
     ModifiableInteger requestLength;
     @ModifiableVariableProperty
     ModifiableInteger responderIdListLength;
@@ -40,7 +40,9 @@ public class RequestItemV2 {
     public RequestItemV2() {
     }
 
-    public RequestItemV2(int requestType,int requestLength, int responderIdListLength, List<ResponderId> responderIdList, int requestExtensionsLength, byte[] requestExtensions, byte[] responderIdListBytes) {
+    public RequestItemV2(int requestType, int requestLength, int responderIdListLength,
+            List<ResponderId> responderIdList, int requestExtensionsLength, byte[] requestExtensions,
+            byte[] responderIdListBytes) {
         this.requestType = safelySetValue(this.requestType, requestType);
         this.requestLength = safelySetValue(this.requestLength, requestLength);
         this.responderIdListLength = safelySetValue(this.responderIdListLength, responderIdListLength);
@@ -71,7 +73,8 @@ public class RequestItemV2 {
     }
 
     public void setResponderIdListLength(int responderIdListLength) {
-        this.responderIdListLength = ModifiableVariableFactory.safelySetValue(this.responderIdListLength, responderIdListLength);
+        this.responderIdListLength = ModifiableVariableFactory.safelySetValue(this.responderIdListLength,
+                responderIdListLength);
     }
 
     public List<ResponderId> getResponderIdList() {
@@ -91,7 +94,8 @@ public class RequestItemV2 {
     }
 
     public void setRequestExtensionsLength(int requestExtensionsLength) {
-        this.requestExtensionsLength = ModifiableVariableFactory.safelySetValue(this.requestExtensionsLength, requestExtensionsLength);
+        this.requestExtensionsLength = ModifiableVariableFactory.safelySetValue(this.requestExtensionsLength,
+                requestExtensionsLength);
     }
 
     public ModifiableByteArray getRequestExtensions() {
@@ -115,7 +119,8 @@ public class RequestItemV2 {
     }
 
     public void setResponderIdListBytes(byte[] responderIdListBytes) {
-        this.responderIdListBytes = ModifiableVariableFactory.safelySetValue(this.responderIdListBytes, responderIdListBytes);
+        this.responderIdListBytes = ModifiableVariableFactory.safelySetValue(this.responderIdListBytes,
+                responderIdListBytes);
     }
 
     public ModifiableInteger getRequestLength() {
@@ -125,8 +130,9 @@ public class RequestItemV2 {
     public void setRequestLength(ModifiableInteger requestLength) {
         this.requestLength = requestLength;
     }
+
     public void setRequestLength(int requestLength) {
         this.requestLength = safelySetValue(this.requestLength, requestLength);
     }
-    
+
 }

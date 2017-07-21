@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -163,6 +164,8 @@ public class TlsContext {
     private boolean isCachedInfoExtensionClientState;
 
     private List<CachedObject> cachedInfoExtensionObjects;
+
+    private List<RequestItemV2> statusRequestV2RequestList;
 
     /**
      * These are the padding bytes as used in the padding extension.
@@ -962,4 +965,13 @@ public class TlsContext {
     public void setTrustedCaIndicationExtensionCas(List<TrustedAuthority> trustedCaIndicationExtensionCas) {
         this.trustedCaIndicationExtensionCas = trustedCaIndicationExtensionCas;
     }
+
+    public List<RequestItemV2> getStatusRequestV2RequestList() {
+        return statusRequestV2RequestList;
+    }
+
+    public void setStatusRequestV2RequestList(List<RequestItemV2> statusRequestV2RequestList) {
+        this.statusRequestV2RequestList = statusRequestV2RequestList;
+    }
+
 }

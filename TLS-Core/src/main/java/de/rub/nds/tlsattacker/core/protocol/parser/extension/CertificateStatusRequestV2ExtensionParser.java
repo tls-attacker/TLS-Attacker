@@ -18,7 +18,8 @@ import java.util.List;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class CertificateStatusRequestV2ExtensionParser extends ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
+public class CertificateStatusRequestV2ExtensionParser extends
+        ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 
     public CertificateStatusRequestV2ExtensionParser(int startposition, byte[] array) {
         super(startposition, array);

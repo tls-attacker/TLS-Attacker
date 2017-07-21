@@ -30,6 +30,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
@@ -188,12 +189,14 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddCachedInfoExtension()) {
             addExtension(new CachedInfoExtensionMessage());
         }
-
         if (tlsConfig.isAddClientCertificateUrlExtension()) {
             addExtension(new ClientCertificateUrlExtensionMessage());
         }
         if (tlsConfig.isAddTrustedCaIndicationExtension()) {
             addExtension(new TrustedCaIndicationExtensionMessage());
+        }
+        if (tlsConfig.isAddCertificateStatusRequestV2Extension()) {
+            addExtension(new CertificateStatusRequestV2ExtensionMessage());
         }
     }
 

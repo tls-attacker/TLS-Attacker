@@ -113,6 +113,7 @@ public class ExtensionParserFactory {
                 parser = new SRPExtensionParser(pointer, extensionBytes);
                 break;
             case STATUS_REQUEST_V2:
+                parser = new CertificateStatusRequestV2ExtensionParser(pointer, extensionBytes);
                 break;
             case TOKEN_BINDING:
                 parser = new TokenBindingExtensionParser(pointer, extensionBytes);

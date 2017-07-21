@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
@@ -319,6 +320,10 @@ public class TlsConfig implements Serializable {
      */
     private List<CachedObject> cachedObjectList;
     /**
+     * Default certificate status request v2 extension request list
+     */
+    private List<RequestItemV2> statusRequestV2RequestList;
+    /**
      * Default Timeout we wait for TLSMessages
      */
     private int tlsTimeout = 400;
@@ -467,6 +472,10 @@ public class TlsConfig implements Serializable {
      * If we generate ClientHello with trusted ca indication extension
      */
     private boolean addTrustedCaIndicationExtension = false;
+    /**
+     * If we generate ClientHello with status request v2 extension
+     */
+    private boolean addCertificateStatusRequestV2Extension = false;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -678,6 +687,8 @@ public class TlsConfig implements Serializable {
 
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
+
+        statusRequestV2RequestList = new LinkedList<>();
     }
 
     public boolean isWorkflowExecutorShouldOpen() {
@@ -1623,6 +1634,22 @@ public class TlsConfig implements Serializable {
 
     public void setAddTrustedCaIndicationExtension(boolean addTrustedCaIndicationExtension) {
         this.addTrustedCaIndicationExtension = addTrustedCaIndicationExtension;
+    }
+
+    public List<RequestItemV2> getStatusRequestV2RequestList() {
+        return statusRequestV2RequestList;
+    }
+
+    public void setStatusRequestV2RequestList(List<RequestItemV2> statusRequestV2RequestList) {
+        this.statusRequestV2RequestList = statusRequestV2RequestList;
+    }
+
+    public boolean isAddCertificateStatusRequestV2Extension() {
+        return addCertificateStatusRequestV2Extension;
+    }
+
+    public void setAddCertificateStatusRequestV2Extension(boolean addCertificateStatusRequestV2Extension) {
+        this.addCertificateStatusRequestV2Extension = addCertificateStatusRequestV2Extension;
     }
 
 }
