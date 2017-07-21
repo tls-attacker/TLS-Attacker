@@ -832,4 +832,19 @@ public class TlsContext {
         this.certificateRequestContext = certificateRequestContext;
     }
 
+    public BigInteger getServerRSAPrivateKey() {
+        return serverRSAPrivateKey;
+    }
+
+    public void setServerRSAPrivateKey(BigInteger serverRSAPrivateKey) {
+        this.serverRSAPrivateKey = serverRSAPrivateKey;
+    }
+
+    public BigInteger getClientRSAPrivateKey() {
+        return clientRSAPrivateKey;
+    }
+
+    public void setClientRSAPrivateKey(BigInteger clientRSAPrivateKey) {
+        this.clientRSAPrivateKey = clientRSAPrivateKey;
+    }
 }

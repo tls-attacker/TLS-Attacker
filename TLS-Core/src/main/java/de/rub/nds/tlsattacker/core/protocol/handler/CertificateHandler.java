@@ -107,8 +107,10 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 tlsContext.setRsaModulus(CertificateUtils.extractRSAModulus(cert));
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     tlsContext.setClientRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
+                    tlsContext.setClientRSAPrivateKey(tlsContext.getConfig().getDefaultClientRSAPrivateKey());
                 } else {
                     tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
+                    tlsContext.setServerRSAPrivateKey(tlsContext.getConfig().getDefaultServerRSAPrivateKey());
                 }
             }
         } catch (IOException E) {

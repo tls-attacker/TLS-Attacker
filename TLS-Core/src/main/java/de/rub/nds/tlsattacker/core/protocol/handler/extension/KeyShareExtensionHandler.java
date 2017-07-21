@@ -90,8 +90,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
             if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
-                    sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
+                if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
                 } else {
                     throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
                 }

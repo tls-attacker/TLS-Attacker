@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -490,6 +491,15 @@ public class DefaultChooser extends Chooser {
             return context.getClientHandshakeTrafficSecret();
         } else {
             return config.getDefaultClientHandshakeTrafficSecret();
+        }
+    }
+
+    @Override
+    public KSEntry getServerKSEntry() {
+        if (context.getServerKSEntry() != null) {
+            return context.getServerKSEntry();
+        } else {
+            return config.getDefaultServerKSEntry();
         }
     }
 }
