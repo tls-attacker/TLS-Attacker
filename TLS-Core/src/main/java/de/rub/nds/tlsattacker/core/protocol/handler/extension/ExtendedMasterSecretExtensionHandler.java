@@ -32,7 +32,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
-        return new ExtendedMasterSecretExtensionPreparator(context, message);
+        return new ExtendedMasterSecretExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override

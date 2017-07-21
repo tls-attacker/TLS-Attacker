@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 
@@ -20,8 +21,9 @@ import java.io.ByteArrayOutputStream;
 public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBindingExtensionMessage> {
     private final TokenBindingExtensionMessage message;
 
-    public TokenBindingExtensionPreparator(TlsContext context, TokenBindingExtensionMessage message) {
-        super(context, message);
+    public TokenBindingExtensionPreparator(TlsContext context, TokenBindingExtensionMessage message,
+            TokenBindingExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.message = message;
     }
 

@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsExtensionHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -53,10 +51,5 @@ public class SupportedVersionsExtensionMessage extends ExtensionMessage {
 
     public void setSupportedVersions(ModifiableByteArray supportedVersions) {
         this.supportedVersions = supportedVersions;
-    }
-
-    @Override
-    public SupportedVersionsExtensionHandler getHandler(TlsContext context) {
-        return new SupportedVersionsExtensionHandler(context);
     }
 }

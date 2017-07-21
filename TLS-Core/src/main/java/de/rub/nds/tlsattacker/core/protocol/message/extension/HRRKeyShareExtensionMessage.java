@@ -12,8 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.HRRKeyShareExtensionHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -37,10 +35,5 @@ public class HRRKeyShareExtensionMessage extends ExtensionMessage {
 
     public void setSelectedGroup(byte[] bytes) {
         this.selectedGroup = ModifiableVariableFactory.safelySetValue(selectedGroup, bytes);
-    }
-
-    @Override
-    public HRRKeyShareExtensionHandler getHandler(TlsContext context) {
-        return new HRRKeyShareExtensionHandler(context);
     }
 }

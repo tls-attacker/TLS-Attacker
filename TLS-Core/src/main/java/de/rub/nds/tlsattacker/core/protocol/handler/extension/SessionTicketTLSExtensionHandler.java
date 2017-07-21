@@ -50,7 +50,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      */
     @Override
     public SessionTicketTLSExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
-        return new SessionTicketTLSExtensionPreparator(context, message);
+        return new SessionTicketTLSExtensionPreparator(context, message, getSerializer(message));
     }
 
     /**

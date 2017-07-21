@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
@@ -19,8 +20,9 @@ public class MaxFragmentLengthExtensionPreparator extends ExtensionPreparator<Ma
 
     private final MaxFragmentLengthExtensionMessage message;
 
-    public MaxFragmentLengthExtensionPreparator(TlsContext context, MaxFragmentLengthExtensionMessage message) {
-        super(context, message);
+    public MaxFragmentLengthExtensionPreparator(TlsContext context, MaxFragmentLengthExtensionMessage message,
+            MaxFragmentLengthExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.message = message;
     }
 

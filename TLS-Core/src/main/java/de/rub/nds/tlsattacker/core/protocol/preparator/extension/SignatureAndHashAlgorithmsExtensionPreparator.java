@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignatureAndHashAlgorithmsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -26,8 +27,8 @@ public class SignatureAndHashAlgorithmsExtensionPreparator extends
     private final SignatureAndHashAlgorithmsExtensionMessage msg;
 
     public SignatureAndHashAlgorithmsExtensionPreparator(TlsContext context,
-            SignatureAndHashAlgorithmsExtensionMessage message) {
-        super(context, message);
+            SignatureAndHashAlgorithmsExtensionMessage message, SignatureAndHashAlgorithmsExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.msg = message;
     }
 

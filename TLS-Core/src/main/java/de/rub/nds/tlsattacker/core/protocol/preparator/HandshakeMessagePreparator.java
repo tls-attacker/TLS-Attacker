@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
@@ -84,7 +85,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
-                ExtensionHandler handler = extensionMessage.getHandler(context);
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(context,
+                        extensionMessage.getExtensionTypeConstant(), msg.getHandshakeMessageType());
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());

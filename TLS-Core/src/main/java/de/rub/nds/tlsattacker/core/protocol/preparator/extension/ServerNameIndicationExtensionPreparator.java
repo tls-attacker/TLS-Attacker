@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
@@ -26,8 +27,9 @@ public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator
     private final ServerNameIndicationExtensionMessage msg;
     private ByteArrayOutputStream stream;
 
-    public ServerNameIndicationExtensionPreparator(TlsContext context, ServerNameIndicationExtensionMessage message) {
-        super(context, message);
+    public ServerNameIndicationExtensionPreparator(TlsContext context, ServerNameIndicationExtensionMessage message,
+            ServerNameIndicationExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.msg = message;
     }
 

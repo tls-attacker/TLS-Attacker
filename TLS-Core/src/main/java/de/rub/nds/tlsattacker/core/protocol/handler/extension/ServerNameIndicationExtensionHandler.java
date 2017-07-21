@@ -49,7 +49,7 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
 
     @Override
     public ServerNameIndicationExtensionPreparator getPreparator(ServerNameIndicationExtensionMessage message) {
-        return new ServerNameIndicationExtensionPreparator(context, message);
+        return new ServerNameIndicationExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override

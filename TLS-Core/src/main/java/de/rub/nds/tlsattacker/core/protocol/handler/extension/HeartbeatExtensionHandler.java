@@ -47,7 +47,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
 
     @Override
     public HeartbeatExtensionPreparator getPreparator(HeartbeatExtensionMessage message) {
-        return new HeartbeatExtensionPreparator(context, message);
+        return new HeartbeatExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override

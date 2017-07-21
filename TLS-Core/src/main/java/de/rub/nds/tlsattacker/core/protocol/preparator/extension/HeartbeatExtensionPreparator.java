@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
@@ -20,8 +21,9 @@ public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatE
 
     private final HeartbeatExtensionMessage msg;
 
-    public HeartbeatExtensionPreparator(TlsContext context, HeartbeatExtensionMessage message) {
-        super(context, message);
+    public HeartbeatExtensionPreparator(TlsContext context, HeartbeatExtensionMessage message,
+            HeartbeatExtensionSerializer serializer) {
+        super(context, message, serializer);
         this.msg = message;
     }
 

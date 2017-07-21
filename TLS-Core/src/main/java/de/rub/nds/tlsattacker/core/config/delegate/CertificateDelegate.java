@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.IOException;
 import java.security.KeyStoreException;

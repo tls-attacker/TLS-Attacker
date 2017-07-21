@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
-import de.rub.nds.tlsattacker.core.config.ConfigIO;
-import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

@@ -11,11 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ECPointFormatExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatExtensionPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
@@ -51,17 +48,17 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
     }
 
     @Override
-    public ExtensionParser getParser(byte[] message, int pointer) {
+    public ECPointFormatExtensionParser getParser(byte[] message, int pointer) {
         return new ECPointFormatExtensionParser(pointer, message);
     }
 
     @Override
-    public ExtensionPreparator getPreparator(ECPointFormatExtensionMessage message) {
-        return new ECPointFormatExtensionPreparator(context, message);
+    public ECPointFormatExtensionPreparator getPreparator(ECPointFormatExtensionMessage message) {
+        return new ECPointFormatExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override
-    public ExtensionSerializer getSerializer(ECPointFormatExtensionMessage message) {
+    public ECPointFormatExtensionSerializer getSerializer(ECPointFormatExtensionMessage message) {
         return new ECPointFormatExtensionSerializer(message);
     }
 

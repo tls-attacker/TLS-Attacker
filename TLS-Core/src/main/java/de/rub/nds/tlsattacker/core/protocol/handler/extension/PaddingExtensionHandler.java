@@ -33,7 +33,7 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
 
     @Override
     public PaddingExtensionPreparator getPreparator(PaddingExtensionMessage message) {
-        return new PaddingExtensionPreparator(context, message);
+        return new PaddingExtensionPreparator(context, message, getSerializer(message));
     }
 
     @Override
