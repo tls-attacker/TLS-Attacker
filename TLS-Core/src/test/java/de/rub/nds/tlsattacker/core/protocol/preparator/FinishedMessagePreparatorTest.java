@@ -76,4 +76,9 @@ public class FinishedMessagePreparatorTest {
                 ArrayConverter.hexStringToByteArray("B4AB5C21316FD38E3605D62C9022062DA84D83214EBC7BCD4BE6B3DB1971AFCA"));
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

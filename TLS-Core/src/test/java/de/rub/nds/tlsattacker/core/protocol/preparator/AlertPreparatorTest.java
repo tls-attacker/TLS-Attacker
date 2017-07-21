@@ -56,4 +56,9 @@ public class AlertPreparatorTest {
         assertTrue(message.getDescription().getValue() == 2);
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

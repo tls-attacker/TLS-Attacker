@@ -137,6 +137,10 @@ public class ECDHEServerKeyExchangePreparatorTest {
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
         SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
         config.setSupportedSignatureAndHashAlgorithms(SigAndHashList);
+    }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 }

@@ -41,4 +41,9 @@ public class ApplicationMessagePreparatorTest {
         preparator.prepare();
         assertArrayEquals(message.getData().getValue(), "1234".getBytes());
     }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }
