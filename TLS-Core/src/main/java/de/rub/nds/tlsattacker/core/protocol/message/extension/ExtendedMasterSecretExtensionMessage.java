@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * This is the extended_master_secret message. There is no need for any data,
