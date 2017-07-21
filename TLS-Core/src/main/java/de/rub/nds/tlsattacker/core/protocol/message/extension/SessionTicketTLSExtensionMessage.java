@@ -12,8 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -29,18 +27,6 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
      */
     public SessionTicketTLSExtensionMessage() {
         super(ExtensionType.SESSION_TICKET);
-    }
-
-    /**
-     * Returns a new SessionTicketTLSExtensionHandler
-     *
-     * @param context
-     *            A TLSContext
-     * @return A new SessionTicketTLSExtensionHandler
-     */
-    @Override
-    public SessionTicketTLSExtensionHandler getHandler(TlsContext context) {
-        return new SessionTicketTLSExtensionHandler(context);
     }
 
     /**

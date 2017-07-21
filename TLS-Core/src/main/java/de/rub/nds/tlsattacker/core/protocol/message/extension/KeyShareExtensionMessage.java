@@ -14,9 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -70,10 +68,4 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public void setKeyShareList(List<KeySharePair> keyShareList) {
         this.keyShareList = keyShareList;
     }
-
-    @Override
-    public KeyShareExtensionHandler getHandler(TlsContext context) {
-        return new KeyShareExtensionHandler(context);
-    }
-
 }

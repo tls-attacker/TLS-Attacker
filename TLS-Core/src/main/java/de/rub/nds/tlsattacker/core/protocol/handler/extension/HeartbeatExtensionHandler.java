@@ -47,7 +47,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
 
     @Override
     public HeartbeatExtensionPreparator getPreparator(HeartbeatExtensionMessage message) {
-        return new HeartbeatExtensionPreparator(context.getChooser(), message);
+        return new HeartbeatExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

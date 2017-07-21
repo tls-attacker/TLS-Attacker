@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 
 /**
  *
@@ -20,8 +21,9 @@ public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExten
 
     private final PaddingExtensionMessage message;
 
-    public PaddingExtensionPreparator(Chooser chooser, PaddingExtensionMessage message) {
-        super(chooser, message);
+    public PaddingExtensionPreparator(Chooser chooser, PaddingExtensionMessage message,
+            PaddingExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.message = message;
     }
 

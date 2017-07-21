@@ -9,8 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRetryRequestParser;
@@ -21,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  * This handler processes the HelloRetryRequest messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.1.4
- * 
+ *
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetryRequestMessage> {
@@ -51,7 +54,9 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
         adjustSelectedCiphersuite(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                extension.getHandler(tlsContext).adjustTLSContext(extension);
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
+                        extension.getExtensionTypeConstant(), HandshakeMessageType.HELLO_RETRY_REQUEST);
+                handler.adjustTLSContext(extension);
             }
         }
     }

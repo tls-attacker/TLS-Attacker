@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -25,9 +26,11 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
      *
      * @param chooser
      * @param message
+     * @param serializer
      */
-    public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message) {
-        super(chooser, message);
+    public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message,
+            RenegotiationInfoExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.message = message;
     }
 

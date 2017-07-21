@@ -12,7 +12,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
@@ -60,7 +63,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustServerRandom(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                extension.getHandler(tlsContext).adjustTLSContext(extension);
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
+                        extension.getExtensionTypeConstant(), HandshakeMessageType.SERVER_HELLO);
+                handler.adjustTLSContext(extension);
             }
         }
         if (tlsContext.getSelectedProtocolVersion().isTLS13()) {

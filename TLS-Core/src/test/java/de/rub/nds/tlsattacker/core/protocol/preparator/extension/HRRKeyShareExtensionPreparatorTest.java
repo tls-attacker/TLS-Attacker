@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HRRKeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
@@ -30,7 +31,8 @@ public class HRRKeyShareExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new HRRKeyShareExtensionMessage();
-        preparator = new HRRKeyShareExtensionPreparator(context.getChooser(), message);
+        preparator = new HRRKeyShareExtensionPreparator(context.getChooser(), message,
+                new HRRKeyShareExtensionSerializer(message));
     }
 
     /**

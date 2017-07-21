@@ -37,7 +37,7 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
 
     @Override
     public UnknownExtensionPreparator getPreparator(UnknownExtensionMessage message) {
-        return new UnknownExtensionPreparator(context.getChooser(), message);
+        return new UnknownExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

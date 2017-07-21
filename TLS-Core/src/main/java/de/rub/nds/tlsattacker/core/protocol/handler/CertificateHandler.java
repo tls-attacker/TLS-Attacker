@@ -11,7 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -152,7 +155,9 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
                 if (entry.getExtensions() != null) {
                     for (ExtensionMessage extension : entry.getExtensions()) {
-                        extension.getHandler(tlsContext).adjustTLSContext(extension);
+                        ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
+                                extension.getExtensionTypeConstant(), HandshakeMessageType.CERTIFICATE);
+                        handler.adjustTLSContext(extension);
                     }
                 }
             }

@@ -37,7 +37,7 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
 
     @Override
     public SupportedVersionsExtensionPreparator getPreparator(SupportedVersionsExtensionMessage message) {
-        return new SupportedVersionsExtensionPreparator(context.getChooser(), message);
+        return new SupportedVersionsExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
