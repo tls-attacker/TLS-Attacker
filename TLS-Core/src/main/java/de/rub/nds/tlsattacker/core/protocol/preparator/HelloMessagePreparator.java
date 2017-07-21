@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
@@ -27,8 +27,8 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     private final HelloMessage msg;
 
-    public HelloMessagePreparator(TlsContext context, HelloMessage message) {
-        super(context, message);
+    public HelloMessagePreparator(Chooser chooser, HelloMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

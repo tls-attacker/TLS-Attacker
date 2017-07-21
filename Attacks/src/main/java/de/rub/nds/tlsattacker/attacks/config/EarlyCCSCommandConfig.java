@@ -9,13 +9,12 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
-import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 
 /**
  *
@@ -46,7 +45,12 @@ public class EarlyCCSCommandConfig extends AttackConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
+    public boolean isExecuteAttack() {
+        return false;
+    }
+
+    @Override
+    public Config createConfig() {
         return super.createConfig();
     }
 

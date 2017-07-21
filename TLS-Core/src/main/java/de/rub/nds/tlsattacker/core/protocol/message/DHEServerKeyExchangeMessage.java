@@ -14,13 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -35,22 +35,22 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray p;
+    private ModifiableByteArray modulus;
 
     /**
      * DH modulus Length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger pLength;
+    private ModifiableInteger modulusLength;
 
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray g;
+    private ModifiableByteArray generator;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger gLength;
+    private ModifiableInteger generatorLength;
 
     @HoldsModifiableVariable
     protected DHEServerComputations computations;
@@ -59,56 +59,56 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super();
     }
 
-    public DHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
+    public DHEServerKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
-    public ModifiableByteArray getP() {
-        return p;
+    public ModifiableByteArray getModulus() {
+        return modulus;
     }
 
-    public void setP(ModifiableByteArray p) {
-        this.p = p;
+    public void setModulus(ModifiableByteArray modulus) {
+        this.modulus = modulus;
     }
 
-    public void setP(byte[] p) {
-        this.p = ModifiableVariableFactory.safelySetValue(this.p, p);
+    public void setModulus(byte[] modulus) {
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
 
-    public ModifiableByteArray getG() {
-        return g;
+    public ModifiableByteArray getGenerator() {
+        return generator;
     }
 
-    public void setG(ModifiableByteArray g) {
-        this.g = g;
+    public void setGenerator(ModifiableByteArray generator) {
+        this.generator = generator;
     }
 
-    public void setG(byte[] g) {
-        this.g = ModifiableVariableFactory.safelySetValue(this.g, g);
+    public void setGenerator(byte[] generator) {
+        this.generator = ModifiableVariableFactory.safelySetValue(this.generator, generator);
     }
 
-    public ModifiableInteger getpLength() {
-        return pLength;
+    public ModifiableInteger getModulusLength() {
+        return modulusLength;
     }
 
-    public void setpLength(ModifiableInteger pLength) {
-        this.pLength = pLength;
+    public void setModulusLength(ModifiableInteger modulusLength) {
+        this.modulusLength = modulusLength;
     }
 
-    public void setpLength(int pLength) {
-        this.pLength = ModifiableVariableFactory.safelySetValue(this.pLength, pLength);
+    public void setModulusLength(int modulusLength) {
+        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 
-    public ModifiableInteger getgLength() {
-        return gLength;
+    public ModifiableInteger getGeneratorLength() {
+        return generatorLength;
     }
 
-    public void setgLength(ModifiableInteger gLength) {
-        this.gLength = gLength;
+    public void setGeneratorLength(ModifiableInteger generatorLength) {
+        this.generatorLength = generatorLength;
     }
 
-    public void setgLength(int gLength) {
-        this.gLength = ModifiableVariableFactory.safelySetValue(this.gLength, gLength);
+    public void setGeneratorLength(int generatorLength) {
+        this.generatorLength = ModifiableVariableFactory.safelySetValue(this.generatorLength, generatorLength);
     }
 
     @Override
@@ -120,20 +120,20 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Modulus p: ");
-        if (p != null) {
-            sb.append(ArrayConverter.bytesToHexString(p.getValue()));
+        if (modulus != null) {
+            sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
-        if (g != null) {
-            sb.append(ArrayConverter.bytesToHexString(g.getValue()));
+        if (generator != null) {
+            sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        if (getSerializedPublicKey() != null) {
-            sb.append(ArrayConverter.bytesToHexString(getSerializedPublicKey().getValue(), false));
+        if (getPublicKey() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }

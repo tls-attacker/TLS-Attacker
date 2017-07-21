@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -67,6 +67,12 @@ public class ChangeCipherSuiteActionTest {
         action.setNewValue(CipherSuite.TLS_FALLBACK_SCSV);
         assertEquals(action.getNewValue(), CipherSuite.TLS_FALLBACK_SCSV);
 
+    }
+
+    @Test
+    public void testNoOld() {
+        tlsContext.setSelectedCipherSuite(null);
+        action.execute(tlsContext, null);
     }
 
     /**

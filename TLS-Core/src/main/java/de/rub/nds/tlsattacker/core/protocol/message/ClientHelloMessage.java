@@ -13,45 +13,45 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -96,7 +96,7 @@ public class ClientHelloMessage extends HelloMessage {
         super(HandshakeMessageType.CLIENT_HELLO);
     }
 
-    public ClientHelloMessage(TlsConfig tlsConfig) {
+    public ClientHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CLIENT_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
             addExtension(new HeartbeatExtensionMessage());
@@ -127,7 +127,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddKeyShareExtension()) {
             KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
             KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getkeySharePublic());
+            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
             pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
             extension.getKeyShareList().add(pair);
             addExtension(extension);
@@ -275,22 +275,31 @@ public class ClientHelloMessage extends HelloMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(super.toString()).append("\n  Protocol Version: ")
-                .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
-                .append("\n  Client Unix Time: ")
-                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000))
-                .append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()))
-                .append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()))
-                .append("\n  Supported Cipher Suites: ")
-                .append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()))
-                .append("\n  Supported Compression Methods: ")
-                .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
-        sb.append("\n  Extensions: ");
-        if (getExtensions() == null) {
-            sb.append("null");
-        } else {
-            for (ExtensionMessage e : getExtensions()) {
-                sb.append(e.toString());
+        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
+            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        }
+        if (getUnixTime() != null && getUnixTime().getValue() != null) {
+            sb.append("\n  Client Unix Time: ");
+            sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+        }
+        if (getRandom() != null && getRandom().getValue() != null) {
+            sb.append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+        }
+        if (getSessionId() != null && getSessionId().getValue() != null) {
+            sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        }
+        if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
+            sb.append("\n  Supported Cipher Suites: ").append(
+                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        }
+        if (getCompressions() != null && getCompressions().getValue() != null) {
+            sb.append("\n  Supported Compression Methods: ")
+                    .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
+        }
+        if (getExtensions() != null) {
+            for (ExtensionMessage extension : getExtensions()) {
+                sb.append(extension.toString()).append("\n");
             }
         }
         return sb.toString();

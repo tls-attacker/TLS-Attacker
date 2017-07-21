@@ -15,9 +15,7 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.util.List;
 
 /**
@@ -41,11 +39,6 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
 
     public CachedInfoExtensionMessage() {
         super(ExtensionType.CACHED_INFO);
-    }
-
-    @Override
-    public CachedInfoExtensionHandler getHandler(TlsContext context) {
-        return new CachedInfoExtensionHandler(context);
     }
 
     public ModifiableInteger getCachedInfoLength() {

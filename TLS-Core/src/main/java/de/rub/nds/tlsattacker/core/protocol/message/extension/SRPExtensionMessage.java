@@ -13,9 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This extension is defined in RFC5054
@@ -33,11 +30,6 @@ public class SRPExtensionMessage extends ExtensionMessage {
 
     public SRPExtensionMessage() {
         super(ExtensionType.SRP);
-    }
-
-    @Override
-    public ExtensionHandler getHandler(TlsContext context) {
-        return new SRPExtensionHandler(context);
     }
 
     public ModifiableByteArray getSrpIdentifier() {

@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -32,7 +32,8 @@ public class EncryptThenMacExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new EncryptThenMacExtensionMessage();
-        preparator = new EncryptThenMacExtensionPreparator(context, message);
+        preparator = new EncryptThenMacExtensionPreparator(context.getChooser(), message,
+                new EncryptThenMacExtensionSerializer(message));
     }
 
     @Test

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
@@ -27,17 +27,17 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     @Override
     public HelloVerifyRequestParser getParser(byte[] message, int pointer) {
-        return new HelloVerifyRequestParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new HelloVerifyRequestParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public HelloVerifyRequestPreparator getPreparator(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestPreparator(tlsContext, message);
+        return new HelloVerifyRequestPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public HelloVerifyRequestSerializer getSerializer(HelloVerifyRequestMessage message) {
-        return new HelloVerifyRequestSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new HelloVerifyRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVeri
 
     private void adjustDTLSCookie(HelloVerifyRequestMessage message) {
         byte[] dtlsCookie = message.getCookie().getValue();
-        tlsContext.setDtlsHandshakeCookie(dtlsCookie);
+        tlsContext.setDtlsCookie(dtlsCookie);
         LOGGER.debug("Set DTLS Cookie in Context to " + ArrayConverter.bytesToHexString(dtlsCookie, false));
     }
 }

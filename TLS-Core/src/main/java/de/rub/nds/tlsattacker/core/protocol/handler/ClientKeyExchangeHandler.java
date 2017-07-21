@@ -14,7 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -40,18 +41,19 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
     }
 
     protected byte[] calculateMasterSecret(ClientKeyExchangeMessage message) {
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getSelectedProtocolVersion(),
-                tlsContext.getSelectedCipherSuite());
+        Chooser chooser = tlsContext.getChooser();
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
         if (tlsContext.isExtendedMasterSecretExtension()) {
             LOGGER.debug("Calculating ExtendedMasterSecret");
-            byte[] sessionHash = tlsContext.getDigest().digest(tlsContext.getSelectedProtocolVersion(),
-                    tlsContext.getSelectedCipherSuite());
-            byte[] extendedMasterSecret = PseudoRandomFunction.compute(prfAlgorithm, tlsContext.getPreMasterSecret(),
+            byte[] sessionHash = tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite());
+            byte[] extendedMasterSecret = PseudoRandomFunction.compute(prfAlgorithm, chooser.getPreMasterSecret(),
                     PseudoRandomFunction.EXTENDED_MASTER_SECRET_LABEL, sessionHash, HandshakeByteLength.MASTER_SECRET);
             return extendedMasterSecret;
         } else {
             LOGGER.debug("Calculating MasterSecret");
-            byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, tlsContext.getPreMasterSecret(),
+            byte[] masterSecret = PseudoRandomFunction.compute(prfAlgorithm, chooser.getPreMasterSecret(),
                     PseudoRandomFunction.MASTER_SECRET_LABEL, message.getComputations().getClientRandom().getValue(),
                     HandshakeByteLength.MASTER_SECRET);
             return masterSecret;

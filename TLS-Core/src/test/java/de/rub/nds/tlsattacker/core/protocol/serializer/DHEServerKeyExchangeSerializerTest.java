@@ -77,12 +77,12 @@ public class DHEServerKeyExchangeSerializerTest {
         msg.setCompleteResultingMessage(expectedPart);
         msg.setType(type.getValue());
         msg.setLength(length);
-        msg.setpLength(pLength);
-        msg.setP(p);
-        msg.setgLength(gLength);
-        msg.setG(g);
-        msg.setSerializedPublicKey(serializedKey);
-        msg.setSerializedPublicKeyLength(serializedKeyLength);
+        msg.setModulusLength(pLength);
+        msg.setModulus(p);
+        msg.setGeneratorLength(gLength);
+        msg.setGenerator(g);
+        msg.setPublicKey(serializedKey);
+        msg.setPublicKeyLength(serializedKeyLength);
         msg.setSignature(signature);
         if (signatureAndHashAlgo != null) {
             msg.setSignatureAndHashAlgorithm(signatureAndHashAlgo);

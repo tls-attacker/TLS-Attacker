@@ -11,11 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
@@ -74,15 +71,6 @@ public class UnknownExtensionMessage extends ExtensionMessage {
 
     @Override
     public String toString() {
-        return "UnknownExtensionMessage{ extensionData="
-                + ArrayConverter.bytesToHexString(getExtensionType().getValue(), false) + " extensionLength="
-                + getExtensionLength().getValue() + " extensionData="
-                + ArrayConverter.bytesToHexString(extensionData.getValue(), false) + '}';
+        return "UnknownExtensionMessage";
     }
-
-    @Override
-    public UnknownExtensionHandler getHandler(TlsContext context) {
-        return new UnknownExtensionHandler(context);
-    }
-
 }

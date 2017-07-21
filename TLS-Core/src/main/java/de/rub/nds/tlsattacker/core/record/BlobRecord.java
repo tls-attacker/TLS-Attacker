@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
@@ -17,8 +18,8 @@ import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.preparator.BlobRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.record.serializer.BlobRecordSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * A Blob Record is not a record in a conventional sense but is rather a non
@@ -32,14 +33,13 @@ public class BlobRecord extends AbstractRecord {
     public BlobRecord() {
     }
 
-    public BlobRecord(TlsConfig config) {
+    public BlobRecord(Config config) {
         super(config);
     }
 
     @Override
-    public AbstractRecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor,
-            ProtocolMessageType type) {
-        return new BlobRecordPreparator(context, this, encryptor, type);
+    public AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, ProtocolMessageType type) {
+        return new BlobRecordPreparator(chooser, this, encryptor, type);
     }
 
     @Override
@@ -50,6 +50,11 @@ public class BlobRecord extends AbstractRecord {
     @Override
     public AbstractRecordSerializer getRecordSerializer() {
         return new BlobRecordSerializer(this);
+    }
+
+    @Override
+    public void adjustContext(TlsContext context) {
+        // do nothing
     }
 
 }

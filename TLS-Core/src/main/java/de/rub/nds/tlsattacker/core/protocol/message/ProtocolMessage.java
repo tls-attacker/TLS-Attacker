@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -70,7 +70,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isRequired() {
-        if (required == null) {
+        if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;
         }
         return required.getValue();
@@ -81,7 +81,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isGoingToBeSent() {
-        if (goingToBeSent == null) {
+        if (goingToBeSent == null || goingToBeSent.getValue() == null) {
             return GOING_TO_BE_SENT_DEFAULT;
         }
         return goingToBeSent.getValue();
@@ -119,11 +119,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
-    }
-
-    @Override
-    public String toString() {
-        return toCompactString();
     }
 
     public abstract String toCompactString();

@@ -61,6 +61,10 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
     protected void parseHandshakeMessageContent(ServerHelloMessage msg) {
         LOGGER.debug("Parsing ServerHelloMessage");
         parseProtocolVersion(msg);
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue());
+        if (version != null) {
+            setVersion(version);
+        }
         if (!getVersion().isTLS13()) {
             parseUnixtime(msg);
         }

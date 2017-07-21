@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -23,8 +23,8 @@ public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends
 
     protected ProtocolMessageType type;
 
-    public AbstractRecordPreparator(TlsContext context, T object, ProtocolMessageType type) {
-        super(context, object);
+    public AbstractRecordPreparator(Chooser chooser, T object, ProtocolMessageType type) {
+        super(chooser, object);
         this.type = type;
     }
 

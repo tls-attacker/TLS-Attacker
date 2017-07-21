@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessa
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SrtpExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -33,7 +33,7 @@ public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage>
 
     @Override
     public SrtpExtensionPreparator getPreparator(SrtpExtensionMessage message) {
-        return new SrtpExtensionPreparator(context, message);
+        return new SrtpExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

@@ -11,7 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -21,17 +22,17 @@ import java.io.ByteArrayOutputStream;
 public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMessage> {
 
     private final SrtpExtensionMessage msg;
-    private final int protectionProfileLength = 2;
 
-    public SrtpExtensionPreparator(TlsContext context, SrtpExtensionMessage message) {
-        super(context, message);
-        this.msg = message;
+    public SrtpExtensionPreparator(Chooser chooser, SrtpExtensionMessage message,
+            ExtensionSerializer<SrtpExtensionMessage> serializer) {
+        super(chooser, message, serializer);
+        msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        for (SrtpProtectionProfiles profile : context.getConfig()
+        for (SrtpProtectionProfiles profile : chooser.getConfig()
                 .getSecureRealTimeTransportProtocolProtectionProfiles()) {
             byteStream.write(profile.getMinor());
             byteStream.write(profile.getMajor());
@@ -43,13 +44,13 @@ public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMe
         LOGGER.debug("Prepared the SRTP extension with protection profiles length "
                 + msg.getSrtpProtectionProfilesLength().getValue());
 
-        if (context.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier().length != 0) {
-            msg.setSrtpMki(context.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
+        if (chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier().length != 0) {
+            msg.setSrtpMki(chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
             LOGGER.debug("Prepared the SRTP extension with MKI " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
             msg.setSrtpMkiLength(msg.getSrtpMki().getValue().length);
             LOGGER.debug("Prepared the SRTP extension with mki length " + msg.getSrtpMkiLength().getValue());
         } else {
-            msg.setSrtpMki(context.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
+            msg.setSrtpMki(chooser.getConfig().getSecureRealTimeTransportProtocolMasterKeyIdentifier());
             msg.setSrtpMkiLength(0);
             LOGGER.debug("Prepared the SRTP extension with no MKI, hence the length is 0");
         }

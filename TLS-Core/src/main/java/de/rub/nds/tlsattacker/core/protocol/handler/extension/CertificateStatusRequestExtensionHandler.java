@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -34,7 +34,7 @@ public class CertificateStatusRequestExtensionHandler extends
 
     @Override
     public CertificateStatusRequestExtensionPreparator getPreparator(CertificateStatusRequestExtensionMessage message) {
-        return new CertificateStatusRequestExtensionPreparator(context, message);
+        return new CertificateStatusRequestExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

@@ -12,10 +12,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -29,8 +30,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     private HandshakeMessageSerializer serializer;
     private final HandshakeMessage msg;
 
-    public HandshakeMessagePreparator(TlsContext context, T message) {
-        super(context, message);
+    public HandshakeMessagePreparator(Chooser chooser, T message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -48,7 +49,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     protected final void prepareProtocolMessageContents() {
         prepareHandshakeMessageContents();
         // Ugly but only temporary
-        serializer = (HandshakeMessageSerializer) msg.getHandler(context).getSerializer(msg);
+        serializer = (HandshakeMessageSerializer) msg.getHandler(chooser.getContext()).getSerializer(msg);
 
         prepareMessageLength(serializer.serializeHandshakeMessageContent().length);
         if (isDTLS()) {
@@ -72,19 +73,20 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     }
 
     private void prepareMessageSeq(HandshakeMessage msg) {
-        msg.setMessageSeq(context.getSequenceNumber());
+        msg.setMessageSeq(chooser.getContext().getSequenceNumber());
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 
     private boolean isDTLS() {
-        return context.getSelectedProtocolVersion().isDTLS();
+        return chooser.getSelectedProtocolVersion().isDTLS();
     }
 
     protected void prepareExtensions() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
-                ExtensionHandler handler = extensionMessage.getHandler(context);
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
+                        extensionMessage.getExtensionTypeConstant(), msg.getHandshakeMessageType());
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());

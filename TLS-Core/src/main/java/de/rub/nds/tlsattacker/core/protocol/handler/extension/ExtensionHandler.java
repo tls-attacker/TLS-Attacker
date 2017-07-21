@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ExtensionHandler<Message extends ExtensionMessage> {
 
-    protected static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    protected static final Logger LOGGER = LogManager.getLogger(ExtensionHandler.class.getName());
 
     protected final TlsContext context;
 

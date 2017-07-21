@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -69,7 +69,7 @@ public class HelloVerifyRequestHandlerTest {
         HelloVerifyRequestMessage message = new HelloVerifyRequestMessage();
         message.setCookie(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
-        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getDtlsHandshakeCookie());
+        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, context.getDtlsCookie());
     }
 
 }

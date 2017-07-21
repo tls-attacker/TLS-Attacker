@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicatio
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -31,7 +31,7 @@ public class TrustedCaIndicationExtensionHandler extends ExtensionHandler<Truste
 
     @Override
     public TrustedCaIndicationExtensionPreparator getPreparator(TrustedCaIndicationExtensionMessage message) {
-        return new TrustedCaIndicationExtensionPreparator(context, message);
+        return new TrustedCaIndicationExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

@@ -67,8 +67,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parsepLength(DHEServerKeyExchangeMessage msg) {
-        msg.setpLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
-        LOGGER.debug("pLength: " + msg.getpLength().getValue());
+        msg.setModulusLength(parseIntField(HandshakeByteLength.DH_MODULUS_LENGTH));
+        LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
     }
 
     /**
@@ -78,8 +78,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseP(DHEServerKeyExchangeMessage msg) {
-        msg.setP(parseByteArrayField(msg.getpLength().getValue()));
-        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getP().getValue()));
+        msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
+        LOGGER.debug("P: " + msg.getModulus().getValue());
     }
 
     /**
@@ -89,8 +89,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parsegLength(DHEServerKeyExchangeMessage msg) {
-        msg.setgLength(parseIntField(HandshakeByteLength.DH_G_LENGTH));
-        LOGGER.debug("gLength: " + msg.getgLength().getValue());
+        msg.setGeneratorLength(parseIntField(HandshakeByteLength.DH_GENERATOR_LENGTH));
+        LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
     }
 
     /**
@@ -100,8 +100,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseG(DHEServerKeyExchangeMessage msg) {
-        msg.setG(parseByteArrayField(msg.getgLength().getValue()));
-        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getG().getValue()));
+        msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
+        LOGGER.debug("G: " + msg.getGenerator().getValue());
     }
 
     /**
@@ -112,8 +112,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -124,8 +124,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     /**

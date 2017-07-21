@@ -14,8 +14,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This extension is defined in RFC6520
@@ -51,10 +49,5 @@ public class HeartbeatExtensionMessage extends ExtensionMessage {
 
     public void setHeartbeatModeConfig(HeartbeatMode heartbeatModeConfig) {
         this.heartbeatModeConfig = heartbeatModeConfig;
-    }
-
-    @Override
-    public HeartbeatExtensionHandler getHandler(TlsContext context) {
-        return new HeartbeatExtensionHandler(context);
     }
 }

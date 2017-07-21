@@ -10,9 +10,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,7 @@ import org.junit.Test;
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class FinishedMessagePreparatorTest {
+
     private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);
 
     private FinishedMessage message;
@@ -36,7 +38,7 @@ public class FinishedMessagePreparatorTest {
     public void setUp() {
         message = new FinishedMessage();
         context = new TlsContext();
-        preparator = new FinishedMessagePreparator(context, message);
+        preparator = new FinishedMessagePreparator(context.getChooser(), message);
     }
 
     /**
@@ -48,11 +50,12 @@ public class FinishedMessagePreparatorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setMasterSecret(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"));
+        context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
         preparator.prepare();
         LOGGER.info(ArrayConverter.bytesToHexString(message.getVerifyData().getValue(), false));
         assertArrayEquals(ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"), message.getVerifyData()
                 .getValue());// TODO Did not check if this is calculated
-                             // correctly, just made sure it is set
+        // correctly, just made sure it is set
 
     }
 

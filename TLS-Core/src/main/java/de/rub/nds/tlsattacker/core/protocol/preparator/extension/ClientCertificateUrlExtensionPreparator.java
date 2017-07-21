@@ -9,7 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -17,8 +18,9 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  */
 public class ClientCertificateUrlExtensionPreparator extends ExtensionPreparator<ClientCertificateUrlExtensionMessage> {
 
-    public ClientCertificateUrlExtensionPreparator(TlsContext context, ClientCertificateUrlExtensionMessage message) {
-        super(context, message);
+    public ClientCertificateUrlExtensionPreparator(Chooser chooser, ClientCertificateUrlExtensionMessage message,
+            ExtensionSerializer<ClientCertificateUrlExtensionMessage> serializer) {
+        super(chooser, message, serializer);
     }
 
     @Override

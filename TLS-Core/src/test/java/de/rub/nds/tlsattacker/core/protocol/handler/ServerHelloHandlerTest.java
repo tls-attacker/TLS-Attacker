@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -80,7 +80,7 @@ public class ServerHelloHandlerTest {
         handler.adjustTLSContext(message);
         assertArrayEquals(context.getServerRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
         assertTrue(context.getSelectedCompressionMethod() == CompressionMethod.DEFLATE);
-        assertArrayEquals(context.getSessionID(), new byte[] { 6, 6, 6 });
+        assertArrayEquals(context.getServerSessionId(), new byte[] { 6, 6, 6 });
         assertArrayEquals(context.getSelectedCipherSuite().getByteValue(),
                 CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384.getByteValue());
         assertArrayEquals(context.getSelectedProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());

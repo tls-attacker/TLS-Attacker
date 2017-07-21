@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -26,17 +26,17 @@ public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage
 
     @Override
     public UnknownMessageParser getParser(byte[] message, int pointer) {
-        return new UnknownMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new UnknownMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public UnknownMessagePreparator getPreparator(UnknownMessage message) {
-        return new UnknownMessagePreparator(tlsContext, message);
+        return new UnknownMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public UnknownMessageSerializer getSerializer(UnknownMessage message) {
-        return new UnknownMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new UnknownMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

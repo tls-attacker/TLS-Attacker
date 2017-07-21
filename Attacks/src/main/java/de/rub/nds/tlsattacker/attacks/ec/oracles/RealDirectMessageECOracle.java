@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
@@ -21,8 +22,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -42,7 +42,7 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class RealDirectMessageECOracle extends ECOracle {
 
-    private final TlsConfig config;
+    private final Config config;
 
     private Point checkPoint;
 
@@ -50,7 +50,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     private final ECComputer computer;
 
-    public RealDirectMessageECOracle(TlsConfig config, Curve curve) {
+    public RealDirectMessageECOracle(Config config, Curve curve) {
         this.config = config;
         this.curve = curve;
         this.computer = new ECComputer();

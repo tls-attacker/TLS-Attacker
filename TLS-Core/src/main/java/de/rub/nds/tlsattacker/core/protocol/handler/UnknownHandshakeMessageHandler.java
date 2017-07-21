@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -31,16 +31,16 @@ public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<Unkn
 
     @Override
     public UnknownHandshakeMessageParser getParser(byte[] message, int pointer) {
-        return new UnknownHandshakeMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new UnknownHandshakeMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public UnknownHandshakeMessagePreparator getPreparator(UnknownHandshakeMessage message) {
-        return new UnknownHandshakeMessagePreparator(tlsContext, message);
+        return new UnknownHandshakeMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public UnknownHandshakeMessageSerializer getSerializer(UnknownHandshakeMessage message) {
-        return new UnknownHandshakeMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new UnknownHandshakeMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 }

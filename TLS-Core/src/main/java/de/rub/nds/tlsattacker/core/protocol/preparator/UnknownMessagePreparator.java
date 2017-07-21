@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,8 +20,8 @@ public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownM
 
     private final UnknownMessage msg;
 
-    public UnknownMessagePreparator(TlsContext context, UnknownMessage message) {
-        super(context, message);
+    public UnknownMessagePreparator(Chooser chooser, UnknownMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

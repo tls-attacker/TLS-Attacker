@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * RFC7366
@@ -21,11 +19,6 @@ public class EncryptThenMacExtensionMessage extends ExtensionMessage {
 
     public EncryptThenMacExtensionMessage() {
         super(ExtensionType.ENCRYPT_THEN_MAC);
-    }
-
-    @Override
-    public EncryptThenMacExtensionHandler getHandler(TlsContext context) {
-        return new EncryptThenMacExtensionHandler(context);
     }
 
 }

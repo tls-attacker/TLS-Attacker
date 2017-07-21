@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 
 /**
  *
@@ -20,8 +21,9 @@ public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatE
 
     private final HeartbeatExtensionMessage msg;
 
-    public HeartbeatExtensionPreparator(TlsContext context, HeartbeatExtensionMessage message) {
-        super(context, message);
+    public HeartbeatExtensionPreparator(Chooser chooser, HeartbeatExtensionMessage message,
+            HeartbeatExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.msg = message;
     }
 
@@ -32,7 +34,7 @@ public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatE
     }
 
     private void prepareHeartbeatMode(HeartbeatExtensionMessage msg) {
-        msg.setHeartbeatMode(context.getConfig().getHeartbeatMode().getArrayValue());
+        msg.setHeartbeatMode(chooser.getConfig().getHeartbeatMode().getArrayValue());
         LOGGER.debug("HeartbeatMode: " + ArrayConverter.bytesToHexString(msg.getHeartbeatMode().getValue()));
     }
 

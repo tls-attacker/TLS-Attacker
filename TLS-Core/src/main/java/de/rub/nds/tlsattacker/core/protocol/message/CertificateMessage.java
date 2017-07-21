@@ -14,21 +14,18 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
-import java.io.ByteArrayOutputStream;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.crypto.tls.Certificate;
 
@@ -69,15 +66,26 @@ public class CertificateMessage extends HandshakeMessage {
         super(HandshakeMessageType.CERTIFICATE);
     }
 
-    public CertificateMessage(TlsConfig tlsConfig) {
+    public CertificateMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.CERTIFICATE);
-        if (tlsConfig.getHighestProtocolVersion().isTLS13()) {
+        certificatesList = new LinkedList<>();
+        try {
+            Certificate cert = getCertificate(tlsConfig);
+            for (org.bouncycastle.asn1.x509.Certificate singleCert : cert.getCertificateList()) {
+                CertificatePair pair = new CertificatePair();
+                pair.setCertificateConfig(singleCert.getEncoded());
+                certificatesList.add(pair);
+            }
+        } catch (IOException ex) {
+            LOGGER.warn("Could not parse configured Certificate into a real Certificate. Just sending bytes as they are (with added Length field)");
             CertificatePair pair = new CertificatePair();
-            pair.setCertificateConfig(encodeCert(tlsConfig.getOurCertificate()));
-            // Extentions can be added via if statements ? (as ClientHello and
-            // ServerHello). For this message no extension is currently
-            // implemented.
+            pair.setCertificateConfig(CertificateByteChooser.chooseCertificateType(tlsConfig));
+            certificatesList.add(pair);
         }
+    }
+
+    private Certificate getCertificate(Config config) throws IOException {
+        return Certificate.parse(new ByteArrayInputStream(CertificateByteChooser.chooseCertificateType(config)));
     }
 
     public ModifiableInteger getCertificatesListLength() {
@@ -179,17 +187,5 @@ public class CertificateMessage extends HandshakeMessage {
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new CertificateHandler(context);
-    }
-
-    private byte[] encodeCert(Certificate cert) {
-        ByteArrayOutputStream certByteStream = new ByteArrayOutputStream();
-        try {
-            cert.encode(certByteStream);
-            return Arrays.copyOfRange(certByteStream.toByteArray(), HandshakeByteLength.CERTIFICATES_LENGTH
-                    + HandshakeByteLength.CERTIFICATE_LENGTH, certByteStream.toByteArray().length);
-        } catch (IOException ex) {
-            throw new PreparationException(
-                    "Cannot prepare CertificateMessage. An exception Occured while encoding the Certificates", ex);
-        }
     }
 }

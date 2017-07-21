@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.MaxFragmentLengthExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.MaxFragmentLengthExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.MaxFragmentLengthExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -47,7 +47,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
 
     @Override
     public MaxFragmentLengthExtensionPreparator getPreparator(MaxFragmentLengthExtensionMessage message) {
-        return new MaxFragmentLengthExtensionPreparator(context, message);
+        return new MaxFragmentLengthExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

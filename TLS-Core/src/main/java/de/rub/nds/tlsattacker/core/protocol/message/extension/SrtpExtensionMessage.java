@@ -13,9 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This extension is defined in RFC5764
@@ -35,11 +32,6 @@ public class SrtpExtensionMessage extends ExtensionMessage {
 
     public SrtpExtensionMessage() {
         super(ExtensionType.USE_SRTP);
-    }
-
-    @Override
-    public ExtensionHandler getHandler(TlsContext context) {
-        return new SrtpExtensionHandler(context);
     }
 
     public ModifiableByteArray getSrtpProtectionProfiles() {

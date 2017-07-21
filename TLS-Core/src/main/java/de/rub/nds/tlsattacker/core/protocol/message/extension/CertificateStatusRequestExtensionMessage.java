@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This extension is defined in RFC6066
@@ -36,11 +34,6 @@ public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
 
     public CertificateStatusRequestExtensionMessage() {
         super(ExtensionType.STATUS_REQUEST);
-    }
-
-    @Override
-    public CertificateStatusRequestExtensionHandler getHandler(TlsContext context) {
-        return new CertificateStatusRequestExtensionHandler(context);
     }
 
     public ModifiableInteger getCertificateStatusRequestType() {

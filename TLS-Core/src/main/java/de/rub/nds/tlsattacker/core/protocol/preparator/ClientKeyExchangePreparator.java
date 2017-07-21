@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMessage> extends
         HandshakeMessagePreparator<ClientKeyExchangeMessage> {
 
-    public ClientKeyExchangePreparator(TlsContext context, ClientKeyExchangeMessage message) {
-        super(context, message);
+    public ClientKeyExchangePreparator(Chooser chooser, ClientKeyExchangeMessage message) {
+        super(chooser, message);
     }
 }

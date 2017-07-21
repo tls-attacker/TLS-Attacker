@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RetransmitMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RetransmitMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -31,12 +31,12 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
 
     @Override
     public RetransmitMessagePreparator getPreparator(RetransmitMessage message) {
-        return new RetransmitMessagePreparator(tlsContext, message);
+        return new RetransmitMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public RetransmitMessageSerializer getSerializer(RetransmitMessage message) {
-        return new RetransmitMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new RetransmitMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

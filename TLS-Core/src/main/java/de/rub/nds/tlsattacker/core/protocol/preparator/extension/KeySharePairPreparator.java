@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -20,8 +20,8 @@ public class KeySharePairPreparator extends Preparator<KeySharePair> {
 
     private final KeySharePair pair;
 
-    public KeySharePairPreparator(TlsContext context, KeySharePair pair) {
-        super(context, pair);
+    public KeySharePairPreparator(Chooser chooser, KeySharePair pair) {
+        super(chooser, pair);
         this.pair = pair;
     }
 

@@ -9,7 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -17,8 +18,9 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  */
 public class EncryptThenMacExtensionPreparator extends ExtensionPreparator<EncryptThenMacExtensionMessage> {
 
-    public EncryptThenMacExtensionPreparator(TlsContext context, EncryptThenMacExtensionMessage message) {
-        super(context, message);
+    public EncryptThenMacExtensionPreparator(Chooser chooser, EncryptThenMacExtensionMessage message,
+            ExtensionSerializer<EncryptThenMacExtensionMessage> serializer) {
+        super(chooser, message, serializer);
     }
 
     @Override

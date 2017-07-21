@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,15 +21,16 @@ public class ServerAuthzExtensionPreparator extends ExtensionPreparator<ServerAu
 
     private final ServerAuthzExtensionMessage msg;
 
-    public ServerAuthzExtensionPreparator(TlsContext context, ServerAuthzExtensionMessage message) {
-        super(context, message);
+    public ServerAuthzExtensionPreparator(Chooser chooser, ServerAuthzExtensionMessage message,
+            ExtensionSerializer<ServerAuthzExtensionMessage> serializer) {
+        super(chooser, message, serializer);
         msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setAuthzFormatListLength(context.getConfig().getServerAuthzExtensionDataFormat().size());
-        msg.setAuthzFormatList(AuthzDataFormat.listToByteArray(context.getConfig().getServerAuthzExtensionDataFormat()));
+        msg.setAuthzFormatListLength(chooser.getConfig().getServerAuthzExtensionDataFormat().size());
+        msg.setAuthzFormatList(AuthzDataFormat.listToByteArray(chooser.getConfig().getServerAuthzExtensionDataFormat()));
     }
 
 }

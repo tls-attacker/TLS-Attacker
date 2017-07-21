@@ -9,7 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -19,14 +20,15 @@ public class UserMappingExtensionPreparator extends ExtensionPreparator<UserMapp
 
     private final UserMappingExtensionMessage msg;
 
-    public UserMappingExtensionPreparator(TlsContext context, UserMappingExtensionMessage message) {
-        super(context, message);
-        this.msg = message;
+    public UserMappingExtensionPreparator(Chooser chooser, UserMappingExtensionMessage message,
+            UserMappingExtensionSerializer serializer) {
+        super(chooser, message, serializer);
+        msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setUserMappingType(context.getConfig().getUserMappingExtensionHintType().getValue());
+        msg.setUserMappingType(chooser.getConfig().getUserMappingExtensionHintType().getValue());
         LOGGER.debug("Prepared the user mapping extension with hint type " + msg.getUserMappingType().getValue());
     }
 

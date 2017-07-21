@@ -14,14 +14,15 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.RecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 /**
@@ -85,7 +86,7 @@ public class Record extends AbstractRecord {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableBigInteger sequenceNumber;
 
-    public Record(TlsConfig config) {
+    public Record(Config config) {
         super(config);
     }
 
@@ -214,8 +215,8 @@ public class Record extends AbstractRecord {
     }
 
     @Override
-    public RecordPreparator getRecordPreparator(TlsContext context, Encryptor encryptor, ProtocolMessageType type) {
-        return new RecordPreparator(context, this, encryptor, type);
+    public RecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor, ProtocolMessageType type) {
+        return new RecordPreparator(chooser, this, encryptor, type);
     }
 
     @Override
@@ -226,5 +227,11 @@ public class Record extends AbstractRecord {
     @Override
     public RecordSerializer getRecordSerializer() {
         return new RecordSerializer(this);
+    }
+
+    @Override
+    public void adjustContext(TlsContext context) {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue());
+        context.setLastRecordVersion(version);
     }
 }

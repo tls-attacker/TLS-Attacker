@@ -8,17 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * This handler processes the EncryptedExtension messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.3.1
- * 
+ *
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class EncryptedExtensionsHandler extends HandshakeMessageHandler<EncryptedExtensionsMessage> {
@@ -34,7 +37,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
 
     @Override
     public EncryptedExtensionsPreparator getPreparator(EncryptedExtensionsMessage message) {
-        return new EncryptedExtensionsPreparator(tlsContext, message);
+        return new EncryptedExtensionsPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
@@ -46,7 +49,9 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     protected void adjustTLSContext(EncryptedExtensionsMessage message) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
-                extension.getHandler(tlsContext).adjustTLSContext(extension);
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
+                        extension.getExtensionTypeConstant(), HandshakeMessageType.ENCRYPTED_EXTENSIONS);
+                handler.adjustTLSContext(extension);
             }
         }
     }

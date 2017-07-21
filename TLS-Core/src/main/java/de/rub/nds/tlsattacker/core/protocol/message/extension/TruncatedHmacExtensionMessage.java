@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This is a binary extension, which means that no extension data is used. This
@@ -22,11 +20,6 @@ public class TruncatedHmacExtensionMessage extends ExtensionMessage {
 
     public TruncatedHmacExtensionMessage() {
         super(ExtensionType.TRUNCATED_HMAC);
-    }
-
-    @Override
-    public TruncatedHmacExtensionHandler getHandler(TlsContext context) {
-        return new TruncatedHmacExtensionHandler(context);
     }
 
 }

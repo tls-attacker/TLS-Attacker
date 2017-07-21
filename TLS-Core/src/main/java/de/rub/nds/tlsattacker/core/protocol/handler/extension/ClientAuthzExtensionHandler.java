@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientAuthzExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientAuthzExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -32,7 +32,7 @@ public class ClientAuthzExtensionHandler extends ExtensionHandler<ClientAuthzExt
 
     @Override
     public ClientAuthzExtensionPreparator getPreparator(ClientAuthzExtensionMessage message) {
-        return new ClientAuthzExtensionPreparator(context, message);
+        return new ClientAuthzExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

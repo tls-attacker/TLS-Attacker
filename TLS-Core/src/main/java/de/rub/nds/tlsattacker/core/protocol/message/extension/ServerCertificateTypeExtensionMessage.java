@@ -14,8 +14,6 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This extension is defined in RFC7250
@@ -33,11 +31,6 @@ public class ServerCertificateTypeExtensionMessage extends ExtensionMessage {
 
     public ServerCertificateTypeExtensionMessage() {
         super(ExtensionType.SERVER_CERTIFICATE_TYPE);
-    }
-
-    @Override
-    public ServerCertificateTypeExtensionHandler getHandler(TlsContext context) {
-        return new ServerCertificateTypeExtensionHandler(context);
     }
 
     public ModifiableInteger getCertificateTypesLength() {

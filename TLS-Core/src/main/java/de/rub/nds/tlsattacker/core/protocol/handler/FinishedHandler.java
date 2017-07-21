@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
@@ -31,23 +31,23 @@ import javax.crypto.Mac;
  */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
-    public FinishedHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public FinishedHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
     public FinishedMessageParser getParser(byte[] message, int pointer) {
-        return new FinishedMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new FinishedMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public FinishedMessagePreparator getPreparator(FinishedMessage message) {
-        return new FinishedMessagePreparator(tlsContext, message);
+        return new FinishedMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public FinishedMessageSerializer getSerializer(FinishedMessage message) {
-        return new FinishedMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new FinishedMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

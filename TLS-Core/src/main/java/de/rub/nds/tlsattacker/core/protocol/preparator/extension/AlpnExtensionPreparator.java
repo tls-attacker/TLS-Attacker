@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,14 +21,15 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
 
     private final AlpnExtensionMessage msg;
 
-    public AlpnExtensionPreparator(TlsContext context, AlpnExtensionMessage message) {
-        super(context, message);
-        this.msg = message;
+    public AlpnExtensionPreparator(Chooser chooser, AlpnExtensionMessage message,
+            ExtensionSerializer<AlpnExtensionMessage> serializer) {
+        super(chooser, message, serializer);
+        msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setAlpnAnnouncedProtocols(context.getConfig().getApplicationLayerProtocolNegotiationAnnouncedProtocols()
+        msg.setAlpnAnnouncedProtocols(chooser.getConfig().getApplicationLayerProtocolNegotiationAnnouncedProtocols()
                 .getBytes());
         LOGGER.debug("Prepared the ALPN Extension with announced protocols "
                 + ArrayConverter.bytesToHexString(msg.getAlpnAnnouncedProtocols()));

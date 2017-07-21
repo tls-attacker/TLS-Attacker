@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
 import java.io.Serializable;
@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TLSAction implements Serializable {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Action");
+    protected static final Logger LOGGER = LogManager.getLogger(TLSAction.class.getName());
 
     private static final boolean EXECUTED_DEFAULT = false;
 

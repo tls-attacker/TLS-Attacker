@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -22,13 +23,14 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
 
     /**
      * 
-     * @param context
-     *            A TLSContext
+     * @param chooser
      * @param message
      *            A SessionTicketTLSExtensionMessage
+     * @param serializer
      */
-    public SessionTicketTLSExtensionPreparator(TlsContext context, SessionTicketTLSExtensionMessage message) {
-        super(context, message);
+    public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message,
+            SessionTicketTLSExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.message = message;
     }
 
@@ -38,7 +40,7 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
      */
     @Override
     public void prepareExtensionContent() {
-        message.setTicket(context.getConfig().getTLSSessionTicket());
+        message.setTicket(chooser.getConfig().getTLSSessionTicket());
         LOGGER.debug("Prepared the SessionTicketTLSExtension with Ticket "
                 + ArrayConverter.bytesToHexString(message.getTicket().getValue()));
     }

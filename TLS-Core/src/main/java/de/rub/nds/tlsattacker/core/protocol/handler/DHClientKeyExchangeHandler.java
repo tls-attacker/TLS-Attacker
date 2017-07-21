@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * Handler for DH and DHE ClientKeyExchange messages
@@ -28,17 +28,17 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
 
     @Override
     public DHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new DHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new DHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public DHClientKeyExchangePreparator getPreparator(DHClientKeyExchangeMessage message) {
-        return new DHClientKeyExchangePreparator(tlsContext, message);
+        return new DHClientKeyExchangePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public DHClientKeyExchangeSerializer getSerializer(DHClientKeyExchangeMessage message) {
-        return new DHClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new DHClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

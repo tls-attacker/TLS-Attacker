@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,14 +21,15 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
 
     private final TrustedCaIndicationExtensionMessage msg;
 
-    public TrustedCaIndicationExtensionPreparator(TlsContext context, TrustedCaIndicationExtensionMessage message) {
-        super(context, message);
+    public TrustedCaIndicationExtensionPreparator(Chooser chooser, TrustedCaIndicationExtensionMessage message,
+            TrustedCaIndicationExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setTrustedAuthorities(context.getConfig().getTrustedCaIndicationExtensionAuthorties());
+        msg.setTrustedAuthorities(chooser.getConfig().getTrustedCaIndicationExtensionAuthorties());
         int taLength = 0;
         for (TrustedAuthority ta : msg.getTrustedAuthorities()) {
             taLength += ta.getLength();

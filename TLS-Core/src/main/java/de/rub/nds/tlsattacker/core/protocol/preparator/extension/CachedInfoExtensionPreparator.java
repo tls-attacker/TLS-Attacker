@@ -11,7 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -21,15 +22,16 @@ public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInf
 
     private final CachedInfoExtensionMessage msg;
 
-    public CachedInfoExtensionPreparator(TlsContext context, CachedInfoExtensionMessage message) {
-        super(context, message);
+    public CachedInfoExtensionPreparator(Chooser chooser, CachedInfoExtensionMessage message,
+            ExtensionSerializer<CachedInfoExtensionMessage> serializer) {
+        super(chooser, message, serializer);
         msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setCachedInfo(context.getConfig().getCachedObjectList());
-        msg.setIsClientState(context.getConfig().isCachedInfoExtensionIsClientState());
+        msg.setCachedInfo(chooser.getConfig().getCachedObjectList());
+        msg.setIsClientState(chooser.getConfig().isCachedInfoExtensionIsClientState());
         int payloadLength = 0;
         for (CachedObject co : msg.getCachedInfo()) {
             payloadLength += 1;

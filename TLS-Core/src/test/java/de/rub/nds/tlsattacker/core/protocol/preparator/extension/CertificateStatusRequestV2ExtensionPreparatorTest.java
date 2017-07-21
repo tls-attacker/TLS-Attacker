@@ -12,7 +12,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParserTest;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestV2ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -35,7 +36,7 @@ public class CertificateStatusRequestV2ExtensionPreparatorTest {
         context.getConfig().setStatusRequestV2RequestList(list);
 
         CertificateStatusRequestV2ExtensionPreparator preparator = new CertificateStatusRequestV2ExtensionPreparator(
-                context, msg);
+                context.getChooser(), msg, new CertificateStatusRequestV2ExtensionSerializer(msg));
         preparator.prepare();
 
         CertificateStatusRequestV2ExtensionParserTest.assertRequestItemV2List(list, msg.getStatusRequestList());

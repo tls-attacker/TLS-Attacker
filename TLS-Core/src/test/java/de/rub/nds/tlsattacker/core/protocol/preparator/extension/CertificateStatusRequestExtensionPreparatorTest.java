@@ -11,7 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -36,7 +37,8 @@ public class CertificateStatusRequestExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         msg = new CertificateStatusRequestExtensionMessage();
-        preparator = new CertificateStatusRequestExtensionPreparator(context, msg);
+        preparator = new CertificateStatusRequestExtensionPreparator(context.getChooser(), msg,
+                new CertificateStatusRequestExtensionSerializer(msg));
     }
 
     @Test

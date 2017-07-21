@@ -13,9 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This extension is defined in RFC5878
@@ -31,11 +28,6 @@ public class ClientAuthzExtensionMessage extends ExtensionMessage {
 
     public ClientAuthzExtensionMessage() {
         super(ExtensionType.CLIENT_AUTHZ);
-    }
-
-    @Override
-    public ExtensionHandler getHandler(TlsContext context) {
-        return new ClientAuthzExtensionHandler(context);
     }
 
     public ModifiableInteger getAuthzFormatListLength() {

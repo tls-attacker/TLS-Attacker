@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import static org.junit.Assert.*;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class ApplicationMessagePreparatorTest {
     public void setUp() {
         message = new ApplicationMessage();
         context = new TlsContext();
-        preparator = new ApplicationMessagePreparator(context, message);
+        preparator = new ApplicationMessagePreparator(context.getChooser(), message);
     }
 
     /**

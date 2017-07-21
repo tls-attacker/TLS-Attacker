@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,24 +31,15 @@ public class PoodleAttacker extends Attacker {
 
     @Override
     public void executeAttack() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public Boolean isVulnerable() {
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         TlsContext context = new TlsContext(tlsConfig);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.SSL3);
-        context.getConfig().setSupportedCiphersuites(getCbcCiphers());
+        context.getConfig().setDefaultClientSupportedCiphersuites(getCbcCiphers());
         context.getConfig().setWorkflowTraceType(WorkflowTraceType.HELLO);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
         executor.executeWorkflow();

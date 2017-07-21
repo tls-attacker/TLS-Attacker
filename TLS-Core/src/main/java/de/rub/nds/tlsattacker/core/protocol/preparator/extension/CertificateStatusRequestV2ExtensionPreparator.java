@@ -10,8 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RequestItemV2Serializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -22,15 +23,16 @@ public class CertificateStatusRequestV2ExtensionPreparator extends
 
     private final CertificateStatusRequestV2ExtensionMessage msg;
 
-    public CertificateStatusRequestV2ExtensionPreparator(TlsContext context,
-            CertificateStatusRequestV2ExtensionMessage message) {
-        super(context, message);
+    public CertificateStatusRequestV2ExtensionPreparator(Chooser chooser,
+            CertificateStatusRequestV2ExtensionMessage message,
+            ExtensionSerializer<CertificateStatusRequestV2ExtensionMessage> serializer) {
+        super(chooser, message, serializer);
         msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setStatusRequestList(context.getConfig().getStatusRequestV2RequestList());
+        msg.setStatusRequestList(chooser.getConfig().getStatusRequestV2RequestList());
         int listLength = 0;
         byte[] itemAsBytes;
 

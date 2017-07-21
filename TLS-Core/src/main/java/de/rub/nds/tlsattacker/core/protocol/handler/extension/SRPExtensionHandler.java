@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessag
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SRPExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SRPExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SRPExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -32,7 +32,7 @@ public class SRPExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
 
     @Override
     public SRPExtensionPreparator getPreparator(SRPExtensionMessage message) {
-        return new SRPExtensionPreparator(context, message);
+        return new SRPExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

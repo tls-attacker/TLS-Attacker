@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensio
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -31,7 +31,7 @@ public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExten
 
     @Override
     public CachedInfoExtensionPreparator getPreparator(CachedInfoExtensionMessage message) {
-        return new CachedInfoExtensionPreparator(context, message);
+        return new CachedInfoExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

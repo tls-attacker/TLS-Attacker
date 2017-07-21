@@ -10,10 +10,11 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,20 +84,22 @@ public class CiphersuiteDelegateTest {
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly",
                 delegate.getCipherSuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
-        TlsConfig config = TlsConfig.createConfig();
-        config.setSupportedCiphersuites(null);
+        Config config = Config.createConfig();
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_UNKNOWN_CIPHER);
+        config.setDefaultClientSupportedCiphersuites(null);
         delegate.applyDelegate(config);
-        assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config.getSupportedCiphersuites()
-                .contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
-        assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly", config.getSupportedCiphersuites()
-                .contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
+        assertTrue("TLS_RSA_WITH_AES_128_CBC_SHA should get parsed correctly", config
+                .getDefaultClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
+        assertTrue("TLS_RSA_WITH_AES_256_CBC_SHA should get parsed correctly", config
+                .getDefaultClientSupportedCiphersuites().contains(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA));
+        assertEquals(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, config.getDefaultSelectedCipherSuite());
 
     }
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

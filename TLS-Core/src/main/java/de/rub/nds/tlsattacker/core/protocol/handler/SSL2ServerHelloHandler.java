@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -29,12 +29,12 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
 
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        return new SSL2ServerHelloParser(message, pointer, tlsContext.getSelectedProtocolVersion());
+        return new SSL2ServerHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public ProtocolMessagePreparator getPreparator(SSL2ServerHelloMessage message) {
-        return new SSL2ServerHelloPreparator(message, tlsContext);
+        return new SSL2ServerHelloPreparator(message, tlsContext.getChooser());
     }
 
     @Override

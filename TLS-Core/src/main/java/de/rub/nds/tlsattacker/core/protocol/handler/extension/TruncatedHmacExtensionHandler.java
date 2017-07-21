@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExten
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -31,7 +31,7 @@ public class TruncatedHmacExtensionHandler extends ExtensionHandler<TruncatedHma
 
     @Override
     public TruncatedHmacExtensionPreparator getPreparator(TruncatedHmacExtensionMessage message) {
-        return new TruncatedHmacExtensionPreparator(context, message);
+        return new TruncatedHmacExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

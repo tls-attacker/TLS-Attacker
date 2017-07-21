@@ -185,7 +185,7 @@ public abstract class Parser<T> {
     }
 
     protected byte[] parseArrayOrTillEnd(int n) {
-        if (n < getBytesLeft()) {
+        if (n >= 0 && n < getBytesLeft()) {
             return parseByteArrayField(n);
         } else {
             return parseByteArrayField(getBytesLeft());

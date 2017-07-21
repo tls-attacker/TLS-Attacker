@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecr
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
@@ -32,7 +32,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
-        return new ExtendedMasterSecretExtensionPreparator(context, message);
+        return new ExtendedMasterSecretExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     }
 
     /**
-     * Adjusts the TlsContext.
+     * Adjusts the Chooser.
      *
      * @param message
      */
@@ -49,7 +49,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER
                 || context.getConfig().isEnforceSettings()) {
-            context.setIsExtendedMasterSecretExtension(true);
+            context.setReceivedMasterSecretExtension(true);
         }
     }
 

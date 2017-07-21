@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
@@ -29,17 +29,17 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public ChangeCipherSpecParser getParser(byte[] message, int pointer) {
-        return new ChangeCipherSpecParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ChangeCipherSpecParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ChangeCipherSpecPreparator getPreparator(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecPreparator(tlsContext, message);
+        return new ChangeCipherSpecPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ChangeCipherSpecSerializer getSerializer(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ChangeCipherSpecSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

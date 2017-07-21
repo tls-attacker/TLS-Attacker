@@ -34,12 +34,12 @@ public enum TokenBindingKeyParameters {
         }
     }
 
-    public static TokenBindingKeyParameters getExtensionType(byte value) {
+    public static TokenBindingKeyParameters getTokenBindingKeyParameter(byte value) {
         TokenBindingKeyParameters type = MAP.get(value);
         return type;
     }
 
-    public byte getKeyParameterValue() {
+    public byte getValue() {
         return keyParameterValue;
     }
 

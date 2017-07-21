@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -23,8 +23,8 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
         super(HandshakeMessageType.ENCRYPTED_EXTENSIONS);
     }
 
-    public EncryptedExtensionsMessage(TlsConfig tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
+    public EncryptedExtensionsMessage(Config config) {
+        super(config, HandshakeMessageType.ENCRYPTED_EXTENSIONS);
     }
 
     @Override

@@ -12,7 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -24,9 +25,10 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private final EllipticCurvesExtensionMessage msg;
 
-    public EllipticCurvesExtensionPreparator(TlsContext context, EllipticCurvesExtensionMessage message) {
-        super(context, message);
-        this.msg = message;
+    public EllipticCurvesExtensionPreparator(Chooser chooser, EllipticCurvesExtensionMessage message,
+            EllipticCurvesExtensionSerializer serializer) {
+        super(chooser, message, serializer);
+        msg = message;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private byte[] createEllipticCurveArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (NamedCurve curve : context.getConfig().getNamedCurves()) {
+        for (NamedCurve curve : chooser.getConfig().getNamedCurves()) {
             try {
                 stream.write(curve.getValue());
             } catch (IOException ex) {

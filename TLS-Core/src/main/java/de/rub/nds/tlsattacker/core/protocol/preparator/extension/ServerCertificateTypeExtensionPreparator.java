@@ -10,7 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -21,16 +22,17 @@ public class ServerCertificateTypeExtensionPreparator extends
 
     private final ServerCertificateTypeExtensionMessage msg;
 
-    public ServerCertificateTypeExtensionPreparator(TlsContext context, ServerCertificateTypeExtensionMessage message) {
-        super(context, message);
-        this.msg = message;
+    public ServerCertificateTypeExtensionPreparator(Chooser chooser, ServerCertificateTypeExtensionMessage message,
+            ExtensionSerializer<ServerCertificateTypeExtensionMessage> serializer) {
+        super(chooser, message, serializer);
+        msg = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setCertificateTypes(CertificateType.toByteArray(context.getConfig().getServerCertificateTypeDesiredTypes()));
+        msg.setCertificateTypes(CertificateType.toByteArray(chooser.getConfig().getServerCertificateTypeDesiredTypes()));
         msg.setCertificateTypesLength(msg.getCertificateTypes().getValue().length);
-        msg.setIsClientMessage(context.getConfig().isClientCertificateTypeExtensionMessageState());
+        msg.setIsClientMessage(chooser.getConfig().isClientCertificateTypeExtensionMessageState());
     }
 
 }

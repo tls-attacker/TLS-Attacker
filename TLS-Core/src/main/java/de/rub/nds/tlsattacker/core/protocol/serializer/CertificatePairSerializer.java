@@ -28,8 +28,10 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
         LOGGER.debug("Serializing CertificatePair");
         writeCertificateLength(pair);
         writeCertificate(pair);
-        writeExtensionsLength(pair);
-        writeExtensions(pair);
+        if (pair.getExtensions() != null) {
+            writeExtensionsLength(pair);
+            writeExtensions(pair);
+        }
         return getAlreadySerialized();
     }
 

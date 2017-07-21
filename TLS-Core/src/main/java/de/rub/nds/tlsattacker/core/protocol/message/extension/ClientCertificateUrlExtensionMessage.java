@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  *
@@ -20,11 +18,6 @@ public class ClientCertificateUrlExtensionMessage extends ExtensionMessage {
 
     public ClientCertificateUrlExtensionMessage() {
         super(ExtensionType.CLIENT_CERTIFICATE_URL);
-    }
-
-    @Override
-    public ClientCertificateUrlExtensionHandler getHandler(TlsContext context) {
-        return new ClientCertificateUrlExtensionHandler(context);
     }
 
 }

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.FileInputStream;
 import org.apache.logging.log4j.LogManager;
 
@@ -36,7 +36,7 @@ public class WorkflowInputDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         FileInputStream fis = null;
         if (workflowInput != null) {
             config.setWorkflowInput(workflowInput);

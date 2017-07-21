@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
@@ -50,7 +50,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionPreparator getPreparator(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionPreparator(context, message);
+        return new KeyShareExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
@@ -90,8 +90,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
             if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
-                    sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
+                if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
                 } else {
                     throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
                 }

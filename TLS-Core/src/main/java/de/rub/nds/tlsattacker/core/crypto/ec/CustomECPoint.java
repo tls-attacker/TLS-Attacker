@@ -1,0 +1,77 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.core.crypto.ec;
+
+import java.math.BigInteger;
+import java.util.Objects;
+
+/**
+ *
+ * @author Robert Merget <robert.merget@rub.de>
+ */
+public class CustomECPoint {
+
+    private BigInteger x;
+
+    private BigInteger y;
+
+    public CustomECPoint() {
+    }
+
+    public CustomECPoint(BigInteger x, BigInteger y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public BigInteger getX() {
+        return x;
+    }
+
+    public void setX(BigInteger x) {
+        this.x = x;
+    }
+
+    public BigInteger getY() {
+        return y;
+    }
+
+    public void setY(BigInteger y) {
+        this.y = y;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.x);
+        hash = 79 * hash + Objects.hashCode(this.y);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CustomECPoint other = (CustomECPoint) obj;
+        if (!Objects.equals(this.x, other.x)) {
+            return false;
+        }
+        if (!Objects.equals(this.y, other.y)) {
+            return false;
+        }
+        return true;
+    }
+
+}

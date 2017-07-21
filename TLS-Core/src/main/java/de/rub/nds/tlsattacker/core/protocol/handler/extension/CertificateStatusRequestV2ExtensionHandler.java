@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CertificateStatusRequestV2ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStatusRequestV2ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestV2ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -33,7 +33,7 @@ public class CertificateStatusRequestV2ExtensionHandler extends
     @Override
     public CertificateStatusRequestV2ExtensionPreparator getPreparator(
             CertificateStatusRequestV2ExtensionMessage message) {
-        return new CertificateStatusRequestV2ExtensionPreparator(context, message);
+        return new CertificateStatusRequestV2ExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

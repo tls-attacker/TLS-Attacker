@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.*;
@@ -34,7 +34,7 @@ public class HelloVerifyRequestPreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new HelloVerifyRequestMessage();
-        this.preparator = new HelloVerifyRequestPreparator(context, message);
+        this.preparator = new HelloVerifyRequestPreparator(context.getChooser(), message);
     }
 
     /**

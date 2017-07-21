@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExte
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -31,7 +31,7 @@ public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThen
 
     @Override
     public EncryptThenMacExtensionPreparator getPreparator(EncryptThenMacExtensionMessage message) {
-        return new EncryptThenMacExtensionPreparator(context, message);
+        return new EncryptThenMacExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

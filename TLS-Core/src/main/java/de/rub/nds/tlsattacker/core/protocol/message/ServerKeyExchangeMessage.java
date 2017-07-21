@@ -12,9 +12,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 
 /**
  *
@@ -42,18 +42,18 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger serializedPublicKeyLength;
+    private ModifiableInteger publicKeyLength;
     /**
      * serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray serializedPublicKey;
+    private ModifiableByteArray publicKey;
 
     public ServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
-    public ServerKeyExchangeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+    public ServerKeyExchangeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super(tlsConfig, handshakeMessageType);
     }
 
@@ -98,29 +98,27 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 
-    public ModifiableInteger getSerializedPublicKeyLength() {
-        return serializedPublicKeyLength;
+    public ModifiableInteger getPublicKeyLength() {
+        return publicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
-        this.serializedPublicKeyLength = serializedPublicKeyLength;
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
+        this.publicKeyLength = publicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
-        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
-                publicKeyLength);
+    public void setPublicKeyLength(Integer publicKeyLength) {
+        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
-    public ModifiableByteArray getSerializedPublicKey() {
-        return serializedPublicKey;
+    public ModifiableByteArray getPublicKey() {
+        return publicKey;
     }
 
-    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
-        this.serializedPublicKey = serializedPublicKey;
+    public void setPublicKey(ModifiableByteArray publicKey) {
+        this.publicKey = publicKey;
     }
 
-    public void setSerializedPublicKey(byte[] serializedPublicKey) {
-        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
-                serializedPublicKey);
+    public void setPublicKey(byte[] publicKey) {
+        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 }

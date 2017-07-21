@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This extension is defined in RFC7301
@@ -30,11 +28,6 @@ public class AlpnExtensionMessage extends ExtensionMessage {
 
     public AlpnExtensionMessage() {
         super(ExtensionType.ALPN);
-    }
-
-    @Override
-    public AlpnExtensionHandler getHandler(TlsContext context) {
-        return new AlpnExtensionHandler(context);
     }
 
     public ModifiableInteger getAlpnExtensionLength() {

@@ -68,8 +68,8 @@ public class SimpleTransportHandler extends TransportHandler {
     @Override
     public void sendData(byte[] data) throws IOException {
         LOGGER.debug("Sending data:" + ArrayConverter.bytesToHexString(data));
-        bos.write(data);
         try {
+            bos.write(data);
             // todo: this must be improved in the future versions, best approach
             // would be to execute JNI calls or to execute the calls over a
             // MitM server written in C

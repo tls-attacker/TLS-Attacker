@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateT
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerCertificateTypeExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerCertificateTypeExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerCertificateTypeExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -32,7 +32,7 @@ public class ServerCertificateTypeExtensionHandler extends ExtensionHandler<Serv
 
     @Override
     public ServerCertificateTypeExtensionPreparator getPreparator(ServerCertificateTypeExtensionMessage message) {
-        return new ServerCertificateTypeExtensionPreparator(context, message);
+        return new ServerCertificateTypeExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

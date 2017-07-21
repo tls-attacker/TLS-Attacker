@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.server.config;
 
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
@@ -23,9 +24,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 
 /**
  *
@@ -93,8 +92,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
+    public Config createConfig() {
+        Config config = super.createConfig();
         if (config.getWorkflowTraceType() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.FULL);
         }

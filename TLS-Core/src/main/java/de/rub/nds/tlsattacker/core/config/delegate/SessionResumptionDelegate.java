@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 
 /**
  *
@@ -18,20 +18,10 @@ import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
  */
 public class SessionResumptionDelegate extends Delegate {
 
-    @Parameter(names = "-session_resumption", description = "YES or NO")
-    private Boolean sessionResumption = null;
     @Parameter(names = "-session_id", description = "The sessionID to resume in hex", converter = ByteArrayConverter.class)
     private byte[] sessionID = null;
 
     public SessionResumptionDelegate() {
-    }
-
-    public Boolean isSessionResumption() {
-        return sessionResumption;
-    }
-
-    public void setSessionResumption(boolean sessionResumption) {
-        this.sessionResumption = sessionResumption;
     }
 
     public byte[] getSessionID() {
@@ -43,12 +33,10 @@ public class SessionResumptionDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
-        if (sessionResumption != null) {
-            config.setSessionResumption(sessionResumption);
-        }
+    public void applyDelegate(Config config) {
         if (sessionID != null) {
-            config.setSessionId(sessionID);
+            config.setDefaultClientSessionId(sessionID);
+            config.setDefaultServerSessionId(sessionID);
         }
     }
 }
