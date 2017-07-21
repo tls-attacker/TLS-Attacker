@@ -42,7 +42,11 @@ public class CiphersuiteDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (cipherSuites != null) {
-            config.setSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+            config.setDefaultServerSupportedCiphersuites(cipherSuites);
+            if (cipherSuites.size() > 0) {
+                config.setDefaultSelectedCipherSuite(cipherSuites.get(0));
+            }
         }
     }
 

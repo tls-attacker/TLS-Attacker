@@ -62,12 +62,11 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     @Override
     public EllipticCurvesExtensionPreparator getPreparator(EllipticCurvesExtensionMessage message) {
-        return new EllipticCurvesExtensionPreparator(context, message, getSerializer(message));
+        return new EllipticCurvesExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
     public EllipticCurvesExtensionSerializer getSerializer(EllipticCurvesExtensionMessage message) {
         return new EllipticCurvesExtensionSerializer(message);
     }
-
 }

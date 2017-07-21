@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -22,8 +22,8 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
 
     private final HelloRetryRequestMessage msg;
 
-    public HelloRetryRequestPreparator(TlsContext context, HelloRetryRequestMessage message) {
-        super(context, message);
+    public HelloRetryRequestPreparator(Chooser chooser, HelloRetryRequestMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -37,8 +37,8 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
     }
 
     private void prepareProtocolVersion() {
-        ProtocolVersion ourVersion = context.getConfig().getHighestProtocolVersion();
-        if (context.getConfig().isEnforceSettings()) {
+        ProtocolVersion ourVersion = chooser.getConfig().getHighestProtocolVersion();
+        if (chooser.getConfig().isEnforceSettings()) {
             msg.setProtocolVersion(ourVersion.getValue());
         } else {
             msg.setProtocolVersion(ProtocolVersion.TLS13.getValue());
@@ -47,12 +47,13 @@ public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<Hell
     }
 
     private void prepareCipherSuite() {
-        if (context.getConfig().isEnforceSettings()) {
-            msg.setSelectedCipherSuite(context.getConfig().getSupportedCiphersuites().get(0).getByteValue());
+        if (chooser.getConfig().isEnforceSettings()) {
+            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultServerSupportedCiphersuites().get(0)
+                    .getByteValue());
         } else {
             CipherSuite selectedSuite = null;
-            for (CipherSuite suite : context.getConfig().getSupportedCiphersuites()) {
-                if (context.getClientSupportedCiphersuites().contains(suite)) {
+            for (CipherSuite suite : chooser.getConfig().getDefaultServerSupportedCiphersuites()) {
+                if (chooser.getClientSupportedCiphersuites().contains(suite)) {
                     selectedSuite = suite;
                     break;
                 }

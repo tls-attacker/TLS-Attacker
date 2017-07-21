@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 
 /**
@@ -21,19 +21,19 @@ import java.io.ByteArrayOutputStream;
 public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBindingExtensionMessage> {
     private final TokenBindingExtensionMessage message;
 
-    public TokenBindingExtensionPreparator(TlsContext context, TokenBindingExtensionMessage message,
+    public TokenBindingExtensionPreparator(Chooser chooser, TokenBindingExtensionMessage message,
             TokenBindingExtensionSerializer serializer) {
-        super(context, message, serializer);
+        super(chooser, message, serializer);
         this.message = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setTokenbindingVersion(context.getConfig().getTokenBindingVersion().getByteValue());
-        message.setParameterListLength(context.getConfig().getTokenBindingKeyParameters().length);
+        message.setTokenbindingVersion(chooser.getConfig().getDefaultTokenBindingVersion().getByteValue());
+        message.setParameterListLength(chooser.getConfig().getDefaultTokenBindingKeyParameters().size());
         ByteArrayOutputStream tokenbindingKeyParameters = new ByteArrayOutputStream();
-        for (TokenBindingKeyParameters kp : context.getConfig().getTokenBindingKeyParameters()) {
-            tokenbindingKeyParameters.write(kp.getKeyParameterValue());
+        for (TokenBindingKeyParameters kp : chooser.getConfig().getDefaultTokenBindingKeyParameters()) {
+            tokenbindingKeyParameters.write(kp.getValue());
         }
         message.setTokenbindingKeyParameters(tokenbindingKeyParameters.toByteArray());
     }

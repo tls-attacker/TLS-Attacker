@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import static de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -57,7 +58,7 @@ public class DefaultActionExecutor extends ActionExecutor {
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records) {
         context.setTalkingConnectionEndType(context.getConfig().getConnectionEndType());
 
-        if (!proceed) {
+        if (!proceed || (context.getConfig().isStopRecievingAfterFatal() && context.isReceivedFatalAlert())) {
             return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
         }
         if (records == null) {
@@ -94,8 +95,6 @@ public class DefaultActionExecutor extends ActionExecutor {
             }
         }
         flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
-        // Save Bytes and parse them afterwards
-        byte[] toSendBytes = messageBytesCollector.getRecordBytes();
         try {
             sendData(messageBytesCollector);
         } catch (IOException ex) {
@@ -187,12 +186,14 @@ public class DefaultActionExecutor extends ActionExecutor {
                 return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
             }
             byte[] recievedBytes = null;
+            boolean shouldContinue = true;
             do {
                 recievedBytes = receiveByteArray();
                 if (recievedBytes.length != 0) {
                     records = parseRecords(recievedBytes);
                     List<List<AbstractRecord>> recordGroups = getRecordGroups(records);
                     for (List<AbstractRecord> recordGroup : recordGroups) {
+                        adjustContext(recordGroup);
                         decryptRecords(recordGroup);
                         messages.addAll(parseMessages(recordGroup));
                         if (context.getConfig().isQuickReceive()) {
@@ -206,10 +207,13 @@ public class DefaultActionExecutor extends ActionExecutor {
                                 }
                             }
                             boolean receivedAllConfiguredMessages = true;
-                            if (messages.size() != expectedMessages.size()) {
+                            if (messages.size() != expectedMessages.size() && !context.getConfig().isEarlyStop()) {
                                 receivedAllConfiguredMessages = false;
                             } else {
-                                for (int i = 0; i < messages.size(); i++) {
+                                for (int i = 0; i < expectedMessages.size(); i++) {
+                                    if (i >= messages.size()) {
+                                        receivedAllConfiguredMessages = false;
+                                    }
                                     if (!expectedMessages.get(i).getClass().equals(messages.get(i).getClass())) {
                                         receivedAllConfiguredMessages = false;
                                     }
@@ -217,12 +221,13 @@ public class DefaultActionExecutor extends ActionExecutor {
                             }
                             if (receivedAllConfiguredMessages || receivedFatalAlert) {
                                 LOGGER.debug("Quickreceive active. Stopping listening");
+                                shouldContinue = false;
                                 break;
                             }
                         }
                     }
                 }
-            } while (recievedBytes.length != 0);
+            } while (recievedBytes.length != 0 && shouldContinue);
 
         } catch (IOException ex) {
             LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
@@ -345,6 +350,12 @@ public class DefaultActionExecutor extends ActionExecutor {
     private void decryptRecords(List<AbstractRecord> records) {
         for (AbstractRecord record : records) {
             context.getRecordLayer().decryptRecord(record);
+        }
+    }
+
+    private void adjustContext(List<AbstractRecord> recordGroup) {
+        for (AbstractRecord record : recordGroup) {
+            record.adjustContext(context);
         }
     }
 }

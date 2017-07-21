@@ -19,8 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * //TODO
- *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class TlsAttackerSocketTest {

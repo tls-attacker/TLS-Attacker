@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class UnknownHandshakeMessagePreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new UnknownHandshakeMessage();
-        this.preparator = new UnknownHandshakeMessagePreparator(context, message);
+        this.preparator = new UnknownHandshakeMessagePreparator(context.getChooser(), message);
     }
 
     /**

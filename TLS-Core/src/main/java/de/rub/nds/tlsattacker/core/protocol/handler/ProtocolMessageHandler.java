@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -41,9 +40,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        if (tlsContext == null) {
-            throw new ConfigurationException("TLS Context is not configured yet");
-        }
     }
 
     /**
@@ -76,7 +72,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Parses a byteArray from a Position into a MessageObject and returns the
      * parsed MessageObjet and parser position in a parser result. The current
-     * TlsContext is adjusted as
+     * Chooser is adjusted as
      *
      * @param message
      * @param pointer
@@ -93,7 +89,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         try {
             prepareAfterParse(parsedMessage);
             adjustTLSContext(parsedMessage);
-        } catch (AdjustmentException E) {
+        } catch (AdjustmentException | UnsupportedOperationException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }

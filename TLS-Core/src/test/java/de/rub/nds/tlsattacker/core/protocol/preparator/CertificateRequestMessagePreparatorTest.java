@@ -34,7 +34,7 @@ public class CertificateRequestMessagePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new CertificateRequestMessage();
-        preparator = new CertificateRequestMessagePreparator(context, message);
+        preparator = new CertificateRequestMessagePreparator(context.getChooser(), message);
     }
 
     /**
@@ -51,7 +51,7 @@ public class CertificateRequestMessagePreparatorTest {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
         algoList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA, HashAlgorithm.SHA512));
-        context.getConfig().setSupportedSignatureAndHashAlgorithms(algoList);
+        context.getConfig().setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
         preparator.prepare();
         assertArrayEquals(new byte[] { 0, 1, 2 }, message.getDistinguishedNames().getValue());
         assertTrue(3 == message.getDistinguishedNamesLength().getValue());

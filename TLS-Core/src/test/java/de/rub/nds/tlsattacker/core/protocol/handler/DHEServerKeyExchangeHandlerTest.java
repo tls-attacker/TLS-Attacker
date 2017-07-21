@@ -70,9 +70,9 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        message.setP(BigInteger.TEN.toByteArray());
-        message.setG(BigInteger.ONE.toByteArray());
-        message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
+        message.setModulus(BigInteger.TEN.toByteArray());
+        message.setGenerator(BigInteger.ONE.toByteArray());
+        message.setPublicKey(new byte[] { 0, 1, 2, 3 });
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
         message.getComputations().setPrivateKey(BigInteger.ZERO);
@@ -83,9 +83,9 @@ public class DHEServerKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContextWithoutComputations() {
         DHEServerKeyExchangeMessage message = new DHEServerKeyExchangeMessage();
-        message.setP(BigInteger.TEN.toByteArray());
-        message.setG(BigInteger.ONE.toByteArray());
-        message.setSerializedPublicKey(new byte[] { 0, 1, 2, 3 });
+        message.setModulus(BigInteger.TEN.toByteArray());
+        message.setGenerator(BigInteger.ONE.toByteArray());
+        message.setPublicKey(new byte[] { 0, 1, 2, 3 });
         handler.adjustTLSContext(message);
     }
 }

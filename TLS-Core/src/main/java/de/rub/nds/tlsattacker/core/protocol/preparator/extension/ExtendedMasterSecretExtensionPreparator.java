@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -18,9 +18,9 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  */
 public class ExtendedMasterSecretExtensionPreparator extends ExtensionPreparator<ExtendedMasterSecretExtensionMessage> {
 
-    public ExtendedMasterSecretExtensionPreparator(TlsContext context, ExtendedMasterSecretExtensionMessage message,
+    public ExtendedMasterSecretExtensionPreparator(Chooser chooser, ExtendedMasterSecretExtensionMessage message,
             ExtendedMasterSecretExtensionSerializer serializer) {
-        super(context, message, serializer);
+        super(chooser, message, serializer);
     }
 
     /**

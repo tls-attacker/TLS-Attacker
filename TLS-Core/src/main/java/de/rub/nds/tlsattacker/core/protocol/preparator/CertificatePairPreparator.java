@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -27,8 +27,8 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
 
     private final CertificatePair pair;
 
-    public CertificatePairPreparator(TlsContext context, CertificatePair pair) {
-        super(context, pair);
+    public CertificatePairPreparator(Chooser chooser, CertificatePair pair) {
+        super(chooser, pair);
         this.pair = pair;
     }
 
@@ -37,8 +37,10 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         LOGGER.debug("Preparing CertificatePair");
         prepareCertificate(pair);
         prepareCertificateLength(pair);
-        prepareExtensions(pair);
-        prepareExtensionLength(pair);
+        if (pair.getExtensionsConfig() != null) {
+            prepareExtensions(pair);
+            prepareExtensionLength(pair);
+        }
     }
 
     private void prepareCertificate(CertificatePair pair) {
@@ -55,7 +57,7 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (pair.getExtensionsConfig() != null) {
             for (ExtensionMessage extensionMessage : pair.getExtensionsConfig()) {
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(context,
+                ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
                         extensionMessage.getExtensionTypeConstant(), HandshakeMessageType.CERTIFICATE);
                 handler.getPreparator(extensionMessage).prepare();
                 try {
@@ -64,8 +66,8 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
                     throw new PreparationException("Could not write ExtensionBytes to byte[]", ex);
                 }
             }
+            pair.setExtensions(stream.toByteArray());
         }
-        pair.setExtensions(stream.toByteArray());
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
     }
 

@@ -31,23 +31,23 @@ import javax.crypto.Mac;
  */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
-    public FinishedHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public FinishedHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
     public FinishedMessageParser getParser(byte[] message, int pointer) {
-        return new FinishedMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new FinishedMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public FinishedMessagePreparator getPreparator(FinishedMessage message) {
-        return new FinishedMessagePreparator(tlsContext, message);
+        return new FinishedMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public FinishedMessageSerializer getSerializer(FinishedMessage message) {
-        return new FinishedMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new FinishedMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

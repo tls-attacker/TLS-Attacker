@@ -88,7 +88,8 @@ public class TlsRecordLayer extends RecordLayer {
         records = seperator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
-            AbstractRecordPreparator preparator = record.getRecordPreparator(tlsContext, encryptor, contentType);
+            AbstractRecordPreparator preparator = record.getRecordPreparator(tlsContext.getChooser(), encryptor,
+                    contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,8 +20,8 @@ public class RetransmitMessagePreparator extends ProtocolMessagePreparator<Retra
 
     private final RetransmitMessage msg;
 
-    public RetransmitMessagePreparator(TlsContext context, RetransmitMessage message) {
-        super(context, message);
+    public RetransmitMessagePreparator(Chooser chooser, RetransmitMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

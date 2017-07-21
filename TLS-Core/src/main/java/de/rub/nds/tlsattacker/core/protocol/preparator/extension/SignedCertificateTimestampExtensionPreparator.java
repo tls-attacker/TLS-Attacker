@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -24,12 +24,12 @@ public class SignedCertificateTimestampExtensionPreparator extends
     /**
      * Constructor
      * 
-     * @param context
+     * @param chooser
      * @param message
      */
-    public SignedCertificateTimestampExtensionPreparator(TlsContext context,
+    public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
             SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
-        super(context, message, serializer);
+        super(chooser, message, serializer);
         this.message = message;
     }
 
@@ -38,7 +38,7 @@ public class SignedCertificateTimestampExtensionPreparator extends
      */
     @Override
     public void prepareExtensionContent() {
-        message.setSignedTimestamp(context.getConfig().getSignedCertificateTimestamp());
+        message.setSignedTimestamp(chooser.getConfig().getDefaultSignedCertificateTimestamp());
         LOGGER.debug("Prepared the SignedCertificateTimestapExtension with timestamp length "
                 + message.getSignedTimestamp().getValue().length);
     }

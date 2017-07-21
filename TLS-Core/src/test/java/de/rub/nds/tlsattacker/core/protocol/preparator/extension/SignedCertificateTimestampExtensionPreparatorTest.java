@@ -42,13 +42,13 @@ public class SignedCertificateTimestampExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SignedCertificateTimestampExtensionMessage();
-        preparator = new SignedCertificateTimestampExtensionPreparator(context, message,
+        preparator = new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message,
                 new SignedCertificateTimestampExtensionSerializer(message));
     }
 
     @Test
     public void testPreparator() {
-        context.getConfig().setSignedCertificateTimestamp(timestamp);
+        context.getConfig().setDefaultSignedCertificateTimestamp(timestamp);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP.getValue(), message.getExtensionType().getValue());

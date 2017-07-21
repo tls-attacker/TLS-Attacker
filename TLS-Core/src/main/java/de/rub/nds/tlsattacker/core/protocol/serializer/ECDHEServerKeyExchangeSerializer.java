@@ -72,8 +72,8 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
      * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
-        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -81,8 +81,8 @@ public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerialize
      * the final byte[]
      */
     private void writeSerializedPublicKey(ECDHEServerKeyExchangeMessage msg) {
-        appendBytes(msg.getSerializedPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        appendBytes(msg.getPublicKey().getValue());
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private boolean isTLS12() {

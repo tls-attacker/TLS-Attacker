@@ -40,7 +40,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
 
     @Override
     public HelloRetryRequestPreparator getPreparator(HelloRetryRequestMessage message) {
-        return new HelloRetryRequestPreparator(tlsContext, message);
+        return new HelloRetryRequestPreparator(tlsContext.getChooser(), message);
     }
 
     @Override

@@ -26,17 +26,17 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
 
     @Override
     public RSAClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new RSAClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new RSAClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public RSAClientKeyExchangePreparator getPreparator(RSAClientKeyExchangeMessage message) {
-        return new RSAClientKeyExchangePreparator(tlsContext, message);
+        return new RSAClientKeyExchangePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public RSAClientKeyExchangeSerializer getSerializer(RSAClientKeyExchangeMessage message) {
-        return new RSAClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new RSAClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

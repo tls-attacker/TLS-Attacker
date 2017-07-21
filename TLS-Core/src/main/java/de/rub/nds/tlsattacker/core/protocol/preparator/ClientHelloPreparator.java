@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -28,8 +28,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
 
     private final ClientHelloMessage msg;
 
-    public ClientHelloPreparator(TlsContext context, ClientHelloMessage message) {
-        super(context, message);
+    public ClientHelloPreparator(Chooser chooser, ClientHelloMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -37,8 +37,8 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
-        prepareRandom(context.getConfig().getHighestProtocolVersion());
-        if (!context.getConfig().getHighestProtocolVersion().isTLS13()) {
+        prepareRandom(chooser.getConfig().getHighestProtocolVersion());
+        if (!chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             prepareUnixTime();
         }
         prepareSessionID();
@@ -56,15 +56,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareSessionID() {
-        if (context.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setSessionId(new byte[0]);
         } else {
-            msg.setSessionId(new byte[0]);
-            if (hasSessionID()) {
-                msg.setSessionId(context.getConfig().getSessionId());
-            } else {
-                msg.setSessionId(context.getSessionID());
-            }
+            msg.setSessionId(chooser.getClientSessionId());
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
@@ -96,19 +91,19 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareProtocolVersion(ClientHelloMessage msg) {
-        if (context.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setProtocolVersion(ProtocolVersion.TLS12.getValue());
         } else {
-            msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+            msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 
     private void prepareCompressions(ClientHelloMessage msg) {
-        if (context.getConfig().getHighestProtocolVersion().isTLS13()) {
+        if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
         } else {
-            msg.setCompressions(convertCompressions(context.getConfig().getSupportedCompressionMethods()));
+            msg.setCompressions(convertCompressions(chooser.getConfig().getSupportedCompressionMethods()));
         }
         LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
@@ -119,7 +114,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private void prepareCipherSuites(ClientHelloMessage msg) {
-        msg.setCipherSuites(convertCipherSuites(context.getConfig().getSupportedCiphersuites()));
+        msg.setCipherSuites(convertCipherSuites(chooser.getConfig().getDefaultClientSupportedCiphersuites()));
         LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(msg.getCipherSuites().getValue()));
     }
 
@@ -129,11 +124,11 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     }
 
     private boolean hasHandshakeCookie() {
-        return context.getDtlsHandshakeCookie() != null;
+        return chooser.getContext().getDtlsCookie() != null;
     }
 
     private void prepareCookie(ClientHelloMessage msg) {
-        msg.setCookie(context.getDtlsHandshakeCookie());
+        msg.setCookie(chooser.getDtlsCookie());
         LOGGER.debug("Cookie: " + ArrayConverter.bytesToHexString(msg.getCookie().getValue()));
     }
 
@@ -141,9 +136,4 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         msg.setCookieLength((byte) msg.getCookie().getValue().length);
         LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
     }
-
-    private boolean hasSessionID() {
-        return context.getSessionID() == null;
-    }
-
 }

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -19,8 +19,8 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
     private final AlertMessage msg;
 
-    public AlertPreparator(TlsContext context, AlertMessage message) {
-        super(context, message);
+    public AlertPreparator(Chooser chooser, AlertMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -32,12 +32,20 @@ public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
     }
 
     private void prepareLevel(AlertMessage msg) {
-        msg.setLevel(msg.getConfig()[0]);
+        if (msg.getConfig() != null && msg.getConfig().length > 0) {
+            msg.setLevel(msg.getConfig()[0]);
+        } else {
+            msg.setLevel(chooser.getConfig().getDefaultAlertLevel());
+        }
         LOGGER.debug("Level: " + msg.getLevel().getValue());
     }
 
     private void prepareDescription(AlertMessage msg) {
-        msg.setDescription(msg.getConfig()[1]);
+        if (msg.getConfig() != null && msg.getConfig().length > 1) {
+            msg.setDescription(msg.getConfig()[1]);
+        } else {
+            msg.setDescription(chooser.getConfig().getDefaultAlertDescription());
+        }
         LOGGER.debug("Description: " + msg.getDescription().getValue());
     }
 

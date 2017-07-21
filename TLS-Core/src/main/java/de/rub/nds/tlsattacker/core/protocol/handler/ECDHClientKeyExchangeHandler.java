@@ -26,22 +26,27 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     public ECDHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ECDHClientKeyExchangePreparator getPreparator(ECDHClientKeyExchangeMessage message) {
-        return new ECDHClientKeyExchangePreparator(tlsContext, message);
+        return new ECDHClientKeyExchangePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ECDHClientKeyExchangeSerializer getSerializer(ECDHClientKeyExchangeMessage message) {
-        return new ECDHClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ECDHClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     protected void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        adjustClientPublicKey(message);
+    }
+
+    private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {
+        tlsContext.setClientEcPublicKey(message.getComputations().getClientPublicKey());
     }
 }

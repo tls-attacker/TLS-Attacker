@@ -80,7 +80,7 @@ public class ServerHelloHandlerTest {
         handler.adjustTLSContext(message);
         assertArrayEquals(context.getServerRandom(), new byte[] { 0, 1, 2, 3, 4, 5 });
         assertTrue(context.getSelectedCompressionMethod() == CompressionMethod.DEFLATE);
-        assertArrayEquals(context.getSessionID(), new byte[] { 6, 6, 6 });
+        assertArrayEquals(context.getServerSessionId(), new byte[] { 6, 6, 6 });
         assertArrayEquals(context.getSelectedCipherSuite().getByteValue(),
                 CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384.getByteValue());
         assertArrayEquals(context.getSelectedProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());

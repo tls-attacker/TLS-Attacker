@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
-import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.config.Config;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,9 +62,9 @@ public class TLSPoodleCommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-            config.setSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
-        for (CipherSuite suite : config.getSupportedCiphersuites()) {
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
             if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }

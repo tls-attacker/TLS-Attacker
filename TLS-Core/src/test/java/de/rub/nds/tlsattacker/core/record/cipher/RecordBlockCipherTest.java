@@ -45,7 +45,6 @@ public class RecordBlockCipherTest {
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
         for (CipherSuite suite : CipherSuite.values()) {
-            // TODO add fortezza and gost
             if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV()
                     && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {

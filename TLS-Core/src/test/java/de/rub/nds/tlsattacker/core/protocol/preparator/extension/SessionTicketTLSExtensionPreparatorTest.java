@@ -36,8 +36,8 @@ public class SessionTicketTLSExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SessionTicketTLSExtensionMessage();
-        preparator = new SessionTicketTLSExtensionPreparator(context, message, new SessionTicketTLSExtensionSerializer(
-                message));
+        preparator = new SessionTicketTLSExtensionPreparator(context.getChooser(), message,
+                new SessionTicketTLSExtensionSerializer(message));
     }
 
     /**

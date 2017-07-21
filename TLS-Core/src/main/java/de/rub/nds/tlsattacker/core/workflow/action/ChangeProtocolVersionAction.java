@@ -50,7 +50,8 @@ public class ChangeProtocolVersionAction extends TLSAction {
         }
         oldValue = tlsContext.getSelectedProtocolVersion();
         tlsContext.setSelectedProtocolVersion(newValue);
-        LOGGER.info("Changed ProtocolVersion from " + oldValue.name() + " to " + newValue.name());
+        LOGGER.info("Changed ProtocolVersion from " + oldValue == null ? oldValue.name() : null + " to "
+                + newValue.name());
         setExecuted(true);
     }
 

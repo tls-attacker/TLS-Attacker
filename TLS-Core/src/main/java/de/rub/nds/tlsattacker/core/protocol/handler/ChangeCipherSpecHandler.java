@@ -29,17 +29,17 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public ChangeCipherSpecParser getParser(byte[] message, int pointer) {
-        return new ChangeCipherSpecParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ChangeCipherSpecParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ChangeCipherSpecPreparator getPreparator(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecPreparator(tlsContext, message);
+        return new ChangeCipherSpecPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ChangeCipherSpecSerializer getSerializer(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ChangeCipherSpecSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

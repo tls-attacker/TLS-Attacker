@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
@@ -19,7 +21,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
@@ -34,34 +35,33 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
 
     @Override
     public ECDHEServerKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ECDHEServerKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ECDHEServerKeyExchangePreparator getPreparator(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangePreparator(tlsContext, message);
+        return new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ECDHEServerKeyExchangeSerializer getSerializer(ECDHEServerKeyExchangeMessage message) {
-        return new ECDHEServerKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ECDHEServerKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
         adjustECParameter(message);
         if (message.getComputations() != null) {
-            ECPrivateKeyParameters privEcParams = new ECPrivateKeyParameters(message.getComputations().getPrivateKey()
-                    .getValue(), tlsContext.getServerEcPublicKeyParameters().getParameters());
-            tlsContext.setServerEcPrivateKeyParameters(privEcParams);
+            tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
         }
     }
 
     private void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
-
+        tlsContext.setSelectedCurve(NamedCurve.getNamedCurve(message.getNamedCurve().getValue()));
+        // TODO avoid BC tool
         byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getCurveType().getValue() }, message
-                .getNamedCurve().getValue(), ArrayConverter.intToBytes(message.getSerializedPublicKeyLength()
-                .getValue(), 1), message.getSerializedPublicKey().getValue());
+                .getNamedCurve().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
+                message.getPublicKey().getValue());
         InputStream is = new ByteArrayInputStream(ecParams);
         ECPublicKeyParameters publicKeyParameters = null;
         try {
@@ -71,6 +71,8 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
         } catch (IOException ex) {
             throw new AdjustmentException("EC public key parsing failed", ex);
         }
-        tlsContext.setServerECPublicKeyParameters(publicKeyParameters);
+        CustomECPoint publicKey = new CustomECPoint(publicKeyParameters.getQ().getRawXCoord().toBigInteger(),
+                publicKeyParameters.getQ().getRawYCoord().toBigInteger());
+        tlsContext.setServerEcPublicKey(publicKey);
     }
 }

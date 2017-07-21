@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -24,20 +24,21 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
     /**
      * Constructor
      *
-     * @param context
+     * @param chooser
      * @param message
+     * @param serializer
      */
-    public RenegotiationInfoExtensionPreparator(TlsContext context, RenegotiationInfoExtensionMessage message,
+    public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message,
             RenegotiationInfoExtensionSerializer serializer) {
-        super(context, message, serializer);
+        super(chooser, message, serializer);
         this.message = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setRenegotiationInfo(context.getConfig().getRenegotiationInfo());
+        message.setRenegotiationInfo(chooser.getConfig().getDefaultRenegotiationInfo());
         LOGGER.debug("Prepared the RenegotiationInfo extension with info "
-                + ArrayConverter.bytesToHexString(context.getConfig().getRenegotiationInfo()));
+                + ArrayConverter.bytesToHexString(chooser.getConfig().getDefaultRenegotiationInfo()));
     }
 
 }

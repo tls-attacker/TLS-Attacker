@@ -32,7 +32,7 @@ public class RSAClientKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RSAClientKeyExchangeMessage();
-        preparator = new RSAClientKeyExchangePreparator(context, message);
+        preparator = new RSAClientKeyExchangePreparator(context.getChooser(), message);
     }
 
     /**
@@ -63,8 +63,7 @@ public class RSAClientKeyExchangePreparatorTest {
         assertEquals((byte) 0x02, message.getComputations().getPlainPaddedPremasterSecret().getValue()[1]);
         assertEquals((byte) 0x00, message.getComputations().getPlainPaddedPremasterSecret().getValue()[message
                 .getComputations().getPadding().getValue().length + 2]);
-
-        assertNotNull(message.getSerializedPublicKeyLength().getValue());
-        assertNotNull(message.getSerializedPublicKey());
+        assertNotNull(message.getPublicKeyLength().getValue());
+        assertNotNull(message.getPublicKey());
     }
 }

@@ -40,7 +40,7 @@ public class ServerHelloMessagePreparatorTest {
     public void setUp() {
         this.message = new ServerHelloMessage();
         this.context = new TlsContext();
-        this.preparator = new ServerHelloMessagePreparator(context, message);
+        this.preparator = new ServerHelloMessagePreparator(context.getChooser(), message);
     }
 
     /**
@@ -54,33 +54,21 @@ public class ServerHelloMessagePreparatorTest {
         List<CipherSuite> suiteList = new LinkedList<>();
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS12);
         suiteList.add(CipherSuite.TLS_DHE_DSS_WITH_AES_256_CBC_SHA256);
-        suiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);// use
-                                                                                 // an
-                                                                                 // unusual
-                                                                                 // CipherSuite
-                                                                                 // to
-                                                                                 // make
-                                                                                 // sure
-                                                                                 // that
-                                                                                 // this
-                                                                                 // test
-                                                                                 // works
-                                                                                 // as
-                                                                                 // expected
+        suiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         suiteList.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_GCM_SHA256);
         context.setClientSupportedCiphersuites(suiteList);
         List<CipherSuite> ourSuiteList = new LinkedList<>();
         ourSuiteList.add(CipherSuite.RFC_TLS_DHE_RSA_WITH_CHACHA20_POLY1305_SHA256);
         List<CompressionMethod> ourCompressionList = new LinkedList<>();
         ourCompressionList.add(CompressionMethod.LZS);
-        context.getConfig().setSupportedCiphersuites(ourSuiteList);
+        context.getConfig().setDefaultClientSupportedCiphersuites(ourSuiteList);
         context.getConfig().setSupportedCompressionMethods(ourCompressionList);
         context.setHighestClientProtocolVersion(ProtocolVersion.TLS11);
         List<CompressionMethod> compressionList = new LinkedList<>();
         compressionList.add(CompressionMethod.NULL);// same as CipherSuite
         compressionList.add(CompressionMethod.LZS);// same as CipherSuite
         context.setClientSupportedCompressions(compressionList);
-        context.getConfig().setSessionId(new byte[] { 0, 1, 2, 3, 4, 5 });
+        context.getConfig().setDefaultServerSessionId(new byte[] { 0, 1, 2, 3, 4, 5 });
         preparator.prepare();
         assertArrayEquals(ProtocolVersion.TLS11.getValue(), message.getProtocolVersion().getValue());
         assertArrayEquals(ArrayConverter.longToUint32Bytes(12345l), message.getUnixTime().getValue());

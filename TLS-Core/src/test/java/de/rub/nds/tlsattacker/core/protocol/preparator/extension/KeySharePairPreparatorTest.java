@@ -32,7 +32,7 @@ public class KeySharePairPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         pair = new KeySharePair();
-        preparator = new KeySharePairPreparator(context, pair);
+        preparator = new KeySharePairPreparator(context.getChooser(), pair);
 
     }
 

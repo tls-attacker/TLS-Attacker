@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
@@ -33,8 +34,8 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     private byte[] verifyData;
     private final FinishedMessage msg;
 
-    public FinishedMessagePreparator(TlsContext context, FinishedMessage message) {
-        super(context, message);
+    public FinishedMessagePreparator(Chooser chooser, FinishedMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
@@ -47,35 +48,35 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     }
 
     private byte[] computeVerifyData() {
-        if (context.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
             try {
-                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite());
+                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
-                LOGGER.debug("Connection End: " + context.getConfig().getConnectionEndType());
-                if (context.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
-                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, context.getServerHandshakeTrafficSecret(),
+                LOGGER.debug("Connection End: " + chooser.getConfig().getConnectionEndType());
+                if (chooser.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getServerHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
-                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, context.getClientHandshakeTrafficSecret(),
+                    finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getClientHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
                 LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(context.getDigest().digest(context.getSelectedProtocolVersion(),
-                        context.getSelectedCipherSuite()));
+                mac.update(chooser.getContext().getDigest()
+                        .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
                 return mac.doFinal();
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
             }
         } else {
-            PRFAlgorithm prfAlgorithm = context.getPRFAlgorithm();
-            byte[] masterSecret = context.getMasterSecret();
-            byte[] handshakeMessageHash = context.getDigest().digest(context.getSelectedProtocolVersion(),
-                    context.getSelectedCipherSuite());
+            PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
+            byte[] masterSecret = chooser.getMasterSecret();
+            byte[] handshakeMessageHash = chooser.getContext().getDigest()
+                    .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
 
-            if (context.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (chooser.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
                 // TODO put this in seperate config option
                 return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                         PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,

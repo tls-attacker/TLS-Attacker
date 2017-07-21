@@ -27,7 +27,7 @@ public class ServerHelloDonePreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new ServerHelloDoneMessage();
-        this.preparator = new ServerHelloDonePreparator(context, message);
+        this.preparator = new ServerHelloDonePreparator(context.getChooser(), message);
     }
 
     /**

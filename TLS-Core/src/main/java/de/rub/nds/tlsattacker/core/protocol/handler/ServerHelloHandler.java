@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSeriali
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -37,17 +39,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public ServerHelloMessagePreparator getPreparator(ServerHelloMessage message) {
-        return new ServerHelloMessagePreparator(tlsContext, message);
+        return new ServerHelloMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ServerHelloMessageSerializer getSerializer(ServerHelloMessage message) {
-        return new ServerHelloMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ServerHelloMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public ServerHelloParser getParser(byte[] message, int pointer) {
-        return new ServerHelloParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ServerHelloParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
@@ -74,6 +76,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 tlsContext.setEncryptActive(true);
             }
         }
+        adjustPRF(message);
     }
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
@@ -104,15 +107,26 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustSelectedSessionID(ServerHelloMessage message) {
         byte[] sessionID = message.getSessionId().getValue();
-        tlsContext.setSessionID(sessionID);
+        tlsContext.setServerSessionId(sessionID);
         LOGGER.debug("Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID, false));
 
     }
 
     private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
-        tlsContext.setSelectedProtocolVersion(version);
-        LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+        if (version != null) {
+            tlsContext.setSelectedProtocolVersion(version);
+            LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+        } else {
+            LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
+                    + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+        }
+    }
+
+    private void adjustPRF(ServerHelloMessage message) {
+        Chooser chooser = tlsContext.getChooser();
+        tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite()));
     }
 
     private void setRecordCipher() {

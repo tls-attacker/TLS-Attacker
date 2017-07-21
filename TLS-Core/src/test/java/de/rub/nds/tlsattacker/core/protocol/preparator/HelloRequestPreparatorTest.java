@@ -27,7 +27,7 @@ public class HelloRequestPreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new HelloRequestMessage();
-        this.preparator = new HelloRequestPreparator(context, message);
+        this.preparator = new HelloRequestPreparator(context.getChooser(), message);
     }
 
     /**

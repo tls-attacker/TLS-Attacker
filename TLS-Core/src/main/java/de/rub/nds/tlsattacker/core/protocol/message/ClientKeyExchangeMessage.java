@@ -26,12 +26,12 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger serializedPublicKeyLength;
+    private ModifiableInteger publicKeyLength;
     /**
      * serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray serializedPublicKey;
+    private ModifiableByteArray publicKey;
 
     public ClientKeyExchangeMessage() {
         super(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
@@ -45,30 +45,28 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
 
     public abstract void prepareComputations();
 
-    public ModifiableInteger getSerializedPublicKeyLength() {
-        return serializedPublicKeyLength;
+    public ModifiableInteger getPublicKeyLength() {
+        return publicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
-        this.serializedPublicKeyLength = serializedPublicKeyLength;
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
+        this.publicKeyLength = publicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
-        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
-                publicKeyLength);
+    public void setPublicKeyLength(Integer publicKeyLength) {
+        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
-    public ModifiableByteArray getSerializedPublicKey() {
-        return serializedPublicKey;
+    public ModifiableByteArray getPublicKey() {
+        return publicKey;
     }
 
-    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
-        this.serializedPublicKey = serializedPublicKey;
+    public void setPublicKey(ModifiableByteArray publicKey) {
+        this.publicKey = publicKey;
     }
 
-    public void setSerializedPublicKey(byte[] serializedPublicKey) {
-        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
-                serializedPublicKey);
+    public void setPublicKey(byte[] publicKey) {
+        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 
 }

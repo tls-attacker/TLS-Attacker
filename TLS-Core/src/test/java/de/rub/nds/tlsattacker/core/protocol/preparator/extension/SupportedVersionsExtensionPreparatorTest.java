@@ -35,7 +35,7 @@ public class SupportedVersionsExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SupportedVersionsExtensionMessage();
-        preparator = new SupportedVersionsExtensionPreparator(context, message,
+        preparator = new SupportedVersionsExtensionPreparator(context.getChooser(), message,
                 new SupportedVersionsExtensionSerializer(message));
     }
 

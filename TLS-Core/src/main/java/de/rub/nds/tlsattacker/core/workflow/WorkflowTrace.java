@@ -262,7 +262,11 @@ public class WorkflowTrace implements Serializable {
     }
 
     public ProtocolMessage getFirstConfiguredSendMessageOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllConfiguredSendMessages(), type).get(0);
+        List<ProtocolMessage> list = filterMessageList(getAllConfiguredSendMessages(), type);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
     }
 
     public HandshakeMessage getFirstConfiguredSendMessageOfType(HandshakeMessageType type) {
@@ -283,7 +287,12 @@ public class WorkflowTrace implements Serializable {
     }
 
     public HandshakeMessage getFirstActuallySendMessageOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllActuallySentMessages()), type).get(0);
+        List<HandshakeMessage> list = filterMessageList(filterHandshakeMessagesFromList(getAllActuallySentMessages()),
+                type);
+        if (list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
     }
 
     public List<ProtocolMessage> getActualReceivedProtocolMessagesOfType(ProtocolMessageType type) {
@@ -413,15 +422,17 @@ public class WorkflowTrace implements Serializable {
     public ProtocolMessage getLastConfiguredReceiveMesssage() {
         List<ProtocolMessage> messages = getAllConfiguredReceivingMessages();
         if (messages.size() > 0) {
-            return messages.get(0);
+            return messages.get(messages.size() - 1);
         }
         return null;
     }
 
     public ProtocolMessage getLastConfiguredSendMesssage() {
-        List<ProtocolMessage> clientMessages = getAllConfiguredSendMessages();
-        int size = clientMessages.size();
-        return clientMessages.get(size - 1);
+        List<ProtocolMessage> messages = getAllConfiguredSendMessages();
+        if (messages.size() > 0) {
+            return messages.get(messages.size() - 1);
+        }
+        return null;
     }
 
     public boolean containsConfiguredReceivedProtocolMessage(ProtocolMessageType type) {

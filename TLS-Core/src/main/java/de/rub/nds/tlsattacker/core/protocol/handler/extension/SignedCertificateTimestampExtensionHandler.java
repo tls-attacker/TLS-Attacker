@@ -27,7 +27,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      * Constructor
      *
      * @param context
-     *            A TlsContext
+     *            A Chooser
      */
     public SignedCertificateTimestampExtensionHandler(TlsContext context) {
         super(context);
@@ -57,7 +57,7 @@ public class SignedCertificateTimestampExtensionHandler extends
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(
             SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionPreparator(context, message, getSerializer(message));
+        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     /**
@@ -75,7 +75,7 @@ public class SignedCertificateTimestampExtensionHandler extends
 
     /**
      * Parses the content of a SignedCertificateTimestampExtensionMessage to the
-     * actual TlsContext
+     * actual Chooser
      *
      * @param message
      *            A SingedCertificateImestampExtensionMessage

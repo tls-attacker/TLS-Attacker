@@ -20,9 +20,11 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -48,6 +50,7 @@ public class CertificateDelegateTest {
     public void setUp() {
         delegate = new CertificateDelegate();
         jcommander = new JCommander(delegate);
+        Security.addProvider(new BouncyCastleProvider());
 
     }
 
@@ -138,15 +141,11 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[3]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[5]));
         Config config = Config.createConfig();
-        config.setKeyStore(null);
-        config.setAlias(null);
-        config.setPassword(null);
-        config.setOurCertificate(null);
+        config.setDefaultRsaCertificate(null);
+        config.setDefaultDsaCertificate(null);
+        config.setDefaultEcCertificate(null);
         delegate.applyDelegate(config);
-        assertNotNull("Keystore not set correctly in config", config.getKeyStore());
-        assertTrue("Password not set correctly in config", config.getPassword().equals(args[3]));
-        assertTrue("Alias not set correctly in config", config.getAlias().equals(args[5]));
-        assertNotNull("Ceritifcate could not be loaded", config.getOurCertificate());
+        assertNotNull("Ceritifcate could not be loaded", config.getDefaultRsaCertificate());
     }
 
     @Test
@@ -160,16 +159,9 @@ public class CertificateDelegateTest {
         assertTrue("Password parameter gets not parsed correctly", delegate.getPassword().equals(args[1]));
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
         Config config = Config.createConfig();
-        config.setAlias(null);
-        config.setPassword(null);
-        config.setOurCertificate(null);
-        assertNotNull("Default keystore should be loaded", config.getKeyStore());
-        config.setKeyStore(null);
+        config.setDefaultRsaCertificate(null);
         delegate.applyDelegate(config);
-        assertTrue("Password not set correctly in config", config.getPassword().equals(args[1]));
-        assertTrue("Alias not set correctly in config", config.getAlias().equals(args[3]));
-        assertNull("Keystore should not get loaded if not specified", config.getKeyStore());
-        assertNull("Certificate should not get loaded if not specified", config.getOurCertificate());
+        assertNull("Certificate should not get loaded if not specified", config.getDefaultRsaCertificate());
     }
 
     @Test(expected = ConfigurationException.class)
@@ -219,7 +211,7 @@ public class CertificateDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2));// little
         // ugly
     }
 }

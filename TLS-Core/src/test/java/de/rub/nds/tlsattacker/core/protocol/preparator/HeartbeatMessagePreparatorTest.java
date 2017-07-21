@@ -15,7 +15,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static org.junit.Assert.*;
+import org.bouncycastle.crypto.prng.FixedSecureRandom;
+import org.junit.After;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,8 +37,13 @@ public class HeartbeatMessagePreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new HeartbeatMessage();
-        this.preparator = new HeartbeatMessagePreparator(context, message);
+        this.preparator = new HeartbeatMessagePreparator(context.getChooser(), message);
         RandomHelper.getRandom().setSeed(0);
+    }
+
+    @After
+    public void cleanUp() {
+        RandomHelper.setRandom(null);
     }
 
     /**
@@ -45,15 +53,16 @@ public class HeartbeatMessagePreparatorTest {
     @Test
     public void testPrepare() {
         context.getConfig().setHeartbeatPayloadLength(11);
-        context.getConfig().setHeartbeatMaxPaddingLength(11);
-        context.getConfig().setHeartbeatMinPaddingLength(5);
+        context.getConfig().setHeartbeatPaddingLength(11);
+        RandomHelper.setRandom(new FixedSecureRandom(ArrayConverter
+                .hexStringToByteArray("F6C92DA33AF01D4FB770AA60B420BB3851D9D47ACB93")));
         preparator.prepare();
         assertTrue(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue() == message.getHeartbeatMessageType().getValue());
         LOGGER.info("padding: " + ArrayConverter.bytesToHexString(message.getPadding().getValue()));
         LOGGER.info("payload: " + ArrayConverter.bytesToHexString(message.getPayload().getValue()));
-
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("F6C92DA33AF01D4FB770"), message.getPadding().getValue());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB93"), message.getPayload()
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB93"), message.getPadding()
+                .getValue());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("F6C92DA33AF01D4FB770AA"), message.getPayload()
                 .getValue());
         assertTrue(11 == message.getPayloadLength().getValue());
     }

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ public class RetransmitMessagePreparatorTest {
     public void setUp() {
         message = new RetransmitMessage(new byte[] { 0, 1, 2, 3 });
         context = new TlsContext();
-        preparator = new RetransmitMessagePreparator(context, message);
+        preparator = new RetransmitMessagePreparator(context.getChooser(), message);
     }
 
     /**

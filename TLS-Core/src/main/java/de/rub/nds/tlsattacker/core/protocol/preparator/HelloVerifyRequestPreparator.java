@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -21,7 +21,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     private final HelloVerifyRequestMessage msg;
 
-    public HelloVerifyRequestPreparator(TlsContext context, HelloVerifyRequestMessage message) {
+    public HelloVerifyRequestPreparator(Chooser context, HelloVerifyRequestMessage message) {
         super(context, message);
         this.msg = message;
     }
@@ -36,7 +36,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     }
 
     private byte[] generateCookie() {
-        byte[] cookie = new byte[context.getConfig().getDefaultDTLSCookieLength()];
+        byte[] cookie = new byte[chooser.getConfig().getDefaultDTLSCookieLength()];
         RandomHelper.getRandom().nextBytes(cookie);
         return cookie;
     }
@@ -52,7 +52,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     }
 
     private void prepareProtocolVersion(HelloVerifyRequestMessage msg) {
-        msg.setProtocolVersion(context.getConfig().getHighestProtocolVersion().getValue());
+        msg.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(msg.getProtocolVersion().getValue()));
     }
 

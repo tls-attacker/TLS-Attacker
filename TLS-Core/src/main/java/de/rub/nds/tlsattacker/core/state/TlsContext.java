@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -25,22 +24,20 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.security.PublicKey;
-import java.util.Collections;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
-import org.bouncycastle.crypto.tls.ServerDHParams;
 
 /**
  *
@@ -51,8 +48,11 @@ import org.bouncycastle.crypto.tls.ServerDHParams;
  */
 public class TlsContext {
 
+    /**
+     * TlsConfig which contains the configurations for everything TLS-Attacker
+     * related
+     */
     private Config config;
-
     /**
      * shared key established during the handshake
      */
@@ -103,9 +103,14 @@ public class TlsContext {
     private CompressionMethod selectedCompressionMethod;
 
     /**
-     * session ID
+     * server session ID
      */
-    private byte[] sessionID;
+    private byte[] serverSessionId;
+
+    /**
+     * client session ID
+     */
+    private byte[] clientSessionId;
 
     /**
      * server certificate parsed from the server certificate message
@@ -132,7 +137,7 @@ public class TlsContext {
 
     private ConnectionEndType talkingConnectionEndType = ConnectionEndType.CLIENT;
 
-    private byte[] dtlsHandshakeCookie;
+    private byte[] dtlsCookie;
 
     private ProtocolVersion selectedProtocolVersion;
 
@@ -165,7 +170,7 @@ public class TlsContext {
     /**
      * Is the extended master secret extension present?
      */
-    private boolean isExtendedMasterSecretExtension;
+    private boolean receivedMasterSecretExtension;
 
     /**
      * This is the renegotiation info of the RenegotiationInfo extension.
@@ -181,19 +186,37 @@ public class TlsContext {
      */
     private byte[] signedCertificateTimestamp;
 
-    private PublicKey clientCertificatePublicKey;
+    private BigInteger dhGenerator;
 
-    private PublicKey serverCertificatePublicKey;
+    private BigInteger dhModulus;
 
-    private ECPublicKeyParameters serverEcPublicKeyParameters;
+    private BigInteger serverDhPrivateKey;
 
-    private ECPrivateKeyParameters serverEcPrivateKeyParameters;
+    private BigInteger serverDhPublicKey;
 
-    private DHPrivateKeyParameters serverDhPrivateKeyParameters;
+    private BigInteger clientDhPrivateKey;
 
-    private DHPublicKeyParameters serverDhPublicKeyParameters;
+    private BigInteger clientDhPublicKey;
 
-    private ServerDHParams serverDHParameters;
+    private NamedCurve selectedCurve;
+
+    private CustomECPoint clientEcPublicKey;
+
+    private CustomECPoint serverEcPublicKey;
+
+    private BigInteger serverEcPrivateKey;
+
+    private BigInteger clientEcPrivateKey;
+
+    private BigInteger rsaModulus;
+
+    private BigInteger serverRSAPublicKey;
+
+    private BigInteger clientRSAPublicKey;
+
+    private BigInteger serverRSAPrivateKey;
+
+    private BigInteger clientRSAPrivateKey;
 
     private List<NamedCurve> clientNamedCurvesList;
 
@@ -232,6 +255,13 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
+    private SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm;
+
+    private PRFAlgorithm prfAlgorithm;
+
+    @XmlTransient
+    private Chooser chooser;
+
     public TlsContext() {
         this(Config.createConfig());
     }
@@ -245,6 +275,13 @@ public class TlsContext {
         selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
+    public Chooser getChooser() {
+        if (chooser == null) {
+            chooser = ChooserFactory.getChooser(config.getChooserType(), this);
+        }
+        return chooser;
+    }
+
     public List<ProtocolVersion> getClientSupportedProtocolVersions() {
         return clientSupportedProtocolVersions;
     }
@@ -253,20 +290,124 @@ public class TlsContext {
         this.clientSupportedProtocolVersions = clientSupportedProtocolVersions;
     }
 
-    public DHPublicKeyParameters getServerDhPublicKeyParameters() {
-        return serverDhPublicKeyParameters;
+    public BigInteger getRsaModulus() {
+        return rsaModulus;
     }
 
-    public void setServerDhPublicKeyParameters(DHPublicKeyParameters serverDhPublicKeyParameters) {
-        this.serverDhPublicKeyParameters = serverDhPublicKeyParameters;
+    public void setRsaModulus(BigInteger rsaModulus) {
+        this.rsaModulus = rsaModulus;
     }
 
-    public ECPrivateKeyParameters getServerEcPrivateKeyParameters() {
-        return serverEcPrivateKeyParameters;
+    public BigInteger getServerRSAPublicKey() {
+        return serverRSAPublicKey;
     }
 
-    public void setServerEcPrivateKeyParameters(ECPrivateKeyParameters serverEcPrivateKeyParameters) {
-        this.serverEcPrivateKeyParameters = serverEcPrivateKeyParameters;
+    public void setServerRSAPublicKey(BigInteger serverRSAPublicKey) {
+        this.serverRSAPublicKey = serverRSAPublicKey;
+    }
+
+    public BigInteger getClientRSAPublicKey() {
+        return clientRSAPublicKey;
+    }
+
+    public void setClientRSAPublicKey(BigInteger clientRSAPublicKey) {
+        this.clientRSAPublicKey = clientRSAPublicKey;
+    }
+
+    public BigInteger getServerEcPrivateKey() {
+        return serverEcPrivateKey;
+    }
+
+    public void setServerEcPrivateKey(BigInteger serverEcPrivateKey) {
+        this.serverEcPrivateKey = serverEcPrivateKey;
+    }
+
+    public BigInteger getClientEcPrivateKey() {
+        return clientEcPrivateKey;
+    }
+
+    public void setClientEcPrivateKey(BigInteger clientEcPrivateKey) {
+        this.clientEcPrivateKey = clientEcPrivateKey;
+    }
+
+    public NamedCurve getSelectedCurve() {
+        return selectedCurve;
+    }
+
+    public void setSelectedCurve(NamedCurve selectedCurve) {
+        this.selectedCurve = selectedCurve;
+    }
+
+    public CustomECPoint getClientEcPublicKey() {
+        return clientEcPublicKey;
+    }
+
+    public void setClientEcPublicKey(CustomECPoint clientEcPublicKey) {
+        this.clientEcPublicKey = clientEcPublicKey;
+    }
+
+    public CustomECPoint getServerEcPublicKey() {
+        return serverEcPublicKey;
+    }
+
+    public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
+        this.serverEcPublicKey = serverEcPublicKey;
+    }
+
+    public BigInteger getDhGenerator() {
+        return dhGenerator;
+    }
+
+    public void setDhGenerator(BigInteger dhGenerator) {
+        this.dhGenerator = dhGenerator;
+    }
+
+    public BigInteger getDhModulus() {
+        return dhModulus;
+    }
+
+    public void setDhModulus(BigInteger dhModulus) {
+        this.dhModulus = dhModulus;
+    }
+
+    public BigInteger getServerDhPublicKey() {
+        return serverDhPublicKey;
+    }
+
+    public void setServerDhPublicKey(BigInteger serverDhPublicKey) {
+        this.serverDhPublicKey = serverDhPublicKey;
+    }
+
+    public BigInteger getClientDhPrivateKey() {
+        return clientDhPrivateKey;
+    }
+
+    public void setClientDhPrivateKey(BigInteger clientDhPrivateKey) {
+        this.clientDhPrivateKey = clientDhPrivateKey;
+    }
+
+    public BigInteger getClientDhPublicKey() {
+        return clientDhPublicKey;
+    }
+
+    public void setClientDhPublicKey(BigInteger clientDhPublicKey) {
+        this.clientDhPublicKey = clientDhPublicKey;
+    }
+
+    public BigInteger getServerDhPrivateKey() {
+        return serverDhPrivateKey;
+    }
+
+    public void setServerDhPrivateKey(BigInteger serverDhPrivateKey) {
+        this.serverDhPrivateKey = serverDhPrivateKey;
+    }
+
+    public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {
+        return selectedSignatureAndHashAlgorithm;
+    }
+
+    public void setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm) {
+        this.selectedSignatureAndHashAlgorithm = selectedSignatureAndHashAlgorithm;
     }
 
     public List<NamedCurve> getClientNamedCurvesList() {
@@ -350,36 +491,12 @@ public class TlsContext {
         this.updateKeys = updateKeys;
     }
 
-    public ECPublicKeyParameters getServerEcPublicKeyParameters() {
-        return serverEcPublicKeyParameters;
-    }
-
-    public void setServerECPublicKeyParameters(ECPublicKeyParameters serverPublicKeyParameters) {
-        this.serverEcPublicKeyParameters = serverPublicKeyParameters;
-    }
-
     public List<ECPointFormat> getClientPointFormatsList() {
         return clientPointFormatsList;
     }
 
     public void setClientPointFormatsList(List<ECPointFormat> clientPointFormatsList) {
         this.clientPointFormatsList = clientPointFormatsList;
-    }
-
-    public PublicKey getClientCertificatePublicKey() {
-        return clientCertificatePublicKey;
-    }
-
-    public void setClientCertificatePublicKey(PublicKey clientCertificatePublicKey) {
-        this.clientCertificatePublicKey = clientCertificatePublicKey;
-    }
-
-    public PublicKey getServerCertificatePublicKey() {
-        return serverCertificatePublicKey;
-    }
-
-    public void setServerCertificatePublicKey(PublicKey serverCertificatePublicKey) {
-        this.serverCertificatePublicKey = serverCertificatePublicKey;
     }
 
     public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
@@ -415,18 +532,15 @@ public class TlsContext {
     }
 
     public boolean isExtendedMasterSecretExtension() {
-        return isExtendedMasterSecretExtension;
+        return receivedMasterSecretExtension;
     }
 
-    public void setIsExtendedMasterSecretExtension(boolean isExtendedMasterSecretExtension) {
-        this.isExtendedMasterSecretExtension = isExtendedMasterSecretExtension;
+    public void setReceivedMasterSecretExtension(boolean receivedMasterSecretExtension) {
+        this.receivedMasterSecretExtension = receivedMasterSecretExtension;
     }
 
     public List<CompressionMethod> getClientSupportedCompressions() {
-        if (clientSupportedCompressions == null) {
-            return null;
-        }
-        return Collections.unmodifiableList(clientSupportedCompressions);
+        return clientSupportedCompressions;
     }
 
     public void setClientSupportedCompressions(List<CompressionMethod> clientSupportedCompressions) {
@@ -442,10 +556,7 @@ public class TlsContext {
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
-        if (clientSupportedCiphersuites == null) {
-            return null;
-        }
-        return Collections.unmodifiableList(clientSupportedCiphersuites);
+        return clientSupportedCiphersuites;
     }
 
     public void setClientSupportedCiphersuites(List<CipherSuite> clientSupportedCiphersuites) {
@@ -453,7 +564,7 @@ public class TlsContext {
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
-        return Collections.unmodifiableList(serverSupportedSignatureAndHashAlgorithms);
+        return serverSupportedSignatureAndHashAlgorithms;
     }
 
     public void setServerSupportedSignatureAndHashAlgorithms(
@@ -541,12 +652,20 @@ public class TlsContext {
         this.selectedCompressionMethod = selectedCompressionMethod;
     }
 
-    public byte[] getSessionID() {
-        return sessionID;
+    public byte[] getServerSessionId() {
+        return serverSessionId;
     }
 
-    public void setSessionID(byte[] sessionID) {
-        this.sessionID = sessionID;
+    public void setServerSessionId(byte[] serverSessionId) {
+        this.serverSessionId = serverSessionId;
+    }
+
+    public byte[] getClientSessionId() {
+        return clientSessionId;
+    }
+
+    public void setClientSessionId(byte[] clientSessionId) {
+        this.clientSessionId = clientSessionId;
     }
 
     public WorkflowTrace getWorkflowTrace() {
@@ -573,32 +692,16 @@ public class TlsContext {
         this.clientCertificate = clientCertificate;
     }
 
-    public ServerDHParams getServerDHParameters() {
-        return serverDHParameters;
-    }
-
-    public void setServerDHParameters(ServerDHParams serverDHParameters) {
-        this.serverDHParameters = serverDHParameters;
-    }
-
-    public DHPrivateKeyParameters getServerDhPrivateKeyParameters() {
-        return serverDhPrivateKeyParameters;
-    }
-
-    public void setServerDhPrivateKeyParameters(DHPrivateKeyParameters serverDhPrivateKeyParameters) {
-        this.serverDhPrivateKeyParameters = serverDhPrivateKeyParameters;
-    }
-
     public MessageDigestCollector getDigest() {
         return digest;
     }
 
-    public void setDtlsHandshakeCookie(byte[] cookie) {
-        this.dtlsHandshakeCookie = cookie;
+    public byte[] getDtlsCookie() {
+        return dtlsCookie;
     }
 
-    public byte[] getDtlsHandshakeCookie() {
-        return dtlsHandshakeCookie;
+    public void setDtlsCookie(byte[] dtlsCookie) {
+        this.dtlsCookie = dtlsCookie;
     }
 
     public TransportHandler getTransportHandler() {
@@ -617,8 +720,12 @@ public class TlsContext {
         this.recordLayer = recordLayer;
     }
 
-    public PRFAlgorithm getPRFAlgorithm() {
-        return AlgorithmResolver.getPRFAlgorithm(selectedProtocolVersion, selectedCipherSuite);
+    public PRFAlgorithm getPrfAlgorithm() {
+        return prfAlgorithm;
+    }
+
+    public void setPrfAlgorithm(PRFAlgorithm prfAlgorithm) {
+        this.prfAlgorithm = prfAlgorithm;
     }
 
     public byte[] getClientHandshakeTrafficSecret() {
@@ -709,11 +816,11 @@ public class TlsContext {
         this.tokenBindingVersion = tokenBindingVersion;
     }
 
-    public List getTokenBindingKeyParameters() {
+    public List<TokenBindingKeyParameters> getTokenBindingKeyParameters() {
         return tokenBindingKeyParameters;
     }
 
-    public void setTokenBindingKeyParameters(List tokenBindingKeyParameters) {
+    public void setTokenBindingKeyParameters(List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
@@ -725,4 +832,19 @@ public class TlsContext {
         this.certificateRequestContext = certificateRequestContext;
     }
 
+    public BigInteger getServerRSAPrivateKey() {
+        return serverRSAPrivateKey;
+    }
+
+    public void setServerRSAPrivateKey(BigInteger serverRSAPrivateKey) {
+        this.serverRSAPrivateKey = serverRSAPrivateKey;
+    }
+
+    public BigInteger getClientRSAPrivateKey() {
+        return clientRSAPrivateKey;
+    }
+
+    public void setClientRSAPrivateKey(BigInteger clientRSAPrivateKey) {
+        this.clientRSAPrivateKey = clientRSAPrivateKey;
+    }
 }

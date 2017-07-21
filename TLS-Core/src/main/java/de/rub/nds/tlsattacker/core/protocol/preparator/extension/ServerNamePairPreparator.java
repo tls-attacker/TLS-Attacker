@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -21,8 +21,8 @@ public class ServerNamePairPreparator extends Preparator<ServerNamePair> {
 
     private final ServerNamePair pair;
 
-    public ServerNamePairPreparator(TlsContext context, ServerNamePair pair) {
-        super(context, pair);
+    public ServerNamePairPreparator(Chooser chooser, ServerNamePair pair) {
+        super(chooser, pair);
         this.pair = pair;
     }
 

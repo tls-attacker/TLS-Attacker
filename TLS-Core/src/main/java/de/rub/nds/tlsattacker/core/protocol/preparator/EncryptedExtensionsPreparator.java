@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * @author Nurullah Erinola
@@ -18,8 +18,8 @@ public class EncryptedExtensionsPreparator extends HandshakeMessagePreparator<En
 
     private final EncryptedExtensionsMessage msg;
 
-    public EncryptedExtensionsPreparator(TlsContext context, EncryptedExtensionsMessage message) {
-        super(context, message);
+    public EncryptedExtensionsPreparator(Chooser chooser, EncryptedExtensionsMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

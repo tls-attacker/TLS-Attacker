@@ -82,7 +82,6 @@ public class CertificateHandlerTest {
         message.setCertificatesListLength(573);
         handler.adjustTLSContext(message);
         assertNotNull(context.getClientCertificate());
-        assertNotNull(context.getClientCertificatePublicKey());
         assertNull(context.getServerCertificate());
         context = new TlsContext();
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
@@ -91,8 +90,6 @@ public class CertificateHandlerTest {
         handler.adjustTLSContext(message);
         assertNull(context.getClientCertificate());
         assertNotNull(context.getServerCertificate());
-        assertNotNull(context.getServerCertificatePublicKey());
-
     }
 
     @Test

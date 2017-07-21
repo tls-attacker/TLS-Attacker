@@ -257,7 +257,7 @@ public class HandlerFactory {
         // a
         // server
         // keyexchangeHandler
-        CipherSuite cs = context.getSelectedCipherSuite();
+        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case ECDHE_ECDSA:

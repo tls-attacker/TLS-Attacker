@@ -112,7 +112,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddKeyShareExtension()) {
             KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
             KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getkeySharePublic());
+            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
             pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
             extension.getKeyShareList().add(pair);
             addExtension(extension);
@@ -212,22 +212,31 @@ public class ClientHelloMessage extends HelloMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        sb.append(super.toString()).append("\n  Protocol Version: ")
-                .append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()))
-                .append("\n  Client Unix Time: ")
-                .append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000))
-                .append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()))
-                .append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()))
-                .append("\n  Supported Cipher Suites: ")
-                .append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()))
-                .append("\n  Supported Compression Methods: ")
-                .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
-        sb.append("\n  Extensions: ");
-        if (getExtensions() == null) {
-            sb.append("null");
-        } else {
-            for (ExtensionMessage e : getExtensions()) {
-                sb.append(e.toString());
+        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
+            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        }
+        if (getUnixTime() != null && getUnixTime().getValue() != null) {
+            sb.append("\n  Client Unix Time: ");
+            sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+        }
+        if (getRandom() != null && getRandom().getValue() != null) {
+            sb.append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+        }
+        if (getSessionId() != null && getSessionId().getValue() != null) {
+            sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        }
+        if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
+            sb.append("\n  Supported Cipher Suites: ").append(
+                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        }
+        if (getCompressions() != null && getCompressions().getValue() != null) {
+            sb.append("\n  Supported Compression Methods: ")
+                    .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
+        }
+        if (getExtensions() != null) {
+            for (ExtensionMessage extension : getExtensions()) {
+                sb.append(extension.toString()).append("\n");
             }
         }
         return sb.toString();

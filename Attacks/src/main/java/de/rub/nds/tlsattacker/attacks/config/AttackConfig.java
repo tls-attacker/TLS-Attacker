@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
-import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 

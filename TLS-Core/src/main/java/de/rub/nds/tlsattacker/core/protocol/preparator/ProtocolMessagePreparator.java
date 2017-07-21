@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,8 +20,8 @@ public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> exten
 
     private final ProtocolMessage message;
 
-    public ProtocolMessagePreparator(TlsContext context, T message) {
-        super(context, message);
+    public ProtocolMessagePreparator(Chooser chooser, T message) {
+        super(chooser, message);
         this.message = message;
     }
 

@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -20,9 +20,9 @@ public class UnknownExtensionPreparator extends ExtensionPreparator<UnknownExten
 
     private final UnknownExtensionMessage msg;
 
-    public UnknownExtensionPreparator(TlsContext context, UnknownExtensionMessage msg,
+    public UnknownExtensionPreparator(Chooser chooser, UnknownExtensionMessage msg,
             UnknownExtensionSerializer serializer) {
-        super(context, msg, serializer);
+        super(chooser, msg, serializer);
         this.msg = msg;
     }
 

@@ -34,7 +34,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
 
     @Override
     public TokenBindingExtensionPreparator getPreparator(TokenBindingExtensionMessage message) {
-        return new TokenBindingExtensionPreparator(context, message, getSerializer(message));
+        return new TokenBindingExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
                 .getExtensionType(message.getTokenbindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
         for (byte kp : message.getTokenbindingKeyParameters().getValue()) {
-            tokenbindingKeyParameters.add(TokenBindingKeyParameters.getExtensionType(kp));
+            tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters);
     }

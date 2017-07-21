@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -35,12 +38,8 @@ import org.junit.Test;
 public class ECDHClientKeyExchangePreparatorTest {
 
     private final static String RANDOM = "CAFEBABECAFE";
-    private final static byte[] SERVER_PUB_KEY = ArrayConverter
-            .hexStringToByteArray("023683c91035ad3815282ce7a4a273678487fa031f802508c2");
     private final static byte[] PREMASTER_SECRET = ArrayConverter
-            .hexStringToByteArray("81d3ba4e7a54eea7c584cf487bd6bea7dcfc27201f42a543");
-    private final static byte[] MASTER_SECRET = ArrayConverter
-            .hexStringToByteArray("44569804ebaef0c715a08bfea7272396c74bc75a3e1cf5c68cf6026286c27a1ddfcac31488692f14691fc8de62042004");
+            .hexStringToByteArray("273CF78A3DB2E37EE97935DEF45E3C82F126807C31A498E9");
     private TlsContext context;
     private ECDHClientKeyExchangeMessage message;
     private ECDHClientKeyExchangePreparator preparator;
@@ -52,14 +51,14 @@ public class ECDHClientKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new ECDHClientKeyExchangeMessage();
-        preparator = new ECDHClientKeyExchangePreparator(context, message);
+        preparator = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
         RandomHelper.setRandom(new Random(0));
     }
 
     /**
      * Test of prepareHandshakeMessageContents method, of class
      * ECDHClientKeyExchangePreparator.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
      * @throws java.security.NoSuchProviderException
      * @throws java.security.InvalidAlgorithmParameterException
@@ -73,22 +72,18 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server ECDH-parameters
-        X9ECParameters curve = X962NamedCurves.getByName("prime192v1");
-        context.setServerECPublicKeyParameters(new ECPublicKeyParameters(curve.getCurve().decodePoint(SERVER_PUB_KEY),
-                new ECDomainParameters(curve.getCurve(), curve.getG(), curve.getN())));
+        context.setSelectedCurve(NamedCurve.SECP192R1);
+        context.setServerEcPublicKey(new CustomECPoint(new BigInteger(
+                "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
+                "4390496211885670837594012513791855863576256216444143941964")));
+        context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
 
-        preparator.prepareHandshakeMessageContents();
-
-        // Tests
+        preparator.prepare();
         assertNotNull(message.getPublicKeyBaseX());
         assertNotNull(message.getPublicKeyBaseY());
         assertArrayEquals(PREMASTER_SECRET, message.getComputations().getPremasterSecret().getValue());
-        // assertArrayEquals(MASTER_SECRET,
-        // message.getComputations().getMasterSecret().getValue());
-        // assertEquals(HandshakeByteLength.MASTER_SECRET,
-        // message.getComputations().getMasterSecret().getValue().length);
-        assertNotNull(message.getSerializedPublicKeyLength().getValue());
-        assertNotNull(message.getSerializedPublicKey());
+        assertNotNull(message.getPublicKeyLength().getValue());
+        assertNotNull(message.getPublicKey());
         assertNotNull(message.getComputations().getClientRandom());
         assertArrayEquals(
                 ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),

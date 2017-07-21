@@ -18,20 +18,10 @@ import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
  */
 public class SessionResumptionDelegate extends Delegate {
 
-    @Parameter(names = "-session_resumption", description = "YES or NO")
-    private Boolean sessionResumption = null;
     @Parameter(names = "-session_id", description = "The sessionID to resume in hex", converter = ByteArrayConverter.class)
     private byte[] sessionID = null;
 
     public SessionResumptionDelegate() {
-    }
-
-    public Boolean isSessionResumption() {
-        return sessionResumption;
-    }
-
-    public void setSessionResumption(boolean sessionResumption) {
-        this.sessionResumption = sessionResumption;
     }
 
     public byte[] getSessionID() {
@@ -44,11 +34,9 @@ public class SessionResumptionDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        if (sessionResumption != null) {
-            config.setSessionResumption(sessionResumption);
-        }
         if (sessionID != null) {
-            config.setSessionId(sessionID);
+            config.setDefaultClientSessionId(sessionID);
+            config.setDefaultServerSessionId(sessionID);
         }
     }
 }

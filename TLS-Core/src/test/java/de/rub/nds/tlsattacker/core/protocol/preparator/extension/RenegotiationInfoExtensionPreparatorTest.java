@@ -33,14 +33,14 @@ public class RenegotiationInfoExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new RenegotiationInfoExtensionMessage();
-        preparator = new RenegotiationInfoExtensionPreparator(context, message,
+        preparator = new RenegotiationInfoExtensionPreparator(context.getChooser(), message,
                 new RenegotiationInfoExtensionSerializer(message));
 
     }
 
     @Test
     public void testPreparator() {
-        context.getConfig().setRenegotiationInfo(extensionPayload);
+        context.getConfig().setDefaultRenegotiationInfo(extensionPayload);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.RENEGOTIATION_INFO.getValue(), message.getExtensionType().getValue());

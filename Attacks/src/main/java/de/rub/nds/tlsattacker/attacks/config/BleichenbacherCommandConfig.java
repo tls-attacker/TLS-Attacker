@@ -10,14 +10,13 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
-import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.config.Config;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
-            config.setSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
         return config;
     }

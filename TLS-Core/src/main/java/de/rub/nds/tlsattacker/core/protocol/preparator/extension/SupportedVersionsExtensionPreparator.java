@@ -12,8 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -22,11 +22,11 @@ import java.io.IOException;
  */
 public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<SupportedVersionsExtensionMessage> {
 
-    private SupportedVersionsExtensionMessage msg;
+    private final SupportedVersionsExtensionMessage msg;
 
-    public SupportedVersionsExtensionPreparator(TlsContext context, SupportedVersionsExtensionMessage message,
+    public SupportedVersionsExtensionPreparator(Chooser chooser, SupportedVersionsExtensionMessage message,
             SupportedVersionsExtensionSerializer serializer) {
-        super(context, message, serializer);
+        super(chooser, message, serializer);
         this.msg = message;
     }
 
@@ -49,7 +49,7 @@ public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<Su
 
     private byte[] createProtocolVersionArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ProtocolVersion version : context.getConfig().getSupportedVersions()) {
+        for (ProtocolVersion version : chooser.getConfig().getSupportedVersions()) {
             try {
                 stream.write(version.getValue());
             } catch (IOException ex) {

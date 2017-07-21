@@ -37,8 +37,8 @@ public class KeyShareExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new KeyShareExtensionMessage();
-        preparator = new KeyShareExtensionPreparator(context, message, new KeyShareExtensionSerializer(message,
-                ConnectionEndType.CLIENT));
+        preparator = new KeyShareExtensionPreparator(context.getChooser(), message, new KeyShareExtensionSerializer(
+                message, ConnectionEndType.CLIENT));
     }
 
     /**

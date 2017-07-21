@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeySharePairSerializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -26,9 +26,9 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     private final KeyShareExtensionMessage msg;
     private ByteArrayOutputStream stream;
 
-    public KeyShareExtensionPreparator(TlsContext context, KeyShareExtensionMessage message,
+    public KeyShareExtensionPreparator(Chooser chooser, KeyShareExtensionMessage message,
             KeyShareExtensionSerializer serializer) {
-        super(context, message, serializer);
+        super(chooser, message, serializer);
         this.msg = message;
     }
 
@@ -37,7 +37,7 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
         LOGGER.debug("Preparing KeyShareExtensionMessage");
         stream = new ByteArrayOutputStream();
         for (KeySharePair pair : msg.getKeyShareList()) {
-            KeySharePairPreparator preparator = new KeySharePairPreparator(context, pair);
+            KeySharePairPreparator preparator = new KeySharePairPreparator(chooser, pair);
             preparator.prepare();
             KeySharePairSerializer serializer = new KeySharePairSerializer(pair);
             try {

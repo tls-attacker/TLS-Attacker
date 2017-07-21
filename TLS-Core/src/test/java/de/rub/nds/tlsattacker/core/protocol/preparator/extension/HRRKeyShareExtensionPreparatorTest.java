@@ -31,7 +31,8 @@ public class HRRKeyShareExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new HRRKeyShareExtensionMessage();
-        preparator = new HRRKeyShareExtensionPreparator(context, message, new HRRKeyShareExtensionSerializer(message));
+        preparator = new HRRKeyShareExtensionPreparator(context.getChooser(), message,
+                new HRRKeyShareExtensionSerializer(message));
     }
 
     /**

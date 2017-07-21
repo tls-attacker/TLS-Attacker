@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 /**
@@ -28,8 +28,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     private final Record record;
     private final Encryptor encryptor;
 
-    public RecordPreparator(TlsContext context, Record record, Encryptor encryptor, ProtocolMessageType type) {
-        super(context, record, type);
+    public RecordPreparator(Chooser chooser, Record record, Encryptor encryptor, ProtocolMessageType type) {
+        super(chooser, record, type);
         this.record = record;
         this.encryptor = encryptor;
     }
@@ -40,7 +40,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         prepareContentType(record);
         prepareProtocolVersion(record);
         prepareSequenceNumber(record);
-        if (context.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
             preparePaddingLength(record);
         }
         encryptor.encrypt(record);
@@ -48,7 +48,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareContentType(Record record) {
-        if (context.getSelectedProtocolVersion().isTLS13() && context.isEncryptActive() == true) {
+        if (chooser.getSelectedProtocolVersion().isTLS13() && chooser.getContext().isEncryptActive()) {
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
             record.setContentType(type.getValue());
@@ -58,16 +58,16 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareProtocolVersion(Record record) {
-        if (context.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
             record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         } else {
-            record.setProtocolVersion(context.getSelectedProtocolVersion().getValue());
+            record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
         }
         LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(record.getProtocolVersion().getValue()));
     }
 
     private void prepareSequenceNumber(Record record) {
-        record.setSequenceNumber(BigInteger.valueOf(context.getSequenceNumber()));
+        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getSequenceNumber()));
         LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 
@@ -77,7 +77,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void preparePaddingLength(Record record) {
-        record.setPaddingLength(context.getConfig().getPaddingLength());
+        record.setPaddingLength(chooser.getConfig().getPaddingLength());
         LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
     }
 }

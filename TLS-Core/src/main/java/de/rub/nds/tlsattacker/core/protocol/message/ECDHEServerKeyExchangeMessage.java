@@ -83,7 +83,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        sb.append(ArrayConverter.bytesToHexString(getSerializedPublicKey().getValue()));
+        sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
         sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2

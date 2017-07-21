@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -18,14 +19,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -81,7 +80,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
         ModifiableByteArray pms = new ModifiableByteArray();
         pms.setModification(ByteArrayModificationFactory.explicitValue(msg));
-        cke.setSerializedPublicKey(pms);
+        cke.setPublicKey(pms);
 
         if (numberOfQueries % 100 == 0) {
             LOGGER.debug("Number of queries so far: {}", numberOfQueries);

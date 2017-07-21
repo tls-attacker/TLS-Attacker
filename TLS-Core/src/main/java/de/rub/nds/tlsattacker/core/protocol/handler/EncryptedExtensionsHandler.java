@@ -37,7 +37,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
 
     @Override
     public EncryptedExtensionsPreparator getPreparator(EncryptedExtensionsMessage message) {
-        return new EncryptedExtensionsPreparator(tlsContext, message);
+        return new EncryptedExtensionsPreparator(tlsContext.getChooser(), message);
     }
 
     @Override

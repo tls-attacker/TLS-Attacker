@@ -34,7 +34,7 @@ public class HelloVerifyRequestPreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new HelloVerifyRequestMessage();
-        this.preparator = new HelloVerifyRequestPreparator(context, message);
+        this.preparator = new HelloVerifyRequestPreparator(context.getChooser(), message);
     }
 
     /**

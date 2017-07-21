@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -28,20 +28,20 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
     private byte[] sigHashAlgos;
     private final CertificateRequestMessage msg;
 
-    public CertificateRequestMessagePreparator(TlsContext context, CertificateRequestMessage message) {
-        super(context, message);
+    public CertificateRequestMessagePreparator(Chooser chooser, CertificateRequestMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateRequestMessage");
-        certTypes = convertClientCertificateTypes(context.getConfig().getClientCertificateTypes());
+        certTypes = convertClientCertificateTypes(chooser.getConfig().getClientCertificateTypes());
         prepareClientCertificateTypes(certTypes, msg);
         prepareClientCertificateTypesCount(msg);
         prepareDistinguishedNames(msg);
         prepareDistinguishedNamesLength(msg);
-        sigHashAlgos = convertSigAndHashAlgos(context.getConfig().getSupportedSignatureAndHashAlgorithms());
+        sigHashAlgos = convertSigAndHashAlgos(chooser.getServerSupportedSignatureAndHashAlgorithms());
         prepareSignatureHashAlgorithms(msg);
         prepareSignatureHashAlgorithmsLength(msg);
     }
@@ -86,7 +86,7 @@ public class CertificateRequestMessagePreparator extends HandshakeMessagePrepara
     }
 
     private void prepareDistinguishedNames(CertificateRequestMessage msg) {
-        msg.setDistinguishedNames(context.getConfig().getDistinguishedNames());
+        msg.setDistinguishedNames(chooser.getConfig().getDistinguishedNames());
         LOGGER.debug("DistinguishedNames: " + ArrayConverter.bytesToHexString(msg.getDistinguishedNames().getValue()));
     }
 
