@@ -79,12 +79,17 @@ public class CompressionDelegateTest {
         args[1] = "NULL,DEFLATE";
         jcommander.parse(args);
         Config config = Config.createConfig();
-        config.setSupportedCompressionMethods(null);
+        config.setDefaultClientSupportedCompressionMethods(null);
+        config.setDefaultServerSupportedCompressionMethods(null);
         delegate.applyDelegate(config);
         assertTrue("NULL should get parsed correctly",
-                config.getSupportedCompressionMethods().contains(CompressionMethod.NULL));
-        assertTrue("DEFLATE should get parsed correctly",
-                config.getSupportedCompressionMethods().contains(CompressionMethod.DEFLATE));
+                config.getDefaultClientSupportedCompressionMethods().contains(CompressionMethod.NULL));
+        assertTrue("DEFLATE should get parsed correctly", config.getDefaultClientSupportedCompressionMethods()
+                .contains(CompressionMethod.DEFLATE));
+        assertTrue("NULL should get parsed correctly",
+                config.getDefaultServerSupportedCompressionMethods().contains(CompressionMethod.NULL));
+        assertTrue("DEFLATE should get parsed correctly", config.getDefaultServerSupportedCompressionMethods()
+                .contains(CompressionMethod.DEFLATE));
 
     }
 

@@ -74,10 +74,10 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     private void prepareCompressionMethod() {
         if (chooser.getConfig().isEnforceSettings()) {
-            msg.setSelectedCompressionMethod(chooser.getConfig().getSupportedCompressionMethods().get(0).getValue());
+            msg.setSelectedCompressionMethod(chooser.getConfig().getDefaultSelectedCompressionMethod().getValue());
         } else {
             CompressionMethod selectedCompressionMethod = null;
-            for (CompressionMethod method : chooser.getConfig().getSupportedCompressionMethods()) {
+            for (CompressionMethod method : chooser.getConfig().getDefaultServerSupportedCompressionMethods()) {
                 if (chooser.getClientSupportedCompressions().contains(method)) {
                     selectedCompressionMethod = method;
                     break;
