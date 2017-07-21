@@ -371,7 +371,7 @@ public class Config implements Serializable {
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPaddingExtensionBytes = new byte[]{0, 0, 0, 0, 0, 0};
+    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
     // Switch between TLS and DTLS execution
     private ExecutorType executorType = ExecutorType.TLS;
