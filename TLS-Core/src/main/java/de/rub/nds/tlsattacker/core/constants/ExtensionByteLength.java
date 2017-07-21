@@ -182,6 +182,26 @@ public class ExtensionByteLength {
      * Length of the trusted ca indication trusted authority list
      */
     public static final int TRUSTED_AUTHORITY_LIST_LENGTH = 2;
+    
+    /**
+     * Length of the status request v2 responder id length
+     */
+    public static final int CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID = 2;
+    
+    /**
+     * Length of the status request v2 request extension length
+     */
+    public static final int CERTIFICATE_STATUS_REQUEST_V2_REQUEST_EXTENSION = 2;
+    
+    /** 
+     * Length of the status request v2 request length
+     */
+    public static final int CERTIFICATE_STATUS_REQUEST_V2_REQUEST_LENGTH = 2;
+    
+    /**
+     * Length of the status request v2 list length
+     */
+    public static final int CERTIFICATE_STATUS_REQUEST_V2_LIST = 2;
 
     private ExtensionByteLength() {
     }

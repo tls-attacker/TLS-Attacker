@@ -16,7 +16,8 @@ import java.util.Map;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum CertificateStatusRequestType {
-    OCSP((int) 1);
+    OCSP((int) 1),
+    OCSP_multi((int) 2);
 
     private final int certificateStatusRequestValue;
     private static final Map<Integer, CertificateStatusRequestType> MAP;
