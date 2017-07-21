@@ -535,8 +535,6 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private KSEntry defaultServerKSEntry;
-
     private Config() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -583,7 +581,6 @@ public class Config implements Serializable {
         defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
                 "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
                 "3142682168214624565874993023364886040439474355932713162721"));
-        defaultServerKSEntry = new KSEntry(NamedCurve.SECP192R1, keySharePublic);
     }
 
     public ChooserType getChooserType() {
@@ -1611,11 +1608,7 @@ public class Config implements Serializable {
         this.addTokenBindingExtension = addTokenBindingExtension;
     }
 
-    public void setDefaultServerKSEntry(KSEntry defaultServerKSEntry) {
-        this.defaultServerKSEntry = defaultServerKSEntry;
-    }
-
     public KSEntry getDefaultServerKSEntry() {
-        return defaultServerKSEntry;
+        return new KSEntry(keyShareType, keySharePublic);
     }
 }
