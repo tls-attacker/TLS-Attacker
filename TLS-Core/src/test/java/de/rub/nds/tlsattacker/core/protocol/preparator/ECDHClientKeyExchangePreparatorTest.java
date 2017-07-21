@@ -90,4 +90,9 @@ public class ECDHClientKeyExchangePreparatorTest {
                         ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientRandom()
                         .getValue());
     }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

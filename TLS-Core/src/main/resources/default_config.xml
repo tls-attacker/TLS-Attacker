@@ -121,7 +121,6 @@
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_RSA_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_DHE_DSS_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
-    <supportedCompressionMethods>NULL</supportedCompressionMethods>
     <dynamicWorkflow>false</dynamicWorkflow>
     <namedCurves>SECP192R1</namedCurves>
     <namedCurves>SECP256R1</namedCurves>
@@ -361,6 +360,8 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
     <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
     <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>
+    <defaultClientSupportedCompressionMethods>NULL</defaultClientSupportedCompressionMethods>
+    <defaultServerSupportedCompressionMethods>NULL</defaultServerSupportedCompressionMethods>
     <defaultMasterSecret></defaultMasterSecret>
     <defaultPreMasterSecret></defaultPreMasterSecret>
     <defaultClientRandom></defaultClientRandom>

@@ -109,10 +109,7 @@ public class Config implements Serializable {
      * Which Ciphersuites we support by default
      */
     private List<CipherSuite> defaultServerSupportedCiphersuites;
-    /**
-     * Which compression methods we support by default
-     */
-    private List<CompressionMethod> supportedCompressionMethods;
+
     /**
      * If we are a dynamic workflow //TODO implement
      */
@@ -453,6 +450,8 @@ public class Config implements Serializable {
 
     private List<CompressionMethod> defaultClientSupportedCompressionMethods;
 
+    private List<CompressionMethod> defaultServerSupportedCompressionMethods;
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultMasterSecret = new byte[0];
 
@@ -550,8 +549,10 @@ public class Config implements Serializable {
                 HashAlgorithm.SHA1));
         supportedSignatureAndHashAlgorithms
                 .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
-        supportedCompressionMethods = new LinkedList<>();
-        supportedCompressionMethods.add(CompressionMethod.NULL);
+        defaultClientSupportedCompressionMethods = new LinkedList<>();
+        defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
+        defaultServerSupportedCompressionMethods = new LinkedList<>();
+        defaultServerSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultClientSupportedCiphersuites = new LinkedList<>();
         defaultClientSupportedCiphersuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCiphersuites = new LinkedList<>();
@@ -1425,18 +1426,6 @@ public class Config implements Serializable {
         this.defaultClientSupportedCiphersuites = Arrays.asList(defaultClientSupportedCiphersuites);
     }
 
-    public List<CompressionMethod> getSupportedCompressionMethods() {
-        return Collections.unmodifiableList(supportedCompressionMethods);
-    }
-
-    public void setSupportedCompressionMethods(List<CompressionMethod> supportedCompressionMethods) {
-        this.supportedCompressionMethods = supportedCompressionMethods;
-    }
-
-    public final void setSupportedCompressionMethods(CompressionMethod... supportedCompressionMethods) {
-        this.supportedCompressionMethods = Arrays.asList(supportedCompressionMethods);
-    }
-
     public ConnectionEndType getConnectionEndType() {
         return connectionEndType;
     }
@@ -1677,5 +1666,19 @@ public class Config implements Serializable {
 
     public KSEntry getDefaultServerKSEntry() {
         return new KSEntry(keyShareType, keySharePublic);
+    }
+
+    public List<CompressionMethod> getDefaultServerSupportedCompressionMethods() {
+        return defaultServerSupportedCompressionMethods;
+    }
+
+    public void setDefaultServerSupportedCompressionMethods(
+            List<CompressionMethod> defaultServerSupportedCompressionMethods) {
+        this.defaultServerSupportedCompressionMethods = defaultServerSupportedCompressionMethods;
+    }
+
+    public void setDefaultServerSupportedCompressionMethods(
+            CompressionMethod... defaultServerSupportedCompressionMethods) {
+        this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
     }
 }

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterS
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -27,12 +28,16 @@ public class ExtendedMasterSecretExtensionPreparatorTest {
     private ExtendedMasterSecretExtensionMessage message;
     private ExtendedMasterSecretExtensionPreparator preparator;
 
-    @Test
-    public void testPreparator() {
+    @Before
+    public void setUp() {
         context = new TlsContext();
         message = new ExtendedMasterSecretExtensionMessage();
         preparator = new ExtendedMasterSecretExtensionPreparator(context.getChooser(), message,
                 new ExtendedMasterSecretExtensionSerializer(message));
+    }
+
+    @Test
+    public void testPreparator() {
 
         context.getConfig().setAddExtendedMasterSecretExtension(true);
         preparator.prepare();
@@ -40,6 +45,11 @@ public class ExtendedMasterSecretExtensionPreparatorTest {
         assertArrayEquals(ExtensionType.EXTENDED_MASTER_SECRET.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
 
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 
 }

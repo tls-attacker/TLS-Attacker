@@ -34,12 +34,21 @@ public class KeySharePairPreparator extends Preparator<KeySharePair> {
     }
 
     private void prepareKeyShare(KeySharePair pair) {
-        pair.setKeyShare(pair.getKeyShareConfig());
+        if (pair.getKeyShareConfig() != null) {
+            pair.setKeyShare(pair.getKeyShareConfig());
+        } else {
+            pair.setKeyShare(new byte[0]);
+        }
         LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(pair.getKeyShare().getValue()));
     }
 
     private void prepareKeyShareType(KeySharePair pair) {
-        pair.setKeyShareType(pair.getKeyShareTypeConfig());
+        if (pair.getKeyShareTypeConfig() != null) {
+            pair.setKeyShareType(pair.getKeyShareTypeConfig());
+        } else {
+            pair.setKeyShareType(new byte[0]);
+        }
+
         LOGGER.debug("KeyShareType: " + ArrayConverter.bytesToHexString(pair.getKeyShareType().getValue()));
     }
 

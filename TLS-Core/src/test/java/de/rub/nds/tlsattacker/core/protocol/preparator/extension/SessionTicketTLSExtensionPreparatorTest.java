@@ -53,4 +53,9 @@ public class SessionTicketTLSExtensionPreparatorTest {
         assertArrayEquals(ticket, message.getTicket().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

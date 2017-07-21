@@ -32,7 +32,11 @@ public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparato
     }
 
     private void prepareData(UnknownHandshakeMessage msg) {
-        msg.setData(msg.getDataConfig());
+        if (msg.getDataConfig() != null) {
+            msg.setData(msg.getDataConfig());
+        } else {
+            msg.setData(new byte[0]);
+        }
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
 

@@ -25,12 +25,14 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateVerifyMessagePreparatorTest {
+
     private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
 
     private CertificateVerifyMessage message;
@@ -88,9 +90,8 @@ public class CertificateVerifyMessagePreparatorTest {
         assertTrue(message.getSignatureLength().getValue() == 70);
     }
 
-    // @Test(expected = PreparationException.class)
-    public void testPrepareUnknownPrivateKey() throws NoSuchAlgorithmException {
-        // TODO
+    @Test
+    public void testNoContextPrepare() {
         preparator.prepare();
     }
 
