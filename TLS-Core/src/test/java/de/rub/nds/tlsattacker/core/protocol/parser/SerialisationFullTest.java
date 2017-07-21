@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -39,7 +40,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
@@ -87,7 +87,7 @@ public class SerialisationFullTest {
 
     @Test
     public void test() throws JAXBException, IOException {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddHeartbeatExtension(true);
@@ -103,19 +103,19 @@ public class SerialisationFullTest {
         config.setAddTokenBindingExtension(true);
 
         WorkflowTrace trace = new WorkflowConfigurationFactory(config).createFullWorkflow();
-        trace.add(new ChangeCipherSuiteAction(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
-        trace.add(new ChangeClientCertificateAction(Certificate.EMPTY_CHAIN));
-        trace.add(new ChangeClientRandomAction(new byte[] { 0x00, 0x11, 0x22, 0x33 }));
-        trace.add(new ChangeCompressionAction(CompressionMethod.LZS));
-        trace.add(new ChangeMasterSecretAction(new byte[] { 0x00, 0x22, 0x44, 0x66, 0x44 }));
-        trace.add(new ChangePreMasterSecretAction(new byte[] { 0x33, 0x66, 0x55, 0x44, }));
-        trace.add(new WaitingAction(10000));
-        trace.add(new ResetConnectionAction());
-        trace.add(new ChangeProtocolVersionAction(ProtocolVersion.SSL3));
-        trace.add(new ChangeServerCertificateAction(Certificate.EMPTY_CHAIN));
-        trace.add(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));
-        trace.add(new DeactivateEncryptionAction());
-        trace.add(new RenegotiationAction());
+        trace.addTlsAction(new ChangeCipherSuiteAction(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
+        trace.addTlsAction(new ChangeClientCertificateAction(Certificate.EMPTY_CHAIN));
+        trace.addTlsAction(new ChangeClientRandomAction(new byte[] { 0x00, 0x11, 0x22, 0x33 }));
+        trace.addTlsAction(new ChangeCompressionAction(CompressionMethod.LZS));
+        trace.addTlsAction(new ChangeMasterSecretAction(new byte[] { 0x00, 0x22, 0x44, 0x66, 0x44 }));
+        trace.addTlsAction(new ChangePreMasterSecretAction(new byte[] { 0x33, 0x66, 0x55, 0x44, }));
+        trace.addTlsAction(new WaitingAction(10000));
+        trace.addTlsAction(new ResetConnectionAction());
+        trace.addTlsAction(new ChangeProtocolVersionAction(ProtocolVersion.SSL3));
+        trace.addTlsAction(new ChangeServerCertificateAction(Certificate.EMPTY_CHAIN));
+        trace.addTlsAction(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));
+        trace.addTlsAction(new DeactivateEncryptionAction());
+        trace.addTlsAction(new RenegotiationAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
@@ -146,7 +146,7 @@ public class SerialisationFullTest {
         records.add(new BlobRecord());
         records.add(new Record());
         action.setConfiguredRecords(records);
-        trace.add(action);
+        trace.addTlsAction(action);
 
         File f = folder.newFile();
         WorkflowTraceSerializer.write(f, trace);

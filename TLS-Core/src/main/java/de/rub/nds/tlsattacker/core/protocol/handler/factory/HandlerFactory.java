@@ -56,7 +56,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

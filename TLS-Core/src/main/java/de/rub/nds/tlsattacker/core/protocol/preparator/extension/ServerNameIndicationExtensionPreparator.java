@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNamePairSerializier;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 

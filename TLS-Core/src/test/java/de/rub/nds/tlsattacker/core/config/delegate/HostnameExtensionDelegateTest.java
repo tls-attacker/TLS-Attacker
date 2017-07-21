@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -64,7 +64,7 @@ public class HostnameExtensionDelegateTest {
         args[0] = "-server_name";
         args[1] = "its_me";
         jcommander.parse(args);
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setSniHostname(null);
         config.setAddServerNameIndicationExtension(false);
         assertFalse(config.isAddServerNameIndicationExtension());
@@ -75,8 +75,8 @@ public class HostnameExtensionDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
     }

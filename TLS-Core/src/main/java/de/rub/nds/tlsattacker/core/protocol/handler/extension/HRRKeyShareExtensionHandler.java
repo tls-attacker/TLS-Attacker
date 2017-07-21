@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HRRKeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HRRKeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HRRKeyShareExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * This handler processes the KeyShare extensions in HelloRetryRequest message,

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.state.ConnectionEnd;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
@@ -35,6 +36,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -47,8 +49,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A wrapper class over a list of protocol configuredMessages maintained in the
- * TLS context.
+ * A wrapper class over a list of protocol configuredMessages.
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -57,9 +58,11 @@ import org.apache.logging.log4j.Logger;
 public class WorkflowTrace implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowTrace.class);
-    /**
-     * Workflow
-     */
+
+    @XmlElement(type = ConnectionEnd.class, name = "ConnectionEnd")
+    private List<ConnectionEnd> connectionEnds;
+
+    /** Workflow */
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
@@ -88,6 +91,7 @@ public class WorkflowTrace implements Serializable {
      */
     public WorkflowTrace() {
         this.tlsActions = new LinkedList<>();
+        this.connectionEnds = new ArrayList<>();
     }
 
     /**
@@ -144,7 +148,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void reset() {
-        for (TLSAction action : getTLSActions()) {
+        for (TLSAction action : getTlsActions()) {
             action.reset();
         }
     }
@@ -157,24 +161,44 @@ public class WorkflowTrace implements Serializable {
         this.description = description;
     }
 
-    public boolean add(TLSAction action) {
+    public boolean addTlsAction(TLSAction action) {
         return tlsActions.add(action);
     }
 
-    public void add(int position, TLSAction action) {
+    public void addTlsAction(int position, TLSAction action) {
         tlsActions.add(position, action);
     }
 
-    public TLSAction remove(int index) {
+    public TLSAction removeTlsAction(int index) {
         return tlsActions.remove(index);
     }
 
-    public List<TLSAction> getTLSActions() {
+    public List<TLSAction> getTlsActions() {
         return tlsActions;
     }
 
-    public void setTLSActions(List<TLSAction> tlsActions) {
+    public void setTlsActions(List<TLSAction> tlsActions) {
         this.tlsActions = tlsActions;
+    }
+
+    public boolean addConnectionEnd(ConnectionEnd con) {
+        return connectionEnds.add(con);
+    }
+
+    public void addConnectionEnd(int position, ConnectionEnd con) {
+        connectionEnds.add(position, con);
+    }
+
+    public ConnectionEnd removeConnectionEnd(int index) {
+        return connectionEnds.remove(index);
+    }
+
+    public List<ConnectionEnd> getConnectionEnds() {
+        return connectionEnds;
+    }
+
+    public void setConnectionEnds(List<ConnectionEnd> conEnds) {
+        this.connectionEnds = conEnds;
     }
 
     public List<MessageAction> getMessageActions() {

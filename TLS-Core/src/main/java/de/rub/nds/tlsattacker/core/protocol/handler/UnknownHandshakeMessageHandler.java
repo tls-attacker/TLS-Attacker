@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakeMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *

@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

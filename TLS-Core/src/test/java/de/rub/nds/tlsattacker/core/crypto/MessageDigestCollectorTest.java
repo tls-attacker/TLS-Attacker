@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import org.apache.logging.log4j.LogManager;

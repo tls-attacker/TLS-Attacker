@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,8 +62,8 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
+    public Config createConfig() {
+        Config config = super.createConfig();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
@@ -76,6 +76,11 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             config.setSupportedCiphersuites(cipherSuites);
         }
         return config;
+    }
+
+    @Override
+    public boolean isExecuteAttack() {
+        return false;
     }
 
     public enum Type {

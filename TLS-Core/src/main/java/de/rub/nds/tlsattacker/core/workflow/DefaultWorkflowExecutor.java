@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutorFactory;
@@ -36,7 +37,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         context.getWorkflowTrace().reset();
         ActionExecutor actionExecutor = ActionExecutorFactory.getActionExecutor(context.getConfig().getExecutorType(),
                 context);
-        List<TLSAction> tlsActions = context.getWorkflowTrace().getTLSActions();
+        List<TLSAction> tlsActions = context.getWorkflowTrace().getTlsActions();
         for (TLSAction action : tlsActions) {
             try {
                 action.execute(context, actionExecutor);

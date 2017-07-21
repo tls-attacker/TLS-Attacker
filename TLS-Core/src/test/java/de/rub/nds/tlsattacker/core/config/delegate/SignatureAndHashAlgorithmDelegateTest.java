@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -81,7 +81,7 @@ public class SignatureAndHashAlgorithmDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         args = new String[2];
         args[0] = "-signature_hash_algo";
         args[1] = "RSA-SHA512,DSA-SHA512";
@@ -99,8 +99,8 @@ public class SignatureAndHashAlgorithmDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

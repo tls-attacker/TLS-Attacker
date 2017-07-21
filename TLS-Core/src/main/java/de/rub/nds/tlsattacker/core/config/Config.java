@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.workflow;
+package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
@@ -22,15 +22,16 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.util.JKSLoader;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
-import de.rub.nds.tlsattacker.core.util.JKSLoader;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.File;
 import java.io.IOException;
@@ -65,18 +66,18 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TlsConfig implements Serializable {
-    public static TlsConfig createConfig() {
-        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
-        return TlsConfigIO.read(stream);
+public class Config implements Serializable {
+    public static Config createConfig() {
+        InputStream stream = Config.class.getResourceAsStream("/default_config.xml");
+        return ConfigIO.read(stream);
     }
 
-    public static TlsConfig createConfig(File f) {
-        return TlsConfigIO.read(f);
+    public static Config createConfig(File f) {
+        return ConfigIO.read(f);
     }
 
-    public static TlsConfig createConfig(InputStream stream) {
-        return TlsConfigIO.read(stream);
+    public static Config createConfig(InputStream stream) {
+        return ConfigIO.read(stream);
     }
 
     /**
@@ -450,7 +451,7 @@ public class TlsConfig implements Serializable {
      */
     private boolean workflowExecutorShouldClose = true;
 
-    private TlsConfig() {
+    private Config() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA512));
@@ -476,7 +477,7 @@ public class TlsConfig implements Serializable {
         pointFormats = new LinkedList<>();
         pointFormats.add(ECPointFormat.UNCOMPRESSED);
         try {
-            ClassLoader loader = TlsConfig.class.getClassLoader();
+            ClassLoader loader = Config.class.getClassLoader();
             InputStream stream = loader.getResourceAsStream("default.jks");
             setKeyStore(KeystoreHandler.loadKeyStore(stream, "password"));
             setPrivateKey((PrivateKey) keyStore.getKey(alias, password.toCharArray()));
@@ -484,7 +485,7 @@ public class TlsConfig implements Serializable {
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load deauflt JKS!");
         } catch (UnrecoverableKeyException ex) {
-            Logger.getLogger(TlsConfig.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Config.class.getName()).log(Level.SEVERE, null, ex);
         }
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);

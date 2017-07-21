@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNamePairParser;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import java.util.Arrays;
 import java.util.Collection;

@@ -6,11 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package de.rub.nds.tlsattacker.mitm.main;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,12 +16,12 @@ import com.beust.jcommander.ParameterException;
 
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.mitm.config.MitmCommandConfig;
 
 /**
  *
- * @author Lucas Hartmann <firstname.lastname@rub.de>
+ * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class Main {
 
@@ -43,7 +39,7 @@ public class Main {
                 return;
             }
             // Cmd was parsable
-            TlsConfig tlsConfig = null;
+            Config tlsConfig = null;
             try {
                 LOGGER.debug("Creating and launching mitm.");
                 tlsConfig = config.createConfig();

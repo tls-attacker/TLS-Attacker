@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +41,7 @@ public class TlsClient {
                 return;
             }
             // Cmd was parsable
-            TlsConfig tlsConfig = null;
+            Config tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
                 TlsClient client = new TlsClient();
@@ -58,7 +58,7 @@ public class TlsClient {
         }
     }
 
-    public void startTlsClient(TlsConfig config) {
+    public void startTlsClient(Config config) {
         TlsContext tlsContext = new TlsContext(config);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
                 tlsContext);

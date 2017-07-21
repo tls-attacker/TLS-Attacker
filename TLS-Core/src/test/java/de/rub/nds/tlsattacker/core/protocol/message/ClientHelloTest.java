@@ -13,8 +13,8 @@ import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.integer.IntegerAddModification;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction;
@@ -81,7 +81,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization() throws JAXBException {
-        ClientHelloMessage cl = new ClientHelloMessage(TlsConfig.createConfig());
+        ClientHelloMessage cl = new ClientHelloMessage(Config.createConfig());
         cl.setCipherSuiteLength(3);
         // cl.setCipherSuiteLength(new ModifiableInteger());
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
@@ -101,7 +101,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization2() throws Exception {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = cf.createFullWorkflow();
         m.marshal(trace, writer);

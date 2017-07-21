@@ -21,8 +21,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -51,13 +51,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public void executeAttack() {
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
@@ -76,8 +76,12 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     @Override
     public Boolean isVulnerable() {
         RSAPublicKey publicKey;
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        if (publicKey == null) {
+            LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
+            return null;
+        }
         LOGGER.info("Fetched the following server public key: " + publicKey);
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();

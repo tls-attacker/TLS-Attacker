@@ -14,13 +14,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.DHEServerComputations;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -59,7 +59,7 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super();
     }
 
-    public DHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
+    public DHEServerKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.security.InvalidKeyException;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -37,7 +37,7 @@ public class UnlimitedStrengthTest {
     @Test
     public void testAES256() throws Exception {
         try {
-            new GeneralDelegate().applyDelegate(TlsConfig.createConfig());
+            new GeneralDelegate().applyDelegate(Config.createConfig());
 
             Cipher encryptCipher = Cipher.getInstance("AES/CBC/NoPadding");
             IvParameterSpec encryptIv = new IvParameterSpec(new byte[16]);

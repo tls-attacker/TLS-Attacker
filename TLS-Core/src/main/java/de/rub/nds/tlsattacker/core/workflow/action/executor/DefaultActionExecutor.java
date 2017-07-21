@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -61,6 +61,7 @@ public class DefaultActionExecutor extends ActionExecutor {
             return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
         }
         if (records == null) {
+            LOGGER.trace("No Records Specified, creating emtpy list");
             records = new LinkedList<>();
         }
         int recordPosition = 0;
@@ -100,7 +101,6 @@ public class DefaultActionExecutor extends ActionExecutor {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        // TODO Parse our messages
         return new MessageActionResult(records, messages);
     }
 
@@ -135,6 +135,7 @@ public class DefaultActionExecutor extends ActionExecutor {
         while (recordLength < length) {
             if (position >= records.size()) {
                 if (context.getConfig().isCreateRecordsDynamically()) {
+                    LOGGER.trace("Creating new Record");
                     records.add(context.getRecordLayer().getFreshRecord());
                 } else {
                     return toFillList;
