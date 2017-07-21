@@ -10,10 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.prng.FixedSecureRandom;

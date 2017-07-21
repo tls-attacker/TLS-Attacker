@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -24,8 +24,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -37,7 +36,7 @@ import java.util.List;
  */
 public class DefaultChooser extends Chooser {
 
-    DefaultChooser(TlsContext context, TlsConfig config) {
+    DefaultChooser(TlsContext context, Config config) {
         super(context, config);
     }
 

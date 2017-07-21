@@ -51,9 +51,11 @@ public class Main {
         JCommander jc = new JCommander(generalDelegate);
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
-        DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest = new DtlsPaddingOracleAttackCommandConfig(
-                generalDelegate);
-        jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND, dtlsPaddingOracleAttackTest);
+        // DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest =
+        // new DtlsPaddingOracleAttackCommandConfig(
+        // generalDelegate);
+        // jc.addCommand(DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND,
+        // dtlsPaddingOracleAttackTest);
         InvalidCurveAttackConfig ellipticTest = new InvalidCurveAttackConfig(generalDelegate);
         jc.addCommand(InvalidCurveAttackConfig.ATTACK_COMMAND, ellipticTest);
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(generalDelegate);
@@ -107,9 +109,10 @@ public class Main {
             case WinshockCommandConfig.ATTACK_COMMAND:
                 attacker = new WinshockAttacker(winshock);
                 break;
-            case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
-                attacker = new DtlsPaddingOracleAttacker(dtlsPaddingOracleAttackTest);
-                break;
+            // case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
+            // attacker = new
+            // DtlsPaddingOracleAttacker(dtlsPaddingOracleAttackTest);
+            // break;
             case EarlyCCSCommandConfig.ATTACK_COMMAND:
                 attacker = new EarlyCCSAttacker(earlyCCS);
                 break;

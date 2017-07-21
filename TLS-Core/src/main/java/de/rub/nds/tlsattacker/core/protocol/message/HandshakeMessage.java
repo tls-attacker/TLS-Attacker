@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -36,7 +37,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -111,7 +111,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.handshakeMessageType = handshakeMessageType;
     }
 
-    public HandshakeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+    public HandshakeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;

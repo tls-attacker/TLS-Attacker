@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.workflow;
+package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -34,6 +34,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -55,19 +56,19 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TlsConfig implements Serializable {
+public class Config implements Serializable {
 
-    public static TlsConfig createConfig() {
-        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
-        return TlsConfigIO.read(stream);
+    public static Config createConfig() {
+        InputStream stream = Config.class.getResourceAsStream("/default_config.xml");
+        return ConfigIO.read(stream);
     }
 
-    public static TlsConfig createConfig(File f) {
-        return TlsConfigIO.read(f);
+    public static Config createConfig(File f) {
+        return ConfigIO.read(f);
     }
 
-    public static TlsConfig createConfig(InputStream stream) {
-        return TlsConfigIO.read(stream);
+    public static Config createConfig(InputStream stream) {
+        return ConfigIO.read(stream);
     }
 
     /**
@@ -533,7 +534,7 @@ public class TlsConfig implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private TlsConfig() {
+    private Config() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA512));

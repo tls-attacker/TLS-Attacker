@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RetransmitMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RetransmitMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;

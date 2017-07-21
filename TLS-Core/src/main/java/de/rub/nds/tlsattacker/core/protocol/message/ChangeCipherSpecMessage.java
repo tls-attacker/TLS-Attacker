@@ -14,8 +14,8 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ChangeCipherSpecHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -27,7 +27,7 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     ModifiableByte ccsProtocolType;
 
-    public ChangeCipherSpecMessage(TlsConfig tlsConfig) {
+    public ChangeCipherSpecMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.CHANGE_CIPHER_SPEC;
     }

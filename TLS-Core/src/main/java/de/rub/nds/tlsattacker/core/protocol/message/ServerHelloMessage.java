@@ -25,8 +25,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
@@ -52,7 +52,7 @@ public class ServerHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte selectedCompressionMethod;
 
-    public ServerHelloMessage(TlsConfig tlsConfig) {
+    public ServerHelloMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_HELLO);
         if (tlsConfig.isAddHeartbeatExtension()) {
             addExtension(new HeartbeatExtensionMessage());

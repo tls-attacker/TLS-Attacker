@@ -69,4 +69,9 @@ public class WinshockCommandConfig extends AttackConfig {
         this.signature = signature;
     }
 
+    @Override
+    public boolean isExecuteAttack() {
+        return true;
+    }
+
 }

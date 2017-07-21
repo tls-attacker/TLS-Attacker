@@ -16,8 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ECPointFormatEx
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;

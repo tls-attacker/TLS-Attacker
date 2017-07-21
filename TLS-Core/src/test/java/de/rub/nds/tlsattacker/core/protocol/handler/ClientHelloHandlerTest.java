@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;

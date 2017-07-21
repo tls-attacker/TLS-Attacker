@@ -8,21 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
@@ -33,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Test;
 
 /**
  *

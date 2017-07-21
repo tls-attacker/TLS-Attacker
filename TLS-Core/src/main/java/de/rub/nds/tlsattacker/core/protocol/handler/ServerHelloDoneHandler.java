@@ -12,12 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

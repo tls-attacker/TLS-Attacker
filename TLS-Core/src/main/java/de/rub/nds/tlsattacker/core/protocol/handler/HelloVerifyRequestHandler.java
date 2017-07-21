@@ -8,16 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>

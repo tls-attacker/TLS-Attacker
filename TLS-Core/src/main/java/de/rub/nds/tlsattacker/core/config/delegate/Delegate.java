@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,5 +21,5 @@ public abstract class Delegate {
 
     protected static final Logger LOGGER = LogManager.getLogger(Delegate.class.getName());
 
-    public abstract void applyDelegate(TlsConfig config) throws ConfigurationException;
+    public abstract void applyDelegate(Config config) throws ConfigurationException;
 }

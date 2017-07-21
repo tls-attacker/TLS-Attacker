@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExte
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 

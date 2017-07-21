@@ -11,14 +11,14 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -35,7 +35,7 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
         super(HandshakeMessageType.HELLO_RETRY_REQUEST);
     }
 
-    public HelloRetryRequestMessage(TlsConfig tlsConfig) {
+    public HelloRetryRequestMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.HELLO_RETRY_REQUEST);
     }
 

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
@@ -21,7 +22,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -78,16 +79,21 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @ParametersDelegate
     private final ProtocolVersionDelegate protocolVersionDelegate;
 
+    @ParametersDelegate
+    private final AttackDelegate attackDelegate;
+
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
+        attackDelegate = new AttackDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
+        addDelegate(attackDelegate);
     }
 
     public BigInteger getPremasterSecret() {
@@ -155,8 +161,13 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
+    public boolean isExecuteAttack() {
+        return attackDelegate.isExecuteAttack();
+    }
+
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
         List<CipherSuite> cipherSuites = new LinkedList<>();
         cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
         cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);

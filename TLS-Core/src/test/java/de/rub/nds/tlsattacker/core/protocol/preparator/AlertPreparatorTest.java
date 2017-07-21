@@ -11,9 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import static org.junit.Assert.assertTrue;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 

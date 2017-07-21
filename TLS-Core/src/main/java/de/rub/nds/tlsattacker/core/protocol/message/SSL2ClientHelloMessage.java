@@ -16,8 +16,8 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -57,7 +57,7 @@ public class SSL2ClientHelloMessage extends ProtocolMessage {
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
-    public SSL2ClientHelloMessage(TlsConfig config) {
+    public SSL2ClientHelloMessage(Config config) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }

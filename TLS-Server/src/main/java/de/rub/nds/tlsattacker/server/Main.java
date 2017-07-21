@@ -13,7 +13,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +34,7 @@ public class Main {
                 commander.usage();
                 return;
             }
-            TlsConfig tlsConfig = null;
+            Config tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
                 TlsServer server = new TlsServer();

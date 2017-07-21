@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

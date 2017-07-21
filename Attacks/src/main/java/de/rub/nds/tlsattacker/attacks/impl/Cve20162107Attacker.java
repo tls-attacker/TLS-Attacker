@@ -25,8 +25,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -63,7 +63,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     }
 
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         List<CipherSuite> suiteList = new LinkedList<>();
         suiteList.add(suite);
         tlsConfig.setDefaultClientSupportedCiphersuites(suiteList);
@@ -153,7 +153,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     @Override
     public Boolean isVulnerable() {
         List<ProtocolVersion> versions = config.getVersions();
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         List<CipherSuite> ciphers = new LinkedList<>();
         if (tlsConfig.getDefaultClientSupportedCiphersuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {

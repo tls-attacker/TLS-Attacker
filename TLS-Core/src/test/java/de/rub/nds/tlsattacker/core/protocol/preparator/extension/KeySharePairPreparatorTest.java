@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;

@@ -13,8 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMe
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *

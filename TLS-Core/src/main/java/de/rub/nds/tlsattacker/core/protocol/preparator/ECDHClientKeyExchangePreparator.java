@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;

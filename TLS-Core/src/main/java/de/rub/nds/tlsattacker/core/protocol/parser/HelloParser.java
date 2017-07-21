@@ -13,11 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * An abstract Parser class for Hello Messages

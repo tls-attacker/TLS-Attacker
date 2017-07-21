@@ -18,9 +18,11 @@ import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.parser.AbstractRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -50,7 +52,7 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     public AbstractRecord() {
     }
 
-    public AbstractRecord(TlsConfig config) {
+    public AbstractRecord(Config config) {
         this.maxRecordLengthConfig = config.getDefaultMaxRecordData();
     }
 

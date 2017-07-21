@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
@@ -108,8 +108,13 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
+    public boolean isExecuteAttack() {
+        return true;
+    }
+
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
         config.setTransportHandlerType(TransportHandlerType.UDP);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
 import de.rub.nds.tlsattacker.core.unittest.helper.TestCertificates;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;

@@ -16,7 +16,21 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.interfaces.RSAPrivateCrtKey;
+import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
+import org.bouncycastle.crypto.KeyGenerationParameters;
+import org.bouncycastle.crypto.generators.DHKeyPairGenerator;
+import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
+import org.bouncycastle.crypto.params.DHParameters;
+import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
+import org.bouncycastle.crypto.params.DHPublicKeyParameters;
+import org.bouncycastle.util.BigIntegers;
 
 /**
  *

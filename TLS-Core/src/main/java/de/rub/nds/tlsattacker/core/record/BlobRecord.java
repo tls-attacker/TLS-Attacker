@@ -17,9 +17,9 @@ import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.preparator.BlobRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.record.serializer.BlobRecordSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * A Blob Record is not a record in a conventional sense but is rather a non
@@ -33,7 +33,7 @@ public class BlobRecord extends AbstractRecord {
     public BlobRecord() {
     }
 
-    public BlobRecord(TlsConfig config) {
+    public BlobRecord(Config config) {
         super(config);
     }
 

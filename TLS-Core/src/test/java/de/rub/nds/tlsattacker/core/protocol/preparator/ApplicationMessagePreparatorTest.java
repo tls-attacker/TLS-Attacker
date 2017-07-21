@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import static org.junit.Assert.assertArrayEquals;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -12,8 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

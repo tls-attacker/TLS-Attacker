@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -29,16 +29,14 @@ public class DefaultChooserTest {
 
     private Chooser chooser;
     private TlsContext context;
-    private TlsConfig config;
-    
-    
+    private Config config;
+
     public DefaultChooserTest() {
     }
-    
-    
+
     @Before
     public void setUp() {
-        config = TlsConfig.createConfig();
+        config = Config.createConfig();
         context = new TlsContext(config);
         chooser = new DefaultChooser(context, config);
     }
@@ -69,11 +67,16 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedSigHashAlgorithm() {
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(),new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(),new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        context.setSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(),new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
+                HashAlgorithm.NONE));
+        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(), new SignatureAndHashAlgorithm(
+                SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
+                HashAlgorithm.NONE));
+        context.setSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.SHA1));
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.SHA1));
     }
 
     /**
@@ -91,7 +94,8 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getClientSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
+     * Test of getClientSupportedSignatureAndHashAlgorithms method, of class
+     * DefaultChooser.
      */
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
@@ -161,7 +165,8 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getServerSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
+     * Test of getServerSupportedSignatureAndHashAlgorithms method, of class
+     * DefaultChooser.
      */
     @Test
     public void testGetServerSupportedSignatureAndHashAlgorithms() {
@@ -425,5 +430,5 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientHandshakeTrafficSecret() {
     }
-    
+
 }

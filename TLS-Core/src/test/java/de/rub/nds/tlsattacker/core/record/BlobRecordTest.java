@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.record;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.preparator.BlobRecordPreparator;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import static org.junit.Assert.assertEquals;
@@ -32,7 +32,7 @@ public class BlobRecordTest {
 
     @Before
     public void setUp() {
-        record = new BlobRecord(TlsConfig.createConfig());
+        record = new BlobRecord(Config.createConfig());
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext());
 
     }

@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.certificate;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +24,7 @@ public class CertificateByteChooser {
 
     protected static final Logger LOGGER = LogManager.getLogger(CertificateByteChooser.class.getName());
 
-    public static byte[] chooseCertificateType(TlsConfig config) {
+    public static byte[] chooseCertificateType(Config config) {
         CipherSuite suite = config.getDefaultSelectedCipherSuite();
         byte[] rsaCert = config.getDefaultRsaCertificate();
         byte[] ecCert = config.getDefaultEcCertificate();

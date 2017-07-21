@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
