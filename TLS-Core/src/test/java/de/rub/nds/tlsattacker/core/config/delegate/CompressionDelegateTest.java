@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.*;

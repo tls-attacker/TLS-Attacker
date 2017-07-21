@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.security.Security;
 import java.security.interfaces.RSAPublicKey;

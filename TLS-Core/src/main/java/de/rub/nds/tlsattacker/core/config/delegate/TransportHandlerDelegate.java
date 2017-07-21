@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.core.config.converters.TransportHandlerTypeConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.converters.TransportHandlerTypeConverter;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 /**

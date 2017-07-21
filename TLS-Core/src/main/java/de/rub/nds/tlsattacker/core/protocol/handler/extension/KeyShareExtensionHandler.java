@@ -25,12 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;

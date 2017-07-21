@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PublicKey;

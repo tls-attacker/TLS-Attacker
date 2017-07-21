@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.attacks.ec;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.ECOracle;
 import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
 import java.util.Arrays;
