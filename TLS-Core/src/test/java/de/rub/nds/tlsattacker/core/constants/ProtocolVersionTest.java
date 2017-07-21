@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.constants;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +25,13 @@ public class ProtocolVersionTest {
 
     @Before
     public void setUp() {
+    }
+    
+    @Test
+    public void testGetFromValue()
+    {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(new byte[]{03,03});
+        assertTrue(version == ProtocolVersion.TLS12);
     }
 
     /**
