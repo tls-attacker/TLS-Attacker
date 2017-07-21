@@ -60,4 +60,8 @@ public class CertificateRequestMessagePreparatorTest {
         assertTrue(4 == message.getSignatureHashAlgorithmsLength().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

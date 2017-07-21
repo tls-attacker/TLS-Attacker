@@ -76,4 +76,9 @@ public class DHClientKeyExchangePreparatorTest {
                         .getValue());
 
     }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

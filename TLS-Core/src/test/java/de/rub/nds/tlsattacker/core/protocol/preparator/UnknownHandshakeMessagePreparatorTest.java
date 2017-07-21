@@ -42,4 +42,8 @@ public class UnknownHandshakeMessagePreparatorTest {
         assertArrayEquals(new byte[] { 6, 6, 6 }, message.getData().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }
