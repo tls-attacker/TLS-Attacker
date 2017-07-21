@@ -61,4 +61,9 @@ public class KeyShareExtensionPreparatorTest {
         assertTrue(message.getKeyShareListLength().getValue() == 36);
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

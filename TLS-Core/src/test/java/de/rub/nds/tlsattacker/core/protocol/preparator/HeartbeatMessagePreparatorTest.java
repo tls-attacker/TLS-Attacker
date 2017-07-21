@@ -67,4 +67,8 @@ public class HeartbeatMessagePreparatorTest {
         assertTrue(11 == message.getPayloadLength().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

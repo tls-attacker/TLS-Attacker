@@ -54,4 +54,9 @@ public class SupportedVersionsExtensionPreparatorTest {
         assertTrue(message.getSupportedVersionsLength().getValue() == 4);
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

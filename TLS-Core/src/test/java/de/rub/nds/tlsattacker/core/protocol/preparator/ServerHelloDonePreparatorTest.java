@@ -40,4 +40,8 @@ public class ServerHelloDonePreparatorTest {
         // just check that prepare does not throw an exception
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

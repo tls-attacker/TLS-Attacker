@@ -40,4 +40,8 @@ public class HelloRequestPreparatorTest {
         // Just check that preparation did not throw an exception
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

@@ -24,6 +24,7 @@ import org.junit.Test;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class HelloVerifyRequestPreparatorTest {
+
     private static final Logger LOGGER = LogManager.getLogger(HelloVerifyRequestPreparatorTest.class);
 
     private TlsContext context;
@@ -53,4 +54,8 @@ public class HelloVerifyRequestPreparatorTest {
         assertArrayEquals(ProtocolVersion.DTLS12.getValue(), message.getProtocolVersion().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

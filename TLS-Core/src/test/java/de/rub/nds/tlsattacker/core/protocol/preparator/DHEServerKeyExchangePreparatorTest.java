@@ -84,4 +84,9 @@ public class DHEServerKeyExchangePreparatorTest {
         assertNotNull(message.getSignature().getValue());
         assertNotNull(message.getSignatureLength().getValue());
     }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

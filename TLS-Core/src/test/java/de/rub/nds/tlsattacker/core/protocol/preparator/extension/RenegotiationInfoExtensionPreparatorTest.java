@@ -48,4 +48,9 @@ public class RenegotiationInfoExtensionPreparatorTest {
         assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

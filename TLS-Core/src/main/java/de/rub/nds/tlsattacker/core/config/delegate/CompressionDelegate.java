@@ -42,7 +42,11 @@ public class CompressionDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (compressionMethods != null) {
-            config.setSupportedCompressionMethods(compressionMethods);
+            config.setDefaultClientSupportedCompressionMethods(compressionMethods);
+            config.setDefaultServerSupportedCompressionMethods(compressionMethods);
+            if (compressionMethods.size() > 0) {
+                config.setDefaultSelectedCompressionMethod(compressionMethods.get(0));
+            }
         }
     }
 

@@ -43,7 +43,6 @@ public class PaddingExtensionPreparatorTest {
     /**
      * Tests the preparator of the padding extension message.
      */
-
     @Test
     public void testPreparator() {
         context.getConfig().setDefaultPaddingExtensionBytes(extensionPayload);
@@ -53,6 +52,11 @@ public class PaddingExtensionPreparatorTest {
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
 
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 
 }

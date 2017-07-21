@@ -52,4 +52,9 @@ public class KeySharePairPreparatorTest {
 
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

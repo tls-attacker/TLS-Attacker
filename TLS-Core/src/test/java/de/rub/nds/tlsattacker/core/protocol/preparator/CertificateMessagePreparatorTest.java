@@ -65,4 +65,8 @@ public class CertificateMessagePreparatorTest {
         assertTrue(message.getLength().getValue() == 0x00039A);
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

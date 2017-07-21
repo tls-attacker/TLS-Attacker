@@ -66,4 +66,9 @@ public class RSAClientKeyExchangePreparatorTest {
         assertNotNull(message.getPublicKeyLength().getValue());
         assertNotNull(message.getPublicKey());
     }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

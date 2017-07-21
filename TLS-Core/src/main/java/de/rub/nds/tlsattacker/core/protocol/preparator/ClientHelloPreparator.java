@@ -103,7 +103,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setCompressions(CompressionMethod.NULL.getArrayValue());
         } else {
-            msg.setCompressions(convertCompressions(chooser.getConfig().getSupportedCompressionMethods()));
+            msg.setCompressions(convertCompressions(chooser.getConfig().getDefaultClientSupportedCompressionMethods()));
         }
         LOGGER.debug("Compressions: " + ArrayConverter.bytesToHexString(msg.getCompressions().getValue()));
     }
