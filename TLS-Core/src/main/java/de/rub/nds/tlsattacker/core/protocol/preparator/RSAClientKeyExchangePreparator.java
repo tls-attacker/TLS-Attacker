@@ -51,7 +51,6 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         preparePadding(msg);
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
-        // TODO what are those magic numbers?
         preparePlainPaddedPremasterSecret(msg);
 
         byte[] paddedPremasterSecret = msg.getComputations().getPlainPaddedPremasterSecret().getValue();

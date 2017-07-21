@@ -51,7 +51,6 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     }
 
     /**
-     * TODO Preparators should never change Context fields
      *
      * @param context
      */
