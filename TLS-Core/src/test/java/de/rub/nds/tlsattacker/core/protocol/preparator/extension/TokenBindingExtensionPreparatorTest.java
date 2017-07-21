@@ -55,4 +55,9 @@ public class TokenBindingExtensionPreparatorTest {
         assertArrayEquals(keyParameterAsByteArray, message.getTokenbindingKeyParameters().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }

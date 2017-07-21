@@ -42,4 +42,9 @@ public class ExtendedMasterSecretExtensionPreparatorTest {
 
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
+
 }
