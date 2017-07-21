@@ -26,11 +26,10 @@ public class ProtocolVersionTest {
     @Before
     public void setUp() {
     }
-    
+
     @Test
-    public void testGetFromValue()
-    {
-        ProtocolVersion version = ProtocolVersion.getProtocolVersion(new byte[]{03,03});
+    public void testGetFromValue() {
+        ProtocolVersion version = ProtocolVersion.getProtocolVersion(new byte[] { 03, 03 });
         assertTrue(version == ProtocolVersion.TLS12);
     }
 

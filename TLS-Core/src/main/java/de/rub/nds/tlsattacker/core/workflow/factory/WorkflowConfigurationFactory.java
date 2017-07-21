@@ -105,17 +105,26 @@ public class WorkflowConfigurationFactory {
         }
         messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
-        messages.add(new CertificateMessage(config));
+
         if (config.getHighestProtocolVersion().isTLS13()) {
             messages.add(new EncryptedExtensionsMessage(config));
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
                 messages.add(certRequest);
             }
-            messages.add(new CertificateMessage(config));
+            if (config.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                messages.add(new CertificateMessage());
+            } else {
+                messages.add(new CertificateMessage(config));
+            }
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
+            if (config.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                messages.add(new CertificateMessage());
+            } else {
+                messages.add(new CertificateMessage(config));
+            }
             if (config.getDefaultClientSupportedCiphersuites().get(0).isEphemeral()) {
                 addServerKeyExchangeMessage(messages);
             }
