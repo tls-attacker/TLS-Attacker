@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
@@ -110,6 +111,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
             @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
             @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),
+            @XmlElement(type = CertificateStatusRequestV2ExtensionMessage.class, name = "CertificateStatusRequestV2Extension"),
             @XmlElement(type = CertificateTypeExtensionMessage.class, name = "CertificateTypeExtension"),
             @XmlElement(type = ClientCertificateUrlExtensionMessage.class, name = "ClientCertificateUrlExtension"),
             @XmlElement(type = ClientCertificateTypeExtensionMessage.class, name = "ClientCertificateTypeExtension"),
