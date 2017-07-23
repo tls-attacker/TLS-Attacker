@@ -12,7 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * RFC6066
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum TrustedCaIndicationIdentifierType {

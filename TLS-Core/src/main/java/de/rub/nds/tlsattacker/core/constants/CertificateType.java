@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * RFC6091 and RFC7250
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum CertificateType {

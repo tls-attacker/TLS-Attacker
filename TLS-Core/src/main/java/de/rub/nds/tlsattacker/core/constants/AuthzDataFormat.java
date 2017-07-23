@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ * RFC5878
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum AuthzDataFormat {
