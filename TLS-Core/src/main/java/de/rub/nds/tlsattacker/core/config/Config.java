@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -949,12 +950,22 @@ public class Config implements Serializable {
         this.defaultServerSupportedSignatureAndHashAlgorithms = defaultServerSupportedSignatureAndHashAlgorithms;
     }
 
+    public void setDefaultServerSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... defaultServerSupportedSignatureAndHashAlgorithms) {
+        this.defaultServerSupportedSignatureAndHashAlgorithms = Arrays
+                .asList(defaultServerSupportedSignatureAndHashAlgorithms);
+    }
+
     public List<CipherSuite> getDefaultServerSupportedCiphersuites() {
         return defaultServerSupportedCiphersuites;
     }
 
     public void setDefaultServerSupportedCiphersuites(List<CipherSuite> defaultServerSupportedCiphersuites) {
         this.defaultServerSupportedCiphersuites = defaultServerSupportedCiphersuites;
+    }
+
+    public final void setDefaultServerSupportedCiphersuites(CipherSuite... defaultServerSupportedCiphersuites) {
+        this.defaultServerSupportedCiphersuites = Arrays.asList(defaultServerSupportedCiphersuites);
     }
 
     public List<CompressionMethod> getDefaultClientSupportedCompressionMethods() {
@@ -964,6 +975,11 @@ public class Config implements Serializable {
     public void setDefaultClientSupportedCompressionMethods(
             List<CompressionMethod> defaultClientSupportedCompressionMethods) {
         this.defaultClientSupportedCompressionMethods = defaultClientSupportedCompressionMethods;
+    }
+
+    public final void setDefaultClientSupportedCompressionMethods(
+            CompressionMethod... defaultClientSupportedCompressionMethods) {
+        this.defaultClientSupportedCompressionMethods = Arrays.asList(defaultClientSupportedCompressionMethods);
     }
 
     public HeartbeatMode getDefaultHeartbeatMode() {
@@ -999,6 +1015,10 @@ public class Config implements Serializable {
         this.defaultClientSupportedPointFormats = defaultClientSupportedPointFormats;
     }
 
+    public final void setDefaultClientSupportedPointFormats(ECPointFormat... defaultClientSupportedPointFormats) {
+        this.defaultClientSupportedPointFormats = Arrays.asList(defaultClientSupportedPointFormats);
+    }
+
     public ProtocolVersion getDefaultLastRecordProtocolVersion() {
         return defaultLastRecordProtocolVersion;
     }
@@ -1015,6 +1035,10 @@ public class Config implements Serializable {
         this.defaultClientSNIEntryList = defaultClientSNIEntryList;
     }
 
+    public final void setDefaultClientSNIEntries(SNIEntry... defaultClientSNIEntryList) {
+        this.defaultClientSNIEntryList = Arrays.asList(defaultClientSNIEntryList);
+    }
+
     public List<SignatureAndHashAlgorithm> getDefaultClientSupportedSignatureAndHashAlgorithms() {
         return defaultClientSupportedSignatureAndHashAlgorithms;
     }
@@ -1022,6 +1046,12 @@ public class Config implements Serializable {
     public void setDefaultClientSupportedSignatureAndHashAlgorithms(
             List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
+    }
+
+    public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... defaultClientSupportedSignatureAndHashAlgorithms) {
+        this.defaultClientSupportedSignatureAndHashAlgorithms = Arrays
+                .asList(defaultClientSupportedSignatureAndHashAlgorithms);
     }
 
     public List<ECPointFormat> getDefaultServerSupportedPointFormats() {
@@ -1032,12 +1062,20 @@ public class Config implements Serializable {
         this.defaultServerSupportedPointFormats = defaultServerSupportedPointFormats;
     }
 
+    public final void setDefaultServerSupportedPointFormats(ECPointFormat... defaultServerSupportedPointFormats) {
+        this.defaultServerSupportedPointFormats = Arrays.asList(defaultServerSupportedPointFormats);
+    }
+
     public List<NamedCurve> getDefaultClientNamedCurves() {
         return defaultClientNamedCurves;
     }
 
     public void setDefaultClientNamedCurves(List<NamedCurve> defaultClientNamedCurves) {
         this.defaultClientNamedCurves = defaultClientNamedCurves;
+    }
+
+    public final void setDefaultClientNamedCurves(NamedCurve... defaultClientNamedCurves) {
+        this.defaultClientNamedCurves = Arrays.asList(defaultClientNamedCurves);
     }
 
     public CipherSuite getDefaultSelectedCipherSuite() {
@@ -1174,6 +1212,10 @@ public class Config implements Serializable {
 
     public void setClientCertificateTypes(List<ClientCertificateType> clientCertificateTypes) {
         this.clientCertificateTypes = clientCertificateTypes;
+    }
+
+    public final void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
+        this.clientCertificateTypes = Arrays.asList(clientCertificateTypes);
     }
 
     public boolean isWaitOnlyForExpectedDTLS() {
@@ -1380,6 +1422,10 @@ public class Config implements Serializable {
         this.defaultClientSupportedCiphersuites = defaultClientSupportedCiphersuites;
     }
 
+    public final void setDefaultClientSupportedCiphersuites(CipherSuite... defaultClientSupportedCiphersuites) {
+        this.defaultClientSupportedCiphersuites = Arrays.asList(defaultClientSupportedCiphersuites);
+    }
+
     public ConnectionEndType getConnectionEndType() {
         return connectionEndType;
     }
@@ -1425,6 +1471,11 @@ public class Config implements Serializable {
         this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
     }
 
+    public final void setSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
+        this.supportedSignatureAndHashAlgorithms = Arrays.asList(supportedSignatureAndHashAlgorithms);
+    }
+
     public List<NamedCurve> getNamedCurves() {
         return Collections.unmodifiableList(namedCurves);
     }
@@ -1433,12 +1484,20 @@ public class Config implements Serializable {
         this.namedCurves = namedCurves;
     }
 
+    public final void setNamedCurves(NamedCurve... namedCurves) {
+        this.namedCurves = Arrays.asList(namedCurves);
+    }
+
     public List<ProtocolVersion> getSupportedVersions() {
         return Collections.unmodifiableList(supportedVersions);
     }
 
     public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
         this.supportedVersions = supportedVersions;
+    }
+
+    public final void setSupportedVersions(ProtocolVersion... supportedVersions) {
+        this.supportedVersions = Arrays.asList(supportedVersions);
     }
 
     public HeartbeatMode getHeartbeatMode() {
@@ -1593,6 +1652,10 @@ public class Config implements Serializable {
         this.defaultTokenBindingKeyParameters = defaultTokenBindingKeyParameters;
     }
 
+    public final void setDefaultTokenBindingKeyParameters(TokenBindingKeyParameters... defaultTokenBindingKeyParameters) {
+        this.defaultTokenBindingKeyParameters = Arrays.asList(defaultTokenBindingKeyParameters);
+    }
+
     public boolean isAddTokenBindingExtension() {
         return addTokenBindingExtension;
     }
@@ -1612,5 +1675,10 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             List<CompressionMethod> defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods = defaultServerSupportedCompressionMethods;
+    }
+
+    public void setDefaultServerSupportedCompressionMethods(
+            CompressionMethod... defaultServerSupportedCompressionMethods) {
+        this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
     }
 }
