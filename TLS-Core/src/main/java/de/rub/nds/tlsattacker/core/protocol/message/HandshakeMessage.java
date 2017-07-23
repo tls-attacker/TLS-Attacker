@@ -117,7 +117,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = ClientCertificateTypeExtensionMessage.class, name = "ClientCertificateTypeExtension"),
             @XmlElement(type = ClientAuthzExtensionMessage.class, name = "ClientAuthorizationExtension"),
             @XmlElement(type = EncryptThenMacExtensionMessage.class, name = "EncryptThenMacExtension"),
-            @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
             @XmlElement(type = ServerAuthzExtensionMessage.class, name = "ServerAuthorizationExtension"),
             @XmlElement(type = ServerCertificateTypeExtensionMessage.class, name = "ServerCertificateTypeExtension"),
             @XmlElement(type = SRPExtensionMessage.class, name = "SRPExtension"),
