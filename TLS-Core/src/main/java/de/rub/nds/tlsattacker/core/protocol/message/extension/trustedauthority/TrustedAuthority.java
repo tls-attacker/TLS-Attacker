@@ -93,22 +93,4 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
         this.distinguishedName = ModifiableVariableFactory.safelySetValue(this.distinguishedName, distinguishedName);
     }
 
-    public int getLength() {
-        switch (TrustedCaIndicationIdentifierType.getIdentifierByByte(identifierType.getValue())) {
-            case PRE_AGREED:
-                return ExtensionByteLength.TRUSTED_AUTHORITY_TYPE;
-            case KEY_SHA1_HASH:
-                return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
-            case X509_NAME:
-                return (ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH + distinguishedNameLength
-                        .getValue());
-            case CERT_SHA1_HASH:
-                return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
-            default:
-                return 0;
-
-        }
-
-    }
-
 }

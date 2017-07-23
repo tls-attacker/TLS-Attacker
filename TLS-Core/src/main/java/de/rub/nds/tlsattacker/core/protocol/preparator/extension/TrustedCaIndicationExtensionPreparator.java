@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
@@ -32,9 +34,28 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
         msg.setTrustedAuthorities(chooser.getConfig().getTrustedCaIndicationExtensionAuthorties());
         int taLength = 0;
         for (TrustedAuthority ta : msg.getTrustedAuthorities()) {
-            taLength += ta.getLength();
+            taLength += getLength(ta);
         }
         msg.setTrustedAuthoritiesLength(taLength);
+    }
+
+    public int getLength(TrustedAuthority authority) {
+
+        switch (TrustedCaIndicationIdentifierType.getIdentifierByByte(authority.getIdentifierType().getValue())) {
+            case PRE_AGREED:
+                return ExtensionByteLength.TRUSTED_AUTHORITY_TYPE;
+            case KEY_SHA1_HASH:
+                return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
+            case X509_NAME:
+                return (ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH + authority
+                        .getDistinguishedNameLength().getValue());
+            case CERT_SHA1_HASH:
+                return ExtensionByteLength.TRUSTED_AUTHORITY_HASH;
+            default:
+                return 0;
+
+        }
+
     }
 
 }
