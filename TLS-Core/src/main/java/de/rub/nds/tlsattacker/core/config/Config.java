@@ -1430,7 +1430,7 @@ public class Config implements Serializable {
     }
 
     public List<CipherSuite> getDefaultClientSupportedCiphersuites() {
-        return Collections.unmodifiableList(defaultClientSupportedCiphersuites);
+        return defaultClientSupportedCiphersuites;
     }
 
     public void setDefaultClientSupportedCiphersuites(List<CipherSuite> defaultClientSupportedCiphersuites) {
@@ -1478,7 +1478,7 @@ public class Config implements Serializable {
     }
 
     public List<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithms() {
-        return Collections.unmodifiableList(supportedSignatureAndHashAlgorithms);
+        return supportedSignatureAndHashAlgorithms;
     }
 
     public void setSupportedSignatureAndHashAlgorithms(
@@ -1492,7 +1492,7 @@ public class Config implements Serializable {
     }
 
     public List<NamedCurve> getNamedCurves() {
-        return Collections.unmodifiableList(namedCurves);
+        return namedCurves;
     }
 
     public void setNamedCurves(List<NamedCurve> namedCurves) {
@@ -1504,7 +1504,7 @@ public class Config implements Serializable {
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
-        return Collections.unmodifiableList(supportedVersions);
+        return supportedVersions;
     }
 
     public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
