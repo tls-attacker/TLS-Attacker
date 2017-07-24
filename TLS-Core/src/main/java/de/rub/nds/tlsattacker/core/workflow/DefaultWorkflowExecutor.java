@@ -41,7 +41,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         List<TLSAction> tlsActions = context.getWorkflowTrace().getTlsActions();
         for (TLSAction action : tlsActions) {
             try {
-                action.execute(context, actionExecutor);
+                if (!(context.getConfig().isStopActionsAfterFatal() && context.isReceivedFatalAlert())) {
+                    action.execute(context, actionExecutor);
+                }
             } catch (IOException | PreparationException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
