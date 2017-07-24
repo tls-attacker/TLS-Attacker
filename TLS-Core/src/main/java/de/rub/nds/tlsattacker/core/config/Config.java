@@ -585,6 +585,11 @@ public class Config implements Serializable {
         defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
                 "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
                 "3142682168214624565874993023364886040439474355932713162721"));
+        defaultClientNamedCurves = new LinkedList<>();
+        defaultClientNamedCurves.add(NamedCurve.SECP192R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP256R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP384R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP521R1);
     }
 
     public boolean isStopActionsAfterFatal() {
