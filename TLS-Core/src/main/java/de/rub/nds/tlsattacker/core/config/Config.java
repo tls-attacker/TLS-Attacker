@@ -420,7 +420,7 @@ public class Config implements Serializable {
     private boolean workflowExecutorShouldClose = true;
 
     private boolean stopRecievingAfterFatal = false;
-    
+
     private boolean stopActionsAfterFatal = false;
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
@@ -594,7 +594,7 @@ public class Config implements Serializable {
     public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
-    
+
     public ChooserType getChooserType() {
         return chooserType;
     }

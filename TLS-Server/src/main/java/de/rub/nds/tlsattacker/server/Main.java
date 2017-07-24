@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Main {
 
-    private static final Logger LOGGER = LogManager.getLogger("Server");
+    private static final Logger LOGGER = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
         ServerCommandConfig config = new ServerCommandConfig(new GeneralDelegate());

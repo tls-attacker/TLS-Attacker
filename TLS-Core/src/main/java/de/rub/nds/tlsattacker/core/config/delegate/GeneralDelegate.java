@@ -82,14 +82,12 @@ public class GeneralDelegate extends Delegate {
         LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         if (isDebug()) {
             loggerConfig.setLevel(Level.DEBUG);
-            ctx.updateLoggers();
         } else if (isQuiet()) {
             loggerConfig.setLevel(Level.OFF);
-            ctx.updateLoggers();
         } else if (getLogLevel() != null) {
             loggerConfig.setLevel(getLogLevel());
-            ctx.updateLoggers();
         }
+        ctx.updateLoggers();
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());

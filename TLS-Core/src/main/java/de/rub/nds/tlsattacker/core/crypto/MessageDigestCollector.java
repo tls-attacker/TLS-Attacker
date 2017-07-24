@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MessageDigestCollector {
 
-    private static final Logger LOGGER = LogManager.getLogger("MessageDigest");
+    private static final Logger LOGGER = LogManager.getLogger(MessageDigestCollector.class.getName());
 
     private ByteArrayOutputStream stream;
 

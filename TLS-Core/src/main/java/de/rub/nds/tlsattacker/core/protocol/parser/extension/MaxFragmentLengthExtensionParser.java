@@ -20,8 +20,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmentLengthExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
-
     public MaxFragmentLengthExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }

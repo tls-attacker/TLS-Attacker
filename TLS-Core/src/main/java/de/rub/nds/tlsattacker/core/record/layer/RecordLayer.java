@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class RecordLayer {
 
-    protected static final Logger LOGGER = LogManager.getLogger("RecordLayer");
+    protected static final Logger LOGGER = LogManager.getLogger(RecordLayer.class.getName());
 
     public abstract List<AbstractRecord> parseRecords(byte[] rawBytes);
 

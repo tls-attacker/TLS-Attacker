@@ -43,6 +43,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             try {
                 if (!(context.getConfig().isStopActionsAfterFatal() && context.isReceivedFatalAlert())) {
                     action.execute(context, actionExecutor);
+                } else {
+                    LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                    break;
                 }
             } catch (IOException | PreparationException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);

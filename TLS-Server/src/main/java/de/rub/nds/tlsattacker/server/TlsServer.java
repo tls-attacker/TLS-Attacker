@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsServer {
 
-    private static final Logger LOGGER = LogManager.getLogger("TlsServer");
+    private static final Logger LOGGER = LogManager.getLogger(TlsServer.class.getName());
 
     // TODO rename method
     public void startTlsServer(Config config) {
