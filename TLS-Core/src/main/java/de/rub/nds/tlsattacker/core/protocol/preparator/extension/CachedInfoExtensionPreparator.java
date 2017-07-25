@@ -37,7 +37,7 @@ public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInf
             payloadLength += 1;
             if (msg.getIsClientState().getValue()) {
                 payloadLength += ExtensionByteLength.CACHED_INFO_HASH_LENGTH;
-                payloadLength += co.getHashValueLength().getValue();
+                payloadLength += co.getHashValue().getValue().length;
             }
         }
         msg.setCachedInfoLength(payloadLength);
