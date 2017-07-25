@@ -116,9 +116,9 @@ public class EllipticCurveDelegateTest {
         args[2] = "-point_formats";
         args[3] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
         Config config = Config.createConfig();
-        config.setNamedCurves(null);
-        config.setDefaultClientSupportedPointFormats(null);
-        config.setDefaultServerSupportedPointFormats(null);
+        config.setNamedCurves(new NamedCurve[0]);
+        config.setDefaultClientSupportedPointFormats(new ECPointFormat[0]);
+        config.setDefaultServerSupportedPointFormats(new ECPointFormat[0]);
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue("SECP192R1 should get parsed correctly", config.getNamedCurves().contains(NamedCurve.SECP192R1));
