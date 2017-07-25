@@ -35,11 +35,9 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
         boolean isClientState = true;
         cachedObjectList = new LinkedList<>();
 
-        if (msg.getCachedInfoLength().getValue() <= 2) { // since there are only
-                                                         // 2 cached information
-                                                         // types, there can
-                                                         // only be a list with
-                                                         // 2 of them.
+        // since there are only 2 cached information types, there can only be a
+        // list with 2 of them.
+        if (msg.getCachedInfoLength().getValue() <= 2) {
             isClientState = false;
         }
 
