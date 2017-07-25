@@ -331,7 +331,7 @@ public class TlsContext {
 
     private byte[] AlpnAnnouncedProtocols;
 
-    private List<CertificateType> certificateTypeDesiredTypes;
+    private List<CertificateType> certificateTypeClientDesiredTypes;
 
     private List<CertificateType> serverCertificateTypeDesiredTypes;
 
@@ -985,11 +985,11 @@ public class TlsContext {
     }
 
     public List<CertificateType> getCertificateTypeDesiredTypes() {
-        return certificateTypeDesiredTypes;
+        return certificateTypeClientDesiredTypes;
     }
 
     public void setCertificateTypeDesiredTypes(List<CertificateType> certificateTypeDesiredTypes) {
-        this.certificateTypeDesiredTypes = certificateTypeDesiredTypes;
+        this.certificateTypeClientDesiredTypes = certificateTypeDesiredTypes;
     }
 
     public List<AuthzDataFormat> getClientAuthzDataFormatList() {
