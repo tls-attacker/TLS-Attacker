@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmentLengthExtensionMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger("PARSER");
+    private static final Logger LOGGER = LogManager.getLogger(Parser.class.getName());
 
     public MaxFragmentLengthExtensionParser(int startposition, byte[] array) {
         super(startposition, array);

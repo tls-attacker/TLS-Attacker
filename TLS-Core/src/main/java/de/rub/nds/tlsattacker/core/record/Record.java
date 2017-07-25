@@ -221,7 +221,7 @@ public class Record extends AbstractRecord {
 
     @Override
     public RecordParser getRecordParser(int startposition, byte[] array, ProtocolVersion version) {
-        return new RecordParser(0, null, ProtocolVersion.SSL2);
+        return new RecordParser(0, array, version);
     }
 
     @Override

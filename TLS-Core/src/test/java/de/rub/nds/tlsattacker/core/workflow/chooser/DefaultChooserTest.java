@@ -30,12 +30,10 @@ public class DefaultChooserTest {
     private Chooser chooser;
     private TlsContext context;
     private TlsConfig config;
-    
-    
+
     public DefaultChooserTest() {
     }
-    
-    
+
     @Before
     public void setUp() {
         config = TlsConfig.createConfig();
@@ -69,11 +67,16 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedSigHashAlgorithm() {
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(),new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(),new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
-        context.setSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
-        assertEquals(chooser.getSelectedSigHashAlgorithm(),new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS, HashAlgorithm.SHA1));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
+                HashAlgorithm.NONE));
+        assertEquals(config.getDefaultSelectedSignatureAndHashAlgorithm(), new SignatureAndHashAlgorithm(
+                SignatureAlgorithm.RSA_PSS, HashAlgorithm.NONE));
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
+                HashAlgorithm.NONE));
+        context.setSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.SHA1));
+        assertEquals(chooser.getSelectedSigHashAlgorithm(), new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.SHA1));
     }
 
     /**
@@ -91,7 +94,8 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getClientSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
+     * Test of getClientSupportedSignatureAndHashAlgorithms method, of class
+     * DefaultChooser.
      */
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
@@ -161,7 +165,8 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getServerSupportedSignatureAndHashAlgorithms method, of class DefaultChooser.
+     * Test of getServerSupportedSignatureAndHashAlgorithms method, of class
+     * DefaultChooser.
      */
     @Test
     public void testGetServerSupportedSignatureAndHashAlgorithms() {
@@ -425,5 +430,5 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientHandshakeTrafficSecret() {
     }
-    
+
 }
