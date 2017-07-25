@@ -42,6 +42,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -131,12 +132,20 @@ public abstract class MessageAction extends TLSAction {
         this.configuredRecords = null;
     }
 
+    public MessageAction(ProtocolMessage... messages) {
+        this(Arrays.asList(messages));
+    }
+
     public List<AbstractRecord> getConfiguredRecords() {
         return configuredRecords;
     }
 
     public void setConfiguredRecords(List<AbstractRecord> configuredRecords) {
         this.configuredRecords = configuredRecords;
+    }
+
+    public void setConfiguredRecords(AbstractRecord... configuredRecords) {
+        this.configuredRecords = Arrays.asList(configuredRecords);
     }
 
     public List<AbstractRecord> getActualRecords() {
@@ -153,6 +162,10 @@ public abstract class MessageAction extends TLSAction {
 
     public void setConfiguredMessages(List<ProtocolMessage> configuredMessages) {
         this.configuredMessages = configuredMessages;
+    }
+
+    public void setConfiguredMessages(ProtocolMessage... configuredMessages) {
+        this.configuredMessages = Arrays.asList(configuredMessages);
     }
 
     /**

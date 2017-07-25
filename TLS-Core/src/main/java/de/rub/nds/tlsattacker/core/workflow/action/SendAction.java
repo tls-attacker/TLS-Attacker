@@ -31,9 +31,8 @@ public class SendAction extends MessageAction {
         super(messages);
     }
 
-    public SendAction(ProtocolMessage message) {
-        super(new LinkedList<ProtocolMessage>());
-        configuredMessages.add(message);
+    public SendAction(ProtocolMessage... messages) {
+        super(messages);
     }
 
     @Override
