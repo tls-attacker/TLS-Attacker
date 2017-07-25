@@ -33,7 +33,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlTransient;
@@ -290,6 +292,10 @@ public class TlsContext {
         this.clientSupportedProtocolVersions = clientSupportedProtocolVersions;
     }
 
+    public void setClientSupportedProtocolVersions(ProtocolVersion... clientSupportedProtocolVersions) {
+        this.clientSupportedProtocolVersions = Arrays.asList(clientSupportedProtocolVersions);
+    }
+
     public BigInteger getRsaModulus() {
         return rsaModulus;
     }
@@ -418,12 +424,20 @@ public class TlsContext {
         this.clientNamedCurvesList = clientNamedCurvesList;
     }
 
+    public void setClientNamedCurvesList(NamedCurve... clientNamedCurvesList) {
+        this.clientNamedCurvesList = Arrays.asList(clientNamedCurvesList);
+    }
+
     public List<ECPointFormat> getServerPointFormatsList() {
         return serverPointFormatsList;
     }
 
     public void setServerPointFormatsList(List<ECPointFormat> serverPointFormatsList) {
         this.serverPointFormatsList = serverPointFormatsList;
+    }
+
+    public void setServerPointFormatsList(ECPointFormat serverPointFormatsList) {
+        this.serverPointFormatsList = Arrays.asList(serverPointFormatsList);
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
@@ -435,12 +449,21 @@ public class TlsContext {
         this.clientSupportedSignatureAndHashAlgorithms = clientSupportedSignatureAndHashAlgorithms;
     }
 
+    public void setClientSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
+        this.clientSupportedSignatureAndHashAlgorithms = Arrays.asList(clientSupportedSignatureAndHashAlgorithms);
+    }
+
     public List<SNIEntry> getClientSNIEntryList() {
         return clientSNIEntryList;
     }
 
     public void setClientSNIEntryList(List<SNIEntry> clientSNIEntryList) {
         this.clientSNIEntryList = clientSNIEntryList;
+    }
+
+    public void setClientSNIEntryList(SNIEntry... clientSNIEntryList) {
+        this.clientSNIEntryList = Arrays.asList(clientSNIEntryList);
     }
 
     public ProtocolVersion getLastRecordVersion() {
@@ -465,6 +488,10 @@ public class TlsContext {
 
     public void setClientCertificateTypes(List<ClientCertificateType> clientCertificateTypes) {
         this.clientCertificateTypes = clientCertificateTypes;
+    }
+
+    public void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
+        this.clientCertificateTypes = Arrays.asList(clientCertificateTypes);
     }
 
     public boolean isReceivedFatalAlert() {
@@ -497,6 +524,10 @@ public class TlsContext {
 
     public void setClientPointFormatsList(List<ECPointFormat> clientPointFormatsList) {
         this.clientPointFormatsList = clientPointFormatsList;
+    }
+
+    public void setClientPointFormatsList(ECPointFormat... clientPointFormatsList) {
+        this.clientPointFormatsList = Arrays.asList(clientPointFormatsList);
     }
 
     public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
@@ -547,6 +578,10 @@ public class TlsContext {
         this.clientSupportedCompressions = clientSupportedCompressions;
     }
 
+    public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
+        this.clientSupportedCompressions = Arrays.asList(clientSupportedCompressions);
+    }
+
     public int getSequenceNumber() {
         return sequenceNumber;
     }
@@ -563,6 +598,10 @@ public class TlsContext {
         this.clientSupportedCiphersuites = clientSupportedCiphersuites;
     }
 
+    public void setClientSupportedCiphersuites(CipherSuite... clientSupportedCiphersuites) {
+        this.clientSupportedCiphersuites = Arrays.asList(clientSupportedCiphersuites);
+    }
+
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
         return serverSupportedSignatureAndHashAlgorithms;
     }
@@ -570,6 +609,11 @@ public class TlsContext {
     public void setServerSupportedSignatureAndHashAlgorithms(
             List<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms) {
         this.serverSupportedSignatureAndHashAlgorithms = serverSupportedSignatureAndHashAlgorithms;
+    }
+
+    public void setServerSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
+        this.serverSupportedSignatureAndHashAlgorithms = Arrays.asList(serverSupportedSignatureAndHashAlgorithms);
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -822,6 +866,10 @@ public class TlsContext {
 
     public void setTokenBindingKeyParameters(List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public void setTokenBindingKeyParameters(TokenBindingKeyParameters... tokenBindingKeyParameters) {
+        this.tokenBindingKeyParameters = Arrays.asList(tokenBindingKeyParameters);
     }
 
     public byte[] getCertificateRequestContext() {
