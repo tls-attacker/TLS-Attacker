@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -56,8 +57,8 @@ public class CachedInfoExtensionParserTest {
                                 false,
                                 2,
                                 new byte[] { 0x01, 0x02 },
-                                Arrays.asList(new CachedObject(false, (byte) 1, 0, new byte[] {}), new CachedObject(
-                                        false, (byte) 2, 0, new byte[] {})),
+                                Arrays.asList(new CachedObject(false, (byte) 1, (Integer) null, null),
+                                        new CachedObject(false, (byte) 2, (Integer) null, null)),
                                 ArrayConverter.hexStringToByteArray("0019000400020102"), 4 },
                         {
                                 ExtensionType.CACHED_INFO,
@@ -92,8 +93,18 @@ public class CachedInfoExtensionParserTest {
             assertEquals(expectedObject.getIsClientState().getValue(), actualObject.getIsClientState().getValue());
             assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
                     .getValue());
-            assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength().getValue());
-            assertArrayEquals(expectedObject.getHashValue().getValue(), actualObject.getHashValue().getValue());
+
+            if (expectedObject.getHashValueLength().getValue() != null) {
+                assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength()
+                        .getValue());
+            } else {
+                assertNull(actualObject.getHashValueLength());
+            }
+            if (expectedObject.getHashValue().getValue() != null) {
+                assertArrayEquals(expectedObject.getHashValue().getValue(), actualObject.getHashValue().getValue());
+            } else {
+                assertNull(actualObject.getHashValue());
+            }
         }
     }
 }

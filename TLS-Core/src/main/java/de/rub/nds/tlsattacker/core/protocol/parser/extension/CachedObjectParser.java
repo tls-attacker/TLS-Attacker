@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -37,8 +39,8 @@ public class CachedObjectParser extends Parser<CachedObject> {
             cachedObject.setIsClientState(isClientState);
         } else {
             cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
-            cachedObject.setHashValue(new byte[] {});
-            cachedObject.setHashValueLength(0);
+            cachedObject.setHashValue((ModifiableByteArray) null);
+            cachedObject.setHashValueLength((ModifiableInteger) null);
             cachedObject.setIsClientState(isClientState);
         }
 

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -27,11 +28,11 @@ public class CachedObjectParserTest {
 
     private final boolean isClientState;
     private final CachedInfoType infoType;
-    private final int hashLength;
+    private final Integer hashLength;
     private final byte[] hash;
     private final byte[] cachedObjectBytes;
 
-    public CachedObjectParserTest(boolean isClientState, CachedInfoType infoType, int hashLength, byte[] hash,
+    public CachedObjectParserTest(boolean isClientState, CachedInfoType infoType, Integer hashLength, byte[] hash,
             byte[] cachedObjectBytes) {
         this.isClientState = isClientState;
         this.infoType = infoType;
@@ -43,8 +44,8 @@ public class CachedObjectParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { false, CachedInfoType.CERT, 0, new byte[] {}, new byte[] { 0x01 } },
-                { false, CachedInfoType.CERT_REQ, 0, new byte[] {}, new byte[] { 0x02 } },
+                { false, CachedInfoType.CERT, null, null, new byte[] { 0x01 } },
+                { false, CachedInfoType.CERT_REQ, null, null, new byte[] { 0x02 } },
                 { true, CachedInfoType.CERT, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
                         new byte[] { 0x01, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } },
                 { true, CachedInfoType.CERT_REQ, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
@@ -58,8 +59,17 @@ public class CachedObjectParserTest {
 
         assertEquals(isClientState, cachedObject.getIsClientState().getValue());
         assertEquals(infoType.getValue(), (byte) cachedObject.getCachedInformationType().getValue());
-        assertEquals(hashLength, (int) cachedObject.getHashValueLength().getValue());
-        assertArrayEquals(hash, cachedObject.getHashValue().getValue());
+
+        if (hashLength != null) {
+            assertEquals(hashLength, cachedObject.getHashValueLength().getValue());
+        } else {
+            assertNull(cachedObject.getHashValueLength());
+        }
+        if (hash != null) {
+            assertArrayEquals(hash, cachedObject.getHashValue().getValue());
+        } else {
+            assertNull(cachedObject.getHashValue());
+        }
     }
 
 }

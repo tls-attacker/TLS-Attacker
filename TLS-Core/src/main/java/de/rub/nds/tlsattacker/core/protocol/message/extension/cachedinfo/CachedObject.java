@@ -33,7 +33,7 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
     @ModifiableVariableProperty
     private ModifiableByteArray hashValue;
 
-    public CachedObject(boolean isClientState, byte cachedInformationType, int hashValueLength, byte[] hashValue) {
+    public CachedObject(boolean isClientState, byte cachedInformationType, Integer hashValueLength, byte[] hashValue) {
         this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
         this.cachedInformationType = ModifiableVariableFactory.safelySetValue(this.cachedInformationType,
                 cachedInformationType);
