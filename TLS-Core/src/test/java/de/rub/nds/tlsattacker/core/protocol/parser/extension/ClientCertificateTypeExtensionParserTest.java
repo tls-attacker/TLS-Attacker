@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,15 +34,15 @@ public class ClientCertificateTypeExtensionParserTest {
     private final byte[] expectedBytes;
     private final int extensionLength;
     private final int startParsing;
-    private final int certificateTypesLength;
+    private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
     private final boolean isClientState;
     private ClientCertificateTypeExtensionParser parser;
     private ClientCertificateTypeExtensionMessage msg;
 
     public ClientCertificateTypeExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes,
-            int extensionLength, int startParsing, int certificateTypesLength, List<CertificateType> certificateTypes,
-            boolean isClientState) {
+            int extensionLength, int startParsing, Integer certificateTypesLength,
+            List<CertificateType> certificateTypes, boolean isClientState) {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
@@ -54,7 +55,7 @@ public class ClientCertificateTypeExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, 0, 1,
+                { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("0013000100"), 1, 0, null,
                         Arrays.asList(CertificateType.X509), false },
                 { ExtensionType.CLIENT_CERTIFICATE_TYPE, ArrayConverter.hexStringToByteArray("001300020100"), 2, 0, 1,
                         Arrays.asList(CertificateType.X509), true },
@@ -74,7 +75,11 @@ public class ClientCertificateTypeExtensionParserTest {
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
 
-        assertEquals(certificateTypesLength, (int) msg.getCertificateTypesLength().getValue());
+        if (certificateTypesLength != null) {
+            assertEquals(certificateTypesLength, msg.getCertificateTypesLength().getValue());
+        } else {
+            assertNull(msg.getCertificateTypesLength());
+        }
         assertArrayEquals(CertificateType.toByteArray(certificateTypes), msg.getCertificateTypes().getValue());
     }
 
