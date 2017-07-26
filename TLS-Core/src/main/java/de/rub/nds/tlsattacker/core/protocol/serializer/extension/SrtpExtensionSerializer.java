@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessa
  */
 public class SrtpExtensionSerializer extends ExtensionSerializer<SrtpExtensionMessage> {
 
-    private SrtpExtensionMessage msg;
+    private final SrtpExtensionMessage msg;
 
     public SrtpExtensionSerializer(SrtpExtensionMessage message) {
         super(message);
