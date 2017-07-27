@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,8 +53,8 @@ public class TrustedCaIndicationExtensionParserTest {
                 ArrayConverter.hexStringToByteArray("0003000B0009000200050102030405"),
                 0,
                 11,
-                Arrays.asList(new TrustedAuthority((byte) 0, new byte[] {}, 0, new byte[] {}), new TrustedAuthority(
-                        (byte) 2, new byte[] {}, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })), 9 } });
+                Arrays.asList(new TrustedAuthority((byte) 0, null, null, null), new TrustedAuthority((byte) 2, null, 5,
+                        new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })), 9 } });
     }
 
     @Test
@@ -75,11 +76,23 @@ public class TrustedCaIndicationExtensionParserTest {
             TrustedAuthority actualObject = actual.get(i);
 
             assertEquals(expectedObject.getIdentifierType().getValue(), actualObject.getIdentifierType().getValue());
-            assertEquals(expectedObject.getDistinguishedNameLength().getValue(), actualObject
-                    .getDistinguishedNameLength().getValue());
-            assertArrayEquals(expectedObject.getSha1Hash().getValue(), actualObject.getSha1Hash().getValue());
-            assertArrayEquals(expectedObject.getDistinguishedName().getValue(), actualObject.getDistinguishedName()
-                    .getValue());
+            if (expectedObject.getDistinguishedNameLength().getValue() != null) {
+                assertEquals(expectedObject.getDistinguishedNameLength().getValue(), actualObject
+                        .getDistinguishedNameLength().getValue());
+            } else {
+                assertNull(actualObject.getDistinguishedNameLength());
+            }
+            if (expectedObject.getSha1Hash().getValue() != null) {
+                assertArrayEquals(expectedObject.getSha1Hash().getValue(), actualObject.getSha1Hash().getValue());
+            } else {
+                assertNull(actualObject.getSha1Hash());
+            }
+            if (expectedObject.getDistinguishedName().getValue() != null) {
+                assertArrayEquals(expectedObject.getDistinguishedName().getValue(), actualObject.getDistinguishedName()
+                        .getValue());
+            } else {
+                assertNull(actualObject.getDistinguishedName());
+            }
         }
     }
 }

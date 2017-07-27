@@ -25,14 +25,14 @@ import org.junit.runners.Parameterized;
 public class TrustedAuthoritySerializerTest {
     private final TrustedCaIndicationIdentifierType identifier;
     private final byte[] hash;
-    private final int distNameLength;
+    private final Integer distNameLength;
     private final byte[] distName;
     private final byte[] parserBytes;
     private TrustedAuthoritySerializer serializer;
     private TrustedAuthority authority;
 
     public TrustedAuthoritySerializerTest(TrustedCaIndicationIdentifierType identifier, byte[] hash,
-            int distNameLength, byte[] distName, byte[] parserBytes) {
+            Integer distNameLength, byte[] distName, byte[] parserBytes) {
         this.identifier = identifier;
         this.hash = hash;
         this.distNameLength = distNameLength;

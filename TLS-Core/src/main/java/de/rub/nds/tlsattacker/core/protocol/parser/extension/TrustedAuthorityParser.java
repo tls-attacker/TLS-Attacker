@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
@@ -31,27 +32,28 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
         switch (TrustedCaIndicationIdentifierType.getIdentifierByByte(authority.getIdentifierType().getValue())) {
             case PRE_AGREED:
                 // nothing to do here
-                authority.setDistinguishedName(new byte[] {});
-                authority.setDistinguishedNameLength(0);
-                authority.setSha1Hash(new byte[] {});
+                authority.setDistinguishedName((ModifiableByteArray) null);
+                authority.setDistinguishedNameLength(null);
+                authority.setSha1Hash((ModifiableByteArray) null);
                 break;
             case KEY_SHA1_HASH:
                 authority.setSha1Hash(parseByteArrayField(ExtensionByteLength.TRUSTED_AUTHORITY_HASH));
-                authority.setDistinguishedName(new byte[] {});
-                authority.setDistinguishedNameLength(0);
+                authority.setDistinguishedName((ModifiableByteArray) null);
+                authority.setDistinguishedNameLength(null);
                 break;
             case X509_NAME:
                 authority
                         .setDistinguishedNameLength(parseIntField(ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH));
                 authority.setDistinguishedName(parseByteArrayField(authority.getDistinguishedNameLength().getValue()));
-                authority.setSha1Hash(new byte[] {});
+                authority.setSha1Hash((ModifiableByteArray) null);
                 break;
             case CERT_SHA1_HASH:
                 authority.setSha1Hash(parseByteArrayField(ExtensionByteLength.TRUSTED_AUTHORITY_HASH));
-                authority.setDistinguishedName(new byte[] {});
-                authority.setDistinguishedNameLength(0);
+                authority.setDistinguishedName((ModifiableByteArray) null);
+                authority.setDistinguishedNameLength(null);
                 break;
             default:
+                LOGGER.warn("Couldn't set the trusted authority to reasonable values");
                 break;
         }
 

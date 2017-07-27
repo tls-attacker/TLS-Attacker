@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
-import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
@@ -36,7 +34,8 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     public TrustedAuthority() {
     }
 
-    public TrustedAuthority(byte identifierType, byte[] sha1Hash, int distinguishedNameLength, byte[] distinguishedName) {
+    public TrustedAuthority(byte identifierType, byte[] sha1Hash, Integer distinguishedNameLength,
+            byte[] distinguishedName) {
         this.identifierType = ModifiableVariableFactory.safelySetValue(this.identifierType, identifierType);
         this.sha1Hash = ModifiableVariableFactory.safelySetValue(this.sha1Hash, sha1Hash);
         this.distinguishedNameLength = ModifiableVariableFactory.safelySetValue(this.distinguishedNameLength,

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -28,12 +29,12 @@ public class TrustedAuthorityParserTest {
 
     private final TrustedCaIndicationIdentifierType identifier;
     private final byte[] hash;
-    private final int distNameLength;
+    private final Integer distNameLength;
     private final byte[] distName;
     private final byte[] parserBytes;
 
-    public TrustedAuthorityParserTest(TrustedCaIndicationIdentifierType identifier, byte[] hash, int distNameLength,
-            byte[] distName, byte[] parserBytes) {
+    public TrustedAuthorityParserTest(TrustedCaIndicationIdentifierType identifier, byte[] hash,
+            Integer distNameLength, byte[] distName, byte[] parserBytes) {
         this.identifier = identifier;
         this.hash = hash;
         this.distNameLength = distNameLength;
@@ -44,17 +45,14 @@ public class TrustedAuthorityParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { TrustedCaIndicationIdentifierType.PRE_AGREED, new byte[] {}, 0, new byte[] {}, new byte[] { 0 } },
+                { TrustedCaIndicationIdentifierType.PRE_AGREED, null, null, null, new byte[] { 0 } },
                 { TrustedCaIndicationIdentifierType.KEY_SHA1_HASH,
-                        ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), 0,
-                        new byte[] {},
+                        ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), null, null,
                         ArrayConverter.hexStringToByteArray("01da39a3ee5e6b4b0d3255bfef95601890afd80709") },
-                { TrustedCaIndicationIdentifierType.X509_NAME, new byte[] {}, 5,
-                        new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 },
+                { TrustedCaIndicationIdentifierType.X509_NAME, null, 5, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 },
                         new byte[] { 0x02, 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 } },
                 { TrustedCaIndicationIdentifierType.CERT_SHA1_HASH,
-                        ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), 0,
-                        new byte[] {},
+                        ArrayConverter.hexStringToByteArray("da39a3ee5e6b4b0d3255bfef95601890afd80709"), null, null,
                         ArrayConverter.hexStringToByteArray("03da39a3ee5e6b4b0d3255bfef95601890afd80709") } });
     }
 
@@ -65,9 +63,21 @@ public class TrustedAuthorityParserTest {
         TrustedAuthority authority = parser.parse();
 
         assertEquals(identifier.getValue(), (byte) authority.getIdentifierType().getValue());
-        assertArrayEquals(hash, authority.getSha1Hash().getValue());
-        assertEquals(distNameLength, (int) authority.getDistinguishedNameLength().getValue());
-        assertArrayEquals(distName, authority.getDistinguishedName().getValue());
+        if (hash != null) {
+            assertArrayEquals(hash, authority.getSha1Hash().getValue());
+        } else {
+            assertNull(authority.getSha1Hash());
+        }
+        if (distNameLength != null) {
+            assertEquals(distNameLength, authority.getDistinguishedNameLength().getValue());
+        } else {
+            assertNull(authority.getDistinguishedNameLength());
+        }
+        if (distName != null) {
+            assertArrayEquals(distName, authority.getDistinguishedName().getValue());
+        } else {
+            assertNull(authority.getDistinguishedName());
+        }
     }
 
 }
