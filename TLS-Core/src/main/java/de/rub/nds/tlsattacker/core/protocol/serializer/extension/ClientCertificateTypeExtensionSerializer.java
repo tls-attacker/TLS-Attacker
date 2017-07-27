@@ -27,12 +27,10 @@ public class ClientCertificateTypeExtensionSerializer extends
 
     @Override
     public byte[] serializeExtensionContent() {
-        if (msg.getIsClientMessage().getValue()) {
+        if (msg.getCertificateTypesLength() != null) {
             appendInt(msg.getCertificateTypesLength().getValue(), ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH);
-            appendBytes(msg.getCertificateTypes().getValue());
-        } else {
-            appendBytes(msg.getCertificateTypes().getValue());
         }
+        appendBytes(msg.getCertificateTypes().getValue());
 
         return getAlreadySerialized();
     }
