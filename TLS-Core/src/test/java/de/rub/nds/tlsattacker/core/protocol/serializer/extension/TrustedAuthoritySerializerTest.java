@@ -23,6 +23,7 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class TrustedAuthoritySerializerTest {
+
     private final TrustedCaIndicationIdentifierType identifier;
     private final byte[] hash;
     private final Integer distNameLength;

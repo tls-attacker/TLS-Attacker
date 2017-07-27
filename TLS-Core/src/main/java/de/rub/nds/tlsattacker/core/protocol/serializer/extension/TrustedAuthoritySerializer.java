@@ -27,28 +27,20 @@ public class TrustedAuthoritySerializer extends Serializer<TrustedAuthority> {
 
     @Override
     protected byte[] serializeBytes() {
-
-        switch (TrustedCaIndicationIdentifierType.getIdentifierByByte(trustedAuthority.getIdentifierType().getValue())) {
-            case PRE_AGREED:
-                appendByte(trustedAuthority.getIdentifierType().getValue());
-                break;
-            case KEY_SHA1_HASH:
-                appendByte(trustedAuthority.getIdentifierType().getValue());
-                appendBytes(trustedAuthority.getSha1Hash().getValue());
-                break;
-            case X509_NAME:
-                appendByte(trustedAuthority.getIdentifierType().getValue());
-                appendInt(trustedAuthority.getDistinguishedNameLength().getValue(),
-                        ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH);
-                appendBytes(trustedAuthority.getDistinguishedName().getValue());
-                break;
-            case CERT_SHA1_HASH:
-                appendByte(trustedAuthority.getIdentifierType().getValue());
-                appendBytes(trustedAuthority.getSha1Hash().getValue());
-                break;
-            default:
-                break;
+        if (trustedAuthority.getIdentifierType().getValue() != null) {
+            appendByte(trustedAuthority.getIdentifierType().getValue());
         }
+        if (trustedAuthority.getSha1Hash().getValue() != null) {
+            appendBytes(trustedAuthority.getSha1Hash().getValue());
+        }
+        if (trustedAuthority.getDistinguishedNameLength().getValue() != null) {
+            appendInt(trustedAuthority.getDistinguishedNameLength().getValue(),
+                    ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH);
+        }
+        if (trustedAuthority.getDistinguishedName().getValue() != null) {
+            appendBytes(trustedAuthority.getDistinguishedName().getValue());
+        }
+
         return getAlreadySerialized();
     }
 
