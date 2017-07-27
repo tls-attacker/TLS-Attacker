@@ -29,7 +29,7 @@ public class CachedObjectSerializerTest {
 
     @Test
     public void testSerializeBytes() {
-        object = new CachedObject(false, (byte) 1, 0, new byte[] {});
+        object = new CachedObject(false, (byte) 1, null, null);
         serializer = new CachedObjectSerializer(object);
         assertArrayEquals(new byte[] { (byte) 1 }, serializer.serialize());
 

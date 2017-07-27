@@ -26,13 +26,16 @@ public class CachedObjectSerializer extends Serializer<CachedObject> {
 
     @Override
     protected byte[] serializeBytes() {
-        if (object.getIsClientState().getValue()) {
-            appendByte(object.getCachedInformationType().getValue());
+        appendByte(object.getCachedInformationType().getValue());
+        if (object.getHashValueLength().getValue() != null) {
             appendInt(object.getHashValueLength().getValue(), ExtensionByteLength.CACHED_INFO_HASH_LENGTH);
-            appendBytes(object.getHashValue().getValue());
-        } else {
-            appendByte(object.getCachedInformationType().getValue());
+
         }
+        if (object.getHashValue().getValue() != null) {
+            appendBytes(object.getHashValue().getValue());
+
+        }
+
         return getAlreadySerialized();
     }
 
