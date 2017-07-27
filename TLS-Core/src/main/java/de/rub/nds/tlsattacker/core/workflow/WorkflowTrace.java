@@ -37,6 +37,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -181,6 +182,10 @@ public class WorkflowTrace implements Serializable {
         this.tlsActions = tlsActions;
     }
 
+    public void setTlsActions(TLSAction... tlsActions) {
+        this.tlsActions = Arrays.asList(tlsActions);
+    }
+
     public boolean addConnectionEnd(ConnectionEnd con) {
         return connectionEnds.add(con);
     }
@@ -199,6 +204,10 @@ public class WorkflowTrace implements Serializable {
 
     public void setConnectionEnds(List<ConnectionEnd> conEnds) {
         this.connectionEnds = conEnds;
+    }
+
+    public void setConnectionEnds(ConnectionEnd... conEnds) {
+        this.connectionEnds = Arrays.asList(conEnds);
     }
 
     public List<MessageAction> getMessageActions() {
