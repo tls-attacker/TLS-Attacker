@@ -8,13 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.WorkFlowTraceFakeExecuter;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
@@ -22,14 +23,10 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.util.LinkedList;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -39,15 +36,12 @@ public class WorkflowTraceTest {
 
     private WorkflowTrace trace;
     private TlsContext context;
-    private TlsConfig config;
-
-    public WorkflowTraceTest() {
-    }
+    private Config config;
 
     @Before
     public void setUp() {
         trace = new WorkflowTrace();
-        config = TlsConfig.createConfig();
+        config = Config.createConfig();
         context = new TlsContext(config);
     }
 
@@ -95,12 +89,12 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testAdd_TLSAction() {
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        assertTrue(trace.getTLSActions().size() == 3);
-        trace.add(new ReceiveAction());
-        assertTrue(trace.getTLSActions().get(3).equals(new ReceiveAction()));
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        assertTrue(trace.getTlsActions().size() == 3);
+        trace.addTlsAction(new ReceiveAction());
+        assertTrue(trace.getTlsActions().get(3).equals(new ReceiveAction()));
     }
 
     /**
@@ -108,12 +102,12 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testAdd_int_TLSAction() {
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        assertTrue(trace.getTLSActions().size() == 3);
-        trace.add(0, new ReceiveAction());
-        assertTrue(trace.getTLSActions().get(0).equals(new ReceiveAction()));
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        assertTrue(trace.getTlsActions().size() == 3);
+        trace.addTlsAction(0, new ReceiveAction());
+        assertTrue(trace.getTlsActions().get(0).equals(new ReceiveAction()));
     }
 
     /**
@@ -121,38 +115,38 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testRemove() {
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        assertTrue(trace.getTLSActions().size() == 3);
-        trace.remove(0);
-        assertTrue(trace.getTLSActions().size() == 2);
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        assertTrue(trace.getTlsActions().size() == 3);
+        trace.removeTlsAction(0);
+        assertTrue(trace.getTlsActions().size() == 2);
     }
 
     /**
-     * Test of getTLSActions method, of class WorkflowTrace.
+     * Test of getTlsActions method, of class WorkflowTrace.
      */
     @Test
     public void testGetTLSActions() {
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        assertTrue(trace.getTLSActions().size() == 2);
-        assertEquals(trace.getTLSActions().get(0), new SendAction());
-        assertEquals(trace.getTLSActions().get(1), new ReceiveAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        assertTrue(trace.getTlsActions().size() == 2);
+        assertEquals(trace.getTlsActions().get(0), new SendAction());
+        assertEquals(trace.getTlsActions().get(1), new ReceiveAction());
     }
 
     /**
-     * Test of setTLSActions method, of class WorkflowTrace.
+     * Test of setTlsActions method, of class WorkflowTrace.
      */
     @Test
-    public void testSetTLSActions() {
+    public void testSetTlsActions() {
         LinkedList<TLSAction> actionList = new LinkedList<>();
         actionList.add(new SendAction());
         actionList.add(new ReceiveAction());
-        trace.setTLSActions(actionList);
-        assertTrue(trace.getTLSActions().size() == 2);
-        assertEquals(trace.getTLSActions().get(0), new SendAction());
-        assertEquals(trace.getTLSActions().get(1), new ReceiveAction());
+        trace.setTlsActions(actionList);
+        assertTrue(trace.getTlsActions().size() == 2);
+        assertEquals(trace.getTlsActions().get(0), new SendAction());
+        assertEquals(trace.getTlsActions().get(1), new ReceiveAction());
 
     }
 
@@ -161,9 +155,9 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetMessageActions() {
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        trace.add(new ChangeClientRandomAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new ChangeClientRandomAction());
         assertTrue(trace.getMessageActions().size() == 2);
         assertEquals(trace.getMessageActions().get(0), new SendAction());
         assertEquals(trace.getMessageActions().get(1), new ReceiveAction());
@@ -174,9 +168,9 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetReceiveActions() {
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        trace.add(new ChangeClientRandomAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new ChangeClientRandomAction());
         assertTrue(trace.getReceiveActions().size() == 1);
         assertEquals(trace.getReceiveActions().get(0), new ReceiveAction());
     }
@@ -186,9 +180,9 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetSendActions() {
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        trace.add(new ChangeClientRandomAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new ChangeClientRandomAction());
         assertTrue(trace.getSendActions().size() == 1);
         assertEquals(trace.getSendActions().get(0), new SendAction());
     }
@@ -199,10 +193,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetFirstConfiguredSendMessageOfType_ProtocolMessageType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getFirstConfiguredSendMessageOfType(ProtocolMessageType.ALERT) != null);
         assertTrue(trace.getFirstConfiguredSendMessageOfType(ProtocolMessageType.APPLICATION_DATA) == null);
     }
@@ -213,10 +207,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetFirstConfiguredSendMessageOfType_HandshakeMessageType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_HELLO) != null);
         assertTrue(trace.getFirstConfiguredSendMessageOfType(HandshakeMessageType.NEW_SESSION_TICKET) == null);
 
@@ -227,10 +221,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetFirstActuallySendMessageOfType_ProtocolMessageType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getFirstActuallySendMessageOfType(ProtocolMessageType.ALERT) != null);
         assertTrue(trace.getFirstActuallySendMessageOfType(ProtocolMessageType.APPLICATION_DATA) == null);
@@ -241,10 +235,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetFirstActuallySendMessageOfType_HandshakeMessageType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getFirstActuallySendMessageOfType(HandshakeMessageType.CLIENT_HELLO) != null);
         assertTrue(trace.getFirstActuallySendMessageOfType(HandshakeMessageType.NEW_SESSION_TICKET) == null);
@@ -256,10 +250,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetActualReceivedProtocolMessagesOfType() {
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
-        trace.add(new ReceiveAction(new CertificateMessage()));
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new CertificateMessage()));
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() == 1);
         assertTrue(trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.HANDSHAKE).size() == 3);
@@ -272,10 +266,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetActuallyRecievedHandshakeMessagesOfType() {
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
-        trace.add(new ReceiveAction(new CertificateMessage()));
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new CertificateMessage()));
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CERTIFICATE).size() == 1);
         assertTrue(trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO).size() == 2);
@@ -289,10 +283,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetActuallyRecievedProtocolMessagesOfType() {
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
-        trace.add(new ReceiveAction(new CertificateMessage()));
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new CertificateMessage()));
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getActuallyRecievedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() == 1);
         assertTrue(trace.getActuallyRecievedProtocolMessagesOfType(ProtocolMessageType.HANDSHAKE).size() == 3);
@@ -305,10 +299,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetActuallySentHandshakeMessagesOfType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CERTIFICATE).size() == 1);
         assertTrue(trace.getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO).size() == 2);
@@ -321,10 +315,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetActuallySentProtocolMessagesOfType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getActuallySentProtocolMessagesOfType(ProtocolMessageType.ALERT).size() == 1);
         assertTrue(trace.getActuallySentProtocolMessagesOfType(ProtocolMessageType.HANDSHAKE).size() == 3);
@@ -338,10 +332,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetConfiguredRecievedHandshakeMessagesOfType() {
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
-        trace.add(new ReceiveAction(new CertificateMessage()));
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new CertificateMessage()));
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         assertTrue(trace.getConfiguredRecievedHandshakeMessagesOfType(HandshakeMessageType.CERTIFICATE).size() == 1);
         assertTrue(trace.getConfiguredRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO).size() == 2);
         assertTrue(trace.getConfiguredRecievedHandshakeMessagesOfType(HandshakeMessageType.HELLO_VERIFY_REQUEST)
@@ -354,10 +348,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetConfiguredRecievedProtocolMessagesOfType() {
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
-        trace.add(new ReceiveAction(new CertificateMessage()));
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ReceiveAction(new CertificateMessage()));
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         assertTrue(trace.getConfiguredRecievedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() == 1);
         assertTrue(trace.getConfiguredRecievedProtocolMessagesOfType(ProtocolMessageType.HANDSHAKE).size() == 3);
         assertTrue(trace.getConfiguredRecievedProtocolMessagesOfType(ProtocolMessageType.APPLICATION_DATA).isEmpty());
@@ -369,10 +363,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetConfiguredSentHandshakeMessagesOfType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getConfiguredSentHandshakeMessagesOfType(HandshakeMessageType.CERTIFICATE).size() == 1);
         assertTrue(trace.getConfiguredSentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_HELLO).size() == 2);
         assertTrue(trace.getConfiguredSentHandshakeMessagesOfType(HandshakeMessageType.HELLO_VERIFY_REQUEST).isEmpty());
@@ -384,10 +378,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetConfiguredSendProtocolMessagesOfType() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new SendAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getConfiguredSendProtocolMessagesOfType(ProtocolMessageType.ALERT).size() == 1);
         assertTrue(trace.getConfiguredSendProtocolMessagesOfType(ProtocolMessageType.HANDSHAKE).size() == 3);
         assertTrue(trace.getConfiguredSendProtocolMessagesOfType(ProtocolMessageType.APPLICATION_DATA).isEmpty());
@@ -398,11 +392,11 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetAllConfiguredMessages() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new ChangeCipherSuiteAction());
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getAllConfiguredMessages().size() == 4);
     }
 
@@ -411,11 +405,11 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetAllActualMessages() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new ChangeCipherSuiteAction());
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getAllActualMessages().size() == 0);
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getAllActualMessages().size() == 4);
@@ -426,14 +420,14 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetAllConfiguredReceivingMessages() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new ChangeCipherSuiteAction());
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getAllConfiguredReceivingMessages().size() == 1);
-        trace.add(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
         assertTrue(trace.getAllConfiguredReceivingMessages().size() == 2);
     }
 
@@ -442,16 +436,16 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetAllActuallyReceivedMessages() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new ChangeCipherSuiteAction());
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getAllActuallyReceivedMessages().isEmpty());
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getAllActuallyReceivedMessages().size() == 1);
-        trace.add(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getAllActuallyReceivedMessages().size() == 2);
 
@@ -462,14 +456,14 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetAllConfiguredSendMessages() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new ChangeCipherSuiteAction());
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getAllConfiguredSendMessages().size() == 4);
-        trace.add(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
         assertTrue(trace.getAllConfiguredSendMessages().size() == 5);
     }
 
@@ -478,16 +472,16 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetAllActuallySentMessages() {
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new ChangeCipherSuiteAction());
-        trace.add(new ReceiveAction(new AlertMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
-        trace.add(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new ReceiveAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new ClientHelloMessage()));
         assertTrue(trace.getAllActuallySentMessages().isEmpty());
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getAllActuallySentMessages().size() == 4);
-        trace.add(new SendAction(new AlertMessage()));
+        trace.addTlsAction(new SendAction(new AlertMessage()));
         WorkFlowTraceFakeExecuter.execute(trace);
         assertTrue(trace.getAllActuallySentMessages().size() == 5);
     }
@@ -497,14 +491,14 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetLastAction() {
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        trace.add(new ReceiveAction());
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        trace.add(new SendAction());
-        trace.add(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ChangeCipherSuiteAction());
         assertEquals(new ChangeCipherSuiteAction(), trace.getLastAction());
     }
 
@@ -513,16 +507,16 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetLastMessageAction() {
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        trace.add(new ReceiveAction());
-        trace.add(new SendAction());
-        trace.add(new SendAction());
-        trace.add(new ReceiveAction());
-        trace.add(new SendAction());
-        trace.add(new ChangeCipherSuiteAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new SendAction());
+        trace.addTlsAction(new ChangeCipherSuiteAction());
         assertEquals(new SendAction(), trace.getLastMessageAction());
-        trace.add(new ReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         assertEquals(new ReceiveAction(), trace.getLastMessageAction());
     }
 
@@ -531,10 +525,10 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetLastConfiguredReceiveMesssage() {
-        trace.add(new ChangeClientCertificateAction());
-        trace.add(new ReceiveAction(new ApplicationMessage()));
-        trace.add(new SendAction(new ApplicationMessage()));
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new ChangeClientCertificateAction());
+        trace.addTlsAction(new ReceiveAction(new ApplicationMessage()));
+        trace.addTlsAction(new SendAction(new ApplicationMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         assertEquals(trace.getLastConfiguredReceiveMesssage().toCompactString(),
                 new ClientHelloMessage().toCompactString());
     }
@@ -544,11 +538,11 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testGetLastConfiguredSendMesssage() {
-        trace.add(new SendAction(new CertificateMessage()));
-        trace.add(new ChangeClientCertificateAction());
-        trace.add(new ReceiveAction(new ApplicationMessage()));
-        trace.add(new SendAction(new ApplicationMessage()));
-        trace.add(new ReceiveAction(new ClientHelloMessage()));
+        trace.addTlsAction(new SendAction(new CertificateMessage()));
+        trace.addTlsAction(new ChangeClientCertificateAction());
+        trace.addTlsAction(new ReceiveAction(new ApplicationMessage()));
+        trace.addTlsAction(new SendAction(new ApplicationMessage()));
+        trace.addTlsAction(new ReceiveAction(new ClientHelloMessage()));
         assertEquals(trace.getLastConfiguredSendMesssage(), new ApplicationMessage());
     }
 

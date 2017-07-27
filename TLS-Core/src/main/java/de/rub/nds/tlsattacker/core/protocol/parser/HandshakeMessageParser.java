@@ -33,7 +33,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      */
     private final HandshakeMessageType expectedType;
 
-    private final ProtocolVersion version;
+    private ProtocolVersion version;
 
     /**
      * Constructor for the Parser class
@@ -175,5 +175,9 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
 
     protected ProtocolVersion getVersion() {
         return version;
+    }
+
+    protected void setVersion(ProtocolVersion version) {
+        this.version = version;
     }
 }

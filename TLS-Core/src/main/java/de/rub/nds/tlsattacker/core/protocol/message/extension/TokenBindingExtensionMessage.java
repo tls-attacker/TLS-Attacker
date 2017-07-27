@@ -12,8 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  *
@@ -29,11 +27,6 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
 
     public TokenBindingExtensionMessage() {
         super(ExtensionType.TOKEN_BINDING);
-    }
-
-    @Override
-    public TokenBindingExtensionHandler getHandler(TlsContext context) {
-        return new TokenBindingExtensionHandler(context);
     }
 
     public ModifiableByteArray getTokenbindingVersion() {

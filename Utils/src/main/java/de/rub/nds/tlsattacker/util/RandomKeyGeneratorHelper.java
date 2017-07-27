@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.util;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.Random;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;

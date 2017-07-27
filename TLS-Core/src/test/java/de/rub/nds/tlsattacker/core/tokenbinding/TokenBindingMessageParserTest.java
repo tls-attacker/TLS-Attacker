@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -6,9 +6,11 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.workflow;
+package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -18,26 +20,27 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -55,19 +58,19 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TlsConfig implements Serializable {
+public class Config implements Serializable {
 
-    public static TlsConfig createConfig() {
-        InputStream stream = TlsConfig.class.getResourceAsStream("/default_config.xml");
-        return TlsConfigIO.read(stream);
+    public static Config createConfig() {
+        InputStream stream = Config.class.getResourceAsStream("/default_config.xml");
+        return ConfigIO.read(stream);
     }
 
-    public static TlsConfig createConfig(File f) {
-        return TlsConfigIO.read(f);
+    public static Config createConfig(File f) {
+        return ConfigIO.read(f);
     }
 
-    public static TlsConfig createConfig(InputStream stream) {
-        return TlsConfigIO.read(stream);
+    public static Config createConfig(InputStream stream) {
+        return ConfigIO.read(stream);
     }
 
     /**
@@ -106,10 +109,7 @@ public class TlsConfig implements Serializable {
      * Which Ciphersuites we support by default
      */
     private List<CipherSuite> defaultServerSupportedCiphersuites;
-    /**
-     * Which compression methods we support by default
-     */
-    private List<CompressionMethod> supportedCompressionMethods;
+
     /**
      * If we are a dynamic workflow //TODO implement
      */
@@ -450,6 +450,8 @@ public class TlsConfig implements Serializable {
 
     private List<CompressionMethod> defaultClientSupportedCompressionMethods;
 
+    private List<CompressionMethod> defaultServerSupportedCompressionMethods;
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultMasterSecret = new byte[0];
 
@@ -533,7 +535,7 @@ public class TlsConfig implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private TlsConfig() {
+    private Config() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA512));
@@ -547,8 +549,10 @@ public class TlsConfig implements Serializable {
                 HashAlgorithm.SHA1));
         supportedSignatureAndHashAlgorithms
                 .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
-        supportedCompressionMethods = new LinkedList<>();
-        supportedCompressionMethods.add(CompressionMethod.NULL);
+        defaultClientSupportedCompressionMethods = new LinkedList<>();
+        defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
+        defaultServerSupportedCompressionMethods = new LinkedList<>();
+        defaultServerSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultClientSupportedCiphersuites = new LinkedList<>();
         defaultClientSupportedCiphersuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCiphersuites = new LinkedList<>();
@@ -946,12 +950,22 @@ public class TlsConfig implements Serializable {
         this.defaultServerSupportedSignatureAndHashAlgorithms = defaultServerSupportedSignatureAndHashAlgorithms;
     }
 
+    public void setDefaultServerSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... defaultServerSupportedSignatureAndHashAlgorithms) {
+        this.defaultServerSupportedSignatureAndHashAlgorithms = Arrays
+                .asList(defaultServerSupportedSignatureAndHashAlgorithms);
+    }
+
     public List<CipherSuite> getDefaultServerSupportedCiphersuites() {
         return defaultServerSupportedCiphersuites;
     }
 
     public void setDefaultServerSupportedCiphersuites(List<CipherSuite> defaultServerSupportedCiphersuites) {
         this.defaultServerSupportedCiphersuites = defaultServerSupportedCiphersuites;
+    }
+
+    public final void setDefaultServerSupportedCiphersuites(CipherSuite... defaultServerSupportedCiphersuites) {
+        this.defaultServerSupportedCiphersuites = Arrays.asList(defaultServerSupportedCiphersuites);
     }
 
     public List<CompressionMethod> getDefaultClientSupportedCompressionMethods() {
@@ -961,6 +975,11 @@ public class TlsConfig implements Serializable {
     public void setDefaultClientSupportedCompressionMethods(
             List<CompressionMethod> defaultClientSupportedCompressionMethods) {
         this.defaultClientSupportedCompressionMethods = defaultClientSupportedCompressionMethods;
+    }
+
+    public final void setDefaultClientSupportedCompressionMethods(
+            CompressionMethod... defaultClientSupportedCompressionMethods) {
+        this.defaultClientSupportedCompressionMethods = Arrays.asList(defaultClientSupportedCompressionMethods);
     }
 
     public HeartbeatMode getDefaultHeartbeatMode() {
@@ -996,6 +1015,10 @@ public class TlsConfig implements Serializable {
         this.defaultClientSupportedPointFormats = defaultClientSupportedPointFormats;
     }
 
+    public final void setDefaultClientSupportedPointFormats(ECPointFormat... defaultClientSupportedPointFormats) {
+        this.defaultClientSupportedPointFormats = Arrays.asList(defaultClientSupportedPointFormats);
+    }
+
     public ProtocolVersion getDefaultLastRecordProtocolVersion() {
         return defaultLastRecordProtocolVersion;
     }
@@ -1012,6 +1035,10 @@ public class TlsConfig implements Serializable {
         this.defaultClientSNIEntryList = defaultClientSNIEntryList;
     }
 
+    public final void setDefaultClientSNIEntries(SNIEntry... defaultClientSNIEntryList) {
+        this.defaultClientSNIEntryList = Arrays.asList(defaultClientSNIEntryList);
+    }
+
     public List<SignatureAndHashAlgorithm> getDefaultClientSupportedSignatureAndHashAlgorithms() {
         return defaultClientSupportedSignatureAndHashAlgorithms;
     }
@@ -1019,6 +1046,12 @@ public class TlsConfig implements Serializable {
     public void setDefaultClientSupportedSignatureAndHashAlgorithms(
             List<SignatureAndHashAlgorithm> defaultClientSupportedSignatureAndHashAlgorithms) {
         this.defaultClientSupportedSignatureAndHashAlgorithms = defaultClientSupportedSignatureAndHashAlgorithms;
+    }
+
+    public final void setDefaultClientSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... defaultClientSupportedSignatureAndHashAlgorithms) {
+        this.defaultClientSupportedSignatureAndHashAlgorithms = Arrays
+                .asList(defaultClientSupportedSignatureAndHashAlgorithms);
     }
 
     public List<ECPointFormat> getDefaultServerSupportedPointFormats() {
@@ -1029,12 +1062,20 @@ public class TlsConfig implements Serializable {
         this.defaultServerSupportedPointFormats = defaultServerSupportedPointFormats;
     }
 
+    public final void setDefaultServerSupportedPointFormats(ECPointFormat... defaultServerSupportedPointFormats) {
+        this.defaultServerSupportedPointFormats = Arrays.asList(defaultServerSupportedPointFormats);
+    }
+
     public List<NamedCurve> getDefaultClientNamedCurves() {
         return defaultClientNamedCurves;
     }
 
     public void setDefaultClientNamedCurves(List<NamedCurve> defaultClientNamedCurves) {
         this.defaultClientNamedCurves = defaultClientNamedCurves;
+    }
+
+    public final void setDefaultClientNamedCurves(NamedCurve... defaultClientNamedCurves) {
+        this.defaultClientNamedCurves = Arrays.asList(defaultClientNamedCurves);
     }
 
     public CipherSuite getDefaultSelectedCipherSuite() {
@@ -1171,6 +1212,10 @@ public class TlsConfig implements Serializable {
 
     public void setClientCertificateTypes(List<ClientCertificateType> clientCertificateTypes) {
         this.clientCertificateTypes = clientCertificateTypes;
+    }
+
+    public final void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
+        this.clientCertificateTypes = Arrays.asList(clientCertificateTypes);
     }
 
     public boolean isWaitOnlyForExpectedDTLS() {
@@ -1377,12 +1422,8 @@ public class TlsConfig implements Serializable {
         this.defaultClientSupportedCiphersuites = defaultClientSupportedCiphersuites;
     }
 
-    public List<CompressionMethod> getSupportedCompressionMethods() {
-        return Collections.unmodifiableList(supportedCompressionMethods);
-    }
-
-    public void setSupportedCompressionMethods(List<CompressionMethod> supportedCompressionMethods) {
-        this.supportedCompressionMethods = supportedCompressionMethods;
+    public final void setDefaultClientSupportedCiphersuites(CipherSuite... defaultClientSupportedCiphersuites) {
+        this.defaultClientSupportedCiphersuites = Arrays.asList(defaultClientSupportedCiphersuites);
     }
 
     public ConnectionEndType getConnectionEndType() {
@@ -1430,6 +1471,11 @@ public class TlsConfig implements Serializable {
         this.supportedSignatureAndHashAlgorithms = supportedSignatureAndHashAlgorithms;
     }
 
+    public final void setSupportedSignatureAndHashAlgorithms(
+            SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
+        this.supportedSignatureAndHashAlgorithms = Arrays.asList(supportedSignatureAndHashAlgorithms);
+    }
+
     public List<NamedCurve> getNamedCurves() {
         return Collections.unmodifiableList(namedCurves);
     }
@@ -1438,12 +1484,20 @@ public class TlsConfig implements Serializable {
         this.namedCurves = namedCurves;
     }
 
+    public final void setNamedCurves(NamedCurve... namedCurves) {
+        this.namedCurves = Arrays.asList(namedCurves);
+    }
+
     public List<ProtocolVersion> getSupportedVersions() {
         return Collections.unmodifiableList(supportedVersions);
     }
 
     public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
         this.supportedVersions = supportedVersions;
+    }
+
+    public final void setSupportedVersions(ProtocolVersion... supportedVersions) {
+        this.supportedVersions = Arrays.asList(supportedVersions);
     }
 
     public HeartbeatMode getHeartbeatMode() {
@@ -1598,11 +1652,33 @@ public class TlsConfig implements Serializable {
         this.defaultTokenBindingKeyParameters = defaultTokenBindingKeyParameters;
     }
 
+    public final void setDefaultTokenBindingKeyParameters(TokenBindingKeyParameters... defaultTokenBindingKeyParameters) {
+        this.defaultTokenBindingKeyParameters = Arrays.asList(defaultTokenBindingKeyParameters);
+    }
+
     public boolean isAddTokenBindingExtension() {
         return addTokenBindingExtension;
     }
 
     public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
         this.addTokenBindingExtension = addTokenBindingExtension;
+    }
+
+    public KSEntry getDefaultServerKSEntry() {
+        return new KSEntry(keyShareType, keySharePublic);
+    }
+
+    public List<CompressionMethod> getDefaultServerSupportedCompressionMethods() {
+        return defaultServerSupportedCompressionMethods;
+    }
+
+    public void setDefaultServerSupportedCompressionMethods(
+            List<CompressionMethod> defaultServerSupportedCompressionMethods) {
+        this.defaultServerSupportedCompressionMethods = defaultServerSupportedCompressionMethods;
+    }
+
+    public void setDefaultServerSupportedCompressionMethods(
+            CompressionMethod... defaultServerSupportedCompressionMethods) {
+        this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
     }
 }

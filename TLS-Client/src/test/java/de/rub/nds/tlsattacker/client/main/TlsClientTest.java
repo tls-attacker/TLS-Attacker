@@ -8,6 +8,33 @@
  */
 package de.rub.nds.tlsattacker.client.main;
 
+import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.PublicKeyAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
+import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.util.FixedTimeProvider;
+import de.rub.nds.tlsattacker.util.TimeHelper;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.KeyManagementException;
@@ -35,34 +62,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
-
-import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.PublicKeyAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
-import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.util.FixedTimeProvider;
-import de.rub.nds.tlsattacker.util.TimeHelper;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 
 /**
  *
@@ -137,7 +136,7 @@ public class TlsClientTest {
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
-        TlsConfig config = clientCommandConfig.createConfig();
+        Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
         config.setTlsTimeout(TIMEOUT);
@@ -156,7 +155,7 @@ public class TlsClientTest {
 
     }
 
-    private void testProtocolCompatibility(List<String> serverList, TlsConfig config, PublicKeyAlgorithm algorithm) {
+    private void testProtocolCompatibility(List<String> serverList, Config config, PublicKeyAlgorithm algorithm) {
         LOGGER.info(config.getHighestProtocolVersion());
         for (CipherSuite cs : CipherSuite.getImplemented()) {
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
@@ -176,7 +175,7 @@ public class TlsClientTest {
         }
     }
 
-    private boolean testExecuteWorkflow(TlsConfig config) {
+    private boolean testExecuteWorkflow(Config config) {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(config);
 
@@ -199,7 +198,7 @@ public class TlsClientTest {
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
-        TlsConfig config = clientCommandConfig.createConfig();
+        Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
         config.setTlsTimeout(TIMEOUT);
@@ -209,15 +208,15 @@ public class TlsClientTest {
         config.setWorkflowTrace(new WorkflowTrace());
 
         WorkflowTrace trace = config.getWorkflowTrace();
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
                         config)));
-        trace.add(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
                 tlsContext);

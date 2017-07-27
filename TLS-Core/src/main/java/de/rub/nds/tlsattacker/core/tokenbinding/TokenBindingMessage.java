@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -71,11 +71,6 @@ public class TokenBindingMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         return "TOKENBINDING";
-    }
-
-    @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new TokenBindingMessageHandler(context);
     }
 
     public ModifiableInteger getModulusLength() {
@@ -233,5 +228,10 @@ public class TokenBindingMessage extends ProtocolMessage {
 
     public void setExtensionBytes(byte[] extensionbytes) {
         this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionbytes);
+    }
+
+    @Override
+    public ProtocolMessageHandler getHandler(TlsContext context) {
+        return new TokenBindingMessageHandler(context);
     }
 }

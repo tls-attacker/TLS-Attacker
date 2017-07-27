@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.server;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +25,7 @@ public class TlsServer {
     private static final Logger LOGGER = LogManager.getLogger(TlsServer.class.getName());
 
     // TODO rename method
-    public void startTlsServer(TlsConfig config) {
+    public void startTlsServer(Config config) {
         TlsContext tlsContext = new TlsContext(config);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
                 tlsContext);

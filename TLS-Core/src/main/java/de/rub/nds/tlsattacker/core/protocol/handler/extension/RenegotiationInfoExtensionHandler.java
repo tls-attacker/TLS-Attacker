@@ -14,8 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -34,7 +33,7 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
 
     @Override
     public RenegotiationInfoExtensionPreparator getPreparator(RenegotiationInfoExtensionMessage message) {
-        return new RenegotiationInfoExtensionPreparator(context.getChooser(), message);
+        return new RenegotiationInfoExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

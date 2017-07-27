@@ -15,8 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicati
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ServerNameIndicationExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerNameIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerNameIndicationExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
 
     @Override
     public ServerNameIndicationExtensionPreparator getPreparator(ServerNameIndicationExtensionMessage message) {
-        return new ServerNameIndicationExtensionPreparator(context.getChooser(), message);
+        return new ServerNameIndicationExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

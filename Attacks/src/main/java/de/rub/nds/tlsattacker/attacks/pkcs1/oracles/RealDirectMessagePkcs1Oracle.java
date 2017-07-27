@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
@@ -18,14 +19,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
@@ -43,9 +42,9 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
  */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
-    TlsConfig config;
+    Config config;
 
-    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, TlsConfig config) {
+    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, Config config) {
         this.publicKey = (RSAPublicKey) pubKey;
         this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), 8);
         this.config = config;
@@ -68,16 +67,16 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         protocolMessages.add(new ServerHelloMessage(config));
         protocolMessages.add(new CertificateMessage(config));
         protocolMessages.add(new ServerHelloDoneMessage(config));
-        tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
         protocolMessages = new LinkedList<>();
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(config);
         protocolMessages.add(cke);
         protocolMessages.add(new ChangeCipherSpecMessage(config));
-        tlsContext.getWorkflowTrace().add(new SendAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new SendAction(protocolMessages));
 
         protocolMessages = new LinkedList<>();
         protocolMessages.add(new AlertMessage(config));
-        tlsContext.getWorkflowTrace().add(new ReceiveAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
 
         ModifiableByteArray pms = new ModifiableByteArray();
         pms.setModification(ByteArrayModificationFactory.explicitValue(msg));

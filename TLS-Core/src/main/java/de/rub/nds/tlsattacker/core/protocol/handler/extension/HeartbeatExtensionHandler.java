@@ -15,11 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.HeartbeatExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -51,7 +47,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
 
     @Override
     public HeartbeatExtensionPreparator getPreparator(HeartbeatExtensionMessage message) {
-        return new HeartbeatExtensionPreparator(context.getChooser(), message);
+        return new HeartbeatExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

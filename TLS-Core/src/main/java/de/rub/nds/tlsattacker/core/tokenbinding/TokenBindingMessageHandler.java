@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -24,7 +24,7 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
     @Override
     public TokenBindingMessageParser getParser(byte[] message, int pointer) {
         return new TokenBindingMessageParser(pointer, message, tlsContext.getSelectedProtocolVersion(), tlsContext
-                .getTokenBindingKeyParameters().get(0));
+                .getChooser().getTokenBindingKeyParameters().get(0));
     }
 
     @Override

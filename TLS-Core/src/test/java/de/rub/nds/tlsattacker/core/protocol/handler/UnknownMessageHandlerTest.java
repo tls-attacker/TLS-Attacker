@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;

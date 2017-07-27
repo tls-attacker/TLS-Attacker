@@ -15,8 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupportedVersionsExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SupportedVersionsExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 
 /**
@@ -38,7 +37,7 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
 
     @Override
     public SupportedVersionsExtensionPreparator getPreparator(SupportedVersionsExtensionMessage message) {
-        return new SupportedVersionsExtensionPreparator(context.getChooser(), message);
+        return new SupportedVersionsExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

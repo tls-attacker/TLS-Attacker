@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +35,8 @@ public class SupportedVersionsExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new SupportedVersionsExtensionMessage();
-        preparator = new SupportedVersionsExtensionPreparator(context.getChooser(), message);
+        preparator = new SupportedVersionsExtensionPreparator(context.getChooser(), message,
+                new SupportedVersionsExtensionSerializer(message));
     }
 
     /**
@@ -51,6 +52,11 @@ public class SupportedVersionsExtensionPreparatorTest {
         assertArrayEquals(message.getSupportedVersions().getValue(),
                 ArrayConverter.concatenate(ProtocolVersion.TLS13.getValue(), ProtocolVersion.TLS12.getValue()));
         assertTrue(message.getSupportedVersionsLength().getValue() == 4);
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 
 }

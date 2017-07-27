@@ -15,8 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *

@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
 

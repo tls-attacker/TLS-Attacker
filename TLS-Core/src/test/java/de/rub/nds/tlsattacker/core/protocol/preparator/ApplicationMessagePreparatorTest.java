@@ -9,8 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,5 +40,10 @@ public class ApplicationMessagePreparatorTest {
         context.getConfig().setDefaultApplicationMessageData("1234");
         preparator.prepare();
         assertArrayEquals(message.getData().getValue(), "1234".getBytes());
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 }

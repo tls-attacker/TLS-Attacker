@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
-import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 
@@ -16,20 +15,11 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
  *
  * @author robert
  */
-public class AttackConfig extends TLSDelegateConfig {
-
-    @Parameter(names = "-executeAttack", description = "If this value is set the Attack is not only Tested, but also executed (WARNING)")
-    private boolean executeAttack = false;
+public abstract class AttackConfig extends TLSDelegateConfig {
 
     public AttackConfig(GeneralDelegate delegate) {
         super(delegate);
     }
 
-    public boolean isExecuteAttack() {
-        return executeAttack;
-    }
-
-    public void setExecuteAttack(boolean executeAttack) {
-        this.executeAttack = executeAttack;
-    }
+    public abstract boolean isExecuteAttack();
 }

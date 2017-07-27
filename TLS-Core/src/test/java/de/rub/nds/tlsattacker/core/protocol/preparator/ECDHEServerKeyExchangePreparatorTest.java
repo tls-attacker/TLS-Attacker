@@ -8,24 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
-
-import org.junit.Test;
-import org.junit.Before;
-import static org.junit.Assert.*;
-
-import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.modifiablevariable.util.BadFixedRandom;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.BadFixedRandom;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
@@ -35,12 +22,22 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import org.junit.After;
+import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -103,7 +100,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private void loadTestVectorsToContext() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
             CertificateException, KeyStoreException, UnrecoverableKeyException {
 
-        TlsConfig config = tlsContext.getConfig();
+        Config config = tlsContext.getConfig();
         config.setConnectionEndType(ConnectionEndType.SERVER);
         config.setDefaultRSAModulus(new BigInteger(
                 "138176188281796802921728019830883835791466819775862616369528695291051113778191409365728255919237920070170415489798919694047238160141762618463534095589006064306561457254708835463402335256295540403269922932223802187003458396441731541262280889819064536522708759209693618435045828861540756050456047286072194938393"));
@@ -140,6 +137,10 @@ public class ECDHEServerKeyExchangePreparatorTest {
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
         SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
         config.setSupportedSignatureAndHashAlgorithms(SigAndHashList);
+    }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 }

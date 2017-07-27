@@ -14,8 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -58,7 +57,7 @@ public class SignedCertificateTimestampExtensionHandler extends
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(
             SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message);
+        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     /**

@@ -8,17 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import org.junit.Before;
-import org.junit.Test;
-
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
-
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,5 +65,10 @@ public class RSAClientKeyExchangePreparatorTest {
                 .getComputations().getPadding().getValue().length + 2]);
         assertNotNull(message.getPublicKeyLength().getValue());
         assertNotNull(message.getPublicKey());
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 }

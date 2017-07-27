@@ -10,9 +10,9 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.*;
@@ -115,10 +115,10 @@ public class EllipticCurveDelegateTest {
         args[1] = "SECP192R1,SECP256R1";
         args[2] = "-point_formats";
         args[3] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
-        TlsConfig config = TlsConfig.createConfig();
-        config.setNamedCurves(null);
-        config.setDefaultClientSupportedPointFormats(null);
-        config.setDefaultServerSupportedPointFormats(null);
+        Config config = Config.createConfig();
+        config.setNamedCurves(new NamedCurve[0]);
+        config.setDefaultClientSupportedPointFormats(new ECPointFormat[0]);
+        config.setDefaultServerSupportedPointFormats(new ECPointFormat[0]);
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue("SECP192R1 should get parsed correctly", config.getNamedCurves().contains(NamedCurve.SECP192R1));
@@ -136,8 +136,8 @@ public class EllipticCurveDelegateTest {
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

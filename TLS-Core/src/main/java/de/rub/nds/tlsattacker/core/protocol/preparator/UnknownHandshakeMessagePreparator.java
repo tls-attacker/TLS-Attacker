@@ -10,12 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -37,7 +32,11 @@ public class UnknownHandshakeMessagePreparator extends HandshakeMessagePreparato
     }
 
     private void prepareData(UnknownHandshakeMessage msg) {
-        msg.setData(msg.getDataConfig());
+        if (msg.getDataConfig() != null) {
+            msg.setData(msg.getDataConfig());
+        } else {
+            msg.setData(new byte[0]);
+        }
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
 

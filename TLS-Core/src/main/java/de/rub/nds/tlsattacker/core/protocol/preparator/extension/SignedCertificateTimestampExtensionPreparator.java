@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -27,8 +28,8 @@ public class SignedCertificateTimestampExtensionPreparator extends
      * @param message
      */
     public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
-            SignedCertificateTimestampExtensionMessage message) {
-        super(chooser, message);
+            SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.message = message;
     }
 

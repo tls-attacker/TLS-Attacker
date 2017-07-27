@@ -23,18 +23,18 @@ public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Pr
 
     private final ExtensionMessage msg;
     private byte[] content;
-    private ExtensionSerializer serializer;
+    private final ExtensionSerializer<T> serializer;
 
-    public ExtensionPreparator(Chooser chooser, T message) {
+    public ExtensionPreparator(Chooser chooser, T message, ExtensionSerializer<T> serializer) {
         super(chooser, message);
         this.msg = message;
+        this.serializer = serializer;
     }
 
     @Override
     public final void prepare() {
         prepareExtensionType(msg);
         prepareExtensionContent();
-        serializer = msg.getHandler(chooser.getContext()).getSerializer(msg);
         content = serializer.serializeExtensionContent();
         prepareExtensionLength(msg);
         prepareExtensionBytes(msg);

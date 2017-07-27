@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HRRKeyShareExtensionSerializer;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -19,8 +20,9 @@ public class HRRKeyShareExtensionPreparator extends ExtensionPreparator<HRRKeySh
 
     private final HRRKeyShareExtensionMessage msg;
 
-    public HRRKeyShareExtensionPreparator(Chooser chooser, HRRKeyShareExtensionMessage message) {
-        super(chooser, message);
+    public HRRKeyShareExtensionPreparator(Chooser chooser, HRRKeyShareExtensionMessage message,
+            HRRKeyShareExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.msg = message;
     }
 

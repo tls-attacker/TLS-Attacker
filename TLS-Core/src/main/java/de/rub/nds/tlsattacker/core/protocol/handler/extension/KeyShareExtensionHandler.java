@@ -8,9 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
@@ -18,14 +23,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionPreparator getPreparator(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionPreparator(context.getChooser(), message);
+        return new KeyShareExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
@@ -91,8 +90,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
             if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                if (context.getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
-                    sharedSecret = computeSharedSecretECDH(context.getServerKSEntry());
+                if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
                 } else {
                     throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
                 }

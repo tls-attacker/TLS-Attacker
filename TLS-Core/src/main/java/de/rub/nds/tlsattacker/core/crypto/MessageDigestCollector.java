@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

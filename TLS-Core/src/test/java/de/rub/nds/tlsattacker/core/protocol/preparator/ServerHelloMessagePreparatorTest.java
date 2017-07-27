@@ -9,14 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +30,7 @@ import org.junit.Test;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ServerHelloMessagePreparatorTest {
+
     private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessagePreparatorTest.class);
 
     private ServerHelloMessage message;
@@ -63,7 +63,7 @@ public class ServerHelloMessagePreparatorTest {
         List<CompressionMethod> ourCompressionList = new LinkedList<>();
         ourCompressionList.add(CompressionMethod.LZS);
         context.getConfig().setDefaultClientSupportedCiphersuites(ourSuiteList);
-        context.getConfig().setSupportedCompressionMethods(ourCompressionList);
+        context.getConfig().setDefaultServerSupportedCompressionMethods(ourCompressionList);
         context.setHighestClientProtocolVersion(ProtocolVersion.TLS11);
         List<CompressionMethod> compressionList = new LinkedList<>();
         compressionList.add(CompressionMethod.NULL);// same as CipherSuite
@@ -83,4 +83,8 @@ public class ServerHelloMessagePreparatorTest {
         assertTrue(0 == message.getExtensionsLength().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

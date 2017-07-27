@@ -9,20 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.Security;
@@ -40,6 +32,7 @@ import org.junit.Test;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class CertificateVerifyMessagePreparatorTest {
+
     private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
 
     private CertificateVerifyMessage message;
@@ -97,9 +90,8 @@ public class CertificateVerifyMessagePreparatorTest {
         assertTrue(message.getSignatureLength().getValue() == 70);
     }
 
-    // @Test(expected = PreparationException.class)
-    public void testPrepareUnknownPrivateKey() throws NoSuchAlgorithmException {
-        // TODO
+    @Test
+    public void testNoContextPrepare() {
         preparator.prepare();
     }
 

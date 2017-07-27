@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
@@ -29,14 +29,14 @@ public class DefaultChooserTest {
 
     private Chooser chooser;
     private TlsContext context;
-    private TlsConfig config;
+    private Config config;
 
     public DefaultChooserTest() {
     }
 
     @Before
     public void setUp() {
-        config = TlsConfig.createConfig();
+        config = Config.createConfig();
         context = new TlsContext(config);
         chooser = new DefaultChooser(context, config);
     }

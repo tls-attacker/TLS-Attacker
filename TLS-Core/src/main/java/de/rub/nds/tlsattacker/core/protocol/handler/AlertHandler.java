@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>

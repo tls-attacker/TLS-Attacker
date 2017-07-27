@@ -13,10 +13,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -63,7 +63,7 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
-    public SSL2ServerHelloMessage(TlsConfig config) {
+    public SSL2ServerHelloMessage(Config config) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }

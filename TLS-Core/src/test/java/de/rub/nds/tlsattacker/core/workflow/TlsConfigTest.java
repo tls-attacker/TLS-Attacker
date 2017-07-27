@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Security;
@@ -31,12 +32,12 @@ public class TlsConfigTest {
 
     @Test
     public void testReadFromResource() {
-        assertNotNull(TlsConfig.createConfig());
+        assertNotNull(Config.createConfig());
     }
 
     @Test
     public void testDefaultCertificates() throws IOException {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         Certificate cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultRsaCertificate()));
         cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultEcCertificate()));
         cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultDsaCertificate()));

@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -33,6 +32,11 @@ public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownM
     }
 
     private void prepareCompleteResultingMessage(UnknownMessage msg) {
+        if (msg.getDataConfig() != null) {
+            msg.setCompleteResultingMessage(msg.getDataConfig());
+        } else {
+            msg.setCompleteResultingMessage(new byte[0]);
+        }
         msg.setCompleteResultingMessage(msg.getDataConfig());
         LOGGER.debug("CompleteResultinMessage: "
                 + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));

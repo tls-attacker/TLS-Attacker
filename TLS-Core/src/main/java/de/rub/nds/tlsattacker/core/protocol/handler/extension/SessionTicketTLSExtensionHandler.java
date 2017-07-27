@@ -13,8 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SessionTicketTLSExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTLSExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -51,7 +50,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      */
     @Override
     public SessionTicketTLSExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
-        return new SessionTicketTLSExtensionPreparator(context.getChooser(), message);
+        return new SessionTicketTLSExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     /**

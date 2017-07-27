@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.workflow;
+package de.rub.nds.tlsattacker.core.config;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,16 +29,16 @@ public class TlsConfigIOTest {
     @Test
     public void testReadWriteRead() throws IOException {
         File f = folder.newFile();
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfigIO.write(config, f);
-        config = TlsConfigIO.read(f);
+        Config config = Config.createConfig();
+        ConfigIO.write(config, f);
+        config = ConfigIO.read(f);
         assertNotNull(config);
     }
 
     @Test
     public void testIncompleteConfig() {
-        InputStream stream = TlsConfig.class.getResourceAsStream("/test_config.xml");
-        TlsConfig config = TlsConfig.createConfig(stream);
+        InputStream stream = Config.class.getResourceAsStream("/test_config.xml");
+        Config config = Config.createConfig(stream);
         assertNotNull(config);
         assertTrue(config.getDefaultClientSupportedCiphersuites().size() == 1);
     }

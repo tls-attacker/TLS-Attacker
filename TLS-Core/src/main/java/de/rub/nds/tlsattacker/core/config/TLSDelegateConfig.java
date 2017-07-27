@@ -11,14 +11,12 @@ package de.rub.nds.tlsattacker.core.config;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.ec.ECCurve;
 
 /**
  *
@@ -61,18 +59,18 @@ public abstract class TLSDelegateConfig {
         return generalDelegate;
     }
 
-    public TlsConfig createConfig() {
-        TlsConfig config = null;
+    public Config createConfig() {
+        Config config = null;
         if (defaultConfig != null) {
             File configFile = new File(defaultConfig);
             if (configFile.exists()) {
-                config = TlsConfig.createConfig(configFile);
+                config = Config.createConfig(configFile);
             } else {
                 LOGGER.warn("Could not find default Config File");
-                config = TlsConfig.createConfig();
+                config = Config.createConfig();
             }
         } else {
-            config = TlsConfig.createConfig();
+            config = Config.createConfig();
         }
         for (Delegate delegate : getDelegateList()) {
             delegate.applyDelegate(config);

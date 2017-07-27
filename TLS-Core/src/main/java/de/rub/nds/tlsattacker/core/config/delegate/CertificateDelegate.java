@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
 import de.rub.nds.tlsattacker.core.util.CurveNameRetriever;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,7 +72,7 @@ public class CertificateDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         try {
             if (keystore != null && password != null && alias != null) {
                 KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
@@ -108,14 +108,14 @@ public class CertificateDelegate extends Delegate {
         }
     }
 
-    private void applyDHParameters(TlsConfig config, DHPublicKeyParameters dhParameters) {
+    private void applyDHParameters(Config config, DHPublicKeyParameters dhParameters) {
         config.setDefaultDhModulus(dhParameters.getParameters().getP());
         config.setDefaultDhGenerator(dhParameters.getParameters().getG());
         config.setDefaultClientDhPublicKey(dhParameters.getY());
         config.setDefaultServerDhPublicKey(dhParameters.getY());
     }
 
-    private void applyECParameters(TlsConfig config, ECPublicKeyParameters ecParameters) {
+    private void applyECParameters(Config config, ECPublicKeyParameters ecParameters) {
         config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
                 .getCurve()));
         CustomECPoint publicKey = new CustomECPoint(ecParameters.getQ().getRawXCoord().toBigInteger(), ecParameters
@@ -124,7 +124,7 @@ public class CertificateDelegate extends Delegate {
         config.setDefaultServerEcPublicKey(publicKey);
     }
 
-    private void applyRSAParameters(TlsConfig config, BigInteger modulus, BigInteger publicKey) {
+    private void applyRSAParameters(Config config, BigInteger modulus, BigInteger publicKey) {
         config.setDefaultRSAModulus(modulus);
         config.setDefaultClientRSAPublicKey(publicKey);
         config.setDefaultServerRSAPublicKey(publicKey);

@@ -8,25 +8,24 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -45,7 +44,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttacker.class);
 
     private final List<ProtocolMessage> lastMessages;
-    private final TlsConfig tlsConfig;
+    private final Config tlsConfig;
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig config) {
         super(config, false);
@@ -70,9 +69,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.setConfiguredRecords(new LinkedList<AbstractRecord>());
         sendAction.getConfiguredRecords().add(record);
-        trace.add(sendAction);
+        trace.addTlsAction(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
 
         try {
             workflowExecutor.executeWorkflow();

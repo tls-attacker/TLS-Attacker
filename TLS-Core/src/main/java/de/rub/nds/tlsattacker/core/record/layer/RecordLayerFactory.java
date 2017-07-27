@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer;
 
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *

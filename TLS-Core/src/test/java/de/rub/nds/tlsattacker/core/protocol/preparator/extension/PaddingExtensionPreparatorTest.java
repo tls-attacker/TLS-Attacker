@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
@@ -36,13 +36,13 @@ public class PaddingExtensionPreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new PaddingExtensionMessage();
-        preparator = new PaddingExtensionPreparator(context.getChooser(), (PaddingExtensionMessage) message);
+        preparator = new PaddingExtensionPreparator(context.getChooser(), message, new PaddingExtensionSerializer(
+                message));
     }
 
     /**
      * Tests the preparator of the padding extension message.
      */
-
     @Test
     public void testPreparator() {
         context.getConfig().setDefaultPaddingExtensionBytes(extensionPayload);
@@ -52,6 +52,11 @@ public class PaddingExtensionPreparatorTest {
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(extensionPayload, message.getPaddingBytes().getValue());
 
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 
 }

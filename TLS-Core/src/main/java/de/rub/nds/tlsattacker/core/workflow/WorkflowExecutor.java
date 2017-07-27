@@ -9,8 +9,10 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -95,7 +97,7 @@ public abstract class WorkflowExecutor {
     }
 
     protected void storeTrace() {
-        TlsConfig config = context.getConfig();
+        Config config = context.getConfig();
 
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             FileOutputStream fos = null;

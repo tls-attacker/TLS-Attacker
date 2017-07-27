@@ -13,8 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMe
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UnknownExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -38,7 +37,7 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
 
     @Override
     public UnknownExtensionPreparator getPreparator(UnknownExtensionMessage message) {
-        return new UnknownExtensionPreparator(context.getChooser(), message);
+        return new UnknownExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override

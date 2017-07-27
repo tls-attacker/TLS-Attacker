@@ -13,9 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import java.util.LinkedList;
@@ -56,7 +54,7 @@ public class ClientHelloPreparatorTest {
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
         context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
-        context.getConfig().setSupportedCompressionMethods(methodList);
+        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
         preparator.prepare();
@@ -84,7 +82,7 @@ public class ClientHelloPreparatorTest {
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
         context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
-        context.getConfig().setSupportedCompressionMethods(methodList);
+        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.getConfig().setDefaultClientSessionId(new byte[] { 0, 1, 2, 3 });
         context.setDtlsCookie(new byte[] { 7, 6, 5 });
@@ -114,7 +112,7 @@ public class ClientHelloPreparatorTest {
         methodList.add(CompressionMethod.DEFLATE);
         methodList.add(CompressionMethod.NULL);
         context.getConfig().setDefaultClientSupportedCiphersuites(cipherSuiteList);
-        context.getConfig().setSupportedCompressionMethods(methodList);
+        context.getConfig().setDefaultClientSupportedCompressionMethods(methodList);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS11);
         context.setClientSessionId(new byte[] { 0, 1, 2, 3 });
         preparator.prepare();
@@ -122,4 +120,8 @@ public class ClientHelloPreparatorTest {
         assertTrue(4 == message.getSessionIdLength().getValue());
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }
