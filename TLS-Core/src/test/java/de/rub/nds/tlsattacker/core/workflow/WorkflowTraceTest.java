@@ -214,56 +214,10 @@ public class WorkflowTraceTest {
     }
 
     /**
-     * Test of containsConfiguredReceivedProtocolMessage method, of class
-     * WorkflowTrace.
-     */
-    @Test
-    public void testContainsConfiguredReceivedProtocolMessage() {
-    }
-
-    /**
-     * Test of containsConfiguredSendProtocolMessage method, of class
-     * WorkflowTrace.
-     */
-    @Test
-    public void testContainsConfiguredSendProtocolMessage() {
-    }
-
-    /**
-     * Test of actuallyReceivedTypeBeforeType method, of class WorkflowTrace.
-     */
-    @Test
-    public void testActuallyReceivedTypeBeforeType_ProtocolMessageType_ProtocolMessageType() {
-    }
-
-    /**
-     * Test of actuallyReceivedTypeBeforeType method, of class WorkflowTrace.
-     */
-    @Test
-    public void testActuallyReceivedTypeBeforeType_ProtocolMessageType_HandshakeMessageType() {
-    }
-
-    /**
      * Test of executedAsPlanned method, of class WorkflowTrace.
      */
     @Test
     public void testConfiguredLooksLikeActual() {
-    }
-
-    /**
-     * Test of getFirstConfiguredSendActionWithType method, of class
-     * WorkflowTrace.
-     */
-    @Test
-    public void testGetFirstConfiguredSendActionWithType_ProtocolMessageType() {
-    }
-
-    /**
-     * Test of getFirstConfiguredSendActionWithType method, of class
-     * WorkflowTrace.
-     */
-    @Test
-    public void testGetFirstConfiguredSendActionWithType_HandshakeMessageType() {
     }
 
     /**
