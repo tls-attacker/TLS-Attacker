@@ -91,7 +91,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         ConfiguredReceiveAction action = (ConfiguredReceiveAction) (trace.getLastMessageAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
-        action.setConfiguredMessages(messages);
+        action.setExpectedMessages(messages);
         tlsConfig.setWorkflowTrace(trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);

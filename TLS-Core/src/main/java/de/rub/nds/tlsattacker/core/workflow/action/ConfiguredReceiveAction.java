@@ -84,22 +84,22 @@ public class ConfiguredReceiveAction extends MessageAction {
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
-    protected List<ProtocolMessage> configuredMessages;
+    protected List<ProtocolMessage> expectedMessages;
 
     public ConfiguredReceiveAction() {
         super();
-        this.configuredMessages = new LinkedList<>();
+        this.expectedMessages = new LinkedList<>();
     }
 
     public ConfiguredReceiveAction(List<ProtocolMessage> configuredMessages) {
         super();
-        this.configuredMessages = configuredMessages;
+        this.expectedMessages = configuredMessages;
     }
 
     public ConfiguredReceiveAction(ProtocolMessage message) {
         super();
-        this.configuredMessages = new LinkedList<>();
-        this.configuredMessages.add(message);
+        this.expectedMessages = new LinkedList<>();
+        this.expectedMessages.add(message);
     }
 
     @Override
@@ -108,12 +108,12 @@ public class ConfiguredReceiveAction extends MessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Receiving Messages...");
-        MessageActionResult result = ReceiveMessageHelper.receiveMessages(configuredMessages, tlsContext);
+        MessageActionResult result = ReceiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
         records.addAll(result.getRecordList());
         messages.addAll(result.getMessageList());
         setExecuted(true);
 
-        String expected = getReadableString(configuredMessages);
+        String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
         LOGGER.info("Received Messages:" + received);
@@ -122,8 +122,8 @@ public class ConfiguredReceiveAction extends MessageAction {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
-        sb.append("\tConfigured:");
-        for (ProtocolMessage message : configuredMessages) {
+        sb.append("\tExpected:");
+        for (ProtocolMessage message : expectedMessages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -137,11 +137,11 @@ public class ConfiguredReceiveAction extends MessageAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (messages.size() != configuredMessages.size()) {
+        if (messages.size() != expectedMessages.size()) {
             return false;
         } else {
             for (int i = 0; i < messages.size(); i++) {
-                if (!messages.get(i).getClass().equals(configuredMessages.get(i).getClass())) {
+                if (!messages.get(i).getClass().equals(expectedMessages.get(i).getClass())) {
                     return false;
                 }
             }
@@ -149,12 +149,12 @@ public class ConfiguredReceiveAction extends MessageAction {
         return true;
     }
 
-    public List<ProtocolMessage> getConfiguredMessages() {
-        return configuredMessages;
+    public List<ProtocolMessage> getExpectedMessages() {
+        return expectedMessages;
     }
 
-    public void setConfiguredMessages(List<ProtocolMessage> configuredMessages) {
-        this.configuredMessages = configuredMessages;
+    public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
+        this.expectedMessages = expectedMessages;
     }
 
     @Override

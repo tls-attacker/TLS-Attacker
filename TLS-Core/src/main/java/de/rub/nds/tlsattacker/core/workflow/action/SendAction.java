@@ -65,8 +65,8 @@ public class SendAction extends MessageAction {
         return isExecuted();
     }
 
-    public void setRecords(List<AbstractRecord> actualRecords) {
-        this.records = actualRecords;
+    public void setRecords(List<AbstractRecord> records) {
+        this.records = records;
     }
 
     @Override

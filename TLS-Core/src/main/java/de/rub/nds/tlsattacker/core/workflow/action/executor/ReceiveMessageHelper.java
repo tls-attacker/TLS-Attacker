@@ -92,16 +92,16 @@ public class ReceiveMessageHelper {
         return false;
     }
 
-    private static boolean receivedAllConfiguredMessage(List<ProtocolMessage> configuredMessages,
+    private static boolean receivedAllExpectedMessage(List<ProtocolMessage> expectedMessages,
             List<ProtocolMessage> actualMessages, boolean earlyStop) {
-        if (actualMessages.size() != configuredMessages.size() && !earlyStop) {
+        if (actualMessages.size() != expectedMessages.size() && !earlyStop) {
             return false;
         } else {
-            for (int i = 0; i < configuredMessages.size(); i++) {
+            for (int i = 0; i < expectedMessages.size(); i++) {
                 if (i >= actualMessages.size()) {
                     return false;
                 }
-                if (!configuredMessages.get(i).getClass().equals(actualMessages.get(i).getClass())) {
+                if (!expectedMessages.get(i).getClass().equals(actualMessages.get(i).getClass())) {
                     return false;
                 }
             }
@@ -116,7 +116,7 @@ public class ReceiveMessageHelper {
         if (receivedFatalAlert) {
             return false;
         }
-        boolean receivedAllConfiguredMessages = receivedAllConfiguredMessage(expectedMessages, receivedMessages,
+        boolean receivedAllConfiguredMessages = receivedAllExpectedMessage(expectedMessages, receivedMessages,
                 context.getConfig().isEarlyStop());
         if (receivedAllConfiguredMessages) {
             return false;

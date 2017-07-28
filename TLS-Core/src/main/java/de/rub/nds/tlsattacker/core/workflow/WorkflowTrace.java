@@ -49,7 +49,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A wrapper class over a list of protocol configuredMessages.
+ * A wrapper class over a list of protocol expectedMessages.
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -89,7 +89,7 @@ public class WorkflowTrace implements Serializable {
 
     /**
      * Initializes the workflow trace with an empty list of protocol
-     * configuredMessages
+     * expectedMessages
      */
     public WorkflowTrace() {
         this.tlsActions = new LinkedList<>();
