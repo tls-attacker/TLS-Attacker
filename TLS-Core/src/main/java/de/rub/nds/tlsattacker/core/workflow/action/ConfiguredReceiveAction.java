@@ -116,7 +116,6 @@ public class ConfiguredReceiveAction extends MessageAction {
         String expected = getReadableString(configuredMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
-        LOGGER.debug("Receive Actual:" + received);
         LOGGER.info("Received Messages:" + received);
     }
 
