@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -67,7 +67,7 @@ public class WorkflowTrace implements Serializable {
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
-            @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
+            @XmlElement(type = ConfiguredReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
             @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
@@ -99,7 +99,7 @@ public class WorkflowTrace implements Serializable {
      * Swaps Server Messages with ArbitaryMessages
      */
     public void makeGeneric() {
-        for (ReceiveAction action : getReceiveActions()) {
+        for (ConfiguredReceiveAction action : getReceiveActions()) {
             action.getConfiguredMessages().clear();
             action.getConfiguredMessages().add(new ArbitraryMessage());
         }
@@ -220,11 +220,11 @@ public class WorkflowTrace implements Serializable {
         return messageActions;
     }
 
-    public List<ReceiveAction> getReceiveActions() {
-        List<ReceiveAction> receiveActions = new LinkedList<>();
+    public List<ConfiguredReceiveAction> getReceiveActions() {
+        List<ConfiguredReceiveAction> receiveActions = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                receiveActions.add((ReceiveAction) action);
+            if (action instanceof ConfiguredReceiveAction) {
+                receiveActions.add((ConfiguredReceiveAction) action);
             }
         }
         return receiveActions;
@@ -367,7 +367,7 @@ public class WorkflowTrace implements Serializable {
     public List<ProtocolMessage> getAllConfiguredReceivingMessages() {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
+            if (action instanceof ConfiguredReceiveAction) {
                 for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
                     messages.add(pm);
                 }
@@ -379,7 +379,7 @@ public class WorkflowTrace implements Serializable {
     public List<ProtocolMessage> getAllActuallyReceivedMessages() {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
+            if (action instanceof ConfiguredReceiveAction) {
                 for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
 
                     messages.add(pm);
@@ -454,8 +454,8 @@ public class WorkflowTrace implements Serializable {
 
     public boolean actuallyReceivedTypeBeforeType(ProtocolMessageType before, ProtocolMessageType after) {
         for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                ReceiveAction receiveAction = (ReceiveAction) action;
+            if (action instanceof ConfiguredReceiveAction) {
+                ConfiguredReceiveAction receiveAction = (ConfiguredReceiveAction) action;
                 for (ProtocolMessage message : receiveAction.getActualMessages()) {
                     if (message.getProtocolMessageType() == before) {
                         return true;
@@ -471,8 +471,8 @@ public class WorkflowTrace implements Serializable {
 
     public boolean actuallyReceivedTypeBeforeType(ProtocolMessageType before, HandshakeMessageType after) {
         for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                ReceiveAction receiveAction = (ReceiveAction) action;
+            if (action instanceof ConfiguredReceiveAction) {
+                ConfiguredReceiveAction receiveAction = (ConfiguredReceiveAction) action;
                 for (ProtocolMessage message : receiveAction.getActualMessages()) {
                     if (message.getProtocolMessageType() == before) {
                         return true;

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.util.LinkedList;
@@ -21,17 +20,17 @@ import java.util.List;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ReceiveAction extends MessageAction {
+public class ConfiguredReceiveAction extends MessageAction {
 
-    public ReceiveAction() {
+    public ConfiguredReceiveAction() {
         super(new LinkedList<ProtocolMessage>());
     }
 
-    public ReceiveAction(List<ProtocolMessage> messages) {
+    public ConfiguredReceiveAction(List<ProtocolMessage> messages) {
         super(messages);
     }
 
-    public ReceiveAction(ProtocolMessage message) {
+    public ConfiguredReceiveAction(ProtocolMessage message) {
         super(new LinkedList<ProtocolMessage>());
         configuredMessages.add(message);
     }
