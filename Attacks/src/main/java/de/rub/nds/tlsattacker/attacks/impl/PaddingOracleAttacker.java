@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -79,7 +80,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             LOGGER.info("Not possible to finalize the defined workflow.");
             LOGGER.debug(ex);
         }
-        lastMessages.add(trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1));
+        lastMessages.add(WorkflowTraceUtil.getLastReceivedMessage(trace));
     }
 
     private List<Record> createRecordsWithPlainData() {

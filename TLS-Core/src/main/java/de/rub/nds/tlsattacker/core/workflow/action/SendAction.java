@@ -68,4 +68,10 @@ public class SendAction extends MessageAction {
     public void setActualRecords(List<AbstractRecord> actualRecords) {
         this.actualRecords = actualRecords;
     }
+
+    @Override
+    public void reset() {
+        // TODO Strip
+        setExecuted(Boolean.FALSE);
+    }
 }

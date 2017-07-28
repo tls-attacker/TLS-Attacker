@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -104,11 +105,10 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         // The Server has to answer to our ClientHello with a ServerHello
         // Message, else he does not support
         // the offered Ciphersuite and protocol version
-        if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO).isEmpty()) {
+        if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
             return false;
         }
-        ProtocolMessage lm = trace.getAllActuallyReceivedMessages().get(
-                trace.getAllActuallyReceivedMessages().size() - 1);
+        ProtocolMessage lm = WorkflowTraceUtil.getLastReceivedMessage(trace);
         lastMessages.add(lm);
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
             AlertMessage am = ((AlertMessage) lm);

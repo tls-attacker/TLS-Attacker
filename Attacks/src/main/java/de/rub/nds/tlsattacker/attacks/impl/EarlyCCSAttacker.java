@@ -76,7 +76,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
         workflowExecutor.executeWorkflow();
-        if (!workflowTrace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).isEmpty()) {
+        if (tlsContext.isReceivedFatalAlert()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Alert message found");
             return false;
         } else {

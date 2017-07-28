@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
@@ -72,8 +73,8 @@ public class RealDirectMessageECOracle extends ECOracle {
                 tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
@@ -147,20 +148,13 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         workflowExecutor.executeWorkflow();
 
-        List<HandshakeMessage> clientKeyExchangeList = trace
-                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-        if (clientKeyExchangeList.isEmpty()) {
-            // TODO
-            throw new WorkflowExecutionException("Could not retrieve ECDH PublicKey");
-        } else {
-            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                    .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
-
-            // get public point base X and Y coordinates
-            BigInteger x = message.getPublicKeyBaseX().getValue();
-            BigInteger y = message.getPublicKeyBaseY().getValue();
-            checkPoint = new Point(x, y);
-            checkPMS = message.getComputations().getPremasterSecret().getValue();
-        }
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        // TODO Those values can be retrieved from the context
+        // get public point base X and Y coordinates
+        BigInteger x = message.getPublicKeyBaseX().getValue();
+        BigInteger y = message.getPublicKeyBaseY().getValue();
+        checkPoint = new Point(x, y);
+        checkPMS = message.getComputations().getPremasterSecret().getValue();
     }
 }

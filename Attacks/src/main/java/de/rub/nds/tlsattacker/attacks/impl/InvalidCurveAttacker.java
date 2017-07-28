@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -61,7 +62,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
             try {
                 WorkflowTrace trace = executeProtocolFlow();
-                if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
+                if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
                     LOGGER.info("Received no finished Message in Protocolflow:" + i);
                 } else {
                     LOGGER.info("Received a finished Message in Protocolflow: " + i + "! Server is vulnerable!");
@@ -81,8 +82,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
+                .getFirstReceivedMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));

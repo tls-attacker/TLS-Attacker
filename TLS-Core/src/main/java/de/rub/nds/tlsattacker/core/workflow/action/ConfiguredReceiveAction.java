@@ -157,4 +157,11 @@ public class ConfiguredReceiveAction extends MessageAction {
     public void setConfiguredMessages(List<ProtocolMessage> configuredMessages) {
         this.configuredMessages = configuredMessages;
     }
+
+    @Override
+    public void reset() {
+        actualMessages = new LinkedList<>();
+        actualRecords = new LinkedList<>();
+        setExecuted(Boolean.FALSE);
+    }
 }

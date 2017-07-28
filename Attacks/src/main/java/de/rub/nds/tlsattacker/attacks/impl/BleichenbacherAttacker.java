@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashSet;
@@ -63,14 +64,14 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) trace
-                .getFirstActuallySendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
         tlsConfig.setWorkflowTrace(trace);
         workflowExecutor.executeWorkflow();
-        return trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1);
+        return WorkflowTraceUtil.getLastReceivedMessage(trace);
     }
 
     @Override

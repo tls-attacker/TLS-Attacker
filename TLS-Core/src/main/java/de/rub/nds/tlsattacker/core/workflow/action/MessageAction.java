@@ -102,13 +102,6 @@ public abstract class MessageAction extends TLSAction {
     }
 
     @Override
-    public void reset() {
-        setExecuted(null);
-        actualMessages = new LinkedList<>();
-        actualRecords = new LinkedList<>();
-    }
-
-    @Override
     public int hashCode() {
         int hash = 7;
         hash = 71 * hash + Objects.hashCode(this.actualMessages);
