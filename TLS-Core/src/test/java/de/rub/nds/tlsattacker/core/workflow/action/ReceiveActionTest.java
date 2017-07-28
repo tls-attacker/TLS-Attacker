@@ -39,7 +39,7 @@ public class ReceiveActionTest {
 
     private TlsContext tlsContext;
 
-    private ConfiguredReceiveAction action;
+    private ReceiveAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
@@ -53,7 +53,7 @@ public class ReceiveActionTest {
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
-        action = new ConfiguredReceiveAction(alert);
+        action = new ReceiveAction(alert);
     }
 
     @After
@@ -61,7 +61,7 @@ public class ReceiveActionTest {
     }
 
     /**
-     * Test of execute method, of class ConfiguredReceiveAction.
+     * Test of execute method, of class ReceiveAction.
      * 
      * @throws java.lang.Exception
      */
@@ -75,7 +75,7 @@ public class ReceiveActionTest {
     }
 
     /**
-     * Test of execute method, of class ConfiguredReceiveAction.
+     * Test of execute method, of class ReceiveAction.
      */
     @Test
     public void testReset() {
@@ -93,7 +93,7 @@ public class ReceiveActionTest {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
         TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
-                ConfiguredReceiveAction.class);
+                ReceiveAction.class);
         assertEquals(action, action2);
     }
 

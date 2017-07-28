@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -68,7 +68,7 @@ public class WorkflowTrace implements Serializable {
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
-            @XmlElement(type = ConfiguredReceiveAction.class, name = "ReceiveAction"),
+            @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
             @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
@@ -208,11 +208,11 @@ public class WorkflowTrace implements Serializable {
         return messageActions;
     }
 
-    public List<ConfiguredReceiveAction> getReceiveActions() {
-        List<ConfiguredReceiveAction> receiveActions = new LinkedList<>();
+    public List<ReceiveAction> getReceiveActions() {
+        List<ReceiveAction> receiveActions = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof ConfiguredReceiveAction) {
-                receiveActions.add((ConfiguredReceiveAction) action);
+            if (action instanceof ReceiveAction) {
+                receiveActions.add((ReceiveAction) action);
             }
         }
         return receiveActions;

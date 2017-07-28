@@ -46,10 +46,10 @@ public class MessageActionFactoryTest {
         assertEquals(action.getClass(), SendAction.class);
         action = MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new AlertMessage(config));
-        assertEquals(action.getClass(), ConfiguredReceiveAction.class);
+        assertEquals(action.getClass(), ReceiveAction.class);
         action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.CLIENT,
                 new AlertMessage(config));
-        assertEquals(action.getClass(), ConfiguredReceiveAction.class);
+        assertEquals(action.getClass(), ReceiveAction.class);
         action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.SERVER,
                 new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
@@ -69,9 +69,9 @@ public class MessageActionFactoryTest {
                 messages);
         assertEquals(action.getClass(), SendAction.class);
         action = MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER, messages);
-        assertEquals(action.getClass(), ConfiguredReceiveAction.class);
+        assertEquals(action.getClass(), ReceiveAction.class);
         action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.CLIENT, messages);
-        assertEquals(action.getClass(), ConfiguredReceiveAction.class);
+        assertEquals(action.getClass(), ReceiveAction.class);
         action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), SendAction.class);
         assertTrue(action.getMessages().size() == 2);

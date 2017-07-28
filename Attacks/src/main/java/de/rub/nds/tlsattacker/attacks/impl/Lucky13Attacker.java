@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -88,7 +88,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         action.setRecords(configuredRecords);
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.addTlsAction(new ConfiguredReceiveAction(alertMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

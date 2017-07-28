@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,12 +66,12 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         messageList.add(new ServerHelloMessage(tlsConfig));
         messageList.add(new CertificateMessage(tlsConfig));
         messageList.add(new ServerHelloDoneMessage(tlsConfig));
-        workflowTrace.addTlsAction(new ConfiguredReceiveAction(messageList));
+        workflowTrace.addTlsAction(new ReceiveAction(messageList));
         messageList = new LinkedList<>();
         messageList.add(new ChangeCipherSpecMessage());
         workflowTrace.addTlsAction(new SendAction(messageList));
         messageList = new LinkedList<>();
-        workflowTrace.addTlsAction(new ConfiguredReceiveAction(messageList));
+        workflowTrace.addTlsAction(new ReceiveAction(messageList));
         tlsConfig.setWorkflowTrace(workflowTrace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
                 tlsContext);

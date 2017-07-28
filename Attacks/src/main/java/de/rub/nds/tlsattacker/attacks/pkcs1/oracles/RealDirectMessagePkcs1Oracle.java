@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.MathHelper;
@@ -67,7 +67,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         protocolMessages.add(new ServerHelloMessage(config));
         protocolMessages.add(new CertificateMessage(config));
         protocolMessages.add(new ServerHelloDoneMessage(config));
-        tlsContext.getWorkflowTrace().addTlsAction(new ConfiguredReceiveAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
         protocolMessages = new LinkedList<>();
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(config);
         protocolMessages.add(cke);
@@ -76,7 +76,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
         protocolMessages = new LinkedList<>();
         protocolMessages.add(new AlertMessage(config));
-        tlsContext.getWorkflowTrace().addTlsAction(new ConfiguredReceiveAction(protocolMessages));
+        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
 
         ModifiableByteArray pms = new ModifiableByteArray();
         pms.setModification(ByteArrayModificationFactory.explicitValue(msg));

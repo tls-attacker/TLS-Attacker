@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
@@ -72,7 +72,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         sendAction.setRecords(recordList);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(sendAction);
-        trace.addTlsAction(new ConfiguredReceiveAction(alertMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

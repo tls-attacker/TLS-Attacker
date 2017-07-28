@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import java.util.LinkedList;
@@ -85,8 +85,8 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
         assertTrue(trace.getTlsActions().size() == 3);
-        trace.addTlsAction(new ConfiguredReceiveAction());
-        assertTrue(trace.getTlsActions().get(3).equals(new ConfiguredReceiveAction()));
+        trace.addTlsAction(new ReceiveAction());
+        assertTrue(trace.getTlsActions().get(3).equals(new ReceiveAction()));
     }
 
     /**
@@ -98,8 +98,8 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
         assertTrue(trace.getTlsActions().size() == 3);
-        trace.addTlsAction(0, new ConfiguredReceiveAction());
-        assertTrue(trace.getTlsActions().get(0).equals(new ConfiguredReceiveAction()));
+        trace.addTlsAction(0, new ReceiveAction());
+        assertTrue(trace.getTlsActions().get(0).equals(new ReceiveAction()));
     }
 
     /**
@@ -121,10 +121,10 @@ public class WorkflowTraceTest {
     @Test
     public void testGetTLSActions() {
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         assertTrue(trace.getTlsActions().size() == 2);
         assertEquals(trace.getTlsActions().get(0), new SendAction());
-        assertEquals(trace.getTlsActions().get(1), new ConfiguredReceiveAction());
+        assertEquals(trace.getTlsActions().get(1), new ReceiveAction());
     }
 
     /**
@@ -134,11 +134,11 @@ public class WorkflowTraceTest {
     public void testSetTlsActions() {
         LinkedList<TLSAction> actionList = new LinkedList<>();
         actionList.add(new SendAction());
-        actionList.add(new ConfiguredReceiveAction());
+        actionList.add(new ReceiveAction());
         trace.setTlsActions(actionList);
         assertTrue(trace.getTlsActions().size() == 2);
         assertEquals(trace.getTlsActions().get(0), new SendAction());
-        assertEquals(trace.getTlsActions().get(1), new ConfiguredReceiveAction());
+        assertEquals(trace.getTlsActions().get(1), new ReceiveAction());
 
     }
 
@@ -148,11 +148,11 @@ public class WorkflowTraceTest {
     @Test
     public void testGetMessageActions() {
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
         assertTrue(trace.getMessageActions().size() == 2);
         assertEquals(trace.getMessageActions().get(0), new SendAction());
-        assertEquals(trace.getMessageActions().get(1), new ConfiguredReceiveAction());
+        assertEquals(trace.getMessageActions().get(1), new ReceiveAction());
     }
 
     /**
@@ -161,10 +161,10 @@ public class WorkflowTraceTest {
     @Test
     public void testGetReceiveActions() {
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
         assertTrue(trace.getReceiveActions().size() == 1);
-        assertEquals(trace.getReceiveActions().get(0), new ConfiguredReceiveAction());
+        assertEquals(trace.getReceiveActions().get(0), new ReceiveAction());
     }
 
     /**
@@ -173,7 +173,7 @@ public class WorkflowTraceTest {
     @Test
     public void testGetSendActions() {
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
         assertTrue(trace.getSendActions().size() == 1);
         assertEquals(trace.getSendActions().get(0), new SendAction());
@@ -185,11 +185,11 @@ public class WorkflowTraceTest {
     @Test
     public void testGetLastAction() {
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ChangeCipherSuiteAction());
         assertEquals(new ChangeCipherSuiteAction(), trace.getLastAction());
@@ -201,16 +201,16 @@ public class WorkflowTraceTest {
     @Test
     public void testGetLastMessageAction() {
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new SendAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
+        trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ChangeCipherSuiteAction());
         assertEquals(new SendAction(), trace.getLastMessageAction());
-        trace.addTlsAction(new ConfiguredReceiveAction());
-        assertEquals(new ConfiguredReceiveAction(), trace.getLastMessageAction());
+        trace.addTlsAction(new ReceiveAction());
+        assertEquals(new ReceiveAction(), trace.getLastMessageAction());
     }
 
     /**

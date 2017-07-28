@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.util.LinkedList;
@@ -88,7 +88,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         // an alert will be sent.
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
 
-        ConfiguredReceiveAction action = (ConfiguredReceiveAction) (trace.getLastMessageAction());
+        ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);

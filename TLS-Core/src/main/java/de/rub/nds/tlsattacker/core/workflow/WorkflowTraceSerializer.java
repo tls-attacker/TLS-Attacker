@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import java.io.File;
@@ -59,7 +59,7 @@ public class WorkflowTraceSerializer {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
                     ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TLSAction.class,
-                    SendAction.class, ConfiguredReceiveAction.class);
+                    SendAction.class, ReceiveAction.class);
         }
         return context;
     }

@@ -53,7 +53,7 @@ import javax.xml.bind.annotation.XmlElements;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ConfiguredReceiveAction extends MessageAction {
+public class ReceiveAction extends MessageAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -86,17 +86,17 @@ public class ConfiguredReceiveAction extends MessageAction {
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> expectedMessages;
 
-    public ConfiguredReceiveAction() {
+    public ReceiveAction() {
         super();
         this.expectedMessages = new LinkedList<>();
     }
 
-    public ConfiguredReceiveAction(List<ProtocolMessage> expectedMessages) {
+    public ReceiveAction(List<ProtocolMessage> expectedMessages) {
         super();
         this.expectedMessages = expectedMessages;
     }
 
-    public ConfiguredReceiveAction(ProtocolMessage message) {
+    public ReceiveAction(ProtocolMessage message) {
         super();
         this.expectedMessages = new LinkedList<>();
         this.expectedMessages.add(message);

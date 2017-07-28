@@ -26,7 +26,7 @@ public class MessageActionFactory {
         if (myConnectionEndType == sendingConnectionEndType) {
             return new SendAction(messages);
         } else {
-            return new ConfiguredReceiveAction(messages);
+            return new ReceiveAction(messages);
         }
 
     }
@@ -36,7 +36,7 @@ public class MessageActionFactory {
         if (myConnectionEnd == sendingConnectionEnd) {
             return new SendAction(protocolMessages);
         } else {
-            return new ConfiguredReceiveAction(protocolMessages);
+            return new ReceiveAction(protocolMessages);
         }
 
     }

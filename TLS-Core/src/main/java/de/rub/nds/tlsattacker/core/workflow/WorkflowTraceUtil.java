@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
@@ -157,7 +157,7 @@ public class WorkflowTraceUtil {
 
     private static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
-        for (ConfiguredReceiveAction action : trace.getReceiveActions()) {
+        for (ReceiveAction action : trace.getReceiveActions()) {
             receivedMessage.addAll(action.getMessages());
         }
         return receivedMessage;
