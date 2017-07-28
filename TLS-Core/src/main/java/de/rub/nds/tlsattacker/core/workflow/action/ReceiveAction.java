@@ -8,24 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,7 +42,7 @@ public class ReceiveAction extends MessageAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Receiving Messages...");
-        MessageActionResult result = ActionHelper.receiveMessages(configuredMessages, tlsContext);
+        MessageActionResult result = ReceiveMessageHelper.receiveMessages(configuredMessages, tlsContext);
         actualRecords.addAll(result.getRecordList());
         actualMessages.addAll(result.getMessageList());
         setExecuted(true);
