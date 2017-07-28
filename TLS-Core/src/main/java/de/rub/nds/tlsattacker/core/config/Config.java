@@ -313,8 +313,7 @@ public class Config implements Serializable {
     private boolean enforceSettings = false;
 
     /**
-     * Stop as soon as all configured messages are received and dont wait for
-     * more
+     * Stop as soon as all expected messages are received and dont wait for more
      */
     private boolean earlyStop = false;
 
@@ -380,14 +379,14 @@ public class Config implements Serializable {
     private boolean flushOnMessageTypeChange = true;
 
     /**
-     * If there is not enough space in the configured records, new records are
+     * If there is not enough space in the defined records, new records are
      * dynamically added if not set, protocolmessage bytes that wont fit are
      * discarded
      */
     private boolean createRecordsDynamically = true;
     /**
-     * When "Null" records are configured to be send, every message will be sent
-     * in atleast one individual record
+     * When "Null" records are defined to be send, every message will be sent in
+     * atleast one individual record
      */
     private boolean createIndividualRecords = true;
 

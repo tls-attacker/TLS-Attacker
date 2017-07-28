@@ -91,9 +91,9 @@ public class ConfiguredReceiveAction extends MessageAction {
         this.expectedMessages = new LinkedList<>();
     }
 
-    public ConfiguredReceiveAction(List<ProtocolMessage> configuredMessages) {
+    public ConfiguredReceiveAction(List<ProtocolMessage> expectedMessages) {
         super();
-        this.expectedMessages = configuredMessages;
+        this.expectedMessages = expectedMessages;
     }
 
     public ConfiguredReceiveAction(ProtocolMessage message) {

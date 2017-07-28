@@ -116,8 +116,8 @@ public class ReceiveMessageHelper {
         if (receivedFatalAlert) {
             return false;
         }
-        boolean receivedAllConfiguredMessages = receivedAllExpectedMessage(expectedMessages, receivedMessages,
-                context.getConfig().isEarlyStop());
+        boolean receivedAllConfiguredMessages = receivedAllExpectedMessage(expectedMessages, receivedMessages, context
+                .getConfig().isEarlyStop());
         if (receivedAllConfiguredMessages) {
             return false;
         }
