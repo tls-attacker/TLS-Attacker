@@ -82,7 +82,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+                .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));

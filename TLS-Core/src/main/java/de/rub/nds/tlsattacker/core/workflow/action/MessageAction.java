@@ -80,43 +80,7 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
-    @HoldsModifiableVariable
-    protected List<ProtocolMessage> configuredMessages;
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
-            @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-            @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-            @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-            @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-            @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-            @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-            @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-            @XmlElement(type = FinishedMessage.class, name = "Finished"),
-            @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-            @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-            @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-            @XmlElement(type = AlertMessage.class, name = "Alert"),
-            @XmlElement(type = ApplicationMessage.class, name = "Application"),
-            @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-            @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-            @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-            @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-            @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
-            @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-            @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> actualMessages;
-
-    @HoldsModifiableVariable
-    @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-            @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> configuredRecords;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -124,19 +88,9 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> actualRecords;
 
-    public MessageAction(List<ProtocolMessage> messages) {
-        this.configuredMessages = messages;
+    public MessageAction() {
         actualMessages = new LinkedList<>();
         actualRecords = new LinkedList<>();
-        this.configuredRecords = null;
-    }
-
-    public List<AbstractRecord> getConfiguredRecords() {
-        return configuredRecords;
-    }
-
-    public void setConfiguredRecords(List<AbstractRecord> configuredRecords) {
-        this.configuredRecords = configuredRecords;
     }
 
     public List<AbstractRecord> getActualRecords() {
@@ -145,33 +99,6 @@ public abstract class MessageAction extends TLSAction {
 
     public List<ProtocolMessage> getActualMessages() {
         return actualMessages;
-    }
-
-    public List<ProtocolMessage> getConfiguredMessages() {
-        return configuredMessages;
-    }
-
-    public void setConfiguredMessages(List<ProtocolMessage> configuredMessages) {
-        this.configuredMessages = configuredMessages;
-    }
-
-    /**
-     * Checks that every configured message also appears in the actual messages
-     * and no additional messages are present
-     *
-     * @return
-     */
-    public boolean configuredLooksLikeActual() {
-        if (actualMessages.size() != configuredMessages.size()) {
-            return false;
-        } else {
-            for (int i = 0; i < actualMessages.size(); i++) {
-                if (!actualMessages.get(i).getClass().equals(configuredMessages.get(i).getClass())) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     @Override
@@ -183,9 +110,9 @@ public abstract class MessageAction extends TLSAction {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.configuredMessages);
-        hash = 97 * hash + Objects.hashCode(this.actualMessages);
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.actualMessages);
+        hash = 71 * hash + Objects.hashCode(this.actualRecords);
         return hash;
     }
 
@@ -201,10 +128,13 @@ public abstract class MessageAction extends TLSAction {
             return false;
         }
         final MessageAction other = (MessageAction) obj;
-        if (!Objects.equals(this.configuredMessages, other.configuredMessages)) {
+        if (!Objects.equals(this.actualMessages, other.actualMessages)) {
             return false;
         }
-        return Objects.equals(this.actualMessages, other.actualMessages);
+        if (!Objects.equals(this.actualRecords, other.actualRecords)) {
+            return false;
+        }
+        return true;
     }
 
     public String getReadableString(List<ProtocolMessage> messages) {

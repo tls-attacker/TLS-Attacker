@@ -73,7 +73,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+                .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();

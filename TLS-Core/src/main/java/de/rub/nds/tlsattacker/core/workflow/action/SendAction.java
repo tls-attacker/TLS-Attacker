@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,16 +24,17 @@ import java.util.List;
 public class SendAction extends MessageAction {
 
     public SendAction() {
-        super(new LinkedList<ProtocolMessage>());
+        super();
     }
 
     public SendAction(List<ProtocolMessage> messages) {
-        super(messages);
+        super();
+        actualMessages = messages;
     }
 
     public SendAction(ProtocolMessage message) {
-        super(new LinkedList<ProtocolMessage>());
-        configuredMessages.add(message);
+        super();
+        actualMessages.add(message);
     }
 
     @Override
@@ -41,27 +42,17 @@ public class SendAction extends MessageAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        LOGGER.info("Sending " + getReadableString(configuredMessages));
-        MessageActionResult result = SendMessageHelper.sendMessages(configuredMessages, configuredRecords, tlsContext);
-        actualMessages.addAll(result.getMessageList());
-        actualRecords.addAll(result.getRecordList());
-
-        String expected = getReadableString(configuredMessages);
-        LOGGER.debug("Send Expected:" + expected);
-        String received = getReadableString(actualMessages);
-        LOGGER.debug("Send Actual:" + received);
+        LOGGER.info("Sending " + getReadableString(actualMessages));
+        MessageActionResult result = SendMessageHelper.sendMessages(actualMessages, actualRecords, tlsContext);
+        actualMessages = result.getMessageList();
+        actualRecords = result.getRecordList();
         setExecuted(true);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Send Action:\n");
-        sb.append("\tConfigured:");
-        for (ProtocolMessage message : configuredMessages) {
-            sb.append(message.toCompactString());
-            sb.append(", ");
-        }
-        sb.append("\n\tActual:");
+        sb.append("Messages:\n");
         for (ProtocolMessage message : actualMessages) {
             sb.append(message.toCompactString());
             sb.append(", ");
@@ -69,4 +60,12 @@ public class SendAction extends MessageAction {
         return sb.toString();
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
+
+    public void setActualRecords(List<AbstractRecord> actualRecords) {
+        this.actualRecords = actualRecords;
+    }
 }

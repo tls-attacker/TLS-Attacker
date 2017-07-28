@@ -34,10 +34,14 @@ import org.apache.logging.log4j.Logger;
 public class ReceiveMessageHelper {
 
     protected static final Logger LOGGER = LogManager.getLogger(ReceiveMessageHelper.class.getName());
-   
+
     private ReceiveMessageHelper() {
     }
-    
+
+    public static MessageActionResult receiveMessages(TlsContext context) {
+        return receiveMessages(new LinkedList<ProtocolMessage>(), context);
+    }
+
     /**
      * Receives messages, and tries to receive the messages specified in
      * messages
@@ -63,7 +67,7 @@ public class ReceiveMessageHelper {
                     for (List<AbstractRecord> recordGroup : recordGroups) {
                         messages.addAll(processRecordGroup(recordGroup, context));
                     }
-                    if (context.getConfig().isQuickReceive()) {
+                    if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
                         shouldContinue = shouldContinue(expectedMessages, messages, context);
                     }
                 }

@@ -235,7 +235,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         }
 
         records.add(new Record());
-        action.getConfiguredMessages().add(heartbeatMessage);
+        action.getActualMessages().add(heartbeatMessage);
         train[n] = recordLayer.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records);
 
@@ -264,7 +264,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
         records.remove(0);
         records.add(new Record());
-        action.getConfiguredMessages().add(heartbeatMessage);
+        action.getActualMessages().add(heartbeatMessage);
         train[n] = (recordLayer.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records));
 

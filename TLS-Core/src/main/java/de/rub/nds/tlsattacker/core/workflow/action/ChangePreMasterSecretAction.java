@@ -17,10 +17,11 @@ import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangePreMasterSecretAction extends TLSAction {
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
@@ -90,4 +91,8 @@ public class ChangePreMasterSecretAction extends TLSAction {
         return Arrays.equals(this.oldValue, other.oldValue);
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
 }

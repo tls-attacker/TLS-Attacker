@@ -91,4 +91,8 @@ public class ChangeServerRandomAction extends TLSAction {
         return Arrays.equals(this.oldValue, other.oldValue);
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
 }

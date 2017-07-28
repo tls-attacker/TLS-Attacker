@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ConfiguredReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.util.LinkedList;
@@ -70,24 +70,24 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         TlsContext tlsContext = new TlsContext(tlsConfig);
 
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
-        SendAction sendAction = trace.getFirstConfiguredSendActionWithType(HandshakeMessageType.FINISHED);
+        SendAction sendAction = trace.getLastSendAction();
         // We need 2-3 Records,one for every message, while the last one will
         // have the modified padding
         List<AbstractRecord> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
         tlsConfig.setCreateIndividualRecords(true);
         records.add(new Record(tlsConfig));
-        if (sendAction.getConfiguredMessages().size() > 2) {
+        if (sendAction.getActualMessages().size() > 2) {
             records.add(new Record(tlsConfig));
         }
         records.add(record);
-        sendAction.setConfiguredRecords(records);
+        sendAction.setActualRecords(records);
 
         // Remove last two server messages (CCS and Finished). Instead of them,
         // an alert will be sent.
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
 
-        ReceiveAction action = (ReceiveAction) (trace.getLastMessageAction());
+        ConfiguredReceiveAction action = (ConfiguredReceiveAction) (trace.getLastMessageAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setConfiguredMessages(messages);

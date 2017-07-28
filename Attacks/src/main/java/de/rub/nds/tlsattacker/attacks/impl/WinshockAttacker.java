@@ -60,7 +60,7 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
         }
 
         CertificateVerifyMessage cvm = (CertificateVerifyMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CERTIFICATE_VERIFY);
+                .getActuallySentHandshakeMessagesOfType(HandshakeMessageType.CERTIFICATE_VERIFY);
         cvm.setSignature(signature);
         cvm.setSignatureLength(signatureLength);
 

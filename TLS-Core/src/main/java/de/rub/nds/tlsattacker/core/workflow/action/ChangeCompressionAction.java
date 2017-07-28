@@ -85,4 +85,9 @@ public class ChangeCompressionAction extends TLSAction {
         }
         return this.oldValue == other.oldValue;
     }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
 }

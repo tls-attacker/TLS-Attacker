@@ -36,6 +36,7 @@ public class WaitingAction extends TLSAction {
             Thread.sleep(time);
         } catch (InterruptedException ex) {
             Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
+            // TODO executedAsPlanned = false
         }
         this.setExecuted(Boolean.TRUE);
     }
@@ -51,5 +52,10 @@ public class WaitingAction extends TLSAction {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 }

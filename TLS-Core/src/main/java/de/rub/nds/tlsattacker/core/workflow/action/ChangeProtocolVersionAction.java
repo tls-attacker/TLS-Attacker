@@ -15,10 +15,11 @@ import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
 import java.util.Objects;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeProtocolVersionAction extends TLSAction {
+
     private ProtocolVersion newValue;
     private ProtocolVersion oldValue = null;
 
@@ -84,6 +85,11 @@ public class ChangeProtocolVersionAction extends TLSAction {
             return false;
         }
         return this.oldValue == other.oldValue;
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 
 }

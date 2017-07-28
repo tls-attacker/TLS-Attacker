@@ -145,7 +145,7 @@ public class SerialisationFullTest {
         List<AbstractRecord> records = new LinkedList<>();
         records.add(new BlobRecord());
         records.add(new Record());
-        action.setConfiguredRecords(records);
+        action.setActualRecords(records);
         trace.addTlsAction(action);
 
         File f = folder.newFile();

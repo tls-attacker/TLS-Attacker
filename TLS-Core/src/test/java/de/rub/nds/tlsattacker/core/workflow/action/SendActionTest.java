@@ -54,7 +54,7 @@ public class SendActionTest {
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         tlsContext.setTransportHandler(new FakeTransportHandler());
         action = new SendAction(alert);
-        action.setConfiguredRecords(new LinkedList<AbstractRecord>());
+        action.setActualRecords(new LinkedList<AbstractRecord>());
     }
 
     @After
@@ -67,7 +67,7 @@ public class SendActionTest {
     @Test
     public void testExecute() {
         action.execute(tlsContext);
-        assertEquals(action.getConfiguredMessages(), action.getActualMessages());
+        action.executedAsPlanned(); // TODO check faketransporthandler
         assertTrue(action.isExecuted());
     }
 

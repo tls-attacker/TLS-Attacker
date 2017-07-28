@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeServerCertificateAction extends TLSAction {
@@ -81,5 +81,10 @@ public class ChangeServerCertificateAction extends TLSAction {
             return false;
         }
         return Objects.equals(this.oldValue, other.oldValue);
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 }

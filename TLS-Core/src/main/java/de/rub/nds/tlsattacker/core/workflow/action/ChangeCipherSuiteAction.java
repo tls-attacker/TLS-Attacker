@@ -89,4 +89,9 @@ public class ChangeCipherSuiteAction extends TLSAction {
         return this.oldValue == other.oldValue;
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
+
 }

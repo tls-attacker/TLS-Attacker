@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 public class SendMessageHelper {
 
     protected static final Logger LOGGER = LogManager.getLogger(SendMessageHelper.class.getName());
-    
+
     private SendMessageHelper() {
     }
 
@@ -114,9 +114,12 @@ public class SendMessageHelper {
      * Sends all messageBytes in the MessageByteCollector with the specified
      * TransportHandler
      *
-     * @param handler TransportHandler to send the Data with
-     * @param messageBytesCollector MessageBytes to send
-     * @throws IOException Thrown if something goes wrong while sending
+     * @param handler
+     *            TransportHandler to send the Data with
+     * @param messageBytesCollector
+     *            MessageBytes to send
+     * @throws IOException
+     *             Thrown if something goes wrong while sending
      */
     private static void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());

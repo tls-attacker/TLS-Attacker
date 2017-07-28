@@ -47,5 +47,10 @@ public abstract class TLSAction implements Serializable {
         return this instanceof MessageAction;
     }
 
+    /**
+     * Checks that the Action got executed as planned
+     */
+    public abstract boolean executedAsPlanned();
+
     public abstract void reset();
 }

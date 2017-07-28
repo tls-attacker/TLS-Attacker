@@ -35,4 +35,9 @@ public class ResetConnectionAction extends TLSAction {
         setExecuted(false);
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
+
 }

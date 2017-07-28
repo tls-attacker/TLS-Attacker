@@ -63,7 +63,9 @@ public class WorkflowTrace implements Serializable {
     @XmlElement(type = ConnectionEnd.class, name = "ConnectionEnd")
     private List<ConnectionEnd> connectionEnds;
 
-    /** Workflow */
+    /**
+     * Workflow
+     */
     @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
@@ -96,16 +98,6 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Swaps Server Messages with ArbitaryMessages
-     */
-    public void makeGeneric() {
-        for (ConfiguredReceiveAction action : getReceiveActions()) {
-            action.getConfiguredMessages().clear();
-            action.getConfiguredMessages().add(new ArbitraryMessage());
-        }
-    }
-
-    /**
      * Removes runtime values for more compact storage. This keeps only the
      * relevant information to reexecute a WorkflowTrace
      */
@@ -115,9 +107,6 @@ public class WorkflowTrace implements Serializable {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         for (MessageAction action : messageActions) {
             for (ProtocolMessage message : action.getActualMessages()) {
-                holders.addAll(message.getAllModifiableVariableHolders());
-            }
-            for (ProtocolMessage message : action.getConfiguredMessages()) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -270,23 +259,6 @@ public class WorkflowTrace implements Serializable {
         return returnedMessages;
     }
 
-    public ProtocolMessage getFirstConfiguredSendMessageOfType(ProtocolMessageType type) {
-        List<ProtocolMessage> list = filterMessageList(getAllConfiguredSendMessages(), type);
-        if (list.size() > 0) {
-            return list.get(0);
-        }
-        return null;
-    }
-
-    public HandshakeMessage getFirstConfiguredSendMessageOfType(HandshakeMessageType type) {
-        List<HandshakeMessage> list = filterMessageList(
-                filterHandshakeMessagesFromList(getAllConfiguredSendMessages()), type);
-        if (list.size() > 0) {
-            return list.get(0);
-        }
-        return null;
-    }
-
     public ProtocolMessage getFirstActuallySendMessageOfType(ProtocolMessageType type) {
         List<ProtocolMessage> list = filterMessageList(getAllActuallySentMessages(), type);
         if (list.size() > 0) {
@@ -324,51 +296,11 @@ public class WorkflowTrace implements Serializable {
         return filterMessageList(getAllActuallySentMessages(), type);
     }
 
-    public List<HandshakeMessage> getConfiguredRecievedHandshakeMessagesOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllConfiguredReceivingMessages()), type);
-    }
-
-    public List<ProtocolMessage> getConfiguredRecievedProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllConfiguredReceivingMessages(), type);
-    }
-
-    public List<HandshakeMessage> getConfiguredSentHandshakeMessagesOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllConfiguredSendMessages()), type);
-    }
-
-    public List<ProtocolMessage> getConfiguredSendProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllConfiguredSendMessages(), type);
-    }
-
-    public List<ProtocolMessage> getAllConfiguredMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action.isMessageAction()) {
-                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-                    messages.add(pm);
-                }
-            }
-        }
-        return messages;
-    }
-
     public List<ProtocolMessage> getAllActualMessages() {
         List<ProtocolMessage> messages = new LinkedList<>();
         for (TLSAction action : tlsActions) {
             if (action instanceof MessageAction) {
                 for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
-                    messages.add(pm);
-                }
-            }
-        }
-        return messages;
-    }
-
-    public List<ProtocolMessage> getAllConfiguredReceivingMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action instanceof ConfiguredReceiveAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
                     messages.add(pm);
                 }
             }
@@ -384,18 +316,6 @@ public class WorkflowTrace implements Serializable {
 
                     messages.add(pm);
 
-                }
-            }
-        }
-        return messages;
-    }
-
-    public List<ProtocolMessage> getAllConfiguredSendMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-                    messages.add(pm);
                 }
             }
         }
@@ -428,28 +348,13 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
-    public ProtocolMessage getLastConfiguredReceiveMesssage() {
-        List<ProtocolMessage> messages = getAllConfiguredReceivingMessages();
-        if (messages.size() > 0) {
-            return messages.get(messages.size() - 1);
+    public SendAction getLastSendAction() {
+        for (int i = tlsActions.size() - 1; i > 0; i--) {
+            if (tlsActions.get(i) instanceof SendAction) {
+                return (SendAction) (tlsActions.get(i));
+            }
         }
         return null;
-    }
-
-    public ProtocolMessage getLastConfiguredSendMesssage() {
-        List<ProtocolMessage> messages = getAllConfiguredSendMessages();
-        if (messages.size() > 0) {
-            return messages.get(messages.size() - 1);
-        }
-        return null;
-    }
-
-    public boolean containsConfiguredReceivedProtocolMessage(ProtocolMessageType type) {
-        return !getConfiguredRecievedProtocolMessagesOfType(type).isEmpty();
-    }
-
-    public boolean containsConfiguredSendProtocolMessage(ProtocolMessageType type) {
-        return !getConfiguredSendProtocolMessagesOfType(type).isEmpty();
     }
 
     public boolean actuallyReceivedTypeBeforeType(ProtocolMessageType before, ProtocolMessageType after) {
@@ -487,45 +392,6 @@ public class WorkflowTrace implements Serializable {
             }
         }
         return false;
-    }
-
-    public boolean configuredLooksLikeActual() {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof MessageAction) {
-                MessageAction messageAction = (MessageAction) action;
-                if (!messageAction.configuredLooksLikeActual()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public SendAction getFirstConfiguredSendActionWithType(ProtocolMessageType type) {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                SendAction sendAction = (SendAction) action;
-                for (ProtocolMessage message : sendAction.getConfiguredMessages()) {
-                    if (message.getProtocolMessageType() == type) {
-                        return sendAction;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public SendAction getFirstConfiguredSendActionWithType(HandshakeMessageType type) {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                SendAction sendAction = (SendAction) action;
-                List<HandshakeMessage> messages = filterHandshakeMessagesFromList(sendAction.getConfiguredMessages());
-                if (!filterMessageList(messages, type).isEmpty()) {
-                    return sendAction;
-                }
-            }
-        }
-        return null;
     }
 
     public String getName() {
@@ -574,5 +440,14 @@ public class WorkflowTrace implements Serializable {
             return false;
         }
         return Objects.equals(this.tlsActions, other.tlsActions);
+    }
+
+    public boolean configuredLooksLikeActual() {
+        for (TLSAction action : tlsActions) {
+            if (!action.executedAsPlanned()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

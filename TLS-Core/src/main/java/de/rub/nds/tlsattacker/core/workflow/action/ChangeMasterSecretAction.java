@@ -91,4 +91,9 @@ public class ChangeMasterSecretAction extends TLSAction {
         return Arrays.equals(this.oldValue, other.oldValue);
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
+
 }

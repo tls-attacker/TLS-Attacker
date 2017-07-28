@@ -33,4 +33,9 @@ public class RenegotiationAction extends TLSAction {
         setExecuted(null);
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
+
 }
