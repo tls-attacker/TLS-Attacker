@@ -25,6 +25,7 @@ public class FakeTransportHandler extends TransportHandler {
 
     public FakeTransportHandler() {
         super(null, 0, ConnectionEndType.CLIENT, 0);
+        fetchableByte = new byte[0];
     }
 
     public byte[] getSendByte() {

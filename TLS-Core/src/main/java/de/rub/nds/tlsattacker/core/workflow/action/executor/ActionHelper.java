@@ -22,149 +22,23 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor.LOGGER;
+import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * This ActionExecutor tries to perform Actions in a way that imitates a TLS
- * Client/Server.
  *
- * @author Robert Merget - robert.merget@rub.de
+ * @author Robert Merget <robert.merget@rub.de>
  */
-public class DefaultActionExecutor extends ActionExecutor {
+public class ActionHelper {
 
-    private final TlsContext context;
+    protected static final Logger LOGGER = LogManager.getLogger(ActionHelper.class.getName());
 
-    private boolean proceed;
-
-    public DefaultActionExecutor(TlsContext context) {
-        this.proceed = true;
-        this.context = context;
-    }
-
-    /**
-     * Sends a list of ProtocolMessage
-     *
-     * @param messages
-     *            Protocol messages to send
-     * @param records
-     * @return
-     *
-     */
-    @Override
-    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records) {
-        context.setTalkingConnectionEndType(context.getConfig().getConnectionEndType());
-
-        if (!proceed || (context.getConfig().isStopRecievingAfterFatal() && context.isReceivedFatalAlert())) {
-            return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
-        }
-        if (records == null) {
-            LOGGER.trace("No Records Specified, creating emtpy list");
-            records = new LinkedList<>();
-        }
-        int recordPosition = 0;
-        ProtocolMessageType lastType = null;
-        MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
-        for (ProtocolMessage message : messages) {
-            if (message.getProtocolMessageType() != lastType && lastType != null
-                    && context.getConfig().isFlushOnMessageTypeChange()) {
-                recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
-                if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                    // TODO this should not be here
-                    context.getRecordLayer().updateEncryptionCipher();
-                }
-            }
-            lastType = message.getProtocolMessageType();
-            LOGGER.debug("Preparing " + message.toCompactString());
-            byte[] protocolMessageBytes = prepareProtocolMessageBytes(message);
-            if (message.isGoingToBeSent()) {
-                messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
-            }
-            if (context.getConfig().isCreateIndividualRecords()) {
-                recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
-            }
-            if (context.getSelectedProtocolVersion().isTLS13() && context.isUpdateKeys() == true) {
-                LOGGER.debug("Setting new Cipher in RecordLayer");
-                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
-                context.getRecordLayer().setRecordCipher(recordCipher);
-                context.getRecordLayer().updateDecryptionCipher();
-                context.getRecordLayer().updateEncryptionCipher();
-            }
-        }
-        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition);
-        try {
-            sendData(messageBytesCollector);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return new MessageActionResult(records, messages);
-    }
-
-    /**
-     * Chooses the correct handler for the ProtocolMessage and returns the
-     * preparedMessage bytes
-     *
-     * @param message
-     *            Message to prepare
-     * @return Prepared message bytes for the ProtocolMessage
-     */
-    private byte[] prepareProtocolMessageBytes(ProtocolMessage message) {
-        LOGGER.debug("Preparing the following protocol message to send: {}", message.toCompactString());
-        ProtocolMessageHandler handler = message.getHandler(context);
-        byte[] protocolMessageBytes = handler.prepareMessage(message);
-        return protocolMessageBytes;
-    }
-
-    private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
-            List<AbstractRecord> records, int recordPosition) {
-        int length = collector.getProtocolMessageBytesStream().length;
-        List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records);
-        collector.appendRecordBytes(context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(),
-                type, toFillList));
-        collector.flushProtocolMessageBytes();
-        return recordPosition + toFillList.size();
-    }
-
-    private List<AbstractRecord> getEnoughRecords(int length, int position, List<AbstractRecord> records) {
-        List<AbstractRecord> toFillList = new LinkedList<>();
-        int recordLength = 0;
-        while (recordLength < length) {
-            if (position >= records.size()) {
-                if (context.getConfig().isCreateRecordsDynamically()) {
-                    LOGGER.trace("Creating new Record");
-                    records.add(context.getRecordLayer().getFreshRecord());
-                } else {
-                    return toFillList;
-                }
-            }
-            AbstractRecord record = records.get(position);
-            toFillList.add(record);
-            if (record.getMaxRecordLengthConfig() == null) {
-                record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
-            }
-            recordLength += record.getMaxRecordLengthConfig();
-            position++;
-        }
-        return toFillList;
-    }
-
-    /**
-     * Sends all messageBytes in the MessageByteCollector with the specified
-     * TransportHandler
-     *
-     * @param handler
-     *            TransportHandler to send the Data with
-     * @param messageBytesCollector
-     *            MessageBytes to send
-     * @throws IOException
-     *             Thrown if something goes wrong while sending
-     */
-    private void sendData(MessageBytesCollector collector) throws IOException {
-        context.getTransportHandler().sendData(collector.getRecordBytes());
-        collector.flushRecordBytes();
+    private ActionHelper() {
     }
 
     /**
@@ -175,27 +49,23 @@ public class DefaultActionExecutor extends ActionExecutor {
      *            Messages which should be received
      * @return Actually received Messages
      */
-    @Override
-    public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages) {
+    public static MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
         context.setTalkingConnectionEndType(context.getConfig().getMyConnectionPeer());
 
         List<AbstractRecord> records = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
         try {
-            if (!proceed) {
-                return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
-            }
             byte[] recievedBytes = null;
             boolean shouldContinue = true;
             do {
-                recievedBytes = receiveByteArray();
+                recievedBytes = receiveByteArray(context);
                 if (recievedBytes.length != 0) {
-                    records = parseRecords(recievedBytes);
+                    records = parseRecords(recievedBytes, context);
                     List<List<AbstractRecord>> recordGroups = getRecordGroups(records);
                     for (List<AbstractRecord> recordGroup : recordGroups) {
-                        adjustContext(recordGroup);
-                        decryptRecords(recordGroup);
-                        messages.addAll(parseMessages(recordGroup));
+                        adjustContext(recordGroup, context);
+                        decryptRecords(recordGroup, context);
+                        messages.addAll(parseMessages(recordGroup, context));
                         if (context.getConfig().isQuickReceive()) {
                             boolean receivedFatalAlert = false;
                             for (ProtocolMessage message : messages) {
@@ -236,24 +106,25 @@ public class DefaultActionExecutor extends ActionExecutor {
         return new MessageActionResult(records, messages);
     }
 
-    private byte[] receiveByteArray() throws IOException {
+    private static byte[] receiveByteArray(TlsContext context) throws IOException {
         return context.getTransportHandler().fetchData();
     }
 
-    private List<AbstractRecord> parseRecords(byte[] recordBytes) {
+    private static List<AbstractRecord> parseRecords(byte[] recordBytes, TlsContext context) {
         List<AbstractRecord> receivedRecords = context.getRecordLayer().parseRecords(recordBytes);
         return receivedRecords;
     }
 
-    private List<ProtocolMessage> parseMessages(List<AbstractRecord> records) {
+    private static List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
         if (records.isEmpty()) {
             return new LinkedList<>();
         }
         byte[] cleanProtocolMessageBytes = getCleanBytes(records);
-        return recieveMessage(cleanProtocolMessageBytes, getProtocolMessageType(records));
+        return recieveMessage(cleanProtocolMessageBytes, getProtocolMessageType(records), context);
     }
 
-    private List<ProtocolMessage> recieveMessage(byte[] cleanProtocolMessageBytes, ProtocolMessageType typeFromRecord) {
+    private static List<ProtocolMessage> recieveMessage(byte[] cleanProtocolMessageBytes,
+            ProtocolMessageType typeFromRecord, TlsContext context) {
         int dataPointer = 0;
         List<ProtocolMessage> receivedMessages = new LinkedList<>();
         while (dataPointer < cleanProtocolMessageBytes.length) {
@@ -289,13 +160,10 @@ public class DefaultActionExecutor extends ActionExecutor {
             LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
             receivedMessages.add(result.getMessage());
         }
-        if (context.isReceivedFatalAlert()) {
-            proceed = false;
-        }
         return receivedMessages;
     }
 
-    private byte[] getCleanBytes(List<AbstractRecord> recordSubGroup) {
+    private static byte[] getCleanBytes(List<AbstractRecord> recordSubGroup) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : recordSubGroup) {
             try {
@@ -308,7 +176,7 @@ public class DefaultActionExecutor extends ActionExecutor {
         return stream.toByteArray();
     }
 
-    private List<List<AbstractRecord>> getRecordGroups(List<AbstractRecord> records) {
+    private static List<List<AbstractRecord>> getRecordGroups(List<AbstractRecord> records) {
         List<List<AbstractRecord>> returnList = new LinkedList<>();
         if (records.isEmpty()) {
             return returnList;
@@ -330,7 +198,7 @@ public class DefaultActionExecutor extends ActionExecutor {
 
     }
 
-    private ProtocolMessageType getProtocolMessageType(List<AbstractRecord> recordSubGroup) {
+    private static ProtocolMessageType getProtocolMessageType(List<AbstractRecord> recordSubGroup) {
         ProtocolMessageType type = null;
         for (AbstractRecord record : recordSubGroup) {
             if (type == null) {
@@ -347,15 +215,121 @@ public class DefaultActionExecutor extends ActionExecutor {
         return type;
     }
 
-    private void decryptRecords(List<AbstractRecord> records) {
+    private static void decryptRecords(List<AbstractRecord> records, TlsContext context) {
         for (AbstractRecord record : records) {
             context.getRecordLayer().decryptRecord(record);
         }
     }
 
-    private void adjustContext(List<AbstractRecord> recordGroup) {
+    private static void adjustContext(List<AbstractRecord> recordGroup, TlsContext context) {
         for (AbstractRecord record : recordGroup) {
             record.adjustContext(context);
         }
+    }
+
+    public static MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
+            TlsContext context) {
+        context.setTalkingConnectionEndType(context.getConfig().getConnectionEndType());
+
+        if ((context.getConfig().isStopRecievingAfterFatal() && context.isReceivedFatalAlert())) {
+            return new MessageActionResult(new LinkedList<AbstractRecord>(), new LinkedList<ProtocolMessage>());
+        }
+        if (records == null) {
+            LOGGER.trace("No Records Specified, creating emtpy list");
+            records = new LinkedList<>();
+        }
+        int recordPosition = 0;
+        ProtocolMessageType lastType = null;
+        MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+        for (ProtocolMessage message : messages) {
+            if (message.getProtocolMessageType() != lastType && lastType != null
+                    && context.getConfig().isFlushOnMessageTypeChange()) {
+                recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                    // TODO this should not be here
+                    context.getRecordLayer().updateEncryptionCipher();
+                }
+            }
+            lastType = message.getProtocolMessageType();
+            LOGGER.debug("Preparing " + message.toCompactString());
+            byte[] protocolMessageBytes = prepareProtocolMessageBytes(message, context);
+            if (message.isGoingToBeSent()) {
+                messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+            }
+            if (context.getConfig().isCreateIndividualRecords()) {
+                recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+            }
+            if (context.getSelectedProtocolVersion().isTLS13() && context.isUpdateKeys() == true) {
+                LOGGER.debug("Setting new Cipher in RecordLayer");
+                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
+                context.getRecordLayer().setRecordCipher(recordCipher);
+                context.getRecordLayer().updateDecryptionCipher();
+                context.getRecordLayer().updateEncryptionCipher();
+            }
+        }
+        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        try {
+            sendData(messageBytesCollector, context);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return new MessageActionResult(records, messages);
+    }
+
+    private static int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
+            List<AbstractRecord> records, int recordPosition, TlsContext context) {
+        int length = collector.getProtocolMessageBytesStream().length;
+        List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records, context);
+        collector.appendRecordBytes(context.getRecordLayer().prepareRecords(collector.getProtocolMessageBytesStream(),
+                type, toFillList));
+        collector.flushProtocolMessageBytes();
+        return recordPosition + toFillList.size();
+    }
+
+    private static List<AbstractRecord> getEnoughRecords(int length, int position, List<AbstractRecord> records,
+            TlsContext context) {
+        List<AbstractRecord> toFillList = new LinkedList<>();
+        int recordLength = 0;
+        while (recordLength < length) {
+            if (position >= records.size()) {
+                if (context.getConfig().isCreateRecordsDynamically()) {
+                    LOGGER.trace("Creating new Record");
+                    records.add(context.getRecordLayer().getFreshRecord());
+                } else {
+                    return toFillList;
+                }
+            }
+            AbstractRecord record = records.get(position);
+            toFillList.add(record);
+            if (record.getMaxRecordLengthConfig() == null) {
+                record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
+            }
+            recordLength += record.getMaxRecordLengthConfig();
+            position++;
+        }
+        return toFillList;
+    }
+
+    /**
+     * Sends all messageBytes in the MessageByteCollector with the specified
+     * TransportHandler
+     *
+     * @param handler
+     *            TransportHandler to send the Data with
+     * @param messageBytesCollector
+     *            MessageBytes to send
+     * @throws IOException
+     *             Thrown if something goes wrong while sending
+     */
+    private static void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
+        context.getTransportHandler().sendData(collector.getRecordBytes());
+        collector.flushRecordBytes();
+    }
+
+    private static byte[] prepareProtocolMessageBytes(ProtocolMessage message, TlsContext context) {
+        LOGGER.debug("Preparing the following protocol message to send: {}", message.toCompactString());
+        ProtocolMessageHandler handler = message.getHandler(context);
+        byte[] protocolMessageBytes = handler.prepareMessage(message);
+        return protocolMessageBytes;
     }
 }

@@ -8,11 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageBytesCollector;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,12 +44,12 @@ public class SendAction extends MessageAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) {
+    public void execute(TlsContext tlsContext) {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Sending " + getReadableString(configuredMessages));
-        MessageActionResult result = executor.sendMessages(configuredMessages, configuredRecords);
+        MessageActionResult result = ActionHelper.sendMessages(configuredMessages, configuredRecords, tlsContext);
         actualMessages.addAll(result.getMessageList());
         actualRecords.addAll(result.getRecordList());
 

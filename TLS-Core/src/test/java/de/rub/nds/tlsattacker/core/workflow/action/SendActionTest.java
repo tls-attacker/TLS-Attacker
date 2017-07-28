@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -39,7 +39,6 @@ public class SendActionTest {
 
     private TlsContext tlsContext;
 
-    private ActionExecutorMock executor;
     private SendAction action;
 
     @Before
@@ -49,11 +48,11 @@ public class SendActionTest {
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
-        executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
+        tlsContext.setTransportHandler(new FakeTransportHandler());
         action = new SendAction(alert);
         action.setConfiguredRecords(new LinkedList<AbstractRecord>());
     }
@@ -67,7 +66,7 @@ public class SendActionTest {
      */
     @Test
     public void testExecute() {
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertEquals(action.getConfiguredMessages(), action.getActualMessages());
         assertTrue(action.isExecuted());
     }
@@ -75,11 +74,11 @@ public class SendActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertTrue(action.isExecuted());
     }
 
