@@ -65,7 +65,8 @@ public class ReceiveActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        ((FakeTransportHandler)tlsContext.getTransportHandler()).setFetchableByte(new byte[]{0x15,0x03,0x03,0x00,0x02,0x02,50});
+        ((FakeTransportHandler) tlsContext.getTransportHandler()).setFetchableByte(new byte[] { 0x15, 0x03, 0x03, 0x00,
+                0x02, 0x02, 50 });
         action.execute(tlsContext);
         assertEquals(action.getConfiguredMessages(), action.getActualMessages());
         assertTrue(action.isExecuted());
