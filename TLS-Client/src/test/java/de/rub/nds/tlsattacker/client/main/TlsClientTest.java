@@ -187,7 +187,7 @@ public class TlsClientTest {
             E.printStackTrace();
         }
         String workflowString = tlsContext.getWorkflowTrace().toString();
-        boolean result = tlsContext.getWorkflowTrace().configuredLooksLikeActual();
+        boolean result = tlsContext.getWorkflowTrace().executedAsPlanned();
         if (!result) {
             LOGGER.info(workflowString);
             return result;
@@ -226,7 +226,7 @@ public class TlsClientTest {
             return false;
         }
 
-        return trace.configuredLooksLikeActual();
+        return trace.executedAsPlanned();
     }
 
 }

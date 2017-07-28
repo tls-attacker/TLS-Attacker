@@ -106,7 +106,7 @@ public class RealDirectMessageECOracle extends ECOracle {
             numberOfQueries++;
         }
 
-        if (!tlsContext.getWorkflowTrace().configuredLooksLikeActual()) {
+        if (!tlsContext.getWorkflowTrace().executedAsPlanned()) {
             valid = false;
         }
 
