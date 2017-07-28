@@ -85,7 +85,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         trace.addTlsAction(action);
         List<AbstractRecord> configuredRecords = new LinkedList<>();
         configuredRecords.add(record);
-        action.setActualRecords(configuredRecords);
+        action.setRecords(configuredRecords);
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ConfiguredReceiveAction(alertMessage));

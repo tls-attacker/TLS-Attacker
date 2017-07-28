@@ -80,32 +80,32 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
-    protected List<ProtocolMessage> actualMessages;
+    protected List<ProtocolMessage> messages;
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> actualRecords;
+    protected List<AbstractRecord> records;
 
     public MessageAction() {
-        actualMessages = new LinkedList<>();
-        actualRecords = new LinkedList<>();
+        messages = new LinkedList<>();
+        records = new LinkedList<>();
     }
 
-    public List<AbstractRecord> getActualRecords() {
-        return actualRecords;
+    public List<AbstractRecord> getRecords() {
+        return records;
     }
 
-    public List<ProtocolMessage> getActualMessages() {
-        return actualMessages;
+    public List<ProtocolMessage> getMessages() {
+        return messages;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.actualMessages);
-        hash = 71 * hash + Objects.hashCode(this.actualRecords);
+        hash = 71 * hash + Objects.hashCode(this.messages);
+        hash = 71 * hash + Objects.hashCode(this.records);
         return hash;
     }
 
@@ -121,10 +121,10 @@ public abstract class MessageAction extends TLSAction {
             return false;
         }
         final MessageAction other = (MessageAction) obj;
-        if (!Objects.equals(this.actualMessages, other.actualMessages)) {
+        if (!Objects.equals(this.messages, other.messages)) {
             return false;
         }
-        if (!Objects.equals(this.actualRecords, other.actualRecords)) {
+        if (!Objects.equals(this.records, other.records)) {
             return false;
         }
         return true;

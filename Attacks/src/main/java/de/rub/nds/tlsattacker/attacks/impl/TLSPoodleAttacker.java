@@ -69,7 +69,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         SendAction sendAction = new SendAction(applicationMessage);
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);
-        sendAction.setActualRecords(recordList);
+        sendAction.setRecords(recordList);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(sendAction);
         trace.addTlsAction(new ConfiguredReceiveAction(alertMessage));

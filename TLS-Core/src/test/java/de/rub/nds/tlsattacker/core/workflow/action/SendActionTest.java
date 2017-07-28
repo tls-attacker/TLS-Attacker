@@ -54,7 +54,7 @@ public class SendActionTest {
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         tlsContext.setTransportHandler(new FakeTransportHandler());
         action = new SendAction(alert);
-        action.setActualRecords(new LinkedList<AbstractRecord>());
+        action.setRecords(new LinkedList<AbstractRecord>());
     }
 
     @After

@@ -158,7 +158,7 @@ public class WorkflowTraceUtil {
     private static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
         for (ConfiguredReceiveAction action : trace.getReceiveActions()) {
-            receivedMessage.addAll(action.getActualMessages());
+            receivedMessage.addAll(action.getMessages());
         }
         return receivedMessage;
     }
@@ -166,7 +166,7 @@ public class WorkflowTraceUtil {
     private static List<ProtocolMessage> getAllSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage> sendMessages = new LinkedList<>();
         for (SendAction action : trace.getSendActions()) {
-            sendMessages.addAll(action.getActualMessages());
+            sendMessages.addAll(action.getMessages());
         }
         return sendMessages;
     }

@@ -78,11 +78,11 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         Record record = createRecordWithBadPadding();
         tlsConfig.setCreateIndividualRecords(true);
         records.add(new Record(tlsConfig));
-        if (sendAction.getActualMessages().size() > 2) {
+        if (sendAction.getMessages().size() > 2) {
             records.add(new Record(tlsConfig));
         }
         records.add(record);
-        sendAction.setActualRecords(records);
+        sendAction.setRecords(records);
 
         // Remove last two server messages (CCS and Finished). Instead of them,
         // an alert will be sent.

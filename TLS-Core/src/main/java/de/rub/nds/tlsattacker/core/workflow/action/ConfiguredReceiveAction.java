@@ -109,13 +109,13 @@ public class ConfiguredReceiveAction extends MessageAction {
         }
         LOGGER.info("Receiving Messages...");
         MessageActionResult result = ReceiveMessageHelper.receiveMessages(configuredMessages, tlsContext);
-        actualRecords.addAll(result.getRecordList());
-        actualMessages.addAll(result.getMessageList());
+        records.addAll(result.getRecordList());
+        messages.addAll(result.getMessageList());
         setExecuted(true);
 
         String expected = getReadableString(configuredMessages);
         LOGGER.debug("Receive Expected:" + expected);
-        String received = getReadableString(actualMessages);
+        String received = getReadableString(messages);
         LOGGER.debug("Receive Actual:" + received);
         LOGGER.info("Received Messages:" + received);
     }
@@ -129,7 +129,7 @@ public class ConfiguredReceiveAction extends MessageAction {
             sb.append(", ");
         }
         sb.append("\n\tActual:");
-        for (ProtocolMessage message : actualMessages) {
+        for (ProtocolMessage message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -138,11 +138,11 @@ public class ConfiguredReceiveAction extends MessageAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (actualMessages.size() != configuredMessages.size()) {
+        if (messages.size() != configuredMessages.size()) {
             return false;
         } else {
-            for (int i = 0; i < actualMessages.size(); i++) {
-                if (!actualMessages.get(i).getClass().equals(configuredMessages.get(i).getClass())) {
+            for (int i = 0; i < messages.size(); i++) {
+                if (!messages.get(i).getClass().equals(configuredMessages.get(i).getClass())) {
                     return false;
                 }
             }
@@ -160,8 +160,8 @@ public class ConfiguredReceiveAction extends MessageAction {
 
     @Override
     public void reset() {
-        actualMessages = new LinkedList<>();
-        actualRecords = new LinkedList<>();
+        messages = new LinkedList<>();
+        records = new LinkedList<>();
         setExecuted(Boolean.FALSE);
     }
 }

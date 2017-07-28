@@ -53,7 +53,7 @@ public class MessageActionFactoryTest {
         action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.SERVER,
                 new AlertMessage(config));
         assertEquals(action.getClass(), SendAction.class);
-        assertTrue(action.getActualMessages().size() == 1);
+        assertTrue(action.getMessages().size() == 1);
     }
 
     /**
@@ -74,7 +74,7 @@ public class MessageActionFactoryTest {
         assertEquals(action.getClass(), ConfiguredReceiveAction.class);
         action = MessageActionFactory.createAction(ConnectionEndType.SERVER, ConnectionEndType.SERVER, messages);
         assertEquals(action.getClass(), SendAction.class);
-        assertTrue(action.getActualMessages().size() == 2);
+        assertTrue(action.getMessages().size() == 2);
     }
 
 }

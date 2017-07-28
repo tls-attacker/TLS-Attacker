@@ -29,12 +29,12 @@ public class SendAction extends MessageAction {
 
     public SendAction(List<ProtocolMessage> messages) {
         super();
-        actualMessages = messages;
+        this.messages = messages;
     }
 
     public SendAction(ProtocolMessage message) {
         super();
-        actualMessages.add(message);
+        messages.add(message);
     }
 
     @Override
@@ -42,10 +42,10 @@ public class SendAction extends MessageAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        LOGGER.info("Sending " + getReadableString(actualMessages));
-        MessageActionResult result = SendMessageHelper.sendMessages(actualMessages, actualRecords, tlsContext);
-        actualMessages = result.getMessageList();
-        actualRecords = result.getRecordList();
+        LOGGER.info("Sending " + getReadableString(messages));
+        MessageActionResult result = SendMessageHelper.sendMessages(messages, records, tlsContext);
+        messages = result.getMessageList();
+        records = result.getRecordList();
         setExecuted(true);
     }
 
@@ -53,7 +53,7 @@ public class SendAction extends MessageAction {
     public String toString() {
         StringBuilder sb = new StringBuilder("Send Action:\n");
         sb.append("Messages:\n");
-        for (ProtocolMessage message : actualMessages) {
+        for (ProtocolMessage message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -65,8 +65,8 @@ public class SendAction extends MessageAction {
         return isExecuted();
     }
 
-    public void setActualRecords(List<AbstractRecord> actualRecords) {
-        this.actualRecords = actualRecords;
+    public void setRecords(List<AbstractRecord> actualRecords) {
+        this.records = actualRecords;
     }
 
     @Override

@@ -105,7 +105,7 @@ public class WorkflowTrace implements Serializable {
         List<MessageAction> messageActions = getMessageActions();
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         for (MessageAction action : messageActions) {
-            for (ProtocolMessage message : action.getActualMessages()) {
+            for (ProtocolMessage message : action.getMessages()) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
