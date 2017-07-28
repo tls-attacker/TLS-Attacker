@@ -107,7 +107,7 @@ public class ConfiguredReceiveAction extends MessageAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        LOGGER.info("Receiving Messages...");
+        LOGGER.debug("Receiving Messages...");
         MessageActionResult result = ReceiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
         records.addAll(result.getRecordList());
         messages.addAll(result.getMessageList());
