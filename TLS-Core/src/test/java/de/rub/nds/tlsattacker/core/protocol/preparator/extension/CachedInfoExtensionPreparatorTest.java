@@ -12,10 +12,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensio
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,13 +26,13 @@ import org.junit.Test;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class CachedInfoExtensionPreparatorTest {
+
     private TlsContext context;
     private CachedInfoExtensionMessage msg;
     private CachedInfoExtensionPreparator preparator;
-    private final List<CachedObject> cachedObjectsClient = Arrays.asList(new CachedObject(true, (byte) 0x01, 2,
-            new byte[] { 0x01, 0x02 }));
-    private final List<CachedObject> cachedObjectsServer = Arrays.asList(new CachedObject(false, (byte) 0x02, 0,
-            new byte[] {}));
+    private final List<CachedObject> cachedObjectsClient = Arrays.asList(new CachedObject((byte) 1, 2, new byte[] {
+            0x01, 0x02 }));
+    private final List<CachedObject> cachedObjectsServer = Arrays.asList(new CachedObject((byte) 0x02, null, null));
     private final int cachedObjectClientLength = 4;
     private final int cachedObjectServerLength = 1;
 
@@ -44,16 +46,14 @@ public class CachedInfoExtensionPreparatorTest {
 
     @Test
     public void testPreparator() {
-        context.getConfig().setCachedObjectList(cachedObjectsClient);
-        context.getConfig().setCachedInfoExtensionIsClientState(true);
+        msg.setCachedInfo(cachedObjectsClient);
 
         preparator.prepare();
 
         assertEquals(cachedObjectClientLength, (int) msg.getCachedInfoLength().getValue());
         assertCachedObjectList(cachedObjectsClient, msg.getCachedInfo());
 
-        context.getConfig().setCachedObjectList(cachedObjectsServer);
-        context.getConfig().setCachedInfoExtensionIsClientState(false);
+        msg.setCachedInfo(cachedObjectsServer);
 
         preparator.prepare();
 
@@ -67,11 +67,19 @@ public class CachedInfoExtensionPreparatorTest {
             CachedObject expectedObject = expected.get(i);
             CachedObject actualObject = actual.get(i);
 
-            assertEquals(expectedObject.getIsClientState().getValue(), actualObject.getIsClientState().getValue());
             assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
                     .getValue());
-            assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength().getValue());
-            assertArrayEquals(expectedObject.getHashValue().getValue(), actualObject.getHashValue().getValue());
+            if (expectedObject.getHashValueLength() != null && expectedObject.getHashValueLength().getValue() != null) {
+                assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength()
+                        .getValue());
+            } else {
+                assertNull(actualObject.getHashValueLength());
+            }
+            if (expectedObject.getHashValue() != null && expectedObject.getHashValue().getValue() != null) {
+                assertArrayEquals(expectedObject.getHashValue().getValue(), actualObject.getHashValue().getValue());
+            } else {
+                assertNull(actualObject.getHashValue());
+            }
         }
     }
 }

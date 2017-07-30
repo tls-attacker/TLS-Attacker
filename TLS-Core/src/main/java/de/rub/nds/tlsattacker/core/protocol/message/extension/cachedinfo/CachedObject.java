@@ -23,8 +23,8 @@ import java.io.Serializable;
  */
 public class CachedObject extends ModifiableVariableHolder implements Serializable {
 
-    @ModifiableVariableProperty
-    private ModifiableBoolean isClientState;
+    // @ModifiableVariableProperty
+    // private ModifiableBoolean isClientState;
     @ModifiableVariableProperty
     private ModifiableByte cachedInformationType;
     @ModifiableVariableProperty
@@ -33,28 +33,31 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
     @ModifiableVariableProperty
     private ModifiableByteArray hashValue;
 
-    public CachedObject(boolean isClientState, byte cachedInformationType, Integer hashValueLength, byte[] hashValue) {
-        this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
-        this.cachedInformationType = ModifiableVariableFactory.safelySetValue(this.cachedInformationType,
-                cachedInformationType);
-        this.hashValueLength = ModifiableVariableFactory.safelySetValue(this.hashValueLength, hashValueLength);
-        this.hashValue = ModifiableVariableFactory.safelySetValue(this.hashValue, hashValue);
+    // Preparator values
+    byte preparatorCachedInformationType;
+    Integer preparatorHashValueLength;
+    byte[] preparatorHashValue;
+
+    public CachedObject(byte preparatorCachedInformationType, Integer preparatorHashValueLength,
+            byte[] preparatorHashValue) {
+        this.preparatorCachedInformationType = preparatorCachedInformationType;
+        this.preparatorHashValueLength = preparatorHashValueLength;
+        this.preparatorHashValue = preparatorHashValue;
     }
 
     public CachedObject() {
     }
 
-    public ModifiableBoolean getIsClientState() {
-        return isClientState;
-    }
-
-    public void setIsClientState(ModifiableBoolean isClientState) {
-        this.isClientState = isClientState;
-    }
-
-    public void setIsClientState(boolean isClientState) {
-        this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
-    }
+    /*
+     * public ModifiableBoolean getIsClientState() { return isClientState; }
+     * 
+     * public void setIsClientState(ModifiableBoolean isClientState) {
+     * this.isClientState = isClientState; }
+     * 
+     * public void setIsClientState(boolean isClientState) { this.isClientState
+     * = ModifiableVariableFactory.safelySetValue(this.isClientState,
+     * isClientState); }
+     */
 
     public ModifiableByte getCachedInformationType() {
         return cachedInformationType;
@@ -77,7 +80,7 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
         this.hashValueLength = hashValueLength;
     }
 
-    public void setHashValueLength(int hashValueLength) {
+    public void setHashValueLength(Integer hashValueLength) {
         this.hashValueLength = ModifiableVariableFactory.safelySetValue(this.hashValueLength, hashValueLength);
     }
 
@@ -91,6 +94,30 @@ public class CachedObject extends ModifiableVariableHolder implements Serializab
 
     public void setHashValue(byte[] hashValue) {
         this.hashValue = ModifiableVariableFactory.safelySetValue(this.hashValue, hashValue);
+    }
+
+    public byte getPreparatorCachedInformationType() {
+        return preparatorCachedInformationType;
+    }
+
+    public void setPreparatorCachedInformationType(byte preparatorCachedInformationType) {
+        this.preparatorCachedInformationType = preparatorCachedInformationType;
+    }
+
+    public Integer getPreparatorHashValueLength() {
+        return preparatorHashValueLength;
+    }
+
+    public void setPreparatorHashValueLength(int preparatorHashValueLength) {
+        this.preparatorHashValueLength = preparatorHashValueLength;
+    }
+
+    public byte[] getPreparatorHashValue() {
+        return preparatorHashValue;
+    }
+
+    public void setPreparatorHashValue(byte[] preparatorHashValue) {
+        this.preparatorHashValue = preparatorHashValue;
     }
 
 }

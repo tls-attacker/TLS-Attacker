@@ -28,10 +28,7 @@ public class CachedInfoExtensionSerializer extends ExtensionSerializer<CachedInf
     @Override
     public byte[] serializeExtensionContent() {
         appendInt(msg.getCachedInfoLength().getValue(), ExtensionByteLength.CACHED_INFO_LENGTH);
-        for (CachedObject co : msg.getCachedInfo()) {
-            CachedObjectSerializer serializer = new CachedObjectSerializer(co);
-            appendBytes(serializer.serialize());
-        }
+        appendBytes(msg.getCachedInfoBytes().getValue());
 
         return getAlreadySerialized();
     }

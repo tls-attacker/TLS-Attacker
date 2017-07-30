@@ -12,6 +12,9 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.CachedInfoExtensionParserTest;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExtensionPreparator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -28,7 +31,7 @@ import org.junit.runners.Parameterized;
 public class CachedInfoExtensionSerializerTest {
 
     private final ExtensionType type;
-    private final boolean isClientState;
+    private final ConnectionEndType isClientState;
     private final int cachedInfoLength;
     private final byte[] cachedInfoBytes;
     private final List<CachedObject> cachedObjectList;
@@ -37,7 +40,7 @@ public class CachedInfoExtensionSerializerTest {
     private CachedInfoExtensionSerializer serializer;
     private CachedInfoExtensionMessage msg;
 
-    public CachedInfoExtensionSerializerTest(ExtensionType type, boolean isClientState, int cachedInfoLength,
+    public CachedInfoExtensionSerializerTest(ExtensionType type, ConnectionEndType isClientState, int cachedInfoLength,
             byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
         this.type = type;
         this.isClientState = isClientState;
@@ -64,8 +67,11 @@ public class CachedInfoExtensionSerializerTest {
         msg.setCachedInfo(cachedObjectList);
         msg.setExtensionType(type.getValue());
         msg.setExtensionLength(extensionLength);
-        msg.setIsClientState(isClientState);
         msg.setCachedInfoLength(cachedInfoLength);
+
+        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(new TlsContext().getChooser(),
+                msg, new CachedInfoExtensionSerializer(msg));
+        preparator.prepare();
 
         assertArrayEquals(extensionBytes, serializer.serialize());
     }

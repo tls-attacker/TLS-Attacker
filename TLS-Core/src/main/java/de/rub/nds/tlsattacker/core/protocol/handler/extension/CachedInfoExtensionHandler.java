@@ -42,7 +42,6 @@ public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExten
     @Override
     public void adjustTLSContext(CachedInfoExtensionMessage message) {
         context.setCachedInfoExtensionObjects(message.getCachedInfo());
-        context.setIsCachedInfoExtensionClientState(message.getIsClientState().getValue());
     }
 
 }

@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CachedInfoType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -26,15 +28,16 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class CachedObjectParserTest {
 
-    private final boolean isClientState;
+    private final ConnectionEndType speakingEndType;
     private final CachedInfoType infoType;
     private final Integer hashLength;
     private final byte[] hash;
     private final byte[] cachedObjectBytes;
+    private TlsContext context;
 
-    public CachedObjectParserTest(boolean isClientState, CachedInfoType infoType, Integer hashLength, byte[] hash,
-            byte[] cachedObjectBytes) {
-        this.isClientState = isClientState;
+    public CachedObjectParserTest(ConnectionEndType speakingEndType, CachedInfoType infoType, Integer hashLength,
+            byte[] hash, byte[] cachedObjectBytes) {
+        this.speakingEndType = speakingEndType;
         this.infoType = infoType;
         this.hashLength = hashLength;
         this.hash = hash;
@@ -44,20 +47,22 @@ public class CachedObjectParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { false, CachedInfoType.CERT, null, null, new byte[] { 0x01 } },
-                { false, CachedInfoType.CERT_REQ, null, null, new byte[] { 0x02 } },
-                { true, CachedInfoType.CERT, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
+                { ConnectionEndType.SERVER, CachedInfoType.CERT, null, null, new byte[] { 0x01 } },
+                { ConnectionEndType.SERVER, CachedInfoType.CERT_REQ, null, null, new byte[] { 0x02 } },
+                { ConnectionEndType.CLIENT, CachedInfoType.CERT, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
                         new byte[] { 0x01, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } },
-                { true, CachedInfoType.CERT_REQ, 6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
+                { ConnectionEndType.CLIENT, CachedInfoType.CERT_REQ, 6,
+                        new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 },
                         new byte[] { 0x02, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 } } });
     }
 
     @Test
     public void parse() {
-        CachedObjectParser parser = new CachedObjectParser(0, cachedObjectBytes, isClientState);
+        context = new TlsContext();
+        context.setTalkingConnectionEndType(speakingEndType);
+        CachedObjectParser parser = new CachedObjectParser(0, cachedObjectBytes, context);
         CachedObject cachedObject = parser.parse();
 
-        assertEquals(isClientState, cachedObject.getIsClientState().getValue());
         assertEquals(infoType.getValue(), (byte) cachedObject.getCachedInformationType().getValue());
 
         if (hashLength != null) {

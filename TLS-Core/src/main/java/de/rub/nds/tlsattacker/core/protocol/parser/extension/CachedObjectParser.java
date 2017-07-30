@@ -13,6 +13,8 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -21,27 +23,25 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 public class CachedObjectParser extends Parser<CachedObject> {
 
     private CachedObject cachedObject;
-    private final boolean isClientState;
+    private final TlsContext context;
 
-    public CachedObjectParser(int startposition, byte[] array, boolean isClientState) {
+    public CachedObjectParser(int startposition, byte[] array, TlsContext context) {
         super(startposition, array);
-        this.isClientState = isClientState;
+        this.context = context;
     }
 
     @Override
     public CachedObject parse() {
         cachedObject = new CachedObject();
 
-        if (isClientState) {
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
             cachedObject.setHashValueLength(parseIntField(ExtensionByteLength.CACHED_INFO_HASH_LENGTH));
             cachedObject.setHashValue(parseByteArrayField(cachedObject.getHashValueLength().getValue()));
-            cachedObject.setIsClientState(isClientState);
         } else {
             cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
             cachedObject.setHashValue((ModifiableByteArray) null);
             cachedObject.setHashValueLength((ModifiableInteger) null);
-            cachedObject.setIsClientState(isClientState);
         }
 
         return cachedObject;

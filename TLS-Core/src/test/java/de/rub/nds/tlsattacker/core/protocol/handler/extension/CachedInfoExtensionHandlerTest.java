@@ -28,9 +28,8 @@ import org.junit.Test;
  */
 public class CachedInfoExtensionHandlerTest {
 
-    private final List<CachedObject> cachedObjects = Arrays.asList(new CachedObject(true, (byte) 1, 2, new byte[] {
-            0x01, 0x02 }), new CachedObject(true, (byte) 2, 3, new byte[] { 0x01, 0x02, 0x03 }));
-    private final boolean isClientState = true;
+    private final List<CachedObject> cachedObjects = Arrays.asList(new CachedObject((byte) 1, 2, new byte[] { 0x01,
+            0x02 }), new CachedObject((byte) 2, 3, new byte[] { 0x01, 0x02, 0x03 }));
     private CachedInfoExtensionHandler handler;
     private TlsContext context;
 
@@ -44,11 +43,12 @@ public class CachedInfoExtensionHandlerTest {
     public void testAdjustTLSContext() {
         CachedInfoExtensionMessage msg = new CachedInfoExtensionMessage();
         msg.setCachedInfo(cachedObjects);
-        msg.setIsClientState(isClientState);
+        CachedInfoExtensionPreparator preparator = new CachedInfoExtensionPreparator(context.getChooser(), msg,
+                new CachedInfoExtensionSerializer(msg));
+        preparator.prepare();
 
         handler.adjustTLSContext(msg);
 
-        assertEquals(isClientState, context.isIsCachedInfoExtensionClientState());
         assertCachedObjectList(cachedObjects, context.getCachedInfoExtensionObjects());
     }
 
@@ -72,7 +72,6 @@ public class CachedInfoExtensionHandlerTest {
             CachedObject expectedObject = expected.get(i);
             CachedObject actualObject = actual.get(i);
 
-            assertEquals(expectedObject.getIsClientState().getValue(), actualObject.getIsClientState().getValue());
             assertEquals(expectedObject.getCachedInformationType().getValue(), actualObject.getCachedInformationType()
                     .getValue());
             assertEquals(expectedObject.getHashValueLength().getValue(), actualObject.getHashValueLength().getValue());

@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedObjectSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  *
@@ -30,17 +33,19 @@ public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInf
 
     @Override
     public void prepareExtensionContent() {
-        msg.setCachedInfo(chooser.getConfig().getCachedObjectList());
-        msg.setIsClientState(chooser.getConfig().isCachedInfoExtensionIsClientState());
-        int payloadLength = 0;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (CachedObject co : msg.getCachedInfo()) {
-            payloadLength += 1;
-            if (msg.getIsClientState().getValue()) {
-                payloadLength += ExtensionByteLength.CACHED_INFO_HASH_LENGTH;
-                payloadLength += co.getHashValue().getValue().length;
+            CachedObjectPreparator preparator = new CachedObjectPreparator(chooser, co);
+            preparator.prepare();
+            CachedObjectSerializer serializer = new CachedObjectSerializer(co);
+            try {
+                stream.write(serializer.serialize());
+            } catch (IOException ex) {
+                throw new PreparationException("Could not write byte[] from CachedObject", ex);
             }
         }
-        msg.setCachedInfoLength(payloadLength);
+        msg.setCachedInfoBytes(stream.toByteArray());
+        msg.setCachedInfoLength(msg.getCachedInfoBytes().getValue().length);
     }
 
 }

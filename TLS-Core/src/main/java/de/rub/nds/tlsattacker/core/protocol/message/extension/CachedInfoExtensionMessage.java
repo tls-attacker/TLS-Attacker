@@ -27,10 +27,9 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
     private ModifiableInteger cachedInfoLength;
-
-    @ModifiableVariableProperty
-    private ModifiableBoolean isClientState;
-
+    /*
+     * @ModifiableVariableProperty private ModifiableBoolean isClientState;
+     */
     @HoldsModifiableVariable
     private List<CachedObject> cachedInfo;
 
@@ -61,18 +60,16 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
         this.cachedInfo = cachedInfo;
     }
 
-    public ModifiableBoolean getIsClientState() {
-        return isClientState;
-    }
-
-    public void setIsClientState(ModifiableBoolean isClientState) {
-        this.isClientState = isClientState;
-    }
-
-    public void setIsClientState(boolean isClientState) {
-        this.isClientState = ModifiableVariableFactory.safelySetValue(this.isClientState, isClientState);
-    }
-
+    /*
+     * public ModifiableBoolean getIsClientState() { return isClientState; }
+     * 
+     * public void setIsClientState(ModifiableBoolean isClientState) {
+     * this.isClientState = isClientState; }
+     * 
+     * public void setIsClientState(boolean isClientState) { this.isClientState
+     * = ModifiableVariableFactory.safelySetValue(this.isClientState,
+     * isClientState); }
+     */
     public ModifiableByteArray getCachedInfoBytes() {
         return cachedInfoBytes;
     }
