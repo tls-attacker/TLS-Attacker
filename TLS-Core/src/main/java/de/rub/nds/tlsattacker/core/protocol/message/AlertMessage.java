@@ -144,7 +144,7 @@ public class AlertMessage extends ProtocolMessage {
         }
         AlertMessage alert = (AlertMessage) obj;
         return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                && (Objects.equals(alert.getDescription().getValue(), alert.getDescription().getValue()));
+                && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
 
     }
 
