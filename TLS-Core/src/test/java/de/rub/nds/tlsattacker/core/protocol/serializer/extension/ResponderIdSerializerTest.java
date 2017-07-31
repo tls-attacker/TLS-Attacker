@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
@@ -23,6 +25,8 @@ public class ResponderIdSerializerTest {
 
     @Test
     public void testSerializer() {
+        ResponderIdPreparator preparator = new ResponderIdPreparator(new TlsContext().getChooser(), id);
+        preparator.prepare();
         ResponderIdSerializer serializer = new ResponderIdSerializer(id);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

@@ -19,7 +19,8 @@ import org.junit.Test;
  */
 public class ResponderIdParserTest {
 
-    private final ResponderId id = new ResponderId(6, new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 });
+    private final Integer idLength = 6;
+    private final byte[] id = new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
     private final byte[] payloadBytes = new byte[] { 0x00, 0x06, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06 };
     private final int startParsing = 0;
     private ResponderIdParser parser;
@@ -30,7 +31,7 @@ public class ResponderIdParserTest {
         parser = new ResponderIdParser(startParsing, payloadBytes);
         parsedId = parser.parse();
 
-        assertEquals(id.getIdLength().getValue(), parsedId.getIdLength().getValue());
-        assertArrayEquals(id.getId().getValue(), parsedId.getId().getValue());
+        assertEquals(idLength, parsedId.getIdLength().getValue());
+        assertArrayEquals(id, parsedId.getId().getValue());
     }
 }
