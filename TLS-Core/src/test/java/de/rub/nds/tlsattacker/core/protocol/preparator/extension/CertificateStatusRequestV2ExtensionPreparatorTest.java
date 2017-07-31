@@ -26,11 +26,14 @@ import org.junit.Test;
 public class CertificateStatusRequestV2ExtensionPreparatorTest {
 
     private final int listLength = 12;
-    private final List<RequestItemV2> list = Arrays.asList(new RequestItemV2(1, 1, 1, Arrays.asList(new ResponderId(1,
-            new byte[] { 1 })), 1, new byte[] { 0x01, 0x02 }, new byte[] { 0x01, 0x02 }));
+    private final List<RequestItemV2> list = Arrays.asList(new RequestItemV2(1, 1, 1, 1, new byte[] { 0x01, 0x02 }));
+    private final List<ResponderId> respList = Arrays.asList(new ResponderId(1, new byte[] { 1 }));
+    private final byte[] respListBytes = new byte[] { 0x01, 0x02 };
 
     @Test
     public void testPreparator() {
+        list.get(0).setResponderIdList(respList);
+        list.get(0).setResponderIdListBytes(respListBytes);
         TlsContext context = new TlsContext();
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         context.getConfig().setStatusRequestV2RequestList(list);

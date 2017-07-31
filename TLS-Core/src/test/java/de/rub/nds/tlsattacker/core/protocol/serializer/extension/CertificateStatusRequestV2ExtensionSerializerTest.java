@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
 import java.util.Arrays;
+import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
@@ -28,12 +29,15 @@ public class CertificateStatusRequestV2ExtensionSerializerTest {
     private final int reqListLength = 0x11;
     private final int extensionLength = 0x13;
     private final ExtensionType type = ExtensionType.STATUS_REQUEST_V2;
-    private final RequestItemV2 item = new RequestItemV2(1, (byte) 0x0E, 7, Arrays.asList(new ResponderId(5,
-            new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })), 3, new byte[] { 0x01, 0x02, 0x03 }, new byte[] { 0x00, 0x05,
-            0x01, 0x02, 0x03, 0x04, 0x05 });
+    private final RequestItemV2 item = new RequestItemV2(1, 14, 7, 3, new byte[] { 0x01, 0x02, 0x03 });
+    private final List<ResponderId> responderIdList = Arrays.asList(new ResponderId(5, new byte[] { 0x01, 0x02, 0x03,
+            0x04, 0x05 }));
+    private final byte[] respoderIdListBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };
 
     @Test
     public void testSerializer() {
+        item.setResponderIdList(responderIdList);
+        item.setResponderIdListBytes(respoderIdListBytes);
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         msg.setExtensionType(type.getValue());
         msg.setExtensionLength(extensionLength);

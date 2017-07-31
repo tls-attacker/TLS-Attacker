@@ -37,19 +37,23 @@ public class RequestItemV2 {
     @ModifiableVariableProperty
     ModifiableByteArray responderIdListBytes;
 
+    Integer preparatorRequestType;
+    Integer preparatorRequestLength;
+    Integer preparatorResponderIdListLength;
+    Integer preparatorRequestExtensionLength;
+    byte[] preparatorRequestExtensions;
+
     public RequestItemV2() {
     }
 
-    public RequestItemV2(int requestType, int requestLength, int responderIdListLength,
-            List<ResponderId> responderIdList, int requestExtensionsLength, byte[] requestExtensions,
-            byte[] responderIdListBytes) {
-        this.requestType = safelySetValue(this.requestType, requestType);
-        this.requestLength = safelySetValue(this.requestLength, requestLength);
-        this.responderIdListLength = safelySetValue(this.responderIdListLength, responderIdListLength);
-        this.responderIdList = responderIdList;
-        this.requestExtensionsLength = safelySetValue(this.requestExtensionsLength, requestExtensionsLength);
-        this.requestExtensions = safelySetValue(this.requestExtensions, requestExtensions);
-        this.responderIdListBytes = safelySetValue(this.responderIdListBytes, responderIdListBytes);
+    public RequestItemV2(Integer preparatorRequestType, Integer preparatorRequestLength,
+            Integer preparatorResponderIdListLength, Integer preparatorRequestExtensionLength,
+            byte[] preparatorRequestExtensions) {
+        this.preparatorRequestType = preparatorRequestType;
+        this.preparatorRequestLength = preparatorRequestLength;
+        this.preparatorResponderIdListLength = preparatorResponderIdListLength;
+        this.preparatorRequestExtensionLength = preparatorRequestExtensionLength;
+        this.preparatorRequestExtensions = preparatorRequestExtensions;
     }
 
     public ModifiableInteger getRequestType() {
@@ -133,6 +137,46 @@ public class RequestItemV2 {
 
     public void setRequestLength(int requestLength) {
         this.requestLength = safelySetValue(this.requestLength, requestLength);
+    }
+
+    public Integer getPreparatorRequestType() {
+        return preparatorRequestType;
+    }
+
+    public void setPreparatorRequestType(Integer preparatorRequestType) {
+        this.preparatorRequestType = preparatorRequestType;
+    }
+
+    public Integer getPreparatorRequestLength() {
+        return preparatorRequestLength;
+    }
+
+    public void setPreparatorRequestLength(Integer preparatorRequestLength) {
+        this.preparatorRequestLength = preparatorRequestLength;
+    }
+
+    public Integer getPreparatorResponderIdListLength() {
+        return preparatorResponderIdListLength;
+    }
+
+    public void setPreparatorResponderIdListLength(Integer preparatorResponderIdListLength) {
+        this.preparatorResponderIdListLength = preparatorResponderIdListLength;
+    }
+
+    public Integer getPreparatorRequestExtensionLength() {
+        return preparatorRequestExtensionLength;
+    }
+
+    public void setPreparatorRequestExtensionLength(Integer preparatorRequestExtensionLength) {
+        this.preparatorRequestExtensionLength = preparatorRequestExtensionLength;
+    }
+
+    public byte[] getPreparatorRequestExtensions() {
+        return preparatorRequestExtensions;
+    }
+
+    public void setPreparatorRequestExtensions(byte[] preparatorRequestExtensions) {
+        this.preparatorRequestExtensions = preparatorRequestExtensions;
     }
 
 }

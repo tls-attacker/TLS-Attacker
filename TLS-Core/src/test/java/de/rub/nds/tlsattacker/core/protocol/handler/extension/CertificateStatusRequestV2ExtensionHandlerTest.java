@@ -27,8 +27,8 @@ import org.junit.Test;
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class CertificateStatusRequestV2ExtensionHandlerTest {
-    private final List<RequestItemV2> itemList = Arrays.asList(new RequestItemV2(1, 1, 1, Arrays
-            .asList(new ResponderId(1, new byte[] { 0x01 })), 0, new byte[] { 0x02 }, new byte[] { 0x03 }));
+    private final List<RequestItemV2> itemList = Arrays.asList(new RequestItemV2(1, 1, 1, 0, new byte[] { 0x02 }));
+    private final List<ResponderId> idList = Arrays.asList(new ResponderId(1, new byte[] { 0x01 }));
     private CertificateStatusRequestV2ExtensionHandler handler;
     private TlsContext context;
 
@@ -40,6 +40,7 @@ public class CertificateStatusRequestV2ExtensionHandlerTest {
 
     @Test
     public void testAdjustTLSContext() {
+        itemList.get(0).setResponderIdList(idList);
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         msg.setStatusRequestList(itemList);
 
