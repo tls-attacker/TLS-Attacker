@@ -10,7 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -26,17 +28,22 @@ public class TrustedAuthoritySerializer extends Serializer<TrustedAuthority> {
 
     @Override
     protected byte[] serializeBytes() {
-        if (trustedAuthority.getIdentifierType().getValue() != null) {
+        TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(),
+                trustedAuthority);
+        preparator.prepare();
+        if (trustedAuthority.getIdentifierType() != null && trustedAuthority.getIdentifierType().getValue() != null) {
             appendByte(trustedAuthority.getIdentifierType().getValue());
         }
-        if (trustedAuthority.getSha1Hash().getValue() != null) {
+        if (trustedAuthority.getSha1Hash() != null && trustedAuthority.getSha1Hash().getValue() != null) {
             appendBytes(trustedAuthority.getSha1Hash().getValue());
         }
-        if (trustedAuthority.getDistinguishedNameLength().getValue() != null) {
+        if (trustedAuthority.getDistinguishedNameLength() != null
+                && trustedAuthority.getDistinguishedNameLength().getValue() != null) {
             appendInt(trustedAuthority.getDistinguishedNameLength().getValue(),
                     ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH);
         }
-        if (trustedAuthority.getDistinguishedName().getValue() != null) {
+        if (trustedAuthority.getDistinguishedName() != null
+                && trustedAuthority.getDistinguishedName().getValue() != null) {
             appendBytes(trustedAuthority.getDistinguishedName().getValue());
         }
 

@@ -31,18 +31,34 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     @ModifiableVariableProperty
     private ModifiableByteArray distinguishedName;
 
+    private byte preparatorIdentifierType;
+    private byte[] preparatorSha1Hash;
+    private Integer preparatorDistinguishedNameLength;
+    private byte[] preparatorDistinguishedName;
+
     public TrustedAuthority() {
     }
 
-    public TrustedAuthority(byte identifierType, byte[] sha1Hash, Integer distinguishedNameLength,
-            byte[] distinguishedName) {
-        this.identifierType = ModifiableVariableFactory.safelySetValue(this.identifierType, identifierType);
-        this.sha1Hash = ModifiableVariableFactory.safelySetValue(this.sha1Hash, sha1Hash);
-        this.distinguishedNameLength = ModifiableVariableFactory.safelySetValue(this.distinguishedNameLength,
-                distinguishedNameLength);
-        this.distinguishedName = ModifiableVariableFactory.safelySetValue(this.distinguishedName, distinguishedName);
+    public TrustedAuthority(byte preparatorIdentifierType, byte[] preparatorSha1Hash,
+            Integer preparatorDistinguishedNameLength, byte[] preparatorDistinguishedName) {
+        this.preparatorIdentifierType = preparatorIdentifierType;
+        this.preparatorSha1Hash = preparatorSha1Hash;
+        this.preparatorDistinguishedNameLength = preparatorDistinguishedNameLength;
+        this.preparatorDistinguishedName = preparatorDistinguishedName;
     }
 
+    /*
+     * public TrustedAuthority(byte identifierType, byte[] sha1Hash, Integer
+     * distinguishedNameLength, byte[] distinguishedName) { this.identifierType
+     * = ModifiableVariableFactory.safelySetValue(this.identifierType,
+     * identifierType); this.sha1Hash =
+     * ModifiableVariableFactory.safelySetValue(this.sha1Hash, sha1Hash);
+     * this.distinguishedNameLength =
+     * ModifiableVariableFactory.safelySetValue(this.distinguishedNameLength,
+     * distinguishedNameLength); this.distinguishedName =
+     * ModifiableVariableFactory.safelySetValue(this.distinguishedName,
+     * distinguishedName); }
+     */
     public ModifiableByte getIdentifierType() {
         return identifierType;
     }
@@ -90,6 +106,38 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
 
     public void setDistinguishedName(byte[] distinguishedName) {
         this.distinguishedName = ModifiableVariableFactory.safelySetValue(this.distinguishedName, distinguishedName);
+    }
+
+    public byte getPreparatorIdentifierType() {
+        return preparatorIdentifierType;
+    }
+
+    public void setPreparatorIdentifierType(byte preparatorIdentifierType) {
+        this.preparatorIdentifierType = preparatorIdentifierType;
+    }
+
+    public byte[] getPreparatorSha1Hash() {
+        return preparatorSha1Hash;
+    }
+
+    public void setPreparatorSha1Hash(byte[] preparatorSha1Hash) {
+        this.preparatorSha1Hash = preparatorSha1Hash;
+    }
+
+    public Integer getPreparatorDistinguishedNameLength() {
+        return preparatorDistinguishedNameLength;
+    }
+
+    public void setPreparatorDistinguishedNameLength(int preparatorDistinguishedNameLength) {
+        this.preparatorDistinguishedNameLength = preparatorDistinguishedNameLength;
+    }
+
+    public byte[] getPreparatorDistinguishedName() {
+        return preparatorDistinguishedName;
+    }
+
+    public void setPreparatorDistinguishedName(byte[] preparatorDistinguishedName) {
+        this.preparatorDistinguishedName = preparatorDistinguishedName;
     }
 
 }

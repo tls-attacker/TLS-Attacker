@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -34,6 +35,8 @@ public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<
         msg.setTrustedAuthorities(chooser.getConfig().getTrustedCaIndicationExtensionAuthorties());
         int taLength = 0;
         for (TrustedAuthority ta : msg.getTrustedAuthorities()) {
+            TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(), ta);
+            preparator.prepare();
             taLength += getLength(ta);
         }
         msg.setTrustedAuthoritiesLength(taLength);

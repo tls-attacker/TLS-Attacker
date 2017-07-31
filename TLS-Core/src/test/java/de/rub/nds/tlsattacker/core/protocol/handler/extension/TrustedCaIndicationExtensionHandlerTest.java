@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndicationExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -38,11 +39,16 @@ public class TrustedCaIndicationExtensionHandlerTest {
     public void setUp() {
         context = new TlsContext();
         handler = new TrustedCaIndicationExtensionHandler(context);
+        for (TrustedAuthority ta : trustedAuthorities) {
+            TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(context.getChooser(), ta);
+            preparator.prepare();
+        }
     }
 
     @Test
     public void testAdjustTLSContext() {
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
+
         msg.setTrustedAuthorities(trustedAuthorities);
 
         handler.adjustTLSContext(msg);

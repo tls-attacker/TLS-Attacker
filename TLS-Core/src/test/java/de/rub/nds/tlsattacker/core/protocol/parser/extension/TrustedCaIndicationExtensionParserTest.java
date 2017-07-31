@@ -12,12 +12,15 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -57,6 +60,14 @@ public class TrustedCaIndicationExtensionParserTest {
                         new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05 })), 9 } });
     }
 
+    @Before
+    public void setUp() {
+        for (TrustedAuthority ta : trustedAuthoritiesList) {
+            TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(), ta);
+            preparator.prepare();
+        }
+    }
+
     @Test
     public void testParse() {
         TrustedCaIndicationExtensionParser parser = new TrustedCaIndicationExtensionParser(startposition,
@@ -76,18 +87,20 @@ public class TrustedCaIndicationExtensionParserTest {
             TrustedAuthority actualObject = actual.get(i);
 
             assertEquals(expectedObject.getIdentifierType().getValue(), actualObject.getIdentifierType().getValue());
-            if (expectedObject.getDistinguishedNameLength().getValue() != null) {
+            if (expectedObject.getDistinguishedNameLength() != null
+                    && expectedObject.getDistinguishedNameLength().getValue() != null) {
                 assertEquals(expectedObject.getDistinguishedNameLength().getValue(), actualObject
                         .getDistinguishedNameLength().getValue());
             } else {
                 assertNull(actualObject.getDistinguishedNameLength());
             }
-            if (expectedObject.getSha1Hash().getValue() != null) {
+            if (expectedObject.getSha1Hash() != null && expectedObject.getSha1Hash().getValue() != null) {
                 assertArrayEquals(expectedObject.getSha1Hash().getValue(), actualObject.getSha1Hash().getValue());
             } else {
                 assertNull(actualObject.getSha1Hash());
             }
-            if (expectedObject.getDistinguishedName().getValue() != null) {
+            if (expectedObject.getDistinguishedName() != null
+                    && expectedObject.getDistinguishedName().getValue() != null) {
                 assertArrayEquals(expectedObject.getDistinguishedName().getValue(), actualObject.getDistinguishedName()
                         .getValue());
             } else {
