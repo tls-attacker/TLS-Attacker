@@ -28,12 +28,12 @@ public class CachedObjectPreparator extends Preparator<CachedObject> {
 
     @Override
     public void prepare() {
-        object.setCachedInformationType(object.getPreparatorCachedInformationType());
-        if (object.getPreparatorHashValueLength() != null) {
-            object.setHashValueLength(object.getPreparatorHashValueLength());
+        object.setCachedInformationType(object.getCachedInformationTypeConfig());
+        if (object.getHashValueLengthConfig() != null) {
+            object.setHashValueLength(object.getHashValueLengthConfig());
         }
-        if (object.getPreparatorHashValue() != null) {
-            object.setHashValue(object.getPreparatorHashValue());
+        if (object.getHashValueConfig() != null) {
+            object.setHashValue(object.getHashValueConfig());
         } else {
             object.setHashValue((ModifiableByteArray) null);
         }

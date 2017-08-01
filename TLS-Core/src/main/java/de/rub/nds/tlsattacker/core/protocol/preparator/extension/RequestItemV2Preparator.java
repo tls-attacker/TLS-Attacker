@@ -27,11 +27,11 @@ public class RequestItemV2Preparator extends Preparator<RequestItemV2> {
 
     @Override
     public void prepare() {
-        item.setRequestType(item.getPreparatorRequestType());
-        item.setRequestLength(item.getPreparatorRequestLength());
-        item.setResponderIdListLength(item.getPreparatorResponderIdListLength());
-        item.setRequestExtensionsLength(item.getPreparatorRequestExtensionLength());
-        item.setRequestExtensions(item.getPreparatorRequestExtensions());
+        item.setRequestType(item.getRequestTypeConfig());
+        item.setRequestLength(item.getRequestLengthConfig());
+        item.setResponderIdListLength(item.getResponderIdListLengthConfig());
+        item.setRequestExtensionsLength(item.getRequestExtensionLengthConfig());
+        item.setRequestExtensions(item.getRequestExtensionsConfig());
     }
 
 }

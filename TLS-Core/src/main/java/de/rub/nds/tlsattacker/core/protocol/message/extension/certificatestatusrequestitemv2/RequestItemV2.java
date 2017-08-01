@@ -37,11 +37,11 @@ public class RequestItemV2 {
     @ModifiableVariableProperty
     ModifiableByteArray responderIdListBytes;
 
-    Integer preparatorRequestType;
-    Integer preparatorRequestLength;
-    Integer preparatorResponderIdListLength;
-    Integer preparatorRequestExtensionLength;
-    byte[] preparatorRequestExtensions;
+    Integer requestTypeConfig;
+    Integer requestLengthConfig;
+    Integer responderIdListLengthConfig;
+    Integer requestExtensionLengthConfig;
+    byte[] requestExtensionsConfig;
 
     public RequestItemV2() {
     }
@@ -49,11 +49,11 @@ public class RequestItemV2 {
     public RequestItemV2(Integer preparatorRequestType, Integer preparatorRequestLength,
             Integer preparatorResponderIdListLength, Integer preparatorRequestExtensionLength,
             byte[] preparatorRequestExtensions) {
-        this.preparatorRequestType = preparatorRequestType;
-        this.preparatorRequestLength = preparatorRequestLength;
-        this.preparatorResponderIdListLength = preparatorResponderIdListLength;
-        this.preparatorRequestExtensionLength = preparatorRequestExtensionLength;
-        this.preparatorRequestExtensions = preparatorRequestExtensions;
+        this.requestTypeConfig = preparatorRequestType;
+        this.requestLengthConfig = preparatorRequestLength;
+        this.responderIdListLengthConfig = preparatorResponderIdListLength;
+        this.requestExtensionLengthConfig = preparatorRequestExtensionLength;
+        this.requestExtensionsConfig = preparatorRequestExtensions;
     }
 
     public ModifiableInteger getRequestType() {
@@ -139,44 +139,44 @@ public class RequestItemV2 {
         this.requestLength = safelySetValue(this.requestLength, requestLength);
     }
 
-    public Integer getPreparatorRequestType() {
-        return preparatorRequestType;
+    public Integer getRequestTypeConfig() {
+        return requestTypeConfig;
     }
 
-    public void setPreparatorRequestType(Integer preparatorRequestType) {
-        this.preparatorRequestType = preparatorRequestType;
+    public void setRequestTypeConfig(Integer requestTypeConfig) {
+        this.requestTypeConfig = requestTypeConfig;
     }
 
-    public Integer getPreparatorRequestLength() {
-        return preparatorRequestLength;
+    public Integer getRequestLengthConfig() {
+        return requestLengthConfig;
     }
 
-    public void setPreparatorRequestLength(Integer preparatorRequestLength) {
-        this.preparatorRequestLength = preparatorRequestLength;
+    public void setRequestLengthConfig(Integer requestLengthConfig) {
+        this.requestLengthConfig = requestLengthConfig;
     }
 
-    public Integer getPreparatorResponderIdListLength() {
-        return preparatorResponderIdListLength;
+    public Integer getResponderIdListLengthConfig() {
+        return responderIdListLengthConfig;
     }
 
-    public void setPreparatorResponderIdListLength(Integer preparatorResponderIdListLength) {
-        this.preparatorResponderIdListLength = preparatorResponderIdListLength;
+    public void setResponderIdListLengthConfig(Integer responderIdListLengthConfig) {
+        this.responderIdListLengthConfig = responderIdListLengthConfig;
     }
 
-    public Integer getPreparatorRequestExtensionLength() {
-        return preparatorRequestExtensionLength;
+    public Integer getRequestExtensionLengthConfig() {
+        return requestExtensionLengthConfig;
     }
 
-    public void setPreparatorRequestExtensionLength(Integer preparatorRequestExtensionLength) {
-        this.preparatorRequestExtensionLength = preparatorRequestExtensionLength;
+    public void setRequestExtensionLengthConfig(Integer requestExtensionLengthConfig) {
+        this.requestExtensionLengthConfig = requestExtensionLengthConfig;
     }
 
-    public byte[] getPreparatorRequestExtensions() {
-        return preparatorRequestExtensions;
+    public byte[] getRequestExtensionsConfig() {
+        return requestExtensionsConfig;
     }
 
-    public void setPreparatorRequestExtensions(byte[] preparatorRequestExtensions) {
-        this.preparatorRequestExtensions = preparatorRequestExtensions;
+    public void setRequestExtensionsConfig(byte[] requestExtensionsConfig) {
+        this.requestExtensionsConfig = requestExtensionsConfig;
     }
 
 }

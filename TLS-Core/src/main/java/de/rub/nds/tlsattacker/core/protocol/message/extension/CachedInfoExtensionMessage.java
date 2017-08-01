@@ -26,9 +26,6 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
     private ModifiableInteger cachedInfoLength;
-    /*
-     * @ModifiableVariableProperty private ModifiableBoolean isClientState;
-     */
     @HoldsModifiableVariable
     private List<CachedObject> cachedInfo;
 

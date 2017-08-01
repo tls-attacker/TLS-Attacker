@@ -31,34 +31,22 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
     @ModifiableVariableProperty
     private ModifiableByteArray distinguishedName;
 
-    private byte preparatorIdentifierType;
-    private byte[] preparatorSha1Hash;
-    private Integer preparatorDistinguishedNameLength;
-    private byte[] preparatorDistinguishedName;
+    private byte identifierTypeConfig;
+    private byte[] sha1HashConfig;
+    private Integer distinguishedNameLengthConfig;
+    private byte[] distinguishedNameConfig;
 
     public TrustedAuthority() {
     }
 
     public TrustedAuthority(byte preparatorIdentifierType, byte[] preparatorSha1Hash,
             Integer preparatorDistinguishedNameLength, byte[] preparatorDistinguishedName) {
-        this.preparatorIdentifierType = preparatorIdentifierType;
-        this.preparatorSha1Hash = preparatorSha1Hash;
-        this.preparatorDistinguishedNameLength = preparatorDistinguishedNameLength;
-        this.preparatorDistinguishedName = preparatorDistinguishedName;
+        this.identifierTypeConfig = preparatorIdentifierType;
+        this.sha1HashConfig = preparatorSha1Hash;
+        this.distinguishedNameLengthConfig = preparatorDistinguishedNameLength;
+        this.distinguishedNameConfig = preparatorDistinguishedName;
     }
 
-    /*
-     * public TrustedAuthority(byte identifierType, byte[] sha1Hash, Integer
-     * distinguishedNameLength, byte[] distinguishedName) { this.identifierType
-     * = ModifiableVariableFactory.safelySetValue(this.identifierType,
-     * identifierType); this.sha1Hash =
-     * ModifiableVariableFactory.safelySetValue(this.sha1Hash, sha1Hash);
-     * this.distinguishedNameLength =
-     * ModifiableVariableFactory.safelySetValue(this.distinguishedNameLength,
-     * distinguishedNameLength); this.distinguishedName =
-     * ModifiableVariableFactory.safelySetValue(this.distinguishedName,
-     * distinguishedName); }
-     */
     public ModifiableByte getIdentifierType() {
         return identifierType;
     }
@@ -108,36 +96,36 @@ public class TrustedAuthority extends ModifiableVariableHolder implements Serial
         this.distinguishedName = ModifiableVariableFactory.safelySetValue(this.distinguishedName, distinguishedName);
     }
 
-    public byte getPreparatorIdentifierType() {
-        return preparatorIdentifierType;
+    public byte getIdentifierTypeConfig() {
+        return identifierTypeConfig;
     }
 
-    public void setPreparatorIdentifierType(byte preparatorIdentifierType) {
-        this.preparatorIdentifierType = preparatorIdentifierType;
+    public void setIdentifierTypeConfig(byte identifierTypeConfig) {
+        this.identifierTypeConfig = identifierTypeConfig;
     }
 
-    public byte[] getPreparatorSha1Hash() {
-        return preparatorSha1Hash;
+    public byte[] getSha1HashConfig() {
+        return sha1HashConfig;
     }
 
-    public void setPreparatorSha1Hash(byte[] preparatorSha1Hash) {
-        this.preparatorSha1Hash = preparatorSha1Hash;
+    public void setSha1HashConfig(byte[] sha1HashConfig) {
+        this.sha1HashConfig = sha1HashConfig;
     }
 
-    public Integer getPreparatorDistinguishedNameLength() {
-        return preparatorDistinguishedNameLength;
+    public Integer getDistinguishedNameLengthConfig() {
+        return distinguishedNameLengthConfig;
     }
 
     public void setPreparatorDistinguishedNameLength(int preparatorDistinguishedNameLength) {
-        this.preparatorDistinguishedNameLength = preparatorDistinguishedNameLength;
+        this.distinguishedNameLengthConfig = preparatorDistinguishedNameLength;
     }
 
-    public byte[] getPreparatorDistinguishedName() {
-        return preparatorDistinguishedName;
+    public byte[] getDistinguishedNameConfig() {
+        return distinguishedNameConfig;
     }
 
-    public void setPreparatorDistinguishedName(byte[] preparatorDistinguishedName) {
-        this.preparatorDistinguishedName = preparatorDistinguishedName;
+    public void setDistinguishedNameConfig(byte[] distinguishedNameConfig) {
+        this.distinguishedNameConfig = distinguishedNameConfig;
     }
 
 }

@@ -27,8 +27,8 @@ public class ResponderIdPreparator extends Preparator<ResponderId> {
 
     @Override
     public void prepare() {
-        object.setId(object.getPreparatorId());
-        object.setIdLength(object.getPreparatorIdLength());
+        object.setId(object.getIdConfig());
+        object.setIdLength(object.getIdLengthConfig());
     }
 
 }

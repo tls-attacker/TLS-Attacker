@@ -24,12 +24,12 @@ public class ResponderId {
     @ModifiableVariableProperty
     ModifiableByteArray id;
 
-    Integer preparatorIdLength;
-    byte[] preparatorId;
+    Integer idLengthConfig;
+    byte[] idConfig;
 
     public ResponderId(Integer preparatorIdLength, byte[] preparatorId) {
-        this.preparatorIdLength = preparatorIdLength;
-        this.preparatorId = preparatorId;
+        this.idLengthConfig = preparatorIdLength;
+        this.idConfig = preparatorId;
     }
 
     public ResponderId() {
@@ -59,20 +59,20 @@ public class ResponderId {
         this.id = safelySetValue(this.id, id);
     }
 
-    public Integer getPreparatorIdLength() {
-        return preparatorIdLength;
+    public Integer getIdLengthConfig() {
+        return idLengthConfig;
     }
 
-    public void setPreparatorIdLength(Integer preparatorIdLength) {
-        this.preparatorIdLength = preparatorIdLength;
+    public void setIdLengthConfig(Integer idLengthConfig) {
+        this.idLengthConfig = idLengthConfig;
     }
 
-    public byte[] getPreparatorId() {
-        return preparatorId;
+    public byte[] getIdConfig() {
+        return idConfig;
     }
 
-    public void setPreparatorId(byte[] preparatorId) {
-        this.preparatorId = preparatorId;
+    public void setIdConfig(byte[] idConfig) {
+        this.idConfig = idConfig;
     }
 
 }

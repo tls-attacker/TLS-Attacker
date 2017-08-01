@@ -27,15 +27,15 @@ public class TrustedAuthorityPreparator extends Preparator<TrustedAuthority> {
 
     @Override
     public void prepare() {
-        object.setIdentifierType(object.getPreparatorIdentifierType());
-        if (object.getPreparatorSha1Hash() != null) {
-            object.setSha1Hash(object.getPreparatorSha1Hash());
+        object.setIdentifierType(object.getIdentifierTypeConfig());
+        if (object.getSha1HashConfig() != null) {
+            object.setSha1Hash(object.getSha1HashConfig());
         }
-        if (object.getPreparatorDistinguishedNameLength() != null) {
-            object.setDistinguishedNameLength(object.getPreparatorDistinguishedNameLength());
+        if (object.getDistinguishedNameLengthConfig() != null) {
+            object.setDistinguishedNameLength(object.getDistinguishedNameLengthConfig());
         }
-        if (object.getPreparatorDistinguishedName() != null) {
-            object.setDistinguishedName(object.getPreparatorDistinguishedName());
+        if (object.getDistinguishedNameConfig() != null) {
+            object.setDistinguishedName(object.getDistinguishedNameConfig());
         }
     }
 
