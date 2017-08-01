@@ -87,7 +87,7 @@ public class TlsAttackerSocket {
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction();
         action.execute(context);
-        List<ProtocolMessage> recievedMessages = action.getMessages();
+        List<ProtocolMessage> recievedMessages = action.getReceivedMessages();
         List<ApplicationMessage> recievedAppMessages = new LinkedList<>();
         for (ProtocolMessage message : recievedMessages) {
             if (message instanceof ApplicationMessage) {

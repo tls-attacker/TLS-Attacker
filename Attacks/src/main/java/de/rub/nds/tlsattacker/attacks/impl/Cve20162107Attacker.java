@@ -71,14 +71,14 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         TlsContext tlsContext = new TlsContext(tlsConfig);
 
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
-        SendAction sendAction = trace.getLastSendAction();
+        SendAction sendAction = (SendAction) trace.getLastSendingAction();
         // We need 2-3 Records,one for every message, while the last one will
         // have the modified padding
         List<AbstractRecord> records = new LinkedList<>();
         Record record = createRecordWithBadPadding();
         tlsConfig.setCreateIndividualRecords(true);
         records.add(new Record(tlsConfig));
-        if (sendAction.getMessages().size() > 2) {
+        if (sendAction.getSendMessages().size() > 2) {
             records.add(new Record(tlsConfig));
         }
         records.add(record);

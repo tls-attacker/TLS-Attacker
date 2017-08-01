@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.ConnectionEnd;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
@@ -29,9 +26,11 @@ import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import java.io.Serializable;
@@ -210,21 +209,21 @@ public class WorkflowTrace implements Serializable {
         return messageActions;
     }
 
-    public List<ReceiveAction> getReceiveActions() {
-        List<ReceiveAction> receiveActions = new LinkedList<>();
+    public List<ReceivingAction> getReceivingActions() {
+        List<ReceivingAction> receiveActions = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                receiveActions.add((ReceiveAction) action);
+            if (action instanceof ReceivingAction) {
+                receiveActions.add((ReceivingAction) action);
             }
         }
         return receiveActions;
     }
 
-    public List<SendAction> getSendActions() {
-        List<SendAction> sendActions = new LinkedList<>();
+    public List<SendingAction> getSendingActions() {
+        List<SendingAction> sendActions = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                sendActions.add((SendAction) action);
+            if (action instanceof SendingAction) {
+                sendActions.add((SendingAction) action);
             }
         }
         return sendActions;
@@ -244,9 +243,9 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
-    public SendAction getLastSendAction() {
+    public SendingAction getLastSendingAction() {
         for (int i = tlsActions.size() - 1; i > 0; i--) {
-            if (tlsActions.get(i) instanceof SendAction) {
+            if (tlsActions.get(i) instanceof SendingAction) {
                 return (SendAction) (tlsActions.get(i));
             }
         }

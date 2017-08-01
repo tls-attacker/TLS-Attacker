@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -157,16 +156,16 @@ public class WorkflowTraceUtil {
 
     private static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
-        for (ReceiveAction action : trace.getReceiveActions()) {
-            receivedMessage.addAll(action.getMessages());
+        for (ReceivingAction action : trace.getReceivingActions()) {
+            receivedMessage.addAll(action.getReceivedMessages());
         }
         return receivedMessage;
     }
 
     private static List<ProtocolMessage> getAllSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage> sendMessages = new LinkedList<>();
-        for (SendAction action : trace.getSendActions()) {
-            sendMessages.addAll(action.getMessages());
+        for (SendingAction action : trace.getSendingActions()) {
+            sendMessages.addAll(action.getSendMessages());
         }
         return sendMessages;
     }

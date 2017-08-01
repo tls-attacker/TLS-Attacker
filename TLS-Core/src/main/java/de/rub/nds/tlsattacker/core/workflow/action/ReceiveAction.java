@@ -38,13 +38,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -53,7 +52,7 @@ import javax.xml.bind.annotation.XmlElements;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ReceiveAction extends MessageAction {
+public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -162,5 +161,49 @@ public class ReceiveAction extends MessageAction {
         messages = new LinkedList<>();
         records = new LinkedList<>();
         setExecuted(Boolean.FALSE);
+    }
+
+    @Override
+    public List<ProtocolMessage> getReceivedMessages() {
+        return messages;
+    }
+
+    @Override
+    public List<AbstractRecord> getReceivedRecords() {
+        return records;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.expectedMessages);
+        hash = 67 * hash + Objects.hashCode(this.messages);
+        hash = 67 * hash + Objects.hashCode(this.records);
+
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ReceiveAction other = (ReceiveAction) obj;
+        if (!Objects.equals(this.expectedMessages, other.expectedMessages)) {
+            return false;
+        }
+        if (!Objects.equals(this.messages, other.messages)) {
+            return false;
+        }
+        if (!Objects.equals(this.records, other.records)) {
+            return false;
+        }
+        return true;
     }
 }

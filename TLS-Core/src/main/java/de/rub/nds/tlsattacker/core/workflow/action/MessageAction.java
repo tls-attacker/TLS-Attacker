@@ -41,7 +41,6 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -93,43 +92,6 @@ public abstract class MessageAction extends TLSAction {
         records = new LinkedList<>();
     }
 
-    public List<AbstractRecord> getRecords() {
-        return records;
-    }
-
-    public List<ProtocolMessage> getMessages() {
-        return messages;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.messages);
-        hash = 71 * hash + Objects.hashCode(this.records);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final MessageAction other = (MessageAction) obj;
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        if (!Objects.equals(this.records, other.records)) {
-            return false;
-        }
-        return true;
-    }
-
     public String getReadableString(List<ProtocolMessage> messages) {
         StringBuilder builder = new StringBuilder();
         for (ProtocolMessage message : messages) {
@@ -140,5 +102,21 @@ public abstract class MessageAction extends TLSAction {
             builder.append(", ");
         }
         return builder.toString();
+    }
+
+    public List<ProtocolMessage> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<ProtocolMessage> messages) {
+        this.messages = messages;
+    }
+
+    public List<AbstractRecord> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<AbstractRecord> records) {
+        this.records = records;
     }
 }

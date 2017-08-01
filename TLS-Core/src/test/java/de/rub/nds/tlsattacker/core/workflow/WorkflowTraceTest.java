@@ -163,8 +163,8 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
-        assertTrue(trace.getReceiveActions().size() == 1);
-        assertEquals(trace.getReceiveActions().get(0), new ReceiveAction());
+        assertTrue(trace.getReceivingActions().size() == 1);
+        assertEquals(trace.getReceivingActions().get(0), new ReceiveAction());
     }
 
     /**
@@ -175,8 +175,8 @@ public class WorkflowTraceTest {
         trace.addTlsAction(new SendAction());
         trace.addTlsAction(new ReceiveAction());
         trace.addTlsAction(new ChangeClientRandomAction());
-        assertTrue(trace.getSendActions().size() == 1);
-        assertEquals(trace.getSendActions().get(0), new SendAction());
+        assertTrue(trace.getSendingActions().size() == 1);
+        assertEquals(trace.getSendingActions().get(0), new SendAction());
     }
 
     /**

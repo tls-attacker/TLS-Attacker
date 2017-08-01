@@ -15,13 +15,14 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * todo print configured records
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class SendAction extends MessageAction {
+public class SendAction extends MessageAction implements SendingAction {
 
     public SendAction() {
         super();
@@ -73,5 +74,45 @@ public class SendAction extends MessageAction {
     public void reset() {
         // TODO Strip
         setExecuted(Boolean.FALSE);
+    }
+
+    @Override
+    public List<ProtocolMessage> getSendMessages() {
+        return messages;
+    }
+
+    @Override
+    public List<AbstractRecord> getSendRecords() {
+        return records;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SendAction other = (SendAction) obj;
+        if (!Objects.equals(this.messages, other.messages)) {
+            return false;
+        }
+        if (!Objects.equals(this.records, other.records)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.messages);
+        hash = 67 * hash + Objects.hashCode(this.records);
+
+        return hash;
     }
 }

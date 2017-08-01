@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class GenericReceiveAction extends MessageAction{
+public class GenericReceiveAction extends MessageAction implements ReceivingAction {
 
     public GenericReceiveAction() {
         super();
@@ -64,5 +64,14 @@ public class GenericReceiveAction extends MessageAction{
         records = new LinkedList<>();
         setExecuted(Boolean.FALSE);
     }
-    
+
+    @Override
+    public List<ProtocolMessage> getReceivedMessages() {
+        return messages;
+    }
+
+    @Override
+    public List<AbstractRecord> getReceivedRecords() {
+        return records;
+    }
 }
