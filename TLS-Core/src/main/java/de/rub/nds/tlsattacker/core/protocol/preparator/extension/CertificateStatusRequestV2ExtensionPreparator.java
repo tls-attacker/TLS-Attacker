@@ -38,7 +38,7 @@ public class CertificateStatusRequestV2ExtensionPreparator extends
         byte[] itemAsBytes;
 
         for (RequestItemV2 item : msg.getStatusRequestList()) {
-            RequestItemV2Preparator preparator = new RequestItemV2Preparator(new TlsContext().getChooser(), item);
+            RequestItemV2Preparator preparator = new RequestItemV2Preparator(chooser, item);
             preparator.prepare();
             RequestItemV2Serializer serializer = new RequestItemV2Serializer(item);
             itemAsBytes = serializer.serialize();

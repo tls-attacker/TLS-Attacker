@@ -28,7 +28,6 @@ public class ClientCertificateTypeExtensionParser extends ExtensionParser<Client
             msg.setCertificateTypes(parseByteArrayField(msg.getCertificateTypesLength().getValue()));
         } else {
             msg.setCertificateTypes(parseByteArrayField(ExtensionByteLength.CERTIFICATE_TYPE_TYPE_LENGTH));
-            msg.setCertificateTypesLength(null);
         }
     }
 
