@@ -21,6 +21,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import  de.rub.nds.tlsattacker.core.constants.NamedCurve;
+
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
@@ -84,13 +86,27 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientSupportedNamedCurves() {
+        
     }
-
     /**
      * Test of getServerSupportedPointFormats method, of class DefaultChooser.
      */
     @Test
     public void testGetServerSupportedPointFormats() {
+        List<ECPointFormat> formatList = new LinkedList<>();
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        formatList.add(ECPointFormat.UNCOMPRESSED);
+        config.setDefaultServerSupportedPointFormats(formatList);
+        assertTrue(config.getDefaultServerSupportedPointFormats().size() == 8);
+        assertTrue(chooser.getServerSupportedPointFormats().size() == 8);
+        context.setServerPointFormatsList(new LinkedList<ECPointFormat>());
+        assertTrue(chooser.getServerSupportedPointFormats().size() == 0);
     }
 
     /**
