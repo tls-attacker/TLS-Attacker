@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.bouncycastle.crypto.tls.TlsClientContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -34,17 +33,17 @@ import org.junit.runners.Parameterized;
 public class CachedInfoExtensionParserTest {
 
     private final ExtensionType type;
-    private final ConnectionEndType isClientState;
+    private final ConnectionEndType connectionEndType;
     private final int cachedInfoLength;
     private final byte[] cachedInfoBytes;
     private final List<CachedObject> cachedObjectList;
     private final byte[] extensionBytes;
     private final int extensionLength;
 
-    public CachedInfoExtensionParserTest(ExtensionType type, ConnectionEndType isClientState, int cachedInfoLength,
+    public CachedInfoExtensionParserTest(ExtensionType type, ConnectionEndType connectionEndType, int cachedInfoLength,
             byte[] cachedInfoBytes, List<CachedObject> cachedObjectList, byte[] extensionBytes, int extensionLength) {
         this.type = type;
-        this.isClientState = isClientState;
+        this.connectionEndType = connectionEndType;
         this.cachedInfoLength = cachedInfoLength;
         this.cachedInfoBytes = cachedInfoBytes;
         this.cachedObjectList = cachedObjectList;
@@ -76,7 +75,7 @@ public class CachedInfoExtensionParserTest {
     @Test
     public void testParse() {
         TlsContext context = new TlsContext();
-        context.setTalkingConnectionEndType(isClientState);
+        context.setTalkingConnectionEndType(connectionEndType);
 
         CachedInfoExtensionParser parser = new CachedInfoExtensionParser(0, extensionBytes);
         CachedInfoExtensionMessage msg = parser.parse();
