@@ -13,6 +13,9 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -38,6 +41,14 @@ public class CertificateStatusRequestV2ExtensionSerializerTest {
     public void testSerializer() {
         item.setResponderIdList(responderIdList);
         item.setResponderIdListBytes(respoderIdListBytes);
+        RequestItemV2Preparator preparator = new RequestItemV2Preparator(new TlsContext().getChooser(), item);
+        preparator.prepare();
+
+        for (ResponderId id : responderIdList) {
+            ResponderIdPreparator responderPreparator = new ResponderIdPreparator(new TlsContext().getChooser(), id);
+            responderPreparator.prepare();
+        }
+
         CertificateStatusRequestV2ExtensionMessage msg = new CertificateStatusRequestV2ExtensionMessage();
         msg.setExtensionType(type.getValue());
         msg.setExtensionLength(extensionLength);

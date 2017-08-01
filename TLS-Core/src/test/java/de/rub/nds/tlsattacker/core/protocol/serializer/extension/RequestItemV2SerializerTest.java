@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -30,6 +33,12 @@ public class RequestItemV2SerializerTest {
 
     @Test
     public void testSerializer() {
+        for (ResponderId id : respIdList) {
+            ResponderIdPreparator preparatorResponderId = new ResponderIdPreparator(new TlsContext().getChooser(), id);
+            preparatorResponderId.prepare();
+        }
+        RequestItemV2Preparator preparator = new RequestItemV2Preparator(new TlsContext().getChooser(), item);
+        preparator.prepare();
         item.setResponderIdList(respIdList);
         item.setResponderIdListBytes(respIdListBytes);
         RequestItemV2Serializer serializer = new RequestItemV2Serializer(item);

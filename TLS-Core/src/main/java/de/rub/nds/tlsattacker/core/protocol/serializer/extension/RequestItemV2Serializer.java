@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RequestItemV2Preparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ResponderIdPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -30,8 +29,6 @@ public class RequestItemV2Serializer extends Serializer<RequestItemV2> {
 
     @Override
     protected byte[] serializeBytes() {
-        RequestItemV2Preparator preparator = new RequestItemV2Preparator(new TlsContext().getChooser(), reqItem);
-        preparator.prepare();
         appendInt(reqItem.getRequestType().getValue(), ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_STATUS_TYPE);
         appendInt(reqItem.getRequestLength().getValue(),
                 ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_REQUEST_LENGTH);
@@ -39,8 +36,6 @@ public class RequestItemV2Serializer extends Serializer<RequestItemV2> {
                 ExtensionByteLength.CERTIFICATE_STATUS_REQUEST_V2_RESPONDER_ID);
 
         for (ResponderId id : reqItem.getResponderIdList()) {
-            ResponderIdPreparator preparatorResponderId = new ResponderIdPreparator(new TlsContext().getChooser(), id);
-            preparatorResponderId.prepare();
             ResponderIdSerializer serializer = new ResponderIdSerializer(id);
             appendBytes(serializer.serialize());
         }

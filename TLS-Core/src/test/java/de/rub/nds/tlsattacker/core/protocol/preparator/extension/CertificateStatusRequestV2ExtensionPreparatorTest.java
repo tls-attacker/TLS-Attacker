@@ -32,6 +32,15 @@ public class CertificateStatusRequestV2ExtensionPreparatorTest {
 
     @Test
     public void testPreparator() {
+        for (ResponderId item : respList) {
+            ResponderIdPreparator idPreparator = new ResponderIdPreparator(new TlsContext().getChooser(), item);
+            idPreparator.prepare();
+        }
+
+        for (RequestItemV2 item : list) {
+            RequestItemV2Preparator itemPreparator = new RequestItemV2Preparator(new TlsContext().getChooser(), item);
+            itemPreparator.prepare();
+        }
         list.get(0).setResponderIdList(respList);
         list.get(0).setResponderIdListBytes(respListBytes);
         TlsContext context = new TlsContext();

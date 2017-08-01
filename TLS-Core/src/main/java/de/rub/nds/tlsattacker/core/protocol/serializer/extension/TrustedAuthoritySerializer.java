@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -28,9 +26,6 @@ public class TrustedAuthoritySerializer extends Serializer<TrustedAuthority> {
 
     @Override
     protected byte[] serializeBytes() {
-        TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(),
-                trustedAuthority);
-        preparator.prepare();
         if (trustedAuthority.getIdentifierType() != null && trustedAuthority.getIdentifierType().getValue() != null) {
             appendByte(trustedAuthority.getIdentifierType().getValue());
         }

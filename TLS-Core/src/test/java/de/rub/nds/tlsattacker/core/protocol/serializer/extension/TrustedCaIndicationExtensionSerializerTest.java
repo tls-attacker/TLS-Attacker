@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TrustedCaIndicationExtensionParserTest;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedAuthorityPreparator;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Collection;
 import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
@@ -51,6 +53,10 @@ public class TrustedCaIndicationExtensionSerializerTest {
     @Test
     public void testSerializeBytes() {
         TrustedCaIndicationExtensionMessage msg = new TrustedCaIndicationExtensionMessage();
+        for (TrustedAuthority item : trustedAuthoritiesList) {
+            TrustedAuthorityPreparator preparator = new TrustedAuthorityPreparator(new TlsContext().getChooser(), item);
+            preparator.prepare();
+        }
 
         msg.setExtensionType(type.getValue());
         msg.setExtensionLength(extensionLength);
@@ -58,8 +64,8 @@ public class TrustedCaIndicationExtensionSerializerTest {
         msg.setTrustedAuthorities(trustedAuthoritiesList);
 
         TrustedCaIndicationExtensionSerializer serializer = new TrustedCaIndicationExtensionSerializer(msg);
-
-        assertArrayEquals(extensionBytes, serializer.serialize());
+        byte[] test = serializer.serialize();
+        assertArrayEquals(extensionBytes, test);
     }
 
 }
