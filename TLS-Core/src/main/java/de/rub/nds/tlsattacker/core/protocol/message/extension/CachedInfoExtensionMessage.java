@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -60,16 +59,6 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
         this.cachedInfo = cachedInfo;
     }
 
-    /*
-     * public ModifiableBoolean getIsClientState() { return isClientState; }
-     * 
-     * public void setIsClientState(ModifiableBoolean isClientState) {
-     * this.isClientState = isClientState; }
-     * 
-     * public void setIsClientState(boolean isClientState) { this.isClientState
-     * = ModifiableVariableFactory.safelySetValue(this.isClientState,
-     * isClientState); }
-     */
     public ModifiableByteArray getCachedInfoBytes() {
         return cachedInfoBytes;
     }
