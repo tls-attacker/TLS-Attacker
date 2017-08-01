@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -100,24 +99,15 @@ public abstract class WorkflowExecutor {
         Config config = context.getConfig();
 
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            FileOutputStream fos = null;
             try {
                 File f = new File(config.getWorkflowOutput());
                 if (f.isDirectory()) {
                     f = new File(config.getWorkflowOutput() + "trace-" + RandomHelper.getRandom().nextInt());
                 }
-                fos = new FileOutputStream(f);
-                WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
+                WorkflowTraceSerializer.write(f, context.getWorkflowTrace());
             } catch (JAXBException | IOException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.");
                 LOGGER.debug(ex);
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    LOGGER.info("Could not serialize WorkflowTrace.");
-                    LOGGER.debug(ex);
-                }
             }
         }
     }
