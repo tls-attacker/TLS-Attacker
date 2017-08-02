@@ -31,14 +31,16 @@ public class WaitingAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException {
+        Boolean success= null;
         LOGGER.info("Wating " + time + "ms...");
         try {
             Thread.sleep(time);
+            success = true;
         } catch (InterruptedException ex) {
             Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
-            // TODO executedAsPlanned = false
+            success = false;
         }
-        this.setExecuted(Boolean.TRUE);
+        this.setExecuted(success);
     }
 
     @Override
