@@ -69,7 +69,7 @@ public class TlsRecordLayer extends RecordLayer {
                 records.add(record);
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
-                // TODO Could not parse as record try parsing Blob
+                LOGGER.debug("Could not parse Record, parsing as Blob",E);
                 BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData,
                         tlsContext.getSelectedProtocolVersion());
                 AbstractRecord record = blobParser.parse();
