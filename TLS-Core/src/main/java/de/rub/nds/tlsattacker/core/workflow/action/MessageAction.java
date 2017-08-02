@@ -39,6 +39,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -118,5 +119,9 @@ public abstract class MessageAction extends TLSAction {
 
     public void setRecords(List<AbstractRecord> records) {
         this.records = records;
+    }
+
+    public void setRecords(AbstractRecord... records) {
+        this.records = Arrays.asList(records);
     }
 }
