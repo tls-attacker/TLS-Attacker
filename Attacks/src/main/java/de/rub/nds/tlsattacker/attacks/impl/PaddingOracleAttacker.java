@@ -61,8 +61,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     public void executeAttackRound(Record record) {
         TlsContext tlsContext = new TlsContext(tlsConfig);
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 

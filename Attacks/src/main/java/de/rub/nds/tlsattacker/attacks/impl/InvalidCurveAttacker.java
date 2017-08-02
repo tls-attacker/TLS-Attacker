@@ -79,8 +79,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         Config tlsConfig = config.createConfig();
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(config.createConfig());
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
                 .getFirstReceivedMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);

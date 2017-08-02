@@ -179,11 +179,11 @@ public class TlsClientTest {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(config);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (Exception E) {
+        } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
         String workflowString = tlsContext.getWorkflowTrace().toString();
@@ -218,8 +218,8 @@ public class TlsClientTest {
                         config)));
         trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {

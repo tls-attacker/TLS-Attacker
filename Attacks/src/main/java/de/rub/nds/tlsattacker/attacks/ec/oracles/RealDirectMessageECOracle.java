@@ -67,8 +67,8 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
@@ -139,8 +139,8 @@ public class RealDirectMessageECOracle extends ECOracle {
      */
     private void executeValidWorkflowAndExtractCheckValues() {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 

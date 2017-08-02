@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -150,7 +151,11 @@ public class ReceiveMessageHelper {
         while (dataPointer < cleanProtocolMessageBytes.length) {
             ParserResult result = null;
             try {
-                result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord, context);
+                if (typeFromRecord != null) {
+                    result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord, context);
+                } else {
+                    result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
+                }
             } catch (ParserException | AdjustmentException E) {
                 LOGGER.warn("Could not parse Message as a CorrectMessage");
                 LOGGER.debug(E);
@@ -179,6 +184,12 @@ public class ReceiveMessageHelper {
         HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(protocolMessageBytes[pointer]);
         ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
         return pmh.parseMessage(protocolMessageBytes, pointer);
+    }
+
+    private static ParserResult tryHandleAsSslMessage(byte[] cleanProtocolMessageBytes, int dataPointer,
+            TlsContext context) {
+        ProtocolMessageHandler pmh = new SSL2ServerHelloHandler(context);
+        return pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
     }
 
     private static ParserResult tryHandleAsUnknownHandshakeMessage(byte[] protocolMessageBytes, int pointer,

@@ -27,9 +27,7 @@ import java.util.List;
  */
 public class TlsAttackerSocket {
 
-    private final TlsContext context; // TODO Would be better if we could keep
-
-    // the context out of this
+    private final TlsContext context;
 
     public TlsAttackerSocket(TlsContext context) {
         this.context = context;
@@ -85,7 +83,7 @@ public class TlsAttackerSocket {
      * @throws java.io.IOException
      */
     public byte[] receiveBytes() throws IOException {
-        ReceiveAction action = new ReceiveAction();
+        ReceiveAction action = new ReceiveAction(new ApplicationMessage());
         action.execute(context);
         List<ProtocolMessage> recievedMessages = action.getReceivedMessages();
         List<ApplicationMessage> recievedAppMessages = new LinkedList<>();

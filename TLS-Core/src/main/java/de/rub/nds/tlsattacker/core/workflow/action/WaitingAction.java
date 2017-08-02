@@ -31,7 +31,7 @@ public class WaitingAction extends TLSAction {
 
     @Override
     public void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException {
-        Boolean success= null;
+        Boolean success = null;
         LOGGER.info("Wating " + time + "ms...");
         try {
             Thread.sleep(time);

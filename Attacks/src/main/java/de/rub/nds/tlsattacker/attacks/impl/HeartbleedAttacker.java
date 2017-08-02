@@ -49,8 +49,8 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 

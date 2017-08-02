@@ -44,8 +44,8 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
         Config tlsConfig = config.createConfig();
         tlsConfig.setClientAuthentication(true);
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 

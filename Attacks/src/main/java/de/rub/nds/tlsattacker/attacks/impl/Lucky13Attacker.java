@@ -75,8 +75,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     public void executeAttackRound(Record record) {
         Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         // Client

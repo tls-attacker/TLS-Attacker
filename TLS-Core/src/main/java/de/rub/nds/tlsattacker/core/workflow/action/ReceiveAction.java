@@ -160,7 +160,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public void reset() {
         messages = new LinkedList<>();
         records = new LinkedList<>();
-        setExecuted(Boolean.FALSE);
+        setExecuted(null);
     }
 
     @Override

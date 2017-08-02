@@ -32,7 +32,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
 import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -71,7 +70,6 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config) {
         super(config, false);
         tlsConfig = config.createConfig();
-        tlsConfig.setExecutorType(ExecutorType.DTLS);
     }
 
     @Override
@@ -289,7 +287,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private void initExecuteAttack() {
         tlsContext = new TlsContext(tlsConfig);
-        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(), tlsContext);
+        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(),
+                tlsContext);
         recordLayer = tlsContext.getRecordLayer();
         trace = tlsContext.getWorkflowTrace();
         actionList = trace.getTlsActions();

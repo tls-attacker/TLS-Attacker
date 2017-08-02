@@ -60,8 +60,8 @@ public class TlsClient {
 
     public void startTlsClient(Config config) {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
 
         try {
             workflowExecutor.executeWorkflow();

@@ -8,12 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
+import java.lang.reflect.Field;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,8 +76,39 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public void reset() {
-        // TODO Strip
-        setExecuted(Boolean.FALSE);
+        List<ModifiableVariableHolder> holders = new LinkedList<>();
+        for (ProtocolMessage message : messages) {
+            holders.addAll(message.getAllModifiableVariableHolders());
+        }
+        for (AbstractRecord record : getRecords()) {
+            holders.addAll(record.getAllModifiableVariableHolders());
+        }
+        for (ModifiableVariableHolder holder : holders) {
+            List<Field> fields = holder.getAllModifiableVariableFields();
+            for (Field f : fields) {
+                f.setAccessible(true);
+
+                ModifiableVariable mv = null;
+                try {
+                    mv = (ModifiableVariable) f.get(holder);
+                } catch (IllegalArgumentException | IllegalAccessException ex) {
+                    LOGGER.warn("Could not retrieve ModifiableVariables");
+                    LOGGER.debug(ex);
+                }
+                if (mv != null) {
+                    if (mv.getModification() != null) {
+                        mv.setOriginalValue(null);
+                    } else {
+                        try {
+                            f.set(holder, null);
+                        } catch (IllegalArgumentException | IllegalAccessException ex) {
+                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
+                        }
+                    }
+                }
+            }
+        }
+        setExecuted(null);
     }
 
     @Override

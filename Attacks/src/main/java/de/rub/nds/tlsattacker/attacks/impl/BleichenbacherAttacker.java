@@ -61,8 +61,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);

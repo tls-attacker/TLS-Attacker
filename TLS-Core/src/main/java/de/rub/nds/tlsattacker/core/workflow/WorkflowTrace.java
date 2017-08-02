@@ -97,46 +97,6 @@ public class WorkflowTrace implements Serializable {
         this.connectionEnds = new ArrayList<>();
     }
 
-    /**
-     * Removes runtime values for more compact storage. This keeps only the
-     * relevant information to reexecute a WorkflowTrace
-     */
-    public void strip() {
-        this.reset();
-        List<MessageAction> messageActions = getMessageActions();
-        List<ModifiableVariableHolder> holders = new LinkedList<>();
-        for (MessageAction action : messageActions) {
-            for (ProtocolMessage message : action.getMessages()) {
-                holders.addAll(message.getAllModifiableVariableHolders());
-            }
-        }
-
-        for (ModifiableVariableHolder holder : holders) {
-            List<Field> fields = holder.getAllModifiableVariableFields();
-            for (Field f : fields) {
-                f.setAccessible(true);
-
-                ModifiableVariable mv = null;
-                try {
-                    mv = (ModifiableVariable) f.get(holder);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOGGER.warn("Could not retrieve ModifiableVariables");
-                }
-                if (mv != null) {
-                    if (mv.getModification() != null) {
-                        mv.setOriginalValue(null);
-                    } else {
-                        try {
-                            f.set(holder, null);
-                        } catch (IllegalArgumentException | IllegalAccessException ex) {
-                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     public void reset() {
         for (TLSAction action : getTlsActions()) {
             action.reset();

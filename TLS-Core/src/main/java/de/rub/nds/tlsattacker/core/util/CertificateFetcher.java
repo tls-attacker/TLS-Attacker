@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
@@ -49,9 +49,8 @@ public class CertificateFetcher {
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
         // config.setSupportedCiphersuites(new
         // LinkedList<>(Arrays.asList(CipherSuite.values())));
-        ExecutorType type = context.getConfig().getHighestProtocolVersion().isDTLS() ? ExecutorType.DTLS
-                : ExecutorType.TLS;
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(type, context);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                WorkflowExecutorType.DEFAULT, context);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {

@@ -32,7 +32,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
@@ -370,8 +370,7 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
-    // Switch between TLS and DTLS execution
-    private ExecutorType executorType = ExecutorType.TLS;
+    private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /**
      * Does not mix messages with different message types in a single record
@@ -400,7 +399,7 @@ public class Config implements Serializable {
      * values from the workflow trace and will only keep the relevant
      * information
      */
-    private boolean stripWorkflowtracesBeforeSaving = false;
+    private boolean resetWorkflowtracesBeforeSaving = false;
 
     /**
      * TLS-Attacker will not try to receive additional messages after the
@@ -1093,12 +1092,12 @@ public class Config implements Serializable {
         this.quickReceive = quickReceive;
     }
 
-    public boolean isStripWorkflowtracesBeforeSaving() {
-        return stripWorkflowtracesBeforeSaving;
+    public boolean isResetWorkflowtracesBeforeSaving() {
+        return resetWorkflowtracesBeforeSaving;
     }
 
-    public void setStripWorkflowtracesBeforeSaving(boolean stripWorkflowtracesBeforeSaving) {
-        this.stripWorkflowtracesBeforeSaving = stripWorkflowtracesBeforeSaving;
+    public void setResetWorkflowtracesBeforeSaving(boolean resetWorkflowtracesBeforeSaving) {
+        this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -1141,12 +1140,12 @@ public class Config implements Serializable {
         this.defaultMaxRecordData = defaultMaxRecordData;
     }
 
-    public ExecutorType getExecutorType() {
-        return executorType;
+    public WorkflowExecutorType getWorkflowExecutorType() {
+        return workflowExecutorType;
     }
 
-    public void setExecutorType(ExecutorType executorType) {
-        this.executorType = executorType;
+    public void setWorkflowExecutorType(WorkflowExecutorType workflowExecutorType) {
+        this.workflowExecutorType = workflowExecutorType;
     }
 
     public NameType getSniType() {

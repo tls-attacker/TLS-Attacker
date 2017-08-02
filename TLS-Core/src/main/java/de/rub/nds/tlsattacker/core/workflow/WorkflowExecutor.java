@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
@@ -33,11 +33,11 @@ public abstract class WorkflowExecutor {
 
     protected static final Logger LOGGER = LogManager.getLogger("WorkflowExecutor");
 
-    protected final ExecutorType type;
+    protected final WorkflowExecutorType type;
 
     protected final TlsContext context;
 
-    public WorkflowExecutor(ExecutorType type, TlsContext context) {
+    public WorkflowExecutor(WorkflowExecutorType type, TlsContext context) {
         this.type = type;
         this.context = context;
         initWorkflowTrace();
