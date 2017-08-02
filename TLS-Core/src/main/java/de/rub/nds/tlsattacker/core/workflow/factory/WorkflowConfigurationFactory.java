@@ -33,8 +33,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -269,10 +272,14 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createSsl2Hello() {
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
-                new SSL2ClientHelloMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
-                new SSL2ServerHelloMessage(config)));
+        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
+                ConnectionEndType.CLIENT, new SSL2ClientHelloMessage(config));
+        action.setRecords(new BlobRecord());
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                new SSL2ServerHelloMessage(config));
+        action.setRecords(new BlobRecord());
+        trace.addTlsAction(action);
         return trace;
     }
 }
