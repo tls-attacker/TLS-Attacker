@@ -58,7 +58,6 @@ public class TlsRecordLayer extends RecordLayer {
      */
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawRecordData) {
-
         List<AbstractRecord> records = new LinkedList<>();
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
@@ -129,7 +128,6 @@ public class TlsRecordLayer extends RecordLayer {
         } else {
             LOGGER.warn("Not decrypting received non Record:" + record.toString());
             record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
-
         }
     }
 
