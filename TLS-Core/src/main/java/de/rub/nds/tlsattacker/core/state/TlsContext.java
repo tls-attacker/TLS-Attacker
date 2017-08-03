@@ -436,7 +436,7 @@ public class TlsContext {
         this.serverPointFormatsList = serverPointFormatsList;
     }
 
-    public void setServerPointFormatsList(ECPointFormat serverPointFormatsList) {
+    public void setServerPointFormatsList(ECPointFormat... serverPointFormatsList) {
         this.serverPointFormatsList = Arrays.asList(serverPointFormatsList);
     }
 
@@ -818,6 +818,10 @@ public class TlsContext {
 
     public void setClientKSEntryList(List<KSEntry> clientKSEntryList) {
         this.clientKSEntryList = clientKSEntryList;
+    }
+
+    public void setClientKSEntryList(KSEntry... clientKSEntryList) {
+        this.clientKSEntryList = Arrays.asList(clientKSEntryList);
     }
 
     public KSEntry getServerKSEntry() {
