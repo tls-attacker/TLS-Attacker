@@ -30,24 +30,70 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
 
     @Override
     protected void prepareProtocolMessageContents() {
-        message.setType(HandshakeMessageType.CLIENT_HELLO.getValue());
-        message.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
+        LOGGER.debug("Prepare SSL2ClientHello");
+        prepareType(message);
+        prepareProtocolVersion(message);
         // By Default we just set a fixed value with ssl2 ciphersuites
-        message.setCipherSuites(ArrayConverter.hexStringToByteArray("0700c0060040050080040080030080020080010080080080"));
+        prepareCipherSuites(message);
         byte[] challenge = new byte[16];
         RandomHelper.getRandom().nextBytes(challenge);
-        message.setChallenge(challenge);
-        message.setSessionID(chooser.getClientSessionId());
-        message.setSessionIDLength(message.getSessionID().getValue().length);
-        message.setChallengeLength(message.getChallenge().getValue().length);
-        message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
+        prepareChallenge(message, challenge);
+        prepareSessionID(message);
+        prepareSessionIDLength(message);
+        prepareChallengeLength(message);
+        prepareCipherSuiteLength(message);
         int length = SSL2ByteLength.CHALLENGE_LENGTH + SSL2ByteLength.CIPHERSUITE_LENGTH + SSL2ByteLength.MESSAGE_TYPE
                 + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
         length += message.getSessionID().getValue().length;
         length += message.getProtocolVersion().getValue().length;
+        prepareMessageLength(message, length);
+    }
+
+    private void prepareType(SSL2ClientHelloMessage message) {
+        message.setType(HandshakeMessageType.CLIENT_HELLO.getValue());
+        LOGGER.debug("Type: " + message.getType().getValue());
+    }
+
+    private void prepareProtocolVersion(SSL2ClientHelloMessage message) {
+        message.setProtocolVersion(chooser.getConfig().getHighestProtocolVersion().getValue());
+        LOGGER.debug("ProtocolVersion: " + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+    }
+
+    private void prepareCipherSuites(SSL2ClientHelloMessage message) {
+        message.setCipherSuites(ArrayConverter.hexStringToByteArray("0700c0060040050080040080030080020080010080080080"));
+        LOGGER.debug("CipherSuites: " + ArrayConverter.bytesToHexString(message.getCipherSuites().getValue()));
+    }
+
+    private void prepareChallenge(SSL2ClientHelloMessage message, byte[] challenge) {
+        message.setChallenge(challenge);
+        LOGGER.debug("Challenge: " + ArrayConverter.bytesToHexString(message.getChallenge().getValue()));
+    }
+
+    private void prepareSessionID(SSL2ClientHelloMessage message) {
+        message.setSessionID(chooser.getClientSessionId());
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionID().getValue()));
+    }
+
+    private void prepareSessionIDLength(SSL2ClientHelloMessage message) {
+        message.setSessionIDLength(message.getSessionID().getValue().length);
+        LOGGER.debug("SessionIDLength: " + message.getSessionIDLength().getValue());
+    }
+
+    private void prepareChallengeLength(SSL2ClientHelloMessage message) {
+        message.setChallengeLength(message.getChallenge().getValue().length);
+        LOGGER.debug("ChallengeLength: " + message.getChallengeLength().getValue());
+    }
+
+    private void prepareCipherSuiteLength(SSL2ClientHelloMessage message) {
+        message.setCipherSuiteLength(message.getCipherSuites().getValue().length);
+        LOGGER.debug("CipherSuiteLength: " + message.getCipherSuiteLength().getValue());
+    }
+
+    private void prepareMessageLength(SSL2ClientHelloMessage message, int length) {
         message.setMessageLength(length ^ 0x8000);
+        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 
 }

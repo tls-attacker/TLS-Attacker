@@ -45,7 +45,7 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableInteger certificateLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger ciphersuitesLength;
+    private ModifiableInteger cipherSuitesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger sessionIDLength;
@@ -150,16 +150,16 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         this.certificateLength = certificateLength;
     }
 
-    public ModifiableInteger getCiphersuitesLength() {
-        return ciphersuitesLength;
+    public ModifiableInteger getCipherSuitesLength() {
+        return cipherSuitesLength;
     }
 
-    public void setCiphersuitesLength(ModifiableInteger ciphersuitesLength) {
-        this.ciphersuitesLength = ciphersuitesLength;
+    public void setCipherSuitesLength(ModifiableInteger cipherSuitesLength) {
+        this.cipherSuitesLength = cipherSuitesLength;
     }
 
-    public void setCiphersuitesLength(int ciphersuitesLength) {
-        this.ciphersuitesLength = ModifiableVariableFactory.safelySetValue(this.ciphersuitesLength, ciphersuitesLength);
+    public void setCipherSuitesLength(int cipherSuitesLength) {
+        this.cipherSuitesLength = ModifiableVariableFactory.safelySetValue(this.cipherSuitesLength, cipherSuitesLength);
     }
 
     public ModifiableInteger getSessionIDLength() {
