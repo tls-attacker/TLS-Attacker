@@ -31,9 +31,8 @@ public class ReceiveAction extends MessageAction {
         super(messages);
     }
 
-    public ReceiveAction(ProtocolMessage message) {
-        super(new LinkedList<ProtocolMessage>());
-        configuredMessages.add(message);
+    public ReceiveAction(ProtocolMessage... messages) {
+        super(messages);
     }
 
     @Override
