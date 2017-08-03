@@ -270,9 +270,9 @@ public class TlsContext {
         digest = new MessageDigestCollector();
         this.config = config;
         // init lastRecordVersion for records
-        clientCertificateTypes = new LinkedList<>();
-        lastRecordVersion = config.getHighestProtocolVersion();
-        selectedProtocolVersion = config.getHighestProtocolVersion();
+        // clientCertificateTypes = new LinkedList<>();
+        // lastRecordVersion = config.getHighestProtocolVersion();
+        // selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
     public Chooser getChooser() {
