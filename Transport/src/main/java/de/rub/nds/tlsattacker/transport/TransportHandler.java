@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.transport;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,53 +21,45 @@ public abstract class TransportHandler {
 
     protected static final Logger LOGGER = LogManager.getLogger("Transport");
 
-    protected int socketTimeout;
+    protected long timeout;
 
-    protected long lastSystemNano;
+    private OutputStream outStream;
 
-    protected long lastMeasurement;
+    private InputStream inStream;
 
-    protected boolean measuringTiming;
+    private boolean initialized = false;
 
-    protected ConnectionEndType end;
-
-    protected String hostname;
-
-    protected int port;
-
-    public TransportHandler(String hostname, int port, ConnectionEndType end, int socketTimeout) {
-        this.end = end;
-        this.socketTimeout = socketTimeout;
-        this.hostname = hostname;
-        this.port = port;
+    public TransportHandler(long timeout) {
+        this.timeout = timeout;
     }
 
     public abstract void closeConnection();
 
-    public abstract byte[] fetchData() throws IOException;
+    public byte[] fetchData() throws IOException {
+        if (!initialized) {
+            throw new IOException("Transporthandler is not initalized!");
+        }
+        int available;
+        long startTime = System.currentTimeMillis();
+        do {
+            available = inStream.available();
+        } while (available == 0 && startTime + timeout < System.currentTimeMillis());
+        byte[] receivedBytes = new byte[available];
+        inStream.read(receivedBytes);
+        return receivedBytes;
+    }
+    
+    public void sendData(byte[] data) throws IOException {
+        outStream.write(data);
+        outStream.flush();
+     }
+ 
+
+    public void setStreams(InputStream inStream, OutputStream outStream) {
+        this.outStream = outStream;
+        this.inStream = inStream;
+        initialized = true;
+    }
 
     public abstract void initialize() throws IOException;
-
-    public abstract void sendData(byte[] data) throws IOException;
-
-    public String getHostname() {
-        return hostname;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void measureTiming(boolean b) {
-        measuringTiming = b;
-    }
-
-    public long getLastMeasurement() {
-        return lastMeasurement;
-    }
-
-    public boolean isMeasuringTiming() {
-        return measuringTiming;
-    }
-
 }
