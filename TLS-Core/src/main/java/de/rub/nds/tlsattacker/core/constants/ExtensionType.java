@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,5 +111,60 @@ public enum ExtensionType {
 
     public byte getMinor() {
         return value[1];
+    }
+
+    public static List<ExtensionType> getSendable() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EC_POINT_FORMATS);
+        list.add(ELLIPTIC_CURVES);
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(HEARTBEAT);
+        list.add(KEY_SHARE);
+        list.add(MAX_FRAGMENT_LENGTH);
+        list.add(PADDING);
+        list.add(RENEGOTIATION_INFO);
+        list.add(SERVER_NAME_INDICATION);
+        list.add(SESSION_TICKET);
+        list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SIGNED_CERTIFICATE_TIMESTAMP);
+        list.add(SUPPORTED_VERSIONS);
+        list.add(TOKEN_BINDING);
+
+        return list;
+    }
+
+    public static List<ExtensionType> getReceivable() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EC_POINT_FORMATS);
+        list.add(ELLIPTIC_CURVES);
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(HEARTBEAT);
+        list.add(KEY_SHARE);
+        list.add(MAX_FRAGMENT_LENGTH);
+        list.add(PADDING);
+        list.add(RENEGOTIATION_INFO);
+        list.add(SERVER_NAME_INDICATION);
+        list.add(SESSION_TICKET);
+        list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SIGNED_CERTIFICATE_TIMESTAMP);
+        list.add(SUPPORTED_VERSIONS);
+        list.add(TOKEN_BINDING);
+
+        return list;
+    }
+
+    public static List<ExtensionType> getImplemented() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EC_POINT_FORMATS);
+        list.add(ELLIPTIC_CURVES);
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(KEY_SHARE);
+        list.add(MAX_FRAGMENT_LENGTH);
+        list.add(PADDING);
+        list.add(SERVER_NAME_INDICATION);
+        list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SUPPORTED_VERSIONS);
+
+        return list;
     }
 }

@@ -213,9 +213,11 @@ public class DefaultActionExecutor extends ActionExecutor {
                                 for (int i = 0; i < expectedMessages.size(); i++) {
                                     if (i >= messages.size()) {
                                         receivedAllConfiguredMessages = false;
+                                        break;
                                     }
                                     if (!expectedMessages.get(i).getClass().equals(messages.get(i).getClass())) {
                                         receivedAllConfiguredMessages = false;
+                                        break;
                                     }
                                 }
                             }
