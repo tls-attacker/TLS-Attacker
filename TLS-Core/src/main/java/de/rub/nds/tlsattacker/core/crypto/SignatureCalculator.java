@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidKeyException;
@@ -36,7 +37,8 @@ public class SignatureCalculator {
             case DSA:
                 return generateDSASignature(chooser, toBeSigned, algorithm);
             case ECDSA:
-                return generateECDSASignature(chooser, toBeSigned, algorithm);
+                ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
+                return generateECDSASignature(key, toBeSigned, algorithm);
             case RSA:
                 return generateRSASignature(chooser, toBeSigned, algorithm);
             default:
@@ -45,7 +47,17 @@ public class SignatureCalculator {
         }
     }
 
-    private static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+    public static byte[] generateTokenBindingSignature(SignatureAndHashAlgorithm algorithm,
+            TokenBindingKeyParameters parameters, Chooser chooser, byte[] toBeSigned) {
+        switch (parameters) {
+            case ECDSAP256:
+                return generateECDSASignature(KeyGenerator.getTokenBindingECPrivateKey(chooser), toBeSigned, algorithm);
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
+    public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         try {
             RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
             Signature instance = Signature.getInstance(algorithm.getJavaName());
@@ -57,7 +69,7 @@ public class SignatureCalculator {
         }
     }
 
-    private static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+    public static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         try {
             DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
             Signature instance = Signature.getInstance(algorithm.getJavaName());
@@ -69,9 +81,8 @@ public class SignatureCalculator {
         }
     }
 
-    private static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+    public static byte[] generateECDSASignature(ECPrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         try {
-            ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
             Signature instance = Signature.getInstance(algorithm.getJavaName());
             instance.initSign(key, RandomHelper.getBadSecureRandom());
             instance.update(toBeSigned);
@@ -81,7 +92,7 @@ public class SignatureCalculator {
         }
     }
 
-    private static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,
+    public static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,
             SignatureAndHashAlgorithm algorithm) {
         return new byte[0];
     }
