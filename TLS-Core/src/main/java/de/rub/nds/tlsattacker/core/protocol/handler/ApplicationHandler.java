@@ -40,8 +40,7 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     protected void adjustTLSContext(ApplicationMessage message) {
-        // TLSContext does not change when sending or receiving
-        // ApplicationMessages
+        LOGGER.info("Received Data:" + new String(message.getData().getValue()));
     }
 
 }
