@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 
 /**
@@ -25,6 +26,7 @@ public class RenegotiationInfoExtensionSerializer extends ExtensionSerializer<Re
 
     @Override
     public byte[] serializeExtensionContent() {
+        appendInt(message.getRenegotiationInfoLength().getValue(), ExtensionByteLength.RENEGOTIATION_INFO);
         appendBytes(message.getRenegotiationInfo().getValue());
         LOGGER.debug("Serialized RenegotiationInfo extension with info of length "
                 + message.getRenegotiationInfo().getValue().length);
