@@ -40,7 +40,11 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     protected void adjustTLSContext(ApplicationMessage message) {
-        LOGGER.info("Received Data:" + new String(message.getData().getValue()));
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getConfig().getMyConnectionPeer()) {
+            LOGGER.info("Received Data:" + new String(message.getData().getValue()));
+        } else {
+            LOGGER.info("Sending Data:" + new String(message.getData().getValue()));
+        }
     }
 
 }
