@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.constants.NameType;
 
 /**
  *
@@ -91,10 +92,13 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientSupportedNamedCurves() {
-        List<NamedCurve> CurveList = new LinkedList<>();
-        config.setDefaultClientNamedCurves(CurveList);
-        assertTrue(config.getDefaultClientNamedCurves().size() == 0);
-        assertTrue(chooser.getClientSupportedNamedCurves().size() == 0);
+        List<NamedCurve> curveList = new LinkedList<>();
+        curveList.add(NamedCurve.BRAINPOOLP256R1);
+        curveList.add(NamedCurve.ECDH_X448);
+        curveList.add(NamedCurve.SECP160K1);
+        config.setDefaultClientNamedCurves(curveList);
+        assertTrue(config.getDefaultClientNamedCurves().size() == 3);
+        assertTrue(chooser.getClientSupportedNamedCurves().size() == 3);
         context.setClientNamedCurvesList(new LinkedList<NamedCurve>());
         assertTrue(chooser.getClientSupportedNamedCurves().size() == 0);
 
@@ -142,10 +146,11 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientSNIEntryList() {
         List<SNIEntry> listSNI = new LinkedList<>();
+        listSNI.add(new SNIEntry("Test", NameType.HOST_NAME));
         config.setDefaultClientSNIEntryList(listSNI);
-        assertTrue(config.getDefaultClientSNIEntryList().size() == 0);
-        assertTrue(chooser.getClientSNIEntryList().size() == 0);
-        context.setClientSNIEntryList(listSNI);
+        assertTrue(config.getDefaultClientSNIEntryList().size() == 1);
+        assertTrue(chooser.getClientSNIEntryList().size() == 1);
+        context.setClientSNIEntryList(new LinkedList<SNIEntry>());
         assertTrue(context.getClientSNIEntryList().size() == 0);
     }
 
@@ -156,7 +161,7 @@ public class DefaultChooserTest {
     public void testGetLastRecordVersion() {
         config.setDefaultLastRecordProtocolVersion(ProtocolVersion.TLS13_DRAFT20);
         assertEquals("TLS13_DRAFT20", config.getDefaultLastRecordProtocolVersion().toString());
-        assertEquals("TLS13_DRAFT20",chooser.getLastRecordVersion().toString());//Bug
+        assertEquals("TLS13_DRAFT20", chooser.getLastRecordVersion().toString());// Bug
         context.setLastRecordVersion(ProtocolVersion.SSL2);
         assertEquals("SSL2", context.getLastRecordVersion().toString());
     }
@@ -170,8 +175,9 @@ public class DefaultChooserTest {
         config.setDistinguishedNames(namelist);
         assertTrue(config.getDistinguishedNames().length == 2);
         assertTrue(chooser.getDistinguishedNames().length == 2);
-        context.setDistinguishedNames(namelist);
-        assertTrue(chooser.getDistinguishedNames().length == 2);
+        byte[] namelist2 = { (byte) 0, (byte) 1, (byte) 3};
+        context.setDistinguishedNames(namelist2);
+        assertTrue(chooser.getDistinguishedNames().length == 3);
     }
 
     /**
@@ -190,7 +196,7 @@ public class DefaultChooserTest {
         typeList.add(ClientCertificateType.RSA_SIGN);
         config.setClientCertificateTypes(typeList);
         assertTrue(config.getClientCertificateTypes().size() == 7);
-        assertTrue(chooser.getClientCertificateTypes().size()==7);//Bug
+        assertTrue(chooser.getClientCertificateTypes().size() == 7);// Bug
         context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
         assertTrue(chooser.getClientCertificateTypes().size() == 0);
 
@@ -204,8 +210,8 @@ public class DefaultChooserTest {
         config.setDefaultMaxFragmentLength(MaxFragmentLength.TWO_9);
         assertEquals("TWO_9", config.getMaxFragmentLength().toString());
         assertEquals("TWO_9", chooser.getMaxFragmentLength().toString());
-        context.setMaxFragmentLength(MaxFragmentLength.TWO_9);
-        assertEquals("TWO_9", chooser.getMaxFragmentLength().toString());
+        context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
+        assertEquals("TWO_11", chooser.getMaxFragmentLength().toString());
     }
 
     /**
@@ -216,8 +222,8 @@ public class DefaultChooserTest {
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
         assertEquals("PEER_ALLOWED_TO_SEND", config.getHeartbeatMode().toString());
         assertEquals("PEER_ALLOWED_TO_SEND", chooser.getHeartbeatMode().toString());
-        context.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
-        assertEquals("PEER_ALLOWED_TO_SEND", chooser.getHeartbeatMode().toString());
+        context.setHeartbeatMode(HeartbeatMode.PEER_NOT_ALLOWED_TO_SEND);
+        assertEquals("PEER_NOT_ALLOWED_TO_SEND", chooser.getHeartbeatMode().toString());
     }
 
     /**
