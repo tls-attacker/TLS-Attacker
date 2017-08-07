@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.interfaces.DSAPrivateKey;
@@ -37,8 +38,7 @@ public class SignatureCalculator {
             case DSA:
                 return generateDSASignature(chooser, toBeSigned, algorithm);
             case ECDSA:
-                ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
-                return generateECDSASignature(key, toBeSigned, algorithm);
+                return generateECDSASignature(chooser, toBeSigned, algorithm);
             case RSA:
                 return generateRSASignature(chooser, toBeSigned, algorithm);
             default:
@@ -47,19 +47,8 @@ public class SignatureCalculator {
         }
     }
 
-    public static byte[] generateTokenBindingSignature(SignatureAndHashAlgorithm algorithm,
-            TokenBindingKeyParameters parameters, Chooser chooser, byte[] toBeSigned) {
-        switch (parameters) {
-            case ECDSAP256:
-                return generateECDSASignature(KeyGenerator.getTokenBindingECPrivateKey(chooser), toBeSigned, algorithm);
-            default:
-                throw new UnsupportedOperationException();
-        }
-    }
-
-    public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+    public static byte[] generateSignature(PrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         try {
-            RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
             Signature instance = Signature.getInstance(algorithm.getJavaName());
             instance.initSign(key, RandomHelper.getBadSecureRandom());
             instance.update(toBeSigned);
@@ -67,29 +56,21 @@ public class SignatureCalculator {
         } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not sign Data", ex);
         }
+    }
+
+    public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+        RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
+        return generateSignature(key, toBeSigned, algorithm);
     }
 
     public static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
-        try {
-            DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key, RandomHelper.getBadSecureRandom());
-            instance.update(toBeSigned);
-            return instance.sign();
-        } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
-            throw new CryptoException("Could not sign Data", ex);
-        }
+        DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
+        return generateSignature(key, toBeSigned, algorithm);
     }
 
-    public static byte[] generateECDSASignature(ECPrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
-        try {
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key, RandomHelper.getBadSecureRandom());
-            instance.update(toBeSigned);
-            return instance.sign();
-        } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
-            throw new CryptoException("Could not sign Data", ex);
-        }
+    public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+        ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
+        return generateSignature(key, toBeSigned, algorithm);
     }
 
     public static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,
