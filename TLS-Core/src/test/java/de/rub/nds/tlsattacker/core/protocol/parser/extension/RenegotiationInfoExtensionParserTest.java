@@ -26,14 +26,16 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class RenegotiationInfoExtensionParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.RENEGOTIATION_INFO, 1, new byte[] { 0 },
+        return Arrays.asList(new Object[][] { { ExtensionType.RENEGOTIATION_INFO, 1, 0, new byte[] {},
                 ArrayConverter.hexStringToByteArray("ff01000100"), 0 } });
     }
 
     private final ExtensionType extensionType;
     private final int extensionLength;
+    private final int extensionPayloadLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
@@ -41,12 +43,13 @@ public class RenegotiationInfoExtensionParserTest {
     private RenegotiationInfoExtensionMessage message;
 
     public RenegotiationInfoExtensionParserTest(ExtensionType extensionType, int extensionLength,
-            byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+            int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
         this.startParsing = startParsing;
+        this.extensionPayloadLength = extensionPayloadLength;
     }
 
     @Before
@@ -60,6 +63,7 @@ public class RenegotiationInfoExtensionParserTest {
 
         assertEquals(extensionType, message.getExtensionTypeConstant());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
+        assertEquals(extensionPayloadLength, (long) message.getRenegotiationInfoLength().getValue());
         assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
     }
 

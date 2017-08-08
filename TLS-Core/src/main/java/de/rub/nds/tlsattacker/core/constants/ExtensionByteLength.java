@@ -203,6 +203,8 @@ public class ExtensionByteLength {
      */
     public static final int CERTIFICATE_STATUS_REQUEST_V2_LIST = 2;
 
+    public static final int RENEGOTIATION_INFO = 1;
+
     private ExtensionByteLength() {
     }
 }
