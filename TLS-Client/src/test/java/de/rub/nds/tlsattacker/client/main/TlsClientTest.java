@@ -140,6 +140,7 @@ public class TlsClientTest {
         config.setHost("localhost");
         config.setPort(port);
         config.setTlsTimeout(TIMEOUT);
+        config.setEnforceSettings(false);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
         testProtocolCompatibility(serverList, config, algorithm);
@@ -165,6 +166,7 @@ public class TlsClientTest {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
                 config.setDefaultClientSupportedCiphersuites(cslist);
+                config.setDefaultSelectedCipherSuite(cs);
                 config.setWorkflowTrace(null);
                 boolean result = testExecuteWorkflow(config);
                 LOGGER.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
