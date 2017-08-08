@@ -91,6 +91,8 @@ public class ExtensionByteLength {
      */
     public static final int TOKENBINDING_KEYPARAMETER_LENGTHFIELD_LENGTH = 1;
 
+    public static final int RENEGOTIATION_INFO = 1;
+
     private ExtensionByteLength() {
     }
 }

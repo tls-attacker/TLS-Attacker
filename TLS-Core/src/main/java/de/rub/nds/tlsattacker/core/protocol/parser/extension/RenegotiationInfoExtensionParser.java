@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 
 /**
@@ -23,12 +24,14 @@ public class RenegotiationInfoExtensionParser extends ExtensionParser<Renegotiat
 
     @Override
     public void parseExtensionMessageContent(RenegotiationInfoExtensionMessage msg) {
-        if (msg.getExtensionLength().getValue() > 65535) {
-            LOGGER.warn("The renegotiation info length shouldn't exceed 2 bytes as defined in RFC 5246. "
+        msg.setRenegotiationInfoLength(parseIntField(ExtensionByteLength.RENEGOTIATION_INFO));
+        if (msg.getRenegotiationInfoLength().getValue() > 255) {
+            LOGGER.warn("The renegotiation info length shouldn't exceed 1 byte as defined in RFC 5246. "
                     + "Length was " + msg.getExtensionLength().getValue());
         }
-        msg.setRenegotiationInfo(parseByteArrayField(msg.getExtensionLength().getValue()));
-        LOGGER.debug("The padding extension parser parsed the value " + bytesToHexString(msg.getRenegotiationInfo()));
+        msg.setRenegotiationInfo(parseByteArrayField(msg.getRenegotiationInfoLength().getValue()));
+        LOGGER.debug("The RenegotiationInfoExtensionParser parsed the value "
+                + bytesToHexString(msg.getRenegotiationInfo()));
     }
 
     @Override

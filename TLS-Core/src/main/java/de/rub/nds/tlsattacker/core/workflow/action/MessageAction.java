@@ -42,6 +42,8 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -90,6 +92,11 @@ public abstract class MessageAction extends TLSAction {
 
     public MessageAction() {
         messages = new LinkedList<>();
+        records = new LinkedList<>();
+    }
+
+    public MessageAction(ProtocolMessage... messages) {
+        this.messages = Arrays.asList(messages);
         records = new LinkedList<>();
     }
 

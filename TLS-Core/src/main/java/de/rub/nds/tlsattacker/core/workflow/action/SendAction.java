@@ -37,9 +37,8 @@ public class SendAction extends MessageAction implements SendingAction {
         this.messages = messages;
     }
 
-    public SendAction(ProtocolMessage message) {
-        super();
-        messages.add(message);
+    public SendAction(ProtocolMessage... messages) {
+        super(messages);
     }
 
     @Override
