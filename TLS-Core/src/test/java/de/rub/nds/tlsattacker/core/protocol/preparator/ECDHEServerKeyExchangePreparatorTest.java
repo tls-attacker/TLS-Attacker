@@ -124,7 +124,8 @@ public class ECDHEServerKeyExchangePreparatorTest {
         serverCurves.add(NamedCurve.SECP256R1);
         tlsContext.setClientNamedCurvesList(clientCurves);
         config.setNamedCurves(serverCurves);
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA512));
         List<ECPointFormat> clientFormats = new ArrayList<>();
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_CHAR2);
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_PRIME);
