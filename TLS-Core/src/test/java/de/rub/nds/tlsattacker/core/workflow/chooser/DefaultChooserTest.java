@@ -160,10 +160,10 @@ public class DefaultChooserTest {
     @Test
     public void testGetLastRecordVersion() {
         config.setDefaultLastRecordProtocolVersion(ProtocolVersion.TLS13_DRAFT20);
-        assertEquals("TLS13_DRAFT20", config.getDefaultLastRecordProtocolVersion().toString());
-        assertEquals("TLS13_DRAFT20", chooser.getLastRecordVersion().toString());// Bug
+        assertEquals(ProtocolVersion.TLS13_DRAFT20, config.getDefaultLastRecordProtocolVersion());
+        assertEquals(ProtocolVersion.TLS13_DRAFT20, chooser.getLastRecordVersion());
         context.setLastRecordVersion(ProtocolVersion.SSL2);
-        assertEquals("SSL2", context.getLastRecordVersion().toString());
+        assertEquals(ProtocolVersion.SSL2, context.getLastRecordVersion());
     }
 
     /**
@@ -196,7 +196,7 @@ public class DefaultChooserTest {
         typeList.add(ClientCertificateType.RSA_SIGN);
         config.setClientCertificateTypes(typeList);
         assertTrue(config.getClientCertificateTypes().size() == 7);
-        assertTrue(chooser.getClientCertificateTypes().size() == 7);// Bug
+        assertTrue(chooser.getClientCertificateTypes().size() == 7);
         context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
         assertTrue(chooser.getClientCertificateTypes().size() == 0);
 
@@ -208,10 +208,10 @@ public class DefaultChooserTest {
     @Test
     public void testGetMaxFragmentLength() {
         config.setDefaultMaxFragmentLength(MaxFragmentLength.TWO_9);
-        assertEquals("TWO_9", config.getMaxFragmentLength().toString());
-        assertEquals("TWO_9", chooser.getMaxFragmentLength().toString());
+        assertEquals(MaxFragmentLength.TWO_9, config.getMaxFragmentLength());
+        assertEquals(MaxFragmentLength.TWO_9, chooser.getMaxFragmentLength());
         context.setMaxFragmentLength(MaxFragmentLength.TWO_11);
-        assertEquals("TWO_11", chooser.getMaxFragmentLength().toString());
+        assertEquals(MaxFragmentLength.TWO_11, chooser.getMaxFragmentLength());
     }
 
     /**
@@ -220,10 +220,10 @@ public class DefaultChooserTest {
     @Test
     public void testGetHeartbeatMode() {
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
-        assertEquals("PEER_ALLOWED_TO_SEND", config.getHeartbeatMode().toString());
-        assertEquals("PEER_ALLOWED_TO_SEND", chooser.getHeartbeatMode().toString());
+        assertEquals(HeartbeatMode.PEER_ALLOWED_TO_SEND, config.getHeartbeatMode());
+        assertEquals(HeartbeatMode.PEER_ALLOWED_TO_SEND, chooser.getHeartbeatMode());
         context.setHeartbeatMode(HeartbeatMode.PEER_NOT_ALLOWED_TO_SEND);
-        assertEquals("PEER_NOT_ALLOWED_TO_SEND", chooser.getHeartbeatMode().toString());
+        assertEquals(HeartbeatMode.PEER_NOT_ALLOWED_TO_SEND, chooser.getHeartbeatMode());
     }
 
     /**
