@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
@@ -22,19 +21,19 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
  */
 public class CachedObjectParser extends Parser<CachedObject> {
 
-    private CachedObject cachedObject;
-    private final TlsContext context;
+    private final CachedObject cachedObject;
+    private final ConnectionEndType connectionEndType;
 
-    public CachedObjectParser(int startposition, byte[] array, TlsContext context) {
+    public CachedObjectParser(int startposition, byte[] array, ConnectionEndType connectionEndType) {
         super(startposition, array);
-        this.context = context;
+        cachedObject = new CachedObject();
+        this.connectionEndType = connectionEndType;
     }
 
     @Override
     public CachedObject parse() {
-        cachedObject = new CachedObject();
 
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (connectionEndType == ConnectionEndType.CLIENT) {
             cachedObject.setCachedInformationType(parseByteField(ExtensionByteLength.CACHED_INFO_TYPE));
             cachedObject.setHashValueLength(parseIntField(ExtensionByteLength.CACHED_INFO_HASH_LENGTH));
             cachedObject.setHashValue(parseByteArrayField(cachedObject.getHashValueLength().getValue()));

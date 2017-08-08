@@ -33,7 +33,6 @@ public class CachedObjectParserTest {
     private final Integer hashLength;
     private final byte[] hash;
     private final byte[] cachedObjectBytes;
-    private TlsContext context;
 
     public CachedObjectParserTest(ConnectionEndType speakingEndType, CachedInfoType infoType, Integer hashLength,
             byte[] hash, byte[] cachedObjectBytes) {
@@ -58,9 +57,7 @@ public class CachedObjectParserTest {
 
     @Test
     public void parse() {
-        context = new TlsContext();
-        context.setTalkingConnectionEndType(speakingEndType);
-        CachedObjectParser parser = new CachedObjectParser(0, cachedObjectBytes, context);
+        CachedObjectParser parser = new CachedObjectParser(0, cachedObjectBytes, speakingEndType);
         CachedObject cachedObject = parser.parse();
 
         assertEquals(infoType.getValue(), (byte) cachedObject.getCachedInformationType().getValue());

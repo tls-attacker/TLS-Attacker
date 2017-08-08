@@ -75,7 +75,6 @@ public class CachedInfoExtensionParserTest {
     @Test
     public void testParse() {
         TlsContext context = new TlsContext();
-        context.setTalkingConnectionEndType(connectionEndType);
 
         CachedInfoExtensionParser parser = new CachedInfoExtensionParser(0, extensionBytes);
         CachedInfoExtensionMessage msg = parser.parse();
