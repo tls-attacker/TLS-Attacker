@@ -1,0 +1,7 @@
+<Config>
+	<namedCurves>SECP256R1</namedCurves>
+	<defaultSelectedCurve>SECP256R1</defaultSelectedCurve>
+	<addECPointFormatExtension>true</addECPointFormatExtension>
+    <addEllipticCurveExtension>true</addEllipticCurveExtension>
+
+</Config>

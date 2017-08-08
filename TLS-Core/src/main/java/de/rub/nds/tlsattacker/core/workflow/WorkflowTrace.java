@@ -9,18 +9,13 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.ConnectionEnd;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
@@ -34,7 +29,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -71,7 +65,6 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
-            @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
             @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
             @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
@@ -79,7 +72,6 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
             @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
             @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
-            @XmlElement(type = ChangeServerCertificateAction.class, name = "ChangeServerCertAction"),
             @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
             @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
