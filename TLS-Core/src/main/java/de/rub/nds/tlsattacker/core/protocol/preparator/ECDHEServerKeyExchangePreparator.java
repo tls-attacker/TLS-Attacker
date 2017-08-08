@@ -70,7 +70,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         prepareServerRandom(msg);
 
         SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = chooser.getConfig().getSupportedSignatureAndHashAlgorithms().get(0);
+        signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
 
         byte[] signature = generateSignature(msg, signHashAlgo);
