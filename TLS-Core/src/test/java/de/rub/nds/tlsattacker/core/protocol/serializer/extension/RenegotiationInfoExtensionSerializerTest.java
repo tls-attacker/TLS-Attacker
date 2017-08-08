@@ -30,18 +30,20 @@ public class RenegotiationInfoExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final int extensionLength;
+    private final int extensionPayloadLength;
     private final byte[] extensionPayload;
     private final byte[] expectedBytes;
     private final int startParsing;
     private RenegotiationInfoExtensionMessage message;
 
     public RenegotiationInfoExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
-            byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
+            int extensionPayloadLength, byte[] extensionPayload, byte[] expectedBytes, int startParsing) {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.extensionPayload = extensionPayload;
         this.expectedBytes = expectedBytes;
         this.startParsing = startParsing;
+        this.extensionPayloadLength = extensionPayloadLength;
     }
 
     @Test
@@ -50,7 +52,7 @@ public class RenegotiationInfoExtensionSerializerTest {
         message.setExtensionType(extensionType.getValue());
         message.setExtensionLength(extensionLength);
         message.setRenegotiationInfo(extensionPayload);
-
+        message.setRenegotiationInfoLength(extensionPayloadLength);
         RenegotiationInfoExtensionSerializer serializer = new RenegotiationInfoExtensionSerializer(message);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

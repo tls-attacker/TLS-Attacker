@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -21,6 +22,9 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
     private ModifiableByteArray renegotiationInfo;
+
+    @ModifiableVariableProperty
+    private ModifiableInteger renegotiationInfoLength;
 
     public RenegotiationInfoExtensionMessage() {
         super(ExtensionType.RENEGOTIATION_INFO);
@@ -38,4 +42,16 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
         this.renegotiationInfo = ModifiableVariableFactory.safelySetValue(this.renegotiationInfo, renegotiationInfo);
     }
 
+    public ModifiableInteger getRenegotiationInfoLength() {
+        return renegotiationInfoLength;
+    }
+
+    public void setRenegotiationInfoLength(ModifiableInteger renegotiationInfoLength) {
+        this.renegotiationInfoLength = renegotiationInfoLength;
+    }
+
+    public void setRenegotiationInfoLength(int renegotiationInfoLength) {
+        this.renegotiationInfoLength = ModifiableVariableFactory.safelySetValue(this.renegotiationInfoLength,
+                renegotiationInfoLength);
+    }
 }
