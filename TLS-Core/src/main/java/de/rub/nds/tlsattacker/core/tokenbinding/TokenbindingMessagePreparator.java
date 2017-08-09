@@ -80,7 +80,7 @@ public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<Tok
             }
             dig.update(generateToBeSigned());
             BigInteger[] signature = signer.generateSignature(dig.digest());
-            
+
             message.setSignature(ArrayConverter.concatenate(CustomECPoint.toUnsignedByteArray(signature[0]),
                     CustomECPoint.toUnsignedByteArray(signature[1])));
         } else {
