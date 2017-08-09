@@ -12,16 +12,19 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import java.util.Random;
 import mockit.Expectations;
 import mockit.Mocked;
+import mockit.integration.junit4.JMockit;
 import org.bouncycastle.crypto.tls.ProtocolVersion;
 import org.bouncycastle.crypto.tls.SecurityParameters;
 import org.bouncycastle.crypto.tls.TlsContext;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
+@RunWith(JMockit.class)
 public class PseudoRandomFunctionTest {
 
     /**
