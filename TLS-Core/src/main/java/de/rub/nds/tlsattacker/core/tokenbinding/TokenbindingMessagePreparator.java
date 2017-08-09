@@ -9,19 +9,19 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
@@ -29,15 +29,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.PrivateKey;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
-import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
-import org.bouncycastle.crypto.tls.ECCurveType;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
 
 /**
@@ -55,7 +55,6 @@ public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
     @Override
     protected void prepareProtocolMessageContents() {
-        PrivateKey key;
         message.setTokenbindingType(chooser.getConfig().getDefaultTokenBindingType().getTokenBindingTypeValue());
         message.setKeyParameter(chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
         if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0) == TokenBindingKeyParameters.ECDSAP256) {
@@ -67,12 +66,23 @@ public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<Tok
 
             CustomECPoint point = new CustomECPoint(publicParams.getQ().getRawXCoord().toBigInteger(), publicParams
                     .getQ().getRawYCoord().toBigInteger());
-            message.setPoint(ArrayConverter.concatenate(point.getX().toByteArray(), point.getY().toByteArray()));
+            message.setPoint(ArrayConverter.concatenate(point.getByteX(), point.getByteY()));
             message.setPointLength(message.getPoint().getValue().length);
-            ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()));
-            signer.init(true, privateParams);
-            BigInteger[] signature = signer.generateSignature(generateToBeSigned());
-            message.setSignature(ArrayConverter.concatenate(signature[0].toByteArray(), signature[1].toByteArray()));
+            ParametersWithRandom params = new ParametersWithRandom(privateParams, new BadRandom(new Random(0),
+                    new byte[0]));
+            ECDSASigner signer = new ECDSASigner();
+            signer.init(true, params);
+            MessageDigest dig = null;
+            try {
+                dig = MessageDigest.getInstance("SHA-256");
+            } catch (NoSuchAlgorithmException ex) {
+                ex.printStackTrace();
+            }
+            dig.update(generateToBeSigned());
+            BigInteger[] signature = signer.generateSignature(dig.digest());
+            
+            message.setSignature(ArrayConverter.concatenate(CustomECPoint.toUnsignedByteArray(signature[0]),
+                    CustomECPoint.toUnsignedByteArray(signature[1])));
         } else {
             message.setModulus(chooser.getConfig().getDefaultTokenBindingRsaModulus().toByteArray());
             message.setModulusLength(message.getModulus().getValue().length);
@@ -89,6 +99,7 @@ public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<Tok
         // message.setSignature(SignatureCalculator.generateSignature(chooser.getConfig()
         // .getDefaultTokenBindingKeyParameters().get(0), chooser,));
         message.setSignatureLength(message.getSignature().getValue().length);
+        serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         message.setTokenbindingsLength(serializer.serializeBinding().length);
     }
 

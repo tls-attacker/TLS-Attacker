@@ -44,6 +44,18 @@ public class SimpleTransportHandler extends TransportHandler {
         this.tlsTimeout = tlsTimeout;
     }
 
+    public SimpleTransportHandler(Socket clientSocket, ConnectionEndType end, int socketTimeout, int tlsTimeout)
+            throws IOException {
+        super("openalready", clientSocket.getLocalPort(), end, socketTimeout);
+        this.socket = clientSocket;
+        this.tlsTimeout = tlsTimeout;
+        OutputStream os = socket.getOutputStream();
+        bos = new BufferedOutputStream(os);
+
+        InputStream is = socket.getInputStream();
+        bis = new BufferedInputStream(is);
+    }
+
     @Override
     public void initialize() throws IOException {
         if (end == ConnectionEndType.SERVER) {
