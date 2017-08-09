@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -46,9 +47,9 @@ public class RecordNullCipherTest {
     /**
      * Test of calculateMac method, of class RecordNullCipher.
      */
-    @Test
+    @Test (expected = UnsupportedOperationException.class)
     public void testCalculateMac() {
-        // not supported yet
+        record.calculateMac(data);
     }
 
     /**

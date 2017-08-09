@@ -48,10 +48,6 @@ public class RecordTest {
         chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext());
     }
 
-    @After
-    public void tearDown() {
-    }
-
     /**
      * Test of getRecordPreparator method, of class Record.
      */
