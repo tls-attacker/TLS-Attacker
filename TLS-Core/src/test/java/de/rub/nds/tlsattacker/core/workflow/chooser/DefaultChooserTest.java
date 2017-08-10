@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
@@ -23,11 +25,15 @@ import org.junit.Test;
 
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.constants.NameType;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  *
@@ -231,6 +237,9 @@ public class DefaultChooserTest {
      */
     @Test
     public void testIsExtendedMasterSecretExtension() {
+        assertEquals(false, chooser.isExtendedMasterSecretExtension());
+        context.setReceivedMasterSecretExtension(true);
+        assertEquals(true, chooser.isExtendedMasterSecretExtension());
     }
 
     /**
@@ -238,6 +247,16 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientSupportedCompressions() {
+        LinkedList<CompressionMethod> clientSupportedCompressionMethods = new LinkedList<>();
+        LinkedList<CompressionMethod> clientSupportedCompressionMethods2 = new LinkedList<>();
+        clientSupportedCompressionMethods.add(CompressionMethod.LZS);
+        clientSupportedCompressionMethods.add(CompressionMethod.NULL);
+        clientSupportedCompressionMethods.add(CompressionMethod.DEFLATE);
+        config.setDefaultClientSupportedCompressionMethods(clientSupportedCompressionMethods);
+        assertEquals(clientSupportedCompressionMethods, config.getDefaultClientSupportedCompressionMethods());
+        assertEquals(clientSupportedCompressionMethods, chooser.getClientSupportedCompressions());
+        context.setClientSupportedCompressions(clientSupportedCompressionMethods2);
+        assertEquals(clientSupportedCompressionMethods2, chooser.getClientSupportedCompressions());
     }
 
     /**
@@ -245,6 +264,19 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientSupportedCiphersuites() {
+        LinkedList<CipherSuite> clientSupportedCiphersuites = new LinkedList<>();
+        LinkedList<CipherSuite> clientSupportedCiphersuites2 = new LinkedList<>();
+        clientSupportedCiphersuites.add(CipherSuite.TLS_FALLBACK_SCSV);
+        clientSupportedCiphersuites.add(CipherSuite.TLS_AES_128_GCM_SHA256);
+        clientSupportedCiphersuites.add(CipherSuite.TLS_DHE_DSS_EXPORT1024_WITH_RC4_56_SHA);
+        clientSupportedCiphersuites.add(CipherSuite.SSL_FORTEZZA_KEA_WITH_NULL_SHA);
+        clientSupportedCiphersuites.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA256);
+        clientSupportedCiphersuites.add(CipherSuite.TLS_DHE_DSS_WITH_ARIA_256_GCM_SHA384);
+        config.setDefaultClientSupportedCiphersuites(clientSupportedCiphersuites);
+        assertEquals(clientSupportedCiphersuites, config.getDefaultClientSupportedCiphersuites());
+        assertEquals(clientSupportedCiphersuites, chooser.getClientSupportedCiphersuites());
+        context.setClientSupportedCiphersuites(clientSupportedCiphersuites2);
+        assertEquals(clientSupportedCiphersuites2, chooser.getClientSupportedCiphersuites());
     }
 
     /**
@@ -253,6 +285,22 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerSupportedSignatureAndHashAlgorithms() {
+        LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms = new LinkedList<>();
+        LinkedList<SignatureAndHashAlgorithm> serverSupportedSignatureAndHashAlgorithms2 = new LinkedList<>();
+        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.SHA1));
+        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.MD5));
+        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.SHA224));
+        serverSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ANONYMOUS,
+                HashAlgorithm.SHA512));
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms);
+        assertEquals(serverSupportedSignatureAndHashAlgorithms,
+                config.getDefaultServerSupportedSignatureAndHashAlgorithms());
+        assertEquals(serverSupportedSignatureAndHashAlgorithms, chooser.getServerSupportedSignatureAndHashAlgorithms());
+        context.setServerSupportedSignatureAndHashAlgorithms(serverSupportedSignatureAndHashAlgorithms2);
+        assertEquals(serverSupportedSignatureAndHashAlgorithms2, chooser.getServerSupportedSignatureAndHashAlgorithms());
     }
 
     /**
@@ -260,6 +308,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedProtocolVersion() {
+        context.setSelectedProtocolVersion(null);
+        config.setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT20);
+        assertEquals(ProtocolVersion.TLS13_DRAFT20, config.getDefaultSelectedProtocolVersion());
+        assertEquals(ProtocolVersion.TLS13_DRAFT20, chooser.getSelectedProtocolVersion());
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        assertEquals(ProtocolVersion.TLS12, chooser.getSelectedProtocolVersion());
     }
 
     /**
@@ -267,6 +321,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetHighestClientProtocolVersion() {
+        context.setHighestClientProtocolVersion(null);
+        config.setDefaultHighestClientProtocolVersion(ProtocolVersion.TLS10);
+        assertEquals(ProtocolVersion.TLS10, config.getDefaultHighestClientProtocolVersion());
+        assertEquals(ProtocolVersion.TLS10, chooser.getHighestClientProtocolVersion());
+        context.setHighestClientProtocolVersion(ProtocolVersion.TLS11);
+        assertEquals(ProtocolVersion.TLS11, chooser.getHighestClientProtocolVersion());
     }
 
     /**
@@ -274,6 +334,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetTalkingConnectionEnd() {
+        context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
+        assertEquals(ConnectionEndType.CLIENT, chooser.getTalkingConnectionEnd());
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        assertEquals(ConnectionEndType.SERVER, chooser.getTalkingConnectionEnd());
+        context.setTalkingConnectionEndType(null);
+        assertEquals(null, chooser.getTalkingConnectionEnd());
     }
 
     /**
@@ -281,6 +347,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetMasterSecret() {
+        byte[] masterSecret = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        config.setDefaultMasterSecret(masterSecret);
+        assertArrayEquals(masterSecret, config.getDefaultMasterSecret());
+        assertArrayEquals(masterSecret, chooser.getMasterSecret());
+        context.setMasterSecret(masterSecret);
+        assertArrayEquals(masterSecret, chooser.getMasterSecret());
     }
 
     /**
@@ -288,6 +360,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedCipherSuite() {
+        context.setSelectedCipherSuite(null);
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
+        assertEquals(CipherSuite.TLS_AES_128_CCM_SHA256, config.getDefaultSelectedCipherSuite());
+        assertEquals(CipherSuite.TLS_AES_128_CCM_SHA256, chooser.getSelectedCipherSuite());
+        context.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA);
+        assertEquals(CipherSuite.TLS_DHE_DSS_WITH_CAMELLIA_128_CBC_SHA, chooser.getSelectedCipherSuite());
     }
 
     /**
@@ -295,6 +373,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetPreMasterSecret() {
+        byte[] preMasterSecret = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        config.setDefaultPreMasterSecret(preMasterSecret);
+        assertArrayEquals(preMasterSecret, config.getDefaultPreMasterSecret());
+        assertArrayEquals(preMasterSecret, chooser.getPreMasterSecret());
+        context.setPreMasterSecret(preMasterSecret);
+        assertArrayEquals(preMasterSecret, chooser.getPreMasterSecret());
     }
 
     /**
@@ -302,6 +386,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientRandom() {
+        byte[] clientRandom = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        config.setDefaultClientRandom(clientRandom);
+        assertArrayEquals(clientRandom, config.getDefaultClientRandom());
+        assertArrayEquals(clientRandom, chooser.getClientRandom());
+        context.setClientRandom(clientRandom);
+        assertArrayEquals(clientRandom, chooser.getClientRandom());
     }
 
     /**
@@ -309,6 +399,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerRandom() {
+        byte[] serverRandom = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        config.setDefaultServerRandom(serverRandom);
+        assertArrayEquals(serverRandom, config.getDefaultServerRandom());
+        assertArrayEquals(serverRandom, chooser.getServerRandom());
+        context.setServerRandom(serverRandom);
+        assertArrayEquals(serverRandom, chooser.getServerRandom());
     }
 
     /**
@@ -316,6 +412,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedCompressionMethod() {
+        context.setSelectedCompressionMethod(null);
+        config.setDefaultSelectedCompressionMethod(CompressionMethod.DEFLATE);
+        assertEquals(CompressionMethod.DEFLATE, config.getDefaultSelectedCompressionMethod());
+        assertEquals(CompressionMethod.DEFLATE, chooser.getSelectedCompressionMethod());
+        context.setSelectedCompressionMethod(CompressionMethod.LZS);
+        assertEquals(CompressionMethod.LZS, chooser.getSelectedCompressionMethod());
     }
 
     /**
@@ -323,6 +425,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientSessionId() {
+        byte[] sessionID = new byte[0];
+        config.setDefaultClientSessionId(sessionID);
+        assertArrayEquals(sessionID, config.getDefaultClientSessionId());
+        assertArrayEquals(sessionID, chooser.getClientSessionId());
+        context.setClientSessionId(sessionID);
+        assertArrayEquals(sessionID, chooser.getServerRandom());
     }
 
     /**
@@ -330,6 +438,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerSessionId() {
+        byte[] sessionID = new byte[0];
+        config.setDefaultServerSessionId(sessionID);
+        assertArrayEquals(sessionID, config.getDefaultServerSessionId());
+        assertArrayEquals(sessionID, chooser.getServerSessionId());
+        context.setServerSessionId(sessionID);
+        assertArrayEquals(sessionID, chooser.getServerRandom());
     }
 
     /**
@@ -337,6 +451,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDtlsCookie() {
+        byte[] cookie = ArrayConverter.hexStringToByteArray("ab18712378669892893619236899692136");
+        config.setDefaultDtlsCookie(cookie);
+        assertArrayEquals(cookie, config.getDefaultDtlsCookie());
+        assertArrayEquals(cookie, chooser.getDtlsCookie());
+        context.setDtlsCookie(cookie);
+        assertArrayEquals(cookie, chooser.getDtlsCookie());
     }
 
     /**
@@ -351,6 +471,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetPRFAlgorithm() {
+        context.setPrfAlgorithm(null);
+        config.setDefaultPRFAlgorithm(PRFAlgorithm.TLS_PRF_SHA384);
+        assertEquals(PRFAlgorithm.TLS_PRF_SHA384, config.getDefaultPRFAlgorithm());
+        assertEquals(PRFAlgorithm.TLS_PRF_SHA384, chooser.getPRFAlgorithm());
+        context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
+        assertEquals(PRFAlgorithm.TLS_PRF_SHA256, chooser.getPRFAlgorithm());
     }
 
     /**
