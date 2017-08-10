@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
+import de.rub.nds.tlsattacker.core.crypto.KeyGenerator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
@@ -31,6 +32,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.ECPrivateKey;
 import java.util.Random;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
@@ -39,6 +41,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
+import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
@@ -59,17 +62,16 @@ public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<Tok
         message.setKeyParameter(chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0).getValue());
         if (chooser.getConfig().getDefaultTokenBindingKeyParameters().get(0) == TokenBindingKeyParameters.ECDSAP256) {
             ECDomainParameters generateEcParameters = generateEcParameters();
-            AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(),
-                    generateEcParameters);
-            ECPublicKeyParameters publicParams = (ECPublicKeyParameters) keyPair.getPublic();
-            ECPrivateKeyParameters privateParams = (ECPrivateKeyParameters) keyPair.getPrivate();
-
-            CustomECPoint point = new CustomECPoint(publicParams.getQ().getRawXCoord().toBigInteger(), publicParams
-                    .getQ().getRawYCoord().toBigInteger());
+            ECPrivateKey tokenBindingECPrivateKey = KeyGenerator.getTokenBindingECPrivateKey(chooser);
+            LOGGER.debug("Using private Key:" + tokenBindingECPrivateKey.getS());
+            ECPoint publicKey = generateEcParameters.getG().multiply(tokenBindingECPrivateKey.getS());
+            publicKey = publicKey.normalize();
+            CustomECPoint point = new CustomECPoint(publicKey.getRawXCoord().toBigInteger(), publicKey.getRawYCoord()
+                    .toBigInteger());
             message.setPoint(ArrayConverter.concatenate(point.getByteX(), point.getByteY()));
             message.setPointLength(message.getPoint().getValue().length);
-            ParametersWithRandom params = new ParametersWithRandom(privateParams, new BadRandom(new Random(0),
-                    new byte[0]));
+            ParametersWithRandom params = new ParametersWithRandom(new ECPrivateKeyParameters(
+                    tokenBindingECPrivateKey.getS(), generateEcParameters), new BadRandom(new Random(0), new byte[0]));
             ECDSASigner signer = new ECDSASigner();
             signer.init(true, params);
             MessageDigest dig = null;
