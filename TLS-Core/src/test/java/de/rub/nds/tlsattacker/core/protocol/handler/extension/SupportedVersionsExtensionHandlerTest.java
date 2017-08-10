@@ -51,6 +51,15 @@ public class SupportedVersionsExtensionHandlerTest {
         assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS13.getValue());
     }
 
+    @Test
+    public void testAdjustTLSContextBadVersions() {
+        SupportedVersionsExtensionMessage msg = new SupportedVersionsExtensionMessage();
+        msg.setSupportedVersions(new byte[] { 0, 1, 2, 3, 3, 3 });
+        handler.adjustTLSContext(msg);
+        assertTrue(context.getClientSupportedProtocolVersions().size() == 1);
+        assertEquals(context.getHighestClientProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
+    }
+
     /**
      * Test of getParser method, of class SupportedVersionsExtensionHandler.
      */
