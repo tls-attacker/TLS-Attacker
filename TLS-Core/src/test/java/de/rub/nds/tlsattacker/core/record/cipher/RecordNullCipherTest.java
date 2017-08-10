@@ -47,7 +47,7 @@ public class RecordNullCipherTest {
     /**
      * Test of calculateMac method, of class RecordNullCipher.
      */
-    @Test (expected = UnsupportedOperationException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testCalculateMac() {
         record.calculateMac(data);
     }
