@@ -39,7 +39,7 @@ public class RecordDecryptor extends Decryptor<Record> {
         if (recordCipher.isUsePadding()) {
             LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(decrypted));
 
-            if (!context.getSelectedProtocolVersion().isTLS13()) {
+            if (!context.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 int paddingLength = parsePaddingLength(decrypted);
                 record.setPaddingLength(paddingLength);
                 LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());

@@ -175,7 +175,7 @@ public class DefaultChooserTest {
         config.setDistinguishedNames(namelist);
         assertTrue(config.getDistinguishedNames().length == 2);
         assertTrue(chooser.getDistinguishedNames().length == 2);
-        byte[] namelist2 = { (byte) 0, (byte) 1, (byte) 3};
+        byte[] namelist2 = { (byte) 0, (byte) 1, (byte) 3 };
         context.setDistinguishedNames(namelist2);
         assertTrue(chooser.getDistinguishedNames().length == 3);
     }
