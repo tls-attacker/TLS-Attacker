@@ -78,10 +78,9 @@ public enum ProtocolVersion {
             byte[] version = new byte[2];
             version[0] = values[pointer];
             version[1] = values[pointer + 1];
-            if (version == null) {
-                throw new UnknownProtocolVersionException("Unknown ProtocolVersion!");
-            } else {
-                versions.add(getProtocolVersion(version));
+            ProtocolVersion tempVersion = getProtocolVersion(version);
+            if (tempVersion != null) {
+                versions.add(tempVersion);
             }
             pointer += 2;
         }
