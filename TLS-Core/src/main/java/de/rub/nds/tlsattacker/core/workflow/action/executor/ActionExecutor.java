@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ActionExecutor {
 
-    protected static final Logger LOGGER = LogManager.getLogger("ActionExecutor");
+    protected static final Logger LOGGER = LogManager.getLogger(ActionExecutor.class.getName());
 
     public abstract MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records);
 
