@@ -156,6 +156,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = expectedMessages;
     }
 
+    public void setExpectedMessages(ProtocolMessage... expectedMessages) {
+        this.expectedMessages = Arrays.asList(expectedMessages);
+    }
+
     @Override
     public void reset() {
         messages = new LinkedList<>();
