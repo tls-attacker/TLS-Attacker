@@ -45,7 +45,7 @@ public class MaxFragmentLengthExtensionParser extends ExtensionParser<MaxFragmen
      *            Message to write in
      */
     private void parseMaxFragmentLength(MaxFragmentLengthExtensionMessage msg) {
-        msg.setMaxFragmentLength(parseByteArrayField(ExtensionByteLength.MAX_FRAGMENT_EXTENSION_LENGTH));
+        msg.setMaxFragmentLength(parseByteArrayField(ExtensionByteLength.MAX_FRAGMENT));
         LOGGER.debug("MaxFragmentLength: " + ArrayConverter.bytesToHexString(msg.getMaxFragmentLength().getValue()));
     }
 }

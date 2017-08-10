@@ -37,6 +37,7 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
     @Override
     public void prepareExtensionContent() {
         message.setRenegotiationInfo(chooser.getConfig().getDefaultRenegotiationInfo());
+        message.setRenegotiationInfoLength(message.getRenegotiationInfo().getValue().length);
         LOGGER.debug("Prepared the RenegotiationInfo extension with info "
                 + ArrayConverter.bytesToHexString(chooser.getConfig().getDefaultRenegotiationInfo()));
     }
