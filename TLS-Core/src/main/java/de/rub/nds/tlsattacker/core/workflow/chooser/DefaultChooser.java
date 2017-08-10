@@ -391,7 +391,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerEcPrivateKey() {
-        if (context.getServerEcPublicKey() != null) {
+        if (context.getServerEcPrivateKey() != null) {
             return context.getServerEcPrivateKey();
         } else {
             return config.getDefaultServerEcPrivateKey();

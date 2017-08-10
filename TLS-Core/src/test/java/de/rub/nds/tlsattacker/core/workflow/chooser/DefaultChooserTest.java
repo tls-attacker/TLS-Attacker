@@ -32,7 +32,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import static org.junit.Assert.assertArrayEquals;
 
 /**
@@ -484,6 +487,14 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSessionTicketTLS() {
+        context.setSessionTicketTLS(null);
+        byte[] sessionTicketTLS = ArrayConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] sessionTicketTLS2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        config.setTLSSessionTicket(sessionTicketTLS);
+        assertArrayEquals(sessionTicketTLS, config.getTLSSessionTicket());
+        assertArrayEquals(sessionTicketTLS, chooser.getSessionTicketTLS());
+        context.setSessionTicketTLS(sessionTicketTLS2);
+        assertArrayEquals(sessionTicketTLS2, chooser.getSessionTicketTLS());
     }
 
     /**
@@ -491,6 +502,14 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSignedCertificateTimestamp() {
+        context.setSignedCertificateTimestamp(null);
+        byte[] timestamp = ArrayConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] timestamp2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        config.setDefaultSignedCertificateTimestamp(timestamp);
+        assertArrayEquals(timestamp, config.getDefaultSignedCertificateTimestamp());
+        assertArrayEquals(timestamp, chooser.getSignedCertificateTimestamp());
+        context.setSignedCertificateTimestamp(timestamp2);
+        assertArrayEquals(timestamp2, chooser.getSignedCertificateTimestamp());
     }
 
     /**
@@ -498,6 +517,14 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetRenegotiationInfo() {
+        context.setRenegotiationInfo(null);
+        byte[] info = ArrayConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] info2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        config.setDefaultRenegotiationInfo(info);
+        assertArrayEquals(info, config.getDefaultRenegotiationInfo());
+        assertArrayEquals(info, chooser.getRenegotiationInfo());
+        context.setRenegotiationInfo(info2);
+        assertArrayEquals(info2, chooser.getRenegotiationInfo());
     }
 
     /**
@@ -505,6 +532,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetTokenBindingVersion() {
+        context.setTokenBindingVersion(null);
+        config.setDefaultTokenBindingVersion(TokenBindingVersion.DRAFT_13);
+        assertEquals(TokenBindingVersion.DRAFT_13, config.getDefaultTokenBindingVersion());
+        assertEquals(TokenBindingVersion.DRAFT_13, chooser.getTokenBindingVersion());
+        context.setTokenBindingVersion(TokenBindingVersion.DRAFT_1);
+        assertEquals(TokenBindingVersion.DRAFT_1, chooser.getTokenBindingVersion());
     }
 
     /**
@@ -512,6 +545,16 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetTokenBindingKeyParameters() {
+        List<TokenBindingKeyParameters> paramList = new LinkedList<>();
+        List<TokenBindingKeyParameters> paramList2 = new LinkedList<>();
+        paramList.add(TokenBindingKeyParameters.ECDSAP256);
+        paramList.add(TokenBindingKeyParameters.RSA2048_PKCS1_5);
+        paramList.add(TokenBindingKeyParameters.RSA2048_PSS);
+        config.setDefaultTokenBindingKeyParameters(paramList);
+        assertEquals(paramList, config.getDefaultTokenBindingKeyParameters());
+        assertEquals(paramList, chooser.getTokenBindingKeyParameters());
+        context.setTokenBindingKeyParameters(paramList2);
+        assertEquals(paramList2, chooser.getTokenBindingKeyParameters());
     }
 
     /**
@@ -519,6 +562,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDhModulus() {
+        context.setDhModulus(null);
+        config.setDefaultDhModulus(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultDhModulus());
+        assertEquals(BigInteger.ONE, chooser.getDhModulus());
+        context.setDhModulus(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getDhModulus());
     }
 
     /**
@@ -526,6 +575,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDhGenerator() {
+        context.setDhGenerator(null);
+        config.setDefaultDhGenerator(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultDhGenerator());
+        assertEquals(BigInteger.ONE, chooser.getDhGenerator());
+        context.setDhGenerator(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getDhGenerator());
     }
 
     /**
@@ -533,6 +588,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDhServerPrivateKey() {
+        context.setServerDhPrivateKey(null);
+        config.setDefaultServerDhPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerDhPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getDhServerPrivateKey());
+        context.setServerDhPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getDhServerPrivateKey());
     }
 
     /**
@@ -540,6 +601,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDhClientPrivateKey() {
+        context.setClientDhPrivateKey(null);
+        config.setDefaultClientDhPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultClientDhPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getDhClientPrivateKey());
+        context.setClientDhPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getDhClientPrivateKey());
     }
 
     /**
@@ -547,6 +614,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDhServerPublicKey() {
+        context.setServerDhPublicKey(null);
+        config.setDefaultServerDhPublicKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerDhPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getDhServerPublicKey());
+        context.setServerDhPublicKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getDhServerPublicKey());
     }
 
     /**
@@ -554,6 +627,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDhClientPublicKey() {
+        context.setClientDhPublicKey(null);
+        config.setDefaultClientDhPublicKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultClientDhPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getDhClientPublicKey());
+        context.setClientDhPublicKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getDhClientPublicKey());
     }
 
     /**
@@ -561,6 +640,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerEcPrivateKey() {
+        context.setServerEcPrivateKey(null);
+        config.setDefaultServerEcPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerEcPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getServerEcPrivateKey());
+        context.setServerEcPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerEcPrivateKey());
     }
 
     /**
@@ -568,6 +653,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientEcPrivateKey() {
+        context.setClientEcPrivateKey(null);
+        config.setDefaultClientEcPrivateKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultClientEcPrivateKey());
+        assertEquals(BigInteger.ONE, chooser.getClientEcPrivateKey());
+        context.setClientEcPrivateKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getClientEcPrivateKey());
     }
 
     /**
@@ -575,6 +666,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedCurve() {
+        context.setSelectedCurve(null);
+        config.setDefaultSelectedCurve(NamedCurve.FFDHE2048);
+        assertEquals(NamedCurve.FFDHE2048, config.getDefaultSelectedCurve());
+        assertEquals(NamedCurve.FFDHE2048, chooser.getSelectedCurve());
+        context.setSelectedCurve(NamedCurve.SECT163R1);
+        assertEquals(NamedCurve.SECT163R1, chooser.getSelectedCurve());
     }
 
     /**
