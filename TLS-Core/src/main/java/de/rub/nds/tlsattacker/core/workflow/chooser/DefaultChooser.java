@@ -481,7 +481,7 @@ public class DefaultChooser extends Chooser {
         if (context.getServerHandshakeTrafficSecret() != null) {
             return context.getServerHandshakeTrafficSecret();
         } else {
-            return config.getDefaultClientHandshakeTrafficSecret();
+            return config.getDefaultServerHandshakeTrafficSecret();
         }
     }
 

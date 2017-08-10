@@ -26,6 +26,7 @@ import org.junit.Test;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -34,6 +35,7 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import static org.junit.Assert.assertArrayEquals;
@@ -679,6 +681,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientEcPublicKey() {
+        context.setClientEcPublicKey(null);
+        config.setDefaultClientEcPublicKey(new CustomECPoint(BigInteger.ONE, BigInteger.TEN));
+        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), config.getDefaultClientEcPublicKey());
+        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), chooser.getClientEcPublicKey());
+        context.setClientEcPublicKey(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN));
+        assertEquals(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN), chooser.getClientEcPublicKey());
     }
 
     /**
@@ -686,6 +694,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerEcPublicKey() {
+        context.setServerEcPublicKey(null);
+        config.setDefaultServerEcPublicKey(new CustomECPoint(BigInteger.ONE, BigInteger.TEN));
+        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), config.getDefaultServerEcPublicKey());
+        assertEquals(new CustomECPoint(BigInteger.ONE, BigInteger.TEN), chooser.getServerEcPublicKey());
+        context.setServerEcPublicKey(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN));
+        assertEquals(new CustomECPoint(BigInteger.ZERO, BigInteger.TEN), chooser.getServerEcPublicKey());
     }
 
     /**
@@ -693,6 +707,7 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetEcCurveType() {
+        assertEquals(EllipticCurveType.NAMED_CURVE, chooser.getEcCurveType());
     }
 
     /**
@@ -700,6 +715,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetRsaModulus() {
+        context.setRsaModulus(null);
+        config.setDefaultRSAModulus(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultRSAModulus());
+        assertEquals(BigInteger.ONE, chooser.getRsaModulus());
+        context.setRsaModulus(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getRsaModulus());
     }
 
     /**
@@ -707,6 +728,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerRSAPublicKey() {
+        context.setServerRSAPublicKey(null);
+        config.setDefaultServerRSAPublicKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerRSAPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getServerRSAPublicKey());
+        context.setServerRSAPublicKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerRSAPublicKey());
     }
 
     /**
@@ -714,6 +741,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientRSAPublicKey() {
+        context.setClientRSAPublicKey(null);
+        config.setDefaultClientRSAPublicKey(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultClientRSAPublicKey());
+        assertEquals(BigInteger.ONE, chooser.getClientRSAPublicKey());
+        context.setClientRSAPublicKey(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getClientRSAPublicKey());
     }
 
     /**
@@ -721,6 +754,14 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetCertificateRequestContext() {
+        context.setCertificateRequestContext(null);
+        byte[] requestContext = ArrayConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] requestContext2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        config.setDefaultCertificateRequestContext(requestContext);
+        assertArrayEquals(requestContext, config.getDefaultCertificateRequestContext());
+        assertArrayEquals(requestContext, chooser.getCertificateRequestContext());
+        context.setCertificateRequestContext(requestContext2);
+        assertArrayEquals(requestContext2, chooser.getCertificateRequestContext());
     }
 
     /**
@@ -728,6 +769,14 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerHandshakeTrafficSecret() {
+        context.setServerHandshakeTrafficSecret(null);
+        byte[] secret = ArrayConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] secret2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        config.setDefaultServerHandshakeTrafficSecret(secret);
+        assertArrayEquals(secret, config.getDefaultServerHandshakeTrafficSecret());
+        assertArrayEquals(secret, chooser.getServerHandshakeTrafficSecret());
+        context.setServerHandshakeTrafficSecret(secret2);
+        assertArrayEquals(secret2, chooser.getServerHandshakeTrafficSecret());
     }
 
     /**
@@ -735,6 +784,14 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientHandshakeTrafficSecret() {
+        context.setClientHandshakeTrafficSecret(null);
+        byte[] secret = ArrayConverter.hexStringToByteArray("122131123987891238098123");
+        byte[] secret2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
+        config.setDefaultClientHandshakeTrafficSecret(secret);
+        assertArrayEquals(secret, config.getDefaultClientHandshakeTrafficSecret());
+        assertArrayEquals(secret, chooser.getClientHandshakeTrafficSecret());
+        context.setClientHandshakeTrafficSecret(secret2);
+        assertArrayEquals(secret2, chooser.getClientHandshakeTrafficSecret());
     }
 
 }
