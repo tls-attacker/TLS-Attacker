@@ -355,10 +355,6 @@ public class TlsContext {
     public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
-        // init lastRecordVersion for records
-        clientCertificateTypes = new LinkedList<>();
-        lastRecordVersion = config.getHighestProtocolVersion();
-        selectedProtocolVersion = config.getHighestProtocolVersion();
     }
 
     public Chooser getChooser() {
