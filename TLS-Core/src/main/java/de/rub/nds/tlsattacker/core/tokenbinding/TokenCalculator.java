@@ -26,9 +26,9 @@ public class TokenCalculator {
     public static byte[] calculateEKM(Chooser chooser, int length) {
         byte[] masterSecret = chooser.getMasterSecret();
         String label = TokenBindingLabel.TOKEN_LABEL;
-        byte[] clientServerRandom = context.getClientServerRandom();
-        PRFAlgorithm algorithm = AlgorithmResolver.getPRFAlgorithm(context.getChooser().getSelectedProtocolVersion(),
-                context.getChooser().getSelectedCipherSuite());
+        byte[] clientServerRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        PRFAlgorithm algorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
         return PseudoRandomFunction.compute(algorithm, masterSecret, label, clientServerRandom, length);
     }
 
