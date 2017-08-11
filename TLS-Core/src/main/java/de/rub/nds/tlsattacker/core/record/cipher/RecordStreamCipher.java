@@ -85,8 +85,8 @@ public class RecordStreamCipher extends RecordCipher {
 
     private void init() {
         try {
-            ProtocolVersion protocolVersion = tlsContext.getSelectedProtocolVersion();
-            CipherSuite cipherSuite = tlsContext.getSelectedCipherSuite();
+            ProtocolVersion protocolVersion = tlsContext.getChooser().getSelectedProtocolVersion();
+            CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
             bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             int keySize = cipherAlg.getKeySize();
@@ -126,7 +126,7 @@ public class RecordStreamCipher extends RecordCipher {
                     writeMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
                 } catch (InvalidKeyException E) {
                     throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                            + tlsContext.getSelectedCipherSuite().name(), E);
+                            + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
                 }
             } else {
                 decryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
@@ -138,7 +138,7 @@ public class RecordStreamCipher extends RecordCipher {
                     writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
                 } catch (InvalidKeyException E) {
                     throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                            + tlsContext.getSelectedCipherSuite().name(), E);
+                            + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
                 }
             }
             if (offset != keyBlock.length) {
@@ -147,7 +147,7 @@ public class RecordStreamCipher extends RecordCipher {
             setMinimalEncryptedRecordLength(readMac.getMacLength());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             throw new CryptoException("Could not initialize StreamCipher with Ciphersuite:"
-                    + tlsContext.getSelectedCipherSuite().name(), ex);
+                    + tlsContext.getChooser().getSelectedCipherSuite().name(), ex);
         }
     }
 

@@ -50,7 +50,7 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawBytes) {
         List<AbstractRecord> list = new LinkedList<>();
-        BlobRecordParser parser = new BlobRecordParser(0, rawBytes, context.getSelectedProtocolVersion());
+        BlobRecordParser parser = new BlobRecordParser(0, rawBytes, context.getChooser().getSelectedProtocolVersion());
         list.add(parser.parse());
         return list;
     }
