@@ -115,6 +115,14 @@ public class WorkflowTraceUtil {
         return getFirstReceivedMessage(type, trace) != null;
     }
 
+    public static boolean didSendMessage(ProtocolMessageType type, WorkflowTrace trace) {
+        return getFirstSendMessage(type, trace) != null;
+    }
+
+    public static boolean didSendMessage(HandshakeMessageType type, WorkflowTrace trace) {
+        return getFirstSendMessage(type, trace) != null;
+    }
+
     public static ProtocolMessage getLastReceivedMessage(WorkflowTrace trace) {
         List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
         if (messageList.isEmpty()) {
@@ -154,7 +162,7 @@ public class WorkflowTraceUtil {
         return returnedMessages;
     }
 
-    private static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
+    public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
             receivedMessage.addAll(action.getReceivedMessages());
@@ -162,7 +170,7 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
-    private static List<ProtocolMessage> getAllSendMessages(WorkflowTrace trace) {
+    public static List<ProtocolMessage> getAllSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage> sendMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
             sendMessages.addAll(action.getSendMessages());
@@ -170,4 +178,18 @@ public class WorkflowTraceUtil {
         return sendMessages;
     }
 
+    public Boolean didReceiveTypeBeforeType(ProtocolMessageType protocolMessageType, HandshakeMessageType type, WorkflowTrace trace) {
+        List<ProtocolMessage> receivedMessages = getAllReceivedMessages(trace);
+        for (ProtocolMessage message : receivedMessages) {
+            if (message.getProtocolMessageType() == protocolMessageType) {
+                return true;
+            }
+            if (message instanceof HandshakeMessage) {
+                if (((HandshakeMessage) message).getHandshakeMessageType() == type) {
+                    return false;
+                }
+            }
+        }
+        return null;
+    }
 }
