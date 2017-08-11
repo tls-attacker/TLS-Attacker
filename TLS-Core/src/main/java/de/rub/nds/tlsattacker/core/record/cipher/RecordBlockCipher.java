@@ -189,8 +189,8 @@ public final class RecordBlockCipher extends RecordCipher {
 
     private void init() {
         try {
-            ProtocolVersion protocolVersion = tlsContext.getSelectedProtocolVersion();
-            CipherSuite cipherSuite = tlsContext.getSelectedCipherSuite();
+            ProtocolVersion protocolVersion = tlsContext.getChooser().getSelectedProtocolVersion();
+            CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
             if (protocolVersion == ProtocolVersion.TLS11 || protocolVersion == ProtocolVersion.TLS12
                     || protocolVersion == ProtocolVersion.DTLS10 || protocolVersion == ProtocolVersion.DTLS12) {
                 useExplicitIv = true;
@@ -253,7 +253,7 @@ public final class RecordBlockCipher extends RecordCipher {
                     writeMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
                 } catch (InvalidAlgorithmParameterException | InvalidKeyException E) {
                     throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                            + tlsContext.getSelectedCipherSuite().name(), E);
+                            + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
                 }
             } else {
                 decryptIv = new IvParameterSpec(clientWriteIv);
@@ -267,7 +267,7 @@ public final class RecordBlockCipher extends RecordCipher {
                     writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
                 } catch (InvalidAlgorithmParameterException | InvalidKeyException E) {
                     throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                            + tlsContext.getSelectedCipherSuite().name(), E);
+                            + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
                 }
             }
             if (offset != keyBlock.length) {
@@ -280,7 +280,7 @@ public final class RecordBlockCipher extends RecordCipher {
                     * decryptCipher.getBlockSize());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             throw new CryptoException("Could not initialize RecordBlocKCipher with Ciphersuite:"
-                    + tlsContext.getSelectedCipherSuite().name(), ex);
+                    + tlsContext.getChooser().getSelectedCipherSuite().name(), ex);
         }
     }
 

@@ -26,7 +26,7 @@ public class RecordCipherFactory {
         if (context.getSelectedCipherSuite() == null) {
             return new RecordNullCipher();
         } else {
-            CipherType type = AlgorithmResolver.getCipherType(context.getSelectedCipherSuite());
+            CipherType type = AlgorithmResolver.getCipherType(context.getChooser().getSelectedCipherSuite());
             switch (type) {
                 case AEAD:
                     return new RecordAEADCipher(context);

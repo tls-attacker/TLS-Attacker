@@ -229,7 +229,7 @@ public class HandlerFactory {
     }
 
     private static ClientKeyExchangeHandler getClientKeyExchangeHandler(TlsContext context) {
-        CipherSuite cs = context.getSelectedCipherSuite();
+        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case RSA:

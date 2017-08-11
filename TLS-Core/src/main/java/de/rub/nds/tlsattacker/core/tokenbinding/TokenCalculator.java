@@ -26,8 +26,8 @@ public class TokenCalculator {
         byte[] masterSecret = context.getMasterSecret();
         String label = TokenBindingLabel.TOKEN_LABEL;
         byte[] clientServerRandom = context.getClientServerRandom();
-        PRFAlgorithm algorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
+        PRFAlgorithm algorithm = AlgorithmResolver.getPRFAlgorithm(context.getChooser().getSelectedProtocolVersion(),
+                context.getChooser().getSelectedCipherSuite());
         return PseudoRandomFunction.compute(algorithm, masterSecret, label, clientServerRandom, length);
     }
 
