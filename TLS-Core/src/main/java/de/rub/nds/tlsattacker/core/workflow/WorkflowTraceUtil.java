@@ -178,7 +178,8 @@ public class WorkflowTraceUtil {
         return sendMessages;
     }
 
-    public Boolean didReceiveTypeBeforeType(ProtocolMessageType protocolMessageType, HandshakeMessageType type, WorkflowTrace trace) {
+    public Boolean didReceiveTypeBeforeType(ProtocolMessageType protocolMessageType, HandshakeMessageType type,
+            WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessages = getAllReceivedMessages(trace);
         for (ProtocolMessage message : receivedMessages) {
             if (message.getProtocolMessageType() == protocolMessageType) {
