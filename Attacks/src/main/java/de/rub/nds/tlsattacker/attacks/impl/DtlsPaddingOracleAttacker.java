@@ -32,7 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -57,7 +57,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private RecordLayer recordLayer;
     private List<TLSAction> actionList;
-    private UDPTransportHandler transportHandler;
+    private TransportHandler transportHandler;
 
     private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
             modifiedMacArray = new ModifiableByteArray();
@@ -191,7 +191,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             } else {
                 LOGGER.info("No data from the server was received. Train: {}", trainInfo);
             }
-            return transportHandler.getResponseTimeNanos();
+            return 0;// transportHandler.getResponseTimeNanos();
         } catch (SocketTimeoutException e) {
             LOGGER.info("Received timeout when waiting for heartbeat answer. Train: {}", trainInfo);
         } catch (Exception e) {
@@ -298,14 +298,14 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     }
 
     private void flushTransportHandler() throws IOException {
-        transportHandler.setTlsTimeout(50);
+        transportHandler.setTimeout(50);
         try {
             while (true) {
                 transportHandler.fetchData();
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTlsTimeout(tlsConfig.getTlsTimeout());
+            transportHandler.setTimeout(tlsConfig.getTlsTimeout());
         }
     }
 

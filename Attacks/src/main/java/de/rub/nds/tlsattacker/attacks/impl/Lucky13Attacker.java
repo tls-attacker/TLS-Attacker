@@ -95,7 +95,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             LOGGER.info("Not possible to finalize the defined workflow.");
             LOGGER.debug(ex);
         }
-        lastResult = tlsContext.getTransportHandler().getLastMeasurement();
+        lastResult = 0;// TODO
+                       // tlsContext.getTransportHandler().getLastMeasurement();
 
     }
 
