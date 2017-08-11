@@ -188,7 +188,7 @@ public class WorkflowTraceUtil {
         return sendMessages;
     }
 
-    public Boolean didReceiveTypeBeforeType(ProtocolMessageType protocolMessageType, HandshakeMessageType type,
+    public static Boolean didReceiveTypeBeforeType(ProtocolMessageType protocolMessageType, HandshakeMessageType type,
             WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessages = getAllReceivedMessages(trace);
         for (ProtocolMessage message : receivedMessages) {
