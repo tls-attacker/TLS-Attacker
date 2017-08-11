@@ -21,20 +21,27 @@ import java.nio.channels.SocketChannel;
  */
 public class ClientTCPNonBlockingTransportHandler extends TransportHandler {
 
-   
-    
     public ClientTCPNonBlockingTransportHandler(long timeout, ConnectionEndType type) {
         super(timeout, type);
     }
 
     @Override
     public void closeConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
     public void initialize() throws IOException {
-        
+
     }
 
 }

@@ -36,12 +36,9 @@ public class TransportHandlerFactory {
                     // return new ServerTcpTransportHandler(timeout);
                 }
             case NON_BLOCKING_TCP:
-                if(end == ConnectionEndType.CLIENT)
-                {
+                if (end == ConnectionEndType.CLIENT) {
                     throw new UnsupportedOperationException();
-                }
-                else
-                {
+                } else {
                     return new ServerTCPNonBlockingTransportHandler(timeout, end);
                 }
             default:
