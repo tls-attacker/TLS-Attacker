@@ -170,6 +170,16 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
+    public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace, ProtocolMessageType type) {
+        List<ProtocolMessage> receivedMessage = new LinkedList<>();
+        for (ProtocolMessage message : getAllReceivedMessages(trace)) {
+            if (message.getProtocolMessageType() == type) {
+                receivedMessage.add(message);
+            }
+        }
+        return receivedMessage;
+    }
+
     public static List<ProtocolMessage> getAllSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage> sendMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
