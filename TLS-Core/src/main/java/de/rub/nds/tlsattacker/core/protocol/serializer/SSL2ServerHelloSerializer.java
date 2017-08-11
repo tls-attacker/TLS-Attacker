@@ -22,7 +22,7 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer {
     private final SSL2ServerHelloMessage message;
 
     public SSL2ServerHelloSerializer(SSL2ServerHelloMessage message, TlsContext tlsContext) {
-        super(message, tlsContext.getSelectedProtocolVersion());
+        super(message, tlsContext.getChooser().getSelectedProtocolVersion());
         this.message = message;
     }
 

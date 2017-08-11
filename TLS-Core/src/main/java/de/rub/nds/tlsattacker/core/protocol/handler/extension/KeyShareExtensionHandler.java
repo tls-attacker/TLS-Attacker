@@ -79,9 +79,9 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     }
 
     private void adjustHandshakeTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getSelectedCipherSuite());
-        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
+        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(context.getChooser()
+                .getSelectedProtocolVersion(), context.getChooser().getSelectedCipherSuite());
         // PSK = null
         try {
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
