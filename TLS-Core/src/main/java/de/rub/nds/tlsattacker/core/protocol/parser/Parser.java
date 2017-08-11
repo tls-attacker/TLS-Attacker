@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Parser<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Parser");
+    protected static final Logger LOGGER = LogManager.getLogger(Parser.class.getName());
 
     /**
      * Current position in the byte array

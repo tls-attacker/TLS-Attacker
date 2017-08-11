@@ -34,7 +34,7 @@ public class EllipticCurvesExtensionSerializer extends ExtensionSerializer<Ellip
     }
 
     private void writeSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
-        appendInt(msg.getSupportedCurvesLength().getValue(), ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES_LENGTH);
+        appendInt(msg.getSupportedCurvesLength().getValue(), ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES);
         LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
     }
 

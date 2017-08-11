@@ -14,7 +14,8 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
- *
+ * This extension is defined in RFC4507
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SessionTicketTLSExtensionMessage extends ExtensionMessage {

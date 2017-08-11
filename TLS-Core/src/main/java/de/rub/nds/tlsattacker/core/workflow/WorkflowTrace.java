@@ -111,6 +111,10 @@ public class WorkflowTrace implements Serializable {
         tlsActions.add(position, action);
     }
 
+    public boolean addTlsActions(TLSAction... actions) {
+        return tlsActions.addAll(Arrays.asList(actions));
+    }
+
     public TLSAction removeTlsAction(int index) {
         return tlsActions.remove(index);
     }

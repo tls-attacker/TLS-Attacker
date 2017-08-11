@@ -42,7 +42,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
 
     @Override
     public EncryptedExtensionsSerializer getSerializer(EncryptedExtensionsMessage message) {
-        return new EncryptedExtensionsSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new EncryptedExtensionsSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

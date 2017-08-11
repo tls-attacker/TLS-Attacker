@@ -78,7 +78,7 @@ import org.junit.rules.TemporaryFolder;
  */
 public class SerialisationFullTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Test");
+    protected static final Logger LOGGER = LogManager.getLogger(Test.class.getName());
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();

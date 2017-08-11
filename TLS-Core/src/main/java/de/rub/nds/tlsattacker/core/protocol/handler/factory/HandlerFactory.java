@@ -66,7 +66,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class HandlerFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger("HandlerFactory");
+    private static final Logger LOGGER = LogManager.getLogger(HandlerFactory.class.getName());
 
     public static ProtocolMessageHandler getHandler(TlsContext context, ProtocolMessageType protocolType,
             HandshakeMessageType handshakeType) {
@@ -229,7 +229,7 @@ public class HandlerFactory {
     }
 
     private static ClientKeyExchangeHandler getClientKeyExchangeHandler(TlsContext context) {
-        CipherSuite cs = context.getSelectedCipherSuite();
+        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case RSA:
