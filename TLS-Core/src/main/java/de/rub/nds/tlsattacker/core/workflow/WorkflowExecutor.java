@@ -80,8 +80,8 @@ public abstract class WorkflowExecutor {
         String host = context.getConfig().getHost();
         int port = context.getConfig().getPort();
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, context.getConfig()
-                .getConnectionEndType(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
-                .getConfig().getTransportHandlerType());
+                .getConnectionEndType(), context.getConfig().getTimeout(), context.getConfig()
+                .getTransportHandlerType());
         try {
 
             th.initialize();

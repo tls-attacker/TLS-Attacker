@@ -8,20 +8,42 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
+
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class TransportHandlerFactory {
 
     public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEndType end,
-            int tlsTimeout, int socketTimeout, TransportHandlerType type) {
+            int timeout, TransportHandlerType type) {
         switch (type) {
             case TCP:
-                return new SimpleTransportHandler(hostname, port, end, socketTimeout, tlsTimeout);
+                if (end == ConnectionEndType.CLIENT) {
+                    return new ClientTcpTransportHandler(timeout, hostname, port);
+                } else {
+                    return new ServerTcpTransportHandler(timeout);
+                }
             case EAP_TLS:
                 throw new UnsupportedOperationException("EAP_TLS is currently not supported");
             case UDP:
-                return new UDPTransportHandler(hostname, port, end, tlsTimeout);
+                if (end == ConnectionEndType.CLIENT) {
+                    // return new ClientTcpTransportHandler(timeout, hostname,
+                    // port); //TODO
+                } else {
+                    // return new ServerTcpTransportHandler(timeout);
+                }
+            case NON_BLOCKING_TCP:
+                if(end == ConnectionEndType.CLIENT)
+                {
+                    throw new UnsupportedOperationException();
+                }
+                else
+                {
+                    return new ServerTCPNonBlockingTransportHandler(timeout, end);
+                }
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
         }

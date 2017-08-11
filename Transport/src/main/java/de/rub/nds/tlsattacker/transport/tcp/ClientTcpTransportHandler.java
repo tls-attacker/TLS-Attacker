@@ -8,35 +8,44 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp;
 
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class ClientTcpTransportHandler extends TransportHandler{
+public class ClientTcpTransportHandler extends TransportHandler {
 
     private Socket socket;
     private String hostname;
     private int port;
-    
+
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
-        super(timeout);
+        super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
         this.port = port;
     }
 
     @Override
     public void closeConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            LOGGER.error("Problem while closing the socket", ex);
+        }
     }
 
     @Override
     public void initialize() throws IOException {
-        socket.connect(new InetSocketAddress(hostname, port));
+        socket = new Socket(hostname, port);
+
+        setStreams(socket.getInputStream(), socket.getOutputStream());
     }
-    
+
 }

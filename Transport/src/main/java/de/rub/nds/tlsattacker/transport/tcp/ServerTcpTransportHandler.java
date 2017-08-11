@@ -8,8 +8,13 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp;
 
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,18 +22,27 @@ import java.io.IOException;
  */
 public class ServerTcpTransportHandler extends TransportHandler {
 
+    private ServerSocket serverSocket;
+    private Socket socket;
+
     public ServerTcpTransportHandler(long timeout) {
-        super(timeout);
+        super(timeout, ConnectionEndType.SERVER);
     }
 
     @Override
     public void closeConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            socket.close();
+            serverSocket.close();
+        } catch (IOException ex) {
+            LOGGER.error("Problem while closing sockets");
+        }
     }
 
     @Override
     public void initialize() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        serverSocket = new ServerSocket();
+        socket = serverSocket.accept();
     }
 
 }

@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,37 +31,60 @@ public abstract class TransportHandler {
 
     private boolean initialized = false;
 
-    public TransportHandler(long timeout) {
+    private final ConnectionEndType type;
+
+    public TransportHandler(long timeout, ConnectionEndType type) {
         this.timeout = timeout;
+        this.type = type;
     }
 
     public abstract void closeConnection();
 
     public byte[] fetchData() throws IOException {
+        byte[] response = new byte[0];
+
+        long minTimeMillies = System.currentTimeMillis() + timeout;
+        // long maxTimeMillies = System.currentTimeMillis() + timeout;
+        while ((System.currentTimeMillis() < minTimeMillies) && (response.length == 0)) {
+            // while ((System.currentTimeMillis() < maxTimeMillies) &&
+            // (bis.available() != 0)) {
+            while (inStream.available() != 0) {
+                // TODO: It is never correct to use the return value of this
+                // method to allocate a buffer intended to hold all data in this
+                // stream.
+                // http://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html#available%28%29
+                byte[] current = new byte[inStream.available()];
+                int readResult = inStream.read(current);
+                if (readResult != -1) {
+                    response = ArrayConverter.concatenate(response, current);
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+
+                    }
+                }
+            }
+        }
+        return response;
+    }
+
+    public void sendData(byte[] data) throws IOException {
         if (!initialized) {
             throw new IOException("Transporthandler is not initalized!");
         }
-        int available;
-        long startTime = System.currentTimeMillis();
-        do {
-            available = inStream.available();
-        } while (available == 0 && startTime + timeout < System.currentTimeMillis());
-        byte[] receivedBytes = new byte[available];
-        inStream.read(receivedBytes);
-        return receivedBytes;
-    }
-    
-    public void sendData(byte[] data) throws IOException {
         outStream.write(data);
         outStream.flush();
-     }
- 
+    }
 
-    public void setStreams(InputStream inStream, OutputStream outStream) {
+    protected final void setStreams(InputStream inStream, OutputStream outStream) {
         this.outStream = outStream;
         this.inStream = inStream;
         initialized = true;
     }
 
     public abstract void initialize() throws IOException;
+
+    public boolean isInitialized() {
+        return initialized;
+    }
 }

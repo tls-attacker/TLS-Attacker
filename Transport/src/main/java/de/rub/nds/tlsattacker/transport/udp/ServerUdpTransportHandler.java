@@ -13,5 +13,5 @@ package de.rub.nds.tlsattacker.transport.udp;
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class ServerUdpTransportHandler {
-    
+
 }

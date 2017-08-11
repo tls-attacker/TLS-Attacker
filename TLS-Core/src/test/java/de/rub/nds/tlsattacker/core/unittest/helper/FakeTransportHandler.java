@@ -23,8 +23,8 @@ public class FakeTransportHandler extends TransportHandler {
     private byte[] fetchableByte;
     private byte[] sendByte;
 
-    public FakeTransportHandler() {
-        super(null, 0, ConnectionEndType.CLIENT, 0);
+    public FakeTransportHandler(ConnectionEndType type) {
+        super(0, type);
         fetchableByte = new byte[0];
     }
 
