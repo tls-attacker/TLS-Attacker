@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
@@ -38,6 +39,10 @@ public class KeyGenerator {
         } else {
             return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getSelectedCurve());
         }
+    }
+
+    public static ECPrivateKey getTokenBindingECPrivateKey(Chooser chooser) {
+        return new CustomECPrivateKey(chooser.getConfig().getDefaultTokenBindingEcPrivateKey(), NamedCurve.SECP256R1);
     }
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {

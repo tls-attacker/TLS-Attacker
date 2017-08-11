@@ -10,10 +10,12 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.interfaces.DSAPrivateKey;
@@ -45,9 +47,8 @@ public class SignatureCalculator {
         }
     }
 
-    private static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+    public static byte[] generateSignature(PrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         try {
-            RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
             Signature instance = Signature.getInstance(algorithm.getJavaName());
             instance.initSign(key, RandomHelper.getBadSecureRandom());
             instance.update(toBeSigned);
@@ -57,31 +58,22 @@ public class SignatureCalculator {
         }
     }
 
-    private static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
-        try {
-            DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key, RandomHelper.getBadSecureRandom());
-            instance.update(toBeSigned);
-            return instance.sign();
-        } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
-            throw new CryptoException("Could not sign Data", ex);
-        }
+    public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+        RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
+        return generateSignature(key, toBeSigned, algorithm);
     }
 
-    private static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
-        try {
-            ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key, RandomHelper.getBadSecureRandom());
-            instance.update(toBeSigned);
-            return instance.sign();
-        } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
-            throw new CryptoException("Could not sign Data", ex);
-        }
+    public static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+        DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
+        return generateSignature(key, toBeSigned, algorithm);
     }
 
-    private static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,
+    public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+        ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
+        return generateSignature(key, toBeSigned, algorithm);
+    }
+
+    public static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,
             SignatureAndHashAlgorithm algorithm) {
         return new byte[0];
     }

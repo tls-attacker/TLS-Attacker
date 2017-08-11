@@ -41,6 +41,7 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -95,10 +96,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(ProtocolMessage message) {
+    public ReceiveAction(ProtocolMessage... messages) {
         super();
-        this.expectedMessages = new LinkedList<>();
-        this.expectedMessages.add(message);
+        expectedMessages = Arrays.asList(messages);
     }
 
     @Override

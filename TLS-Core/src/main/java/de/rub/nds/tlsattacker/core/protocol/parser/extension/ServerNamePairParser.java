@@ -54,7 +54,7 @@ public class ServerNamePairParser extends Parser<ServerNamePair> {
      *            Message to write in
      */
     private void parseServerNameLength(ServerNamePair pair) {
-        pair.setServerNameLength(parseIntField(ExtensionByteLength.SERVER_NAME_LENGTH));
+        pair.setServerNameLength(parseIntField(ExtensionByteLength.SERVER_NAME));
         LOGGER.debug("ServerNameLength: " + pair.getServerNameLength().getValue());
     }
 

@@ -1,0 +1,59 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.core.crypto.keys;
+
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ErrorCollector;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
+
+/**
+ *
+ * @author Robert Merget <robert.merget@rub.de>
+ */
+@RunWith(Parameterized.class)
+public class CustomECPrivateKeyTest {
+
+    @Parameter(0)
+    public NamedCurve curve;
+
+    @Rule
+    public ErrorCollector collector = new ErrorCollector();
+
+    @Parameters
+    public static Iterable<Object[]> createParameters() {
+        List<Object[]> testValues = new ArrayList<>();
+        for (NamedCurve curve : NamedCurve.getImplemented()) {
+            testValues.add(new Object[] { curve });
+        }
+        return testValues;
+    }
+
+    /**
+     * Test of getParams method, of class CustomECPrivateKey.
+     */
+    @Test
+    public void testGetParams() {
+        try {
+            CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
+            key.getParams();
+            System.out.println("Supported: " + curve.name());
+        } catch (Exception E) {
+            Assert.fail(curve.name() + " is not supported!");
+        }
+    }
+}

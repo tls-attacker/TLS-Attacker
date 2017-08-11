@@ -9,16 +9,19 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
+ * s_client -keymatexport “label” -keymatexportlen 20
+ * 
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class TokenCalculatorTest {
@@ -51,7 +54,7 @@ public class TokenCalculatorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("C2199B4A1CD5404F03DBAAB9B69ECBA607687555"),
-                TokenCalculator.calculateEKM(context, 20));
+                TokenCalculator.calculateEKM(ChooserFactory.getChooser(ChooserType.DEFAULT, context), 20));
     }
 
 }

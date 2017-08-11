@@ -28,7 +28,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateFetcher {
 
-    private static final Logger LOGGER = LogManager.getLogger("CertificateFetcher");
+    private static final Logger LOGGER = LogManager.getLogger(CertificateFetcher.class.getName());
 
     public static PublicKey fetchServerPublicKey(Config config) {
         X509CertificateObject cert;

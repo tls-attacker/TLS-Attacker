@@ -132,7 +132,7 @@ public class WorkflowConfigurationFactory {
             } else {
                 messages.add(new CertificateMessage(config));
             }
-            if (config.getDefaultClientSupportedCiphersuites().get(0).isEphemeral()) {
+            if (config.getDefaultSelectedCipherSuite().isEphemeral()) {
                 addServerKeyExchangeMessage(messages);
             }
             if (config.isClientAuthentication()) {
@@ -205,27 +205,24 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
-        switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
-            case RSA:
-                break;
-            case ECDHE_ECDSA:
-            case ECDH_ECDSA:
-            case ECDH_RSA:
-            case ECDHE_RSA:
-                messages.add(new ECDHEServerKeyExchangeMessage(config));
-                break;
-            case DHE_DSS:
-            case DHE_RSA:
-            case DH_ANON:
-            case DH_DSS:
-            case DH_RSA:
-                messages.add(new DHEServerKeyExchangeMessage(config));
-                break;
-            default:
-                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
-                        + ", not adding ServerKeyExchange Message");
-                break;
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        if (cs.isEphemeral()) {
+            switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
+                case ECDHE_ECDSA:
+                case ECDHE_RSA:
+                    messages.add(new ECDHEServerKeyExchangeMessage(config));
+                    break;
+                case DHE_DSS:
+                case DHE_RSA:
+                    messages.add(new DHEServerKeyExchangeMessage(config));
+                    break;
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+                            + ", not adding ServerKeyExchange Message");
+                    break;
+            }
+        } else {
+            LOGGER.debug("Not adding ServerKeyExchange message - " + cs.name() + " is not an Ephermaral Ciphersuite");
         }
     }
 

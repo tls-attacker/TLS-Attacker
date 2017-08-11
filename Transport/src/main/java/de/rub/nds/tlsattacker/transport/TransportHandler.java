@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class TransportHandler {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Transport");
+    protected static final Logger LOGGER = LogManager.getLogger(TransportHandler.class.getName());
 
     protected long timeout;
 

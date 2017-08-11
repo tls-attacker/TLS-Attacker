@@ -29,7 +29,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
  */
 public class PseudoRandomFunction {
 
-    static final Logger LOGGER = LogManager.getLogger("PRF");
+    static final Logger LOGGER = LogManager.getLogger(PseudoRandomFunction.class.getName());
 
     /**
      * master secret label

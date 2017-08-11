@@ -57,7 +57,7 @@ public class CustomECPrivateKey implements ECPrivateKey {
     public ECParameterSpec getParams() {
         try {
             AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
-            parameters.init(new ECGenParameterSpec(curve.name()));
+            parameters.init(new ECGenParameterSpec(curve.getJavaName()));
             ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
             return ecParameters;
         } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {

@@ -41,7 +41,7 @@ public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtension
      *            Message to write in
      */
     private void parseHeartbeatMode(HeartbeatExtensionMessage msg) {
-        msg.setHeartbeatMode(parseByteArrayField(ExtensionByteLength.HEARTBEAT_MODE_LENGTH));
+        msg.setHeartbeatMode(parseByteArrayField(ExtensionByteLength.HEARTBEAT_MODE));
         LOGGER.debug("HeartbeatMode: " + ArrayConverter.bytesToHexString(msg.getHeartbeatMode().getValue()));
     }
 
