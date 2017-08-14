@@ -33,16 +33,11 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     @Override
     public void closeConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        try {
+            serverSocketChannel.close();
+        } catch (IOException ex) {
+            LOGGER.warn("Could not close TransportHandler");
+        }
     }
 
     @Override
