@@ -24,7 +24,8 @@ public class StreamTransportHandler extends TransportHandler {
 
     private final OutputStream outputStream;
 
-    public StreamTransportHandler(long timeout, ConnectionEndType type, InputStream inputStream, OutputStream outputStream) {
+    public StreamTransportHandler(long timeout, ConnectionEndType type, InputStream inputStream,
+            OutputStream outputStream) {
         super(timeout, type);
         this.inputStream = inputStream;
         this.outputStream = outputStream;

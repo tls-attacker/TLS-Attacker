@@ -26,7 +26,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
     private SocketChannel accept;
 
     private ServerSocketChannel serverSocketChannel;
-    
+
     private int port;
 
     public ServerTCPNonBlockingTransportHandler(long timeout, int port) {

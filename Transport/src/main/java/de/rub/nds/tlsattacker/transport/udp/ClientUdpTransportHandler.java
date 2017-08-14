@@ -20,7 +20,7 @@ public class ClientUdpTransportHandler extends TransportHandler {
 
     private final String hostname;
     private final int port;
-    
+
     public ClientUdpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
