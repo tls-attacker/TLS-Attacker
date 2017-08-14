@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -43,7 +45,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
         if (context.getConfig().isWorkflowExecutorShouldClose()) {
-            context.getTransportHandler().closeConnection();
+            try {
+                context.getTransportHandler().closeConnection();
+            } catch (IOException ex) {
+                LOGGER.warn("Could not close Connection");
+                LOGGER.debug(ex);
+            }
         }
         if (context.getConfig().isResetWorkflowtracesBeforeSaving()) {
             context.getWorkflowTrace().reset();

@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.transport.tcp;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -33,19 +30,16 @@ public class ClientTcpTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void closeConnection() {
-        try {
-            socket.close();
-        } catch (IOException ex) {
-            LOGGER.error("Problem while closing the socket", ex);
+    public void closeConnection() throws IOException {
+        if (socket == null) {
+            throw new IOException("Transporthandler is not initalized!");
         }
+        socket.close();
     }
 
     @Override
     public void initialize() throws IOException {
         socket = new Socket(hostname, port);
-
         setStreams(socket.getInputStream(), socket.getOutputStream());
     }
-
 }

@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -136,7 +137,11 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
         closeDtlsConnectionGracefully();
 
-        transportHandler.closeConnection();
+        try {
+            transportHandler.closeConnection();
+        } catch (IOException ex) {
+            LOGGER.warn("Could not close connection!");
+        }
     }
 
     private long[] executeAttackRound() throws IOException {

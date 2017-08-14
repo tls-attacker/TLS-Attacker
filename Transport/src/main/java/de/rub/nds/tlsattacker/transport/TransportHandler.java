@@ -25,9 +25,9 @@ public abstract class TransportHandler {
 
     protected long timeout;
 
-    private OutputStream outStream;
+    protected OutputStream outStream;
 
-    private InputStream inStream;
+    protected InputStream inStream;
 
     private boolean initialized = false;
 
@@ -38,34 +38,18 @@ public abstract class TransportHandler {
         this.type = type;
     }
 
-    public abstract void closeConnection();
+    public abstract void closeConnection() throws IOException;
 
     public byte[] fetchData() throws IOException {
-        byte[] response = new byte[0];
-
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
         long minTimeMillies = System.currentTimeMillis() + timeout;
-        // long maxTimeMillies = System.currentTimeMillis() + timeout;
-        while ((System.currentTimeMillis() < minTimeMillies) && (response.length == 0)) {
-            // while ((System.currentTimeMillis() < maxTimeMillies) &&
-            // (bis.available() != 0)) {
+        while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
             while (inStream.available() != 0) {
-                // TODO: It is never correct to use the return value of this
-                // method to allocate a buffer intended to hold all data in this
-                // stream.
-                // http://docs.oracle.com/javase/7/docs/api/java/io/InputStream.html#available%28%29
-                byte[] current = new byte[inStream.available()];
-                int readResult = inStream.read(current);
-                if (readResult != -1) {
-                    response = ArrayConverter.concatenate(response, current);
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-
-                    }
-                }
+                int read = inStream.read();
+                stream.write(read);
             }
         }
-        return response;
+        return stream.toByteArray();
     }
 
     public void sendData(byte[] data) throws IOException {

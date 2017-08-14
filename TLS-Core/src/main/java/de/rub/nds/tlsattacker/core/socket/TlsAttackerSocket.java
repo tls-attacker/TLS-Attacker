@@ -115,7 +115,7 @@ public class TlsAttackerSocket {
         action.execute(context);
     }
 
-    public void close() {
+    public void close() throws IOException {
         AlertMessage closeNotify = new AlertMessage();
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         send(closeNotify);

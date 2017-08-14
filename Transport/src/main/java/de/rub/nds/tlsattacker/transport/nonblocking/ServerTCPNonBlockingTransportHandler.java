@@ -11,9 +11,12 @@ package de.rub.nds.tlsattacker.transport.nonblocking;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,11 +26,17 @@ import java.util.logging.Logger;
  */
 public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
-    private SocketChannel accept;
+    private final int port;
 
-    private ServerSocketChannel serverSocketChannel;
+    private ServerSocket serverSocket;
 
-    private int port;
+    private Socket clientSocket;
+
+    private AcceptorCallable callable;
+
+    private FutureTask<Socket> task;
+
+    private Thread thread;
 
     public ServerTCPNonBlockingTransportHandler(long timeout, int port) {
         super(timeout, ConnectionEndType.SERVER);
@@ -35,35 +44,57 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void closeConnection() {
-        try {
-            serverSocketChannel.close();
-        } catch (IOException ex) {
-            LOGGER.warn("Could not close TransportHandler");
+    public void closeConnection() throws IOException {
+        if (serverSocket == null) {
+            throw new IOException("TransportHandler is not initialised!");
+        }
+        serverSocket.close();
+        if (clientSocket != null) {
+            clientSocket.close();
         }
     }
 
     @Override
     public void initialize() throws IOException {
-        serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(port));
-        serverSocketChannel.configureBlocking(false);
-        accept = serverSocketChannel.accept();
-        if (accept != null) {
-            setStreams(accept.socket().getInputStream(), accept.socket().getOutputStream());
+        serverSocket = new ServerSocket(port);
+        callable = new AcceptorCallable(serverSocket);
+        task = new FutureTask(callable);
+        thread = new Thread(task);
+        thread.start();
+        recheck();
+    }
+
+    public void recheck() throws IOException {
+        if (task != null) {
+            if (task.isDone()) {
+                try {
+                    clientSocket = task.get();
+                    setStreams(clientSocket.getInputStream(), clientSocket.getOutputStream());
+                } catch (InterruptedException | ExecutionException ex) {
+                    LOGGER.warn("Could not retrieve clientSocket");
+                    LOGGER.debug(ex);
+                }
+            } else {
+                LOGGER.debug("TransportHandler not yet connected");
+            }
+        } else {
+            throw new IOException("Transporthandler is not initalized!");
         }
     }
 
-    public void recheck() {
+    public void recheck(long timeout) throws IOException {
         try {
-            if (serverSocketChannel != null) {
-                accept = serverSocketChannel.accept();
-                if (accept != null) {
-                    setStreams(accept.socket().getInputStream(), accept.socket().getOutputStream());
+            if (task != null) {
+                clientSocket = task.get(timeout, TimeUnit.MILLISECONDS);
+                if (clientSocket != null) {
+                    setStreams(clientSocket.getInputStream(), clientSocket.getOutputStream());
                 }
             }
-        } catch (IOException ex) {
-            LOGGER.error("Could not accept connection", ex);
+        } catch (InterruptedException | ExecutionException ex) {
+            LOGGER.warn("Could not retrieve clientSocket");
+            LOGGER.debug(ex);
+        } catch (TimeoutException ex) {
+            Logger.getLogger(ServerTCPNonBlockingTransportHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
