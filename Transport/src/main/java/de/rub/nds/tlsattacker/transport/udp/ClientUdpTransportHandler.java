@@ -18,8 +18,13 @@ import java.io.IOException;
  */
 public class ClientUdpTransportHandler extends TransportHandler {
 
-    public ClientUdpTransportHandler(long timeout) {
+    private final String hostname;
+    private final int port;
+    
+    public ClientUdpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
+        this.hostname = hostname;
+        this.port = port;
     }
 
     @Override

@@ -26,9 +26,12 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
     private SocketChannel accept;
 
     private ServerSocketChannel serverSocketChannel;
+    
+    private int port;
 
-    public ServerTCPNonBlockingTransportHandler(long timeout, ConnectionEndType type) {
-        super(timeout, type);
+    public ServerTCPNonBlockingTransportHandler(long timeout, int port) {
+        super(timeout, ConnectionEndType.SERVER);
+        this.port = port;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
     @Override
     public void initialize() throws IOException {
         serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(9999));
+        serverSocketChannel.socket().bind(new InetSocketAddress(port));
         serverSocketChannel.configureBlocking(false);
         accept = serverSocketChannel.accept();
         if (accept != null) {

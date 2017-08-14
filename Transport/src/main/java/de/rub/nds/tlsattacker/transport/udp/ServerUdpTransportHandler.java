@@ -8,10 +8,31 @@
  */
 package de.rub.nds.tlsattacker.transport.udp;
 
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.IOException;
+
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class ServerUdpTransportHandler {
+public class ServerUdpTransportHandler extends TransportHandler {
+
+    private final int port;
+
+    public ServerUdpTransportHandler(long timeout, int port) {
+        super(timeout, ConnectionEndType.SERVER);
+        this.port = port;
+    }
+
+    @Override
+    public void closeConnection() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void initialize() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
 }

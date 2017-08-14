@@ -24,9 +24,11 @@ public class ServerTcpTransportHandler extends TransportHandler {
 
     private ServerSocket serverSocket;
     private Socket socket;
+    private int port;
 
-    public ServerTcpTransportHandler(long timeout) {
+    public ServerTcpTransportHandler(long timeout, int port) {
         super(timeout, ConnectionEndType.SERVER);
+        this.port = port;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        serverSocket = new ServerSocket();
+        serverSocket = new ServerSocket(port);
         socket = serverSocket.accept();
     }
 

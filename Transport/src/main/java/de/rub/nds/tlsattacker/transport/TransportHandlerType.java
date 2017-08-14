@@ -16,6 +16,7 @@ public enum TransportHandlerType {
     TCP,
     EAP_TLS,
     UDP,
-    NON_BLOCKING_TCP
+    NON_BLOCKING_TCP,
+    STREAM
 
 }

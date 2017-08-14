@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.transport;
 import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -24,22 +26,21 @@ public class TransportHandlerFactory {
                 if (end == ConnectionEndType.CLIENT) {
                     return new ClientTcpTransportHandler(timeout, hostname, port);
                 } else {
-                    return new ServerTcpTransportHandler(timeout);
+                    return new ServerTcpTransportHandler(timeout, port);
                 }
             case EAP_TLS:
                 throw new UnsupportedOperationException("EAP_TLS is currently not supported");
             case UDP:
                 if (end == ConnectionEndType.CLIENT) {
-                    // return new ClientTcpTransportHandler(timeout, hostname,
-                    // port); //TODO
+                    return new ClientUdpTransportHandler(timeout, hostname, port);
                 } else {
-                    // return new ServerTcpTransportHandler(timeout);
+                    return new ServerUdpTransportHandler(timeout, port);
                 }
             case NON_BLOCKING_TCP:
                 if (end == ConnectionEndType.CLIENT) {
-                    throw new UnsupportedOperationException();
+                    throw new UnsupportedOperationException("NON_BLOCKING_TCP-Transporthandler is not supported");
                 } else {
-                    return new ServerTCPNonBlockingTransportHandler(timeout, end);
+                    return new ServerTCPNonBlockingTransportHandler(timeout, port);
                 }
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
