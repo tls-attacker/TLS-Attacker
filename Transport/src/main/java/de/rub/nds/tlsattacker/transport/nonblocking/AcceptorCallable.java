@@ -33,7 +33,6 @@ public class AcceptorCallable implements Callable<Socket> {
     @Override
     public Socket call() throws Exception {
         try {
-            System.out.println("Waiting for connection!");
             return serverSocket.accept();
         } catch (IOException ex) {
             LOGGER.warn("Could not open Accept connection!");
