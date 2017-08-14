@@ -24,7 +24,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
 
     private ServerSocket serverSocket;
     private Socket socket;
-    private int port;
+    private final int port;
 
     public ServerTcpTransportHandler(long timeout, int port) {
         super(timeout, ConnectionEndType.SERVER);
@@ -32,12 +32,14 @@ public class ServerTcpTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void closeConnection() {
-        try {
+    public void closeConnection() throws IOException {
+        if (socket != null) {
             socket.close();
+        }
+        if (serverSocket != null) {
             serverSocket.close();
-        } catch (IOException ex) {
-            LOGGER.error("Problem while closing sockets");
+        } else {
+            throw new IOException("TransportHandler not initialised");
         }
     }
 
@@ -45,6 +47,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
         serverSocket = new ServerSocket(port);
         socket = serverSocket.accept();
+        setStreams(socket.getInputStream(), socket.getOutputStream());
     }
 
 }
