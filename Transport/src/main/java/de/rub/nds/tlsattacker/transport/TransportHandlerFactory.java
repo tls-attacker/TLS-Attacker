@@ -42,6 +42,8 @@ public class TransportHandlerFactory {
                 } else {
                     return new ServerTCPNonBlockingTransportHandler(timeout, port);
                 }
+            case STREAM:
+                throw new UnsupportedOperationException("STREAM TransportHandler can only be created manually");
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
         }
