@@ -56,9 +56,11 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     public void recheck() {
         try {
-            accept = serverSocketChannel.accept();
-            if (accept != null) {
-                setStreams(accept.socket().getInputStream(), accept.socket().getOutputStream());
+            if (serverSocketChannel != null) {
+                accept = serverSocketChannel.accept();
+                if (accept != null) {
+                    setStreams(accept.socket().getInputStream(), accept.socket().getOutputStream());
+                }
             }
         } catch (IOException ex) {
             LOGGER.error("Could not accept connection", ex);
