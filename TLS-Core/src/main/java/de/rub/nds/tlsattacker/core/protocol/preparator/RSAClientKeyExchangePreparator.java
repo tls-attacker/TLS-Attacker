@@ -60,7 +60,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         if (paddedPremasterSecret.length == 0) {
             paddedPremasterSecret = new byte[] { 0 };
         }
-        BigInteger biPaddedPremasterSecret = new BigInteger(paddedPremasterSecret);
+        BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(),
                 chooser.getRsaModulus());
         encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getRsaModulus().bitLength() / 8, true);
@@ -125,7 +125,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private byte[] decryptPremasterSecret() {
-        BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(msg.getPublicKey().getValue());
+        BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(1, msg.getPublicKey().getValue());
         BigInteger serverPrivateKey = chooser.getConfig().getDefaultServerRSAPrivateKey();
         BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey, chooser.getRsaModulus());
         return decrypted.toByteArray();
