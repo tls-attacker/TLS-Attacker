@@ -130,16 +130,15 @@ public enum ProtocolVersion {
 
     /**
      * Return the highest protocol version.
-     * 
+     *
      * @param list
      * @return
      */
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
-        ProtocolVersion highestProtocolVersion = list.get(0);
+        ProtocolVersion highestProtocolVersion = null;
         for (ProtocolVersion pv : list) {
             if (highestProtocolVersion == null) {
                 highestProtocolVersion = pv;
-                continue;
             }
             if (pv != null
                     && ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion
@@ -152,7 +151,7 @@ public enum ProtocolVersion {
 
     /**
      * Return true, if protocol version TLS 1.3
-     * 
+     *
      * @return
      */
     public boolean isTLS13() {
