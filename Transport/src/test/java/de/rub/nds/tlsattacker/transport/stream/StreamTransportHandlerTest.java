@@ -8,6 +8,10 @@
  */
 package de.rub.nds.tlsattacker.transport.stream;
 
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -18,18 +22,25 @@ import static org.junit.Assert.*;
  */
 public class StreamTransportHandlerTest {
 
-    public StreamTransportHandlerTest() {
-    }
+    private StreamTransportHandler handler;
+
+    private ByteArrayOutputStream outputStream;
+
+    private ByteArrayInputStream inputStream;
 
     @Before
     public void setUp() {
+        outputStream = new ByteArrayOutputStream();
+        inputStream = new ByteArrayInputStream(new byte[] { 4, 3, 2, 1 });
+        handler = new StreamTransportHandler(100, ConnectionEndType.CLIENT, inputStream, outputStream);
     }
 
     /**
      * Test of closeConnection method, of class StreamTransportHandler.
      */
-    @Test
-    public void testCloseConnection() {
+    @Test(expected = IOException.class)
+    public void testCloseConnection() throws IOException {
+        handler.closeConnection();
     }
 
     /**
@@ -37,6 +48,9 @@ public class StreamTransportHandlerTest {
      */
     @Test
     public void testInitialize() throws Exception {
+        assertFalse(handler.isInitialized());
+        handler.initialize();
+        assertTrue(handler.isInitialized());
     }
 
     /**
@@ -44,6 +58,7 @@ public class StreamTransportHandlerTest {
      */
     @Test
     public void testGetInputStream() {
+        assertNotNull(handler.getInputStream());
     }
 
     /**
@@ -51,6 +66,15 @@ public class StreamTransportHandlerTest {
      */
     @Test
     public void testGetOutputStream() {
+        assertNotNull(handler.getOutputStream());
     }
 
+    @Test
+    public void fullTest() throws IOException {
+        handler.initialize();
+        handler.sendData(new byte[] { 0, 1, 2, 3 });
+        assertArrayEquals(new byte[] { 0, 1, 2, 3 }, outputStream.toByteArray());
+        byte[] fetchData = handler.fetchData();
+        assertArrayEquals(new byte[] { 4, 3, 2, 1 }, fetchData);
+    }
 }

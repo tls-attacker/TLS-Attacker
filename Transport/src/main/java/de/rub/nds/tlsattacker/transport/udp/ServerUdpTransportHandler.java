@@ -10,7 +10,11 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 
 /**
  *
@@ -20,37 +24,25 @@ public class ServerUdpTransportHandler extends TransportHandler {
 
     private final int port;
 
+    private DatagramSocket socket;
+
     public ServerUdpTransportHandler(long timeout, int port) {
         super(timeout, ConnectionEndType.SERVER);
         this.port = port;
     }
 
     @Override
-    public void closeConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public void closeConnection() throws IOException {
+        socket.close();
+        inStream.close();
+        outStream.close();
     }
 
     @Override
     public void initialize() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        socket = new DatagramSocket();
+        socket.setSoTimeout((int) getTimeout());
+        setStreams(new UdpInputStream(socket), new UdpOutputStream(socket));
     }
 
 }

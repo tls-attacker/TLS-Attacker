@@ -10,7 +10,11 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
+import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
 
 /**
  *
@@ -21,6 +25,8 @@ public class ClientUdpTransportHandler extends TransportHandler {
     private final String hostname;
     private final int port;
 
+    private DatagramSocket socket;
+
     public ClientUdpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
         this.hostname = hostname;
@@ -28,31 +34,24 @@ public class ClientUdpTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void closeConnection() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+    public void closeConnection() throws IOException {
+        socket.close();
+        inStream.close();
+        outStream.close();
     }
 
     @Override
     public void initialize() throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        socket = new DatagramSocket();
+        socket.connect(new InetSocketAddress(hostname, port));
+        socket.setSoTimeout((int) getTimeout());
+        setStreams(new UdpInputStream(socket), new UdpOutputStream(socket));
     }
 
+    public int getLocalPort() throws IOException {
+        if (socket.isConnected()) {
+            return socket.getLocalPort();
+        }
+        throw new IOException("Cannot retrieve local Port. Socket not connected");
+    }
 }

@@ -32,16 +32,21 @@ public class StreamTransportHandler extends TransportHandler {
     }
 
     @Override
-    public void closeConnection() {
-        try {
-            inputStream.close();
-        } catch (IOException E) {
-            LOGGER.warn("Could not close StreamTransportHandler");
-        }
-        try {
-            inputStream.close();
-        } catch (IOException E) {
-            LOGGER.warn("Could not close StreamTransportHandler");
+    public void closeConnection() throws IOException {
+        if (isInitialized()) {
+            try {
+                inputStream.close();
+            } catch (IOException E) {
+                throw new IOException("Could not close StreamTransportHandler");
+            }
+
+            try {
+                inputStream.close();
+            } catch (IOException E) {
+                throw new IOException("Could not close StreamTransportHandler");
+            }
+        } else {
+            throw new IOException("Could not close StreamTransportHandler. Not Initialised");
         }
     }
 
