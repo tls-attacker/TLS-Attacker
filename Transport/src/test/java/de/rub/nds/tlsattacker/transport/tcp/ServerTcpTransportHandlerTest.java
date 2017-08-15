@@ -65,7 +65,13 @@ public class ServerTcpTransportHandlerTest {
         Thread t = new Thread(task);
         t.start();
         handler.initialize();
-        assertTrue(task.isDone());
+        long time = System.currentTimeMillis();
+        long timeout = 1000;
+        while (!task.isDone()) {
+            if (System.currentTimeMillis() > time + timeout) {
+                fail("Starting task timed out.");
+            }
+        }
         assertTrue(handler.isInitialized());
         Socket socket = task.get();
         socket.getOutputStream().write(new byte[] { 0, 1, 2, 3 });
