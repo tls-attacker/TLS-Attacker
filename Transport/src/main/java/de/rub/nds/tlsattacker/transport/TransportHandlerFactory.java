@@ -11,8 +11,12 @@ package de.rub.nds.tlsattacker.transport;
 import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.timing.TimingServerTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.timing.TimingServerUdpTransportHandler;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -44,6 +48,18 @@ public class TransportHandlerFactory {
                 }
             case STREAM:
                 throw new UnsupportedOperationException("STREAM TransportHandler can only be created manually");
+            case TCP_TIMING:
+                if (end == ConnectionEndType.CLIENT) {
+                    return new TimingClientTcpTransportHandler(timeout, hostname, port);
+                } else {
+                    return new TimingServerTcpTransportHandler(timeout, port);
+                }
+            case UDP_TIMING:
+                if (end == ConnectionEndType.CLIENT) {
+                    return new TimingClientUdpTransportHandler(timeout, hostname, port);
+                } else {
+                    return new TimingServerUdpTransportHandler(timeout, port);
+                }
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");
         }

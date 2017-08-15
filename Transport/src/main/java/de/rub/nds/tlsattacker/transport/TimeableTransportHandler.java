@@ -12,6 +12,6 @@ package de.rub.nds.tlsattacker.transport;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public interface CanMeasureTiming {
+public interface TimeableTransportHandler {
     public abstract long getLastMeasurement();
 }
