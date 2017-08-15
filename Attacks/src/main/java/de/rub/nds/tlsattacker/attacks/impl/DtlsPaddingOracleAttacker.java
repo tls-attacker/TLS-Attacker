@@ -32,7 +32,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,7 +57,9 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private RecordLayer recordLayer;
     private List<TLSAction> actionList;
-    private TransportHandler transportHandler;
+    
+    private TimingClientUdpTransportHandler transportHandler;
+
 
     private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
             modifiedMacArray = new ModifiableByteArray();
@@ -196,7 +197,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             } else {
                 LOGGER.info("No data from the server was received. Train: {}", trainInfo);
             }
-            return 0;// transportHandler.getResponseTimeNanos();
+            return transportHandler.getLastMeasurement();
         } catch (SocketTimeoutException e) {
             LOGGER.info("Received timeout when waiting for heartbeat answer. Train: {}", trainInfo);
         } catch (Exception e) {
@@ -292,6 +293,9 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private void initExecuteAttack() {
         tlsContext = new TlsContext(tlsConfig);
+        tlsContext.getConfig().setWorkflowExecutorShouldOpen(false);
+        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(), tlsConfig.getPort());
+        tlsContext.setTransportHandler(transportHandler);
         workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(),
                 tlsContext);
         recordLayer = tlsContext.getRecordLayer();

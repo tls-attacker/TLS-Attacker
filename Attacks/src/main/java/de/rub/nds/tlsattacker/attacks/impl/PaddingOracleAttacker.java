@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
