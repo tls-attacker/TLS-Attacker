@@ -16,16 +16,24 @@ import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler{
+public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler {
 
     public TimingClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, hostname, port);
     }
-    
+
     @Override
     public long getLastMeasurement() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
-    
 }

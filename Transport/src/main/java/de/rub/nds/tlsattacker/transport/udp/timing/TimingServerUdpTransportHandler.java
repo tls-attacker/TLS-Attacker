@@ -20,7 +20,7 @@ public class TimingServerUdpTransportHandler extends ServerUdpTransportHandler i
     public TimingServerUdpTransportHandler(long timeout, int port) {
         super(timeout, port);
     }
-   
+
     @Override
     public long getLastMeasurement() {
         throw new UnsupportedOperationException("Not supported yet.");
