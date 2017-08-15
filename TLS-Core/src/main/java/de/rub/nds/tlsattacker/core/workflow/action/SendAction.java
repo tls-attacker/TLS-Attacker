@@ -16,7 +16,9 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -47,10 +49,15 @@ public class SendAction extends MessageAction implements SendingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Sending " + getReadableString(messages));
-        MessageActionResult result = SendMessageHelper.sendMessages(messages, records, tlsContext);
-        messages = result.getMessageList();
-        records = result.getRecordList();
-        setExecuted(true);
+        try {
+            MessageActionResult result = SendMessageHelper.sendMessages(messages, records, tlsContext);
+            messages = result.getMessageList();
+            records = result.getRecordList();
+            setExecuted(true);
+        } catch (IOException E) {
+            LOGGER.debug(E);
+            setExecuted(false);
+        }
     }
 
     @Override

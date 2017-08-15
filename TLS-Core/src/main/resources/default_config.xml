@@ -126,6 +126,10 @@
     <namedCurves>SECP256R1</namedCurves>
     <namedCurves>SECP384R1</namedCurves>
     <namedCurves>SECP521R1</namedCurves>
+    <defaultClientNamedCurves>SECP192R1</defaultClientNamedCurves>
+    <defaultClientNamedCurves>SECP256R1</defaultClientNamedCurves>
+    <defaultClientNamedCurves>SECP384R1</defaultClientNamedCurves>
+    <defaultClientNamedCurves>SECP521R1</defaultClientNamedCurves>
     <supportedVersions>TLS13</supportedVersions>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <paddingLength>0</paddingLength>

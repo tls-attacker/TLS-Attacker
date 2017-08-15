@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -20,13 +21,22 @@ import java.util.Arrays;
  * @author Robert Merget <robert.merget@rub.de>
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
-public class RecordDecryptor extends Decryptor<Record> {
+public class RecordDecryptor extends Decryptor {
 
     private final TlsContext context;
 
     public RecordDecryptor(RecordCipher recordCipher, TlsContext context) {
         super(recordCipher);
         this.context = context;
+    }
+
+    @Override
+    public void decrypt(BlobRecord record) {
+        LOGGER.debug("Decrypting BlobRecord");
+        byte[] decrypted = recordCipher.decrypt(record.getProtocolMessageBytes().getValue());
+        record.setCleanProtocolMessageBytes(decrypted);
+        LOGGER.debug("CleanProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getCleanProtocolMessageBytes().getValue()));
     }
 
     @Override

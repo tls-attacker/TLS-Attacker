@@ -129,7 +129,7 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Return the highest protcol version.
+     * Return the highest protocol version.
      * 
      * @param list
      * @return
@@ -137,7 +137,13 @@ public enum ProtocolVersion {
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = list.get(0);
         for (ProtocolVersion pv : list) {
-            if (ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion.getValue())) {
+            if (highestProtocolVersion == null) {
+                highestProtocolVersion = pv;
+                continue;
+            }
+            if (pv != null
+                    && ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion
+                            .getValue())) {
                 highestProtocolVersion = pv;
             }
         }

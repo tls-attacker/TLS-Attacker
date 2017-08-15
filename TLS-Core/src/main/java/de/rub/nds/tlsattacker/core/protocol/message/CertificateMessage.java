@@ -64,6 +64,7 @@ public class CertificateMessage extends HandshakeMessage {
 
     public CertificateMessage() {
         super(HandshakeMessageType.CERTIFICATE);
+        certificatesList = new LinkedList<>();
     }
 
     public CertificateMessage(Config tlsConfig) {

@@ -33,7 +33,7 @@ public class SendMessageHelper {
     }
 
     public static MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
-            TlsContext context) {
+            TlsContext context) throws IOException {
         context.setTalkingConnectionEndType(context.getConfig().getConnectionEndType());
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
@@ -68,11 +68,7 @@ public class SendMessageHelper {
             }
         }
         flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-        try {
-            sendData(messageBytesCollector, context);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        sendData(messageBytesCollector, context);
         return new MessageActionResult(records, messages);
     }
 

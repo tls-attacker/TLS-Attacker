@@ -39,10 +39,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -55,6 +54,7 @@ import javax.xml.bind.annotation.XmlElements;
 public abstract class MessageAction extends TLSAction {
 
     @XmlElementWrapper
+    @HoldsModifiableVariable
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
             @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
@@ -96,7 +96,7 @@ public abstract class MessageAction extends TLSAction {
     }
 
     public MessageAction(ProtocolMessage... messages) {
-        this.messages = Arrays.asList(messages);
+        this.messages = new ArrayList<>(Arrays.asList(messages));
         records = new LinkedList<>();
     }
 
@@ -129,6 +129,6 @@ public abstract class MessageAction extends TLSAction {
     }
 
     public void setRecords(AbstractRecord... records) {
-        this.records = Arrays.asList(records);
+        this.records = new ArrayList<>(Arrays.asList(records));
     }
 }
