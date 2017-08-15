@@ -139,7 +139,7 @@ public class TlsClientTest {
         Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
-        config.setTlsTimeout(TIMEOUT);
+        config.setTimeout(TIMEOUT);
         config.setEnforceSettings(false);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
@@ -203,7 +203,7 @@ public class TlsClientTest {
         Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
-        config.setTlsTimeout(TIMEOUT);
+        config.setTimeout(TIMEOUT);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         TlsContext tlsContext = new TlsContext(config);

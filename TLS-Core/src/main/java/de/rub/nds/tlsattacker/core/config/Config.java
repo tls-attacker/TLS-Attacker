@@ -294,10 +294,6 @@ public class Config implements Serializable {
      */
     private List<RequestItemV2> statusRequestV2RequestList;
     /**
-     * Default Timeout we wait for TLSMessages
-     */
-    private int tlsTimeout = 400;
-    /**
      * Default Timeout for the Connection
      */
     private int timeout = 1000;
@@ -1537,14 +1533,6 @@ public class Config implements Serializable {
 
     public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
         this.transportHandlerType = transportHandlerType;
-    }
-
-    public int getTlsTimeout() {
-        return tlsTimeout;
-    }
-
-    public void setTlsTimeout(int tlsTimeout) {
-        this.tlsTimeout = tlsTimeout;
     }
 
     public int getTimeout() {

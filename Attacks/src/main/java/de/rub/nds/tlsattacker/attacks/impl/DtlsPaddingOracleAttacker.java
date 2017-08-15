@@ -57,9 +57,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private RecordLayer recordLayer;
     private List<TLSAction> actionList;
-    
-    private TimingClientUdpTransportHandler transportHandler;
 
+    private TimingClientUdpTransportHandler transportHandler;
 
     private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
             modifiedMacArray = new ModifiableByteArray();
@@ -294,7 +293,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private void initExecuteAttack() {
         tlsContext = new TlsContext(tlsConfig);
         tlsContext.getConfig().setWorkflowExecutorShouldOpen(false);
-        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(), tlsConfig.getPort());
+        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(),
+                tlsConfig.getPort());
         tlsContext.setTransportHandler(transportHandler);
         workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(),
                 tlsContext);
@@ -314,7 +314,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTimeout(tlsConfig.getTlsTimeout());
+            transportHandler.setTimeout(tlsConfig.getTimeout());
         }
     }
 
