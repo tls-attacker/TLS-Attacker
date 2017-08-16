@@ -243,7 +243,7 @@ public class Config implements Serializable {
      * Default SRTP extension master key identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[]{};
+    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[] {};
     /**
      * Default user mapping extension hint type
      */
@@ -523,7 +523,7 @@ public class Config implements Serializable {
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPaddingExtensionBytes = new byte[]{0, 0, 0, 0, 0, 0};
+    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 

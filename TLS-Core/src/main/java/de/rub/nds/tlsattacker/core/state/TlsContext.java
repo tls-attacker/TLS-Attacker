@@ -344,7 +344,7 @@ public class TlsContext {
     private SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm;
 
     private PRFAlgorithm prfAlgorithm;
-    
+
     @XmlTransient
     private Chooser chooser;
 
