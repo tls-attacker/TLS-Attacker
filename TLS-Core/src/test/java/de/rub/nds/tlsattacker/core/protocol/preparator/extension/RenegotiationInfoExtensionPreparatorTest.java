@@ -23,8 +23,9 @@ import org.junit.Test;
  */
 public class RenegotiationInfoExtensionPreparatorTest {
 
-    private final int extensionLength = 1;
+    private final int extensionLength = 2;
     private final byte[] extensionPayload = new byte[] { 0 };
+    private final int extensionPayloadLength = 1;
     private TlsContext context;
     private RenegotiationInfoExtensionMessage message;
     private RenegotiationInfoExtensionPreparator preparator;
@@ -46,6 +47,7 @@ public class RenegotiationInfoExtensionPreparatorTest {
         assertArrayEquals(ExtensionType.RENEGOTIATION_INFO.getValue(), message.getExtensionType().getValue());
         assertEquals(extensionLength, (long) message.getExtensionLength().getValue());
         assertArrayEquals(extensionPayload, message.getRenegotiationInfo().getValue());
+        assertEquals(extensionPayloadLength, (long) message.getRenegotiationInfoLength().getValue());
     }
 
     @Test

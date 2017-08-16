@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HRRKeyShareExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>

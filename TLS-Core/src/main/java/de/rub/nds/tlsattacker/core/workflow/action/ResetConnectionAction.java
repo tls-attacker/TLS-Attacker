@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
 
 /**
@@ -23,7 +22,7 @@ public class ResetConnectionAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+    public void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException {
         LOGGER.info("Terminating Connection");
         tlsContext.getTransportHandler().closeConnection();
         LOGGER.info("Reopening Connection");
@@ -34,6 +33,11 @@ public class ResetConnectionAction extends TLSAction {
     @Override
     public void reset() {
         setExecuted(false);
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 
 }

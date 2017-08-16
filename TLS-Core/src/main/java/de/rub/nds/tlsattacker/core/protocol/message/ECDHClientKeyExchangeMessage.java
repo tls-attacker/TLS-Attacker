@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHClientComputations;
-import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.util.List;

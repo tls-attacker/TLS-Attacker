@@ -20,9 +20,6 @@ public class TimeoutDelegate extends Delegate {
     @Parameter(names = "-timeout", description = "Timeout for socket connection")
     private Integer timeout = null;
 
-    @Parameter(names = "-tls_timeout", description = "Maximum time in milliseconds to wait for peer's response. Use different values for attack optimizations (e.g. 30 for OpenSSL localhost or 50 for JSSE localhost)")
-    private Integer tlsTimeout = null;
-
     public TimeoutDelegate() {
     }
 
@@ -34,19 +31,8 @@ public class TimeoutDelegate extends Delegate {
         this.timeout = timeout;
     }
 
-    public Integer getTlsTimeout() {
-        return tlsTimeout;
-    }
-
-    public void setTlsTimeout(int tlsTimeout) {
-        this.tlsTimeout = tlsTimeout;
-    }
-
     @Override
     public void applyDelegate(Config config) {
-        if (tlsTimeout != null) {
-            config.setTlsTimeout(tlsTimeout);
-        }
         if (timeout != null) {
             config.setTimeout(timeout);
         }

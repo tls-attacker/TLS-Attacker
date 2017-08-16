@@ -39,8 +39,15 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ECPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HRRKeyShareExtensionHandler;
@@ -49,13 +56,19 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionH
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TruncatedHmacExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.TrustedCaIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.UnknownExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.UserMappingExtensionHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -154,23 +167,23 @@ public class HandlerFactory {
         try {
             switch (type) {
                 case ALPN:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new AlpnExtensionHandler(context);
                 case CACHED_INFO:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new CachedInfoExtensionHandler(context);
                 case CERT_TYPE:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new CertificateTypeExtensionHandler(context);
                 case CLIENT_AUTHZ:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new ClientAuthzExtensionHandler(context);
                 case CLIENT_CERTIFICATE_TYPE:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new ClientCertificateTypeExtensionHandler(context);
                 case CLIENT_CERTIFICATE_URL:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new ClientCertificateUrlExtensionHandler(context);
                 case EC_POINT_FORMATS:
                     return new ECPointFormatExtensionHandler(context);
                 case ELLIPTIC_CURVES:
                     return new EllipticCurvesExtensionHandler(context);
                 case ENCRYPT_THEN_MAC:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new EncryptThenMacExtensionHandler(context);
                 case EXTENDED_MASTER_SECRET:
                     return new ExtendedMasterSecretExtensionHandler(context);
                 case HEARTBEAT:
@@ -189,7 +202,7 @@ public class HandlerFactory {
                 case SERVER_AUTHZ:
                     return new ServerNameIndicationExtensionHandler(context);
                 case SERVER_CERTIFICATE_TYPE:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new ServerCertificateTypeExtensionHandler(context);
                 case SERVER_NAME_INDICATION:
                     return new ServerNameIndicationExtensionHandler(context);
                 case SESSION_TICKET:
@@ -199,7 +212,7 @@ public class HandlerFactory {
                 case SIGNED_CERTIFICATE_TIMESTAMP:
                     return new SignedCertificateTimestampExtensionHandler(context);
                 case SRP:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new SRPExtensionHandler(context);
                 case STATUS_REQUEST:
                     throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
                 case STATUS_REQUEST_V2:
@@ -209,15 +222,15 @@ public class HandlerFactory {
                 case TOKEN_BINDING:
                     return new TokenBindingExtensionHandler(context);
                 case TRUNCATED_HMAC:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new TruncatedHmacExtensionHandler(context);
                 case TRUSTED_CA_KEYS:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new TrustedCaIndicationExtensionHandler(context);
                 case UNKNOWN:
                     return new UnknownExtensionHandler(context);
                 case USER_MAPPING:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new UserMappingExtensionHandler(context);
                 case USE_SRTP:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new SrtpExtensionHandler(context);
                 default:
                     throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
             }
@@ -229,7 +242,7 @@ public class HandlerFactory {
     }
 
     private static ClientKeyExchangeHandler getClientKeyExchangeHandler(TlsContext context) {
-        CipherSuite cs = context.getSelectedCipherSuite();
+        CipherSuite cs = context.getChooser().getSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         switch (algorithm) {
             case RSA:

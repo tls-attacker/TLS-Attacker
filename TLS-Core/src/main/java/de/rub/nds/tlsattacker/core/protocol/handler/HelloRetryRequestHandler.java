@@ -45,7 +45,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
 
     @Override
     public HelloRetryRequestSerializer getSerializer(HelloRetryRequestMessage message) {
-        return new HelloRetryRequestSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new HelloRetryRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

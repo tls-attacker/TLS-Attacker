@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,8 +44,8 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
         Config tlsConfig = config.createConfig();
         tlsConfig.setClientAuthentication(true);
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
@@ -59,8 +60,8 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
             signatureLength.setModification(IntegerModificationFactory.explicitValue(config.getSignatureLength()));
         }
 
-        CertificateVerifyMessage cvm = (CertificateVerifyMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CERTIFICATE_VERIFY);
+        CertificateVerifyMessage cvm = (CertificateVerifyMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CERTIFICATE_VERIFY, trace);
         cvm.setSignature(signature);
         cvm.setSignatureLength(signatureLength);
 

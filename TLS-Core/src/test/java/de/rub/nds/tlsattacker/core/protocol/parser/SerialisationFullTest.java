@@ -43,13 +43,11 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
@@ -104,7 +102,6 @@ public class SerialisationFullTest {
 
         WorkflowTrace trace = new WorkflowConfigurationFactory(config).createFullWorkflow();
         trace.addTlsAction(new ChangeCipherSuiteAction(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
-        trace.addTlsAction(new ChangeClientCertificateAction(Certificate.EMPTY_CHAIN));
         trace.addTlsAction(new ChangeClientRandomAction(new byte[] { 0x00, 0x11, 0x22, 0x33 }));
         trace.addTlsAction(new ChangeCompressionAction(CompressionMethod.LZS));
         trace.addTlsAction(new ChangeMasterSecretAction(new byte[] { 0x00, 0x22, 0x44, 0x66, 0x44 }));
@@ -112,7 +109,6 @@ public class SerialisationFullTest {
         trace.addTlsAction(new WaitingAction(10000));
         trace.addTlsAction(new ResetConnectionAction());
         trace.addTlsAction(new ChangeProtocolVersionAction(ProtocolVersion.SSL3));
-        trace.addTlsAction(new ChangeServerCertificateAction(Certificate.EMPTY_CHAIN));
         trace.addTlsAction(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));
         trace.addTlsAction(new DeactivateEncryptionAction());
         trace.addTlsAction(new RenegotiationAction());
@@ -145,7 +141,7 @@ public class SerialisationFullTest {
         List<AbstractRecord> records = new LinkedList<>();
         records.add(new BlobRecord());
         records.add(new Record());
-        action.setConfiguredRecords(records);
+        action.setRecords(records);
         trace.addTlsAction(action);
 
         File f = folder.newFile();

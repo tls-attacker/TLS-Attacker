@@ -10,6 +10,9 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
@@ -24,15 +27,20 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
@@ -198,9 +206,93 @@ public class Config implements Serializable {
      */
     private List<TokenBindingKeyParameters> defaultTokenBindingKeyParameters;
     /**
-     * Default Timeout we wait for TLSMessages
+     * This is the request type of the CertificateStatusRequest extension
      */
-    private int tlsTimeout = 400;
+    private CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
+
+    /**
+     * This is the responder ID list of the CertificateStatusRequest extension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] certificateStatusRequestExtensionResponderIDList = new byte[0];
+
+    /**
+     * This is the request extension of the CertificateStatusRequest extension
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] certificateStatusRequestExtensionRequestExtension = new byte[0];
+
+    /**
+     * Default ALPN announced protocols It's HTTP/2 0x68 0x32 as of RFC7540
+     */
+    private String applicationLayerProtocolNegotiationAnnouncedProtocols = "h2";
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] sessionId = new byte[0];
+    /**
+     * Default SRP Identifier
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] secureRemotePasswordExtensionIdentifier = new byte[0];
+    /**
+     * Default SRTP extension protection profiles The list contains every
+     * protection profile as in RFC 5764
+     */
+    private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
+    /**
+     * Default SRTP extension master key identifier
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[]{};
+    /**
+     * Default user mapping extension hint type
+     */
+    private UserMappingExtensionHintType userMappingExtensionHintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
+    /**
+     * Default certificate type extension desired types
+     */
+    private List<CertificateType> certificateTypeDesiredTypes;
+    /**
+     * Default client certificate type extension desired types
+     */
+    private List<CertificateType> clientCertificateTypeDesiredTypes;
+    /**
+     * Default server certificate type extension desired types
+     */
+    private List<CertificateType> serverCertificateTypeDesiredTypes;
+    /**
+     * Default client authz extension data format list
+     */
+    private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
+    /**
+     * Default state for the certificate type extension message. State "client"
+     */
+    private boolean certificateTypeExtensionMessageState = true;
+    /**
+     * Default sever authz extension data format list
+     */
+    private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
+    /**
+     * Default trusted ca indication extension trusted cas
+     */
+    private List<TrustedAuthority> trustedCaIndicationExtensionAuthorties;
+    /**
+     * Default state for the client certificate type extension message. State
+     * "client"
+     */
+    private boolean clientCertificateTypeExtensionMessageState = true;
+    /**
+     * Default state for the cached info extension message. State "client"
+     */
+    private boolean cachedInfoExtensionIsClientState = true;
+    /**
+     * Default cached objects for the cached info extension
+     */
+    private List<CachedObject> cachedObjectList;
+    /**
+     * Default certificate status request v2 extension request list
+     */
+    private List<RequestItemV2> statusRequestV2RequestList;
     /**
      * Default Timeout for the Connection
      */
@@ -286,7 +378,70 @@ public class Config implements Serializable {
      * If we generate ClientHello with TokenBinding extension.
      */
     private boolean addTokenBindingExtension = false;
-
+    /**
+     * If we generate ClientHello with CertificateStatusRequest extension
+     */
+    private boolean addCertificateStatusRequestExtension = false;
+    /**
+     * If we generate ClientHello with ALPN extension
+     */
+    private boolean addAlpnExtension = false;
+    /**
+     * If we generate ClientHello with SRP extension
+     */
+    private boolean addSRPExtension = false;
+    /**
+     * If we generate ClientHello with SRTP extension
+     */
+    private boolean addSRTPExtension = false;
+    /**
+     * If we generate ClientHello with truncated hmac extension
+     */
+    private boolean addTruncatedHmacExtension = false;
+    /**
+     * If we generate ClientHello with user mapping extension
+     */
+    private boolean addUserMappingExtension = false;
+    /**
+     * If we generate ClientHello with certificate type extension
+     */
+    private boolean addCertificateTypeExtension = false;
+    /**
+     * If we generate ClientHello with client authz extension
+     */
+    private boolean addClientAuthzExtension = false;
+    /**
+     * If we generate ClientHello with server authz extension
+     */
+    private boolean addServerAuthzExtension = false;
+    /**
+     * If we generate ClientHello with client certificate type extension
+     */
+    private boolean addClientCertificateTypeExtension = false;
+    /**
+     * If we generate ClientHello with server certificate type extension
+     */
+    private boolean addServerCertificateTypeExtension = false;
+    /**
+     * If we generate ClientHello with encrypt then mac extension
+     */
+    private boolean addEncryptThenMacExtension = false;
+    /**
+     * If we generate ClientHello with cached info extension
+     */
+    private boolean addCachedInfoExtension = false;
+    /**
+     * If we generate ClientHello with client certificate url extension
+     */
+    private boolean addClientCertificateUrlExtension = false;
+    /**
+     * If we generate ClientHello with trusted ca indication extension
+     */
+    private boolean addTrustedCaIndicationExtension = false;
+    /**
+     * If we generate ClientHello with status request v2 extension
+     */
+    private boolean addCertificateStatusRequestV2Extension = false;
     /**
      * If set to true, timestamps will be updated upon execution of a
      * workflowTrace
@@ -313,8 +468,7 @@ public class Config implements Serializable {
     private boolean enforceSettings = false;
 
     /**
-     * Stop as soon as all configured messages are received and dont wait for
-     * more
+     * Stop as soon as all expected messages are received and dont wait for more
      */
     private boolean earlyStop = false;
 
@@ -369,10 +523,9 @@ public class Config implements Serializable {
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+    private byte[] defaultPaddingExtensionBytes = new byte[]{0, 0, 0, 0, 0, 0};
 
-    // Switch between TLS and DTLS execution
-    private ExecutorType executorType = ExecutorType.TLS;
+    private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /**
      * Does not mix messages with different message types in a single record
@@ -380,14 +533,14 @@ public class Config implements Serializable {
     private boolean flushOnMessageTypeChange = true;
 
     /**
-     * If there is not enough space in the configured records, new records are
+     * If there is not enough space in the defined records, new records are
      * dynamically added if not set, protocolmessage bytes that wont fit are
      * discarded
      */
     private boolean createRecordsDynamically = true;
     /**
-     * When "Null" records are configured to be send, every message will be sent
-     * in atleast one individual record
+     * When "Null" records are defined to be send, every message will be sent in
+     * atleast one individual record
      */
     private boolean createIndividualRecords = true;
 
@@ -401,7 +554,7 @@ public class Config implements Serializable {
      * values from the workflow trace and will only keep the relevant
      * information
      */
-    private boolean stripWorkflowtracesBeforeSaving = false;
+    private boolean resetWorkflowtracesBeforeSaving = false;
 
     /**
      * TLS-Attacker will not try to receive additional messages after the
@@ -564,6 +717,11 @@ public class Config implements Serializable {
         namedCurves.add(NamedCurve.SECP256R1);
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
+        defaultClientNamedCurves = new LinkedList<>();
+        defaultClientNamedCurves.add(NamedCurve.SECP192R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP256R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP384R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP521R1);
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
@@ -585,19 +743,38 @@ public class Config implements Serializable {
         defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
                 "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
                 "3142682168214624565874993023364886040439474355932713162721"));
-        defaultClientNamedCurves = new LinkedList<>();
-        defaultClientNamedCurves.add(NamedCurve.SECP192R1);
-        defaultClientNamedCurves.add(NamedCurve.SECP256R1);
-        defaultClientNamedCurves.add(NamedCurve.SECP384R1);
-        defaultClientNamedCurves.add(NamedCurve.SECP521R1);
-    }
+        secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_80);
+        secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_NULL_HMAC_SHA1_32);
+        certificateTypeDesiredTypes = new LinkedList<>();
+        certificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
+        certificateTypeDesiredTypes.add(CertificateType.X509);
+        clientAuthzExtensionDataFormat = new LinkedList<>();
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT);
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION);
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT_URL);
+        clientAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION_URL);
+        serverAuthzExtensionDataFormat = new LinkedList<>();
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT);
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION);
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.X509_ATTR_CERT_URL);
+        serverAuthzExtensionDataFormat.add(AuthzDataFormat.SAML_ASSERTION_URL);
+        clientCertificateTypeDesiredTypes = new LinkedList<>();
+        clientCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
+        clientCertificateTypeDesiredTypes.add(CertificateType.X509);
+        clientCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
 
-    public boolean isStopActionsAfterFatal() {
-        return stopActionsAfterFatal;
-    }
+        serverCertificateTypeDesiredTypes = new LinkedList<>();
+        serverCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
+        serverCertificateTypeDesiredTypes.add(CertificateType.X509);
+        serverCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
 
-    public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
-        this.stopActionsAfterFatal = stopActionsAfterFatal;
+        cachedObjectList = new LinkedList<>();
+        trustedCaIndicationExtensionAuthorties = new LinkedList<>();
+
+        statusRequestV2RequestList = new LinkedList<>();
     }
 
     public ChooserType getChooserType() {
@@ -1109,12 +1286,12 @@ public class Config implements Serializable {
         this.quickReceive = quickReceive;
     }
 
-    public boolean isStripWorkflowtracesBeforeSaving() {
-        return stripWorkflowtracesBeforeSaving;
+    public boolean isResetWorkflowtracesBeforeSaving() {
+        return resetWorkflowtracesBeforeSaving;
     }
 
-    public void setStripWorkflowtracesBeforeSaving(boolean stripWorkflowtracesBeforeSaving) {
-        this.stripWorkflowtracesBeforeSaving = stripWorkflowtracesBeforeSaving;
+    public void setResetWorkflowtracesBeforeSaving(boolean resetWorkflowtracesBeforeSaving) {
+        this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -1157,12 +1334,12 @@ public class Config implements Serializable {
         this.defaultMaxRecordData = defaultMaxRecordData;
     }
 
-    public ExecutorType getExecutorType() {
-        return executorType;
+    public WorkflowExecutorType getWorkflowExecutorType() {
+        return workflowExecutorType;
     }
 
-    public void setExecutorType(ExecutorType executorType) {
-        this.executorType = executorType;
+    public void setWorkflowExecutorType(WorkflowExecutorType workflowExecutorType) {
+        this.workflowExecutorType = workflowExecutorType;
     }
 
     public NameType getSniType() {
@@ -1363,14 +1540,6 @@ public class Config implements Serializable {
 
     public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
         this.transportHandlerType = transportHandlerType;
-    }
-
-    public int getTlsTimeout() {
-        return tlsTimeout;
-    }
-
-    public void setTlsTimeout(int tlsTimeout) {
-        this.tlsTimeout = tlsTimeout;
     }
 
     public int getTimeout() {
@@ -1683,6 +1852,300 @@ public class Config implements Serializable {
         return new KSEntry(keyShareType, keySharePublic);
     }
 
+    public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
+        return certificateStatusRequestExtensionRequestType;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestType(
+            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
+        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionResponderIDList() {
+        return certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public void setCertificateStatusRequestExtensionResponderIDList(
+            byte[] certificateStatusRequestExtensionResponderIDList) {
+        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionRequestExtension() {
+        return certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestExtension(
+            byte[] certificateStatusRequestExtensionRequestExtension) {
+        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public String getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
+        return applicationLayerProtocolNegotiationAnnouncedProtocols;
+    }
+
+    public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
+            String applicationLayerProtocolNegotiationAnnouncedProtocols) {
+        this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
+    }
+
+    public byte[] getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(byte[] sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public byte[] getSecureRemotePasswordExtensionIdentifier() {
+        return secureRemotePasswordExtensionIdentifier;
+    }
+
+    public void setSecureRemotePasswordExtensionIdentifier(byte[] secureRemotePasswordExtensionIdentifier) {
+        this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
+    }
+
+    public List<SrtpProtectionProfiles> getSecureRealTimeTransportProtocolProtectionProfiles() {
+        return secureRealTimeTransportProtocolProtectionProfiles;
+    }
+
+    public void setSecureRealTimeTransportProtocolProtectionProfiles(
+            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
+        this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
+    }
+
+    public byte[] getSecureRealTimeTransportProtocolMasterKeyIdentifier() {
+        return secureRealTimeTransportProtocolMasterKeyIdentifier;
+    }
+
+    public void setSecureRealTimeTransportProtocolMasterKeyIdentifier(
+            byte[] secureRealTimeTransportProtocolMasterKeyIdentifier) {
+        this.secureRealTimeTransportProtocolMasterKeyIdentifier = secureRealTimeTransportProtocolMasterKeyIdentifier;
+    }
+
+    public UserMappingExtensionHintType getUserMappingExtensionHintType() {
+        return userMappingExtensionHintType;
+    }
+
+    public void setUserMappingExtensionHintType(UserMappingExtensionHintType userMappingExtensionHintType) {
+        this.userMappingExtensionHintType = userMappingExtensionHintType;
+    }
+
+    public List<CertificateType> getCertificateTypeDesiredTypes() {
+        return certificateTypeDesiredTypes;
+    }
+
+    public void setCertificateTypeDesiredTypes(List<CertificateType> certificateTypeDesiredTypes) {
+        this.certificateTypeDesiredTypes = certificateTypeDesiredTypes;
+    }
+
+    public List<CertificateType> getClientCertificateTypeDesiredTypes() {
+        return clientCertificateTypeDesiredTypes;
+    }
+
+    public void setClientCertificateTypeDesiredTypes(List<CertificateType> clientCertificateTypeDesiredTypes) {
+        this.clientCertificateTypeDesiredTypes = clientCertificateTypeDesiredTypes;
+    }
+
+    public List<CertificateType> getServerCertificateTypeDesiredTypes() {
+        return serverCertificateTypeDesiredTypes;
+    }
+
+    public void setServerCertificateTypeDesiredTypes(List<CertificateType> serverCertificateTypeDesiredTypes) {
+        this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
+    }
+
+    public List<AuthzDataFormat> getClientAuthzExtensionDataFormat() {
+        return clientAuthzExtensionDataFormat;
+    }
+
+    public void setClientAuthzExtensionDataFormat(List<AuthzDataFormat> clientAuthzExtensionDataFormat) {
+        this.clientAuthzExtensionDataFormat = clientAuthzExtensionDataFormat;
+    }
+
+    public boolean isCertificateTypeExtensionMessageState() {
+        return certificateTypeExtensionMessageState;
+    }
+
+    public void setCertificateTypeExtensionMessageState(boolean certificateTypeExtensionMessageState) {
+        this.certificateTypeExtensionMessageState = certificateTypeExtensionMessageState;
+    }
+
+    public List<AuthzDataFormat> getServerAuthzExtensionDataFormat() {
+        return serverAuthzExtensionDataFormat;
+    }
+
+    public void setServerAuthzExtensionDataFormat(List<AuthzDataFormat> serverAuthzExtensionDataFormat) {
+        this.serverAuthzExtensionDataFormat = serverAuthzExtensionDataFormat;
+    }
+
+    public List<TrustedAuthority> getTrustedCaIndicationExtensionAuthorties() {
+        return trustedCaIndicationExtensionAuthorties;
+    }
+
+    public void setTrustedCaIndicationExtensionAuthorties(List<TrustedAuthority> trustedCaIndicationExtensionAuthorties) {
+        this.trustedCaIndicationExtensionAuthorties = trustedCaIndicationExtensionAuthorties;
+    }
+
+    public boolean isClientCertificateTypeExtensionMessageState() {
+        return clientCertificateTypeExtensionMessageState;
+    }
+
+    public void setClientCertificateTypeExtensionMessageState(boolean clientCertificateTypeExtensionMessageState) {
+        this.clientCertificateTypeExtensionMessageState = clientCertificateTypeExtensionMessageState;
+    }
+
+    public boolean isCachedInfoExtensionIsClientState() {
+        return cachedInfoExtensionIsClientState;
+    }
+
+    public void setCachedInfoExtensionIsClientState(boolean cachedInfoExtensionIsClientState) {
+        this.cachedInfoExtensionIsClientState = cachedInfoExtensionIsClientState;
+    }
+
+    public List<CachedObject> getCachedObjectList() {
+        return cachedObjectList;
+    }
+
+    public void setCachedObjectList(List<CachedObject> cachedObjectList) {
+        this.cachedObjectList = cachedObjectList;
+    }
+
+    public List<RequestItemV2> getStatusRequestV2RequestList() {
+        return statusRequestV2RequestList;
+    }
+
+    public void setStatusRequestV2RequestList(List<RequestItemV2> statusRequestV2RequestList) {
+        this.statusRequestV2RequestList = statusRequestV2RequestList;
+    }
+
+    public boolean isAddCertificateStatusRequestExtension() {
+        return addCertificateStatusRequestExtension;
+    }
+
+    public void setAddCertificateStatusRequestExtension(boolean addCertificateStatusRequestExtension) {
+        this.addCertificateStatusRequestExtension = addCertificateStatusRequestExtension;
+    }
+
+    public boolean isAddAlpnExtension() {
+        return addAlpnExtension;
+    }
+
+    public void setAddAlpnExtension(boolean addAlpnExtension) {
+        this.addAlpnExtension = addAlpnExtension;
+    }
+
+    public boolean isAddSRPExtension() {
+        return addSRPExtension;
+    }
+
+    public void setAddSRPExtension(boolean addSRPExtension) {
+        this.addSRPExtension = addSRPExtension;
+    }
+
+    public boolean isAddSRTPExtension() {
+        return addSRTPExtension;
+    }
+
+    public void setAddSRTPExtension(boolean addSRTPExtension) {
+        this.addSRTPExtension = addSRTPExtension;
+    }
+
+    public boolean isAddTruncatedHmacExtension() {
+        return addTruncatedHmacExtension;
+    }
+
+    public void setAddTruncatedHmacExtension(boolean addTruncatedHmacExtension) {
+        this.addTruncatedHmacExtension = addTruncatedHmacExtension;
+    }
+
+    public boolean isAddUserMappingExtension() {
+        return addUserMappingExtension;
+    }
+
+    public void setAddUserMappingExtension(boolean addUserMappingExtension) {
+        this.addUserMappingExtension = addUserMappingExtension;
+    }
+
+    public boolean isAddCertificateTypeExtension() {
+        return addCertificateTypeExtension;
+    }
+
+    public void setAddCertificateTypeExtension(boolean addCertificateTypeExtension) {
+        this.addCertificateTypeExtension = addCertificateTypeExtension;
+    }
+
+    public boolean isAddClientAuthzExtension() {
+        return addClientAuthzExtension;
+    }
+
+    public void setAddClientAuthzExtension(boolean addClientAuthzExtension) {
+        this.addClientAuthzExtension = addClientAuthzExtension;
+    }
+
+    public boolean isAddServerAuthzExtension() {
+        return addServerAuthzExtension;
+    }
+
+    public void setAddServerAuthzExtension(boolean addServerAuthzExtension) {
+        this.addServerAuthzExtension = addServerAuthzExtension;
+    }
+
+    public boolean isAddClientCertificateTypeExtension() {
+        return addClientCertificateTypeExtension;
+    }
+
+    public void setAddClientCertificateTypeExtension(boolean addClientCertificateTypeExtension) {
+        this.addClientCertificateTypeExtension = addClientCertificateTypeExtension;
+    }
+
+    public boolean isAddServerCertificateTypeExtension() {
+        return addServerCertificateTypeExtension;
+    }
+
+    public void setAddServerCertificateTypeExtension(boolean addServerCertificateTypeExtension) {
+        this.addServerCertificateTypeExtension = addServerCertificateTypeExtension;
+    }
+
+    public boolean isAddEncryptThenMacExtension() {
+        return addEncryptThenMacExtension;
+    }
+
+    public void setAddEncryptThenMacExtension(boolean addEncryptThenMacExtension) {
+        this.addEncryptThenMacExtension = addEncryptThenMacExtension;
+    }
+
+    public boolean isAddCachedInfoExtension() {
+        return addCachedInfoExtension;
+    }
+
+    public void setAddCachedInfoExtension(boolean addCachedInfoExtension) {
+        this.addCachedInfoExtension = addCachedInfoExtension;
+    }
+
+    public boolean isAddClientCertificateUrlExtension() {
+        return addClientCertificateUrlExtension;
+    }
+
+    public void setAddClientCertificateUrlExtension(boolean addClientCertificateUrlExtension) {
+        this.addClientCertificateUrlExtension = addClientCertificateUrlExtension;
+    }
+
+    public boolean isAddTrustedCaIndicationExtension() {
+        return addTrustedCaIndicationExtension;
+    }
+
+    public void setAddTrustedCaIndicationExtension(boolean addTrustedCaIndicationExtension) {
+        this.addTrustedCaIndicationExtension = addTrustedCaIndicationExtension;
+    }
+
+    public boolean isAddCertificateStatusRequestV2Extension() {
+        return addCertificateStatusRequestV2Extension;
+    }
+
+    public void setAddCertificateStatusRequestV2Extension(boolean addCertificateStatusRequestV2Extension) {
+        this.addCertificateStatusRequestV2Extension = addCertificateStatusRequestV2Extension;
+    }
+
     public List<CompressionMethod> getDefaultServerSupportedCompressionMethods() {
         return defaultServerSupportedCompressionMethods;
     }
@@ -1695,5 +2158,13 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
+    }
+
+    public boolean isStopActionsAfterFatal() {
+        return stopActionsAfterFatal;
+    }
+
+    public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
+        this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 }

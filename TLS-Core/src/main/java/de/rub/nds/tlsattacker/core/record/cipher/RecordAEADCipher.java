@@ -124,8 +124,8 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private void init() {
-        ProtocolVersion protocolVersion = context.getSelectedProtocolVersion();
-        CipherSuite cipherSuite = context.getSelectedCipherSuite();
+        ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         try {
             bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);

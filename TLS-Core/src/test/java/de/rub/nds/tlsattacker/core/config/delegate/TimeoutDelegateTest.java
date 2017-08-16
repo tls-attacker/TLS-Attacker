@@ -55,43 +55,17 @@ public class TimeoutDelegateTest {
     }
 
     /**
-     * Test of getTlsTimeout method, of class TimeoutDelegate.
-     */
-    @Test
-    public void testGetTlsTimeout() {
-        args = new String[2];
-        args[0] = "-tls_timeout";
-        args[1] = "123";
-        assertTrue(delegate.getTlsTimeout() == null);
-        jcommander.parse(args);
-        assertTrue(delegate.getTlsTimeout() == 123);
-    }
-
-    /**
-     * Test of setTlsTimeout method, of class TimeoutDelegate.
-     */
-    @Test
-    public void testSetTlsTimeout() {
-        assertTrue(delegate.getTlsTimeout() == null);
-        delegate.setTlsTimeout(123);
-        assertTrue(delegate.getTlsTimeout() == 123);
-    }
-
-    /**
      * Test of applyDelegate method, of class TimeoutDelegate.
      */
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
-        args = new String[4];
-        args[0] = "-tls_timeout";
+        args = new String[2];
+        args[0] = "-timeout";
         args[1] = "123";
-        args[2] = "-timeout";
-        args[3] = "456";
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.getTimeout() == 456);
-        assertTrue(config.getTlsTimeout() == 123);
+        assertTrue(config.getTimeout() == 123);
     }
 
     @Test

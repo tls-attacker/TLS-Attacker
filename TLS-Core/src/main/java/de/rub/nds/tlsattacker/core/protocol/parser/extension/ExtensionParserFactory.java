@@ -35,6 +35,7 @@ public class ExtensionParserFactory {
         ExtensionParser parser = null;
         switch (type) {
             case CLIENT_CERTIFICATE_URL:
+                parser = new ClientCertificateUrlExtensionParser(pointer, extensionBytes);
                 break;
             case EC_POINT_FORMATS:
                 parser = new ECPointFormatExtensionParser(pointer, extensionBytes);
@@ -61,22 +62,31 @@ public class ExtensionParserFactory {
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType);
                 break;
             case STATUS_REQUEST:
+                parser = new CertificateStatusRequestExtensionParser(pointer, extensionBytes);
                 break;
             case TRUNCATED_HMAC:
+                parser = new TruncatedHmacExtensionParser(pointer, extensionBytes);
                 break;
             case TRUSTED_CA_KEYS:
+                parser = new TrustedCaIndicationExtensionParser(pointer, extensionBytes);
                 break;
             case ALPN:
+                parser = new AlpnExtensionParser(pointer, extensionBytes);
                 break;
             case CACHED_INFO:
+                parser = new CachedInfoExtensionParser(pointer, extensionBytes);
                 break;
             case CERT_TYPE:
+                parser = new CertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
             case CLIENT_AUTHZ:
+                parser = new ClientAuthzExtensionParser(pointer, extensionBytes);
                 break;
             case CLIENT_CERTIFICATE_TYPE:
+                parser = new ClientCertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
             case ENCRYPT_THEN_MAC:
+                parser = new EncryptThenMacExtensionParser(pointer, extensionBytes);
                 break;
             case EXTENDED_MASTER_SECRET:
                 parser = new ExtendedMasterSecretExtensionParser(pointer, extensionBytes);
@@ -88,8 +98,10 @@ public class ExtensionParserFactory {
                 parser = new RenegotiationInfoExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_AUTHZ:
+                parser = new ServerAuthzExtensionParser(pointer, extensionBytes);
                 break;
             case SERVER_CERTIFICATE_TYPE:
+                parser = new ServerCertificateTypeExtensionParser(pointer, typeBytes);
                 break;
             case SESSION_TICKET:
                 parser = new SessionTicketTLSExtensionParser(pointer, extensionBytes);
@@ -98,15 +110,19 @@ public class ExtensionParserFactory {
                 parser = new SignedCertificateTimestampExtensionParser(pointer, extensionBytes);
                 break;
             case SRP:
+                parser = new SRPExtensionParser(pointer, extensionBytes);
                 break;
             case STATUS_REQUEST_V2:
+                parser = new CertificateStatusRequestV2ExtensionParser(pointer, extensionBytes);
                 break;
             case TOKEN_BINDING:
                 parser = new TokenBindingExtensionParser(pointer, extensionBytes);
                 break;
             case USER_MAPPING:
+                parser = new UserMappingExtensionParser(pointer, extensionBytes);
                 break;
             case USE_SRTP:
+                parser = new SrtpExtensionParser(pointer, extensionBytes);
                 break;
             case UNKNOWN:
                 parser = new UnknownExtensionParser(pointer, extensionBytes);

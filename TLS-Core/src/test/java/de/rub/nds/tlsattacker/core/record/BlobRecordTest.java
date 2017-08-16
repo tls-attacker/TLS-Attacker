@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.record;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
+import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.BlobRecordPreparator;
+import de.rub.nds.tlsattacker.core.record.serializer.BlobRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
@@ -28,7 +31,7 @@ public class BlobRecordTest {
 
     private BlobRecord record;
     private Chooser chooser;
-    private Encryptor<BlobRecord> encryptor;
+    private Encryptor encryptor;
 
     @Before
     public void setUp() {
@@ -51,6 +54,10 @@ public class BlobRecordTest {
      */
     @Test
     public void testGetRecordParser() {
+        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS10).getClass(), BlobRecordParser.class);
+        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS11).getClass(), BlobRecordParser.class);
+        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS12).getClass(), BlobRecordParser.class);
+        assertEquals(record.getRecordParser(0, new byte[0], ProtocolVersion.TLS13).getClass(), BlobRecordParser.class);
     }
 
     /**
@@ -58,6 +65,7 @@ public class BlobRecordTest {
      */
     @Test
     public void testGetRecordSerializer() {
+        assertEquals(record.getRecordSerializer().getClass(), BlobRecordSerializer.class);
     }
 
     /**

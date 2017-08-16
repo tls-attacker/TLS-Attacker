@@ -40,7 +40,7 @@ public class ServerNamePairSerializier extends Serializer<ServerNamePair> {
     }
 
     private void writeServerNameLength(ServerNamePair pair) {
-        appendInt(pair.getServerNameLength().getValue(), ExtensionByteLength.SERVER_NAME_LENGTH);
+        appendInt(pair.getServerNameLength().getValue(), ExtensionByteLength.SERVER_NAME);
         LOGGER.debug("ServerNameLength: " + pair.getServerNameLength().getValue());
     }
 

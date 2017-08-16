@@ -58,20 +58,20 @@ public class TlsRecordLayer extends RecordLayer {
      */
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawRecordData) {
-
         List<AbstractRecord> records = new LinkedList<>();
         int dataPointer = 0;
         while (dataPointer != rawRecordData.length) {
             try {
-                RecordParser parser = new RecordParser(dataPointer, rawRecordData,
-                        tlsContext.getSelectedProtocolVersion());
+                RecordParser parser = new RecordParser(dataPointer, rawRecordData, tlsContext.getChooser()
+                        .getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
-                // TODO Could not parse as record try parsing Blob
-                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData,
-                        tlsContext.getSelectedProtocolVersion());
+                LOGGER.debug("Could not parse Record, parsing as Blob");
+                LOGGER.trace(E);
+                BlobRecordParser blobParser = new BlobRecordParser(dataPointer, rawRecordData, tlsContext.getChooser()
+                        .getSelectedProtocolVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
                 dataPointer = blobParser.getPointer();
@@ -129,7 +129,6 @@ public class TlsRecordLayer extends RecordLayer {
         } else {
             LOGGER.warn("Not decrypting received non Record:" + record.toString());
             record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
-
         }
     }
 

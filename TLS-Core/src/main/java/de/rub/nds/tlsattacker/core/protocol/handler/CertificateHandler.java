@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -45,7 +45,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
 
     @Override
     public CertificateMessageParser getParser(byte[] message, int pointer) {
-        return new CertificateMessageParser(pointer, message, tlsContext.getSelectedProtocolVersion());
+        return new CertificateMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     @Override
     protected void adjustTLSContext(CertificateMessage message) {
         Certificate cert;
-        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             int certificatesLength = 0;
             try {
@@ -90,7 +90,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 adjustPublicKeyParameters(cert);
             }
         }
-        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustExtensions(message);
         }
     }

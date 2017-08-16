@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,5 +111,90 @@ public enum ExtensionType {
 
     public byte getMinor() {
         return value[1];
+    }
+
+    public static List<ExtensionType> getSendable() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(ALPN);
+        list.add(CACHED_INFO);
+        list.add(CERT_TYPE);
+        list.add(CLIENT_AUTHZ);
+        list.add(CLIENT_CERTIFICATE_TYPE);
+        list.add(CLIENT_CERTIFICATE_URL);
+        list.add(EC_POINT_FORMATS);
+        list.add(ELLIPTIC_CURVES);
+        list.add(ENCRYPT_THEN_MAC);
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(HEARTBEAT);
+        list.add(KEY_SHARE);
+        list.add(MAX_FRAGMENT_LENGTH);
+        list.add(PADDING);
+        list.add(RENEGOTIATION_INFO);
+        list.add(SERVER_AUTHZ);
+        list.add(SERVER_CERTIFICATE_TYPE);
+        list.add(SERVER_NAME_INDICATION);
+        list.add(SESSION_TICKET);
+        list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SIGNED_CERTIFICATE_TIMESTAMP);
+        list.add(SRP);
+        list.add(STATUS_REQUEST);
+        list.add(STATUS_REQUEST_V2);
+        list.add(SUPPORTED_VERSIONS);
+        list.add(TOKEN_BINDING);
+        list.add(TRUNCATED_HMAC);
+        list.add(TRUSTED_CA_KEYS);
+        list.add(USE_SRTP);
+
+        return list;
+    }
+
+    public static List<ExtensionType> getReceivable() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(ALPN);
+        list.add(CACHED_INFO);
+        list.add(CERT_TYPE);
+        list.add(CLIENT_AUTHZ);
+        list.add(CLIENT_CERTIFICATE_TYPE);
+        list.add(CLIENT_CERTIFICATE_URL);
+        list.add(EC_POINT_FORMATS);
+        list.add(ELLIPTIC_CURVES);
+        list.add(ENCRYPT_THEN_MAC);
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(HEARTBEAT);
+        list.add(KEY_SHARE);
+        list.add(MAX_FRAGMENT_LENGTH);
+        list.add(PADDING);
+        list.add(RENEGOTIATION_INFO);
+        list.add(SERVER_AUTHZ);
+        list.add(SERVER_CERTIFICATE_TYPE);
+        list.add(SERVER_NAME_INDICATION);
+        list.add(SESSION_TICKET);
+        list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SIGNED_CERTIFICATE_TIMESTAMP);
+        list.add(SRP);
+        list.add(STATUS_REQUEST);
+        list.add(STATUS_REQUEST_V2);
+        list.add(SUPPORTED_VERSIONS);
+        list.add(TOKEN_BINDING);
+        list.add(TRUNCATED_HMAC);
+        list.add(TRUSTED_CA_KEYS);
+        list.add(USE_SRTP);
+
+        return list;
+    }
+
+    public static List<ExtensionType> getImplemented() {
+        List<ExtensionType> list = new LinkedList<>();
+        list.add(EC_POINT_FORMATS);
+        list.add(ELLIPTIC_CURVES);
+        list.add(EXTENDED_MASTER_SECRET);
+        list.add(KEY_SHARE);
+        list.add(MAX_FRAGMENT_LENGTH);
+        list.add(PADDING);
+        list.add(SERVER_NAME_INDICATION);
+        list.add(SIGNATURE_AND_HASH_ALGORITHMS);
+        list.add(SUPPORTED_VERSIONS);
+
+        return list;
     }
 }

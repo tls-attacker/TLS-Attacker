@@ -24,9 +24,11 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,15 +62,15 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     public void executeAttackRound(Record record) {
         TlsContext tlsContext = new TlsContext(tlsConfig);
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction sendAction = new SendAction(applicationMessage);
-        sendAction.setConfiguredRecords(new LinkedList<AbstractRecord>());
-        sendAction.getConfiguredRecords().add(record);
+        sendAction.setRecords(new LinkedList<AbstractRecord>());
+        sendAction.getRecords().add(record);
         trace.addTlsAction(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ReceiveAction(alertMessage));
@@ -79,7 +81,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             LOGGER.info("Not possible to finalize the defined workflow.");
             LOGGER.debug(ex);
         }
-        lastMessages.add(trace.getAllActuallyReceivedMessages().get(trace.getAllActuallyReceivedMessages().size() - 1));
+        lastMessages.add(WorkflowTraceUtil.getLastReceivedMessage(trace));
     }
 
     private List<Record> createRecordsWithPlainData() {
