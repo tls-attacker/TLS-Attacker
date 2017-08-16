@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -175,32 +176,37 @@ public class WorkflowConfigurationFactory {
                     ConnectionEndType.SERVER, messages));
         }
         return workflowTrace;
-
     }
 
     private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
-        switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
-            case RSA:
-                messages.add(new RSAClientKeyExchangeMessage(config));
-                break;
-            case ECDHE_ECDSA:
-            case ECDH_ECDSA:
-            case ECDH_RSA:
-            case ECDHE_RSA:
-                messages.add(new ECDHClientKeyExchangeMessage(config));
-                break;
-            case DHE_DSS:
-            case DHE_RSA:
-            case DH_ANON:
-            case DH_DSS:
-            case DH_RSA:
-                messages.add(new DHClientKeyExchangeMessage(config));
-                break;
-            default:
-                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
-                        + ", not adding ClientKeyExchange Message");
-                break;
+        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        if (algorithm != null) {
+
+            switch (algorithm) {
+                case RSA:
+                    messages.add(new RSAClientKeyExchangeMessage(config));
+                    break;
+                case ECDHE_ECDSA:
+                case ECDH_ECDSA:
+                case ECDH_RSA:
+                case ECDHE_RSA:
+                    messages.add(new ECDHClientKeyExchangeMessage(config));
+                    break;
+                case DHE_DSS:
+                case DHE_RSA:
+                case DH_ANON:
+                case DH_DSS:
+                case DH_RSA:
+                    messages.add(new DHClientKeyExchangeMessage(config));
+                    break;
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
+                            + ", not adding ClientKeyExchange Message");
+                    break;
+            }
+        } else {
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not adding ClientKeyExchange Message");
         }
     }
 

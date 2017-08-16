@@ -573,6 +573,8 @@ public class Config implements Serializable {
     private boolean workflowExecutorShouldClose = true;
 
     private boolean stopRecievingAfterFatal = false;
+
+    private boolean stopActionsAfterFatal = false;
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
      */
@@ -715,6 +717,11 @@ public class Config implements Serializable {
         namedCurves.add(NamedCurve.SECP256R1);
         namedCurves.add(NamedCurve.SECP384R1);
         namedCurves.add(NamedCurve.SECP521R1);
+        defaultClientNamedCurves = new LinkedList<>();
+        defaultClientNamedCurves.add(NamedCurve.SECP192R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP256R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP384R1);
+        defaultClientNamedCurves.add(NamedCurve.SECP521R1);
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
@@ -1592,7 +1599,7 @@ public class Config implements Serializable {
     }
 
     public List<CipherSuite> getDefaultClientSupportedCiphersuites() {
-        return Collections.unmodifiableList(defaultClientSupportedCiphersuites);
+        return defaultClientSupportedCiphersuites;
     }
 
     public void setDefaultClientSupportedCiphersuites(List<CipherSuite> defaultClientSupportedCiphersuites) {
@@ -1640,7 +1647,7 @@ public class Config implements Serializable {
     }
 
     public List<SignatureAndHashAlgorithm> getSupportedSignatureAndHashAlgorithms() {
-        return Collections.unmodifiableList(supportedSignatureAndHashAlgorithms);
+        return supportedSignatureAndHashAlgorithms;
     }
 
     public void setSupportedSignatureAndHashAlgorithms(
@@ -1654,7 +1661,7 @@ public class Config implements Serializable {
     }
 
     public List<NamedCurve> getNamedCurves() {
-        return Collections.unmodifiableList(namedCurves);
+        return namedCurves;
     }
 
     public void setNamedCurves(List<NamedCurve> namedCurves) {
@@ -1666,7 +1673,7 @@ public class Config implements Serializable {
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
-        return Collections.unmodifiableList(supportedVersions);
+        return supportedVersions;
     }
 
     public void setSupportedVersions(List<ProtocolVersion> supportedVersions) {
@@ -2151,5 +2158,13 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
+    }
+
+    public boolean isStopActionsAfterFatal() {
+        return stopActionsAfterFatal;
+    }
+
+    public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
+        this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 }
