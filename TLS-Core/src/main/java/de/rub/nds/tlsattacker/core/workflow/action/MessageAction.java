@@ -112,12 +112,20 @@ public abstract class MessageAction extends TLSAction {
         return builder.toString();
     }
 
+    public String getReadableString(ProtocolMessage... messages) {
+        return getReadableString(Arrays.asList(messages));
+    }
+
     public List<ProtocolMessage> getMessages() {
         return messages;
     }
 
     public void setMessages(List<ProtocolMessage> messages) {
         this.messages = messages;
+    }
+
+    public void setMessages(ProtocolMessage... messages) {
+        this.messages = Arrays.asList(messages);
     }
 
     public List<AbstractRecord> getRecords() {
