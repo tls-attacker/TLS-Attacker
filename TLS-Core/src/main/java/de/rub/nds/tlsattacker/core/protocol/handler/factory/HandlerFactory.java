@@ -41,6 +41,8 @@ import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeMessageHandl
 import de.rub.nds.tlsattacker.core.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.AlpnExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CachedInfoExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateStatusRequestV2ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
@@ -214,9 +216,9 @@ public class HandlerFactory {
                 case SRP:
                     return new SRPExtensionHandler(context);
                 case STATUS_REQUEST:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new CertificateStatusRequestExtensionHandler(context);
                 case STATUS_REQUEST_V2:
-                    throw new UnsupportedOperationException(type.name() + " Extension are not supported yet");
+                    return new CertificateStatusRequestV2ExtensionHandler(context);
                 case SUPPORTED_VERSIONS:
                     return new SupportedVersionsExtensionHandler(context);
                 case TOKEN_BINDING:
