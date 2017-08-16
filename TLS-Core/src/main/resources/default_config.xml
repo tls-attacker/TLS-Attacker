@@ -157,7 +157,6 @@
     <tlsTimeout>400</tlsTimeout>
     <timeout>1000</timeout>
     <transportHandlerType>TCP</transportHandlerType>
-    <verifyWorkflow>false</verifyWorkflow>
     <serverSendsApplicationData>false</serverSendsApplicationData>
     <addECPointFormatExtension>true</addECPointFormatExtension>
     <addEllipticCurveExtension>true</addEllipticCurveExtension>
