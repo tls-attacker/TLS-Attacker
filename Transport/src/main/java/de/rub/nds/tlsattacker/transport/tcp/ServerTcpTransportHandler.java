@@ -45,7 +45,9 @@ public class ServerTcpTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        serverSocket = new ServerSocket(port);
+        if (serverSocket == null) {
+            serverSocket = new ServerSocket(port);
+        }
         socket = serverSocket.accept();
         setStreams(socket.getInputStream(), socket.getOutputStream());
     }
