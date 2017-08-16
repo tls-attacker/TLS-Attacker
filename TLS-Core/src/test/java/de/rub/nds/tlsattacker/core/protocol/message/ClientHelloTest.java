@@ -16,8 +16,6 @@ import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
@@ -62,8 +60,7 @@ public class ClientHelloTest {
         writer = new StringWriter();
         context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
                 ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
-                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class,
-                ChangeClientCertificateAction.class, ChangeServerCertificateAction.class);
+                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class);
         m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setAdapter(new ByteArrayAdapter());

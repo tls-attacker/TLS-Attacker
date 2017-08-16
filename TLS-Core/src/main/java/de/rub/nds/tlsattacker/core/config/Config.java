@@ -40,7 +40,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusr
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
@@ -294,10 +294,6 @@ public class Config implements Serializable {
      */
     private List<RequestItemV2> statusRequestV2RequestList;
     /**
-     * Default Timeout we wait for TLSMessages
-     */
-    private int tlsTimeout = 400;
-    /**
      * Default Timeout for the Connection
      */
     private int timeout = 1000;
@@ -472,8 +468,7 @@ public class Config implements Serializable {
     private boolean enforceSettings = false;
 
     /**
-     * Stop as soon as all configured messages are received and dont wait for
-     * more
+     * Stop as soon as all expected messages are received and dont wait for more
      */
     private boolean earlyStop = false;
 
@@ -530,8 +525,7 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
 
-    // Switch between TLS and DTLS execution
-    private ExecutorType executorType = ExecutorType.TLS;
+    private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
     /**
      * Does not mix messages with different message types in a single record
@@ -539,14 +533,14 @@ public class Config implements Serializable {
     private boolean flushOnMessageTypeChange = true;
 
     /**
-     * If there is not enough space in the configured records, new records are
+     * If there is not enough space in the defined records, new records are
      * dynamically added if not set, protocolmessage bytes that wont fit are
      * discarded
      */
     private boolean createRecordsDynamically = true;
     /**
-     * When "Null" records are configured to be send, every message will be sent
-     * in atleast one individual record
+     * When "Null" records are defined to be send, every message will be sent in
+     * atleast one individual record
      */
     private boolean createIndividualRecords = true;
 
@@ -560,7 +554,7 @@ public class Config implements Serializable {
      * values from the workflow trace and will only keep the relevant
      * information
      */
-    private boolean stripWorkflowtracesBeforeSaving = false;
+    private boolean resetWorkflowtracesBeforeSaving = false;
 
     /**
      * TLS-Attacker will not try to receive additional messages after the
@@ -1285,12 +1279,12 @@ public class Config implements Serializable {
         this.quickReceive = quickReceive;
     }
 
-    public boolean isStripWorkflowtracesBeforeSaving() {
-        return stripWorkflowtracesBeforeSaving;
+    public boolean isResetWorkflowtracesBeforeSaving() {
+        return resetWorkflowtracesBeforeSaving;
     }
 
-    public void setStripWorkflowtracesBeforeSaving(boolean stripWorkflowtracesBeforeSaving) {
-        this.stripWorkflowtracesBeforeSaving = stripWorkflowtracesBeforeSaving;
+    public void setResetWorkflowtracesBeforeSaving(boolean resetWorkflowtracesBeforeSaving) {
+        this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -1333,12 +1327,12 @@ public class Config implements Serializable {
         this.defaultMaxRecordData = defaultMaxRecordData;
     }
 
-    public ExecutorType getExecutorType() {
-        return executorType;
+    public WorkflowExecutorType getWorkflowExecutorType() {
+        return workflowExecutorType;
     }
 
-    public void setExecutorType(ExecutorType executorType) {
-        this.executorType = executorType;
+    public void setWorkflowExecutorType(WorkflowExecutorType workflowExecutorType) {
+        this.workflowExecutorType = workflowExecutorType;
     }
 
     public NameType getSniType() {
@@ -1539,14 +1533,6 @@ public class Config implements Serializable {
 
     public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
         this.transportHandlerType = transportHandlerType;
-    }
-
-    public int getTlsTimeout() {
-        return tlsTimeout;
-    }
-
-    public void setTlsTimeout(int tlsTimeout) {
-        this.tlsTimeout = tlsTimeout;
     }
 
     public int getTimeout() {

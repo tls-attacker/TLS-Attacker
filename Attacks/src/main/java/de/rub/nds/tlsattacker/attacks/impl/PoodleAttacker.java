@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,8 +44,7 @@ public class PoodleAttacker extends Attacker {
         context.getConfig().setWorkflowTraceType(WorkflowTraceType.HELLO);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
         executor.executeWorkflow();
-        return context.getWorkflowTrace().getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.SERVER_HELLO)
-                .size() > 0;
+        return WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, context.getWorkflowTrace());
     }
 
     private List<CipherSuite> getCbcCiphers() {

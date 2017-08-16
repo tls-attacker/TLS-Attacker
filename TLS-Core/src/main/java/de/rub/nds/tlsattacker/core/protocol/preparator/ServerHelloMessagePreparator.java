@@ -54,8 +54,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     private void prepareCipherSuite() {
         if (chooser.getConfig().isEnforceSettings()) {
-            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultClientSupportedCiphersuites().get(0)
-                    .getByteValue());
+            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultSelectedCipherSuite().getByteValue());
         } else {
             CipherSuite selectedSuite = null;
             for (CipherSuite suite : chooser.getConfig().getDefaultClientSupportedCiphersuites()) {

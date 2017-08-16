@@ -24,6 +24,9 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  */
 public class TokenBindingMessage extends ProtocolMessage {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger tokenbindingsLength;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte tokenbindingType;
 
@@ -71,6 +74,19 @@ public class TokenBindingMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         return "TOKENBINDING";
+    }
+
+    public ModifiableInteger getTokenbindingsLength() {
+        return tokenbindingsLength;
+    }
+
+    public void setTokenbindingsLength(ModifiableInteger tokenbindingsLength) {
+        this.tokenbindingsLength = tokenbindingsLength;
+    }
+
+    public void setTokenbindingsLength(int tokenbindingsLength) {
+        this.tokenbindingsLength = ModifiableVariableFactory.safelySetValue(this.tokenbindingsLength,
+                tokenbindingsLength);
     }
 
     public ModifiableInteger getModulusLength() {

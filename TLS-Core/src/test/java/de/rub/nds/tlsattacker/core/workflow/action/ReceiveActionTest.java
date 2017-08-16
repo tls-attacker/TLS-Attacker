@@ -13,10 +13,11 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -37,7 +38,6 @@ public class ReceiveActionTest {
 
     private TlsContext tlsContext;
 
-    private ActionExecutorMock executor;
     private ReceiveAction action;
 
     @Before
@@ -47,11 +47,11 @@ public class ReceiveActionTest {
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
-        executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
+        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
         action = new ReceiveAction(alert);
     }
 
@@ -61,11 +61,15 @@ public class ReceiveActionTest {
 
     /**
      * Test of execute method, of class ReceiveAction.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecute() throws Exception {
-        action.execute(tlsContext, executor);
-        assertEquals(action.getConfiguredMessages(), action.getActualMessages());
+        ((FakeTransportHandler) tlsContext.getTransportHandler()).setFetchableByte(new byte[] { 0x15, 0x03, 0x03, 0x00,
+                0x02, 0x02, 50 });
+        action.execute(tlsContext);
+        assertTrue(action.executedAsPlanned());
         assertTrue(action.isExecuted());
     }
 
@@ -75,11 +79,11 @@ public class ReceiveActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertTrue(action.isExecuted());
     }
 

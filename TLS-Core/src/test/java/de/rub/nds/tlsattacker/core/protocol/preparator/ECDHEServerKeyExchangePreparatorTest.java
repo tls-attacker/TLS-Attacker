@@ -24,9 +24,8 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.math.BigInteger;
-import org.junit.After;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -35,6 +34,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -124,7 +124,8 @@ public class ECDHEServerKeyExchangePreparatorTest {
         serverCurves.add(NamedCurve.SECP256R1);
         tlsContext.setClientNamedCurvesList(clientCurves);
         config.setNamedCurves(serverCurves);
-
+        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
+                HashAlgorithm.SHA512));
         List<ECPointFormat> clientFormats = new ArrayList<>();
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_CHAR2);
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_PRIME);

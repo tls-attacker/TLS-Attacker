@@ -31,7 +31,7 @@ public class BlobRecordTest {
 
     private BlobRecord record;
     private Chooser chooser;
-    private Encryptor<BlobRecord> encryptor;
+    private Encryptor encryptor;
 
     @Before
     public void setUp() {

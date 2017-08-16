@@ -11,10 +11,9 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DeactivateEncryptionAction extends TLSAction {
@@ -23,7 +22,7 @@ public class DeactivateEncryptionAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
+    public void execute(TlsContext tlsContext) throws WorkflowExecutionException {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
@@ -51,4 +50,8 @@ public class DeactivateEncryptionAction extends TLSAction {
         return hash;
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
 }

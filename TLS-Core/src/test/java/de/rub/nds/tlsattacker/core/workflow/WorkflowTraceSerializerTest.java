@@ -60,7 +60,7 @@ public class WorkflowTraceSerializerTest {
         record.setMaxRecordLengthConfig(5);
         records.add(record);
         SendAction action = new SendAction(new ClientHelloMessage());
-        action.setConfiguredRecords(records);
+        action.setRecords(records);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(os, trace);

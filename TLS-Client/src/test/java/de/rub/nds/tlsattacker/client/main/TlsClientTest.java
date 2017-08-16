@@ -139,7 +139,8 @@ public class TlsClientTest {
         Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
-        config.setTlsTimeout(TIMEOUT);
+        config.setTimeout(TIMEOUT);
+        config.setEnforceSettings(false);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
         testProtocolCompatibility(serverList, config, algorithm);
@@ -165,6 +166,7 @@ public class TlsClientTest {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
                 config.setDefaultClientSupportedCiphersuites(cslist);
+                config.setDefaultSelectedCipherSuite(cs);
                 config.setWorkflowTrace(null);
                 boolean result = testExecuteWorkflow(config);
                 LOGGER.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
@@ -179,15 +181,15 @@ public class TlsClientTest {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(config);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
         try {
             workflowExecutor.executeWorkflow();
-        } catch (Exception E) {
+        } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
         String workflowString = tlsContext.getWorkflowTrace().toString();
-        boolean result = tlsContext.getWorkflowTrace().configuredLooksLikeActual();
+        boolean result = tlsContext.getWorkflowTrace().executedAsPlanned();
         if (!result) {
             LOGGER.info(workflowString);
             return result;
@@ -201,7 +203,7 @@ public class TlsClientTest {
         Config config = clientCommandConfig.createConfig();
         config.setHost("localhost");
         config.setPort(port);
-        config.setTlsTimeout(TIMEOUT);
+        config.setTimeout(TIMEOUT);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         TlsContext tlsContext = new TlsContext(config);
@@ -218,15 +220,15 @@ public class TlsClientTest {
                         config)));
         trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
             return false;
         }
 
-        return trace.configuredLooksLikeActual();
+        return trace.executedAsPlanned();
     }
 
 }

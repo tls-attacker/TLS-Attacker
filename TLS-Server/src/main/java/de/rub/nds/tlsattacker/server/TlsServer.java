@@ -27,8 +27,8 @@ public class TlsServer {
     // TODO rename method
     public void startTlsServer(Config config) {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
