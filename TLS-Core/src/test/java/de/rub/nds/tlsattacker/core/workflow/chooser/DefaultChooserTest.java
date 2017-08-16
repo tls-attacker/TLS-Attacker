@@ -37,9 +37,8 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.SimpleTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.math.BigInteger;
 import static org.junit.Assert.assertArrayEquals;
 
@@ -472,7 +471,7 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetTransportHandler() {
-        TransportHandler transportHandler = new SimpleTransportHandler("abc", 0, ConnectionEndType.CLIENT, 0, 0);
+        TransportHandler transportHandler = new ClientTcpTransportHandler(0, "abc", 0);
         context.setTransportHandler(transportHandler);
         assertEquals(transportHandler, chooser.getTransportHandler());
     }

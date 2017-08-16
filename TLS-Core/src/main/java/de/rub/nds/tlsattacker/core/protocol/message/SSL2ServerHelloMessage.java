@@ -219,24 +219,20 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
             sb.append(super.toString()).append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
         }
-        if(getType() != null && getType().getValue() != null)
-        {
+        if (getType() != null && getType().getValue() != null) {
             sb.append("\n Type: ").append(getType().getValue());
         }
-        if(getCipherSuites() != null && getCipherSuites().getValue() != null)
-        {
-            sb.append("\n Supported CipherSuites: ").append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
+            sb.append("\n Supported CipherSuites: ").append(
+                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
         }
-        if(getSessionIdHit() != null && getSessionIdHit().getValue() != null)
-        {
+        if (getSessionIdHit() != null && getSessionIdHit().getValue() != null) {
             sb.append("\n SessionIdHit: ").append(getSessionIdHit().getValue());
         }
-        if(getCertificate()!= null && getCertificate().getValue() != null)
-        {
+        if (getCertificate() != null && getCertificate().getValue() != null) {
             sb.append("\n Certificate: ").append(ArrayConverter.bytesToHexString(getCertificate().getValue()));
         }
-        if(getSessionID() != null && getSessionID().getValue() != null)
-        {
+        if (getSessionID() != null && getSessionID().getValue() != null) {
             sb.append("\n SessionID: ").append(ArrayConverter.bytesToHexString(getSessionID().getValue()));
         }
         return sb.toString();
