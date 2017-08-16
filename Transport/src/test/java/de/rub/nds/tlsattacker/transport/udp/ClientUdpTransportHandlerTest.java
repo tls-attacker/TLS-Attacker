@@ -6,7 +6,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.transport;
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.tlsattacker.transport.udp;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
@@ -20,20 +28,16 @@ import org.junit.Test;
 /**
  * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
  */
-public class UDPTransportHandlerTest {
+public class ClientUdpTransportHandlerTest {
 
     private final InetAddress localhost = InetAddress.getLoopbackAddress();
-
-    public UDPTransportHandlerTest() {
-
-    }
 
     @Test
     public void testSendData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
-            UDPTransportHandler udpTH = new UDPTransportHandler(localhost.getHostName(), testSocket.getLocalPort(),
-                    ConnectionEndType.CLIENT, 400);
-            testSocket.setSoTimeout(1000);
+            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, localhost.getHostName(),
+                    testSocket.getLocalPort());
+            testSocket.setSoTimeout(1);
 
             udpTH.initialize();
 
@@ -55,12 +59,12 @@ public class UDPTransportHandlerTest {
     @Test
     public void testFetchData() throws Exception {
         try (DatagramSocket testSocket = new DatagramSocket()) {
-            UDPTransportHandler udpTH = new UDPTransportHandler(localhost.getHostName(), testSocket.getLocalPort(),
-                    ConnectionEndType.CLIENT, 400);
+            ClientUdpTransportHandler udpTH = new ClientUdpTransportHandler(1, localhost.getHostName(),
+                    testSocket.getLocalPort());
 
             udpTH.initialize();
             testSocket.connect(localhost, udpTH.getLocalPort());
-            udpTH.setTlsTimeout(1);
+            udpTH.setTimeout(1);
 
             byte[] allSentData = new byte[0];
             byte[] allReceivedData = new byte[0];
@@ -78,7 +82,6 @@ public class UDPTransportHandlerTest {
                 rxData = udpTH.fetchData();
                 allReceivedData = ArrayConverter.concatenate(allReceivedData, rxData);
             }
-
             assertEquals("Confirm size of the received data", allSentData.length, allReceivedData.length);
             assertArrayEquals("Confirm received data equals sent data", allSentData, allReceivedData);
 

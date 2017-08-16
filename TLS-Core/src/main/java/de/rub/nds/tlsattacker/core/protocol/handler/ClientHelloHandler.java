@@ -76,7 +76,11 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private void adjustClientSupportedCipherSuites(ClientHelloMessage message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
         tlsContext.setClientSupportedCiphersuites(suiteList);
-        LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
+        if (suiteList != null) {
+            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
+        } else {
+            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + null);
+        }
     }
 
     private void adjustClientSupportedCompressions(ClientHelloMessage message) {

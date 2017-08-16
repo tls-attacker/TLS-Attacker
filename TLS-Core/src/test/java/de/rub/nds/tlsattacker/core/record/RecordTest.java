@@ -40,7 +40,7 @@ public class RecordTest {
 
     Record record;
     Chooser chooser;
-    Encryptor<Record> encryptor;
+    Encryptor encryptor;
 
     @Before
     public void setUp() {

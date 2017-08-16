@@ -76,9 +76,6 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddECPointFormatExtension()) {
             addExtension(new ECPointFormatExtensionMessage());
         }
-        if (tlsConfig.isAddEllipticCurveExtension()) {
-            addExtension(new EllipticCurvesExtensionMessage());
-        }
         if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
             addExtension(new MaxFragmentLengthExtensionMessage());
         }

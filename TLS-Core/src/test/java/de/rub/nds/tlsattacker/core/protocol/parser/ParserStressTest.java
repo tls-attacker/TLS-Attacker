@@ -12,6 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -28,6 +30,7 @@ public class ParserStressTest {
     @Test
     @Category(IntegrationTests.class)
     public void testParser() {
+        Configurator.setRootLevel(Level.INFO);
         for (int i = 0; i < 10000; i++) {
             Random r = new Random(i);
             try {

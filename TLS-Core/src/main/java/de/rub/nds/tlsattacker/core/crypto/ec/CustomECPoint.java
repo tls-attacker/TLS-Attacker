@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -35,6 +36,14 @@ public class CustomECPoint {
 
     public void setX(BigInteger x) {
         this.x = x;
+    }
+
+    public byte[] getByteX() {
+        return toUnsignedByteArray(x);
+    }
+
+    public byte[] getByteY() {
+        return toUnsignedByteArray(y);
     }
 
     public BigInteger getY() {
@@ -74,4 +83,17 @@ public class CustomECPoint {
         return true;
     }
 
+    public static byte[] toUnsignedByteArray(BigInteger value) {
+        byte[] signedValue = value.toByteArray();
+        if (signedValue[0] != 0x00) {
+            return value.toByteArray();
+        }
+        return Arrays.copyOfRange(signedValue, 1, signedValue.length);
+    }
+
+    public static BigInteger fromUnsignedByteArray(byte[] value) {
+        byte[] signedValue = new byte[value.length + 1];
+        System.arraycopy(value, 0, signedValue, 1, value.length);
+        return new BigInteger(signedValue);
+    }
 }

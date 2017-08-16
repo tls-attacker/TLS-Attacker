@@ -9,11 +9,9 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 /**
- * 
- * @author Robert Merget - robert.merget@rub.de
+ *
+ * @author Robert Merget <robert.merget@rub.de>
  */
-public enum ExecutorType {
-    TLS,
-    DTLS,
-    SSL2
+public enum WorkflowExecutorType {
+    DEFAULT
 }

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -68,6 +69,8 @@ public class AlertHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
+        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         AlertMessage message = new AlertMessage();
         message.setDescription(AlertDescription.ACCESS_DENIED.getValue());
         message.setLevel(AlertLevel.WARNING.getValue());

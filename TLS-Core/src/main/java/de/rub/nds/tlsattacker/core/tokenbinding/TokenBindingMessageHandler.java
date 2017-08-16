@@ -23,8 +23,7 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
 
     @Override
     public TokenBindingMessageParser getParser(byte[] message, int pointer) {
-        return new TokenBindingMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion(),
-                tlsContext.getChooser().getTokenBindingKeyParameters().get(0));
+        return new TokenBindingMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
