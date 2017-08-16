@@ -13,8 +13,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -183,7 +185,23 @@ public class SSL2ClientHelloMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        // TODO
+        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
+            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        }
+        if (getType() != null && getType().getValue() != null) {
+            sb.append("\n Type: ").append(getType().getValue());
+        }
+        if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
+            sb.append("\n Supported CipherSuites: ").append(
+                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        }
+        if (getChallenge() != null && getChallenge().getValue() != null) {
+            sb.append("\n Challange: ").append(ArrayConverter.bytesToHexString(getChallenge().getValue()));
+        }
+        if (getSessionID() != null && getSessionID().getValue() != null) {
+            sb.append("\n SessionID: ").append(ArrayConverter.bytesToHexString(getSessionID().getValue()));
+        }
         return sb.toString();
     }
 }

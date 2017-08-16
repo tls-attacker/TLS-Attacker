@@ -302,10 +302,6 @@ public class Config implements Serializable {
      */
     private TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
     /**
-     * If the workflow should be verified //TODO ???
-     */
-    private boolean verifyWorkflow = false;
-    /**
      * If we should use a workflow trace specified in File
      */
     private String workflowInput = null;
@@ -1524,14 +1520,6 @@ public class Config implements Serializable {
 
     public void setWorkflowInput(String workflowInput) {
         this.workflowInput = workflowInput;
-    }
-
-    public boolean isVerifyWorkflow() {
-        return verifyWorkflow;
-    }
-
-    public void setVerifyWorkflow(boolean verifyWorkflow) {
-        this.verifyWorkflow = verifyWorkflow;
     }
 
     public TransportHandlerType getTransportHandlerType() {

@@ -391,7 +391,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerEcPrivateKey() {
-        if (context.getServerEcPublicKey() != null) {
+        if (context.getServerEcPrivateKey() != null) {
             return context.getServerEcPrivateKey();
         } else {
             return config.getDefaultServerEcPrivateKey();
@@ -481,7 +481,7 @@ public class DefaultChooser extends Chooser {
         if (context.getServerHandshakeTrafficSecret() != null) {
             return context.getServerHandshakeTrafficSecret();
         } else {
-            return config.getDefaultClientHandshakeTrafficSecret();
+            return config.getDefaultServerHandshakeTrafficSecret();
         }
     }
 
