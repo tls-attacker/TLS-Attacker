@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoEx
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -47,7 +48,15 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. "
                     + "Length was " + message.getExtensionLength().getValue());
         }
-        context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
+        if (context.getTalkingConnectionEndType() != context.getConfig().getConnectionEndType()) {
+            context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
+        }
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+            if (message.getRenegotiationInfo().getValue().length == 1
+                    && message.getRenegotiationInfo().getValue()[0] == 0) {
+                context.setIsSecureRenegotiation(true);
+            }
+        }
         LOGGER.debug("The context RenegotiationInfo was set to "
                 + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
     }

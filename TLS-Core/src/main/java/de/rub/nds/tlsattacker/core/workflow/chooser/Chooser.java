@@ -120,8 +120,6 @@ public abstract class Chooser {
 
     public abstract byte[] getSignedCertificateTimestamp();
 
-    public abstract byte[] getRenegotiationInfo();
-
     public abstract TokenBindingVersion getTokenBindingVersion();
 
     public abstract List<TokenBindingKeyParameters> getTokenBindingKeyParameters();

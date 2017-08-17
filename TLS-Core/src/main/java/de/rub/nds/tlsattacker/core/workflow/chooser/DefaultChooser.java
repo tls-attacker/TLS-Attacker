@@ -309,15 +309,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getRenegotiationInfo() {
-        if (context.getRenegotiationInfo() != null) {
-            return context.getRenegotiationInfo();
-        } else {
-            return config.getDefaultRenegotiationInfo();
-        }
-    }
-
-    @Override
     public TokenBindingVersion getTokenBindingVersion() {
         if (context.getTokenBindingVersion() != null) {
             return context.getTokenBindingVersion();

@@ -59,6 +59,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 tlsContext.setUpdateKeys(true);
             }
         }
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setLastClientVerifyData(message.getVerifyData().getValue());
+        } else {
+            tlsContext.setLastServerVerifyData(message.getVerifyData().getValue());
+        }
     }
 
     private void adjustApplicationTrafficSecrets() {

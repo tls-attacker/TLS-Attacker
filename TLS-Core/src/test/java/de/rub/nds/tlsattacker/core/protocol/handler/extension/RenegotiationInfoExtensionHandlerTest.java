@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoEx
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -32,6 +33,7 @@ public class RenegotiationInfoExtensionHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler = new RenegotiationInfoExtensionHandler(context);
     }
 

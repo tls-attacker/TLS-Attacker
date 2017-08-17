@@ -520,21 +520,6 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getRenegotiationInfo method, of class DefaultChooser.
-     */
-    @Test
-    public void testGetRenegotiationInfo() {
-        context.setRenegotiationInfo(null);
-        byte[] info = ArrayConverter.hexStringToByteArray("122131123987891238098123");
-        byte[] info2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
-        config.setDefaultRenegotiationInfo(info);
-        assertArrayEquals(info, config.getDefaultRenegotiationInfo());
-        assertArrayEquals(info, chooser.getRenegotiationInfo());
-        context.setRenegotiationInfo(info2);
-        assertArrayEquals(info2, chooser.getRenegotiationInfo());
-    }
-
-    /**
      * Test of getTokenBindingVersion method, of class DefaultChooser.
      */
     @Test
