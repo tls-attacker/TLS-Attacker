@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
@@ -23,8 +24,11 @@ import java.util.ArrayList;
  */
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
 
-    public TokenBindingExtensionHandler(TlsContext context) {
+    private final HandshakeMessageType msgType;
+
+    public TokenBindingExtensionHandler(TlsContext context, HandshakeMessageType msgType) {
         super(context);
+        this.msgType = msgType;
     }
 
     @Override
@@ -51,6 +55,12 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters);
+
+        // in case of SERVER_HELLO, tell context, that the server accepted our
+        // TB version
+        if (msgType == HandshakeMessageType.SERVER_HELLO) {
+            context.setTokenBindingNegotiated(true);
+        }
     }
 
 }

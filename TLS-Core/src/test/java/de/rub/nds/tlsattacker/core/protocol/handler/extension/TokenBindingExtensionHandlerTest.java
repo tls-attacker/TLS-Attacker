@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
@@ -40,7 +41,7 @@ public class TokenBindingExtensionHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new TokenBindingExtensionHandler(context);
+        handler = new TokenBindingExtensionHandler(context, HandshakeMessageType.CLIENT_HELLO);
     }
 
     @Test

@@ -222,7 +222,7 @@ public class HandlerFactory {
                 case SUPPORTED_VERSIONS:
                     return new SupportedVersionsExtensionHandler(context);
                 case TOKEN_BINDING:
-                    return new TokenBindingExtensionHandler(context);
+                    return new TokenBindingExtensionHandler(context, handshakeMessageType);
                 case TRUNCATED_HMAC:
                     return new TruncatedHmacExtensionHandler(context);
                 case TRUSTED_CA_KEYS:
