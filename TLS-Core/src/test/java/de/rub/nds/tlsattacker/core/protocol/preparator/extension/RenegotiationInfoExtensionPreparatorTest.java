@@ -41,7 +41,7 @@ public class RenegotiationInfoExtensionPreparatorTest {
 
     @Test
     public void testPreparator() {
-        context.getConfig().setDefaultRenegotiationInfo(extensionPayload);
+        context.getConfig().setDefaultClientRenegotiationInfo(extensionPayload);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.RENEGOTIATION_INFO.getValue(), message.getExtensionType().getValue());

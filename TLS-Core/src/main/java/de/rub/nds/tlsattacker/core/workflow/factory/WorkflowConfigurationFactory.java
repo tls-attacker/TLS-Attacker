@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -38,6 +39,7 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
@@ -69,11 +71,13 @@ public class WorkflowConfigurationFactory {
             case HANDSHAKE:
                 return createHandshakeWorkflow();
             case SHORT_HELLO:
-                return createShortHello();
+                return createShortHelloWorkflow();
             case SSL2_HELLO:
-                return createSsl2Hello();
-            case RENEGOTIATION:
-                return new WorkflowTrace(); // TODO add real workflow
+                return createSsl2HelloWorkflow();
+            case CLIENT_RENEGOTIATION:
+                return createClientRenegotiationWorkflow();
+            case SERVER_RENEGOTIATION:
+                return createServerRenegotiationWorkflow();
             case RESUMPTION:
                 return new WorkflowTrace(); // TODO add real workflow
         }
@@ -264,7 +268,7 @@ public class WorkflowConfigurationFactory {
         return workflowTrace;
     }
 
-    private WorkflowTrace createShortHello() {
+    private WorkflowTrace createShortHelloWorkflow() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
@@ -273,7 +277,7 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private WorkflowTrace createSsl2Hello() {
+    private WorkflowTrace createSsl2HelloWorkflow() {
         WorkflowTrace trace = new WorkflowTrace();
         MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
                 ConnectionEndType.CLIENT, new SSL2ClientHelloMessage(config));
@@ -283,6 +287,29 @@ public class WorkflowConfigurationFactory {
                 new SSL2ServerHelloMessage(config));
         action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
+        return trace;
+    }
+
+    private WorkflowTrace createClientRenegotiationWorkflow() {
+        WorkflowTrace trace = this.createHandshakeWorkflow();
+        trace.addTlsAction(new RenegotiationAction());
+        WorkflowTrace renegotiationTrace = this.createHandshakeWorkflow();
+        for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createServerRenegotiationWorkflow() {
+        WorkflowTrace trace = this.createHandshakeWorkflow();
+        WorkflowTrace renegotiationTrace = this.createHandshakeWorkflow();
+        trace.addTlsAction(new RenegotiationAction());
+        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
+                ConnectionEndType.SERVER, new HelloRequestMessage(config));
+        trace.addTlsAction(action);
+        for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
         return trace;
     }
 }

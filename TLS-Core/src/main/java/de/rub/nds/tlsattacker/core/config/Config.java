@@ -49,7 +49,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -186,11 +185,17 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] TLSSessionTicket = new byte[0];
     /**
-     * Renegotiation info for the RenegotiationInfo extension. It's an empty
-     * info since we initiate a new connection.
+     * Renegotiation info for the RenegotiationInfo extension for the Client.
+     * It's an empty info since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultRenegotiationInfo = new byte[0];
+    private byte[] defaultClientRenegotiationInfo = new byte[0];
+    /**
+     * Renegotiation info for the RenegotiationInfo extension for the Client.
+     * It's an empty info since we initiate a new connection.
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultServerRenegotiationInfo = new byte[] { 0 };
     /**
      * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
      * It's an emty timestamp, since the server sends it.
@@ -771,6 +776,14 @@ public class Config implements Serializable {
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
 
         statusRequestV2RequestList = new LinkedList<>();
+    }
+
+    public byte[] getDefaultServerRenegotiationInfo() {
+        return defaultServerRenegotiationInfo;
+    }
+
+    public void setDefaultServerRenegotiationInfo(byte[] defaultServerRenegotiationInfo) {
+        this.defaultServerRenegotiationInfo = defaultServerRenegotiationInfo;
     }
 
     public ChooserType getChooserType() {
@@ -1792,12 +1805,12 @@ public class Config implements Serializable {
         this.addSignedCertificateTimestampExtension = addSignedCertificateTimestampExtension;
     }
 
-    public byte[] getDefaultRenegotiationInfo() {
-        return defaultRenegotiationInfo;
+    public byte[] getDefaultClientRenegotiationInfo() {
+        return defaultClientRenegotiationInfo;
     }
 
-    public void setDefaultRenegotiationInfo(byte[] defaultRenegotiationInfo) {
-        this.defaultRenegotiationInfo = defaultRenegotiationInfo;
+    public void setDefaultClientRenegotiationInfo(byte[] defaultClientRenegotiationInfo) {
+        this.defaultClientRenegotiationInfo = defaultClientRenegotiationInfo;
     }
 
     public boolean isAddRenegotiationInfoExtension() {

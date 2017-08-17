@@ -345,6 +345,12 @@ public class TlsContext {
 
     private PRFAlgorithm prfAlgorithm;
 
+    private boolean isSecureRenegotiation = false;
+
+    private byte[] lastClientVerifyData;
+
+    private byte[] lastServerVerifyData;
+
     @XmlTransient
     private Chooser chooser;
 
@@ -362,6 +368,38 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this);
         }
         return chooser;
+    }
+
+    public byte[] getLastClientVerifyData() {
+        return lastClientVerifyData;
+    }
+
+    public void setLastClientVerifyData(byte[] lastClientVerifyData) {
+        this.lastClientVerifyData = lastClientVerifyData;
+    }
+
+    public byte[] getLastServerVerifyData() {
+        return lastServerVerifyData;
+    }
+
+    public void setLastServerVerifyData(byte[] lastServerVerifyData) {
+        this.lastServerVerifyData = lastServerVerifyData;
+    }
+
+    public List<CertificateType> getCertificateTypeClientDesiredTypes() {
+        return certificateTypeClientDesiredTypes;
+    }
+
+    public void setCertificateTypeClientDesiredTypes(List<CertificateType> certificateTypeClientDesiredTypes) {
+        this.certificateTypeClientDesiredTypes = certificateTypeClientDesiredTypes;
+    }
+
+    public boolean isIsSecureRenegotiation() {
+        return isSecureRenegotiation;
+    }
+
+    public void setIsSecureRenegotiation(boolean isSecureRenegotiation) {
+        this.isSecureRenegotiation = isSecureRenegotiation;
     }
 
     public List<ProtocolVersion> getClientSupportedProtocolVersions() {
