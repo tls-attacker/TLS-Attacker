@@ -167,6 +167,8 @@ public class ReceiveMessageHelper {
                 } catch (ParserException ex) {
                     LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");
                     LOGGER.debug(ex);
+                }
+                if (result == null) {
                     result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
                 }
             }
@@ -175,6 +177,7 @@ public class ReceiveMessageHelper {
                 LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
                 receivedMessages.add(result.getMessage());
             }
+
         }
         return receivedMessages;
     }
