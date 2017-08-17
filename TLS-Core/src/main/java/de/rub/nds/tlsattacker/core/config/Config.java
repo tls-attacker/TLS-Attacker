@@ -691,6 +691,8 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
+    private boolean useAllProvidedRecords = false;
+
     private Config() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -776,6 +778,14 @@ public class Config implements Serializable {
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
 
         statusRequestV2RequestList = new LinkedList<>();
+    }
+
+    public boolean isUseAllProvidedRecords() {
+        return useAllProvidedRecords;
+    }
+
+    public void setUseAllProvidedRecords(boolean useAllProvidedRecords) {
+        this.useAllProvidedRecords = useAllProvidedRecords;
     }
 
     public byte[] getDefaultServerRenegotiationInfo() {

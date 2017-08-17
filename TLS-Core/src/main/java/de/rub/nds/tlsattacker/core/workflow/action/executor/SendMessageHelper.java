@@ -105,6 +105,16 @@ public class SendMessageHelper {
             recordLength += record.getMaxRecordLengthConfig();
             position++;
         }
+        if (context.getConfig().isUseAllProvidedRecords() && toFillList.size() < records.size()) {
+            for (AbstractRecord record : records) {
+                if (!toFillList.contains(record)) {
+                    toFillList.add(record);
+                    if (record.getMaxRecordLengthConfig() == null) {
+                        record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
+                    }
+                }
+            }
+        }
         return toFillList;
     }
 
