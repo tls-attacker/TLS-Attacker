@@ -56,6 +56,11 @@ public class BlobRecordLayer extends RecordLayer {
     }
 
     @Override
+    public List<AbstractRecord> parseRecordsSoftly(byte[] rawBytes) {
+        return parseRecords(rawBytes);
+    }
+
+    @Override
     public void decryptRecord(AbstractRecord record) {
         byte[] data = record.getProtocolMessageBytes().getValue();
         data = cipher.decrypt(data);
