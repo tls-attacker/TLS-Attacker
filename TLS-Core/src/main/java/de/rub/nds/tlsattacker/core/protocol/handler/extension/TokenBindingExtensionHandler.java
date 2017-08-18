@@ -24,11 +24,8 @@ import java.util.ArrayList;
  */
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
 
-    private final HandshakeMessageType msgType;
-
-    public TokenBindingExtensionHandler(TlsContext context, HandshakeMessageType msgType) {
+    public TokenBindingExtensionHandler(TlsContext context) {
         super(context);
-        this.msgType = msgType;
     }
 
     @Override
@@ -55,10 +52,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters);
-
-        // in case of SERVER_HELLO, tell context, that the server accepted our
-        // TB version
-        if (msgType == HandshakeMessageType.SERVER_HELLO) {
+        if (context.getTalkingConnectionEndType() == context.getConfig().getMyConnectionPeer()) {
             context.setTokenBindingNegotiated(true);
         }
     }

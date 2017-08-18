@@ -41,7 +41,7 @@ public class TokenBindingExtensionHandlerTest {
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new TokenBindingExtensionHandler(context, HandshakeMessageType.CLIENT_HELLO);
+        handler = new TokenBindingExtensionHandler(context);
     }
 
     @Test
