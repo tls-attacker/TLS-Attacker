@@ -331,6 +331,8 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
+    private boolean tokenBindingNegotiated = false;
+
     private byte[] AlpnAnnouncedProtocols;
 
     private List<CertificateType> certificateTypeClientDesiredTypes;
@@ -988,6 +990,14 @@ public class TlsContext {
 
     public void setTokenBindingKeyParameters(List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public void setTokenBindingNegotiated(boolean tokenBindingNegotiated) {
+        this.tokenBindingNegotiated = tokenBindingNegotiated;
+    }
+
+    public boolean isTokenBindingNegotiated() {
+        return tokenBindingNegotiated;
     }
 
     public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
