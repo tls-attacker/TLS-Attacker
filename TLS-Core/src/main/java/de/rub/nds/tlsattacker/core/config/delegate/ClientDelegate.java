@@ -46,7 +46,7 @@ public class ClientDelegate extends Delegate {
                 throw new ConfigurationException("Could not parse provided host: " + host);
             }
         }
-        config.setConnectionEndType(ConnectionEndType.CLIENT);
+        config.setDefaultConnectionEndType(ConnectionEndType.CLIENT);
     }
 
 }

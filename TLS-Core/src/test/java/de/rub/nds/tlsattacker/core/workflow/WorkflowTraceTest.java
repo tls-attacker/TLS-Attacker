@@ -237,25 +237,4 @@ public class WorkflowTraceTest {
         trace.setName("testName");
         assertEquals("testName", trace.getName());
     }
-
-    /**
-     * Test of toString method, of class WorkflowTrace.
-     */
-    @Test
-    public void testToString() {
-    }
-
-    /**
-     * Test of hashCode method, of class WorkflowTrace.
-     */
-    @Test
-    public void testHashCode() {
-    }
-
-    /**
-     * Test of equals method, of class WorkflowTrace.
-     */
-    @Test
-    public void testEquals() {
-    }
 }

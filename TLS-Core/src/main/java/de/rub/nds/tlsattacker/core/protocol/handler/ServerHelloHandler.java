@@ -53,7 +53,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     @Override
-    protected void adjustTLSContext(ServerHelloMessage message) {
+    public void adjustTLSContext(ServerHelloMessage message) {
         adjustSelectedProtocolVersion(message);
         if (!tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustSelectedCompression(message);
@@ -70,7 +70,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             setRecordCipher();
-            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getConfig().getConnectionEndType()) {
+            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                 tlsContext.getRecordLayer().updateDecryptionCipher();
                 tlsContext.getRecordLayer().updateEncryptionCipher();
                 tlsContext.setEncryptActive(true);

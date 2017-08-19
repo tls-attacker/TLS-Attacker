@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.ByteArrayInputStream;
@@ -49,7 +50,7 @@ public class WorkflowTraceSerializerTest {
     // TODO Test all messages with all modifiable variables
     @Test
     public void testWriteRead() throws Exception {
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(Config.createConfig());
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(new TlsContext());
         WorkflowTrace trace = factory.createFullWorkflow();
         // pick random protocol message and initialize a record with modifiable
         // variable

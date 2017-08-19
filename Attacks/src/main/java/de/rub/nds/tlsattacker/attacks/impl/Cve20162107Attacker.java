@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -62,16 +63,19 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
         Config tlsConfig = config.createConfig();
+        State state = new State(tlsConfig);
+        TlsContext tlsContext = state.getTlsContext();
+
         List<CipherSuite> suiteList = new LinkedList<>();
         suiteList.add(suite);
         tlsConfig.setDefaultClientSupportedCiphersuites(suiteList);
         tlsConfig.setEnforceSettings(true);
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
-        TlsContext tlsContext = new TlsContext(tlsConfig);
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsContext).createHandshakeWorkflow();
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
+
         // We need 2-3 Records,one for every message, while the last one will
         // have the modified padding
         List<AbstractRecord> records = new LinkedList<>();
@@ -93,8 +97,9 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
         tlsConfig.setWorkflowTrace(trace);
+
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
+                tlsConfig.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -30,8 +31,16 @@ public class WaitingAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException, IOException {
+        TlsContext tlsContext;
+        if (contextAlias != null) {
+            tlsContext = state.getTlsContext(contextAlias);
+        } else {
+            tlsContext = state.getTlsContext();
+        }
+
         Boolean success = null;
+
         LOGGER.info("Wating " + time + "ms...");
         try {
             Thread.sleep(time);

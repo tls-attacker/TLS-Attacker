@@ -71,7 +71,7 @@ public class ClientDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.getHost().equals("123456"));
-        assertTrue(config.getConnectionEndType() == ConnectionEndType.CLIENT);
+        assertTrue(config.getDefaultConnectionEndType() == ConnectionEndType.CLIENT);
     }
 
     @Test

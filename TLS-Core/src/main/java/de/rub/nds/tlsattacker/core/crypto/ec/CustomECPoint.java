@@ -25,6 +25,11 @@ public class CustomECPoint {
     public CustomECPoint() {
     }
 
+    public CustomECPoint(CustomECPoint other) {
+        x = other.x;
+        y = other.y;
+    }
+
     public CustomECPoint(BigInteger x, BigInteger y) {
         this.x = x;
         this.y = y;

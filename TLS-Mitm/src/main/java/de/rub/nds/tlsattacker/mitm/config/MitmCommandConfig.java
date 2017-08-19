@@ -53,11 +53,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private final SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
-    private final WorkflowInputDelegate workflowInputDelegate;
-    @ParametersDelegate
     private final WorkflowOutputDelegate workflowOutputDelegate;
-    @ParametersDelegate
-    private final WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
     private final TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
@@ -77,9 +73,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.mitmDelegate = new MitmDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.certificateDelegate = new CertificateDelegate();
         addDelegate(maxFragmentLengthDelegate);
@@ -89,20 +83,8 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(mitmDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
         addDelegate(heartbeatDelegate);
-        addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
-        addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);
-    }
-
-    @Override
-    public Config createConfig() {
-        Config config = super.createConfig();
-        if (config.getWorkflowTraceType() == null) {
-            LOGGER.warn("Setting workflowTraceType to MITM");
-            config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        }
-        return config;
     }
 }

@@ -52,6 +52,11 @@ public class SignatureAndHashAlgorithm implements Serializable {
 
     }
 
+    public SignatureAndHashAlgorithm(SignatureAndHashAlgorithm other) {
+        signatureAlgorithm = other.signatureAlgorithm;
+        hashAlgorithm = other.hashAlgorithm;
+    }
+
     public SignatureAndHashAlgorithm(byte[] value) {
         if (value == null || value.length != 2) {
             throw new ConfigurationException("SignatureAndHashAlgorithm always consists of two bytes, but found "

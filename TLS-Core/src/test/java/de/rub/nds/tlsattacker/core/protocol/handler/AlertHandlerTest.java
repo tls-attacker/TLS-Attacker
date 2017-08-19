@@ -69,7 +69,7 @@ public class AlertHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setConnectionEndType(ConnectionEndType.CLIENT);
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         AlertMessage message = new AlertMessage();
         message.setDescription(AlertDescription.ACCESS_DENIED.getValue());

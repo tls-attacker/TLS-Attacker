@@ -13,12 +13,13 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.SocketException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -37,18 +38,26 @@ public class SendAction extends MessageAction implements SendingAction {
     public SendAction(List<ProtocolMessage> messages) {
         super();
         this.messages = messages;
+        LOGGER.info("msg in constr:" + getReadableString(messages));
     }
 
     public SendAction(ProtocolMessage... messages) {
-        super(messages);
+        this(Arrays.asList(messages));
     }
 
     @Override
-    public void execute(TlsContext tlsContext) {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext;
+        if (contextAlias != null) {
+            tlsContext = state.getTlsContext(contextAlias);
+        } else {
+            tlsContext = state.getTlsContext();
+        }
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.info("Sending " + getReadableString(messages));
+
         try {
             MessageActionResult result = SendMessageHelper.sendMessages(messages, records, tlsContext);
             messages = result.getMessageList();

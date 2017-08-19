@@ -67,7 +67,7 @@ public class FinishedMessagePreparatorTest {
     public void testPrepareTLS13() {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setConnectionEndType(ConnectionEndType.CLIENT);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("2E9C9DD264A15D3C1EEC604A7C862934486764F94E35C0BA7E0B9494EAC06E82"));
         context.getDigest().setRawBytes(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"));

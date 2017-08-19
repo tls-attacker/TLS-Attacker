@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
@@ -96,16 +97,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(ProtocolMessage... messages) {
+    public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
-        expectedMessages = Arrays.asList(messages);
+        this.expectedMessages = Arrays.asList(expectedMessages);
     }
 
     @Override
-    public void execute(TlsContext tlsContext) {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext;
+        if (contextAlias != null) {
+            tlsContext = state.getTlsContext(contextAlias);
+            LOGGER.info("getTlsContext(contextAlias)");
+        } else {
+            tlsContext = state.getTlsContext();
+            LOGGER.info("getTlsContext()");
+        }
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
+
         LOGGER.debug("Receiving Messages...");
         MessageActionResult result = ReceiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
         records.addAll(result.getRecordList());

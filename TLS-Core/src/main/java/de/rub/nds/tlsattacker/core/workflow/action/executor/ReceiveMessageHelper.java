@@ -53,7 +53,7 @@ public class ReceiveMessageHelper {
      * @return Actually received Messages
      */
     public static MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
-        context.setTalkingConnectionEndType(context.getConfig().getMyConnectionPeer());
+        context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
 
         List<AbstractRecord> records = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
@@ -156,20 +156,25 @@ public class ReceiveMessageHelper {
                 } else {
                     result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                 }
-            } catch (ParserException | AdjustmentException E) {
+            } catch (ParserException | AdjustmentException exCorrectMsg) {
                 LOGGER.warn("Could not parse Message as a CorrectMessage");
-                LOGGER.debug(E);
+                LOGGER.debug(exCorrectMsg);
                 try {
                     if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
                         result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
                                 typeFromRecord, context);
                     }
-                } catch (ParserException ex) {
+                } catch (ParserException exUnknownHandshakeMsg) {
                     LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");
-                    LOGGER.debug(ex);
-                }
-                if (result == null) {
-                    result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                    LOGGER.debug(exUnknownHandshakeMsg);
+
+                    try {
+                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                    } catch (ParserException | AdjustmentException exUnknownHMsg) {
+                        LOGGER.warn("Could not parse Message as UnknownMessage");
+                        LOGGER.debug(exUnknownHMsg);
+                        break;
+                    }
                 }
             }
             if (result != null) {
@@ -177,7 +182,6 @@ public class ReceiveMessageHelper {
                 LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
                 receivedMessages.add(result.getMessage());
             }
-
         }
         return receivedMessages;
     }

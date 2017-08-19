@@ -46,7 +46,7 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
     private byte[] createPointFormatsByteArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         List<ECPointFormat> pointFormatList;
-        if (chooser.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             pointFormatList = chooser.getClientSupportedPointFormats();
         } else {
             pointFormatList = chooser.getServerSupportedPointFormats();

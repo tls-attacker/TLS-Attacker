@@ -19,7 +19,9 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
  */
 public class WorkflowTypeDelegate extends Delegate {
 
-    @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace (CLIENT_HELLO, HANDSHAKE or FULL)", converter = WorkflowTraceTypeConverter.class)
+    @Parameter(names = "-workflow_trace_type", description = "Type of the workflow trace"
+            + " (FULL, HANDSHAKE, HELLO, SHORT_HELLO, RESUMPTION, CLIENT_RENEGOTIATION,"
+            + " SERVER_RENEGOTIATION, SSL2_HELLO)", converter = WorkflowTraceTypeConverter.class)
     private WorkflowTraceType workflowTraceType = null;
 
     public WorkflowTypeDelegate() {

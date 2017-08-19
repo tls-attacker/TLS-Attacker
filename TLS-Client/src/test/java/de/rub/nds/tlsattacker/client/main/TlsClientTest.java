@@ -23,6 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -179,17 +180,22 @@ public class TlsClientTest {
 
     private boolean testExecuteWorkflow(Config config) {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        TlsContext tlsContext = new TlsContext(config);
+
+        State state = new State(config);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), tlsContext);
+                config.getWorkflowExecutorType(), state);
+
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
-        String workflowString = tlsContext.getWorkflowTrace().toString();
-        boolean result = tlsContext.getWorkflowTrace().executedAsPlanned();
+
+        TlsContext tlsContext = state.getTlsContext();
+        String workflowString = state.getWorkflowTrace().toString();
+        boolean result = state.getWorkflowTrace().executedAsPlanned();
+
         if (!result) {
             LOGGER.info(workflowString);
             return result;
@@ -206,10 +212,10 @@ public class TlsClientTest {
         config.setTimeout(TIMEOUT);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
-        TlsContext tlsContext = new TlsContext(config);
-        config.setWorkflowTrace(new WorkflowTrace());
+        State state = new State(config);
+        state.setWorkflowTrace(new WorkflowTrace());
 
-        WorkflowTrace trace = config.getWorkflowTrace();
+        WorkflowTrace trace = state.getWorkflowTrace();
         trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
@@ -221,7 +227,7 @@ public class TlsClientTest {
         trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), tlsContext);
+                config.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {

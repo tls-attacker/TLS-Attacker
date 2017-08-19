@@ -70,7 +70,7 @@ public class ServerDelegateTest {
         jcommander.parse(args);
         delegate.applyDelegate(config);
         assertTrue(config.getPort() == 1234);
-        assertTrue(config.getConnectionEndType() == ConnectionEndType.SERVER);
+        assertTrue(config.getDefaultConnectionEndType() == ConnectionEndType.SERVER);
     }
 
     @Test
@@ -81,11 +81,9 @@ public class ServerDelegateTest {
         List<String> excludeFields = new LinkedList<>();
         excludeFields.add("keyStore");
         excludeFields.add("ourCertificate");
-        excludeFields.add("connectionEndType"); // If the server delegate is
-        // chosen
-        // we change the conntection end
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, excludeFields));// little
-                                                                                   // ugly
-                                                                                   // todo
+        // If the server delegate is chosen we change the connection end
+        excludeFields.add("defaultConnectionEndType");
+        // little ugly todo
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2, excludeFields));
     }
 }

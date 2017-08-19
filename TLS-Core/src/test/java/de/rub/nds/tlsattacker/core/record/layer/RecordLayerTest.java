@@ -31,12 +31,12 @@ public class RecordLayerTest {
 
     @Before
     public void setUp() {
-        Config config = Config.createConfig();
-        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        TlsContext context = new TlsContext();
+        Config config = context.getConfig();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(context);
         WorkflowTrace trace = factory.createHandshakeWorkflow();
         config.setWorkflowTrace(trace);
         config.setRecordLayerType(RecordLayerType.RECORD);
-        TlsContext context = new TlsContext(config);
         context.setRecordLayer(new TlsRecordLayer(context));
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         recordHandler = context.getRecordLayer();

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,10 +25,16 @@ import org.apache.logging.log4j.Logger;
 public abstract class TLSAction implements Serializable {
 
     protected static final Logger LOGGER = LogManager.getLogger(TLSAction.class.getName());
-
     private static final boolean EXECUTED_DEFAULT = false;
 
     private Boolean executed = null;
+
+    /**
+     * Reference the TlsContext this action belongs to. Only needed if the state
+     * holds multiple contexts to choose from (i.e. in MitM scenarios). A
+     * contextAlias = null is treated as default context.
+     */
+    protected String contextAlias = null;
 
     public boolean isExecuted() {
         if (executed == null) {
@@ -41,7 +47,15 @@ public abstract class TLSAction implements Serializable {
         this.executed = executed;
     }
 
-    public abstract void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException;
+    public String getContextAlias() {
+        return contextAlias;
+    }
+
+    public void setContextAlias(String contextAlias) {
+        this.contextAlias = contextAlias;
+    }
+
+    public abstract void execute(State state) throws WorkflowExecutionException, IOException;
 
     public boolean isMessageAction() {
         return this instanceof MessageAction;

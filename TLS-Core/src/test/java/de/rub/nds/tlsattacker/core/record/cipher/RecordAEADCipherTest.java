@@ -44,7 +44,7 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testEncrypt() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.SERVER);
+        context.setConnectionEndType(ConnectionEndType.SERVER);
         this.cipher = new RecordAEADCipher(context);
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
         byte[] ciphertext = cipher.encrypt(plaintext);
@@ -58,7 +58,7 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testDecrypt() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setConnectionEndType(ConnectionEndType.CLIENT);
         this.cipher = new RecordAEADCipher(context);
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         byte[] plaintext = cipher.decrypt(ciphertext);

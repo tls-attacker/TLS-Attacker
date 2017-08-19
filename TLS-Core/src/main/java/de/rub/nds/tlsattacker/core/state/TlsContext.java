@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.state;
 
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -30,21 +29,24 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-
+import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -59,85 +61,99 @@ import org.bouncycastle.crypto.tls.Certificate;
 public class TlsContext {
 
     /**
-     * TlsConfig which contains the configurations for everything TLS-Attacker
-     * related
+     * TLS-Attacker related configurations.
      */
     private Config config;
+
+    private String alias;
+
     /**
-     * shared key established during the handshake
+     * The end point of the TLS connection that this context represents.
+     */
+    private ConnectionEndType connectionEndType;
+
+    /**
+     * Remote host or own hostname, depending on the connectionEndType.
+     */
+    private String host;
+
+    /**
+     * Remote port or port to listen on, depending on the connectionEndType.
+     */
+    private int port;
+
+    /**
+     * Default timeout for the connection.
+     */
+    private int connectionTimeout;
+
+    /**
+     * Transport handler type that shall be used.
+     */
+    private TransportHandlerType transportHandlerType;
+
+    /**
+     * Shared key established during the handshake.
      */
     private byte[] handshakeSecret;
-    /**
-     * shared key established during the handshake
-     */
+
     private byte[] clientHandshakeTrafficSecret;
-    /**
-     * shared key established during the handshake
-     */
+
     private byte[] serverHandshakeTrafficSecret;
-    /**
-     * shared key established during the handshake
-     */
+
     private byte[] clientApplicationTrafficSecret0;
-    /**
-     * shared key established during the handshake
-     */
+
     private byte[] serverApplicationTrafficSecret0;
+
     /**
-     * master secret established during the handshake
+     * Master secret established during the handshake.
      */
     private byte[] masterSecret;
+
     /**
-     * premaster secret established during the handshake
+     * Premaster secret established during the handshake.
      */
     private byte[] preMasterSecret;
 
     /**
-     * client random, including unix time /** client random, including unix time
+     * Client random, including unix time.
      */
     private byte[] clientRandom;
 
     /**
-     * server random, including unix time
+     * Server random, including unix time.
      */
     private byte[] serverRandom;
 
     /**
-     * selected cipher suite
+     * Selected cipher suite.
      */
     private CipherSuite selectedCipherSuite = null;
 
     /**
-     * compression algorithm
+     * Selected compression algorithm.
      */
     private CompressionMethod selectedCompressionMethod;
 
     /**
-     * server session ID
+     * Server session ID.
      */
     private byte[] serverSessionId;
 
     /**
-     * client session ID
+     * Client session ID.
      */
     private byte[] clientSessionId;
 
     /**
-     * server certificate parsed from the server certificate message
+     * Server certificate parsed from the server certificate message.
      */
     private Certificate serverCertificate;
 
     /**
-     * client certificate parsed from the client certificate message
+     * Client certificate parsed from the client certificate message.
      */
     private Certificate clientCertificate;
-
-    /**
-     * workflow trace containing all the messages exchanged during the
-     * communication
-     */
-    @HoldsModifiableVariable
-    private WorkflowTrace workflowTrace;
 
     private MessageDigestCollector digest;
 
@@ -184,21 +200,20 @@ public class TlsContext {
     private byte[] sessionTicketTLS;
 
     /**
-     * Is the extended master secret extension present?
+     * Whether the extended master secret extension is present or not.
      */
     private boolean receivedMasterSecretExtension;
 
     /**
-     * This is the renegotiation info of the RenegotiationInfo extension.
+     * The renegotiation info of the RenegotiationInfo extension.
      */
     private byte[] renegotiationInfo;
     /**
-     * This is the requestContext from the CertificateRequest messsage in TLS
-     * 1.3
+     * The requestContext from the CertificateRequest messsage in TLS 1.3.
      */
     private byte[] certificateRequestContext;
     /**
-     * This is the timestamp of the SignedCertificateTimestamp extension
+     * Timestamp of the SignedCertificateTimestamp extension.
      */
     private byte[] signedCertificateTimestamp;
 
@@ -347,6 +362,18 @@ public class TlsContext {
 
     private PRFAlgorithm prfAlgorithm;
 
+    private RecordLayerType recordLayerType;
+
+    private ProtocolVersion highestProtocolVersion;
+
+    private Boolean clientAuthentication;
+
+    /**
+     * Last application message data received/send by this context. This is
+     * especially useful for forwarding application messages via ForwardAction.
+     */
+    private String applicationMessageData;
+
     private boolean isSecureRenegotiation = false;
 
     private byte[] lastClientVerifyData;
@@ -363,11 +390,17 @@ public class TlsContext {
     public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
+        host = config.getHost();
+        port = config.getPort();
+        connectionTimeout = config.getTimeout();
+        connectionEndType = config.getDefaultConnectionEndType();
+        transportHandlerType = config.getTransportHandlerType();
+        recordLayerType = config.getRecordLayerType();
     }
 
     public Chooser getChooser() {
         if (chooser == null) {
-            chooser = ChooserFactory.getChooser(config.getChooserType(), this);
+            chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
     }
@@ -760,10 +793,6 @@ public class TlsContext {
         this.talkingConnectionEndType = talkingConnectionEndType;
     }
 
-    public Config getConfig() {
-        return config;
-    }
-
     public byte[] getMasterSecret() {
         return masterSecret;
     }
@@ -830,14 +859,6 @@ public class TlsContext {
 
     public void setClientSessionId(byte[] clientSessionId) {
         this.clientSessionId = clientSessionId;
-    }
-
-    public WorkflowTrace getWorkflowTrace() {
-        return workflowTrace;
-    }
-
-    public void setWorkflowTrace(WorkflowTrace workflowTrace) {
-        this.workflowTrace = workflowTrace;
     }
 
     public Certificate getServerCertificate() {
@@ -1190,6 +1211,134 @@ public class TlsContext {
 
     public void setClientRSAPrivateKey(BigInteger clientRSAPrivateKey) {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public ConnectionEndType getConnectionEndType() {
+        return connectionEndType;
+    }
+
+    public void setConnectionEndType(ConnectionEndType connectionEndType) {
+        this.connectionEndType = connectionEndType;
+    }
+
+    public TransportHandlerType getTransportHandlerType() {
+        return transportHandlerType;
+    }
+
+    public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
+        this.transportHandlerType = transportHandlerType;
+    }
+
+    public RecordLayerType getRecordLayerType() {
+        return recordLayerType;
+    }
+
+    public void setRecordLayerType(RecordLayerType recordLayerType) {
+        this.recordLayerType = recordLayerType;
+    }
+
+    public ProtocolVersion getHighestProtocolVersion() {
+        return highestProtocolVersion;
+    }
+
+    public void setHighestProtocolVersion(ProtocolVersion highestProtocolVersion) {
+        this.highestProtocolVersion = highestProtocolVersion;
+    }
+
+    public Boolean isClientAuthentication() {
+        return clientAuthentication;
+    }
+
+    public void setClientAuthentication(Boolean clientAuthentication) {
+        this.clientAuthentication = clientAuthentication;
+    }
+
+    public String getApplicationMessageData() {
+        return applicationMessageData;
+    }
+
+    public void setApplicationMessageData(String applicationMessageData) {
+        this.applicationMessageData = applicationMessageData;
+    }
+
+    /**
+     * Initialize the context's transport handler. Start listening or connect to
+     * a server, depending on our connection end type.
+     */
+    public void initTransportHandler() {
+
+        if (transportHandler == null) {
+            if (connectionEndType == null) {
+                throw new ConfigurationException("Connection end type not set");
+            }
+            if (connectionTimeout <= 0) {
+                throw new ConfigurationException("Connection timeout not defined.");
+            }
+            if (transportHandlerType == null) {
+                throw new ConfigurationException("TransportHandlerType not defined.");
+            }
+            transportHandler = TransportHandlerFactory.createTransportHandler(host, port, connectionEndType,
+                    connectionTimeout, transportHandlerType);
+        }
+
+        try {
+            transportHandler.initialize();
+        } catch (NullPointerException | NumberFormatException ex) {
+            throw new ConfigurationException(host + " is an invalid string for host:port configuration", ex);
+        } catch (IOException ex) {
+            throw new ConfigurationException("Unable to initialize the transport handler with: " + host + ex);
+        }
+    }
+
+    /**
+     * Initialize the context's record layer.
+     */
+    public void initRecordLayer() {
+        if (recordLayerType == null) {
+            throw new ConfigurationException("No record layer type defined");
+        }
+        recordLayer = RecordLayerFactory.getRecordLayer(recordLayerType, this);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder info = new StringBuilder();
+        info.append("TlsContext{ '").append(alias).append("'");
+        if (connectionEndType == ConnectionEndType.SERVER) {
+            info.append(", listening on port ").append(port);
+        } else {
+            info.append(", connected to ").append(host).append(":").append(port);
+        }
+        info.append("}");
+        return info.toString();
     }
 
 }

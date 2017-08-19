@@ -34,11 +34,14 @@ public class SendMessageHelper {
 
     public static MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context) throws IOException {
-        context.setTalkingConnectionEndType(context.getConfig().getConnectionEndType());
+
+        context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
+
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
             records = new LinkedList<>();
         }
+
         int recordPosition = 0;
         ProtocolMessageType lastType = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
@@ -125,7 +128,6 @@ public class SendMessageHelper {
     }
 
     private static byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {
-        LOGGER.debug("Preparing the following protocol message to send: {}", message.toCompactString());
         ProtocolMessageHandler handler = message.getHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;

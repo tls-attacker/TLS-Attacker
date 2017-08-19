@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -36,6 +37,7 @@ import org.junit.Test;
  */
 public class ReceiveActionTest {
 
+    private State state;
     private TlsContext tlsContext;
 
     private ReceiveAction action;
@@ -47,7 +49,9 @@ public class ReceiveActionTest {
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
-        tlsContext = new TlsContext();
+
+        state = new State();
+        tlsContext = state.getTlsContext();
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
@@ -68,7 +72,7 @@ public class ReceiveActionTest {
     public void testExecute() throws Exception {
         ((FakeTransportHandler) tlsContext.getTransportHandler()).setFetchableByte(new byte[] { 0x15, 0x03, 0x03, 0x00,
                 0x02, 0x02, 50 });
-        action.execute(tlsContext);
+        action.execute(state);
         assertTrue(action.executedAsPlanned());
         assertTrue(action.isExecuted());
     }
@@ -79,11 +83,11 @@ public class ReceiveActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext);
+        action.execute(state);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext);
+        action.execute(state);
         assertTrue(action.isExecuted());
     }
 

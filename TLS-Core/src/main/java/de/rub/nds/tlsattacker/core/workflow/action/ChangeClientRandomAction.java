@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -47,7 +48,13 @@ public class ChangeClientRandomAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext) throws WorkflowExecutionException {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext;
+        if (contextAlias != null) {
+            tlsContext = state.getTlsContext(contextAlias);
+        } else {
+            tlsContext = state.getTlsContext();
+        }
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }

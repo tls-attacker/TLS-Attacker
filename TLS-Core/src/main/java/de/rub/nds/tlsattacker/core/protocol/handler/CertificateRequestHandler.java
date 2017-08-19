@@ -45,7 +45,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     @Override
-    protected void adjustTLSContext(CertificateRequestMessage message) {
+    public void adjustTLSContext(CertificateRequestMessage message) {
         adjustClientCertificateTypes(message);
         adjustDistinguishedNames(message);
         adjustServerSupportedSignatureAndHashAlgorithms(message);

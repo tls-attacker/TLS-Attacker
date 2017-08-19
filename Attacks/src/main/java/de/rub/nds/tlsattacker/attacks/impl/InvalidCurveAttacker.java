@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -78,12 +79,15 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        TlsContext tlsContext = new TlsContext(config.createConfig());
+        State state = new State(tlsConfig);
+        TlsContext tlsContext = state.getTlsContext();
+
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowTrace trace = state.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil
                 .getFirstReceivedMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));

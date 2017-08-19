@@ -40,9 +40,9 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -100,20 +100,28 @@ public abstract class MessageAction extends TLSAction {
         records = new LinkedList<>();
     }
 
+    public String getReadableString(ProtocolMessage... messages) {
+        return getReadableString(Arrays.asList(messages));
+    }
+
     public String getReadableString(List<ProtocolMessage> messages) {
+        return getReadableString(messages, false);
+    }
+
+    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         for (ProtocolMessage message : messages) {
-            builder.append(message.toCompactString());
+            if (verbose) {
+                builder.append(message.toString());
+            } else {
+                builder.append(message.toCompactString());
+            }
             if (!message.isRequired()) {
                 builder.append("*");
             }
             builder.append(", ");
         }
         return builder.toString();
-    }
-
-    public String getReadableString(ProtocolMessage... messages) {
-        return getReadableString(Arrays.asList(messages));
     }
 
     public List<ProtocolMessage> getMessages() {

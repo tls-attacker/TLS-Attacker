@@ -39,6 +39,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.state.ConnectionEnd;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -48,7 +49,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -88,17 +91,26 @@ public class Config implements Serializable {
     /**
      * Indicates which ConnectionEndType we are
      */
-    private ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
+    private ConnectionEndType defaultConnectionEndType = ConnectionEndType.CLIENT;
 
     /**
      * The Workflow Trace that should be executed
      */
     private WorkflowTrace workflowTrace = null;
+
     /**
-     * host to connect
+     * Host to connect to. TODO: Consider putting this into a default
+     * connectionEnd in connectinEnds[0]
      */
     @XmlTransient
     private String host = "127.0.0.1";
+
+    /**
+     * Connection ends that we know for workflow execution. TODO The default
+     * host and port should be represented by a default connectionEnd.
+     */
+    private List<ConnectionEnd> connectionEnds;
+
     /**
      * If default generated WorkflowTraces should contain client Authentication
      */
@@ -108,10 +120,12 @@ public class Config implements Serializable {
      * Which Signature and Hash algorithms we support
      */
     private List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
+
     /**
      * Which Ciphersuites we support by default
      */
     private List<CipherSuite> defaultClientSupportedCiphersuites;
+
     /**
      * Which Ciphersuites we support by default
      */
@@ -121,6 +135,7 @@ public class Config implements Serializable {
      * If we are a dynamic workflow //TODO implement
      */
     private boolean dynamicWorkflow = false;
+
     /**
      * Supported namedCurves by default
      */
@@ -130,18 +145,22 @@ public class Config implements Serializable {
      * Default clientSupportedNamed Curves
      */
     private List<NamedCurve> defaultClientNamedCurves;
+
     /**
      * Supported ProtocolVersions by default
      */
     private List<ProtocolVersion> supportedVersions;
+
     /**
      * Which heartBeat mode we are in
      */
     private HeartbeatMode heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
+
     /**
      * Padding length for TLS 1.3 messages
      */
     private int paddingLength = 0;
+
     /**
      * Public key for KeyShareExtension
      */
@@ -269,41 +288,50 @@ public class Config implements Serializable {
      * Default client authz extension data format list
      */
     private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
+
     /**
      * Default state for the certificate type extension message. State "client"
      */
     private boolean certificateTypeExtensionMessageState = true;
+
     /**
-     * Default sever authz extension data format list
+     * Default sever authz extension data format list.
      */
     private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
+
     /**
-     * Default trusted ca indication extension trusted cas
+     * Default trusted ca indication extension trusted CAs.
      */
     private List<TrustedAuthority> trustedCaIndicationExtensionAuthorties;
+
     /**
-     * Default state for the client certificate type extension message. State
-     * "client"
+     * Default state for the client certificate type extension message (state
+     * "client").
      */
     private boolean clientCertificateTypeExtensionMessageState = true;
+
     /**
-     * Default state for the cached info extension message. State "client"
+     * Default state for the cached info extension message (state "client").
      */
     private boolean cachedInfoExtensionIsClientState = true;
+
     /**
-     * Default cached objects for the cached info extension
+     * Default cached objects for the cached info extension.
      */
     private List<CachedObject> cachedObjectList;
+
     /**
-     * Default certificate status request v2 extension request list
+     * Default certificate status request v2 extension request list.
      */
     private List<RequestItemV2> statusRequestV2RequestList;
+
     /**
-     * Default Timeout for the Connection
+     * Default timeout for the connection.
      */
     private int timeout = 1000;
+
     /**
-     * Transporthandler Type that shall be used
+     * Transporthandler Type that shall be used.
      */
     private TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
     /**
@@ -1611,16 +1639,12 @@ public class Config implements Serializable {
         this.defaultClientSupportedCiphersuites = Arrays.asList(defaultClientSupportedCiphersuites);
     }
 
-    public ConnectionEndType getConnectionEndType() {
-        return connectionEndType;
+    public ConnectionEndType getDefaultConnectionEndType() {
+        return defaultConnectionEndType;
     }
 
-    public void setConnectionEndType(ConnectionEndType connectionEndType) {
-        this.connectionEndType = connectionEndType;
-    }
-
-    public ConnectionEndType getMyConnectionPeer() {
-        return connectionEndType == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER : ConnectionEndType.CLIENT;
+    public void setDefaultConnectionEndType(ConnectionEndType connectionEndType) {
+        this.defaultConnectionEndType = connectionEndType;
     }
 
     public WorkflowTrace getWorkflowTrace() {
@@ -2159,6 +2183,26 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
+    }
+
+    public void clearConnectionEnds() {
+        if (connectionEnds != null) {
+            connectionEnds.clear();
+        }
+    }
+
+    public void addConnectionEnd(ConnectionEnd con) {
+        if (connectionEnds == null) {
+            connectionEnds = new ArrayList<>();
+        }
+        connectionEnds.add(con);
+    }
+
+    public List<ConnectionEnd> getConnectionEnds() {
+        if (connectionEnds == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(connectionEnds);
     }
 
     public boolean isStopActionsAfterFatal() {

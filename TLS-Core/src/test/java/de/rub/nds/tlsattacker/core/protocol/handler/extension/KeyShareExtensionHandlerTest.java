@@ -50,7 +50,7 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setConnectionEndType(ConnectionEndType.CLIENT);
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();

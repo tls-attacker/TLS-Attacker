@@ -109,7 +109,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      *
      * @param message
      */
-    protected abstract void adjustTLSContext(Message message);
+    public abstract void adjustTLSContext(Message message);
 
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);

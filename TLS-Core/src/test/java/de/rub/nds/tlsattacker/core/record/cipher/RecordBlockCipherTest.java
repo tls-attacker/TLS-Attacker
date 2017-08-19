@@ -50,7 +50,7 @@ public class RecordBlockCipherTest {
                     && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
                 for (ConnectionEndType end : ConnectionEndType.values()) {
-                    context.getConfig().setConnectionEndType(end);
+                    context.setConnectionEndType(end);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
                         if (version == ProtocolVersion.SSL2 || version == ProtocolVersion.SSL3) {
                             continue;
@@ -70,7 +70,7 @@ public class RecordBlockCipherTest {
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setConnectionEndType(ConnectionEndType.CLIENT);
         RecordBlockCipher cipher = new RecordBlockCipher(context);
     }
 

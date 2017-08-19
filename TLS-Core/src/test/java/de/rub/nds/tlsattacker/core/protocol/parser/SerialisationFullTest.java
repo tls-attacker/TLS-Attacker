@@ -40,6 +40,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
@@ -85,7 +86,8 @@ public class SerialisationFullTest {
 
     @Test
     public void test() throws JAXBException, IOException {
-        Config config = Config.createConfig();
+        TlsContext context = new TlsContext();
+        Config config = context.getConfig();
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddHeartbeatExtension(true);
@@ -100,7 +102,7 @@ public class SerialisationFullTest {
         config.setAddSupportedVersionsExtension(true);
         config.setAddTokenBindingExtension(true);
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createFullWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(context).createFullWorkflow();
         trace.addTlsAction(new ChangeCipherSuiteAction(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         trace.addTlsAction(new ChangeClientRandomAction(new byte[] { 0x00, 0x11, 0x22, 0x33 }));
         trace.addTlsAction(new ChangeCompressionAction(CompressionMethod.LZS));

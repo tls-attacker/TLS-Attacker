@@ -41,7 +41,7 @@ public class RecordDecryptor extends Decryptor {
 
     @Override
     public void decrypt(Record record) {
-        LOGGER.debug("Decrypting Record");
+        LOGGER.info("Decrypting Record");
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         byte[] decrypted = recordCipher.decrypt(encrypted);
         record.setPlainRecordBytes(decrypted);

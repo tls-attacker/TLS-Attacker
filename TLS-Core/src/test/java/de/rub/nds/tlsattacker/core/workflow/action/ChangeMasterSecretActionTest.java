@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -30,13 +31,15 @@ import org.junit.Test;
  */
 public class ChangeMasterSecretActionTest {
 
+    private State state;
     private TlsContext tlsContext;
     private ChangeMasterSecretAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        tlsContext = new TlsContext();
+        state = new State();
+        tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
@@ -71,7 +74,7 @@ public class ChangeMasterSecretActionTest {
     @Test
     public void testGetOldValue() {
         tlsContext.setMasterSecret(new byte[] { 3 });
-        action.execute(tlsContext);
+        action.execute(state);
         assertArrayEquals(action.getOldValue(), new byte[] { 3 });
     }
 
@@ -81,7 +84,7 @@ public class ChangeMasterSecretActionTest {
     @Test
     public void testExecute() {
         tlsContext.setMasterSecret(new byte[] { 3 });
-        action.execute(tlsContext);
+        action.execute(state);
         assertArrayEquals(action.getOldValue(), new byte[] { 3 });
         assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
         assertArrayEquals(tlsContext.getMasterSecret(), new byte[] { 0, 1 });
@@ -95,11 +98,11 @@ public class ChangeMasterSecretActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext);
+        action.execute(state);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext);
+        action.execute(state);
         assertTrue(action.isExecuted());
     }
 

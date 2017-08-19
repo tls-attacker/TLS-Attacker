@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -31,6 +32,7 @@ import org.junit.Test;
  */
 public class ChangeCipherSuiteActionTest {
 
+    private State state;
     private TlsContext tlsContext;
 
     private ChangeCipherSuiteAction action;
@@ -39,7 +41,8 @@ public class ChangeCipherSuiteActionTest {
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidKeyException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException,
             InvalidAlgorithmParameterException, InvalidAlgorithmParameterException {
-        tlsContext = new TlsContext();
+        state = new State();
+        tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
@@ -69,7 +72,7 @@ public class ChangeCipherSuiteActionTest {
     @Test
     public void testNoOld() {
         tlsContext.setSelectedCipherSuite(null);
-        action.execute(tlsContext);
+        action.execute(state);
     }
 
     /**
@@ -77,7 +80,7 @@ public class ChangeCipherSuiteActionTest {
      */
     @Test
     public void testGetOldValue() {
-        action.execute(tlsContext);
+        action.execute(state);
         assertEquals(action.getOldValue(), CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
     }
 
@@ -86,7 +89,7 @@ public class ChangeCipherSuiteActionTest {
      */
     @Test
     public void testExecute() {
-        action.execute(tlsContext);
+        action.execute(state);
         assertEquals(tlsContext.getSelectedCipherSuite(), action.getNewValue());
         // TODO check that cipher is reinitialised
         assertTrue(action.isExecuted());
@@ -98,11 +101,11 @@ public class ChangeCipherSuiteActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext);
+        action.execute(state);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext);
+        action.execute(state);
         assertTrue(action.isExecuted());
     }
 
