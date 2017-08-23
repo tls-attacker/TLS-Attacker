@@ -26,14 +26,6 @@ import org.apache.logging.log4j.LogManager;
  */
 public class State {
 
-    /**
-     * Alias of the default context. This is/should be used in states that only
-     * need a single TlsContext. If a State object is instantiated without
-     * custom contexts, a context with this alias is created an used
-     * automatically.
-     */
-    public static final String DEFAULT_CONTEXT_ALIAS = "defaultContext";
-
     protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(State.class.getName());
 
     private Config config = null;
@@ -72,7 +64,7 @@ public class State {
         List<ConnectionEnd> conEnds = config.getConnectionEnds();
         if ((conEnds == null) || (conEnds.isEmpty())) {
             TlsContext ctx = new TlsContext(config);
-            addTlsContext(DEFAULT_CONTEXT_ALIAS, ctx);
+            addTlsContext(Config.DEFAULT_CONTEXT_ALIAS, ctx);
         } else {
             for (ConnectionEnd conEnd : conEnds) {
                 TlsContext ctx = new TlsContext(config);
@@ -99,22 +91,25 @@ public class State {
     }
 
     /**
-     * Use this convenience method when working with a single context only.
+     * Use this convenience method when working with a single context only. It
+     * should be used only if there is exactly one context defined in the state.
+     * 
+     * @return the context known to the state (usually the default context)
      */
     public TlsContext getTlsContext() {
+        if (tlsContexts.isEmpty()) {
+            throw new ConfigurationException("No context defined");
+        }
         if (tlsContexts.size() > 1) {
             throw new ConfigurationException("getTlsContext requires an alias if multiple contexts are defined");
         }
-        if (!tlsContexts.containsKey(DEFAULT_CONTEXT_ALIAS)) {
-            throw new ConfigurationException("Trying to access default context but no context with alias '"
-                    + DEFAULT_CONTEXT_ALIAS + "' defined. Consider using getTlsContext(alias).");
-        }
-        return tlsContexts.get(DEFAULT_CONTEXT_ALIAS);
+
+        return tlsContexts.entrySet().iterator().next().getValue();
     }
 
     public TlsContext getTlsContext(String alias) {
         if (tlsContexts.get(alias) == null) {
-            LOGGER.warn("No context with alias ''{0}''", alias);
+            throw new ConfigurationException("No context defined with alias '" + alias + "'.");
         }
         return tlsContexts.get(alias);
     }
@@ -132,10 +127,10 @@ public class State {
         tlsContexts.put(alias, context);
         context.setAlias(alias);
         if (context.getConnectionEndType() == ConnectionEndType.SERVER) {
-            LOGGER.info("Adding context " + alias + " to listeningCtxs");
+            LOGGER.debug("Adding context " + alias + " to listeningCtxs");
             listeningTlsContexts.add(context);
         } else {
-            LOGGER.info("Adding context " + alias + " to connectingCtxs");
+            LOGGER.debug("Adding context " + alias + " to connectingCtxs");
             connectingTlsContexts.add(context);
         }
     }

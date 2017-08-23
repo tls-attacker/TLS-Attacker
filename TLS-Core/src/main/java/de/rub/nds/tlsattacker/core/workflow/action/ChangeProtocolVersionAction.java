@@ -46,12 +46,8 @@ public class ChangeProtocolVersionAction extends TLSAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext;
-        if (contextAlias != null) {
-            tlsContext = state.getTlsContext(contextAlias);
-        } else {
-            tlsContext = state.getTlsContext();
-        }
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }

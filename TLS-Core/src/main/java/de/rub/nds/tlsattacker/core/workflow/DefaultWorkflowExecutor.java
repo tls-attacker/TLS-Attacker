@@ -45,14 +45,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         List<TLSAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TLSAction action : tlsActions) {
             try {
-                String contextAlias = action.getContextAlias();
-                if ((contextAlias == null) && (state.getTlsContexts().size() > 1)) {
-                    throw new WorkflowExecutionException("Multiple connection ends/contexts defined,"
-                            + " but the following action has an empty context alias: " + action);
-                }
-
-                if (!(state.getConfig().isStopActionsAfterFatal() && state.getTlsContext(contextAlias)
-                        .isReceivedFatalAlert())) {
+                if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                     action.execute(state);
                 } else {
                     LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
@@ -78,5 +71,17 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             state.getWorkflowTrace().reset();
         }
         storeTrace();
+    }
+
+    /**
+     * Check if a at least one TLS context received a fatal alert.
+     */
+    private boolean isReceivedFatalAlert() {
+        for (TlsContext ctx : state.getTlsContexts().values()) {
+            if (ctx.isReceivedFatalAlert()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

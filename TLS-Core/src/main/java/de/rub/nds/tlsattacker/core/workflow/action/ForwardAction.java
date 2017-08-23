@@ -52,10 +52,10 @@ public class ForwardAction extends MessageAction {
         recvAction.setContextAlias(receiveFromAlias);
         recvAction.execute(state);
 
-        List<ProtocolMessage> receivedMessages = recvAction.getReceivedMessages();
         // Apply the action to the forward destination's context
+        List<ProtocolMessage> receivedMessages = recvAction.getReceivedMessages();
         for (ProtocolMessage msg : receivedMessages) {
-            LOGGER.info("Applying " + msg.toCompactString() + "to forward context " + forwardToAlias);
+            LOGGER.debug("Applying " + msg.toCompactString() + "to forward context " + forwardToAlias);
             ProtocolMessageHandler h = msg.getHandler(state.getTlsContext(forwardToAlias));
             h.adjustTLSContext(msg);
         }

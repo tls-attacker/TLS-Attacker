@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
@@ -32,7 +33,8 @@ public abstract class TLSAction implements Serializable {
     /**
      * Reference the TlsContext this action belongs to. Only needed if the state
      * holds multiple contexts to choose from (i.e. in MitM scenarios). A
-     * contextAlias = null is treated as default context.
+     * contextAlias = null is treated as default context. Set to null here to
+     * keep serialization output clean.
      */
     protected String contextAlias = null;
 
@@ -48,7 +50,11 @@ public abstract class TLSAction implements Serializable {
     }
 
     public String getContextAlias() {
-        return contextAlias;
+        if (contextAlias == null) {
+            return Config.DEFAULT_CONTEXT_ALIAS;
+        } else {
+            return contextAlias;
+        }
     }
 
     public void setContextAlias(String contextAlias) {

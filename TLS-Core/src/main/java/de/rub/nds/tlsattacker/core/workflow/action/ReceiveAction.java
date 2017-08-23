@@ -104,14 +104,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext;
-        if (contextAlias != null) {
-            tlsContext = state.getTlsContext(contextAlias);
-            LOGGER.info("getTlsContext(contextAlias)");
-        } else {
-            tlsContext = state.getTlsContext();
-            LOGGER.info("getTlsContext()");
-        }
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }

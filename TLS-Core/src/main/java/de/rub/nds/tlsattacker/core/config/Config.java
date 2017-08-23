@@ -70,6 +70,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config implements Serializable {
 
+    /**
+     * Alias of the default context. This is/should be used in states that only
+     * need a single TlsContext. If a State object is instantiated without
+     * custom contexts, a context with this alias is created an used
+     * automatically.
+     */
+    public static final String DEFAULT_CONTEXT_ALIAS = "defaultContext";
+
     public static Config createConfig() {
         InputStream stream = Config.class.getResourceAsStream("/default_config.xml");
         return ConfigIO.read(stream);

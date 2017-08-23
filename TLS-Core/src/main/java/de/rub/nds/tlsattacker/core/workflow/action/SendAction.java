@@ -38,7 +38,6 @@ public class SendAction extends MessageAction implements SendingAction {
     public SendAction(List<ProtocolMessage> messages) {
         super();
         this.messages = messages;
-        LOGGER.info("msg in constr:" + getReadableString(messages));
     }
 
     public SendAction(ProtocolMessage... messages) {
@@ -47,12 +46,8 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext;
-        if (contextAlias != null) {
-            tlsContext = state.getTlsContext(contextAlias);
-        } else {
-            tlsContext = state.getTlsContext();
-        }
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
