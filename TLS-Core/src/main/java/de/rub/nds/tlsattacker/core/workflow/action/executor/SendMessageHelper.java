@@ -69,8 +69,25 @@ public class SendMessageHelper {
                 context.setSequenceNumber(0);
             }
         }
-        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
         sendData(messageBytesCollector, context);
+        if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
+            int current = 0;
+            for (AbstractRecord record : records) {
+                if (current >= recordPosition) {
+                    if (record.getMaxRecordLengthConfig() == null) {
+                        record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
+                    }
+                    List<AbstractRecord> emptyRecords = new LinkedList<>();
+                    emptyRecords.add(record);
+                    messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
+                            messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(),
+                            emptyRecords));
+                    sendData(messageBytesCollector, context);
+                }
+                current++;
+            }
+        }
         return new MessageActionResult(records, messages);
     }
 
@@ -104,16 +121,6 @@ public class SendMessageHelper {
             }
             recordLength += record.getMaxRecordLengthConfig();
             position++;
-        }
-        if (context.getConfig().isUseAllProvidedRecords() && toFillList.size() < records.size()) {
-            for (AbstractRecord record : records) {
-                if (!toFillList.contains(record)) {
-                    toFillList.add(record);
-                    if (record.getMaxRecordLengthConfig() == null) {
-                        record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
-                    }
-                }
-            }
         }
         return toFillList;
     }
