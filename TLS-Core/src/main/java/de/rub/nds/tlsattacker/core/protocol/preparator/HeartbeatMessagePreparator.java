@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -21,22 +22,24 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
 
     private final HeartbeatMessage msg;
+    private TlsContext context;
 
     public HeartbeatMessagePreparator(Chooser chooser, HeartbeatMessage message) {
         super(chooser, message);
         this.msg = message;
+        context = new TlsContext();
     }
 
     private byte[] generatePayload() {
         byte[] payload = new byte[chooser.getConfig().getHeartbeatPayloadLength()];
-        RandomHelper.getRandom().nextBytes(payload);
+        context.getRandom().nextBytes(payload);
         return payload;
     }
 
     private byte[] generatePadding() {
         int paddingLength = chooser.getConfig().getHeartbeatPaddingLength();
         byte[] padding = new byte[paddingLength];
-        RandomHelper.getRandom().nextBytes(padding);
+        context.getRandom().nextBytes(padding);
         return padding;
     }
 

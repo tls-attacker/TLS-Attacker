@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 
@@ -26,10 +27,12 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
 
     private final HelloMessage msg;
+    private TlsContext context;
 
     public HelloMessagePreparator(Chooser chooser, HelloMessage message) {
         super(chooser, message);
         this.msg = message;
+        context = new TlsContext();
     }
 
     protected void prepareRandom(ProtocolVersion version) {
@@ -39,7 +42,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         } else {
             random = new byte[HandshakeByteLength.RANDOM];
         }
-        RandomHelper.getRandom().nextBytes(random);
+        context.getRandom().nextBytes(random);
         msg.setRandom(random);
         LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
     }

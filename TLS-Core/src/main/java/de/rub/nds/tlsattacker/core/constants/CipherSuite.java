@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -431,6 +432,7 @@ public enum CipherSuite {
     // GREASE_15(0xFAFA);
 
     private int value;
+    private static TlsContext context = new TlsContext();
 
     private static final Map<Integer, CipherSuite> MAP;
 
@@ -442,7 +444,7 @@ public enum CipherSuite {
         CipherSuite c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (CipherSuite) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (CipherSuite) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }

@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -99,6 +100,8 @@ public enum NamedCurve {
 
     private String javaName;
 
+    private static TlsContext context = new TlsContext();
+
     private static final Map<Integer, NamedCurve> MAP;
 
     private NamedCurve(byte[] value, String javaName) {
@@ -137,7 +140,7 @@ public enum NamedCurve {
         NamedCurve c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (NamedCurve) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (NamedCurve) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }

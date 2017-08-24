@@ -43,9 +43,11 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 
@@ -352,6 +354,10 @@ public class TlsContext {
     private byte[] lastClientVerifyData;
 
     private byte[] lastServerVerifyData;
+
+    private Random random;
+
+    private SecureRandom badSecureRandom;
 
     @XmlTransient
     private Chooser chooser;
@@ -1192,4 +1198,25 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
+    public Random getRandom() {
+        if (random == null) {
+            random = new Random(0);
+        }
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public SecureRandom getBadSecureRandom() {
+        if (badSecureRandom == null) {
+            badSecureRandom = new SecureRandom();
+        }
+        return badSecureRandom;
+    }
+
+    public void setBadRandom(SecureRandom badSecureRandom) {
+        this.badSecureRandom = badSecureRandom;
+    }
 }

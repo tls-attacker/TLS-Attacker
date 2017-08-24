@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +29,7 @@ public enum ECPointFormat {
     ANSIX962_COMPRESSED_CHAR2((byte) 2);
 
     private byte value;
+    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, ECPointFormat> MAP;
 
@@ -54,7 +56,7 @@ public enum ECPointFormat {
         ECPointFormat c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (ECPointFormat) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (ECPointFormat) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }

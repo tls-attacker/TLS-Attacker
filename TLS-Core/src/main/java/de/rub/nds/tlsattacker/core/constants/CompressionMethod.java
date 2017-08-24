@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +25,7 @@ public enum CompressionMethod {
     LZS((byte) 0x40);
 
     private byte value;
+    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, CompressionMethod> MAP;
 
@@ -59,7 +61,7 @@ public enum CompressionMethod {
         CompressionMethod c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (CompressionMethod) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (CompressionMethod) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }

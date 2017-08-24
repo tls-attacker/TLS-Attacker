@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -34,6 +35,8 @@ public enum ProtocolVersion {
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
     private byte[] value;
+
+    private static TlsContext context = new TlsContext();
 
     private static final Map<Integer, ProtocolVersion> MAP;
 
@@ -91,7 +94,7 @@ public enum ProtocolVersion {
         ProtocolVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (ProtocolVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (ProtocolVersion) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }

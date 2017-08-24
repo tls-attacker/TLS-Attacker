@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -24,6 +25,8 @@ import org.apache.logging.log4j.Logger;
 public abstract class ModifiableVariableHolder implements Serializable {
 
     protected static final Logger LOGGER = LogManager.getLogger(ModifiableVariableHolder.class.getName());
+
+    private TlsContext context = new TlsContext();
 
     /**
      * Lists all the modifiable variables declared in the class
@@ -41,7 +44,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      */
     public Field getRandomModifiableVariableField() {
         List<Field> fields = getAllModifiableVariableFields();
-        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        int randomField = context.getRandom().nextInt(fields.size());
         return fields.get(randomField);
     }
 
@@ -64,7 +67,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      */
     public ModifiableVariableHolder getRandomModifiableVariableHolder() {
         List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
-        int randomHolder = RandomHelper.getRandom().nextInt(holders.size());
+        int randomHolder = context.getRandom().nextInt(holders.size());
         return holders.get(randomHolder);
     }
 }

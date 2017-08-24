@@ -24,6 +24,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
     public HelloVerifyRequestPreparator(Chooser context, HelloVerifyRequestMessage message) {
         super(context, message);
         this.msg = message;
+
     }
 
     @Override

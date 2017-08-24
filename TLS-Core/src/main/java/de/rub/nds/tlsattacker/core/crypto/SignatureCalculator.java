@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +28,8 @@ import java.security.interfaces.RSAPrivateKey;
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class SignatureCalculator {
+
+    private static TlsContext context = new TlsContext();
 
     private SignatureCalculator() {
     }

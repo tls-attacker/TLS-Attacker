@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ public enum HeartbeatMode {
     PEER_NOT_ALLOWED_TO_SEND((byte) 2);
 
     private byte value;
+    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, HeartbeatMode> MAP;
 
@@ -51,7 +53,7 @@ public enum HeartbeatMode {
         HeartbeatMode c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (HeartbeatMode) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (HeartbeatMode) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }

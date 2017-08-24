@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends ModifiableVariableHolder implements Serializable {
 
+    private TlsContext context = new TlsContext();
     /**
      * content type
      */
@@ -100,7 +101,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     @Override
     public Field getRandomModifiableVariableField() {
         List<Field> fields = getAllModifiableVariableFields();
-        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        int randomField = context.getRandom().nextInt(fields.size());
         return fields.get(randomField);
     }
 

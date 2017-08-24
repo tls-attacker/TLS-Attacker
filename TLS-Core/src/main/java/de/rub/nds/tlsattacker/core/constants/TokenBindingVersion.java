@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +36,8 @@ public enum TokenBindingVersion {
 
     private final byte[] tokenBindingVersion;
     public static final int LENGTH = 2;
+
+    private static TlsContext context = new TlsContext();
 
     private static final Map<Integer, TokenBindingVersion> MAP;
 
@@ -74,7 +77,7 @@ public enum TokenBindingVersion {
         TokenBindingVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (TokenBindingVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (TokenBindingVersion) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }

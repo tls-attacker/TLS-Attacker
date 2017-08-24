@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ public enum MaxFragmentLength {
     TWO_12((byte) 4);
 
     private byte value;
+    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, MaxFragmentLength> MAP;
 
@@ -53,7 +55,7 @@ public enum MaxFragmentLength {
         MaxFragmentLength c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (MaxFragmentLength) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (MaxFragmentLength) o[context.getRandom().nextInt(o.length)];
         }
         return c;
     }
