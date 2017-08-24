@@ -59,7 +59,11 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         if (chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
             msg.setSessionId(new byte[0]);
         } else {
-            msg.setSessionId(chooser.getClientSessionId());
+            if (chooser.getContext().getServerSessionId() == null) {
+                msg.setSessionId(chooser.getClientSessionId());
+            } else {
+                msg.setSessionId(chooser.getServerSessionId());
+            }
         }
         LOGGER.debug("SessionId: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }

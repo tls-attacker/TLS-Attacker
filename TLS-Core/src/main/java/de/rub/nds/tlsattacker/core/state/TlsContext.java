@@ -63,6 +63,8 @@ public class TlsContext {
      * related
      */
     private Config config;
+    
+    private List<Session> sessionList;
     /**
      * shared key established during the handshake
      */
@@ -363,6 +365,7 @@ public class TlsContext {
     public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
+        this.sessionList = new LinkedList<>();
     }
 
     public Chooser getChooser() {
@@ -370,6 +373,31 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this);
         }
         return chooser;
+    }
+
+    public Session getSession(byte[] sessionId) {
+        for (Session session : sessionList) {
+            if (Arrays.equals(session.getSessionId(), sessionId)) {
+                return session;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasSession(byte[] sessionId) {
+        return getSession(sessionId) != null;
+    }
+
+    public void addNewSession(Session session) {
+        sessionList.add(session);
+    }
+
+    public List<Session> getSessionList() {
+        return sessionList;
+    }
+
+    public void setSessionList(List<Session> sessionList) {
+        this.sessionList = sessionList;
     }
 
     public byte[] getLastClientVerifyData() {

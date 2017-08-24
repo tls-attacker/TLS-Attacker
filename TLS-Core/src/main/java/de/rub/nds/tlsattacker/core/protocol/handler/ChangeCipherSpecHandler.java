@@ -44,18 +44,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     protected void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            setRecordCipher();
-        }
-
         if (tlsContext.getTalkingConnectionEndType() != tlsContext.getConfig().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
         }
-    }
-
-    private void setRecordCipher() {
-        LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
     }
 }
