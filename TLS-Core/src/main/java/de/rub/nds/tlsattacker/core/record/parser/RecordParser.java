@@ -33,6 +33,7 @@ public class RecordParser extends AbstractRecordParser<Record> {
         parseVersion(record);
         parseLength(record);
         parseProtocolMessageBytes(record);
+        record.setCompleteRecordBytes(getAlreadyParsed());
         return record;
     }
 

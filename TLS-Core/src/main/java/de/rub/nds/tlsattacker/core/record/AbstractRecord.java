@@ -28,6 +28,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public abstract class AbstractRecord extends ModifiableVariableHolder {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
+    private ModifiableByteArray completeRecordBytes;
+
     /**
      * protocol message bytes transported in the record as seen on the transport
      * layer if encrypption is active this is encrypted if not its plaintext
@@ -95,6 +98,18 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
         this.maxRecordLengthConfig = maxRecordLengthConfig;
     }
 
+    public ModifiableByteArray getCompleteRecordBytes() {
+        return completeRecordBytes;
+    }
+
+    public void setCompleteRecordBytes(ModifiableByteArray completeRecordBytes) {
+        this.completeRecordBytes = completeRecordBytes;
+    }
+    
+    public void setCompleteRecordBytes(byte[] completeRecordBytes) {
+        this.completeRecordBytes = ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
+    }
+    
     public abstract AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
             ProtocolMessageType type);
 
