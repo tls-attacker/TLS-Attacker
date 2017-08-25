@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
@@ -41,9 +43,9 @@ public class RecordBlockCipherTest {
     @Test
     public void testConstructors() {
         // This test just checks that the init() method will not break
-        context.setClientRandom(new byte[] { 0 });
-        context.setServerRandom(new byte[] { 0 });
-        context.setMasterSecret(new byte[] { 0 });
+        context.setClientRandom(new byte[]{0});
+        context.setServerRandom(new byte[]{0});
+        context.setMasterSecret(new byte[]{0});
         for (CipherSuite suite : CipherSuite.values()) {
             if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV()
                     && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
@@ -67,9 +69,9 @@ public class RecordBlockCipherTest {
     public void test() {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
-        context.setClientRandom(new byte[] { 0 });
-        context.setServerRandom(new byte[] { 0 });
-        context.setMasterSecret(new byte[] { 0 });
+        context.setClientRandom(new byte[]{0});
+        context.setServerRandom(new byte[]{0});
+        context.setMasterSecret(new byte[]{0});
         context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
         RecordBlockCipher cipher = new RecordBlockCipher(context);
     }
@@ -86,6 +88,23 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testEncrypt() {
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+        context.setClientRandom(new byte[]{0});
+        context.setServerRandom(new byte[]{0});
+        context.setMasterSecret(new byte[]{0});
+        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        RecordBlockCipher cipher = new RecordBlockCipher(context);
+
+        for (int i = 0; i < 10000; i++) {
+            byte[] bytes = new byte[i];
+            RandomHelper.getRandom().nextBytes(bytes);
+            try {
+                cipher.encrypt(bytes);
+            } catch (CryptoException E) {
+
+            }
+        }
     }
 
     /**
@@ -93,6 +112,23 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testDecrypt() {
+        context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+        context.setClientRandom(new byte[]{0});
+        context.setServerRandom(new byte[]{0});
+        context.setMasterSecret(new byte[]{0});
+        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        RecordBlockCipher cipher = new RecordBlockCipher(context);
+
+        for (int i = 0; i < 10000; i++) {
+            byte[] bytes = new byte[i];
+            RandomHelper.getRandom().nextBytes(bytes);
+            try {
+                cipher.decrypt(bytes);
+            } catch (CryptoException E) {
+
+            }
+        }
     }
 
     /**

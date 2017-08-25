@@ -127,8 +127,7 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param data
-     *            correctly padded data
+     * @param data correctly padded data
      * @return
      * @throws CryptoException
      */
@@ -141,6 +140,9 @@ public final class RecordBlockCipher extends RecordCipher {
             } else {
                 encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
                 ciphertext = encryptCipher.doFinal(data);
+                if (ciphertext.length - decryptCipher.getBlockSize() < 0) {
+                    throw new CryptoException("Could not extract encryptionIv");
+                }
                 encryptIv = new IvParameterSpec(Arrays.copyOfRange(ciphertext,
                         ciphertext.length - decryptCipher.getBlockSize(), ciphertext.length));
             }
@@ -154,8 +156,7 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes ciphertexts and decrypts it
      *
-     * @param data
-     *            correctly padded data
+     * @param data correctly padded data
      * @return
      * @throws CryptoException
      */
@@ -174,9 +175,16 @@ public final class RecordBlockCipher extends RecordCipher {
                         decryptIv);
             }
             if (useExplicitIv) {
+                if(decryptCipher.getBlockSize() > data.length)
+                {
+                    throw new CryptoException("Data smaller than a single cipher Block");
+                }
                 plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
             } else {
                 plaintext = decryptCipher.doFinal(data);
+                if (data.length - decryptCipher.getBlockSize() < 0) {
+                    throw new CryptoException("Could not extract decryption IV");
+                }
                 decryptIv = new IvParameterSpec(Arrays.copyOfRange(data, data.length - decryptCipher.getBlockSize(),
                         data.length));
             }
@@ -274,9 +282,9 @@ public final class RecordBlockCipher extends RecordCipher {
             if (offset != keyBlock.length) {
                 throw new CryptoException("Offset exceeded the generated key block length");
             } // mac has to be put into one or more blocks, depending on the
-              // MAC/block
-              // length
-              // additionally, there is a need for one explicit IV block
+            // MAC/block
+            // length
+            // additionally, there is a need for one explicit IV block
             setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
                     * decryptCipher.getBlockSize());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {

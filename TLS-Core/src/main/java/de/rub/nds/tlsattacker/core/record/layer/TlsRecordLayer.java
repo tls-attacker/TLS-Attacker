@@ -93,7 +93,9 @@ public class TlsRecordLayer extends RecordLayer {
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
-                stream.write(serializer.serialize());
+                byte[] recordBytes = serializer.serialize();
+                record.setCompleteRecordBytes(recordBytes);
+                stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {
                 throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
             }

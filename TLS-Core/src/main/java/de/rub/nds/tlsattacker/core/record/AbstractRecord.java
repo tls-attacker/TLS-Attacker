@@ -105,11 +105,12 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     public void setCompleteRecordBytes(ModifiableByteArray completeRecordBytes) {
         this.completeRecordBytes = completeRecordBytes;
     }
-    
+
     public void setCompleteRecordBytes(byte[] completeRecordBytes) {
-        this.completeRecordBytes = ModifiableVariableFactory.safelySetValue(this.completeRecordBytes, completeRecordBytes);
+        this.completeRecordBytes = ModifiableVariableFactory.safelySetValue(this.completeRecordBytes,
+                completeRecordBytes);
     }
-    
+
     public abstract AbstractRecordPreparator getRecordPreparator(Chooser chooser, Encryptor encryptor,
             ProtocolMessageType type);
 

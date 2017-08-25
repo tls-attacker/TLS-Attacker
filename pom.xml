@@ -42,6 +42,7 @@
         <module>TLS-Server</module>
         <module>TLS-Mitm</module>
         <module>Attacks</module>
+        <module>TLS-Forensics</module>
     </modules>
     <dependencies>
         <dependency>
