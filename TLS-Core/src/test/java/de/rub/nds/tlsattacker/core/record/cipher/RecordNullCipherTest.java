@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -47,9 +46,9 @@ public class RecordNullCipherTest {
     /**
      * Test of calculateMac method, of class RecordNullCipher.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testCalculateMac() {
-        record.calculateMac(data);
+        assertArrayEquals(record.calculateMac(data), new byte[0]);
     }
 
     /**
@@ -73,7 +72,7 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testGetPaddingLength() {
-        assertEquals(record.getPaddingLength(0), 0);
+        assertEquals(record.calculatePaddingLength(0), 0);
     }
 
 }

@@ -36,49 +36,17 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class RecordStreamCipher extends RecordCipher {
 
-    private final TlsContext tlsContext;
-
     /**
      * mac for verification of incoming messages
      */
     private Mac readMac;
-
     /**
      * mac object for macing outgoing messages
      */
     private Mac writeMac;
 
-    /**
-     * CipherAlgorithm algorithm (AES, 3DES ...)
-     */
-    private BulkCipherAlgorithm bulkCipherAlg;
-
-    /**
-     * cipher for encryption
-     */
-    private Cipher encryptCipher;
-
-    /**
-     * cipher for decryption
-     */
-    private Cipher decryptCipher;
-
-    /**
-     * client encryption key
-     */
-    private byte[] clientWriteKey;
-
-    /**
-     * server encryption key
-     */
-    private byte[] serverWriteKey;
-
-    private SecretKey encryptKey;
-
-    private SecretKey decryptKey;
-
     public RecordStreamCipher(TlsContext tlsContext) {
-        super(0, false, true);
+        super(0);
         this.tlsContext = tlsContext;
         init();
     }
@@ -117,29 +85,9 @@ public class RecordStreamCipher extends RecordCipher {
             offset += keySize;
             LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
             if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-                decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
-                try {
-                    encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
-                    decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
-                    readMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
-                    writeMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
-                } catch (InvalidKeyException E) {
-                    throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                            + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
-                }
+                initCipherAndMac(serverMacWriteSecret, clientMacWriteSecret);
             } else {
-                decryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-                encryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
-                try {
-                    encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
-                    decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
-                    readMac.init(new SecretKeySpec(clientMacWriteSecret, macAlg.getJavaName()));
-                    writeMac.init(new SecretKeySpec(serverMacWriteSecret, macAlg.getJavaName()));
-                } catch (InvalidKeyException E) {
-                    throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                            + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
-                }
+                initCipherAndMac(clientMacWriteSecret, serverMacWriteSecret);
             }
             if (offset != keyBlock.length) {
                 throw new CryptoException("Offset exceeded the generated key block length");
@@ -148,6 +96,20 @@ public class RecordStreamCipher extends RecordCipher {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
             throw new CryptoException("Could not initialize StreamCipher with Ciphersuite:"
                     + tlsContext.getChooser().getSelectedCipherSuite().name(), ex);
+        }
+    }
+
+    private void initCipherAndMac(byte[] macReadBytes, byte[] macWriteBytes) throws UnsupportedOperationException {
+        SecretKey encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
+        SecretKey decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
+        try {
+            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
+            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
+            readMac.init(new SecretKeySpec(macReadBytes, readMac.getAlgorithm()));
+            writeMac.init(new SecretKeySpec(macWriteBytes, writeMac.getAlgorithm()));
+        } catch (InvalidKeyException E) {
+            throw new UnsupportedOperationException("Unsupported Ciphersuite:"
+                    + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
         }
     }
 
@@ -181,7 +143,17 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
-    public int getPaddingLength(int dataLength) {
+    public int calculatePaddingLength(int dataLength) {
         return 0;
+    }
+
+    @Override
+    public boolean isUsingPadding() {
+        return false;
+    }
+
+    @Override
+    public boolean isUsingMac() {
+        return true;
     }
 }

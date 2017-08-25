@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,33 +20,66 @@ import org.apache.logging.log4j.Logger;
 public abstract class RecordCipher {
 
     protected static final Logger LOGGER = LogManager.getLogger(RecordCipher.class.getName());
-
     /**
      * minimalRecordLength an encrypted record should have
      */
     private int minimalEncryptedRecordLength;
+    /**
+     * additional authenticated data
+     */
+    protected byte[] aad;
+    /**
+     * cipher for decryption
+     */
+    protected Cipher decryptCipher;
+    /**
+     * cipher for encryption
+     */
+    protected Cipher encryptCipher;
+    /**
+     * CipherAlgorithm algorithm (AES, ...)
+     */
+    protected BulkCipherAlgorithm bulkCipherAlg;
+    /**
+     * client encryption key
+     */
+    protected byte[] clientWriteKey;
+    /**
+     * server encryption key
+     */
+    protected byte[] serverWriteKey;
+    /**
+     * TLS context
+     */
+    protected TlsContext tlsContext;
 
-    private final boolean usePadding;
-
-    private final boolean useMac;
-
-    public RecordCipher(int minimalEncryptedRecordLength, boolean usePadding, boolean useMac) {
+    public RecordCipher(int minimalEncryptedRecordLength) {
         this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
-        this.usePadding = usePadding;
-        this.useMac = useMac;
     }
 
     public abstract byte[] encrypt(byte[] data);
 
     public abstract byte[] decrypt(byte[] data);
 
-    public abstract byte[] calculateMac(byte[] data);
+    public abstract boolean isUsingPadding();
 
-    public abstract byte[] calculatePadding(int paddingLength);
+    public abstract boolean isUsingMac();
 
-    public abstract int getMacLength();
+    public byte[] calculateMac(byte[] data) {
+        return new byte[0];
+    }
 
-    public abstract int getPaddingLength(int dataLength);
+    public int getMacLength() {
+        return 0;
+    }
+
+    public byte[] calculatePadding(int paddingLength) {
+        return new byte[0];
+    }
+
+    public int calculatePaddingLength(int dataLength) {
+        return 0;
+    }
 
     public int getMinimalEncryptedRecordLength() {
         return minimalEncryptedRecordLength;
@@ -53,11 +89,27 @@ public abstract class RecordCipher {
         this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
     }
 
-    public boolean isUsePadding() {
-        return usePadding;
+    public void setAad(byte[] aad) {
+        this.aad = aad;
     }
 
-    public boolean isUseMac() {
-        return useMac;
+    public byte[] getAad() {
+        return aad;
+    }
+
+    /**
+     * This function computes the difference between the plaintext size and the
+     * size of the encrypted payload. In case of AES-CBC cipher suites, it
+     * returns a sum of the IV length and MAC length. In case of AEAD cipher
+     * suites, it sums the IV length and tag length.
+     * 
+     * This functionality is needed when decrypting and verifying records. The
+     * number used for MAC/GMAC computation is based on the plaintext length
+     * (and not the ciphertext length).
+     * 
+     * @return
+     */
+    public int getPlainCipherLengthDifference() {
+        return 0;
     }
 }

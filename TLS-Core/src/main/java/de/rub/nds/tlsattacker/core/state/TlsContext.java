@@ -319,9 +319,14 @@ public class TlsContext {
     private List<KSEntry> clientKSEntryList;
 
     private KSEntry serverKSEntry;
-
-    private int sequenceNumber = 0;
-
+    /**
+     * sequence number used for the encryption
+     */
+    private long writeSequenceNumber = 0;
+    /**
+     * sequence number used for the decryption
+     */
+    private long readSequenceNumber = 0;
     /**
      * supported protocol versions
      */
@@ -702,12 +707,28 @@ public class TlsContext {
         this.clientSupportedCompressions = Arrays.asList(clientSupportedCompressions);
     }
 
-    public int getSequenceNumber() {
-        return sequenceNumber;
+    public long getWriteSequenceNumber() {
+        return writeSequenceNumber;
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public void setWriteSequenceNumber(long writeSequenceNumber) {
+        this.writeSequenceNumber = writeSequenceNumber;
+    }
+
+    public void increaseWriteSequenceNumber() {
+        this.writeSequenceNumber++;
+    }
+
+    public long getReadSequenceNumber() {
+        return readSequenceNumber;
+    }
+
+    public void setReadSequenceNumber(long readSequenceNumber) {
+        this.readSequenceNumber = readSequenceNumber;
+    }
+
+    public void increaseReadSequenceNumber() {
+        this.readSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {

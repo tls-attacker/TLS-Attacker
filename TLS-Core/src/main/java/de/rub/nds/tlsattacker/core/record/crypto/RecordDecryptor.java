@@ -9,12 +9,14 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
@@ -42,13 +44,22 @@ public class RecordDecryptor extends Decryptor {
     @Override
     public void decrypt(Record record) {
         LOGGER.debug("Decrypting Record");
+        record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
+        record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        byte[] aad = collectAdditionalAuthenticatedData(record, recordCipher.getPlainCipherLengthDifference());
+        recordCipher.setAad(aad);
+        if (context.isEncryptThenMacExtensionIsPresent() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
+            byte[] mac = parseMac(record.getUnpaddedRecordBytes().getValue());
+            record.setMac(mac);
+            encrypted = removeMac(record.getUnpaddedRecordBytes().getValue());
+        }
         byte[] decrypted = recordCipher.decrypt(encrypted);
         record.setPlainRecordBytes(decrypted);
         LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
-        if (recordCipher.isUsePadding()) {
-            LOGGER.debug("Padded data after decryption:  {}", ArrayConverter.bytesToHexString(decrypted));
 
+        if (recordCipher.isUsingPadding()) {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 int paddingLength = parsePaddingLength(decrypted);
                 record.setPaddingLength(paddingLength);
@@ -81,7 +92,7 @@ public class RecordDecryptor extends Decryptor {
             record.setUnpaddedRecordBytes(decrypted);
         }
         byte[] cleanBytes;
-        if (recordCipher.isUseMac()) {
+        if (recordCipher.isUsingMac()) {
             byte[] mac = parseMac(record.getUnpaddedRecordBytes().getValue());
             record.setMac(mac);
             cleanBytes = removeMac(record.getUnpaddedRecordBytes().getValue());
@@ -90,6 +101,7 @@ public class RecordDecryptor extends Decryptor {
             cleanBytes = record.getUnpaddedRecordBytes().getValue();
         }
         record.setCleanProtocolMessageBytes(cleanBytes);
+        context.increaseReadSequenceNumber();
     }
 
     /**

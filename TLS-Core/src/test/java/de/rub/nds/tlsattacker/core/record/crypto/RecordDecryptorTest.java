@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -58,10 +59,11 @@ public class RecordDecryptorTest {
         recordCipher = new RecordAEADCipher(context);
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);
-        assertTrue(record.getContentMessageType() == ProtocolMessageType.HANDSHAKE);
-        assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 6);
+        // assertTrue(record.getContentMessageType() ==
+        // ProtocolMessageType.HANDSHAKE);
+        assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 7);
         assertArrayEquals(record.getCleanProtocolMessageBytes().getValue(),
-                ArrayConverter.hexStringToByteArray("080000020000"));
+                ArrayConverter.hexStringToByteArray("08000002000016"));
     }
 
 }

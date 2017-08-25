@@ -247,14 +247,14 @@ public class AlgorithmResolver {
      * @return
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
-        String cipher = cipherSuite.toString().toUpperCase();
-        if (cipherSuite.isAEAD()) {
+        String cs = cipherSuite.toString().toUpperCase();
+        if (cs.contains("_GCM") || cs.contains("_CCM") || cs.contains("_OCB")) {
             return CipherType.AEAD;
-        } else if (cipher.contains("AES") || cipher.contains("DES") || cipher.contains("IDEA")
-                || cipher.contains("WITH_FORTEZZA") || cipher.contains("CAMELLIA") || cipher.contains("GOST")
-                || cipher.contains("WITH_SEED") || cipher.contains("WITH_ARIA") || cipher.contains("RC2")) {
+        } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
+                || cs.contains("CAMELLIA") || cs.contains("GOST") || cs.contains("WITH_SEED")
+                || cs.contains("WITH_ARIA") || cs.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cipher.contains("RC4") || cipher.contains("WITH_NULL") || cipher.contains("CHACHA")) {
+        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
@@ -268,7 +268,7 @@ public class AlgorithmResolver {
 
     public static MacAlgorithm getMacAlgorithm(CipherSuite cipherSuite) {
         MacAlgorithm result = null;
-        if (cipherSuite.isAEAD()) {
+        if (getCipherType(cipherSuite) == CipherType.AEAD) {
             result = MacAlgorithm.AEAD;
         } else {
             String cipher = cipherSuite.toString();

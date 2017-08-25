@@ -509,21 +509,21 @@ public enum CipherSuite {
     }
 
     /**
-     * Returns true in case the cipher suite is an AEAD cipher suite.
-     *
-     * @return
-     */
-    public boolean isAEAD() {
-        return (this.name().contains("_GCM") || this.name().contains("_CCM") || this.name().contains("_OCB"));
-    }
-
-    /**
      * Returns true in case the cipher suite is a CBC cipher suite.
      *
      * @return
      */
     public boolean isCBC() {
         return (this.name().contains("_CBC"));
+    }
+
+    public boolean isUsingPadding() {
+        // todo this should be extended
+        return (this.name().contains("_CBC"));
+    }
+
+    public boolean isUsingMac() {
+        return (this.name().contains("_CBC") || this.name().contains("RC4"));
     }
 
     public boolean isSCSV() {
@@ -595,6 +595,30 @@ public enum CipherSuite {
         list.add(TLS_RSA_WITH_RC4_128_SHA);
         list.add(TLS_ECDHE_RSA_WITH_RC4_128_SHA);
         list.add(TLS_DHE_DSS_WITH_RC4_128_SHA);
+        list.add(TLS_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DHE_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DH_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DH_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_DSS_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DHE_DSS_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DH_DSS_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_RSA_WITH_AES_128_CCM);
+        list.add(TLS_RSA_WITH_AES_256_CCM);
+        list.add(TLS_DHE_RSA_WITH_AES_128_CCM);
+        list.add(TLS_DHE_RSA_WITH_AES_256_CCM);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_128_CCM);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_256_CCM);
+
         return list;
     }
 

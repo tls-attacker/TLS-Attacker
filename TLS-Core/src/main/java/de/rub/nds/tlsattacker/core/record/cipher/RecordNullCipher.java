@@ -15,7 +15,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 public class RecordNullCipher extends RecordCipher {
 
     public RecordNullCipher() {
-        super(0, false, false);
+        super(0);
     }
 
     /**
@@ -41,23 +41,13 @@ public class RecordNullCipher extends RecordCipher {
     }
 
     @Override
-    public byte[] calculateMac(byte[] data) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean isUsingPadding() {
+        return false;
     }
 
     @Override
-    public int getMacLength() {
-        return 0;
-    }
-
-    @Override
-    public byte[] calculatePadding(int paddingLength) {
-        return new byte[0];
-    }
-
-    @Override
-    public int getPaddingLength(int dataLength) {
-        return 0;
+    public boolean isUsingMac() {
+        return false;
     }
 
 }

@@ -9,15 +9,12 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import static de.rub.nds.tlsattacker.core.record.crypto.Encryptor.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * @author Robert Merget <robert.merget@rub.de>
@@ -32,6 +29,7 @@ public class RecordEncryptor extends Encryptor {
         this.context = context;
     }
 
+    @Override
     public void encrypt(BlobRecord record) {
         LOGGER.debug("Encrypting BlobRecord");
         byte[] encrypted = recordCipher.encrypt(record.getCleanProtocolMessageBytes().getValue());
@@ -44,32 +42,19 @@ public class RecordEncryptor extends Encryptor {
     public void encrypt(Record record) {
         LOGGER.debug("Encrypting Record:");
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
-        if (recordCipher.isUseMac()) {
-            byte[] toBeMaced = new byte[0];
-            try {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                stream.write(ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue()));
-                stream.write(record.getContentType().getValue());
-                stream.write(record.getProtocolVersion().getValue());
-                stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
-                        RecordByteLength.RECORD_LENGTH)); // TODO
-                stream.write(record.getCleanProtocolMessageBytes().getValue());
-                toBeMaced = stream.toByteArray();
-            } catch (IOException E) {
-                throw new CryptoException("Could not create ToBeMaced Data", E);
-            }
-            byte[] mac = recordCipher.calculateMac(toBeMaced);
+        byte[] aad = collectAdditionalAuthenticatedData(record, 0);
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        if (!context.isEncryptThenMacExtensionIsPresent()) {
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(aad, cleanBytes));
             setMac(record, mac);
-            context.setSequenceNumber(context.getSequenceNumber() + 1);
-        } else {
-            record.setMac(new byte[0]);
         }
         setUnpaddedRecordBytes(record, cleanBytes);
         byte[] padding;
         if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
         } else {
-            record.setPaddingLength(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes().getValue().length));
+            int paddingLength = recordCipher.calculatePaddingLength(record.getUnpaddedRecordBytes().getValue().length);
+            record.setPaddingLength(paddingLength);
             padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
         }
         setPadding(record, padding);
@@ -83,8 +68,15 @@ public class RecordEncryptor extends Encryptor {
                     .getValue());
         }
         setPlainRecordBytes(record, plain);
+        recordCipher.setAad(aad);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
+        if (context.isEncryptThenMacExtensionIsPresent() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(aad, encrypted));
+            setMac(record, mac);
+            encrypted = ArrayConverter.concatenate(encrypted, record.getMac().getValue());
+        }
         setProtocolMessageBytes(record, encrypted);
+        context.increaseWriteSequenceNumber();
     }
 
     private void setMac(Record record, byte[] mac) {
