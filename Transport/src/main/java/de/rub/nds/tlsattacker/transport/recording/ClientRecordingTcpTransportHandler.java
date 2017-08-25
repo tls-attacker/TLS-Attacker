@@ -9,10 +9,9 @@
 package de.rub.nds.tlsattacker.transport.recording;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  *
@@ -20,76 +19,34 @@ import java.util.List;
  */
 public class ClientRecordingTcpTransportHandler extends ClientTcpTransportHandler {
 
-    private List<byte[]> sendDataCallList;
-    private List<byte[]> fetchDataCallList;
-
-    private int fetchPlayBack = 0;
-
-    private boolean playBack = false;
+    private final Recording recording;
 
     public ClientRecordingTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, hostname, port);
-        sendDataCallList = new LinkedList<>();
-        fetchDataCallList = new LinkedList<>();
-        playBack = false;
-    }
-
-    public ClientRecordingTcpTransportHandler(List<byte[]> sendData, List<byte[]> receiveData) {
-        super(0, null, 0);
-        this.sendDataCallList = sendData;
-        this.fetchDataCallList = receiveData;
-        playBack = true;
+        RandomHelper.getRandom().setSeed(0);
+        recording = new Recording(0);
     }
 
     @Override
     public void initialize() throws IOException {
-        if (!playBack) {
-            super.initialize();
-        }
+        super.initialize();
     }
 
     @Override
     public void sendData(byte[] data) throws IOException {
-        if (!playBack) {
-            super.sendData(data);
-            sendDataCallList.add(data);
-            LOGGER.info("Sending Data:" + ArrayConverter.bytesToHexString(data));
-        } else {
-            LOGGER.debug("Not sending Data. This is a recording");
-        }
+
+        super.sendData(data);
+        recording.addSentLine(new RecordedLine(data));
     }
 
     @Override
     public byte[] fetchData() throws IOException {
-        if (!playBack) {
-            byte[] data = super.fetchData();
-            fetchDataCallList.add(data);
-            LOGGER.info("Fetch Data:" + ArrayConverter.bytesToHexString(data));
-            return data;
-        } else {
-            if (fetchDataCallList.size() <= fetchPlayBack) {
-                LOGGER.warn("Recoding ended");
-                return null;
-            }
-            byte[] data = fetchDataCallList.get(fetchPlayBack);
-            fetchPlayBack++;
-            return data;
-        }
+        byte[] data = super.fetchData();
+        recording.addReceivedLine(new RecordedLine(data));
+        return data;
     }
 
-    public List<byte[]> getSendDataCallList() {
-        return sendDataCallList;
-    }
-
-    public void setSendDataCallList(List<byte[]> sendDataCallList) {
-        this.sendDataCallList = sendDataCallList;
-    }
-
-    public List<byte[]> getFetchDataCallList() {
-        return fetchDataCallList;
-    }
-
-    public void setFetchDataCallList(List<byte[]> fetchDataCallList) {
-        this.fetchDataCallList = fetchDataCallList;
+    public Recording getRecording() {
+        return recording;
     }
 }
