@@ -120,8 +120,9 @@ public class RecordAEADCipher extends RecordCipher {
         // sequence number used increased in the record
         int saltSize = GCM_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
         int secretSetSize = 2 * keySize + 2 * saltSize;
-        byte[] masterSecret = tlsContext.getMasterSecret();
-        byte[] seed = ArrayConverter.concatenate(tlsContext.getServerRandom(), tlsContext.getClientRandom());
+        byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
+        byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser()
+                .getClientRandom());
 
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(tlsContext.getChooser()
                 .getSelectedProtocolVersion(), cipherSuite);
@@ -145,12 +146,12 @@ public class RecordAEADCipher extends RecordCipher {
 
     private void initForTLS13(CipherSuite cipherSuite, CipherAlgorithm cipherAlg) {
         if (tlsContext.isUpdateKeys() == false) {
-            clientSecret = tlsContext.getClientHandshakeTrafficSecret();
-            serverSecret = tlsContext.getServerHandshakeTrafficSecret();
+            clientSecret = tlsContext.getChooser().getClientHandshakeTrafficSecret();
+            serverSecret = tlsContext.getChooser().getServerHandshakeTrafficSecret();
         } else {
             tlsContext.setUpdateKeys(false);
-            clientSecret = tlsContext.getClientApplicationTrafficSecret0();
-            serverSecret = tlsContext.getServerApplicationTrafficSecret0();
+            clientSecret = tlsContext.getChooser().getClientApplicationTrafficSecret0();
+            serverSecret = tlsContext.getChooser().getServerApplicationTrafficSecret0();
         }
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         clientWriteKey = HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
@@ -169,7 +170,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public byte[] encrypt(byte[] data) {
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             return encryptTLS13(data);
         } else {
             return encryptTLS12(data);
@@ -178,7 +179,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public byte[] decrypt(byte[] data) {
-        if (tlsContext.getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion() == ProtocolVersion.TLS13) {
             return decryptTLS13(data);
         } else {
             return decryptTLS12(data);

@@ -42,7 +42,7 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
-        } else if (cipherSuite.name().endsWith("SHA384")) {
+        } else if (cipherSuite.usesSHA384()) {
             result = PRFAlgorithm.TLS_PRF_SHA384;
         } else {
             result = PRFAlgorithm.TLS_PRF_SHA256;
@@ -72,7 +72,7 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
-        } else if (cipherSuite.name().endsWith("SHA384")) {
+        } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
         } else {
             result = DigestAlgorithm.SHA256;
@@ -248,7 +248,7 @@ public class AlgorithmResolver {
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         String cs = cipherSuite.toString().toUpperCase();
-        if (cs.contains("_GCM") || cs.contains("_CCM") || cs.contains("_OCB")) {
+        if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
                 || cs.contains("CAMELLIA") || cs.contains("GOST") || cs.contains("WITH_SEED")

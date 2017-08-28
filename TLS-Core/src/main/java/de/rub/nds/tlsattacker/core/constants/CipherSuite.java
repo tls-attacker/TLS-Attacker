@@ -530,6 +530,22 @@ public enum CipherSuite {
         return (this.name().contains("SCSV"));
     }
 
+    public boolean isGCM() {
+        return (this.name().contains("_GCM"));
+    }
+
+    public boolean isCCM() {
+        return (this.name().contains("_CCM"));
+    }
+
+    public boolean isOCB() {
+        return (this.name().contains("_OCB"));
+    }
+
+    public boolean usesSHA384() {
+        return this.name().endsWith("SHA384");
+    }
+
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version.

@@ -54,11 +54,11 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * encryption IV
      */
-    IvParameterSpec encryptIv;
+    private IvParameterSpec encryptIv;
     /**
      * decryption IV
      */
-    IvParameterSpec decryptIv;
+    private IvParameterSpec decryptIv;
 
     public RecordBlockCipher(TlsContext tlsContext) {
         super(0);
@@ -152,8 +152,8 @@ public final class RecordBlockCipher extends RecordCipher {
             if (!useExplicitIv) {
                 secretSetSize += encryptCipher.getBlockSize() + decryptCipher.getBlockSize();
             }
-            byte[] masterSecret = tlsContext.getMasterSecret();
-            byte[] seed = ArrayConverter.concatenate(tlsContext.getServerRandom(), tlsContext.getClientRandom());
+            byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
+            byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser().getClientRandom());
 
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
             byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
