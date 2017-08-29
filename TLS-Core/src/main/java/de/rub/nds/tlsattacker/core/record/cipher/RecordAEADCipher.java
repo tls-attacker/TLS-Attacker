@@ -150,8 +150,8 @@ public class RecordAEADCipher extends RecordCipher {
             serverSecret = tlsContext.getChooser().getServerHandshakeTrafficSecret();
         } else {
             tlsContext.setUpdateKeys(false);
-            clientSecret = tlsContext.getChooser().getClientApplicationTrafficSecret0();
-            serverSecret = tlsContext.getChooser().getServerApplicationTrafficSecret0();
+            clientSecret = tlsContext.getChooser().getClientApplicationTrafficSecret();
+            serverSecret = tlsContext.getChooser().getServerApplicationTrafficSecret();
         }
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         clientWriteKey = HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
@@ -227,8 +227,9 @@ public class RecordAEADCipher extends RecordCipher {
             }
             LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV.getIV()));
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIV);
-            LOGGER.debug("Encrypting GCM with the following AAD: {}", ArrayConverter.bytesToHexString(aad));
-            encryptCipher.updateAAD(aad);
+            LOGGER.debug("Encrypting GCM with the following AAD: {}",
+                    ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+            encryptCipher.updateAAD(additionalAuthenticatedData);
             byte[] ciphertext = encryptCipher.doFinal(data);
             return ArrayConverter.concatenate(nonce, ciphertext);
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException
@@ -271,8 +272,9 @@ public class RecordAEADCipher extends RecordCipher {
             }
             LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV.getIV()));
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
-            LOGGER.debug("Decrypting GCM with the following AAD: {}", ArrayConverter.bytesToHexString(aad));
-            decryptCipher.updateAAD(aad);
+            LOGGER.debug("Decrypting GCM with the following AAD: {}",
+                    ArrayConverter.bytesToHexString(additionalAuthenticatedData));
+            decryptCipher.updateAAD(additionalAuthenticatedData);
             LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
             return decryptCipher.doFinal(data);
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException

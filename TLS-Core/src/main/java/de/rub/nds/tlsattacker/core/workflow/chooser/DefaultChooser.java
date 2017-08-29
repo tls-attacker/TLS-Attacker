@@ -493,4 +493,23 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultServerKSEntry();
         }
     }
+
+    @Override
+    public byte[] getClientApplicationTrafficSecret() {
+        if (context.getClientApplicationTrafficSecret() != null) {
+            return context.getClientApplicationTrafficSecret();
+        } else {
+            return config.getDefaultClientApplicationTrafficSecret();
+        }
+
+    }
+
+    @Override
+    public byte[] getServerApplicationTrafficSecret() {
+        if (context.getServerApplicationTrafficSecret() != null) {
+            return context.getServerApplicationTrafficSecret();
+        } else {
+            return config.getDefaultServerApplicationTrafficSecret();
+        }
+    }
 }

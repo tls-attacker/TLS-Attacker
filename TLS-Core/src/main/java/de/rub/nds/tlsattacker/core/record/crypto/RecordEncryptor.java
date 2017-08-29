@@ -10,11 +10,13 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import static de.rub.nds.tlsattacker.core.record.crypto.Encryptor.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.math.BigInteger;
 
 /**
  * @author Robert Merget <robert.merget@rub.de>
@@ -41,14 +43,17 @@ public class RecordEncryptor extends Encryptor {
     @Override
     public void encrypt(Record record) {
         LOGGER.debug("Encrypting Record:");
+        // initialising mac
+        record.setMac(new byte[0]);
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
-        byte[] aad = collectAdditionalAuthenticatedData(record, 0);
+        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        if (!context.isEncryptThenMacExtensionIsPresent()) {
-            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(aad, cleanBytes));
+        if (!context.isEncryptThenMacExtensionSentByServer()) {
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, cleanBytes));
             setMac(record, mac);
         }
         setUnpaddedRecordBytes(record, cleanBytes);
+
         byte[] padding;
         if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
@@ -68,10 +73,10 @@ public class RecordEncryptor extends Encryptor {
                     .getValue());
         }
         setPlainRecordBytes(record, plain);
-        recordCipher.setAad(aad);
+        recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
-        if (context.isEncryptThenMacExtensionIsPresent() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
-            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(aad, encrypted));
+        if (context.isEncryptThenMacExtensionSentByServer() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, encrypted));
             setMac(record, mac);
             encrypted = ArrayConverter.concatenate(encrypted, record.getMac().getValue());
         }
@@ -109,5 +114,39 @@ public class RecordEncryptor extends Encryptor {
         record.setProtocolMessageBytes(encrypted);
         LOGGER.debug("ProtocolMessageBytes: "
                 + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
+    }
+
+    /**
+     * This function collects data needed for computing MACs and other
+     * authentication tags in CBC/CCM/GCM cipher suites.
+     *
+     * From the Lucky13 paper: An individual record R (viewed as a byte sequence
+     * of length at least zero) is processed as follows. The sender maintains an
+     * 8-byte sequence number SQN which is incremented for each record sent, and
+     * forms a 5-byte field HDR consisting of a 1-byte type field, a 2-byte
+     * version field, and a 2-byte length field. It then calculates a MAC over
+     * the bytes SQN || HDR || R.
+     *
+     * When we are decrypting a ciphertext, the difference between the
+     * ciphertext length and plaintext length has to be subtracted from the
+     * record length.
+     *
+     * @param record
+     * @param plainCipherDifference
+     * @return
+     */
+    @Override
+    protected byte[] collectAdditionalAuthenticatedData(Record record) {
+        if (record.getSequenceNumber() == null || record.getContentType() == null
+                || record.getCleanProtocolMessageBytes() == null) {
+            return new byte[0];
+        }
+        byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+        byte[] contentType = { record.getContentType().getValue() };
+        int length = record.getCleanProtocolMessageBytes().getValue().length;
+        byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
+        byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
+                byteLength);
+        return result;
     }
 }

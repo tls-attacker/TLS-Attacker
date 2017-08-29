@@ -153,7 +153,8 @@ public final class RecordBlockCipher extends RecordCipher {
                 secretSetSize += encryptCipher.getBlockSize() + decryptCipher.getBlockSize();
             }
             byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
-            byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser().getClientRandom());
+            byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser()
+                    .getClientRandom());
 
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
             byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,

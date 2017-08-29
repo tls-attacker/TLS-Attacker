@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -45,63 +46,84 @@ public class RecordDecryptor extends Decryptor {
     public void decrypt(Record record) {
         LOGGER.debug("Decrypting Record");
         record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
-        record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes());
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        byte[] aad = collectAdditionalAuthenticatedData(record, recordCipher.getPlainCipherLengthDifference());
-        recordCipher.setAad(aad);
-        if (context.isEncryptThenMacExtensionIsPresent() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
-            byte[] mac = parseMac(record.getUnpaddedRecordBytes().getValue());
+        byte[] addtionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+        recordCipher.setAdditionalAuthenticatedData(addtionalAuthenticatedData);
+        if (context.isEncryptThenMacExtensionSentByServer() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
+            byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
             record.setMac(mac);
-            encrypted = removeMac(record.getUnpaddedRecordBytes().getValue());
+            byte[] unmacedBytes = removeMac(record.getProtocolMessageBytes().getValue());
+            record.setUnpaddedRecordBytes(unmacedBytes);// ???
         }
         byte[] decrypted = recordCipher.decrypt(encrypted);
         record.setPlainRecordBytes(decrypted);
         LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
-
+        byte[] plainBytes = record.getPlainRecordBytes().getValue();
         if (recordCipher.isUsingPadding()) {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()) {
-                int paddingLength = parsePaddingLength(decrypted);
-                record.setPaddingLength(paddingLength);
-                LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
-                byte[] unpadded = parseUnpadded(decrypted, paddingLength);
-                record.setUnpaddedRecordBytes(unpadded);
-                LOGGER.debug("UnpaddedRecordBytes: "
-                        + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
-                byte[] padding = parsePadding(decrypted, paddingLength);
-                record.setPadding(padding);
-                LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
-                LOGGER.debug("Unpadded data:  {}", ArrayConverter.bytesToHexString(unpadded));
+                adjustPaddingTLS(record);
             } else {
-                byte[] unpadded = parseUnpaddedTLS13(decrypted);
-                byte contentMessageType = parseContentMessageType(unpadded);
-                record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
-                byte[] unpaddedAndWithoutType = Arrays.copyOf(unpadded, unpadded.length - 1);
-                record.setUnpaddedRecordBytes(unpaddedAndWithoutType);
-                LOGGER.debug("UnpaddedRecordBytes: "
-                        + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
-                byte[] padding = parsePadding(decrypted, decrypted.length - unpadded.length);
-                record.setPadding(padding);
-                LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
-                record.setPaddingLength(padding.length);
-                LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+                adjustPaddingTLS13(record);
             }
         } else {
-            record.setPaddingLength(0);
-            record.setPadding(new byte[0]);
-            record.setUnpaddedRecordBytes(decrypted);
+            useNoPadding(record);
         }
-        byte[] cleanBytes;
         if (recordCipher.isUsingMac()) {
-            byte[] mac = parseMac(record.getUnpaddedRecordBytes().getValue());
-            record.setMac(mac);
-            cleanBytes = removeMac(record.getUnpaddedRecordBytes().getValue());
+            adjustMac(record);
         } else {
-            record.setMac(new byte[0]);
-            cleanBytes = record.getUnpaddedRecordBytes().getValue();
+            useNoMac(record);
         }
-        record.setCleanProtocolMessageBytes(cleanBytes);
         context.increaseReadSequenceNumber();
+    }
+
+    private void adjustMac(Record record) {
+        byte[] cleanBytes;
+        byte[] mac = parseMac(record.getUnpaddedRecordBytes().getValue());
+        record.setMac(mac);
+        cleanBytes = removeMac(record.getUnpaddedRecordBytes().getValue());
+        record.setCleanProtocolMessageBytes(cleanBytes);
+    }
+
+    private void useNoMac(Record record) {
+        record.setMac(new byte[0]);
+        record.setCleanProtocolMessageBytes(record.getUnpaddedRecordBytes().getValue());
+    }
+
+    private void useNoPadding(Record record) {
+        record.setPaddingLength(0);
+        record.setPadding(new byte[0]);
+        record.setUnpaddedRecordBytes(record.getPlainRecordBytes());
+    }
+
+    private void adjustPaddingTLS13(Record record) {
+        byte[] unpadded = parseUnpaddedTLS13(record.getPlainRecordBytes().getValue());
+        byte contentMessageType = parseContentMessageType(unpadded);
+        record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
+        byte[] unpaddedAndWithoutType = Arrays.copyOf(unpadded, unpadded.length - 1);
+        record.setUnpaddedRecordBytes(unpaddedAndWithoutType);
+        LOGGER.debug("UnpaddedRecordBytes: "
+                + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
+        byte[] padding = parsePadding(record.getPlainRecordBytes().getValue(),
+                record.getPlainRecordBytes().getValue().length - unpadded.length);
+        record.setPadding(padding);
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
+        record.setPaddingLength(padding.length);
+        LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+    }
+
+    private void adjustPaddingTLS(Record record) {
+        int paddingLength = parsePaddingLength(record.getPlainRecordBytes().getValue());
+        record.setPaddingLength(paddingLength);
+        LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+        byte[] unpadded = parseUnpadded(record.getPlainRecordBytes().getValue(), paddingLength);
+        record.setUnpaddedRecordBytes(unpadded);
+        LOGGER.debug("UnpaddedRecordBytes: "
+                + ArrayConverter.bytesToHexString(record.getUnpaddedRecordBytes().getValue()));
+        byte[] padding = parsePadding(record.getPlainRecordBytes().getValue(), paddingLength);
+        record.setPadding(padding);
+        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
+        LOGGER.debug("Unpadded data:  {}", ArrayConverter.bytesToHexString(unpadded));
     }
 
     /**
@@ -161,5 +183,40 @@ public class RecordDecryptor extends Decryptor {
             throw new CryptoException("Could not extract content tpye of message.");
         }
         return unpadded[unpadded.length - 1];
+    }
+
+    /**
+     * This function collects data needed for computing MACs and other
+     * authentication tags in CBC/CCM/GCM cipher suites.
+     *
+     * From the Lucky13 paper: An individual record R (viewed as a byte sequence
+     * of length at least zero) is processed as follows. The sender maintains an
+     * 8-byte sequence number SQN which is incremented for each record sent, and
+     * forms a 5-byte field HDR consisting of a 1-byte type field, a 2-byte
+     * version field, and a 2-byte length field. It then calculates a MAC over
+     * the bytes SQN || HDR || R.
+     *
+     * When we are decrypting a ciphertext, the difference between the
+     * ciphertext length and plaintext length has to be subtracted from the
+     * record length.
+     *
+     * @param record
+     * @param plainCipherDifference
+     * @return
+     */
+    @Override
+    protected byte[] collectAdditionalAuthenticatedData(Record record) {
+        if (record.getSequenceNumber() == null || record.getContentType() == null
+                || record.getProtocolMessageBytes() == null) {
+            return new byte[0];
+        }
+        byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+        byte[] contentType = { record.getContentType().getValue() };
+        int length = record.getProtocolMessageBytes().getValue().length;
+        length -= recordCipher.getPlainCipherLengthDifference();
+        byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
+        byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
+                byteLength);
+        return result;
     }
 }

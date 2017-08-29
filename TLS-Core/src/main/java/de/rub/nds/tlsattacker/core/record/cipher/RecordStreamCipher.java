@@ -65,7 +65,8 @@ public class RecordStreamCipher extends RecordCipher {
             writeMac = Mac.getInstance(macAlg.getJavaName());
             int secretSetSize = (2 * keySize) + readMac.getMacLength() + writeMac.getMacLength();
             byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
-            byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser().getClientRandom());
+            byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser()
+                    .getClientRandom());
 
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
             byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,

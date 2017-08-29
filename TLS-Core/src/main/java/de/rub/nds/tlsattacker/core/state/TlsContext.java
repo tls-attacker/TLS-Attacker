@@ -78,11 +78,11 @@ public class TlsContext {
     /**
      * shared key established during the handshake
      */
-    private byte[] clientApplicationTrafficSecret0;
+    private byte[] clientApplicationTrafficSecret;
     /**
      * shared key established during the handshake
      */
-    private byte[] serverApplicationTrafficSecret0;
+    private byte[] serverApplicationTrafficSecret;
     /**
      * master secret established during the handshake
      */
@@ -238,9 +238,14 @@ public class TlsContext {
     private boolean truncatedHmacExtensionIsPresent;
 
     /**
-     * Is the encrypt then mac extension present?
+     * Is the encrypt then mac extension sent from the Server?
      */
-    private boolean encryptThenMacExtensionIsPresent;
+    private boolean encryptThenMacExtensionSentByServer;
+
+    /**
+     * Is the encrypt then mac extension sent from a Client?
+     */
+    private boolean encryptThenMacExtensionSentByClient;
 
     /**
      * Is the client certificate url extension present?
@@ -929,20 +934,20 @@ public class TlsContext {
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
-    public byte[] getClientApplicationTrafficSecret0() {
-        return clientApplicationTrafficSecret0;
+    public byte[] getClientApplicationTrafficSecret() {
+        return clientApplicationTrafficSecret;
     }
 
-    public void setClientApplicationTrafficSecret0(byte[] clientApplicationTrafficSecret0) {
-        this.clientApplicationTrafficSecret0 = clientApplicationTrafficSecret0;
+    public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
-    public byte[] getServerApplicationTrafficSecret0() {
-        return serverApplicationTrafficSecret0;
+    public byte[] getServerApplicationTrafficSecret() {
+        return serverApplicationTrafficSecret;
     }
 
-    public void setServerApplicationTrafficSecret0(byte[] serverApplicationTrafficSecret0) {
-        this.serverApplicationTrafficSecret0 = serverApplicationTrafficSecret0;
+    public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
     public byte[] getHandshakeSecret() {
@@ -1149,12 +1154,12 @@ public class TlsContext {
         this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
     }
 
-    public boolean isEncryptThenMacExtensionIsPresent() {
-        return encryptThenMacExtensionIsPresent;
+    public boolean isEncryptThenMacExtensionSentByServer() {
+        return encryptThenMacExtensionSentByServer;
     }
 
-    public void setEncryptThenMacExtensionIsPresent(boolean encryptThenMacExtensionIsPresent) {
-        this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
+    public void setEncryptThenMacExtensionSentByServer(boolean encryptThenMacExtensionSentByServer) {
+        this.encryptThenMacExtensionSentByServer = encryptThenMacExtensionSentByServer;
     }
 
     public boolean isIsCachedInfoExtensionClientState() {
@@ -1213,4 +1218,11 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
+    public boolean isEncryptThenMacExtensionSentByClient() {
+        return encryptThenMacExtensionSentByClient;
+    }
+
+    public void setEncryptThenMacExtensionSentByClient(boolean encryptThenMacExtensionSentByClient) {
+        this.encryptThenMacExtensionSentByClient = encryptThenMacExtensionSentByClient;
+    }
 }

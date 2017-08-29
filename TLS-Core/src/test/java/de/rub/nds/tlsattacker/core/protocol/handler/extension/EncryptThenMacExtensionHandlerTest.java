@@ -37,7 +37,7 @@ public class EncryptThenMacExtensionHandlerTest {
 
         handler.adjustTLSContext(message);
 
-        assertTrue(context.isEncryptThenMacExtensionIsPresent());
+        assertTrue(context.isEncryptThenMacExtensionSentByClient());
     }
 
     @Test
