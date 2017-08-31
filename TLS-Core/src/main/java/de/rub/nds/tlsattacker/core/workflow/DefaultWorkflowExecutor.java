@@ -36,6 +36,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         context.getWorkflowTrace().reset();
         List<TLSAction> tlsActions = context.getWorkflowTrace().getTlsActions();
         for (TLSAction action : tlsActions) {
+            if (context.isEarlyCleanShutdown()) {
+                LOGGER.debug("Clean shutdown of execution flow");
+                break;
+            }
             try {
                 if (!(context.getConfig().isStopActionsAfterFatal() && context.isReceivedFatalAlert())) {
                     action.execute(context);

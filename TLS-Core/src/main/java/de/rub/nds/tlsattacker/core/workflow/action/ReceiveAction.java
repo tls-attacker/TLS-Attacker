@@ -12,44 +12,16 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import java.util.*;
 
 /**
  *
@@ -90,6 +62,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> expectedMessages;
 
+    @XmlElement
+    protected Boolean earlyCleanShutdown = null;
+
+    @XmlElement
+    protected Boolean checkOnlyExpected = null;
+
     public ReceiveAction() {
         super();
         this.expectedMessages = new LinkedList<>();
@@ -101,8 +79,32 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     public ReceiveAction(ProtocolMessage... messages) {
-        super();
-        expectedMessages = Arrays.asList(messages);
+        this(Arrays.asList(messages));
+    }
+
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage> messages) {
+        this(messages);
+        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
+        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+    }
+
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage... messages) {
+        this(receiveOptions, Arrays.asList(messages));
+    }
+
+    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage> messages) {
+        this(messages);
+        switch (receiveOption) {
+            case CHECK_ONLY_EXPECTED:
+                this.checkOnlyExpected = true;
+                break;
+            case EARLY_CLEAN_SHUTDOWN:
+                this.earlyCleanShutdown = true;
+        }
+    }
+
+    public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage... messages) {
+        this(receiveOption, Arrays.asList(messages));
     }
 
     @Override
@@ -120,6 +122,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
         LOGGER.info("Received Messages:" + received);
+
+        tlsContext.setEarlyCleanShutdown(earlyCleanShutdown == null ? false : earlyCleanShutdown);
     }
 
     @Override
@@ -140,20 +144,29 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (messages.size() != expectedMessages.size()) {
-            return false;
+        if (checkOnlyExpected != null && checkOnlyExpected) {
+            if (expectedMessages.size() > messages.size())
+                return false;
         } else {
-            for (int i = 0; i < messages.size(); i++) {
-                if (!messages.get(i).getClass().equals(expectedMessages.get(i).getClass())) {
-                    return false;
-                }
-            }
+            if (messages.size() != expectedMessages.size())
+                return false;
         }
+        for (int i = 0; i < expectedMessages.size(); i++)
+            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass()))
+                return false;
         return true;
     }
 
     public List<ProtocolMessage> getExpectedMessages() {
         return expectedMessages;
+    }
+
+    public void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
+        this.messages = receivedMessages;
+    }
+
+    public void setReceivedRecords(List<AbstractRecord> receivedRecords) {
+        this.records = receivedRecords;
     }
 
     public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
@@ -213,5 +226,16 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
         return true;
+    }
+
+    public enum ReceiveOption {
+        EARLY_CLEAN_SHUTDOWN,
+        CHECK_ONLY_EXPECTED;
+
+        public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
+            HashSet<ReceiveOption> options = new HashSet<>();
+            options.addAll(Arrays.asList(receiveOptions));
+            return options;
+        }
     }
 }

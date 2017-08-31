@@ -359,6 +359,8 @@ public class TlsContext {
     @XmlTransient
     private Chooser chooser;
 
+    private boolean earlyCleanShutdown;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -1229,6 +1231,14 @@ public class TlsContext {
 
     public void setClientRSAPrivateKey(BigInteger clientRSAPrivateKey) {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
+    }
+
+    public boolean isEarlyCleanShutdown() {
+        return earlyCleanShutdown;
+    }
+
+    public void setEarlyCleanShutdown(boolean earlyCleanShutdown) {
+        this.earlyCleanShutdown = earlyCleanShutdown;
     }
 
 }
