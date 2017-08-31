@@ -199,7 +199,7 @@ public class Config implements Serializable {
      * It's an empty info since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerRenegotiationInfo = new byte[] { 0 };
+    private byte[] defaultServerRenegotiationInfo = new byte[0];
     /**
      * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
      * It's an emty timestamp, since the server sends it.
@@ -695,6 +695,8 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
+    private boolean httpsParsingEnabled = false;
+
     private Config() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -770,16 +772,21 @@ public class Config implements Serializable {
         clientCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
         clientCertificateTypeDesiredTypes.add(CertificateType.X509);
         clientCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
-
         serverCertificateTypeDesiredTypes = new LinkedList<>();
         serverCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
         serverCertificateTypeDesiredTypes.add(CertificateType.X509);
         serverCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
-
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
-
         statusRequestV2RequestList = new LinkedList<>();
+    }
+
+    public boolean isHttpsParsingEnabled() {
+        return httpsParsingEnabled;
+    }
+
+    public void setHttpsParsingEnabled(boolean httpsParsingEnabled) {
+        this.httpsParsingEnabled = httpsParsingEnabled;
     }
 
     public byte[] getDefaultServerRenegotiationInfo() {

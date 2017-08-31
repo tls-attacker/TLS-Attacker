@@ -149,7 +149,7 @@
     <maxFragmentLength>TWO_9</maxFragmentLength>
     <TLSSessionTicket></TLSSessionTicket>
     <defaultClientRenegotiationInfo></defaultClientRenegotiationInfo>
-    <defaultServerRenegotiationInfo>00</defaultServerRenegotiationInfo>
+    <defaultServerRenegotiationInfo></defaultServerRenegotiationInfo>
     <defaultSignedCertificateTimestamp></defaultSignedCertificateTimestamp>
     <defaultTokenBindingVersion>DRAFT_13</defaultTokenBindingVersion>
     <defaultTokenBindingKeyParameters>ECDSAP256</defaultTokenBindingKeyParameters>

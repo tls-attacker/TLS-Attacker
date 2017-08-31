@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
@@ -81,6 +83,8 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
+            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> messages;
 
