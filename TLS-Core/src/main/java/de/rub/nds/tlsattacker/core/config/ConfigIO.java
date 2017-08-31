@@ -10,15 +10,20 @@ package de.rub.nds.tlsattacker.core.config;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import javax.xml.bind.JAXB;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-class ConfigIO {
+public class ConfigIO {
     public static void write(Config config, File f) {
         JAXB.marshal(config, f);
+    }
+
+    public static void write(Config config, OutputStream os) {
+        JAXB.marshal(config, os);
     }
 
     public static Config read(File f) {
