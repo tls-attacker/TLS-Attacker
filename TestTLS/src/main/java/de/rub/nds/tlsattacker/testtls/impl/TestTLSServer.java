@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.testtls.policy.TlsPeerProperties;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandler;
 import de.rub.nds.tlsattacker.tls.config.ConfigHandlerFactory;
 import de.rub.nds.tlsattacker.tls.config.GeneralConfig;
+import de.rub.nds.tlsattacker.tls.constants.NamedCurve;
+import de.rub.nds.tlsattacker.tls.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.tls.util.LogLevel;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
@@ -53,17 +55,28 @@ public class TestTLSServer {
         protocolVersionTest.startTests();
         tests.add(protocolVersionTest);
 
+        List<NamedCurve> namedCurves = testConfig.getNamedCurves();
+        List<SignatureAndHashAlgorithm> signatureAndHashAlgorithms = testConfig.getSignatureAndHashAlgorithms();
+        
         CryptoTest cryptoTest = new CryptoTest(configHandler, testConfig);
         cryptoTest.startTests();
         tests.add(cryptoTest);
+        assert(testConfig.getSignatureAndHashAlgorithms() == signatureAndHashAlgorithms);
+        assert(testConfig.getNamedCurves() == namedCurves);
+        
         NamedCurvesTest ncTest = new NamedCurvesTest(configHandler, testConfig,
                 cryptoTest.getSupportedCipherSuites());
         tests.add(ncTest);
         ncTest.startTests();
+        assert(testConfig.getSignatureAndHashAlgorithms() == signatureAndHashAlgorithms);
+        testConfig.setNamedCurves(namedCurves);
+        
         SignatureAndHashAlgorithmsTest shTest = new SignatureAndHashAlgorithmsTest(configHandler, testConfig,
                 cryptoTest.getSupportedCipherSuites());
         shTest.startTests();
         tests.add(shTest);
+        assert(testConfig.getNamedCurves() == namedCurves);
+        testConfig.setSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
 
         CipherSuiteOrderTest csOrderTest = new CipherSuiteOrderTest(configHandler, testConfig);
         csOrderTest.startTests();
