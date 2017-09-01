@@ -73,6 +73,7 @@ public abstract class WorkflowExecutor {
             throw new ConfigurationException("Could not initialize WorkflowTrace in TLSContext");
         } else {
             context.setWorkflowTrace(trace);
+            context.getConfig().setWorkflowTrace(trace);
         }
     }
 
