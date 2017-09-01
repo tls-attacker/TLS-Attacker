@@ -38,9 +38,6 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
         prepareRandom(chooser.getConfig().getHighestProtocolVersion());
-        if (!chooser.getConfig().getHighestProtocolVersion().isTLS13()) {
-            prepareUnixTime();
-        }
         prepareSessionID();
         prepareSessionIDLength();
         prepareCompressions(msg);
