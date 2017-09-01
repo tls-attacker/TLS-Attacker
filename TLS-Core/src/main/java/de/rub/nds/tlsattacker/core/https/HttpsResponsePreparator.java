@@ -31,11 +31,11 @@ public class HttpsResponsePreparator extends ProtocolMessagePreparator<HttpsResp
         message.setResponseProtocol("HTTP/1.1");
         message.setResponseStatusCode("200 OK");
         message.setResponseContent(chooser.getConfig().getDefaultApplicationMessageData());
-    
+
         for (HttpsHeader header : message.getHeader()) {
-            if(header instanceof ContentLengthHeader)
-            {
-                ((ContentLengthHeader)header).setConfigLength(message.getResponseContent().getValue().getBytes().length);
+            if (header instanceof ContentLengthHeader) {
+                ((ContentLengthHeader) header)
+                        .setConfigLength(message.getResponseContent().getValue().getBytes().length);
             }
             header.getPreparator(chooser).prepare();
         }

@@ -102,7 +102,7 @@ public class HttpsResponseMessage extends ProtocolMessage {
     }
 
     public void setResponseContent(String responseContent) {
-        this.responseContent =ModifiableVariableFactory.safelySetValue(this.responseContent, responseContent);
+        this.responseContent = ModifiableVariableFactory.safelySetValue(this.responseContent, responseContent);
     }
 
     public List<HttpsHeader> getHeader() {
