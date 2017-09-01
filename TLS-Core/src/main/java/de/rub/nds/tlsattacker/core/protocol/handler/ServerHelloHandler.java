@@ -86,16 +86,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustServerRandom(ServerHelloMessage message) {
-        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            tlsContext.setServerRandom(message.getRandom().getValue());
-        } else {
-            setServerRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
-        }
+        tlsContext.setServerRandom(message.getRandom().getValue());
         LOGGER.debug("Set ServerRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getServerRandom()));
-    }
-
-    private void setServerRandomContext(byte[] unixTime, byte[] random) {
-        tlsContext.setServerRandom(ArrayConverter.concatenate(unixTime, random));
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {
