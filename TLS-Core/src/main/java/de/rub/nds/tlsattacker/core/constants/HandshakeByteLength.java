@@ -189,6 +189,11 @@ public class HandshakeByteLength {
      * Fragment length
      */
     public static final int DTLS_FRAGMENT_LENGTH = 3;
+    
+   /**
+    * Lenght of PSK_Identity
+    */
+    public static final int PSK_IDENTITY_LENGTH = 2;
 
     private HandshakeByteLength() {
     }

@@ -21,6 +21,15 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
+import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
+import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.constants.NameType;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
@@ -120,6 +129,13 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetDistinguishedNames() {
+        byte[] namelist = { (byte) 0, (byte) 1 };
+        config.setDistinguishedNames(namelist);
+        assertTrue(config.getDistinguishedNames().length == 2);
+        assertTrue(chooser.getDistinguishedNames().length == 2);
+        byte[] namelist2 = { (byte) 0, (byte) 1, (byte) 3 };
+        context.setDistinguishedNames(namelist2);
+        assertTrue(chooser.getDistinguishedNames().length == 3);
     }
 
     /**
@@ -162,6 +178,14 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientSupportedCiphersuites() {
+        List<CipherSuite> listcipher = new LinkedList<>();
+        listcipher.add(CipherSuite.TLS_FALLBACK_SCSV);
+        listcipher.add(CipherSuite.TLS_AES_128_CCM_SHA256);
+        config.setDefaultClientSupportedCiphersuites(listcipher);
+        assertTrue(config.getDefaultClientSupportedCiphersuites().size() == 2);
+        assertTrue(chooser.getClientSupportedCiphersuites().size() == 2);
+        context.setClientCertificateTypes(new LinkedList<ClientCertificateType>());
+        assertTrue(chooser.getClientCertificateTypes().size() == 0);
     }
 
     /**
@@ -170,6 +194,13 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetServerSupportedSignatureAndHashAlgorithms() {
+        List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
+        algoList.add(SignatureAndHashAlgorithm.getRandom());
+        config.setDefaultServerSupportedSignatureAndHashAlgorithms(algoList);
+        assertTrue(config.getDefaultServerSupportedSignatureAndHashAlgorithms().size() == 1);
+        assertTrue(chooser.getServerSupportedSignatureAndHashAlgorithms().size() == 1);
+        context.setServerSupportedSignatureAndHashAlgorithms(new LinkedList<SignatureAndHashAlgorithm>());
+        assertTrue(chooser.getServerSupportedSignatureAndHashAlgorithms().size() == 0);
     }
 
     /**
@@ -177,6 +208,11 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetSelectedProtocolVersion() {
+        config.setDefaultSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT20);
+        assertEquals(ProtocolVersion.TLS13_DRAFT20, config.getDefaultSelectedProtocolVersion());
+        assertEquals(ProtocolVersion.TLS13_DRAFT20, chooser.getSelectedProtocolVersion());
+        context.setSelectedProtocolVersion(ProtocolVersion.DTLS10);
+        assertEquals(ProtocolVersion.DTLS10, chooser.getSelectedProtocolVersion());
     }
 
     /**
@@ -184,6 +220,11 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetHighestClientProtocolVersion() {
+        config.setDefaultHighestClientProtocolVersion(ProtocolVersion.DTLS10);
+        assertEquals(ProtocolVersion.DTLS10, config.getDefaultHighestClientProtocolVersion());
+        assertEquals(ProtocolVersion.DTLS10, chooser.getHighestClientProtocolVersion());
+        context.setHighestClientProtocolVersion(ProtocolVersion.SSL2);
+        assertEquals(ProtocolVersion.SSL2, chooser.getHighestClientProtocolVersion());
     }
 
     /**
