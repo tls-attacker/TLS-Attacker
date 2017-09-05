@@ -56,6 +56,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -66,6 +68,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config implements Serializable {
+
+    protected static final Logger LOGGER = LogManager.getLogger(Config.class);
 
     public static Config createConfig() {
         InputStream stream = Config.class.getResourceAsStream("/default_config.xml");
@@ -689,6 +693,8 @@ public class Config implements Serializable {
     private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
             "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
+    private boolean useRandomUnixTime = true;
+
     private ChooserType chooserType = ChooserType.DEFAULT;
 
     private boolean useAllProvidedRecords = false;
@@ -778,6 +784,14 @@ public class Config implements Serializable {
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
 
         statusRequestV2RequestList = new LinkedList<>();
+    }
+
+    public boolean isUseRandomUnixTime() {
+        return useRandomUnixTime;
+    }
+
+    public void setUseRandomUnixTime(boolean useRandomUnixTime) {
+        this.useRandomUnixTime = useRandomUnixTime;
     }
 
     public boolean isUseAllProvidedRecords() {
@@ -1350,6 +1364,9 @@ public class Config implements Serializable {
     }
 
     public void setDefaultMaxRecordData(int defaultMaxRecordData) {
+        if (defaultMaxRecordData == 0) {
+            LOGGER.warn("defaultMaxRecordData is being set to 0");
+        }
         this.defaultMaxRecordData = defaultMaxRecordData;
     }
 

@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -41,7 +41,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -63,6 +62,8 @@ public class TlsContext {
      * related
      */
     private Config config;
+
+    private List<Session> sessionList;
     /**
      * shared key established during the handshake
      */
@@ -331,6 +332,8 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
+    private boolean tokenBindingNegotiated = false;
+
     private byte[] AlpnAnnouncedProtocols;
 
     private List<CertificateType> certificateTypeClientDesiredTypes;
@@ -361,6 +364,7 @@ public class TlsContext {
     public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
+        this.sessionList = new LinkedList<>();
     }
 
     public Chooser getChooser() {
@@ -368,6 +372,31 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this);
         }
         return chooser;
+    }
+
+    public Session getSession(byte[] sessionId) {
+        for (Session session : sessionList) {
+            if (Arrays.equals(session.getSessionId(), sessionId)) {
+                return session;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasSession(byte[] sessionId) {
+        return getSession(sessionId) != null;
+    }
+
+    public void addNewSession(Session session) {
+        sessionList.add(session);
+    }
+
+    public List<Session> getSessionList() {
+        return sessionList;
+    }
+
+    public void setSessionList(List<Session> sessionList) {
+        this.sessionList = sessionList;
     }
 
     public byte[] getLastClientVerifyData() {
@@ -988,6 +1017,14 @@ public class TlsContext {
 
     public void setTokenBindingKeyParameters(List<TokenBindingKeyParameters> tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
+    }
+
+    public void setTokenBindingNegotiated(boolean tokenBindingNegotiated) {
+        this.tokenBindingNegotiated = tokenBindingNegotiated;
+    }
+
+    public boolean isTokenBindingNegotiated() {
+        return tokenBindingNegotiated;
     }
 
     public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
