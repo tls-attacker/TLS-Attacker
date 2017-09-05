@@ -102,6 +102,7 @@ public class Config implements Serializable {
     }
 
     public static Config mergeWithDefaultValues(Config c) {
+        String host = c.getHost(); // host is transient and will be resetted
         final Config readConfig = c;
         try {
             final PipedOutputStream outputStream = new PipedOutputStream();
@@ -123,6 +124,7 @@ public class Config implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        c.setHost(host);
         return c;
     }
 
