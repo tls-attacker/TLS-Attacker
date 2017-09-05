@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
@@ -170,7 +172,19 @@ public class ReceiveMessageHelper {
             ParserResult result = null;
             try {
                 if (typeFromRecord != null) {
-                    result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord, context);
+                    if (typeFromRecord == ProtocolMessageType.APPLICATION_DATA
+                            && context.getConfig().isHttpsParsingEnabled()) {
+                        try {
+                            result = tryHandleAsHttpsMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        } catch (ParserException | AdjustmentException E) {
+                            result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
+                                    context);
+                        }
+                    } else {
+                        result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
+                                context);
+
+                    }
                 } else {
                     result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                 }
@@ -198,6 +212,21 @@ public class ReceiveMessageHelper {
 
         }
         return receivedMessages;
+    }
+
+    private static ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
+            throws ParserException, AdjustmentException {
+        try {
+            HttpsRequestHandler handler = new HttpsRequestHandler(context);
+            return handler.parseMessage(protocolMessageBytes, pointer);
+        } catch (ParserException E) {
+            try {
+                HttpsResponseHandler handler = new HttpsResponseHandler(context);
+                return handler.parseMessage(protocolMessageBytes, pointer);
+            } catch (ParserException E2) {
+                throw new ParserException("Could not parse ApplicationData as HTTPS", E2);
+            }
+        }
     }
 
     private static ParserResult tryHandleAsCorrectMessage(byte[] protocolMessageBytes, int pointer,

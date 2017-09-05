@@ -36,6 +36,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
@@ -64,6 +65,7 @@ public class TlsContext {
     private Config config;
 
     private List<Session> sessionList;
+    private HttpContext httpContext;
     /**
      * shared key established during the handshake
      */
@@ -359,11 +361,13 @@ public class TlsContext {
 
     public TlsContext() {
         this(Config.createConfig());
+        httpContext = new HttpContext();
     }
 
     public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
+        httpContext = new HttpContext();
         this.sessionList = new LinkedList<>();
     }
 
@@ -372,6 +376,14 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this);
         }
         return chooser;
+    }
+
+    public HttpContext getHttpContext() {
+        return httpContext;
+    }
+
+    public void setHttpContext(HttpContext httpContext) {
+        this.httpContext = httpContext;
     }
 
     public Session getSession(byte[] sessionId) {
