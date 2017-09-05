@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -73,6 +74,7 @@ public class ECDHClientKeyExchangeHandlerTest {
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
         message.prepareComputations();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setRecordLayer(new TlsRecordLayer(context));
         message.getComputations()
                 .setPremasterSecret(
                         ArrayConverter

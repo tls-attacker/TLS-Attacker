@@ -13,7 +13,11 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
+import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
@@ -64,5 +68,20 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         byte[] masterSecret = calculateMasterSecret(message);
         tlsContext.setMasterSecret(masterSecret);
         LOGGER.debug("Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
+        setRecordCipher();
+        spawnNewSession();
+    }
+
+    protected void setRecordCipher() {
+        LOGGER.debug("Setting new Cipher in RecordLayer");
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+    }
+
+    protected void spawnNewSession() {
+        Session session = new Session(tlsContext.getChooser().getServerSessionId(), tlsContext.getChooser()
+                .getMasterSecret());
+        tlsContext.addNewSession(session);
+        LOGGER.debug("Spawning new resumable Session");
     }
 }

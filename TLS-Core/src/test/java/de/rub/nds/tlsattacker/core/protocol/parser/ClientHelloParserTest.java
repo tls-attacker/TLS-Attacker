@@ -40,7 +40,7 @@ public class ClientHelloParserTest {
                                 ProtocolVersion.TLS12.getValue(),
                                 ArrayConverter.hexStringToByteArray("a9b0b601"),
                                 ArrayConverter
-                                        .hexStringToByteArray("d3dd7d8cfcc2ef56d3b6130bf523fe5d009780088ff1227c10bcaf66"),
+                                        .hexStringToByteArray("a9b0b601d3dd7d8cfcc2ef56d3b6130bf523fe5d009780088ff1227c10bcaf66"),
                                 0,
                                 new byte[0],
                                 34,
@@ -61,7 +61,7 @@ public class ClientHelloParserTest {
                                 ProtocolVersion.TLS11.getValue(),
                                 ArrayConverter.hexStringToByteArray("27169c1b"),
                                 ArrayConverter
-                                        .hexStringToByteArray("fddc2cce7990edcdf5555dad8a8e73451a87745c305e645cd9f0578c"),
+                                        .hexStringToByteArray("27169c1bfddc2cce7990edcdf5555dad8a8e73451a87745c305e645cd9f0578c"),
                                 0,
                                 new byte[0],
                                 100,
@@ -82,7 +82,7 @@ public class ClientHelloParserTest {
                                 ProtocolVersion.TLS10.getValue(),
                                 ArrayConverter.hexStringToByteArray("e6e95eb2"),
                                 ArrayConverter
-                                        .hexStringToByteArray("87b80d868b6ca3aafad6912e21bf71b6bbcabb1fcc46516abb162e3b"),
+                                        .hexStringToByteArray("e6e95eb287b80d868b6ca3aafad6912e21bf71b6bbcabb1fcc46516abb162e3b"),
                                 0,
                                 new byte[0],
                                 100,

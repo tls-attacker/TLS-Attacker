@@ -106,7 +106,14 @@ public class TlsRecordLayer extends RecordLayer {
                 .getDefaultMaxRecordData(), 0, data);
         records = seperator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        boolean useRecordType = false;
+        if (contentType == null) {
+            useRecordType = true;
+        }
         for (AbstractRecord record : records) {
+            if (useRecordType) {
+                contentType = record.getContentMessageType();
+            }
             AbstractRecordPreparator preparator = record.getRecordPreparator(tlsContext.getChooser(), encryptor,
                     contentType);
             preparator.prepare();

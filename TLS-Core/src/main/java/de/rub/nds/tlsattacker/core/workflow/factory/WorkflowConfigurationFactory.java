@@ -40,6 +40,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
@@ -79,7 +80,9 @@ public class WorkflowConfigurationFactory {
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
             case RESUMPTION:
-                return new WorkflowTrace(); // TODO add real workflow
+                return createResumptionWorkflow();
+            case FULL_RESUMPTION:
+                return createFullResumptionWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -183,7 +186,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
         if (algorithm != null) {
 
@@ -287,6 +290,31 @@ public class WorkflowConfigurationFactory {
                 new SSL2ServerHelloMessage(config));
         action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
+        return trace;
+    }
+
+    private WorkflowTrace createFullResumptionWorkflow() {
+        WorkflowTrace trace = this.createHandshakeWorkflow();
+        trace.addTlsAction(new ResetConnectionAction());
+        WorkflowTrace tempTrace = this.createResumptionWorkflow();
+        for (TLSAction resumption : tempTrace.getTlsActions()) {
+            trace.addTlsAction(resumption);
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createResumptionWorkflow() {
+        WorkflowTrace trace = new WorkflowTrace();
+        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
+                ConnectionEndType.CLIENT, new ClientHelloMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                new ServerHelloMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
+                new ChangeCipherSpecMessage(config), new FinishedMessage(config));
+        trace.addTlsAction(action);
+
         return trace;
     }
 

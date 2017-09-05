@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 
@@ -25,6 +26,12 @@ public class ResetConnectionAction extends TLSAction {
     public void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException {
         LOGGER.info("Terminating Connection");
         tlsContext.getTransportHandler().closeConnection();
+        LOGGER.info("Resseting Cipher");
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Resetting MessageDigest");
+        tlsContext.getDigest().reset();
         LOGGER.info("Reopening Connection");
         tlsContext.getTransportHandler().initialize();
         setExecuted(true);
