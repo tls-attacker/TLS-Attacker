@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;

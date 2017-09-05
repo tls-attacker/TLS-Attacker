@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificatePairParser;
 //Dont know if needed all
 import java.util.Arrays;
 import java.util.Collection;

@@ -209,6 +209,7 @@ public final class RecordBlockCipher extends RecordCipher {
             }
             byte[] masterSecret = tlsContext.getMasterSecret();
             byte[] seed = ArrayConverter.concatenate(tlsContext.getServerRandom(), tlsContext.getClientRandom());
+            LOGGER.debug("Keyblock Seed:" + ArrayConverter.bytesToHexString(seed));
 
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
             byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
