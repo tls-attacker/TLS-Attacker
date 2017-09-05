@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -27,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -138,7 +140,23 @@ public class ReceiveMessageHelper {
     }
 
     private static List<AbstractRecord> parseRecords(byte[] recordBytes, TlsContext context) {
-        return context.getRecordLayer().parseRecords(recordBytes);
+        try {
+            return context.getRecordLayer().parseRecords(recordBytes);
+        } catch (ParserException ex) {
+            LOGGER.debug(ex);
+            LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
+            byte[] extraBytes = null;
+            try {
+                extraBytes = receiveByteArray(context);
+            } catch (IOException ex2) {
+                LOGGER.warn("Could not receive more Bytes", ex2);
+            }
+            if (extraBytes != null && extraBytes.length >= 0) {
+                return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
+            }
+            LOGGER.debug("Did not receive more Bytes. Parsing records softly");
+            return context.getRecordLayer().parseRecordsSoftly(extraBytes);
+        }
     }
 
     private static List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {

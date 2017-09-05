@@ -34,7 +34,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 

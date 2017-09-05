@@ -44,6 +44,8 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);
+        setRecordCipher();
+        spawnNewSession();
     }
 
     private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {

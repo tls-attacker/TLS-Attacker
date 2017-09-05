@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.rules.ExpectedException;
 
 /**
  *

@@ -66,7 +66,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.Certificate;
 import static org.junit.Assert.fail;
 import org.junit.Rule;
 import org.junit.Test;
