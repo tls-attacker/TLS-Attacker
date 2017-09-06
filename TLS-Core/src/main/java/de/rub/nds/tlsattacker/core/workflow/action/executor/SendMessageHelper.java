@@ -69,6 +69,10 @@ public class SendMessageHelper {
                 context.setSequenceNumber(0);
             }
         }
+        if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            context.getRecordLayer().updateEncryptionCipher();
+            context.setSequenceNumber(0);
+        }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
         sendData(messageBytesCollector, context);
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
