@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
@@ -40,6 +42,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
@@ -50,6 +54,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -60,12 +66,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Rule;
 import org.junit.Test;
@@ -111,6 +120,7 @@ public class SerialisationFullTest {
         trace.addTlsAction(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));
         trace.addTlsAction(new DeactivateEncryptionAction());
         trace.addTlsAction(new RenegotiationAction());
+        trace.addTlsAction(new GenericReceiveAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
@@ -136,6 +146,10 @@ public class SerialisationFullTest {
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage());
         messages.add(new ServerHelloMessage());
+        HttpsRequestMessage message = new HttpsRequestMessage();
+        message.setRequestPath("someString");
+        message.getRequestPath().setModification(new StringExplicitValueModification("replacedString"));
+        messages.add(message);
         SendAction action = new SendAction(messages);
         List<AbstractRecord> records = new LinkedList<>();
         records.add(new BlobRecord());
@@ -157,5 +171,23 @@ public class SerialisationFullTest {
         } catch (XMLStreamException ex) {
             fail();
         }
+    }
+
+    @Test
+    public void sometest() {
+        Security.addProvider(new BouncyCastleProvider());
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsActions(new SendAction(new ClientHelloMessage()), new ReceiveAction(new ServerHelloMessage(),
+                new CertificateMessage(), new ServerHelloDoneMessage()), new SendAction(
+                new RSAClientKeyExchangeMessage(), new ChangeCipherSpecMessage()),
+                new SendAction(new FinishedMessage()), new ReceiveAction(new ChangeCipherSpecMessage(),
+                        new FinishedMessage()));
+        Config c = Config.createConfig();
+        c.setDefaultClientSupportedCiphersuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+        c.setWorkflowTrace(trace);
+        DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(new TlsContext(c));
+        executor.executeWorkflow();
+        assertTrue(trace.executedAsPlanned());
     }
 }
