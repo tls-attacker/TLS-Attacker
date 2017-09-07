@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -20,10 +21,12 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
 
     private final HelloVerifyRequestMessage msg;
+    private TlsContext tlsContext;
 
     public HelloVerifyRequestPreparator(Chooser context, HelloVerifyRequestMessage message) {
         super(context, message);
         this.msg = message;
+        tlsContext = new TlsContext();
 
     }
 
@@ -38,7 +41,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     private byte[] generateCookie() {
         byte[] cookie = new byte[chooser.getConfig().getDefaultDTLSCookieLength()];
-        RandomHelper.getRandom().nextBytes(cookie);
+        tlsContext.getRandom().nextBytes(cookie);
         return cookie;
     }
 

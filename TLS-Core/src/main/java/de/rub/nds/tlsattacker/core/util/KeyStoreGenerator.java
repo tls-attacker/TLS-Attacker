@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -47,19 +48,21 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
  */
 public class KeyStoreGenerator {
 
+    private static TlsContext context = new TlsContext();
+
     public static final String PASSWORD = "password";
     public static final String ALIAS = "alias";
 
     public static KeyPair createRSAKeyPair(int bits) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(bits, RandomHelper.getBadSecureRandom());
+        keyPairGenerator.initialize(bits, context.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
     }
 
     public static KeyPair createECKeyPair(int bits) throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
-        keyPairGenerator.initialize(bits, RandomHelper.getBadSecureRandom());
+        keyPairGenerator.initialize(bits, context.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.generateKeyPair();
         return keyPair;
     }
@@ -73,7 +76,7 @@ public class KeyStoreGenerator {
         X500Name issuerName = new X500Name("CN=127.0.0.1, O=TLS-Attacker, L=RUB, ST=NRW, C=DE");
         X500Name subjectName = issuerName;
 
-        BigInteger serial = BigInteger.valueOf(RandomHelper.getBadSecureRandom().nextInt());
+        BigInteger serial = BigInteger.valueOf(context.getBadSecureRandom().nextInt());
         Date before = new Date(System.currentTimeMillis() - 5000);
         Date after = new Date(System.currentTimeMillis() + 600000);
         X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(issuerName, serial, before, after,

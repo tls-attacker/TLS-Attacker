@@ -24,6 +24,7 @@ import org.junit.experimental.categories.Category;
 public class TlsRecordLayerIT {
 
     private TlsRecordLayer layer;
+    private TlsContext context;
 
     public TlsRecordLayerIT() {
     }
@@ -31,6 +32,7 @@ public class TlsRecordLayerIT {
     @Before
     public void setUp() {
         layer = new TlsRecordLayer(new TlsContext(Config.createConfig()));
+        context = new TlsContext();
     }
 
     /**
@@ -39,7 +41,7 @@ public class TlsRecordLayerIT {
     @Test
     @Category(IntegrationTests.class)
     public void testParseRecords() {
-        Random r = RandomHelper.getRandom();
+        Random r = context.getRandom();
         for (int i = 0; i < 1000; i++) {
             byte[] data = new byte[r.nextInt(1000)];
             r.nextBytes(data);

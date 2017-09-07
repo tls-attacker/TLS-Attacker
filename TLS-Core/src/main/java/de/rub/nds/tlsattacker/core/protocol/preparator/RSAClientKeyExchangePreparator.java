@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.security.KeyPairGenerator;
@@ -31,11 +32,13 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private byte[] clientRandom;
     private byte[] masterSecret;
     private byte[] encrypted;
+    private TlsContext context;
     private final RSAClientKeyExchangeMessage msg;
 
     public RSAClientKeyExchangePreparator(Chooser chooser, RSAClientKeyExchangeMessage message) {
         super(chooser, message);
         this.msg = message;
+        context = new TlsContext();
     }
 
     @Override
@@ -46,7 +49,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         // the number of random bytes in the pkcs1 message
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
         padding = new byte[randomByteLength];
-        RandomHelper.getRandom().nextBytes(padding);
+        context.getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(msg);
         premasterSecret = generatePremasterSecret();
@@ -70,7 +73,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-        RandomHelper.getRandom().nextBytes(tempPremasterSecret);
+        context.getRandom().nextBytes(tempPremasterSecret);
         tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
         tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
         return tempPremasterSecret;

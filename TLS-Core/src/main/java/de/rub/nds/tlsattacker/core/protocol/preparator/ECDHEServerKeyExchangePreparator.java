@@ -44,10 +44,12 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     private final ECDHEServerKeyExchangeMessage msg;
     private ECPublicKeyParameters pubEcParams;
     private ECPrivateKeyParameters privEcParams;
+    private TlsContext context;
 
     public ECDHEServerKeyExchangePreparator(Chooser chooser, ECDHEServerKeyExchangeMessage msg) {
         super(chooser, msg);
         this.msg = msg;
+        context = new TlsContext();
     }
 
     @Override
@@ -60,7 +62,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         prepareNamedCurve(msg);
 
         ECDomainParameters ecParams = generateEcParameters(msg);
-        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), ecParams);
+        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(context.getBadSecureRandom(), ecParams);
 
         pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
         privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();

@@ -48,7 +48,7 @@ public class ECDHClientKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new ECDHClientKeyExchangeMessage();
         preparator = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
-        RandomHelper.setRandom(new Random(0));
+        context.setRandom(new Random(0));
     }
 
     /**

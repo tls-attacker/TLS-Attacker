@@ -53,7 +53,7 @@ public class SignatureCalculator {
     public static byte[] generateSignature(PrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         try {
             Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key, RandomHelper.getBadSecureRandom());
+            instance.initSign(key, context.getBadSecureRandom());
             instance.update(toBeSigned);
             return instance.sign();
         } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {

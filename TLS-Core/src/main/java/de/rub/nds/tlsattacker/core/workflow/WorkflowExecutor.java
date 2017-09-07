@@ -102,7 +102,7 @@ public abstract class WorkflowExecutor {
             try {
                 File f = new File(config.getWorkflowOutput());
                 if (f.isDirectory()) {
-                    f = new File(config.getWorkflowOutput() + "trace-" + RandomHelper.getRandom().nextInt());
+                    f = new File(config.getWorkflowOutput() + "trace-" + context.getRandom().nextInt());
                 }
                 WorkflowTraceSerializer.write(f, context.getWorkflowTrace());
             } catch (JAXBException | IOException ex) {

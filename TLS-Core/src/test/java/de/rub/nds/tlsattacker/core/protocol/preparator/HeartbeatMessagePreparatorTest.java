@@ -38,12 +38,12 @@ public class HeartbeatMessagePreparatorTest {
         this.context = new TlsContext();
         this.message = new HeartbeatMessage();
         this.preparator = new HeartbeatMessagePreparator(context.getChooser(), message);
-        RandomHelper.getRandom().setSeed(0);
+        context.getRandom().setSeed(0);
     }
 
     @After
     public void cleanUp() {
-        RandomHelper.setRandom(null);
+        context.setRandom(null);
     }
 
     /**
@@ -54,7 +54,7 @@ public class HeartbeatMessagePreparatorTest {
     public void testPrepare() {
         context.getConfig().setHeartbeatPayloadLength(11);
         context.getConfig().setHeartbeatPaddingLength(11);
-        RandomHelper.setRandom(new FixedSecureRandom(ArrayConverter
+        context.setRandom(new FixedSecureRandom(ArrayConverter
                 .hexStringToByteArray("F6C92DA33AF01D4FB770AA60B420BB3851D9D47ACB93")));
         preparator.prepare();
         assertTrue(HeartbeatMessageType.HEARTBEAT_REQUEST.getValue() == message.getHeartbeatMessageType().getValue());
