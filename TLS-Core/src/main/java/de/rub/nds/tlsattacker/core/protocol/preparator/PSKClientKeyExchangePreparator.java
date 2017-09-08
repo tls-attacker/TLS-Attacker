@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
@@ -21,17 +21,23 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  *
- * @author florian
+ * @author Robert Merget - robert.merget@rub.de
  */
-public class PSKClientKeyExchangePreparator {
-   private byte[] padding;
+public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<PSKClientKeyExchangeMessage> {
+
+    private byte[] padding;
     private byte[] premasterSecret;
     private byte[] clientRandom;
     private byte[] masterSecret;
     private byte[] encrypted;
     private final PSKClientKeyExchangeMessage msg;
+    private PSKPremasterComputations comps;
+    private ByteArrayOutputStream outputStream;
 
     public PSKClientKeyExchangePreparator(Chooser chooser, PSKClientKeyExchangeMessage message) {
         super(chooser, message);
@@ -40,110 +46,46 @@ public class PSKClientKeyExchangePreparator {
 
     @Override
     public void prepareHandshakeMessageContents() {
+        msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity().toByteArray());
+        msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().toByteArray().length);
         msg.prepareComputations();
-
-        int keyByteLength = chooser.getRsaModulus().bitLength() / 8;
-        // the number of random bytes in the pkcs1 message
-        int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
-        padding = new byte[randomByteLength];
-        RandomHelper.getRandom().nextBytes(padding);
-        ArrayConverter.makeArrayNonZero(padding);
-        preparePadding(msg);
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
-        preparePlainPaddedPremasterSecret(msg);
-
-        byte[] paddedPremasterSecret = msg.getComputations().getPlainPaddedPremasterSecret().getValue();
-
-        prepareClientRandom(msg);
-
-        if (paddedPremasterSecret.length == 0) {
-            paddedPremasterSecret = new byte[] { 0 };
-        }
-        BigInteger biPaddedPremasterSecret = new BigInteger(paddedPremasterSecret);
-        BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(),
-                chooser.getRsaModulus());
-        encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted, chooser.getRsaModulus().bitLength() / 8, true);
-        prepareSerializedPublicKey(msg);
-        prepareSerializedPublicKeyLength(msg);
     }
 
     private byte[] generatePremasterSecret() {
-        byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-        RandomHelper.getRandom().nextBytes(tempPremasterSecret);
-        tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
-        tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
-        return tempPremasterSecret;
-    }
-
-    private RSAPublicKey generateFreshKey() {
-        KeyPairGenerator keyGen = null;
+        outputStream = new ByteArrayOutputStream();
         try {
-            keyGen = KeyPairGenerator.getInstance("RSA");
-        } catch (NoSuchAlgorithmException ex) {
-            throw new PreparationException("Could not generate a new Key", ex);
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength()/8, 2));
+            outputStream.write(ArrayConverter.intToBytes(0, chooser.getConfig().getDefaultPSKKey().bitLength()/8));
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength()/8, 2));
+            outputStream.write(chooser.getConfig().getDefaultPSKKey().toByteArray());
+        } catch (IOException ex) {
+            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
+            LOGGER.debug(ex);
         }
-        return (RSAPublicKey) keyGen.genKeyPair().getPublic();
-
+       byte[] tempPremasterSecret = outputStream.toByteArray();
+       return tempPremasterSecret; 
     }
 
-    private void preparePadding(RSAClientKeyExchangeMessage msg) {
-        msg.getComputations().setPadding(padding);
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getComputations().getPadding().getValue()));
-    }
-
-    private void preparePremasterSecret(RSAClientKeyExchangeMessage msg) {
+    private void preparePremasterSecret(PSKClientKeyExchangeMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
-    }
-
-    private void preparePlainPaddedPremasterSecret(RSAClientKeyExchangeMessage msg) {
-        msg.getComputations().setPlainPaddedPremasterSecret(
-                ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg
-                        .getComputations().getPremasterSecret().getValue()));
-        LOGGER.debug("PlainPaddedPremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
-    }
-
-    private void prepareClientRandom(RSAClientKeyExchangeMessage msg) {
-        // TODO spooky
-        clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(clientRandom);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
-        msg.setPublicKey(encrypted);
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getPublicKey().getValue()));
-    }
-
-    private void prepareSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
-        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
-    }
-
-    private byte[] decryptPremasterSecret() {
-        BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(msg.getPublicKey().getValue());
-        BigInteger serverPrivateKey = chooser.getConfig().getDefaultServerRSAPrivateKey();
-        BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey, chooser.getRsaModulus());
-        return decrypted.toByteArray();
     }
 
     @Override
     public void prepareAfterParse() {
         // Decrypt premaster secret
         msg.prepareComputations();
-        byte[] paddedPremasterSecret = decryptPremasterSecret();
-        LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
+       // byte[] paddedPremasterSecret = decryptPremasterSecret();
+       // LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
 
         int keyByteLength = chooser.getRsaModulus().bitLength() / 8;
         // the number of random bytes in the pkcs1 message
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
-        premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
-        LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
+        //premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
+       // LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
         preparePremasterSecret(msg);
-        prepareClientRandom(msg);
     }
 }

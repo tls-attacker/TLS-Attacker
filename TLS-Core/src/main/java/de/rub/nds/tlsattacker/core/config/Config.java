@@ -306,7 +306,7 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultEcCertificate = ArrayConverter
             .hexStringToByteArray("0001BD0001BA308201B63082016CA003020102020900B9FB5B9B7B19C211300A06082A8648CE3D0403023045310B30090603550406130244453113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643020170D3137303731333132353530375A180F32313137303631393132353530375A3045310B30090603550406130244453113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643049301306072A8648CE3D020106082A8648CE3D03010103320004DF647234F375CB38137C6775B04A40950C932E180620717F802B21FE868479987D990383D908E19B683F412ECDF397E1A3533051301D0603551D0E04160414ACF90511E691018C1B69177AF743321486EE09D5301F0603551D23041830168014ACF90511E691018C1B69177AF743321486EE09D5300F0603551D130101FF040530030101FF300A06082A8648CE3D04030203380030350219009E8F2E5C4D6C4179B60E12B46B7AD19F7AF39F11731A359702180CDC387E4A12F6BBEE702A05B548C5F5FC2DE3842B6366A0");
-
+ 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
 
@@ -515,6 +515,10 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("7dc0cb485a3edb56811aeab12cdcda8e48b023298dd453a37b4d75d9e0bbba27c98f0e4852c16fd52341ffb673f64b580b7111abf14bf323e53a2dfa92727364ddb34f541f74a478a077f15277c013606aea839307e6f5fec23fdd72506feea7cbe362697949b145fe8945823a39a898ac6583fc5fbaefa1e77cbc95b3b475e66106e92b906bdbb214b87bcc94020f317fc1c056c834e9cee0ad21951fbdca088274c4ef9d8c2004c6294f49b370fb249c1e2431fb80ce5d3dc9e342914501ef4c162e54e1ee4fed9369b82afc00821a29f4979a647e60935420d44184d98f9cb75122fb604642c6d1ff2b3a51dc32eefdc57d9a9407ad6a06d10e83e2965481"));// TODO
 
+    private BigInteger defaultPSKKey = new BigInteger(1, ArrayConverter.hexStringToByteArray("AABBCC"));
+    
+    private BigInteger defaultPSKIdentity = new BigInteger(1, ArrayConverter.hexStringToByteArray("CCBBAA"));
+    
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
     private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
@@ -728,7 +732,23 @@ public class Config implements Serializable {
     public void setStopRecievingAfterFatal(boolean stopRecievingAfterFatal) {
         this.stopRecievingAfterFatal = stopRecievingAfterFatal;
     }
+    
+    public BigInteger getDefaultPSKKey(){
+        return defaultPSKKey;
+    }
+    
+    public void setDefaultPSKKey(BigInteger defaultPSKKey){
+        this.defaultPSKKey = defaultPSKKey;
+    }
 
+    public BigInteger getDefaultPSKIdentity(){
+        return defaultPSKIdentity;
+    }
+    
+    public void setDefaultPSKIdentity(BigInteger defaultPSKIdentity){
+        this.defaultPSKIdentity = defaultPSKIdentity;
+    }
+    
     public BigInteger getDefaultClientRSAPrivateKey() {
         return defaultClientRSAPrivateKey;
     }
