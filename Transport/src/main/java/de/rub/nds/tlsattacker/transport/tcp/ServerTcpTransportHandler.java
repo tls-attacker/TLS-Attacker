@@ -29,6 +29,12 @@ public class ServerTcpTransportHandler extends TransportHandler {
         this.port = port;
     }
 
+    public void closeServerSocket() throws IOException {
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
+    }
+
     @Override
     public void closeConnection() throws IOException {
         if (socket != null) {
