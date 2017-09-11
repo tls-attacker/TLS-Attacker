@@ -52,6 +52,7 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
         if (clientSocket != null) {
             clientSocket.close();
         }
+        closed = true;
     }
 
     @Override

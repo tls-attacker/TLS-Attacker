@@ -38,6 +38,7 @@ public class ClientUdpTransportHandler extends TransportHandler {
         socket.close();
         inStream.close();
         outStream.close();
+        closed = true;
     }
 
     @Override

@@ -45,6 +45,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
         } else {
             throw new IOException("TransportHandler not initialised");
         }
+        closed = true;
     }
 
     @Override

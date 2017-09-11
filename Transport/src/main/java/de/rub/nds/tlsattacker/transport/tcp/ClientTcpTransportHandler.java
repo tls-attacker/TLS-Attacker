@@ -35,6 +35,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
             throw new IOException("Transporthandler is not initalized!");
         }
         socket.close();
+        closed = true;
     }
 
     @Override

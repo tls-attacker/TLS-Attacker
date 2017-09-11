@@ -48,6 +48,7 @@ public class StreamTransportHandler extends TransportHandler {
         } else {
             throw new IOException("Could not close StreamTransportHandler. Not Initialised");
         }
+        closed = true;
     }
 
     @Override
