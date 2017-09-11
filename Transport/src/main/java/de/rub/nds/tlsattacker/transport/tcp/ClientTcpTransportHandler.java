@@ -45,6 +45,6 @@ public class ClientTcpTransportHandler extends TransportHandler {
 
     @Override
     public boolean isClosed() throws IOException {
-        return socket.isClosed();
+        return socket.isClosed() || socket.isInputShutdown();
     }
 }
