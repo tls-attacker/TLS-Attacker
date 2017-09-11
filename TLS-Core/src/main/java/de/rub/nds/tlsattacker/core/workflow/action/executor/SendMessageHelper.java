@@ -69,8 +69,29 @@ public class SendMessageHelper {
                 context.setSequenceNumber(0);
             }
         }
-        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            context.getRecordLayer().updateEncryptionCipher();
+            context.setSequenceNumber(0);
+        }
+        recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
         sendData(messageBytesCollector, context);
+        if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
+            int current = 0;
+            for (AbstractRecord record : records) {
+                if (current >= recordPosition) {
+                    if (record.getMaxRecordLengthConfig() == null) {
+                        record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
+                    }
+                    List<AbstractRecord> emptyRecords = new LinkedList<>();
+                    emptyRecords.add(record);
+                    messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
+                            messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(),
+                            emptyRecords));
+                    sendData(messageBytesCollector, context);
+                }
+                current++;
+            }
+        }
         return new MessageActionResult(records, messages);
     }
 

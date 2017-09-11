@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloHandler;

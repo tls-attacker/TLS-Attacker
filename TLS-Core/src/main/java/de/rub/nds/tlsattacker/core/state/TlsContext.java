@@ -11,10 +11,10 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -37,12 +37,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -66,6 +66,9 @@ public class TlsContext {
      * related
      */
     private Config config;
+
+    private List<Session> sessionList;
+    private HttpContext httpContext;
     /**
      * shared key established during the handshake
      */
@@ -363,11 +366,14 @@ public class TlsContext {
 
     public TlsContext() {
         this(Config.createConfig());
+        httpContext = new HttpContext();
     }
 
     public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
+        httpContext = new HttpContext();
+        this.sessionList = new LinkedList<>();
     }
 
     public Chooser getChooser() {
@@ -375,6 +381,39 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this);
         }
         return chooser;
+    }
+
+    public HttpContext getHttpContext() {
+        return httpContext;
+    }
+
+    public void setHttpContext(HttpContext httpContext) {
+        this.httpContext = httpContext;
+    }
+
+    public Session getSession(byte[] sessionId) {
+        for (Session session : sessionList) {
+            if (Arrays.equals(session.getSessionId(), sessionId)) {
+                return session;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasSession(byte[] sessionId) {
+        return getSession(sessionId) != null;
+    }
+
+    public void addNewSession(Session session) {
+        sessionList.add(session);
+    }
+
+    public List<Session> getSessionList() {
+        return sessionList;
+    }
+
+    public void setSessionList(List<Session> sessionList) {
+        this.sessionList = sessionList;
     }
 
     public byte[] getLastClientVerifyData() {

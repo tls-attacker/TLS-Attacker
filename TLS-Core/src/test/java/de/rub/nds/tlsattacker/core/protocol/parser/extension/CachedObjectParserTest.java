@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.CachedInfoType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.Collection;

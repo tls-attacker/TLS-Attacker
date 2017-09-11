@@ -74,8 +74,8 @@ public class ServerHelloMessagePreparatorTest {
         assertArrayEquals(ProtocolVersion.TLS11.getValue(), message.getProtocolVersion().getValue());
         assertArrayEquals(ArrayConverter.longToUint32Bytes(12345l), message.getUnixTime().getValue());
         LOGGER.info(ArrayConverter.bytesToHexString(message.getRandom().getValue()));
-        assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C"),
+        assertArrayEquals(ArrayConverter.concatenate(ArrayConverter.longToUint32Bytes(12345l),
+                ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BF6C92DA33AF01D4FB770E98C")),
                 message.getRandom().getValue());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("000102030405"), message.getSessionId().getValue());
         assertTrue(6 == message.getSessionIdLength().getValue());

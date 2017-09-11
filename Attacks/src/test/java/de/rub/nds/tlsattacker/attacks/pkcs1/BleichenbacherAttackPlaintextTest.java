@@ -31,7 +31,7 @@ public class BleichenbacherAttackPlaintextTest {
 
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
-    private TlsContext context;
+    private TlsContext context = new TlsContext();
 
     @Test
     public void testBleichenbacherAttack() throws Exception {

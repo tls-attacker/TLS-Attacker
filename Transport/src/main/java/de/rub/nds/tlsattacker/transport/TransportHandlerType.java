@@ -19,6 +19,7 @@ public enum TransportHandlerType {
     NON_BLOCKING_TCP,
     STREAM,
     TCP_TIMING,
-    UDP_TIMING
+    UDP_TIMING,
+    TCP_NO_DELAY,
 
 }
