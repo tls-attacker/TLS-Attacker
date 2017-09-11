@@ -29,6 +29,13 @@ public class ServerTcpTransportHandler extends TransportHandler {
         this.port = port;
     }
 
+    public ServerTcpTransportHandler(long timeout, ServerSocket serverSocket) throws IOException {
+        super(timeout, ConnectionEndType.SERVER);
+        this.port = serverSocket.getLocalPort();
+        this.serverSocket = serverSocket;
+        initialize();
+    }
+
     public void closeServerSocket() throws IOException {
         if (serverSocket != null) {
             serverSocket.close();
@@ -72,4 +79,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
         }
     }
 
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
 }
