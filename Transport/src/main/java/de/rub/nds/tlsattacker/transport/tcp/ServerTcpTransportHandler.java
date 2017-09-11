@@ -59,12 +59,12 @@ public class ServerTcpTransportHandler extends TransportHandler {
     @Override
     public boolean isClosed() throws IOException {
         if (isInitialized()) {
-            if (socket != null && socket.isClosed()) {
+            if (socket != null && (socket.isClosed() || socket.isInputShutdown())) {
                 if (serverSocket.isClosed()) {
                     return true;
-                } else if (socket == null && serverSocket.isClosed()) {
-                    return true;
                 }
+            } else if (socket == null && serverSocket.isClosed()) {
+                return true;
             }
             return false;
         } else {
