@@ -22,24 +22,22 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
 
     private final HeartbeatMessage msg;
-    private TlsContext context;
 
     public HeartbeatMessagePreparator(Chooser chooser, HeartbeatMessage message) {
         super(chooser, message);
         this.msg = message;
-        context = new TlsContext();
     }
 
     private byte[] generatePayload() {
         byte[] payload = new byte[chooser.getConfig().getHeartbeatPayloadLength()];
-        context.getRandom().nextBytes(payload);
+        chooser.getContext().getRandom().nextBytes(payload);
         return payload;
     }
 
     private byte[] generatePadding() {
         int paddingLength = chooser.getConfig().getHeartbeatPaddingLength();
         byte[] padding = new byte[paddingLength];
-        context.getRandom().nextBytes(padding);
+        chooser.getContext().getRandom().nextBytes(padding);
         return padding;
     }
 

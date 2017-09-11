@@ -30,7 +30,7 @@ import org.junit.Test;
 public class BleichenbacherAttackPlaintextTest {
 
     private static final int PREMASTER_SECRET_LENGTH = 48;
-    
+
     private TlsContext context;
 
     @Test
@@ -39,7 +39,7 @@ public class BleichenbacherAttackPlaintextTest {
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         context.getBadSecureRandom().setSeed(0);
-        keyPairGenerator.initialize(2048, RandomHelper.getBadSecureRandom());
+        keyPairGenerator.initialize(2048, context.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 
         SecureRandom sr = new SecureRandom();

@@ -21,13 +21,10 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<HelloVerifyRequestMessage> {
 
     private final HelloVerifyRequestMessage msg;
-    private TlsContext tlsContext;
 
-    public HelloVerifyRequestPreparator(Chooser context, HelloVerifyRequestMessage message) {
-        super(context, message);
+    public HelloVerifyRequestPreparator(Chooser chooser, HelloVerifyRequestMessage message) {
+        super(chooser, message);
         this.msg = message;
-        tlsContext = new TlsContext();
-
     }
 
     @Override
@@ -41,7 +38,7 @@ public class HelloVerifyRequestPreparator extends HandshakeMessagePreparator<Hel
 
     private byte[] generateCookie() {
         byte[] cookie = new byte[chooser.getConfig().getDefaultDTLSCookieLength()];
-        tlsContext.getRandom().nextBytes(cookie);
+        chooser.getContext().getRandom().nextBytes(cookie);
         return cookie;
     }
 

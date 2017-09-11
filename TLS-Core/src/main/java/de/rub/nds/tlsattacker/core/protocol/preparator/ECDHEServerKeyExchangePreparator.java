@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -44,12 +43,10 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     private final ECDHEServerKeyExchangeMessage msg;
     private ECPublicKeyParameters pubEcParams;
     private ECPrivateKeyParameters privEcParams;
-    private TlsContext context;
 
     public ECDHEServerKeyExchangePreparator(Chooser chooser, ECDHEServerKeyExchangeMessage msg) {
         super(chooser, msg);
         this.msg = msg;
-        context = new TlsContext();
     }
 
     @Override
@@ -62,7 +59,8 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         prepareNamedCurve(msg);
 
         ECDomainParameters ecParams = generateEcParameters(msg);
-        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(context.getBadSecureRandom(), ecParams);
+        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(chooser.getContext().getBadSecureRandom(),
+                ecParams);
 
         pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
         privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();

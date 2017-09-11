@@ -27,12 +27,10 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
 
     private final HelloMessage msg;
-    private TlsContext context;
 
     public HelloMessagePreparator(Chooser chooser, HelloMessage message) {
         super(chooser, message);
         this.msg = message;
-        context = new TlsContext();
     }
 
     protected void prepareRandom(ProtocolVersion version) {
@@ -42,7 +40,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         } else {
             random = new byte[HandshakeByteLength.RANDOM];
         }
-        context.getRandom().nextBytes(random);
+        chooser.getContext().getRandom().nextBytes(random);
         msg.setRandom(random);
         LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
     }

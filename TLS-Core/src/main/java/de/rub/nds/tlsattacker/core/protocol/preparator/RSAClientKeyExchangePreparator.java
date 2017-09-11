@@ -32,13 +32,11 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private byte[] clientRandom;
     private byte[] masterSecret;
     private byte[] encrypted;
-    private TlsContext context;
     private final RSAClientKeyExchangeMessage msg;
 
     public RSAClientKeyExchangePreparator(Chooser chooser, RSAClientKeyExchangeMessage message) {
         super(chooser, message);
         this.msg = message;
-        context = new TlsContext();
     }
 
     @Override
@@ -49,7 +47,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         // the number of random bytes in the pkcs1 message
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
         padding = new byte[randomByteLength];
-        context.getRandom().nextBytes(padding);
+        chooser.getContext().getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(msg);
         premasterSecret = generatePremasterSecret();
@@ -73,7 +71,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-        context.getRandom().nextBytes(tempPremasterSecret);
+        chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
         tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
         tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
         return tempPremasterSecret;

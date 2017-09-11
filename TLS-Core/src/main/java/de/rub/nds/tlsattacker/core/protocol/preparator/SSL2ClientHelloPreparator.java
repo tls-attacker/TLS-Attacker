@@ -23,12 +23,10 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
 
     private final SSL2ClientHelloMessage message;
-    private TlsContext context;
 
     public SSL2ClientHelloPreparator(Chooser chooser, SSL2ClientHelloMessage message) {
         super(chooser, message);
         this.message = message;
-        context = new TlsContext();
     }
 
     @Override
@@ -39,7 +37,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
         // By Default we just set a fixed value with ssl2 ciphersuites
         prepareCipherSuites(message);
         byte[] challenge = new byte[16];
-        context.getRandom().nextBytes(challenge);
+        chooser.getContext().getRandom().nextBytes(challenge);
         prepareChallenge(message, challenge);
         prepareSessionID(message);
         prepareSessionIDLength(message);
