@@ -40,6 +40,8 @@ public abstract class TransportHandler {
 
     public abstract void closeConnection() throws IOException;
 
+    public abstract void closeClientConnection() throws IOException;
+
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         long minTimeMillies = System.currentTimeMillis() + timeout;

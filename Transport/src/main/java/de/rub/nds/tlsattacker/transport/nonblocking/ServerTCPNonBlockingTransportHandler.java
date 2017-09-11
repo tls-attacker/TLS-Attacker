@@ -113,4 +113,11 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             throw new IOException("Transporthandler is not initalized!");
         }
     }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        if (clientSocket != null && !clientSocket.isClosed()) {
+            clientSocket.close();
+        }
+    }
 }

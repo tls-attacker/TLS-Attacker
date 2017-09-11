@@ -59,4 +59,9 @@ public class ClientUdpTransportHandler extends TransportHandler {
     public boolean isClosed() throws IOException {
         return socket.isClosed();
     }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
+    }
 }

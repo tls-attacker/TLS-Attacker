@@ -65,4 +65,18 @@ public class FakeTransportHandler extends TransportHandler {
         return false;
     }
 
+    @Override
+    public void closeClientConnection() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
 }

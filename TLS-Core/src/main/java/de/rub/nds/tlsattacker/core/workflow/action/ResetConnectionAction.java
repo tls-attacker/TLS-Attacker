@@ -25,7 +25,7 @@ public class ResetConnectionAction extends TLSAction {
     @Override
     public void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException {
         LOGGER.info("Terminating Connection");
-        tlsContext.getTransportHandler().closeConnection();
+        tlsContext.getTransportHandler().closeClientConnection();
         LOGGER.info("Resseting Cipher");
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
         tlsContext.getRecordLayer().updateDecryptionCipher();

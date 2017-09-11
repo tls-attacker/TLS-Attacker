@@ -71,4 +71,17 @@ public class StreamTransportHandler extends TransportHandler {
         return closed;
     }
 
+    @Override
+    public void closeClientConnection() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
 }

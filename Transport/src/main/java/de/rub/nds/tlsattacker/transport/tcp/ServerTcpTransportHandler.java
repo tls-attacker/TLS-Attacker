@@ -82,4 +82,11 @@ public class ServerTcpTransportHandler extends TransportHandler {
     public ServerSocket getServerSocket() {
         return serverSocket;
     }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
+        }
+    }
 }

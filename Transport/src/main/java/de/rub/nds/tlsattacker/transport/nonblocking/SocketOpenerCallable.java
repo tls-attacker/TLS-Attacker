@@ -37,6 +37,8 @@ public class SocketOpenerCallable implements Callable<Socket> {
                     return socket;
                 }
             } catch (IOException E) {
+                E.printStackTrace();
+                return null;
             }
         }
     }
