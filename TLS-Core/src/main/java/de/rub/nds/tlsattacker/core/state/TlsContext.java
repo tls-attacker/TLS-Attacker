@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -356,8 +357,6 @@ public class TlsContext {
     private byte[] lastServerVerifyData;
 
     private Random random;
-
-    private SecureRandom badSecureRandom;
 
     @XmlTransient
     private Chooser chooser;
@@ -1209,14 +1208,7 @@ public class TlsContext {
         this.random = random;
     }
 
-    public SecureRandom getBadSecureRandom() {
-        if (badSecureRandom == null) {
-            badSecureRandom = new SecureRandom();
-        }
-        return badSecureRandom;
-    }
-
-    public void setBadRandom(SecureRandom badSecureRandom) {
-        this.badSecureRandom = badSecureRandom;
+    public BadRandom getBadSecureRandom() {
+        return new BadRandom(getRandom(), null);
     }
 }

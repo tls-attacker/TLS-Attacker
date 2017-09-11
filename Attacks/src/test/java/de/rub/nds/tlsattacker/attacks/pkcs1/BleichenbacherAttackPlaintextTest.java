@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -29,13 +30,15 @@ import org.junit.Test;
 public class BleichenbacherAttackPlaintextTest {
 
     private static final int PREMASTER_SECRET_LENGTH = 48;
+    
+    private TlsContext context;
 
     @Test
     public void testBleichenbacherAttack() throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        RandomHelper.getBadSecureRandom().setSeed(0);
+        context.getBadSecureRandom().setSeed(0);
         keyPairGenerator.initialize(2048, RandomHelper.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 

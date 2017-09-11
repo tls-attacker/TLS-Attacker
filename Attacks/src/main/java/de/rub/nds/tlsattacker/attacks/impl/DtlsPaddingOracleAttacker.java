@@ -146,7 +146,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private long[] executeAttackRound() throws IOException {
         byte[] roundMessageData = new byte[config.getTrainMessageSize()];
-        RandomHelper.getRandom().nextBytes(roundMessageData);
+        tlsContext.getRandom().nextBytes(roundMessageData);
         HeartbeatMessage sentHbMessage = new HeartbeatMessage(tlsConfig);
         HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(tlsContext.getChooser(), sentHbMessage);
         preparator.prepare();
