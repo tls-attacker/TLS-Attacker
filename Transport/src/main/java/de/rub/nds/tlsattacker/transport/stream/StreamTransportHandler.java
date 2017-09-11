@@ -24,6 +24,8 @@ public class StreamTransportHandler extends TransportHandler {
 
     private final OutputStream outputStream;
 
+    private boolean closed = false;
+
     public StreamTransportHandler(long timeout, ConnectionEndType type, InputStream inputStream,
             OutputStream outputStream) {
         super(timeout, type);
@@ -63,4 +65,10 @@ public class StreamTransportHandler extends TransportHandler {
     public OutputStream getOutputStream() {
         return outputStream;
     }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return closed;
+    }
+
 }

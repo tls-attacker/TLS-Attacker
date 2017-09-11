@@ -60,4 +60,9 @@ public class FakeTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
     }
 
+    @Override
+    public boolean isClosed() throws IOException {
+        return false;
+    }
+
 }

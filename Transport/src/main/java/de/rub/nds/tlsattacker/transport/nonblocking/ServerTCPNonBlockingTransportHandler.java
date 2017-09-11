@@ -52,7 +52,6 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
         if (clientSocket != null) {
             clientSocket.close();
         }
-        closed = true;
     }
 
     @Override
@@ -96,6 +95,22 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             LOGGER.debug(ex);
         } catch (TimeoutException ex) {
             Logger.getLogger(ServerTCPNonBlockingTransportHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        if (isInitialized()) {
+            if (clientSocket != null && clientSocket.isClosed()) {
+                if (serverSocket.isClosed()) {
+                    return true;
+                } else if (clientSocket == null && serverSocket.isClosed()) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            throw new IOException("Transporthandler is not initalized!");
         }
     }
 }

@@ -36,7 +36,6 @@ public class ServerUdpTransportHandler extends TransportHandler {
         socket.close();
         inStream.close();
         outStream.close();
-        closed = true;
     }
 
     @Override
@@ -44,6 +43,11 @@ public class ServerUdpTransportHandler extends TransportHandler {
         socket = new DatagramSocket();
         socket.setSoTimeout((int) getTimeout());
         setStreams(new UdpInputStream(socket), new UdpOutputStream(socket));
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed();
     }
 
 }

@@ -38,7 +38,6 @@ public class ClientUdpTransportHandler extends TransportHandler {
         socket.close();
         inStream.close();
         outStream.close();
-        closed = true;
     }
 
     @Override
@@ -54,5 +53,10 @@ public class ClientUdpTransportHandler extends TransportHandler {
             return socket.getLocalPort();
         }
         throw new IOException("Cannot retrieve local Port. Socket not connected");
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed();
     }
 }

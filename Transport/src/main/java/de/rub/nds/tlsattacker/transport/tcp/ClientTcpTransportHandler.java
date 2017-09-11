@@ -35,12 +35,16 @@ public class ClientTcpTransportHandler extends TransportHandler {
             throw new IOException("Transporthandler is not initalized!");
         }
         socket.close();
-        closed = true;
     }
 
     @Override
     public void initialize() throws IOException {
         socket = new Socket(hostname, port);
         setStreams(socket.getInputStream(), socket.getOutputStream());
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed();
     }
 }

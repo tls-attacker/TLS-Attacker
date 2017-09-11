@@ -45,7 +45,6 @@ public class ServerTcpTransportHandler extends TransportHandler {
         } else {
             throw new IOException("TransportHandler not initialised");
         }
-        closed = true;
     }
 
     @Override
@@ -55,6 +54,22 @@ public class ServerTcpTransportHandler extends TransportHandler {
         }
         socket = serverSocket.accept();
         setStreams(socket.getInputStream(), socket.getOutputStream());
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        if (isInitialized()) {
+            if (socket != null && socket.isClosed()) {
+                if (serverSocket.isClosed()) {
+                    return true;
+                } else if (socket == null && serverSocket.isClosed()) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            throw new IOException("Transporthandler is not initalized!");
+        }
     }
 
 }

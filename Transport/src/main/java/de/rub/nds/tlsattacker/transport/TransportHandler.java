@@ -33,8 +33,6 @@ public abstract class TransportHandler {
 
     private final ConnectionEndType type;
 
-    protected boolean closed = false;
-
     public TransportHandler(long timeout, ConnectionEndType type) {
         this.timeout = timeout;
         this.type = type;
@@ -74,9 +72,7 @@ public abstract class TransportHandler {
         return initialized;
     }
 
-    public boolean isClosed() {
-        return closed;
-    }
+    public abstract boolean isClosed() throws IOException;
 
     public long getTimeout() {
         return timeout;
