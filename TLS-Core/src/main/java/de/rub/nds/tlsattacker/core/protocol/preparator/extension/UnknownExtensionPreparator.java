@@ -28,9 +28,22 @@ public class UnknownExtensionPreparator extends ExtensionPreparator<UnknownExten
 
     @Override
     public void prepareExtensionContent() {
-        msg.setExtensionData(msg.getDataConfig());
-        msg.setExtensionType(msg.getTypeConfig());
-        msg.setExtensionLength(msg.getLengthConfig());
+
+        if (msg.getDataConfig() != null) {
+            msg.setExtensionData(msg.getDataConfig());
+        } else {
+            msg.setExtensionData(new byte[]{});
+        }
+        if (msg.getTypeConfig() != null) {
+            msg.setExtensionType(msg.getTypeConfig());
+        } else {
+            msg.setExtensionType(new byte[]{});
+        }
+        if (msg.getLengthConfig() != null) {
+            msg.setExtensionLength(msg.getLengthConfig());
+        } else {
+            msg.setExtensionLength(msg.getExtensionData().getValue().length);
+        }
     }
 
 }
