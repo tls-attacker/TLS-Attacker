@@ -34,7 +34,7 @@ import javax.crypto.Mac;
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
  * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
- * 
+ *
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
@@ -71,7 +71,9 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             // The server has only one key
-            context.setServerKSEntry(ksEntryList.get(0));
+            if (ksEntryList.size() > 0) {
+                context.setServerKSEntry(ksEntryList.get(0));
+            }
             adjustHandshakeTrafficSecrets();
         } else {
             context.setClientKSEntryList(ksEntryList);
@@ -128,7 +130,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     /**
      * Computes the shared secret for ECDH_X25519
-     * 
+     *
      * @return
      */
     private byte[] computeSharedSecretECDH(KSEntry keyShare) {
