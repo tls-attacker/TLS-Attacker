@@ -20,22 +20,21 @@ import java.util.*;
  * forbidden.
  */
 
-public class MultiReceiveAction extends ReceiveAction {
+public class MultiReceiveAction extends GenericReceiveAction {
 
     private List<ReceiveAction> expectedActionCandidates;
     @XmlTransient
     private ReceiveAction selectedAction;
 
     public MultiReceiveAction() {
+        super.messages = null;
+        super.records = null;
     }
 
     public MultiReceiveAction(ReceiveAction... receiveActions) {
         this.expectedActionCandidates = Arrays.asList(receiveActions);
-    }
-
-    @Override
-    public List<ProtocolMessage> getExpectedMessages() {
-        return selectedAction.getExpectedMessages();
+        super.messages = null;
+        super.records = null;
     }
 
     @Override
