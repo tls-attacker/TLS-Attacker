@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.workflow.factory;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -26,14 +29,22 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,11 +75,19 @@ public class WorkflowConfigurationFactory {
             case HANDSHAKE:
                 return createHandshakeWorkflow();
             case SHORT_HELLO:
-                return createShortHello();
-            case RENEGOTIATION:
-                return new WorkflowTrace(); // TODO add real workflow
+                return createShortHelloWorkflow();
+            case SSL2_HELLO:
+                return createSsl2HelloWorkflow();
+            case CLIENT_RENEGOTIATION:
+                return createClientRenegotiationWorkflow();
+            case SERVER_RENEGOTIATION:
+                return createServerRenegotiationWorkflow();
+            case HTTPS:
+                return createHttpsWorkflow();
             case RESUMPTION:
-                return new WorkflowTrace(); // TODO add real workflow
+                return createResumptionWorkflow();
+            case FULL_RESUMPTION:
+                return createFullResumptionWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -126,7 +145,7 @@ public class WorkflowConfigurationFactory {
             } else {
                 messages.add(new CertificateMessage(config));
             }
-            if (config.getDefaultClientSupportedCiphersuites().get(0).isEphemeral()) {
+            if (config.getDefaultSelectedCipherSuite().isEphemeral()) {
                 addServerKeyExchangeMessage(messages);
             }
             if (config.isClientAuthentication()) {
@@ -169,59 +188,61 @@ public class WorkflowConfigurationFactory {
                     ConnectionEndType.SERVER, messages));
         }
         return workflowTrace;
-
     }
 
     private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
-        switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
-            case RSA:
-                messages.add(new RSAClientKeyExchangeMessage(config));
-                break;
-            case ECDHE_ECDSA:
-            case ECDH_ECDSA:
-            case ECDH_RSA:
-            case ECDHE_RSA:
-                messages.add(new ECDHClientKeyExchangeMessage(config));
-                break;
-            case DHE_DSS:
-            case DHE_RSA:
-            case DH_ANON:
-            case DH_DSS:
-            case DH_RSA:
-                messages.add(new DHClientKeyExchangeMessage(config));
-                break;
-            case PSK:
-                messages.add(new PSKClientKeyExchangeMessage(config));
-            default:
-                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
-                        + ", not adding ClientKeyExchange Message");
-                break;
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        if (algorithm != null) {
+
+            switch (algorithm) {
+                case RSA:
+                    messages.add(new RSAClientKeyExchangeMessage(config));
+                    break;
+                case ECDHE_ECDSA:
+                case ECDH_ECDSA:
+                case ECDH_RSA:
+                case ECDHE_RSA:
+                    messages.add(new ECDHClientKeyExchangeMessage(config));
+                    break;
+                case DHE_DSS:
+                case DHE_RSA:
+                case DH_ANON:
+                case DH_DSS:
+                case DH_RSA:
+                    messages.add(new DHClientKeyExchangeMessage(config));
+                    break;
+                case PSK:
+                    messages.add(new PSKClientKeyExchangeMessage(config));
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
+                            + ", not adding ClientKeyExchange Message");
+                    break;
+            }
+        } else {
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not adding ClientKeyExchange Message");
         }
     }
 
     private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultClientSupportedCiphersuites().get(0);
-        switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
-            case RSA:
-                break;
-            case ECDHE_ECDSA:
-            case ECDH_ECDSA:
-            case ECDH_RSA:
-            case ECDHE_RSA:
-                messages.add(new ECDHEServerKeyExchangeMessage(config));
-                break;
-            case DHE_DSS:
-            case DHE_RSA:
-            case DH_ANON:
-            case DH_DSS:
-            case DH_RSA:
-                messages.add(new DHEServerKeyExchangeMessage(config));
-                break;
-            default:
-                LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
-                        + ", not adding ServerKeyExchange Message");
-                break;
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        if (cs.isEphemeral()) {
+            switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
+                case ECDHE_ECDSA:
+                case ECDHE_RSA:
+                    messages.add(new ECDHEServerKeyExchangeMessage(config));
+                    break;
+                case DHE_DSS:
+                case DHE_RSA:
+                    messages.add(new DHEServerKeyExchangeMessage(config));
+                    break;
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+                            + ", not adding ServerKeyExchange Message");
+                    break;
+            }
+        } else {
+            LOGGER.debug("Not adding ServerKeyExchange message - " + cs.name() + " is not an Ephermaral Ciphersuite");
         }
     }
 
@@ -257,12 +278,84 @@ public class WorkflowConfigurationFactory {
         return workflowTrace;
     }
 
-    private WorkflowTrace createShortHello() {
+    private WorkflowTrace createShortHelloWorkflow() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
                 new ServerHelloMessage(config)));
+        return trace;
+    }
+
+    private WorkflowTrace createSsl2HelloWorkflow() {
+        WorkflowTrace trace = new WorkflowTrace();
+        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
+                ConnectionEndType.CLIENT, new SSL2ClientHelloMessage(config));
+        action.setRecords(new BlobRecord());
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                new SSL2ServerHelloMessage(config));
+        action.setRecords(new BlobRecord());
+        trace.addTlsAction(action);
+        return trace;
+    }
+
+    private WorkflowTrace createFullResumptionWorkflow() {
+        WorkflowTrace trace = this.createHandshakeWorkflow();
+        trace.addTlsAction(new ResetConnectionAction());
+        WorkflowTrace tempTrace = this.createResumptionWorkflow();
+        for (TLSAction resumption : tempTrace.getTlsActions()) {
+            trace.addTlsAction(resumption);
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createResumptionWorkflow() {
+        WorkflowTrace trace = new WorkflowTrace();
+        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
+                ConnectionEndType.CLIENT, new ClientHelloMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                new ServerHelloMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
+                new ChangeCipherSpecMessage(config), new FinishedMessage(config));
+        trace.addTlsAction(action);
+
+        return trace;
+    }
+
+    private WorkflowTrace createClientRenegotiationWorkflow() {
+        WorkflowTrace trace = this.createHandshakeWorkflow();
+        trace.addTlsAction(new RenegotiationAction());
+        WorkflowTrace renegotiationTrace = this.createHandshakeWorkflow();
+        for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createServerRenegotiationWorkflow() {
+        WorkflowTrace trace = this.createHandshakeWorkflow();
+        WorkflowTrace renegotiationTrace = this.createHandshakeWorkflow();
+        trace.addTlsAction(new RenegotiationAction());
+        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
+                ConnectionEndType.SERVER, new HelloRequestMessage(config));
+        trace.addTlsAction(action);
+        for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
+        return trace;
+    }
+
+    private WorkflowTrace createHttpsWorkflow() {
+        WorkflowTrace trace = createHandshakeWorkflow();
+        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
+                ConnectionEndType.CLIENT, new HttpsRequestMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+                new HttpsResponseMessage(config));
+        trace.addTlsAction(action);
         return trace;
     }
 }

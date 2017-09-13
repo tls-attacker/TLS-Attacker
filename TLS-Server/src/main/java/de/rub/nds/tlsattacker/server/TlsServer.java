@@ -22,13 +22,13 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsServer {
 
-    private static final Logger LOGGER = LogManager.getLogger("TlsServer");
+    private static final Logger LOGGER = LogManager.getLogger(TlsServer.class.getName());
 
     // TODO rename method
     public void startTlsServer(Config config) {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

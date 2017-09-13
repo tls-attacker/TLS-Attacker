@@ -21,14 +21,13 @@ import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -68,12 +67,12 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
@@ -106,7 +105,7 @@ public class RealDirectMessageECOracle extends ECOracle {
             numberOfQueries++;
         }
 
-        if (!tlsContext.getWorkflowTrace().configuredLooksLikeActual()) {
+        if (!tlsContext.getWorkflowTrace().executedAsPlanned()) {
             valid = false;
         }
 
@@ -140,27 +139,20 @@ public class RealDirectMessageECOracle extends ECOracle {
      */
     private void executeValidWorkflowAndExtractCheckValues() {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
 
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
 
         workflowExecutor.executeWorkflow();
 
-        List<HandshakeMessage> clientKeyExchangeList = trace
-                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-        if (clientKeyExchangeList.isEmpty()) {
-            // TODO
-            throw new WorkflowExecutionException("Could not retrieve ECDH PublicKey");
-        } else {
-            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                    .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
-
-            // get public point base X and Y coordinates
-            BigInteger x = message.getPublicKeyBaseX().getValue();
-            BigInteger y = message.getPublicKeyBaseY().getValue();
-            checkPoint = new Point(x, y);
-            checkPMS = message.getComputations().getPremasterSecret().getValue();
-        }
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        // TODO Those values can be retrieved from the context
+        // get public point base X and Y coordinates
+        BigInteger x = message.getPublicKeyBaseX().getValue();
+        BigInteger y = message.getPublicKeyBaseY().getValue();
+        checkPoint = new Point(x, y);
+        checkPMS = message.getComputations().getPremasterSecret().getValue();
     }
 }

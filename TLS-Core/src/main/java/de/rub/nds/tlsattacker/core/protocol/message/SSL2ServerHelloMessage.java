@@ -13,8 +13,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -45,7 +47,7 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableInteger certificateLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger ciphersuitesLength;
+    private ModifiableInteger cipherSuitesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger sessionIDLength;
@@ -150,16 +152,16 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         this.certificateLength = certificateLength;
     }
 
-    public ModifiableInteger getCiphersuitesLength() {
-        return ciphersuitesLength;
+    public ModifiableInteger getCipherSuitesLength() {
+        return cipherSuitesLength;
     }
 
-    public void setCiphersuitesLength(ModifiableInteger ciphersuitesLength) {
-        this.ciphersuitesLength = ciphersuitesLength;
+    public void setCipherSuitesLength(ModifiableInteger cipherSuitesLength) {
+        this.cipherSuitesLength = cipherSuitesLength;
     }
 
-    public void setCiphersuitesLength(int ciphersuitesLength) {
-        this.ciphersuitesLength = ModifiableVariableFactory.safelySetValue(this.ciphersuitesLength, ciphersuitesLength);
+    public void setCipherSuitesLength(int cipherSuitesLength) {
+        this.cipherSuitesLength = ModifiableVariableFactory.safelySetValue(this.cipherSuitesLength, cipherSuitesLength);
     }
 
     public ModifiableInteger getSessionIDLength() {
@@ -213,7 +215,26 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        // TODO
+        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
+            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        }
+        if (getType() != null && getType().getValue() != null) {
+            sb.append("\n Type: ").append(getType().getValue());
+        }
+        if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
+            sb.append("\n Supported CipherSuites: ").append(
+                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        }
+        if (getSessionIdHit() != null && getSessionIdHit().getValue() != null) {
+            sb.append("\n SessionIdHit: ").append(getSessionIdHit().getValue());
+        }
+        if (getCertificate() != null && getCertificate().getValue() != null) {
+            sb.append("\n Certificate: ").append(ArrayConverter.bytesToHexString(getCertificate().getValue()));
+        }
+        if (getSessionID() != null && getSessionID().getValue() != null) {
+            sb.append("\n SessionID: ").append(ArrayConverter.bytesToHexString(getSessionID().getValue()));
+        }
         return sb.toString();
     }
 }

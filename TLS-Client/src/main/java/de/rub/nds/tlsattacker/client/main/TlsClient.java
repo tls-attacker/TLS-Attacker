@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsClient {
 
-    private static final Logger LOGGER = LogManager.getLogger("Client");
+    private static final Logger LOGGER = LogManager.getLogger(TlsClient.class.getName());
 
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
@@ -60,8 +60,8 @@ public class TlsClient {
 
     public void startTlsClient(Config config) {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
 
         try {
             workflowExecutor.executeWorkflow();

@@ -36,9 +36,6 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
-        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
-            prepareUnixTime();
-        }
         prepareRandom(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()));
         if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
             prepareSessionID();
@@ -54,8 +51,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     private void prepareCipherSuite() {
         if (chooser.getConfig().isEnforceSettings()) {
-            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultClientSupportedCiphersuites().get(0)
-                    .getByteValue());
+            msg.setSelectedCipherSuite(chooser.getConfig().getDefaultSelectedCipherSuite().getByteValue());
         } else {
             CipherSuite selectedSuite = null;
             for (CipherSuite suite : chooser.getConfig().getDefaultClientSupportedCiphersuites()) {

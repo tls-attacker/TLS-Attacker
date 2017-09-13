@@ -11,6 +11,9 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
+import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
+import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
@@ -21,19 +24,24 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
+import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -55,6 +63,9 @@ public class TlsContext {
      * related
      */
     private Config config;
+
+    private List<Session> sessionList;
+    private HttpContext httpContext;
     /**
      * shared key established during the handshake
      */
@@ -159,6 +170,12 @@ public class TlsContext {
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
 
+    private boolean isCachedInfoExtensionClientState;
+
+    private List<CachedObject> cachedInfoExtensionObjects;
+
+    private List<RequestItemV2> statusRequestV2RequestList;
+
     /**
      * These are the padding bytes as used in the padding extension.
      */
@@ -187,6 +204,66 @@ public class TlsContext {
      * This is the timestamp of the SignedCertificateTimestamp extension
      */
     private byte[] signedCertificateTimestamp;
+
+    /**
+     * This is the request type of the CertificateStatusRequest extension
+     */
+    private CertificateStatusRequestType certificateStatusRequestExtensionRequestType;
+
+    /**
+     * This is the responder ID list of the CertificateStatusRequest extension
+     */
+    private byte[] certificateStatusRequestExtensionResponderIDList;
+
+    /**
+     * This is the request extension of the CertificateStatusRequest extension
+     */
+    private byte[] certificateStatusRequestExtensionRequestExtension;
+
+    /**
+     * This is the user identifier of the SRP extension
+     */
+    private byte[] secureRemotePasswordExtensionIdentifier;
+
+    /**
+     * These are the protection profiles of the SRTP extension
+     */
+    private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
+
+    /**
+     * This is the master key identifier of the SRTP extension
+     */
+    private byte[] secureRealTimeProtocolMasterKeyIdentifier;
+
+    /**
+     * Is the truncated hmac extension present?
+     */
+    private boolean truncatedHmacExtensionIsPresent;
+
+    /**
+     * Is the encrypt then mac extension present?
+     */
+    private boolean encryptThenMacExtensionIsPresent;
+
+    /**
+     * Is the client certificate url extension present?
+     */
+    private boolean clientCertificateUrlExtensionIsPresent;
+
+    /**
+     * User mapping extension hint type
+     */
+    private UserMappingExtensionHintType userMappingExtensionHintType;
+
+    /**
+     * Client authz extension data format list
+     */
+    private List<AuthzDataFormat> clientAuthzDataFormatList;
+
+    /**
+     * Server authz extension data format list
+     */
+    private List<AuthzDataFormat> serverAuthzDataFormatList;
 
     private BigInteger dhGenerator;
 
@@ -257,24 +334,41 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
+    private boolean tokenBindingNegotiated = false;
+
+    private byte[] AlpnAnnouncedProtocols;
+
+    private List<CertificateType> certificateTypeClientDesiredTypes;
+
+    private List<CertificateType> serverCertificateTypeDesiredTypes;
+
+    private List<CertificateType> clientCertificateTypeDesiredTypes;
+
+    private List<TrustedAuthority> trustedCaIndicationExtensionCas;
+
     private SignatureAndHashAlgorithm selectedSignatureAndHashAlgorithm;
 
     private PRFAlgorithm prfAlgorithm;
+
+    private boolean isSecureRenegotiation = false;
+
+    private byte[] lastClientVerifyData;
+
+    private byte[] lastServerVerifyData;
 
     @XmlTransient
     private Chooser chooser;
 
     public TlsContext() {
         this(Config.createConfig());
+        httpContext = new HttpContext();
     }
 
     public TlsContext(Config config) {
         digest = new MessageDigestCollector();
         this.config = config;
-        // init lastRecordVersion for records
-        clientCertificateTypes = new LinkedList<>();
-        lastRecordVersion = config.getHighestProtocolVersion();
-        selectedProtocolVersion = config.getHighestProtocolVersion();
+        httpContext = new HttpContext();
+        this.sessionList = new LinkedList<>();
     }
 
     public Chooser getChooser() {
@@ -282,6 +376,71 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this);
         }
         return chooser;
+    }
+
+    public HttpContext getHttpContext() {
+        return httpContext;
+    }
+
+    public void setHttpContext(HttpContext httpContext) {
+        this.httpContext = httpContext;
+    }
+
+    public Session getSession(byte[] sessionId) {
+        for (Session session : sessionList) {
+            if (Arrays.equals(session.getSessionId(), sessionId)) {
+                return session;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasSession(byte[] sessionId) {
+        return getSession(sessionId) != null;
+    }
+
+    public void addNewSession(Session session) {
+        sessionList.add(session);
+    }
+
+    public List<Session> getSessionList() {
+        return sessionList;
+    }
+
+    public void setSessionList(List<Session> sessionList) {
+        this.sessionList = sessionList;
+    }
+
+    public byte[] getLastClientVerifyData() {
+        return lastClientVerifyData;
+    }
+
+    public void setLastClientVerifyData(byte[] lastClientVerifyData) {
+        this.lastClientVerifyData = lastClientVerifyData;
+    }
+
+    public byte[] getLastServerVerifyData() {
+        return lastServerVerifyData;
+    }
+
+    public void setLastServerVerifyData(byte[] lastServerVerifyData) {
+        this.lastServerVerifyData = lastServerVerifyData;
+    }
+
+    public List<CertificateType> getCertificateTypeClientDesiredTypes() {
+        return certificateTypeClientDesiredTypes;
+    }
+
+    public void setCertificateTypeClientDesiredTypes(List<CertificateType> certificateTypeClientDesiredTypes) {
+        this.certificateTypeClientDesiredTypes = certificateTypeClientDesiredTypes;
+    }
+
+    public boolean isIsSecureRenegotiation() {
+        return isSecureRenegotiation;
+    }
+
+    public void setIsSecureRenegotiation(boolean isSecureRenegotiation) {
+        this.isSecureRenegotiation = isSecureRenegotiation;
     }
 
     public List<ProtocolVersion> getClientSupportedProtocolVersions() {
@@ -872,6 +1031,114 @@ public class TlsContext {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
+    public void setTokenBindingNegotiated(boolean tokenBindingNegotiated) {
+        this.tokenBindingNegotiated = tokenBindingNegotiated;
+    }
+
+    public boolean isTokenBindingNegotiated() {
+        return tokenBindingNegotiated;
+    }
+
+    public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
+        return certificateStatusRequestExtensionRequestType;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestType(
+            CertificateStatusRequestType certificateStatusRequestExtensionRequestType) {
+        this.certificateStatusRequestExtensionRequestType = certificateStatusRequestExtensionRequestType;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionResponderIDList() {
+        return certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public void setCertificateStatusRequestExtensionResponderIDList(
+            byte[] certificateStatusRequestExtensionResponderIDList) {
+        this.certificateStatusRequestExtensionResponderIDList = certificateStatusRequestExtensionResponderIDList;
+    }
+
+    public byte[] getCertificateStatusRequestExtensionRequestExtension() {
+        return certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public void setCertificateStatusRequestExtensionRequestExtension(
+            byte[] certificateStatusRequestExtensionRequestExtension) {
+        this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
+    }
+
+    public byte[] getAlpnAnnouncedProtocols() {
+        return AlpnAnnouncedProtocols;
+    }
+
+    public void setAlpnAnnouncedProtocols(byte[] AlpnAnnouncedProtocols) {
+        this.AlpnAnnouncedProtocols = AlpnAnnouncedProtocols;
+    }
+
+    public byte[] getSecureRemotePasswordExtensionIdentifier() {
+        return secureRemotePasswordExtensionIdentifier;
+    }
+
+    public void setSecureRemotePasswordExtensionIdentifier(byte[] secureRemotePasswordExtensionIdentifier) {
+        this.secureRemotePasswordExtensionIdentifier = secureRemotePasswordExtensionIdentifier;
+    }
+
+    public List<SrtpProtectionProfiles> getSecureRealTimeTransportProtocolProtectionProfiles() {
+        return secureRealTimeTransportProtocolProtectionProfiles;
+    }
+
+    public void setSecureRealTimeTransportProtocolProtectionProfiles(
+            List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles) {
+        this.secureRealTimeTransportProtocolProtectionProfiles = secureRealTimeTransportProtocolProtectionProfiles;
+    }
+
+    public byte[] getSecureRealTimeProtocolMasterKeyIdentifier() {
+        return secureRealTimeProtocolMasterKeyIdentifier;
+    }
+
+    public void setSecureRealTimeProtocolMasterKeyIdentifier(byte[] secureRealTimeProtocolMasterKeyIdentifier) {
+        this.secureRealTimeProtocolMasterKeyIdentifier = secureRealTimeProtocolMasterKeyIdentifier;
+    }
+
+    public boolean isTruncatedHmacExtensionIsPresent() {
+        return truncatedHmacExtensionIsPresent;
+    }
+
+    public void setTruncatedHmacExtensionIsPresent(boolean truncatedHmacExtensionIsPresent) {
+        this.truncatedHmacExtensionIsPresent = truncatedHmacExtensionIsPresent;
+    }
+
+    public UserMappingExtensionHintType getUserMappingExtensionHintType() {
+        return userMappingExtensionHintType;
+    }
+
+    public void setUserMappingExtensionHintType(UserMappingExtensionHintType userMappingExtensionHintType) {
+        this.userMappingExtensionHintType = userMappingExtensionHintType;
+    }
+
+    public List<CertificateType> getCertificateTypeDesiredTypes() {
+        return certificateTypeClientDesiredTypes;
+    }
+
+    public void setCertificateTypeDesiredTypes(List<CertificateType> certificateTypeDesiredTypes) {
+        this.certificateTypeClientDesiredTypes = certificateTypeDesiredTypes;
+    }
+
+    public List<AuthzDataFormat> getClientAuthzDataFormatList() {
+        return clientAuthzDataFormatList;
+    }
+
+    public void setClientAuthzDataFormatList(List<AuthzDataFormat> clientAuthzDataFormatList) {
+        this.clientAuthzDataFormatList = clientAuthzDataFormatList;
+    }
+
+    public List<AuthzDataFormat> getServerAuthzDataFormatList() {
+        return serverAuthzDataFormatList;
+    }
+
+    public void setServerAuthzDataFormatList(List<AuthzDataFormat> serverAuthzDataFormatList) {
+        this.serverAuthzDataFormatList = serverAuthzDataFormatList;
+    }
+
     public void setTokenBindingKeyParameters(TokenBindingKeyParameters... tokenBindingKeyParameters) {
         this.tokenBindingKeyParameters = Arrays.asList(tokenBindingKeyParameters);
     }
@@ -882,6 +1149,70 @@ public class TlsContext {
 
     public void setCertificateRequestContext(byte[] certificateRequestContext) {
         this.certificateRequestContext = certificateRequestContext;
+    }
+
+    public List<CertificateType> getClientCertificateTypeDesiredTypes() {
+        return clientCertificateTypeDesiredTypes;
+    }
+
+    public void setClientCertificateTypeDesiredTypes(List<CertificateType> clientCertificateTypeDesiredTypes) {
+        this.clientCertificateTypeDesiredTypes = clientCertificateTypeDesiredTypes;
+    }
+
+    public List<CertificateType> getServerCertificateTypeDesiredTypes() {
+        return serverCertificateTypeDesiredTypes;
+    }
+
+    public void setServerCertificateTypeDesiredTypes(List<CertificateType> serverCertificateTypeDesiredTypes) {
+        this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
+    }
+
+    public boolean isEncryptThenMacExtensionIsPresent() {
+        return encryptThenMacExtensionIsPresent;
+    }
+
+    public void setEncryptThenMacExtensionIsPresent(boolean encryptThenMacExtensionIsPresent) {
+        this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
+    }
+
+    public boolean isIsCachedInfoExtensionClientState() {
+        return isCachedInfoExtensionClientState;
+    }
+
+    public void setIsCachedInfoExtensionClientState(boolean isCachedInfoExtensionClientState) {
+        this.isCachedInfoExtensionClientState = isCachedInfoExtensionClientState;
+    }
+
+    public List<CachedObject> getCachedInfoExtensionObjects() {
+        return cachedInfoExtensionObjects;
+    }
+
+    public void setCachedInfoExtensionObjects(List<CachedObject> cachedInfoExtensionObjects) {
+        this.cachedInfoExtensionObjects = cachedInfoExtensionObjects;
+    }
+
+    public boolean isClientCertificateUrlExtensionIsPresent() {
+        return clientCertificateUrlExtensionIsPresent;
+    }
+
+    public void setClientCertificateUrlExtensionIsPresent(boolean clientCertificateUrlExtensionIsPresent) {
+        this.clientCertificateUrlExtensionIsPresent = clientCertificateUrlExtensionIsPresent;
+    }
+
+    public List<TrustedAuthority> getTrustedCaIndicationExtensionCas() {
+        return trustedCaIndicationExtensionCas;
+    }
+
+    public void setTrustedCaIndicationExtensionCas(List<TrustedAuthority> trustedCaIndicationExtensionCas) {
+        this.trustedCaIndicationExtensionCas = trustedCaIndicationExtensionCas;
+    }
+
+    public List<RequestItemV2> getStatusRequestV2RequestList() {
+        return statusRequestV2RequestList;
+    }
+
+    public void setStatusRequestV2RequestList(List<RequestItemV2> statusRequestV2RequestList) {
+        this.statusRequestV2RequestList = statusRequestV2RequestList;
     }
 
     public BigInteger getServerRSAPrivateKey() {
@@ -899,4 +1230,5 @@ public class TlsContext {
     public void setClientRSAPrivateKey(BigInteger clientRSAPrivateKey) {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
+
 }

@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -120,8 +119,6 @@ public abstract class Chooser {
     public abstract byte[] getSessionTicketTLS();
 
     public abstract byte[] getSignedCertificateTimestamp();
-
-    public abstract byte[] getRenegotiationInfo();
 
     public abstract TokenBindingVersion getTokenBindingVersion();
 

@@ -68,12 +68,7 @@ public class HandshakeByteLength {
     /**
      * random length
      */
-    public static final int RANDOM = 28;
-
-    /**
-     * random length for TLS 1.3
-     */
-    public static final int RANDOM_TLS13 = 32;
+    public static final int RANDOM = 32;
 
     /**
      * length of the session id length field indicating the session id length
@@ -189,10 +184,10 @@ public class HandshakeByteLength {
      * Fragment length
      */
     public static final int DTLS_FRAGMENT_LENGTH = 3;
-    
-   /**
-    * Lenght of PSK_Identity
-    */
+
+    /**
+     * Lenght of PSK_Identity
+     */
     public static final int PSK_IDENTITY_LENGTH = 2;
 
     private HandshakeByteLength() {

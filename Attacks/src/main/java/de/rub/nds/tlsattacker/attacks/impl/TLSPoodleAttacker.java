@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -55,8 +54,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         Config tlsConfig = config.createConfig();
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), tlsContext);
         WorkflowTrace trace = tlsContext.getWorkflowTrace();
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
@@ -69,7 +68,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         SendAction sendAction = new SendAction(applicationMessage);
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);
-        sendAction.setConfiguredRecords(recordList);
+        sendAction.setRecords(recordList);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(sendAction);
         trace.addTlsAction(new ReceiveAction(alertMessage));
@@ -81,13 +80,12 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
             return null;
         }
         System.out.println(trace.toString());
-        if (trace.getActualReceivedProtocolMessagesOfType(ProtocolMessageType.ALERT).size() > 0) {
+        if (tlsContext.isReceivedFatalAlert()) {
             LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
-        } else if (!tlsContext.isReceivedFatalAlert()) {
+        } else {
             LOGGER.info("Vulnerable(?). The modified message padding was not identified, the server does NOT respond with an alert message");
             return true;
         }
-        return null;
     }
 }

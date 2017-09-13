@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -42,12 +41,16 @@ public abstract class TLSAction implements Serializable {
         this.executed = executed;
     }
 
-    public abstract void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException,
-            IOException;
+    public abstract void execute(TlsContext tlsContext) throws WorkflowExecutionException, IOException;
 
     public boolean isMessageAction() {
         return this instanceof MessageAction;
     }
+
+    /**
+     * Checks that the Action got executed as planned
+     */
+    public abstract boolean executedAsPlanned();
 
     public abstract void reset();
 }

@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -36,7 +37,7 @@ public class TlsAttackerSocketTest {
     public void setUp() {
         context = new TlsContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        transportHandler = new FakeTransportHandler();
+        transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
         context.setTransportHandler(transportHandler);
         socket = new TlsAttackerSocket(context);
         context.setRecordLayer(new TlsRecordLayer(context));

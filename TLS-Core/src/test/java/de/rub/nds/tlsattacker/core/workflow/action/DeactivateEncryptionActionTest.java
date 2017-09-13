@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -33,13 +32,11 @@ public class DeactivateEncryptionActionTest {
 
     private TlsContext tlsContext;
 
-    private ActionExecutorMock executor;
     private DeactivateEncryptionAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        executor = new ActionExecutorMock();
         tlsContext = new TlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
@@ -56,7 +53,7 @@ public class DeactivateEncryptionActionTest {
      */
     @Test
     public void testExecute() throws Exception {
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertTrue(action.isExecuted());
         // TODO Check that decryption is disabled
     }
@@ -67,11 +64,11 @@ public class DeactivateEncryptionActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(tlsContext);
         assertTrue(action.isExecuted());
     }
 

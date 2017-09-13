@@ -8,13 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- *
+ * 
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class TokenCalculator {
@@ -22,12 +23,12 @@ public class TokenCalculator {
     private TokenCalculator() {
     }
 
-    public static byte[] calculateEKM(TlsContext context, int length) {
-        byte[] masterSecret = context.getMasterSecret();
+    public static byte[] calculateEKM(Chooser chooser, int length) {
+        byte[] masterSecret = chooser.getMasterSecret();
         String label = TokenBindingLabel.TOKEN_LABEL;
-        byte[] clientServerRandom = context.getClientServerRandom();
-        PRFAlgorithm algorithm = AlgorithmResolver.getPRFAlgorithm(context.getSelectedProtocolVersion(),
-                context.getSelectedCipherSuite());
+        byte[] clientServerRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        PRFAlgorithm algorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                chooser.getSelectedCipherSuite());
         return PseudoRandomFunction.compute(algorithm, masterSecret, label, clientServerRandom, length);
     }
 

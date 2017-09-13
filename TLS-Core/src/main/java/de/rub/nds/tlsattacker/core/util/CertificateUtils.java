@@ -49,16 +49,25 @@ public class CertificateUtils {
     }
 
     public static boolean hasDHParameters(Certificate cert) {
+        if (cert.isEmpty()) {
+            return false;
+        }
         SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         return keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.dhpublicnumber);
     }
 
     public static boolean hasECParameters(Certificate cert) {
+        if (cert.isEmpty()) {
+            return false;
+        }
         SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
         return keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey);
     }
 
     public static boolean hasRSAParameters(Certificate cert) {
+        if (cert.isEmpty()) {
+            return false;
+        }
         PublicKey key = parsePublicKey(cert);
         return key != null && key instanceof RSAPublicKey;
     }

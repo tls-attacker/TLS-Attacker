@@ -25,9 +25,9 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
  */
-public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
+public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> extends Handler<Message> {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Handler");
+    protected static final Logger LOGGER = LogManager.getLogger(ProtocolMessageHandler.class.getName());
 
     /**
      * tls context
@@ -97,10 +97,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 
+    @Override
     public abstract ProtocolMessageParser getParser(byte[] message, int pointer);
 
+    @Override
     public abstract ProtocolMessagePreparator getPreparator(Message message);
 
+    @Override
     public abstract ProtocolMessageSerializer getSerializer(Message message);
 
     /**
@@ -114,5 +117,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);
         prep.prepareAfterParse();
+    }
+
+    @Override
+    protected final void adjustContext(Message message) {
+        adjustTLSContext(message);
     }
 }

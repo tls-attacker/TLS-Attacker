@@ -56,16 +56,16 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private byte[] generatePremasterSecret() {
         outputStream = new ByteArrayOutputStream();
         try {
-            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength()/8, 2));
-            outputStream.write(ArrayConverter.intToBytes(0, chooser.getConfig().getDefaultPSKKey().bitLength()/8));
-            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength()/8, 2));
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength() / 8, 2));
+            outputStream.write(ArrayConverter.intToBytes(0, chooser.getConfig().getDefaultPSKKey().bitLength() / 8));
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength() / 8, 2));
             outputStream.write(chooser.getConfig().getDefaultPSKKey().toByteArray());
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
             LOGGER.debug(ex);
         }
-       byte[] tempPremasterSecret = outputStream.toByteArray();
-       return tempPremasterSecret; 
+        byte[] tempPremasterSecret = outputStream.toByteArray();
+        return tempPremasterSecret;
     }
 
     private void preparePremasterSecret(PSKClientKeyExchangeMessage msg) {
@@ -76,16 +76,7 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     @Override
     public void prepareAfterParse() {
-        // Decrypt premaster secret
         msg.prepareComputations();
-       // byte[] paddedPremasterSecret = decryptPremasterSecret();
-       // LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
-
-        int keyByteLength = chooser.getRsaModulus().bitLength() / 8;
-        // the number of random bytes in the pkcs1 message
-        int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
-        //premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength, paddedPremasterSecret.length);
-       // LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
         preparePremasterSecret(msg);
     }
 }

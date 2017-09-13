@@ -76,7 +76,11 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     private void adjustClientSupportedCipherSuites(ClientHelloMessage message) {
         List<CipherSuite> suiteList = convertCipherSuites(message.getCipherSuites().getValue());
         tlsContext.setClientSupportedCiphersuites(suiteList);
-        LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
+        if (suiteList != null) {
+            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + suiteList.toString());
+        } else {
+            LOGGER.debug("Set ClientSupportedCiphersuites in Context to " + null);
+        }
     }
 
     private void adjustClientSupportedCompressions(ClientHelloMessage message) {
@@ -109,16 +113,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustRandomContext(ClientHelloMessage message) {
-        if (message.getUnixTime() != null && message.getUnixTime().getValue() != null) {
-            setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
-        } else {
-            tlsContext.setClientRandom(message.getRandom().getValue());
-        }
+        tlsContext.setClientRandom(message.getRandom().getValue());
         LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
-    }
-
-    private void setClientRandomContext(byte[] unixTime, byte[] random) {
-        tlsContext.setClientRandom(ArrayConverter.concatenate(unixTime, random));
     }
 
     private List<CompressionMethod> convertCompressionMethods(byte[] bytesToConvert) {

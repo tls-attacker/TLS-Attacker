@@ -13,14 +13,13 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
@@ -32,13 +31,13 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class WorkflowExecutor {
 
-    protected static final Logger LOGGER = LogManager.getLogger("WorkflowExecutor");
+    protected static final Logger LOGGER = LogManager.getLogger(WorkflowExecutor.class.getName());
 
-    protected final ExecutorType type;
+    protected final WorkflowExecutorType type;
 
     protected final TlsContext context;
 
-    public WorkflowExecutor(ExecutorType type, TlsContext context) {
+    public WorkflowExecutor(WorkflowExecutorType type, TlsContext context) {
         this.type = type;
         this.context = context;
         initWorkflowTrace();
@@ -74,6 +73,7 @@ public abstract class WorkflowExecutor {
             throw new ConfigurationException("Could not initialize WorkflowTrace in TLSContext");
         } else {
             context.setWorkflowTrace(trace);
+            context.getConfig().setWorkflowTrace(trace);
         }
     }
 
@@ -81,8 +81,8 @@ public abstract class WorkflowExecutor {
         String host = context.getConfig().getHost();
         int port = context.getConfig().getPort();
         TransportHandler th = TransportHandlerFactory.createTransportHandler(host, port, context.getConfig()
-                .getConnectionEndType(), context.getConfig().getTlsTimeout(), context.getConfig().getTimeout(), context
-                .getConfig().getTransportHandlerType());
+                .getConnectionEndType(), context.getConfig().getTimeout(), context.getConfig()
+                .getTransportHandlerType());
         try {
 
             th.initialize();
@@ -100,24 +100,15 @@ public abstract class WorkflowExecutor {
         Config config = context.getConfig();
 
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            FileOutputStream fos = null;
             try {
                 File f = new File(config.getWorkflowOutput());
                 if (f.isDirectory()) {
                     f = new File(config.getWorkflowOutput() + "trace-" + RandomHelper.getRandom().nextInt());
                 }
-                fos = new FileOutputStream(f);
-                WorkflowTraceSerializer.write(fos, context.getWorkflowTrace());
+                WorkflowTraceSerializer.write(f, context.getWorkflowTrace());
             } catch (JAXBException | IOException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.");
                 LOGGER.debug(ex);
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    LOGGER.info("Could not serialize WorkflowTrace.");
-                    LOGGER.debug(ex);
-                }
             }
         }
     }

@@ -121,11 +121,16 @@
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_RSA_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_DHE_DSS_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
+    <useAllProvidedRecords>false</useAllProvidedRecords>
     <dynamicWorkflow>false</dynamicWorkflow>
     <namedCurves>SECP192R1</namedCurves>
     <namedCurves>SECP256R1</namedCurves>
     <namedCurves>SECP384R1</namedCurves>
     <namedCurves>SECP521R1</namedCurves>
+    <defaultClientNamedCurves>SECP192R1</defaultClientNamedCurves>
+    <defaultClientNamedCurves>SECP256R1</defaultClientNamedCurves>
+    <defaultClientNamedCurves>SECP384R1</defaultClientNamedCurves>
+    <defaultClientNamedCurves>SECP521R1</defaultClientNamedCurves>
     <supportedVersions>TLS13</supportedVersions>
     <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
     <paddingLength>0</paddingLength>
@@ -144,16 +149,46 @@
     <port>443</port>
     <maxFragmentLength>TWO_9</maxFragmentLength>
     <TLSSessionTicket></TLSSessionTicket>
-    <defaultRenegotiationInfo></defaultRenegotiationInfo>
+    <defaultClientRenegotiationInfo></defaultClientRenegotiationInfo>
+    <defaultServerRenegotiationInfo></defaultServerRenegotiationInfo>
     <defaultSignedCertificateTimestamp></defaultSignedCertificateTimestamp>
     <defaultTokenBindingVersion>DRAFT_13</defaultTokenBindingVersion>
     <defaultTokenBindingKeyParameters>ECDSAP256</defaultTokenBindingKeyParameters>
     <defaultTokenBindingKeyParameters>RSA2048_PKCS1_5</defaultTokenBindingKeyParameters>
     <defaultTokenBindingKeyParameters>RSA2048_PSS</defaultTokenBindingKeyParameters>
-    <tlsTimeout>400</tlsTimeout>
+    <certificateStatusRequestExtensionRequestType>OCSP</certificateStatusRequestExtensionRequestType>
+    <certificateStatusRequestExtensionResponderIDList></certificateStatusRequestExtensionResponderIDList>
+    <certificateStatusRequestExtensionRequestExtension></certificateStatusRequestExtensionRequestExtension>
+    <applicationLayerProtocolNegotiationAnnouncedProtocols>h2</applicationLayerProtocolNegotiationAnnouncedProtocols>
+    <sessionId></sessionId>
+    <secureRemotePasswordExtensionIdentifier></secureRemotePasswordExtensionIdentifier>
+    <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfiles>
+    <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_32</secureRealTimeTransportProtocolProtectionProfiles>
+    <secureRealTimeTransportProtocolProtectionProfiles>SRTP_NULL_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfiles>
+    <secureRealTimeTransportProtocolProtectionProfiles>SRTP_NULL_HMAC_SHA1_32</secureRealTimeTransportProtocolProtectionProfiles>
+    <secureRealTimeTransportProtocolMasterKeyIdentifier></secureRealTimeTransportProtocolMasterKeyIdentifier>
+    <userMappingExtensionHintType>UPN_DOMAIN_HINT</userMappingExtensionHintType>
+    <certificateTypeDesiredTypes>OPEN_PGP</certificateTypeDesiredTypes>
+    <certificateTypeDesiredTypes>X509</certificateTypeDesiredTypes>
+    <clientCertificateTypeDesiredTypes>OPEN_PGP</clientCertificateTypeDesiredTypes>
+    <clientCertificateTypeDesiredTypes>X509</clientCertificateTypeDesiredTypes>
+    <clientCertificateTypeDesiredTypes>RAW_PUBLIC_KEY</clientCertificateTypeDesiredTypes>
+    <serverCertificateTypeDesiredTypes>OPEN_PGP</serverCertificateTypeDesiredTypes>
+    <serverCertificateTypeDesiredTypes>X509</serverCertificateTypeDesiredTypes>
+    <serverCertificateTypeDesiredTypes>RAW_PUBLIC_KEY</serverCertificateTypeDesiredTypes>
+    <clientAuthzExtensionDataFormat>X509_ATTR_CERT</clientAuthzExtensionDataFormat>
+    <clientAuthzExtensionDataFormat>SAML_ASSERTION</clientAuthzExtensionDataFormat>
+    <clientAuthzExtensionDataFormat>X509_ATTR_CERT_URL</clientAuthzExtensionDataFormat>
+    <clientAuthzExtensionDataFormat>SAML_ASSERTION_URL</clientAuthzExtensionDataFormat>
+    <certificateTypeExtensionMessageState>true</certificateTypeExtensionMessageState>
+    <serverAuthzExtensionDataFormat>X509_ATTR_CERT</serverAuthzExtensionDataFormat>
+    <serverAuthzExtensionDataFormat>SAML_ASSERTION</serverAuthzExtensionDataFormat>
+    <serverAuthzExtensionDataFormat>X509_ATTR_CERT_URL</serverAuthzExtensionDataFormat>
+    <serverAuthzExtensionDataFormat>SAML_ASSERTION_URL</serverAuthzExtensionDataFormat>
+    <clientCertificateTypeExtensionMessageState>true</clientCertificateTypeExtensionMessageState>
+    <cachedInfoExtensionIsClientState>true</cachedInfoExtensionIsClientState>
     <timeout>1000</timeout>
     <transportHandlerType>TCP</transportHandlerType>
-    <verifyWorkflow>false</verifyWorkflow>
     <serverSendsApplicationData>false</serverSendsApplicationData>
     <addECPointFormatExtension>true</addECPointFormatExtension>
     <addEllipticCurveExtension>true</addEllipticCurveExtension>
@@ -169,6 +204,22 @@
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
     <addRenegotiationInfoExtension>false</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
+    <addCertificateStatusRequestExtension>false</addCertificateStatusRequestExtension>
+    <addAlpnExtension>false</addAlpnExtension>
+    <addSRPExtension>false</addSRPExtension>
+    <addSRTPExtension>false</addSRTPExtension>
+    <addTruncatedHmacExtension>false</addTruncatedHmacExtension>
+    <addUserMappingExtension>false</addUserMappingExtension>
+    <addCertificateTypeExtension>false</addCertificateTypeExtension>
+    <addClientAuthzExtension>false</addClientAuthzExtension>
+    <addServerAuthzExtension>false</addServerAuthzExtension>
+    <addClientCertificateTypeExtension>false</addClientCertificateTypeExtension>
+    <addServerCertificateTypeExtension>false</addServerCertificateTypeExtension>
+    <addEncryptThenMacExtension>false</addEncryptThenMacExtension>
+    <addCachedInfoExtension>false</addCachedInfoExtension>
+    <addClientCertificateUrlExtension>false</addClientCertificateUrlExtension>
+    <addTrustedCaIndicationExtension>false</addTrustedCaIndicationExtension>
+    <addCertificateStatusRequestV2Extension>false</addCertificateStatusRequestV2Extension>
     <updateTimestamps>true</updateTimestamps>
     <defaultRsaCertificate>
 00 03 97 00 03 94 30 82  03 90 30 82 02 78 A0 03
@@ -334,16 +385,17 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <defaultDTLSCookieLength>6</defaultDTLSCookieLength>
     <defaultMaxRecordData>1048576</defaultMaxRecordData>
     <defaultPaddingExtensionBytes>00 00 00 00 00 00</defaultPaddingExtensionBytes>
-    <executorType>TLS</executorType>
+    <workflowExecutorType>DEFAULT</workflowExecutorType>
     <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
     <createRecordsDynamically>true</createRecordsDynamically>
     <createIndividualRecords>true</createIndividualRecords>
     <recordLayerType>RECORD</recordLayerType>
-    <stripWorkflowtracesBeforeSaving>false</stripWorkflowtracesBeforeSaving>
+    <resetWorkflowtracesBeforeSaving>false</resetWorkflowtracesBeforeSaving>
     <quickReceive>true</quickReceive>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <stopRecievingAfterFatal>false</stopRecievingAfterFatal>
+    <stopActionsAfterFatal>false</stopActionsAfterFatal>
     <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
     <defaultServerSupportedPointFormats>UNCOMPRESSED</defaultServerSupportedPointFormats>
     <defaultClientSupportedPointFormats>UNCOMPRESSED</defaultClientSupportedPointFormats>
@@ -399,5 +451,6 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <defaultTokenBindingRsaPrivateKey>89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713</defaultTokenBindingRsaPrivateKey>
     <defaultTokenBindingEcPrivateKey>3</defaultTokenBindingEcPrivateKey>
     <defaultTokenBindingRsaModulus>145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053</defaultTokenBindingRsaModulus>
+    <useRandomUnixTime>true</useRandomUnixTime>
     <chooserType>DEFAULT</chooserType>
 </config>

@@ -13,12 +13,13 @@ import de.rub.nds.tlsattacker.core.protocol.parser.PSKClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PSKClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PSKClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 /**
  *
  * @author florian
  */
-public class PSKClientKeyExchangeHandler extends ClientKeyExchangeHandler<PSKClientKeyExchangeMessage>{
-    
+public class PSKClientKeyExchangeHandler extends ClientKeyExchangeHandler<PSKClientKeyExchangeMessage> {
+
     public PSKClientKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
     }

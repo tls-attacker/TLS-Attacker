@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
+ * This extension is defined in RFC-ietf-tls-rfc-4492bis-17
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 @XmlRootElement

@@ -26,14 +26,8 @@ public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<Tok
 
     @Override
     public byte[] serializeProtocolMessageContent() {
-        appendByte(message.getTokenbindingType().getValue());
-        appendByte(message.getKeyParameter().getValue());
-        appendInt(message.getKeyLength().getValue(), TokenBindingLength.KEY);
-        serializeKey();
-        appendInt(message.getSignatureLength().getValue(), TokenBindingLength.SIGNATURE);
-        appendBytes(message.getSignature().getValue());
-        appendInt(message.getExtensionLength().getValue(), TokenBindingLength.EXTENSIONS);
-        appendBytes(message.getExtensionBytes().getValue());
+        appendInt(message.getTokenbindingsLength().getValue(), TokenBindingLength.TOKENBINDINGS);
+        serializeBinding();
         return getAlreadySerialized();
     }
 
@@ -47,6 +41,18 @@ public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<Tok
             appendInt(message.getPublicExponentLength().getValue(), TokenBindingLength.PUBLIC_EXPONENT);
             appendBytes(message.getPublicExponent().getValue());
         }
+        return getAlreadySerialized();
+    }
+
+    public byte[] serializeBinding() {
+        appendByte(message.getTokenbindingType().getValue());
+        appendByte(message.getKeyParameter().getValue());
+        appendInt(message.getKeyLength().getValue(), TokenBindingLength.KEY);
+        serializeKey();
+        appendInt(message.getSignatureLength().getValue(), TokenBindingLength.SIGNATURE);
+        appendBytes(message.getSignature().getValue());
+        appendInt(message.getExtensionLength().getValue(), TokenBindingLength.EXTENSIONS);
+        appendBytes(message.getExtensionBytes().getValue());
         return getAlreadySerialized();
     }
 

@@ -42,7 +42,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Main {
 
-    private static Logger LOGGER = LogManager.getLogger("Attacks");
+    private static Logger LOGGER = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralDelegate();

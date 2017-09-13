@@ -15,10 +15,10 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.crypto.BlobDecryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.BlobEncryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
@@ -43,16 +43,21 @@ public class BlobRecordLayer extends RecordLayer {
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
         cipher = new RecordNullCipher();
-        encryptor = new BlobEncryptor(cipher);
-        decryptor = new BlobDecryptor(cipher);
+        encryptor = new RecordEncryptor(cipher, context);
+        decryptor = new RecordDecryptor(cipher, context);
     }
 
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawBytes) {
         List<AbstractRecord> list = new LinkedList<>();
-        BlobRecordParser parser = new BlobRecordParser(0, rawBytes, context.getSelectedProtocolVersion());
+        BlobRecordParser parser = new BlobRecordParser(0, rawBytes, context.getChooser().getSelectedProtocolVersion());
         list.add(parser.parse());
         return list;
+    }
+
+    @Override
+    public List<AbstractRecord> parseRecordsSoftly(byte[] rawBytes) {
+        return parseRecords(rawBytes);
     }
 
     @Override

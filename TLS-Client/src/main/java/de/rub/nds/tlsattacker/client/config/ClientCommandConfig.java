@@ -98,7 +98,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        if (config.getWorkflowTrace() == null) {
+        if (config.getWorkflowTraceType() == null && config.getWorkflowTrace() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }
         return config;

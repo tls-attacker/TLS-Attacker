@@ -60,8 +60,8 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
         TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), tlsContext);
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         protocolMessages.add(new ServerHelloMessage(config));
