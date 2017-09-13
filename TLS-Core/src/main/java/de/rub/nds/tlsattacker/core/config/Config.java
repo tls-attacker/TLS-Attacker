@@ -103,27 +103,9 @@ public class Config implements Serializable {
 
     public static Config mergeWithDefaultValues(Config c) {
         String host = c.getHost(); // host is transient and will be resetted
-        final Config readConfig = c;
-        try {
-            final PipedOutputStream outputStream = new PipedOutputStream();
-            final PipedInputStream inputStream = new PipedInputStream(outputStream);
-            Executor executor = new ForkJoinPool();
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    ConfigIO.write(readConfig, outputStream);
-                    try {
-                        outputStream.flush();
-                        outputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            c = ConfigIO.read(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ConfigIO.write(c, byteArrayOutputStream);
+        c = ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
         c.setHost(host);
         return c;
     }
