@@ -161,11 +161,11 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return expectedMessages;
     }
 
-    public void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
+    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
         this.messages = receivedMessages;
     }
 
-    public void setReceivedRecords(List<AbstractRecord> receivedRecords) {
+    void setReceivedRecords(List<AbstractRecord> receivedRecords) {
         this.records = receivedRecords;
     }
 
