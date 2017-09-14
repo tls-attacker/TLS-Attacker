@@ -59,6 +59,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthE
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerNameIndicationExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
@@ -202,7 +203,7 @@ public class HandlerFactory {
                 case RENEGOTIATION_INFO:
                     return new RenegotiationInfoExtensionHandler(context);
                 case SERVER_AUTHZ:
-                    return new ServerNameIndicationExtensionHandler(context);
+                    return new ServerAuthzExtensionHandler(context);
                 case SERVER_CERTIFICATE_TYPE:
                     return new ServerCertificateTypeExtensionHandler(context);
                 case SERVER_NAME_INDICATION:
