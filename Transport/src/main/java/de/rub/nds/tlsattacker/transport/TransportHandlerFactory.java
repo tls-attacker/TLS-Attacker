@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.transport;
 
 import de.rub.nds.tlsattacker.transport.nonblocking.ServerTCPNonBlockingTransportHandler;
+import de.rub.nds.tlsattacker.transport.tcp.ClientTcpNoDelayTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
@@ -61,6 +62,13 @@ public class TransportHandlerFactory {
                     return new TimingClientUdpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
                 } else {
                     return new TimingServerUdpTransportHandler(timeout, conEnd.getPort());
+                }
+            case TCP_NO_DELAY:
+                if (ourConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientTcpNoDelayTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
+                } else {
+                    throw new UnsupportedOperationException(
+                            "This transport handler type is only supported in client mode");
                 }
             default:
                 throw new UnsupportedOperationException("This transport handler " + "type is not supported");

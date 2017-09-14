@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
@@ -85,12 +87,12 @@ public class WorkflowConfigurationFactory {
                 return createClientRenegotiationWorkflow();
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
-                // case HTTPS:
-                // return createHttpsWorkflow();
+            case HTTPS:
+                return createHttpsWorkflow();
             case RESUMPTION:
                 return createResumptionWorkflow();
-                // case FULL_RESUMPTION:
-                // return createFullResumptionWorkflow();
+            case FULL_RESUMPTION:
+                return createFullResumptionWorkflow();
             case SIMPLE_MITM_PROXY:
                 return createSimpleMitmProxyWorkflow();
         }
@@ -222,6 +224,7 @@ public class WorkflowConfigurationFactory {
             messages = new LinkedList<>();
             messages.add(new ChangeCipherSpecMessage(config));
             messages.add(new FinishedMessage(config));
+
             workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
                     messages));
         }
@@ -290,6 +293,7 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createFullResumptionWorkflow() {
         ConnectionEnd conEnd = getSafeSingleContextConnectionEnd();
         WorkflowTrace trace = this.createHandshakeWorkflow(conEnd);
+
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace tempTrace = this.createResumptionWorkflow();
         for (TLSAction resumption : tempTrace.getTlsActions()) {
@@ -300,7 +304,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createResumptionWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowTrace trace = new WorkflowTrace(config);
         MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config));
         trace.addTlsAction(action);
@@ -327,7 +331,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createServerRenegotiationWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
-        WorkflowTrace trace = createHandshakeWorkflow();
+        WorkflowTrace trace = createHandshakeWorkflow(ourConnectionEnd);
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(ourConnectionEnd);
         trace.addTlsAction(new RenegotiationAction());
         MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
@@ -339,18 +343,17 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    // private WorkflowTrace createHttpsWorkflow() {
-    // WorkflowTrace trace = createHandshakeWorkflow();
-    // MessageAction action =
-    // MessageActionFactory.createAction(ourConnectionEndType,
-    // ConnectionEndType.CLIENT, new HttpsRequestMessage(config));
-    // trace.addTlsAction(action);
-    // action = MessageActionFactory.createAction(ourConnectionEndType,
-    // ConnectionEndType.SERVER,
-    // new HttpsResponseMessage(config));
-    // trace.addTlsAction(action);
-    // return trace;
-    // }
+    private WorkflowTrace createHttpsWorkflow() {
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = createHandshakeWorkflow(ourConnectionEnd);
+        MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                new HttpsRequestMessage(config));
+        trace.addTlsAction(action);
+        action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                new HttpsResponseMessage(config));
+        trace.addTlsAction(action);
+        return trace;
+    }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {
         List<ConnectionEnd> conEnds = config.getConnectionEnds();

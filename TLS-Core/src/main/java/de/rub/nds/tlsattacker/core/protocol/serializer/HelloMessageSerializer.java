@@ -49,14 +49,6 @@ public abstract class HelloMessageSerializer<T extends HelloMessage> extends Han
     }
 
     /**
-     * Writes the UnixTime of the message into the final byte[]
-     */
-    protected void writeUnixtime() {
-        appendBytes(msg.getUnixTime().getValue());
-        LOGGER.debug("UnixTime: " + ArrayConverter.bytesToHexString(msg.getUnixTime().getValue()));
-    }
-
-    /**
      * Writes the Random of the message into the final byte[]
      */
     protected void writeRandom() {

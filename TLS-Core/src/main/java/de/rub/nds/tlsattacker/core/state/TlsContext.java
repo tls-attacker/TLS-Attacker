@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
@@ -47,6 +48,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -65,7 +67,9 @@ public class TlsContext {
      */
     private Config config;
 
-    private String alias;
+    private List<Session> sessionList;
+
+    private HttpContext httpContext;
 
     /**
      * The end point of the TLS connection that this context represents.
@@ -365,6 +369,7 @@ public class TlsContext {
 
     public TlsContext() {
         this(Config.createConfig());
+        httpContext = new HttpContext();
     }
 
     /**
@@ -388,9 +393,13 @@ public class TlsContext {
 
     private void init(Config config, ConnectionEnd conEnd) {
         this.config = config;
+
         digest = new MessageDigestCollector();
         connectionEnd = conEnd;
         recordLayerType = config.getRecordLayerType();
+
+        httpContext = new HttpContext();
+        sessionList = new LinkedList<>();
     }
 
     public Chooser getChooser() {
@@ -398,6 +407,39 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public HttpContext getHttpContext() {
+        return httpContext;
+    }
+
+    public void setHttpContext(HttpContext httpContext) {
+        this.httpContext = httpContext;
+    }
+
+    public Session getSession(byte[] sessionId) {
+        for (Session session : sessionList) {
+            if (Arrays.equals(session.getSessionId(), sessionId)) {
+                return session;
+            }
+        }
+        return null;
+    }
+
+    public boolean hasSession(byte[] sessionId) {
+        return getSession(sessionId) != null;
+    }
+
+    public void addNewSession(Session session) {
+        sessionList.add(session);
+    }
+
+    public List<Session> getSessionList() {
+        return sessionList;
+    }
+
+    public void setSessionList(List<Session> sessionList) {
+        this.sessionList = sessionList;
     }
 
     public byte[] getLastClientVerifyData() {
@@ -1288,7 +1330,7 @@ public class TlsContext {
     @Override
     public String toString() {
         StringBuilder info = new StringBuilder();
-        info.append("TlsContext{ '").append(alias).append("'");
+        info.append("TlsContext{ '").append(connectionEnd.getAlias()).append("'");
         if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
             info.append(", listening on port ").append(connectionEnd.getPort());
         } else {

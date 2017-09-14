@@ -87,6 +87,7 @@ public class SendAction extends MessageAction implements SendingAction {
         return isExecuted();
     }
 
+    @Override
     public void setRecords(List<AbstractRecord> records) {
         this.records = records;
     }
