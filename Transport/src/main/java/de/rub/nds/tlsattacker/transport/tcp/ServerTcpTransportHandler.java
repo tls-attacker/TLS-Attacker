@@ -33,7 +33,6 @@ public class ServerTcpTransportHandler extends TransportHandler {
         super(timeout, ConnectionEndType.SERVER);
         this.port = serverSocket.getLocalPort();
         this.serverSocket = serverSocket;
-        initialize();
     }
 
     public void closeServerSocket() throws IOException {
