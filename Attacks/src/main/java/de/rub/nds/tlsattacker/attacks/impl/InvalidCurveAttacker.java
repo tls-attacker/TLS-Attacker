@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -80,7 +79,6 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         Config tlsConfig = config.createConfig();
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         State state = new State(tlsConfig);
-        TlsContext tlsContext = state.getTlsContext();
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);

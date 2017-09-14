@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -69,7 +68,6 @@ public class RealDirectMessageECOracle extends ECOracle {
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
 
         State state = new State(config);
-        TlsContext tlsContext = state.getTlsContext();
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);
@@ -143,7 +141,6 @@ public class RealDirectMessageECOracle extends ECOracle {
      */
     private void executeValidWorkflowAndExtractCheckValues() {
         State state = new State(config);
-        TlsContext tlsContext = state.getTlsContext();
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);

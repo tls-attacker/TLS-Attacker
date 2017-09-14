@@ -23,7 +23,6 @@ public class SimpleMitmProxy extends Attacker<SimpleMitmProxyCommandConfig> {
 
     public SimpleMitmProxy(SimpleMitmProxyCommandConfig config) {
         super(config, false);
-
     }
 
     @Override

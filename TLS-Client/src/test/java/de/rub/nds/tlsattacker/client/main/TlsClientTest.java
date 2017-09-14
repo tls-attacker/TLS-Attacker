@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -183,7 +182,6 @@ public class TlsClientTest {
 
     private boolean testExecuteWorkflow(Config config) {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-
         State state = new State(config);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
@@ -195,7 +193,6 @@ public class TlsClientTest {
             E.printStackTrace();
         }
 
-        TlsContext tlsContext = state.getTlsContext();
         String workflowString = state.getWorkflowTrace().toString();
         boolean result = state.getWorkflowTrace().executedAsPlanned();
 
