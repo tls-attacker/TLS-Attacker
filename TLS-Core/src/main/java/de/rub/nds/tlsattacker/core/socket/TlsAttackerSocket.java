@@ -52,7 +52,7 @@ public class TlsAttackerSocket {
      * @return
      * @throws java.io.IOException
      */
-    public byte[] recieveRawBytes() throws IOException {
+    public byte[] receiveRawBytes() throws IOException {
         return context.getTransportHandler().fetchData();
     }
 

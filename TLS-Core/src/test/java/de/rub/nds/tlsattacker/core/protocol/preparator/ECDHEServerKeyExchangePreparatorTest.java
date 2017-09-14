@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStoreException;
@@ -100,7 +100,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private void loadTestVectorsToContext() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
             CertificateException, KeyStoreException, UnrecoverableKeyException {
 
-        tlsContext.setConnectionEndType(ConnectionEndType.SERVER);
+        tlsContext.setConnectionEnd(new ServerConnectionEnd());
 
         Config config = tlsContext.getConfig();
         config.setDefaultRSAModulus(new BigInteger(

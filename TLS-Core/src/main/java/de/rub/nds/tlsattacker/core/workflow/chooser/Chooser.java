@@ -27,9 +27,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -164,15 +164,13 @@ public abstract class Chooser {
 
     public abstract KSEntry getServerKSEntry();
 
-    public abstract TransportHandlerType getTransportHandlerType();
-
     public abstract RecordLayerType getRecordLayerType();
 
     public abstract BigInteger getClientRSAPrivateKey();
 
     public abstract BigInteger getServerRSAPrivateKey();
 
-    public abstract ConnectionEndType getConnectionEndType();
+    public abstract ConnectionEnd getConnectionEnd();
 
     public abstract ConnectionEndType getMyConnectionPeer();
 
@@ -180,5 +178,5 @@ public abstract class Chooser {
 
     public abstract boolean isClientAuthentication();
 
-    public abstract String getApplicationMessageData();
+    public abstract byte[] getLastHandledApplicationMessageData();
 }

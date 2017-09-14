@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -81,9 +82,28 @@ public class WorkflowTraceSerializer {
      */
     public static void write(File file, WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
         FileOutputStream fos = new FileOutputStream(file);
-
         WorkflowTraceSerializer.write(fos, trace);
+    }
 
+    /**
+     * Writes a serialized WorkflowTrace to string.
+     *
+     * @param trace
+     *            WorkflowTrace that should be written
+     * @return String containing XML/serialized representation of the
+     *         WorkflowTrace
+     * @throws FileNotFoundException
+     *             Is thrown if the File cannot be found
+     * @throws JAXBException
+     *             Is thrown if the Object cannot be serialized
+     * @throws IOException
+     *             Is thrown if the Process doesn't have the rights to write to
+     *             the File
+     */
+    public static String write(WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        WorkflowTraceSerializer.write(bos, trace);
+        return new String(bos.toByteArray(), "UTF-8");
     }
 
     /**

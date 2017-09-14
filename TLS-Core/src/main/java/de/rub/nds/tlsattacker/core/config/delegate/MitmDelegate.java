@@ -9,15 +9,19 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.state.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 
 /**
+ * The MitmDelegate parses an arbitrary number of {Client,Server}ConnectionEnds
+ * from command line. It requires at least one "accepting" and one "connecting"
+ * connection end.
  *
  * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
@@ -25,33 +29,31 @@ public class MitmDelegate extends Delegate {
 
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("Config");
 
-    @Parameter(names = "-listen_port", required = true, description = "A MiTM client can connect to this port."
-            + " Multiple ports can be added. At least one is required."
+    @Parameter(names = "-accept", required = true, description = "A MiTM client can connect to this connection end."
             + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
-    protected List<String> listenPorts = new ArrayList<>();
+    protected List<String> acceptingConnectionEnds = new ArrayList<>();
 
     @Parameter(names = "-connect", required = true, description = "Add a server to which the MiTM will connect to."
-            + " Multiple destinations can be added. At least one is required."
             + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
-    protected List<String> serverHosts = new ArrayList<>();
+    protected List<String> connectingConnectionEnds = new ArrayList<>();
 
     public MitmDelegate() {
     }
 
-    public List<String> getListenPorts() {
-        return listenPorts;
+    public List<String> getAcceptingConnectionEnds() {
+        return acceptingConnectionEnds;
     }
 
-    public void setListenPorts(List<String> listenPorts) {
-        this.listenPorts = listenPorts;
+    public void setAcceptingConnectionEnds(List<String> acceptingConnectionEnds) {
+        this.acceptingConnectionEnds = acceptingConnectionEnds;
     }
 
-    public List<String> getServerHosts() {
-        return serverHosts;
+    public List<String> getConnectingConnectionEnds() {
+        return connectingConnectionEnds;
     }
 
-    public void setServerHosts(List<String> serverHosts) {
-        this.serverHosts = serverHosts;
+    public void setConnectingConnectionEnds(List<String> connectingConnectionEnds) {
+        this.connectingConnectionEnds = connectingConnectionEnds;
     }
 
     /**
@@ -62,49 +64,65 @@ public class MitmDelegate extends Delegate {
      */
     @Override
     public void applyDelegate(Config config) {
-        for (String port : listenPorts) {
-            ConnectionEnd clientCon = new ConnectionEnd();
-            clientCon.setConnectionEndType(ConnectionEndType.SERVER);
 
-            String[] parsedPort = port.split(":");
+        if ((acceptingConnectionEnds == null) || (connectingConnectionEnds == null)) {
+            // Though {accepting,connecting}ConnectionEnds are required
+            // parameters we can get here if we call applyDelegate
+            // manually, e.g. in tests.
+            throw new ParameterException("{accepting|connecting}ConnectionEnds is empty!");
+        }
+
+        config.clearConnectionEnds();
+
+        for (String conEndStr : acceptingConnectionEnds) {
+            ServerConnectionEnd serverConEnd = new ServerConnectionEnd();
+
+            String[] parsedPort = conEndStr.split(":");
             switch (parsedPort.length) {
                 case 1:
-                    clientCon.setAlias("client:" + parsedPort[0]);
-                    clientCon.setPort(Integer.parseInt(parsedPort[0]));
+                    serverConEnd.setAlias("accept:" + parsedPort[0]);
+                    serverConEnd.setPort(parsePort(parsedPort[0]));
                     break;
                 case 2:
-                    clientCon.setAlias(parsedPort[0]);
-                    clientCon.setPort(Integer.parseInt(parsedPort[1]));
+                    serverConEnd.setAlias(parsedPort[0]);
+                    serverConEnd.setPort(parsePort(parsedPort[1]));
                     break;
                 default:
-                    throw new ConfigurationException("Could not parse provided listen port: " + port
-                            + ". Expected [CONNECTION_ALIAS:]<PORT>");
+                    throw new ConfigurationException("Could not parse provided accepting connection" + " end: "
+                            + conEndStr + ". Expected [CONNECTION_ALIAS:]<PORT>");
             }
-            config.addConnectionEnd(clientCon);
+            config.addConnectionEnd(serverConEnd);
         }
 
-        for (String host : serverHosts) {
-            ConnectionEnd serverCon = new ConnectionEnd();
-            serverCon.setConnectionEndType(ConnectionEndType.CLIENT);
+        for (String conEndStr : connectingConnectionEnds) {
+            ClientConnectionEnd clientConEnd = new ClientConnectionEnd();
 
-            String[] parsedHost = host.split(":");
+            String[] parsedHost = conEndStr.split(":");
             switch (parsedHost.length) {
                 case 2:
-                    serverCon.setHostname(parsedHost[0]);
-                    serverCon.setPort(Integer.parseInt(parsedHost[1]));
-                    serverCon.setAlias(host);
+                    clientConEnd.setHostname(parsedHost[0]);
+                    clientConEnd.setPort(parsePort(parsedHost[1]));
+                    clientConEnd.setAlias(conEndStr);
                     break;
                 case 3:
-                    serverCon.setAlias(parsedHost[0]);
-                    serverCon.setHostname(parsedHost[1]);
-                    serverCon.setPort(Integer.parseInt(parsedHost[2]));
+                    clientConEnd.setAlias(parsedHost[0]);
+                    clientConEnd.setHostname(parsedHost[1]);
+                    clientConEnd.setPort(parsePort(parsedHost[2]));
                     break;
                 default:
-                    throw new ConfigurationException("Could not parse provided server address: " + host
+                    throw new ConfigurationException("Could not parse provided server address: " + conEndStr
                             + ". Expected [CONNECTION_ALIAS:]<HOSTNAME>:<PORT>");
             }
-            config.addConnectionEnd(serverCon);
+            config.addConnectionEnd(clientConEnd);
         }
+    }
+
+    private int parsePort(String portStr) {
+        int port = Integer.parseInt(portStr);
+        if (port < 0 || port > 65535) {
+            throw new ParameterException("port must be in interval [0,65535], but is " + port);
+        }
+        return port;
     }
 
 }

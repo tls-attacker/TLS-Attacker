@@ -10,9 +10,17 @@ package de.rub.nds.tlsattacker.core.util;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
+import java.security.interfaces.ECPrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.ECPrivateKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPrivateKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -42,10 +50,38 @@ public class CertificateUtils {
             X509CertificateObject certObj = new X509CertificateObject(cert.getCertificateAt(0));
             return certObj.getPublicKey();
         } catch (CertificateParsingException ex) {
-            LOGGER.warn("Could extract public Key from Certificate!");
+            LOGGER.warn("Could not extract public key from Certificate!");
             LOGGER.debug(ex);
             return null;
         }
+    }
+
+    public static ECPrivateKey ecPrivateKeyFromPrivateKey(PrivateKey key) {
+        ECPrivateKey k;
+        try {
+            KeyFactory f = KeyFactory.getInstance("EC");
+            ECPrivateKeySpec s = f.getKeySpec(key, ECPrivateKeySpec.class);
+            k = (ECPrivateKey) f.generatePrivate(s);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            LOGGER.warn("Could not convert key to EC private key!");
+            LOGGER.debug(ex);
+            return null;
+        }
+        return k;
+    }
+
+    public static RSAPrivateKey rsaPrivateKeyFromPrivateKey(PrivateKey key) {
+        RSAPrivateKey k;
+        try {
+            KeyFactory f = KeyFactory.getInstance("RSA");
+            RSAPrivateKeySpec s = f.getKeySpec(key, RSAPrivateKeySpec.class);
+            k = (RSAPrivateKey) f.generatePrivate(s);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            LOGGER.warn("Could not convert key to EC private key!");
+            LOGGER.debug(ex);
+            return null;
+        }
+        return k;
     }
 
     public static boolean hasDHParameters(Certificate cert) {

@@ -26,11 +26,9 @@ public class TlsMitm {
     private static final Logger LOGGER = LogManager.getLogger(TlsMitm.class);
 
     public void run(Config config) {
-
         State state = new State(config);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);
-
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {

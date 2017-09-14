@@ -40,10 +40,10 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -70,27 +70,7 @@ public class TlsContext {
     /**
      * The end point of the TLS connection that this context represents.
      */
-    private ConnectionEndType connectionEndType;
-
-    /**
-     * Remote host or own hostname, depending on the connectionEndType.
-     */
-    private String host;
-
-    /**
-     * Remote port or port to listen on, depending on the connectionEndType.
-     */
-    private int port;
-
-    /**
-     * Default timeout for the connection.
-     */
-    private int connectionTimeout;
-
-    /**
-     * Transport handler type that shall be used.
-     */
-    private TransportHandlerType transportHandlerType;
+    private ConnectionEnd connectionEnd;
 
     /**
      * Shared key established during the handshake.
@@ -372,7 +352,7 @@ public class TlsContext {
      * Last application message data received/send by this context. This is
      * especially useful for forwarding application messages via ForwardAction.
      */
-    private String applicationMessageData;
+    private byte[] lastHandledApplicationMessageData;
 
     private boolean isSecureRenegotiation = false;
 
@@ -387,14 +367,29 @@ public class TlsContext {
         this(Config.createConfig());
     }
 
+    /**
+     * This constructor assumes that the config holds exactly one connection
+     * end. This is usually used when working with the default connection end in
+     * single context scenarios.
+     * 
+     * @param config
+     */
     public TlsContext(Config config) {
-        digest = new MessageDigestCollector();
+        if (config.getConnectionEnds().size() > 1) {
+            throw new ConfigurationException("Attempting to create context from a config containing"
+                    + " multiple connection ends. Please specify the connection end to use.");
+        }
+        init(config, config.getConnectionEnd());
+    }
+
+    public TlsContext(Config config, ConnectionEnd conEnd) {
+        init(config, conEnd);
+    }
+
+    private void init(Config config, ConnectionEnd conEnd) {
         this.config = config;
-        host = config.getHost();
-        port = config.getPort();
-        connectionTimeout = config.getTimeout();
-        connectionEndType = config.getDefaultConnectionEndType();
-        transportHandlerType = config.getTransportHandlerType();
+        digest = new MessageDigestCollector();
+        connectionEnd = conEnd;
         recordLayerType = config.getRecordLayerType();
     }
 
@@ -1213,48 +1208,16 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public Config getConfig() {
         return config;
     }
 
-    public ConnectionEndType getConnectionEndType() {
-        return connectionEndType;
+    public ConnectionEnd getConnectionEnd() {
+        return connectionEnd;
     }
 
-    public void setConnectionEndType(ConnectionEndType connectionEndType) {
-        this.connectionEndType = connectionEndType;
-    }
-
-    public TransportHandlerType getTransportHandlerType() {
-        return transportHandlerType;
-    }
-
-    public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
-        this.transportHandlerType = transportHandlerType;
+    public void setConnectionEnd(ConnectionEnd connectionEnd) {
+        this.connectionEnd = connectionEnd;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -1281,12 +1244,12 @@ public class TlsContext {
         this.clientAuthentication = clientAuthentication;
     }
 
-    public String getApplicationMessageData() {
-        return applicationMessageData;
+    public byte[] getLastHandledApplicationMessageData() {
+        return lastHandledApplicationMessageData;
     }
 
-    public void setApplicationMessageData(String applicationMessageData) {
-        this.applicationMessageData = applicationMessageData;
+    public void setLastHandledApplicationMessageData(byte[] lastHandledApplicationMessageData) {
+        this.lastHandledApplicationMessageData = lastHandledApplicationMessageData;
     }
 
     /**
@@ -1296,25 +1259,19 @@ public class TlsContext {
     public void initTransportHandler() {
 
         if (transportHandler == null) {
-            if (connectionEndType == null) {
-                throw new ConfigurationException("Connection end type not set");
+            if (connectionEnd == null) {
+                throw new ConfigurationException("Connection end not set");
             }
-            if (connectionTimeout <= 0) {
-                throw new ConfigurationException("Connection timeout not defined.");
-            }
-            if (transportHandlerType == null) {
-                throw new ConfigurationException("TransportHandlerType not defined.");
-            }
-            transportHandler = TransportHandlerFactory.createTransportHandler(host, port, connectionEndType,
-                    connectionTimeout, transportHandlerType);
+            transportHandler = TransportHandlerFactory.createTransportHandler(connectionEnd);
         }
 
         try {
             transportHandler.initialize();
         } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException(host + " is an invalid string for host:port configuration", ex);
+            throw new ConfigurationException("Invalid values in " + connectionEnd.toString(), ex);
         } catch (IOException ex) {
-            throw new ConfigurationException("Unable to initialize the transport handler with: " + host + ex);
+            throw new ConfigurationException("Unable to initialize the transport handler with: "
+                    + connectionEnd.toString(), ex);
         }
     }
 
@@ -1332,10 +1289,11 @@ public class TlsContext {
     public String toString() {
         StringBuilder info = new StringBuilder();
         info.append("TlsContext{ '").append(alias).append("'");
-        if (connectionEndType == ConnectionEndType.SERVER) {
-            info.append(", listening on port ").append(port);
+        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
+            info.append(", listening on port ").append(connectionEnd.getPort());
         } else {
-            info.append(", connected to ").append(host).append(":").append(port);
+            info.append(", connected to ").append(connectionEnd.getHostname()).append(":")
+                    .append(connectionEnd.getPort());
         }
         info.append("}");
         return info.toString();

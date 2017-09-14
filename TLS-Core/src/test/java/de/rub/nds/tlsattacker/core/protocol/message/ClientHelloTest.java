@@ -15,7 +15,6 @@ import de.rub.nds.modifiablevariable.integer.IntegerAddModification;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -99,8 +98,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization2() throws Exception {
-        TlsContext context = new TlsContext();
-        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(context);
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(Config.createConfig());
         WorkflowTrace trace = cf.createFullWorkflow();
         m.marshal(trace, writer);
         String xmlString = writer.toString();

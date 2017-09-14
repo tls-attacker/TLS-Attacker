@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -18,7 +19,10 @@ import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -57,17 +61,20 @@ public class ForwardActionTest {
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
 
-        state = new State();
-        alert = new AlertMessage(state.getConfig());
+        Config config = Config.createConfig();
+
+        alert = new AlertMessage(config);
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
 
-        ctx1 = new TlsContext(state.getConfig());
-        ctx2 = new TlsContext(state.getConfig());
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addConnectionEnd(new ClientConnectionEnd(ctx1Alias));
+        trace.addConnectionEnd(new ServerConnectionEnd(ctx2Alias));
 
-        state.addTlsContext(ctx1Alias, ctx1);
-        state.addTlsContext(ctx2Alias, ctx2);
+        state = new State(config, trace);
+        ctx1 = state.getTlsContext(ctx1Alias);
+        ctx2 = state.getTlsContext(ctx2Alias);
 
         FakeTransportHandler th = new FakeTransportHandler(ConnectionEndType.SERVER);
         byte[] alertMsg = new byte[] { 0x15, 0x03, 0x03, 0x00, 0x02, 0x02, 50 };

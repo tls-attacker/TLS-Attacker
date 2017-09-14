@@ -27,9 +27,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -497,15 +497,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public TransportHandlerType getTransportHandlerType() {
-        if (context.getTransportHandlerType() != null) {
-            return context.getTransportHandlerType();
-        } else {
-            return config.getTransportHandlerType();
-        }
-    }
-
-    @Override
     public RecordLayerType getRecordLayerType() {
         if (context.getRecordLayerType() != null) {
             return context.getRecordLayerType();
@@ -533,17 +524,18 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public ConnectionEndType getConnectionEndType() {
-        if (context.getConnectionEndType() != null) {
-            return context.getConnectionEndType();
+    public ConnectionEnd getConnectionEnd() {
+        if (context.getConnectionEnd() != null) {
+            return context.getConnectionEnd();
         } else {
-            return config.getDefaultConnectionEndType();
+            return config.getConnectionEnd();
         }
     }
 
     @Override
     public ConnectionEndType getMyConnectionPeer() {
-        return getConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER : ConnectionEndType.CLIENT;
+        return getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
+                : ConnectionEndType.CLIENT;
     }
 
     @Override
@@ -565,11 +557,11 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public String getApplicationMessageData() {
-        if (context.getApplicationMessageData() != null) {
-            return context.getApplicationMessageData();
+    public byte[] getLastHandledApplicationMessageData() {
+        if (context.getLastHandledApplicationMessageData() != null) {
+            return context.getLastHandledApplicationMessageData();
         } else {
-            return config.getDefaultApplicationMessageData();
+            return config.getDefaultApplicationMessageData().getBytes();
         }
     }
 }

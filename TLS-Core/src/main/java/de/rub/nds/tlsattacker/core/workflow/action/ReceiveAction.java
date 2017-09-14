@@ -42,6 +42,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -112,14 +113,18 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         LOGGER.debug("Receiving Messages...");
         MessageActionResult result = ReceiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
-        records.addAll(result.getRecordList());
-        messages.addAll(result.getMessageList());
+        records = new ArrayList<>(result.getRecordList());
+        messages = new ArrayList<>(result.getMessageList());
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
-        LOGGER.info("Received Messages:" + received);
+        if (contextAlias == null) {
+            LOGGER.info("Received Messages: " + received);
+        } else {
+            LOGGER.info("Received Messages (" + contextAlias + "): " + received);
+        }
     }
 
     @Override
@@ -166,8 +171,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
+        messages = null;
+        records = null;
         setExecuted(null);
     }
 

@@ -21,7 +21,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tlsattacker.mitm.main.TlsMitm</mainClass>
+                            <mainClass>de.rub.nds.tlsattacker.mitm.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

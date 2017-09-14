@@ -82,8 +82,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         State state = new State(tlsConfig);
         TlsContext tlsContext = state.getTlsContext();
 
-        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(),
-                tlsConfig.getPort());
+        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
+                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
         transportHandler.initialize();
         tlsContext.setTransportHandler(transportHandler);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(

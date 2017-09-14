@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.attacks.config;
 
-import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ServerCertificateDelegate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -20,26 +23,26 @@ import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
  */
 public class SimpleMitmProxyCommandConfig extends AttackConfig {
 
+    protected static final Logger LOGGER = LogManager.getLogger(SimpleMitmProxyCommandConfig.class);
     public static final String ATTACK_COMMAND = "simple_mitm_proxy";
-
-    @Parameter(names = "-server_certificate", description = "Path to the server's private certificate file (pem)")
-    private String serverCertPath;
 
     @ParametersDelegate
     private final MitmDelegate mitmDelegate;
 
+    @ParametersDelegate
+    private final CiphersuiteDelegate ciphersuiteDelegate;
+
+    @ParametersDelegate
+    private final ServerCertificateDelegate serverCertificateDelegate;
+
     public SimpleMitmProxyCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         mitmDelegate = new MitmDelegate();
+        ciphersuiteDelegate = new CiphersuiteDelegate();
+        serverCertificateDelegate = new ServerCertificateDelegate();
         addDelegate(mitmDelegate);
-    }
-
-    public String getServerCertPath() {
-        return serverCertPath;
-    }
-
-    public void setServerCertPath(String serverCertPath) {
-        this.serverCertPath = serverCertPath;
+        addDelegate(ciphersuiteDelegate);
+        addDelegate(serverCertificateDelegate);
     }
 
     /*
@@ -55,4 +58,5 @@ public class SimpleMitmProxyCommandConfig extends AttackConfig {
         Config config = super.createConfig();
         return config;
     }
+
 }

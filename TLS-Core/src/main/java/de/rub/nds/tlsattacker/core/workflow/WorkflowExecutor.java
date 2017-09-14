@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.File;
@@ -37,6 +36,18 @@ public abstract class WorkflowExecutor {
     protected final State state;
     protected final Config config;
 
+    /**
+     * Prepare a workflow trace for execution according to the given state and
+     * executor type. Try various ways to initialize a workflow trace and add it
+     * to the state. For workflow creation, use the first method which does not
+     * return null, in the following order: state.getWorkflowTrace(),
+     * state.config.getWorkflowInput(), config.getWorkflowTraceType().
+     * 
+     * @param type
+     *            of the workflow executor (currently only DEFAULT)
+     * @param state
+     *            to work on
+     */
     public WorkflowExecutor(WorkflowExecutorType type, State state) {
         this.type = type;
         this.state = state;
@@ -44,11 +55,6 @@ public abstract class WorkflowExecutor {
         initWorkflowTrace();
     }
 
-    /**
-     * Initialization Order 1) Check WorkflowTrace in Config 2) Check
-     * WorkflowTraceInput in Config 3) Check WorkflowTraceType in Config If
-     * nothing set throw configuration exception
-     */
     private void initWorkflowTrace() {
         WorkflowTrace trace = null;
 
@@ -65,14 +71,7 @@ public abstract class WorkflowExecutor {
                 LOGGER.debug(ex);
             }
         } else if (config.getWorkflowTraceType() != null) {
-            TlsContext ctx;
-            try {
-                ctx = state.getTlsContext();
-            } catch (ConfigurationException ex) {
-                throw new ConfigurationException("Can only configure workflow trace for"
-                        + " a single context, but multiple contexts are defined.", ex);
-            }
-            WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(ctx);
+            WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
             trace = factory.createWorkflowTrace(config.getWorkflowTraceType());
         }
 

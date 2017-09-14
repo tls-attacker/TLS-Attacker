@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -64,7 +63,6 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
         Config tlsConfig = config.createConfig();
         State state = new State(tlsConfig);
-        TlsContext tlsContext = state.getTlsContext();
 
         List<CipherSuite> suiteList = new LinkedList<>();
         suiteList.add(suite);
@@ -73,7 +71,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsContext).createHandshakeWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
 
         // We need 2-3 Records,one for every message, while the last one will
@@ -108,8 +106,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.debug(ex.getLocalizedMessage());
         }
         // The Server has to answer to our ClientHello with a ServerHello
-        // Message, else he does not support
-        // the offered Ciphersuite and protocol version
+        // Message, else he does not support the offered Ciphersuite and
+        // protocol version
         if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
             return false;
         }

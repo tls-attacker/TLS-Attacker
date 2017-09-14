@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,12 +52,18 @@ public class SendAction extends MessageAction implements SendingAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        LOGGER.info("Sending " + getReadableString(messages));
+
+        String sending = getReadableString(messages);
+        if (contextAlias == null) {
+            LOGGER.info("Sending messages: " + sending);
+        } else {
+            LOGGER.info("Sending messages (" + contextAlias + "): " + sending);
+        }
 
         try {
             MessageActionResult result = SendMessageHelper.sendMessages(messages, records, tlsContext);
-            messages = result.getMessageList();
-            records = result.getRecordList();
+            messages = new ArrayList<>(result.getMessageList());
+            records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
         } catch (IOException E) {
             LOGGER.debug(E);
@@ -87,11 +94,15 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
-        for (ProtocolMessage message : messages) {
-            holders.addAll(message.getAllModifiableVariableHolders());
+        if (messages != null) {
+            for (ProtocolMessage message : messages) {
+                holders.addAll(message.getAllModifiableVariableHolders());
+            }
         }
-        for (AbstractRecord record : getRecords()) {
-            holders.addAll(record.getAllModifiableVariableHolders());
+        if (getRecords() != null) {
+            for (AbstractRecord record : getRecords()) {
+                holders.addAll(record.getAllModifiableVariableHolders());
+            }
         }
         for (ModifiableVariableHolder holder : holders) {
             List<Field> fields = holder.getAllModifiableVariableFields();

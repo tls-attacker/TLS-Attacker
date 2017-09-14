@@ -34,7 +34,7 @@ public class TimeoutDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (timeout != null) {
-            config.setTimeout(timeout);
+            config.setDefaultTimeout(timeout);
         }
     }
 

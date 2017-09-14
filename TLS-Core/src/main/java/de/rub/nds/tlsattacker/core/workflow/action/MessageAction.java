@@ -92,12 +92,14 @@ public abstract class MessageAction extends TLSAction {
 
     public MessageAction() {
         messages = new LinkedList<>();
-        records = new LinkedList<>();
+    }
+
+    public MessageAction(List<ProtocolMessage> messages) {
+        this.messages = new ArrayList<>(messages);
     }
 
     public MessageAction(ProtocolMessage... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
-        records = new LinkedList<>();
     }
 
     public String getReadableString(ProtocolMessage... messages) {

@@ -11,11 +11,10 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.security.Security;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,18 +65,14 @@ public class DefaultWorkflowExecutorTest {
 
         Config config = Config.createConfig();
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
+        config.clearConnectionEnds();
+        config.addConnectionEnd(new ServerConnectionEnd("c1"));
+        config.addConnectionEnd(new ClientConnectionEnd("c2"));
         State state = new State(config);
-        TlsContext c1 = new TlsContext(config);
-        TlsContext c2 = new TlsContext(config);
-        c1.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        c2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        state.addTlsContext("ctx1", c1);
-        state.addTlsContext("ctx2", c2);
 
-        WorkflowExecutor workflowExecutor;
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("Can only configure workflow trace for"
-                + " a single context, but multiple contexts are defined.");
-        workflowExecutor = new DefaultWorkflowExecutor(state);
+        exception.expectMessage("This workflow type can only be created for"
+                + " a single context, but multiple contexts are defined in the config.");
+        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
     }
 }

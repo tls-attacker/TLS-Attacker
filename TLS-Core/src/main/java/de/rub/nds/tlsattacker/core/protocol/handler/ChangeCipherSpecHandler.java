@@ -48,7 +48,8 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
             setRecordCipher();
         }
 
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
+        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
+                .getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
         }
     }

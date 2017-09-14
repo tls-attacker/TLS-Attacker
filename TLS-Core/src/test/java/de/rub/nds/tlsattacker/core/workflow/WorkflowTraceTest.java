@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
@@ -27,14 +26,12 @@ import org.junit.Test;
 public class WorkflowTraceTest {
 
     private WorkflowTrace trace;
-    private TlsContext context;
     private Config config;
 
     @Before
     public void setUp() {
-        trace = new WorkflowTrace();
         config = Config.createConfig();
-        context = new TlsContext(config);
+        trace = new WorkflowTrace(config);
     }
 
     /**

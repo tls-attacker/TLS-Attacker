@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
@@ -58,21 +59,22 @@ public class ReceiveMessageHelper {
         List<AbstractRecord> records = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
         try {
-            byte[] recievedBytes;
+            byte[] receivedBytes;
             boolean shouldContinue = true;
             do {
-                recievedBytes = receiveByteArray(context);
-                if (recievedBytes.length != 0) {
-                    records = parseRecords(recievedBytes, context);
+                receivedBytes = receiveByteArray(context);
+                if (receivedBytes.length != 0) {
+                    records = parseRecords(receivedBytes, context);
                     List<List<AbstractRecord>> recordGroups = getRecordGroups(records);
                     for (List<AbstractRecord> recordGroup : recordGroups) {
                         messages.addAll(processRecordGroup(recordGroup, context));
                     }
                     if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
                         shouldContinue = shouldContinue(expectedMessages, messages, context);
+
                     }
                 }
-            } while (recievedBytes.length != 0 && shouldContinue);
+            } while (receivedBytes.length != 0 && shouldContinue);
 
         } catch (IOException ex) {
             LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
@@ -132,7 +134,8 @@ public class ReceiveMessageHelper {
     }
 
     private static byte[] receiveByteArray(TlsContext context) throws IOException {
-        return context.getTransportHandler().fetchData();
+        byte[] received = context.getTransportHandler().fetchData();
+        return received;
     }
 
     private static List<AbstractRecord> parseRecords(byte[] recordBytes, TlsContext context) {
@@ -176,6 +179,7 @@ public class ReceiveMessageHelper {
                         break;
                     }
                 }
+                throw new ConfigurationException();
             }
             if (result != null) {
                 dataPointer = result.getParserPosition();

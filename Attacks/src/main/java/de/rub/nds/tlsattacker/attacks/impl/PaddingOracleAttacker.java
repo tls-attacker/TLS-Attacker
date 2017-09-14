@@ -182,11 +182,12 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
 
         if (pmSet.size() == 1) {
-            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(), pmSetList);
+            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getConnectionEnd().getHostname(),
+                    pmSetList);
             return false;
         } else {
-            LOGGER.info("{}, Vulnerable (?), more messages found, recheck in debug mode: {}", tlsConfig.getHost(),
-                    pmSetList);
+            LOGGER.info("{}, Vulnerable (?), more messages found, recheck in debug mode: {}", tlsConfig
+                    .getConnectionEnd().getHostname(), pmSetList);
             return true;
         }
     }

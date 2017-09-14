@@ -297,8 +297,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         tlsContext = state.getTlsContext();
         workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         tlsContext.getConfig().setWorkflowExecutorShouldOpen(false);
-        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(),
-                tlsConfig.getPort());
+        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
+                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
         tlsContext.setTransportHandler(transportHandler);
 
         recordLayer = tlsContext.getRecordLayer();
@@ -317,7 +317,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTimeout(tlsConfig.getTimeout());
+            transportHandler.setTimeout(tlsConfig.getConnectionEnd().getTimeout());
         }
     }
 

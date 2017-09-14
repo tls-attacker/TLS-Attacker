@@ -51,7 +51,7 @@ public abstract class TLSAction implements Serializable {
 
     public String getContextAlias() {
         if (contextAlias == null) {
-            return Config.DEFAULT_CONTEXT_ALIAS;
+            return Config.DEFAULT_CONNECTION_END_ALIAS;
         } else {
             return contextAlias;
         }
