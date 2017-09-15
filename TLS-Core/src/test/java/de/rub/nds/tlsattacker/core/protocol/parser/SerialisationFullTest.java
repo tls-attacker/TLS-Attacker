@@ -172,22 +172,4 @@ public class SerialisationFullTest {
             fail();
         }
     }
-
-    @Test
-    public void sometest() {
-        Security.addProvider(new BouncyCastleProvider());
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsActions(new SendAction(new ClientHelloMessage()), new ReceiveAction(new ServerHelloMessage(),
-                new CertificateMessage(), new ServerHelloDoneMessage()), new SendAction(
-                new RSAClientKeyExchangeMessage(), new ChangeCipherSpecMessage()),
-                new SendAction(new FinishedMessage()), new ReceiveAction(new ChangeCipherSpecMessage(),
-                        new FinishedMessage()));
-        Config c = Config.createConfig();
-        c.setDefaultClientSupportedCiphersuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        c.setWorkflowTrace(trace);
-        DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(new TlsContext(c));
-        executor.executeWorkflow();
-        assertTrue(trace.executedAsPlanned());
-    }
 }
