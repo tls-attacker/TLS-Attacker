@@ -15,13 +15,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 
 /**
  *
- * @author florian
+ * @author Florian Linsner - florian.linsner@rub.de
  */
 public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<PSKClientKeyExchangeMessage> {
     private final PSKClientKeyExchangeMessage msg;
 
     /**
-     * Constructor for the RSAClientKeyExchangeSerializer
+     * Constructor for the PSKClientKeyExchangeSerializer
      *
      * @param message
      *            Message that should be serialized
@@ -42,7 +42,7 @@ public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<P
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage
+     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage
      * into the final byte[]
      */
     private void writeSerializedPSKIdentityLength(PSKClientKeyExchangeMessage msg) {
@@ -51,7 +51,7 @@ public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<P
     }
 
     /**
-     * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
      * the final byte[]
      */
     private void writeSerializedPSKIdentity(PSKClientKeyExchangeMessage msg) {

@@ -701,10 +701,11 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("7dc0cb485a3edb56811aeab12cdcda8e48b023298dd453a37b4d75d9e0bbba27c98f0e4852c16fd52341ffb673f64b580b7111abf14bf323e53a2dfa92727364ddb34f541f74a478a077f15277c013606aea839307e6f5fec23fdd72506feea7cbe362697949b145fe8945823a39a898ac6583fc5fbaefa1e77cbc95b3b475e66106e92b906bdbb214b87bcc94020f317fc1c056c834e9cee0ad21951fbdca088274c4ef9d8c2004c6294f49b370fb249c1e2431fb80ce5d3dc9e342914501ef4c162e54e1ee4fed9369b82afc00821a29f4979a647e60935420d44184d98f9cb75122fb604642c6d1ff2b3a51dc32eefdc57d9a9407ad6a06d10e83e2965481"));// TODO
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPSKKey = ArrayConverter.hexStringToByteArray("1a2b3c4d");
 
-    private BigInteger defaultPSKIdentity = new BigInteger(1,
-            ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479"));
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultPSKIdentity = ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479");
 
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
@@ -1000,11 +1001,11 @@ public class Config implements Serializable {
         this.defaultPSKKey = defaultPSKKey;
     }
 
-    public BigInteger getDefaultPSKIdentity() {
+    public byte[] getDefaultPSKIdentity() {
         return defaultPSKIdentity;
     }
 
-    public void setDefaultPSKIdentity(BigInteger defaultPSKIdentity) {
+    public void setDefaultPSKIdentity(byte[] defaultPSKIdentity) {
         this.defaultPSKIdentity = defaultPSKIdentity;
     }
 

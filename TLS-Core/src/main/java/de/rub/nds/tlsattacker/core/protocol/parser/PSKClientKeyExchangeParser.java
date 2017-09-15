@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 
 /**
  *
- * @author florian
+ * @author Florian Linsner - florian.linsner@rub.de
  */
 public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClientKeyExchangeMessage> {
     /**
@@ -47,26 +47,26 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
+     * Reads the next bytes as the SerializedPSKIdentityLength and writes them
+     * in the message
      *
      * @param msg
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(PSKClientKeyExchangeMessage msg) {
-        msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        msg.setIdentityLength(parseByteArrayField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
         LOGGER.debug("SerializedPSL-IdentityLength: " + msg.getIdentityLength().getValue());
     }
 
     /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the
+     * Reads the next bytes as the SerializedPSKIdentity and writes them in the
      * message
      *
      * @param msg
      *            Message to write in
      */
     private void parseSerializedPublicKey(PSKClientKeyExchangeMessage msg) {
-        msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));
+        msg.setIdentity(parseByteArrayField(ArrayConverter.bytesToInt(msg.getIdentityLength().getValue())));
         LOGGER.debug("SerializedPSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 }

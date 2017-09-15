@@ -9,26 +9,16 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+ * @author Florian Linsner - florian.linsner@rub.de
  */
 public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<PSKClientKeyExchangeMessage> {
 
@@ -48,8 +38,8 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity().toByteArray());
-        msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().toByteArray().length);
+        msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
+        msg.setIdentityLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentity().length, 2));
         msg.prepareComputations();
         // byte[] random = ArrayConverter.concatenate(chooser.getClientRandom(),
         // chooser.getServerRandom());
@@ -64,11 +54,9 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, 2));
-            LOGGER.debug("PSK Length: " + chooser.getConfig().getDefaultPSKKey().length);
             outputStream.write(ArrayConverter.intToBytes(0, chooser.getConfig().getDefaultPSKKey().length));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, 2));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
-            LOGGER.debug("PSK:" + chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
             LOGGER.debug(ex);

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
- * @author florian
+ * @author Florian Linsner - florian.linsner@rub.de
  */
 public class PSKClientKeyExchangeHandler extends ClientKeyExchangeHandler<PSKClientKeyExchangeMessage> {
 

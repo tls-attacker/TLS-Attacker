@@ -19,15 +19,13 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 
 /**
  *
- * @author florian
+ * @author Florian Linsner - florian.linsner@rub.de
  */
 @XmlRootElement
 public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
@@ -38,7 +36,7 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger identity_length;
+    private ModifiableByteArray identity_length;
 
     public PSKClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
@@ -79,15 +77,15 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
     }
 
-    public ModifiableInteger getIdentityLength() {
+    public ModifiableByteArray getIdentityLength() {
         return identity_length;
     }
 
-    public void setIdentityLength(ModifiableInteger identity_length) {
+    public void setIdentityLength(ModifiableByteArray identity_length) {
         this.identity_length = identity_length;
     }
 
-    public void setIdentityLength(int identity_length) {
+    public void setIdentityLength(byte[] identity_length) {
         this.identity_length = ModifiableVariableFactory.safelySetValue(this.identity_length, identity_length);
     }
 
