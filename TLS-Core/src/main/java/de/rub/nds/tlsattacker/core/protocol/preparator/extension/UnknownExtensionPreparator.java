@@ -32,12 +32,12 @@ public class UnknownExtensionPreparator extends ExtensionPreparator<UnknownExten
         if (msg.getDataConfig() != null) {
             msg.setExtensionData(msg.getDataConfig());
         } else {
-            msg.setExtensionData(new byte[]{});
+            msg.setExtensionData(new byte[] {});
         }
         if (msg.getTypeConfig() != null) {
             msg.setExtensionType(msg.getTypeConfig());
         } else {
-            msg.setExtensionType(new byte[]{});
+            msg.setExtensionType(new byte[] {});
         }
         if (msg.getLengthConfig() != null) {
             msg.setExtensionLength(msg.getLengthConfig());
