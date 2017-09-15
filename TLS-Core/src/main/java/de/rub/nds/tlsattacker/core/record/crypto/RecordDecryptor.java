@@ -108,7 +108,7 @@ public class RecordDecryptor extends Decryptor {
                 record.getPlainRecordBytes().getValue().length - unpadded.length);
         record.setPadding(padding);
         LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
-        record.setPaddingLength(padding.length);
+        record.setPaddingLength(record.getPadding().getValue().length);
         LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
     }
 
