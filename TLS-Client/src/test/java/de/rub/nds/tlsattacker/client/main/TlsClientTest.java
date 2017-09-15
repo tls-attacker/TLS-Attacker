@@ -85,7 +85,7 @@ public class TlsClientTest {
     }
 
     @Test
-    // @Category(IntegrationTests.class)
+    @Category(IntegrationTests.class)
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
             TimeHelper.setProvider(new FixedTimeProvider(0));
@@ -107,7 +107,7 @@ public class TlsClientTest {
     }
 
     @Test
-    // @Category(IntegrationTests.class)
+    @Category(IntegrationTests.class)
     public void testECWorkflows() throws OperatorCreationException {
         try {
             KeyPair k = KeyStoreGenerator.createECKeyPair(256);
