@@ -72,7 +72,7 @@ public class ServerHelloHandlerTest {
     public void testAdjustTLSContext() {
         ServerHelloMessage message = new ServerHelloMessage();
         message.setUnixTime(new byte[] { 0, 1, 2 });
-        message.setRandom(new byte[] { 3, 4, 5 });
+        message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
         message.setSelectedCompressionMethod(CompressionMethod.DEFLATE.getValue());
         message.setSelectedCipherSuite(CipherSuite.TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384.getByteValue());
         message.setSessionId(new byte[] { 6, 6, 6 });

@@ -34,20 +34,19 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     protected void prepareRandom(ProtocolVersion version) {
         byte[] random;
-        if (version.isTLS13()) {
-            random = new byte[HandshakeByteLength.RANDOM_TLS13];
+        if (chooser.getConfig().isUseRandomUnixTime()) {
+            random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
+            RandomHelper.getRandom().nextBytes(random);
+            msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
+            random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
+            msg.setRandom(random);
         } else {
             random = new byte[HandshakeByteLength.RANDOM];
+            RandomHelper.getRandom().nextBytes(random);
+            msg.setRandom(random);
         }
-        RandomHelper.getRandom().nextBytes(random);
-        msg.setRandom(random);
-        LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
-    }
 
-    protected void prepareUnixTime() {
-        final long unixTime = TimeHelper.getTime();
-        msg.setUnixTime(ArrayConverter.longToUint32Bytes(unixTime));
-        LOGGER.debug("UnixTime: " + ArrayConverter.bytesToHexString(msg.getUnixTime().getValue()));
+        LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
     }
 
     protected void prepareSessionIDLength() {

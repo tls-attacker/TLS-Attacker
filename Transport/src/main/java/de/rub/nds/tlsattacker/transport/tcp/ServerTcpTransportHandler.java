@@ -13,8 +13,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -45,7 +43,7 @@ public class ServerTcpTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        if (serverSocket == null) {
+        if (serverSocket == null || serverSocket.isClosed()) {
             serverSocket = new ServerSocket(port);
         }
         socket = serverSocket.accept();

@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
@@ -25,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -136,7 +140,23 @@ public class ReceiveMessageHelper {
     }
 
     private static List<AbstractRecord> parseRecords(byte[] recordBytes, TlsContext context) {
-        return context.getRecordLayer().parseRecords(recordBytes);
+        try {
+            return context.getRecordLayer().parseRecords(recordBytes);
+        } catch (ParserException ex) {
+            LOGGER.debug(ex);
+            LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
+            byte[] extraBytes = null;
+            try {
+                extraBytes = receiveByteArray(context);
+            } catch (IOException ex2) {
+                LOGGER.warn("Could not receive more Bytes", ex2);
+            }
+            if (extraBytes != null && extraBytes.length >= 0) {
+                return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
+            }
+            LOGGER.debug("Did not receive more Bytes. Parsing records softly");
+            return context.getRecordLayer().parseRecordsSoftly(extraBytes);
+        }
     }
 
     private static List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
@@ -152,7 +172,19 @@ public class ReceiveMessageHelper {
             ParserResult result = null;
             try {
                 if (typeFromRecord != null) {
-                    result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord, context);
+                    if (typeFromRecord == ProtocolMessageType.APPLICATION_DATA
+                            && context.getConfig().isHttpsParsingEnabled()) {
+                        try {
+                            result = tryHandleAsHttpsMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        } catch (ParserException | AdjustmentException E) {
+                            result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
+                                    context);
+                        }
+                    } else {
+                        result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
+                                context);
+
+                    }
                 } else {
                     result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                 }
@@ -180,6 +212,21 @@ public class ReceiveMessageHelper {
 
         }
         return receivedMessages;
+    }
+
+    private static ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
+            throws ParserException, AdjustmentException {
+        try {
+            HttpsRequestHandler handler = new HttpsRequestHandler(context);
+            return handler.parseMessage(protocolMessageBytes, pointer);
+        } catch (ParserException E) {
+            try {
+                HttpsResponseHandler handler = new HttpsResponseHandler(context);
+                return handler.parseMessage(protocolMessageBytes, pointer);
+            } catch (ParserException E2) {
+                throw new ParserException("Could not parse ApplicationData as HTTPS", E2);
+            }
+        }
     }
 
     private static ParserResult tryHandleAsCorrectMessage(byte[] protocolMessageBytes, int pointer,

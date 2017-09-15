@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
+import java.util.Arrays;
 
 /**
  * An abstract Parser class for Hello Messages
@@ -56,29 +57,16 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     }
 
     /**
-     * Reads the next bytes as a Unixtime and writes them in the message
-     *
-     * @param message
-     *            Message to write in
-     */
-    protected void parseUnixtime(HelloMessage message) {
-        message.setUnixTime(parseByteArrayField(HandshakeByteLength.UNIX_TIME));
-        LOGGER.debug("UnixTime:" + ArrayConverter.bytesToHexString(message.getUnixTime().getValue()));
-    }
-
-    /**
      * Reads the next bytes as a the Random and writes them in the message
      *
      * @param message
      *            Message to write in
      */
     protected void parseRandom(HelloMessage message) {
-        if (getVersion().isTLS13()) {
-            message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM_TLS13));
-        } else {
-            message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
-        }
+        message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
         LOGGER.debug("Random:" + ArrayConverter.bytesToHexString(message.getRandom().getValue()));
+        message.setUnixTime(Arrays.copyOf(message.getRandom().getValue(), HandshakeByteLength.UNIX_TIME));
+        LOGGER.debug("UnixTime:" + ArrayConverter.bytesToHexString(message.getUnixTime().getValue()));
     }
 
     /**

@@ -19,7 +19,9 @@ public enum WorkflowTraceType {
     HELLO,
     SHORT_HELLO,
     RESUMPTION,
+    FULL_RESUMPTION,
     CLIENT_RENEGOTIATION,
     SERVER_RENEGOTIATION,
+    HTTPS,
     SSL2_HELLO;
 }
