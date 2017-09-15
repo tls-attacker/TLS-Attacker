@@ -46,7 +46,7 @@ public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<P
      * into the final byte[]
      */
     private void writeSerializedPSKIdentityLength(PSKClientKeyExchangeMessage msg) {
-        appendInt(ArrayConverter.bytesToInt(msg.getIdentity().getValue()), HandshakeByteLength.PSK_IDENTITY_LENGTH);
+        appendInt(msg.getIdentity().getValue().length, HandshakeByteLength.PSK_IDENTITY_LENGTH);
         LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
     }
 

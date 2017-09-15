@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
@@ -49,17 +51,24 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity().toByteArray());
         msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().toByteArray().length);
         msg.prepareComputations();
+        // byte[] random = ArrayConverter.concatenate(chooser.getClientRandom(),
+        // chooser.getServerRandom());
+        // msg.getComputations().setClientRandom(random);
+
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
+        prepareClientRandom(msg);
     }
 
     private byte[] generatePremasterSecret() {
         outputStream = new ByteArrayOutputStream();
         try {
-            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength() / 8, 2));
-            outputStream.write(ArrayConverter.intToBytes(0, chooser.getConfig().getDefaultPSKKey().bitLength() / 8));
-            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().bitLength() / 8, 2));
-            outputStream.write(chooser.getConfig().getDefaultPSKKey().toByteArray());
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, 2));
+            LOGGER.debug("PSK Length: " + chooser.getConfig().getDefaultPSKKey().length);
+            outputStream.write(ArrayConverter.intToBytes(0, chooser.getConfig().getDefaultPSKKey().length));
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, 2));
+            outputStream.write(chooser.getConfig().getDefaultPSKKey());
+            LOGGER.debug("PSK:" + chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
             LOGGER.debug(ex);
@@ -74,9 +83,18 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
+    private void prepareClientRandom(PSKClientKeyExchangeMessage msg) {
+        // TODO spooky
+        clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        msg.getComputations().setClientRandom(clientRandom);
+        LOGGER.debug("ClientRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+    }
+
     @Override
     public void prepareAfterParse() {
         msg.prepareComputations();
         preparePremasterSecret(msg);
+        prepareClientRandom(msg);
     }
 }
