@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
@@ -27,7 +28,12 @@ public class HelloVerifyRequestParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] {});// TODO add TestCase!
+        return Arrays
+                .asList(new Object[][] { {
+                        ArrayConverter
+                                .hexStringToByteArray("030000170000000000000017feff1415520276466763250a851c5b9eaeb44676ff3381"),
+                        HandshakeMessageType.HELLO_VERIFY_REQUEST, 23, ProtocolVersion.DTLS10.getValue(), (byte) 20,
+                        ArrayConverter.hexStringToByteArray("15520276466763250a851c5b9eaeb44676ff3381"), 0, 23, 0 } });
     }
 
     private byte[] message;
@@ -39,14 +45,21 @@ public class HelloVerifyRequestParserTest {
     private byte cookieLength;
     private byte[] cookie;
 
+    private int fragmentOffset;
+    private int fragmentLength;
+    private int messageSeq;
+
     public HelloVerifyRequestParserTest(byte[] message, HandshakeMessageType type, int length, byte[] protocolVersion,
-            byte cookieLength, byte[] cookie) {
+            byte cookieLength, byte[] cookie, int fragmentOffset, int fragmentLength, int messageSeq) {
         this.message = message;
         this.type = type;
         this.length = length;
         this.protocolVersion = protocolVersion;
         this.cookieLength = cookieLength;
         this.cookie = cookie;
+        this.fragmentLength = fragmentLength;
+        this.fragmentOffset = fragmentOffset;
+        this.messageSeq = messageSeq;
     }
 
     /**
@@ -54,7 +67,7 @@ public class HelloVerifyRequestParserTest {
      */
     @Test
     public void testParse() {
-        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(0, message, ProtocolVersion.TLS12);
+        HelloVerifyRequestParser parser = new HelloVerifyRequestParser(0, message, ProtocolVersion.DTLS10);
         HelloVerifyRequestMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
@@ -62,5 +75,8 @@ public class HelloVerifyRequestParserTest {
         assertArrayEquals(protocolVersion, msg.getProtocolVersion().getValue());
         assertArrayEquals(cookie, msg.getCookie().getValue());
         assertTrue(cookieLength == msg.getCookieLength().getValue());
+        assertTrue(messageSeq == msg.getMessageSeq().getValue());
+        assertTrue(fragmentLength == msg.getFragmentLength().getValue());
+        assertTrue(fragmentOffset == msg.getFragmentOffset().getValue());
     }
 }

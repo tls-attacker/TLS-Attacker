@@ -8,15 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import static org.junit.Assert.assertArrayEquals;
+
+import java.util.Collection;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParserTest;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
@@ -31,8 +34,6 @@ public class HelloVerifyRequestSerializerTest {
     }
 
     private byte[] message;
-    private int start;
-    private byte[] expectedPart;
 
     private HandshakeMessageType type;
     private int length;
@@ -41,16 +42,22 @@ public class HelloVerifyRequestSerializerTest {
     private byte cookieLength;
     private byte[] cookie;
 
-    public HelloVerifyRequestSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length, byte[] protocolVersion, byte cookieLength, byte[] cookie) {
+    private int fragmentOffset;
+    private int fragmentLength;
+    private int messageSeq;
+
+    public HelloVerifyRequestSerializerTest(byte[] message, HandshakeMessageType type, int length,
+            byte[] protocolVersion, byte cookieLength, byte[] cookie, int fragmentOffset, int fragmentLength,
+            int messageSeq) {
         this.message = message;
-        this.start = start;
-        this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.protocolVersion = protocolVersion;
         this.cookieLength = cookieLength;
         this.cookie = cookie;
+        this.fragmentLength = fragmentLength;
+        this.fragmentOffset = fragmentOffset;
+        this.messageSeq = messageSeq;
     }
 
     /**
@@ -60,14 +67,18 @@ public class HelloVerifyRequestSerializerTest {
     @Test
     public void testSerializeHandshakeMessageContent() {
         HelloVerifyRequestMessage msg = new HelloVerifyRequestMessage();
-        msg.setCompleteResultingMessage(expectedPart);
+        msg.setCompleteResultingMessage(message);
         msg.setType(type.getValue());
         msg.setType(type.getValue());
         msg.setProtocolVersion(protocolVersion);
         msg.setCookieLength(cookieLength);
         msg.setCookie(cookie);
-        HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg, ProtocolVersion.TLS12);
-        assertArrayEquals(expectedPart, serializer.serialize());
+        msg.setLength(length);
+        msg.setMessageSeq(messageSeq);
+        msg.setFragmentOffset(fragmentOffset);
+        msg.setFragmentLength(fragmentLength);
+        HelloVerifyRequestSerializer serializer = new HelloVerifyRequestSerializer(msg, ProtocolVersion.DTLS10);
+        assertArrayEquals(message, serializer.serialize());
     }
 
 }
