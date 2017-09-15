@@ -44,13 +44,15 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
+
+import java.io.*;
+import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinPool;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -84,6 +86,30 @@ public class Config implements Serializable {
         return ConfigIO.read(stream);
     }
 
+    public static Config createEmptyConfig() {
+        Config c = new Config();
+        for (Field field : c.getClass().getDeclaredFields()) {
+            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()) {
+                field.setAccessible(true);
+                try {
+                    field.set(c, null);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return c;
+    }
+
+    public static Config mergeWithDefaultValues(Config c) {
+        String host = c.getHost(); // host is transient and will be resetted
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ConfigIO.write(c, byteArrayOutputStream);
+        c = ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        c.setHost(host);
+        return c;
+    }
+
     /**
      * Default value for ProtocolVerionFields
      */
@@ -106,7 +132,7 @@ public class Config implements Serializable {
     /**
      * If default generated WorkflowTraces should contain client Authentication
      */
-    private boolean clientAuthentication = false;
+    private Boolean clientAuthentication = false;
 
     /**
      * Which Signature and Hash algorithms we support
@@ -124,7 +150,7 @@ public class Config implements Serializable {
     /**
      * If we are a dynamic workflow //TODO implement
      */
-    private boolean dynamicWorkflow = false;
+    private Boolean dynamicWorkflow = false;
     /**
      * Supported namedCurves by default
      */
@@ -145,7 +171,7 @@ public class Config implements Serializable {
     /**
      * Padding length for TLS 1.3 messages
      */
-    private int paddingLength = 0;
+    private Integer paddingLength = 0;
     /**
      * Public key for KeyShareExtension
      */
@@ -173,11 +199,11 @@ public class Config implements Serializable {
     /**
      * Should we terminate the connection on a wrong SNI ?
      */
-    private boolean sniHostnameFatal = false;
+    private Boolean sniHostnameFatal = false;
     /**
      * Server port used
      */
-    private int port = 443;
+    private Integer port = 443;
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
@@ -199,7 +225,7 @@ public class Config implements Serializable {
      * It's an empty info since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerRenegotiationInfo = new byte[] { 0 };
+    private byte[] defaultServerRenegotiationInfo = new byte[0];
     /**
      * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
      * It's an emty timestamp, since the server sends it.
@@ -276,7 +302,7 @@ public class Config implements Serializable {
     /**
      * Default state for the certificate type extension message. State "client"
      */
-    private boolean certificateTypeExtensionMessageState = true;
+    private Boolean certificateTypeExtensionMessageState = true;
     /**
      * Default sever authz extension data format list
      */
@@ -289,11 +315,11 @@ public class Config implements Serializable {
      * Default state for the client certificate type extension message. State
      * "client"
      */
-    private boolean clientCertificateTypeExtensionMessageState = true;
+    private Boolean clientCertificateTypeExtensionMessageState = true;
     /**
      * Default state for the cached info extension message. State "client"
      */
-    private boolean cachedInfoExtensionIsClientState = true;
+    private Boolean cachedInfoExtensionIsClientState = true;
     /**
      * Default cached objects for the cached info extension
      */
@@ -305,7 +331,7 @@ public class Config implements Serializable {
     /**
      * Default Timeout for the Connection
      */
-    private int timeout = 1000;
+    private Integer timeout = 1000;
     /**
      * Transporthandler Type that shall be used
      */
@@ -326,132 +352,132 @@ public class Config implements Serializable {
      * If the Default generated workflowtrace should contain Application data
      * send by servers
      */
-    private boolean serverSendsApplicationData = false;
+    private Boolean serverSendsApplicationData = false;
     /**
      * If we generate ClientHello with the ECPointFormat extension
      */
-    private boolean addECPointFormatExtension = true;
+    private Boolean addECPointFormatExtension = true;
     /**
      * If we generate ClientHello with the EllipticCurve extension
      */
-    private boolean addEllipticCurveExtension = true;
+    private Boolean addEllipticCurveExtension = true;
     /**
      * If we generate ClientHello with the Heartbeat extension
      */
-    private boolean addHeartbeatExtension = false;
+    private Boolean addHeartbeatExtension = false;
     /**
      * If we generate ClientHello with the MaxFragmentLength extension
      */
-    private boolean addMaxFragmentLengthExtenstion = false;
+    private Boolean addMaxFragmentLengthExtenstion = false;
     /**
      * If we generate ClientHello with the ServerNameIndication extension
      */
-    private boolean addServerNameIndicationExtension = false;
+    private Boolean addServerNameIndicationExtension = false;
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
-    private boolean addSignatureAndHashAlgrorithmsExtension = false;
+    private Boolean addSignatureAndHashAlgrorithmsExtension = false;
     /**
      * If we generate ClientHello with the SupportedVersion extension
      */
-    private boolean addSupportedVersionsExtension = false;
+    private Boolean addSupportedVersionsExtension = false;
     /**
      * If we generate ClientHello with the KeyShare extension
      */
-    private boolean addKeyShareExtension = false;
+    private Boolean addKeyShareExtension = false;
     /**
      * If we generate ClientHello with the Padding extension
      */
-    private boolean addPaddingExtension = false;
+    private Boolean addPaddingExtension = false;
     /**
      * If we generate ClientHello with the ExtendedMasterSecret extension
      */
-    private boolean addExtendedMasterSecretExtension = false;
+    private Boolean addExtendedMasterSecretExtension = false;
     /**
      * If we generate ClientHello with the SessionTicketTLS extension
      */
-    private boolean addSessionTicketTLSExtension = false;
+    private Boolean addSessionTicketTLSExtension = false;
     /**
      * If we generate ClientHello with SignedCertificateTimestamp extension
      */
-    private boolean addSignedCertificateTimestampExtension = false;
+    private Boolean addSignedCertificateTimestampExtension = false;
     /**
      * If we generate ClientHello with RenegotiationInfo extension
      */
-    private boolean addRenegotiationInfoExtension = false;
+    private Boolean addRenegotiationInfoExtension = false;
     /**
      * If we generate ClientHello with TokenBinding extension.
      */
-    private boolean addTokenBindingExtension = false;
+    private Boolean addTokenBindingExtension = false;
     /**
      * If we generate ClientHello with CertificateStatusRequest extension
      */
-    private boolean addCertificateStatusRequestExtension = false;
+    private Boolean addCertificateStatusRequestExtension = false;
     /**
      * If we generate ClientHello with ALPN extension
      */
-    private boolean addAlpnExtension = false;
+    private Boolean addAlpnExtension = false;
     /**
      * If we generate ClientHello with SRP extension
      */
-    private boolean addSRPExtension = false;
+    private Boolean addSRPExtension = false;
     /**
      * If we generate ClientHello with SRTP extension
      */
-    private boolean addSRTPExtension = false;
+    private Boolean addSRTPExtension = false;
     /**
      * If we generate ClientHello with truncated hmac extension
      */
-    private boolean addTruncatedHmacExtension = false;
+    private Boolean addTruncatedHmacExtension = false;
     /**
      * If we generate ClientHello with user mapping extension
      */
-    private boolean addUserMappingExtension = false;
+    private Boolean addUserMappingExtension = false;
     /**
      * If we generate ClientHello with certificate type extension
      */
-    private boolean addCertificateTypeExtension = false;
+    private Boolean addCertificateTypeExtension = false;
     /**
      * If we generate ClientHello with client authz extension
      */
-    private boolean addClientAuthzExtension = false;
+    private Boolean addClientAuthzExtension = false;
     /**
      * If we generate ClientHello with server authz extension
      */
-    private boolean addServerAuthzExtension = false;
+    private Boolean addServerAuthzExtension = false;
     /**
      * If we generate ClientHello with client certificate type extension
      */
-    private boolean addClientCertificateTypeExtension = false;
+    private Boolean addClientCertificateTypeExtension = false;
     /**
      * If we generate ClientHello with server certificate type extension
      */
-    private boolean addServerCertificateTypeExtension = false;
+    private Boolean addServerCertificateTypeExtension = false;
     /**
      * If we generate ClientHello with encrypt then mac extension
      */
-    private boolean addEncryptThenMacExtension = false;
+    private Boolean addEncryptThenMacExtension = false;
     /**
      * If we generate ClientHello with cached info extension
      */
-    private boolean addCachedInfoExtension = false;
+    private Boolean addCachedInfoExtension = false;
     /**
      * If we generate ClientHello with client certificate url extension
      */
-    private boolean addClientCertificateUrlExtension = false;
+    private Boolean addClientCertificateUrlExtension = false;
     /**
      * If we generate ClientHello with trusted ca indication extension
      */
-    private boolean addTrustedCaIndicationExtension = false;
+    private Boolean addTrustedCaIndicationExtension = false;
     /**
      * If we generate ClientHello with status request v2 extension
      */
-    private boolean addCertificateStatusRequestV2Extension = false;
+    private Boolean addCertificateStatusRequestV2Extension = false;
     /**
      * If set to true, timestamps will be updated upon execution of a
      * workflowTrace
      */
-    private boolean updateTimestamps = true;
+    private Boolean updateTimestamps = true;
     /**
      * The Certificate we initialize CertificateMessages with
      */
@@ -470,14 +496,14 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
 
-    private boolean enforceSettings = false;
+    private Boolean enforceSettings = false;
 
     /**
      * Stop as soon as all expected messages are received and dont wait for more
      */
-    private boolean earlyStop = false;
+    private Boolean earlyStop = false;
 
-    private boolean doDTLSRetransmits = false;
+    private Boolean doDTLSRetransmits = false;
 
     private BigInteger defaultDhGenerator = new BigInteger("2");
 
@@ -503,26 +529,26 @@ public class Config implements Serializable {
      * ReceiveActions This is interesting for DTLS since this prevents the
      * server from retransmitting
      */
-    private boolean waitOnlyForExpectedDTLS = true;
+    private Boolean waitOnlyForExpectedDTLS = true;
 
     private List<ClientCertificateType> clientCertificateTypes;
 
     /**
      * max payload length used in our application (not set by the spec)
      */
-    private int heartbeatPayloadLength = 256;
+    private Integer heartbeatPayloadLength = 256;
 
-    private int heartbeatPaddingLength = 256;
+    private Integer heartbeatPaddingLength = 256;
 
     /**
      * How long should our DTLSCookies be by default
      */
-    private int defaultDTLSCookieLength = 6;
+    private Integer defaultDTLSCookieLength = 6;
 
     /**
      * How much data we should put into a record by default
      */
-    private int defaultMaxRecordData = 1048576;
+    private Integer defaultMaxRecordData = 1048576;
 
     /**
      * How much padding bytes should be send by default
@@ -535,19 +561,19 @@ public class Config implements Serializable {
     /**
      * Does not mix messages with different message types in a single record
      */
-    private boolean flushOnMessageTypeChange = true;
+    private Boolean flushOnMessageTypeChange = true;
 
     /**
      * If there is not enough space in the defined records, new records are
      * dynamically added if not set, protocolmessage bytes that wont fit are
      * discarded
      */
-    private boolean createRecordsDynamically = true;
+    private Boolean createRecordsDynamically = true;
     /**
      * When "Null" records are defined to be send, every message will be sent in
      * atleast one individual record
      */
-    private boolean createIndividualRecords = true;
+    private Boolean createIndividualRecords = true;
 
     /**
      * Which recordLayer should be used
@@ -559,27 +585,27 @@ public class Config implements Serializable {
      * values from the workflow trace and will only keep the relevant
      * information
      */
-    private boolean resetWorkflowtracesBeforeSaving = false;
+    private Boolean resetWorkflowtracesBeforeSaving = false;
 
     /**
      * TLS-Attacker will not try to receive additional messages after the
      * configured number of messages has been received
      */
-    private boolean quickReceive = true;
+    private Boolean quickReceive = true;
 
     /**
      * If the WorkflowExecutor should take care of the connection opening
      */
-    private boolean workflowExecutorShouldOpen = true;
+    private Boolean workflowExecutorShouldOpen = true;
 
     /**
      * If the WorkflowExecutor should take care of the connection closing
      */
-    private boolean workflowExecutorShouldClose = true;
+    private Boolean workflowExecutorShouldClose = true;
 
-    private boolean stopRecievingAfterFatal = false;
+    private Boolean stopRecievingAfterFatal = false;
 
-    private boolean stopActionsAfterFatal = false;
+    private Boolean stopActionsAfterFatal = false;
     /**
      * This CipherSuite will be used if no cipherSuite has been negotiated yet
      */
@@ -640,9 +666,9 @@ public class Config implements Serializable {
 
     private PRFAlgorithm defaultPRFAlgorithm = PRFAlgorithm.TLS_PRF_LEGACY;
 
-    private byte defaultAlertDescription = 0;
+    private Byte defaultAlertDescription = 0;
 
-    private byte defaultAlertLevel = 0;
+    private Byte defaultAlertLevel = 0;
 
     private NamedCurve defaultSelectedCurve = NamedCurve.SECP192R1;
 
@@ -693,7 +719,13 @@ public class Config implements Serializable {
     private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
             "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
+    private boolean useRandomUnixTime = true;
+
     private ChooserType chooserType = ChooserType.DEFAULT;
+
+    private boolean useAllProvidedRecords = false;
+
+    private boolean httpsParsingEnabled = false;
 
     private Config() {
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
@@ -770,16 +802,37 @@ public class Config implements Serializable {
         clientCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
         clientCertificateTypeDesiredTypes.add(CertificateType.X509);
         clientCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
-
         serverCertificateTypeDesiredTypes = new LinkedList<>();
         serverCertificateTypeDesiredTypes.add(CertificateType.OPEN_PGP);
         serverCertificateTypeDesiredTypes.add(CertificateType.X509);
         serverCertificateTypeDesiredTypes.add(CertificateType.RAW_PUBLIC_KEY);
-
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
-
         statusRequestV2RequestList = new LinkedList<>();
+    }
+
+    public boolean isHttpsParsingEnabled() {
+        return httpsParsingEnabled;
+    }
+
+    public void setHttpsParsingEnabled(boolean httpsParsingEnabled) {
+        this.httpsParsingEnabled = httpsParsingEnabled;
+    }
+
+    public boolean isUseRandomUnixTime() {
+        return useRandomUnixTime;
+    }
+
+    public void setUseRandomUnixTime(boolean useRandomUnixTime) {
+        this.useRandomUnixTime = useRandomUnixTime;
+    }
+
+    public boolean isUseAllProvidedRecords() {
+        return useAllProvidedRecords;
+    }
+
+    public void setUseAllProvidedRecords(boolean useAllProvidedRecords) {
+        this.useAllProvidedRecords = useAllProvidedRecords;
     }
 
     public byte[] getDefaultServerRenegotiationInfo() {

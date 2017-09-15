@@ -113,16 +113,8 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void adjustRandomContext(ClientHelloMessage message) {
-        if (message.getUnixTime() != null && message.getUnixTime().getValue() != null) {
-            setClientRandomContext(message.getUnixTime().getValue(), message.getRandom().getValue());
-        } else {
-            tlsContext.setClientRandom(message.getRandom().getValue());
-        }
+        tlsContext.setClientRandom(message.getRandom().getValue());
         LOGGER.debug("Set ClientRandom in Context to " + ArrayConverter.bytesToHexString(tlsContext.getClientRandom()));
-    }
-
-    private void setClientRandomContext(byte[] unixTime, byte[] random) {
-        tlsContext.setClientRandom(ArrayConverter.concatenate(unixTime, random));
     }
 
     private List<CompressionMethod> convertCompressionMethods(byte[] bytesToConvert) {
