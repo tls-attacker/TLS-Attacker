@@ -516,7 +516,7 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getServerRSAPrivateKey() {
-        if (context.getClientRSAPrivateKey() != null) {
+        if (context.getServerRSAPrivateKey() != null) {
             return context.getServerRSAPrivateKey();
         } else {
             return config.getDefaultServerRSAPrivateKey();
