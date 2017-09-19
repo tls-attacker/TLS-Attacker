@@ -56,7 +56,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Create a WorkflowTace based on a Config instance.
- * 
+ *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -268,7 +268,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createShortHelloWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowTrace trace = new WorkflowTrace(config);
         trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
@@ -278,7 +278,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createSsl2HelloWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
-        WorkflowTrace trace = new WorkflowTrace();
+        WorkflowTrace trace = new WorkflowTrace(config);
         MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
                 new SSL2ClientHelloMessage(config));
         action.setRecords(new BlobRecord());
@@ -383,8 +383,11 @@ public class WorkflowConfigurationFactory {
                 }
             }
         }
-
-        // client -> mitm
+        if (connectingConnectionEnd == null || acceptingConnectionEnd == null) {// client
+                                                                                // ->
+                                                                                // mitm
+            throw new ConfigurationException("Could not find both necesary connection ends");
+        }
         String clientToMitmAlias = acceptingConnectionEnd.getAlias();
         // mitm -> server
         String mitmToServerAlias = connectingConnectionEnd.getAlias();

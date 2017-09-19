@@ -125,6 +125,9 @@ public class WorkflowConfigurationFactoryTest {
         final List<WorkflowTrace> list = new ArrayList<>(WorkflowTraceType.values().length);
 
         for (WorkflowTraceType workflowTraceType : WorkflowTraceType.values()) {
+            if (workflowTraceType == WorkflowTraceType.SIMPLE_MITM_PROXY) {
+                continue;
+            }
             WorkflowTrace newTrace = workflowConfigurationFactory.createWorkflowTrace(workflowTraceType);
             Assert.assertNotNull(newTrace.getMessageActions());
             Assert.assertFalse(newTrace.getMessageActions().isEmpty());

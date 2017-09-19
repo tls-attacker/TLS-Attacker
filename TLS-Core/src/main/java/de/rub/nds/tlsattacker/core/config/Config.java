@@ -1712,8 +1712,11 @@ public class Config implements Serializable {
     }
 
     /**
-     * Sets the Default timeout and sets the default Timeout in every ConnectionEnd
-     * @param timeout Timeout to be set
+     * Sets the Default timeout and sets the default Timeout in every
+     * ConnectionEnd
+     * 
+     * @param timeout
+     *            Timeout to be set
      */
     public void setDefaultTimeout(Integer timeout) {
         defaultTimeout = timeout;
