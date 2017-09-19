@@ -29,30 +29,33 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        if (context.getConfig().isWorkflowExecutorShouldOpen()) {
-            context.setTransportHandler(createTransportHandler());
-        }
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getConfig().getRecordLayerType(), context));
-        context.getWorkflowTrace().reset();
-        List<TLSAction> tlsActions = context.getWorkflowTrace().getTlsActions();
-        for (TLSAction action : tlsActions) {
-            try {
-                if (!(context.getConfig().isStopActionsAfterFatal() && context.isReceivedFatalAlert())) {
-                    action.execute(context);
-                } else {
-                    LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
-                    break;
-                }
-            } catch (IOException | PreparationException ex) {
-                throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+        try {
+            if (context.getConfig().isWorkflowExecutorShouldOpen()) {
+                context.setTransportHandler(createTransportHandler());
             }
-        }
-        if (context.getConfig().isWorkflowExecutorShouldClose()) {
-            try {
-                context.getTransportHandler().closeConnection();
-            } catch (IOException ex) {
-                LOGGER.warn("Could not close Connection");
-                LOGGER.debug(ex);
+            context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getConfig().getRecordLayerType(), context));
+            context.getWorkflowTrace().reset();
+            List<TLSAction> tlsActions = context.getWorkflowTrace().getTlsActions();
+            for (TLSAction action : tlsActions) {
+                try {
+                    if (!(context.getConfig().isStopActionsAfterFatal() && context.isReceivedFatalAlert())) {
+                        action.execute(context);
+                    } else {
+                        LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                        break;
+                    }
+                } catch (IOException | PreparationException ex) {
+                    throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+                }
+            }
+        } finally {
+            if (context.getConfig().isWorkflowExecutorShouldClose()) {
+                try {
+                    context.getTransportHandler().closeConnection();
+                } catch (IOException ex) {
+                    LOGGER.warn("Could not close Connection");
+                    LOGGER.debug(ex);
+                }
             }
         }
         if (context.getConfig().isResetWorkflowtracesBeforeSaving()) {
