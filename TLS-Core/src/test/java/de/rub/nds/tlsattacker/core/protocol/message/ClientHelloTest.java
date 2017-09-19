@@ -98,8 +98,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization2() throws Exception {
-        Config config = Config.createConfig();
-        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(Config.createConfig());
         WorkflowTrace trace = cf.createFullWorkflow();
         m.marshal(trace, writer);
         String xmlString = writer.toString();

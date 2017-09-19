@@ -59,7 +59,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     }
 
     @Override
-    protected void adjustTLSContext(CertificateMessage message) {
+    public void adjustTLSContext(CertificateMessage message) {
         Certificate cert;
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();

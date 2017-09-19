@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -19,26 +19,21 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MessageActionFactory {
-    public static MessageAction createAction(ConnectionEndType myConnectionEndType,
-            ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        messages.addAll(Arrays.asList(protocolMessages));
-        if (myConnectionEndType == sendingConnectionEndType) {
-            return new SendAction(messages);
-        } else {
-            return new ReceiveAction(messages);
-        }
-
+    public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEndType,
+            ProtocolMessage... protocolMessages) {
+        return createAction(myConnectionEnd, sendingConnectionEndType, Arrays.asList(protocolMessages));
     }
 
-    public static MessageAction createAction(ConnectionEndType myConnectionEnd, ConnectionEndType sendingConnectionEnd,
+    public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEnd,
             List<ProtocolMessage> protocolMessages) {
-        if (myConnectionEnd == sendingConnectionEnd) {
-            return new SendAction(protocolMessages);
+        MessageAction action;
+        if (myConnectionEnd.getConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAction(protocolMessages);
         } else {
-            return new ReceiveAction(protocolMessages);
+            action = new ReceiveAction(protocolMessages);
         }
-
+        action.setContextAlias(myConnectionEnd.getAlias());
+        return action;
     }
 
     private MessageActionFactory() {

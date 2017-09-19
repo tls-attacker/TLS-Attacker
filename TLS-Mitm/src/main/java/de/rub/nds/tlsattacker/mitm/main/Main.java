@@ -37,7 +37,6 @@ public class Main {
                 commander.usage();
                 return;
             }
-            // Cmd was parsable
             Config tlsConfig = null;
             try {
                 LOGGER.debug("Creating and launching mitm.");
@@ -45,11 +44,11 @@ public class Main {
                 TlsMitm mitm = new TlsMitm();
                 mitm.run(tlsConfig);
             } catch (ConfigurationException E) {
-                LOGGER.info("Encountered a ConfigurationException aborting.");
+                LOGGER.info("Encountered a ConfigurationException aborting. " + "Try -debug for more details.");
                 LOGGER.debug(E);
             }
         } catch (ParameterException E) {
-            LOGGER.info("Could not parse provided parameters");
+            LOGGER.info("Could not parse provided parameters. " + "Try -debug for more details.");
             LOGGER.debug(E);
             commander.usage();
             ex = E;

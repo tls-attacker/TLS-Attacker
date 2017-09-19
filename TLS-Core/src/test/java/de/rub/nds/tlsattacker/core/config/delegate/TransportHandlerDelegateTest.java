@@ -77,10 +77,10 @@ public class TransportHandlerDelegateTest {
         args[0] = "-transport_handler_type";
         args[1] = "UDP";
         jcommander.parse(args);
-        config.setTransportHandlerType(TransportHandlerType.TCP);
-        assertFalse(config.getTransportHandlerType() == TransportHandlerType.UDP);
+        config.setDefaultTransportHandlerType(TransportHandlerType.TCP);
+        assertFalse(config.getDefaultTransportHandlerType() == TransportHandlerType.UDP);
         delegate.applyDelegate(config);
-        assertTrue(config.getTransportHandlerType() == TransportHandlerType.UDP);
+        assertTrue(config.getDefaultTransportHandlerType() == TransportHandlerType.UDP);
     }
 
     @Test

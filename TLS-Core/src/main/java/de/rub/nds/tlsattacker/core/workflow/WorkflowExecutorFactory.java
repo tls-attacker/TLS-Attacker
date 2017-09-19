@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 
 /**
@@ -16,10 +16,10 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
  */
 public class WorkflowExecutorFactory {
 
-    public static WorkflowExecutor createWorkflowExecutor(WorkflowExecutorType type, TlsContext tlsContext) {
+    public static WorkflowExecutor createWorkflowExecutor(WorkflowExecutorType type, State state) {
         switch (type) {
             case DEFAULT:
-                return new DefaultWorkflowExecutor(tlsContext);
+                return new DefaultWorkflowExecutor(state);
             default:
                 throw new UnsupportedOperationException(type.name() + " not yet implemented");
         }

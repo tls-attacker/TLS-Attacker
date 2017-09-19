@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
@@ -57,26 +58,27 @@ public class ReceiveMessageHelper {
      * @return Actually received Messages
      */
     public static MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
-        context.setTalkingConnectionEndType(context.getConfig().getMyConnectionPeer());
+        context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
 
         List<AbstractRecord> records = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
         try {
-            byte[] recievedBytes;
+            byte[] receivedBytes;
             boolean shouldContinue = true;
             do {
-                recievedBytes = receiveByteArray(context);
-                if (recievedBytes.length != 0) {
-                    records = parseRecords(recievedBytes, context);
+                receivedBytes = receiveByteArray(context);
+                if (receivedBytes.length != 0) {
+                    records = parseRecords(receivedBytes, context);
                     List<List<AbstractRecord>> recordGroups = getRecordGroups(records);
                     for (List<AbstractRecord> recordGroup : recordGroups) {
                         messages.addAll(processRecordGroup(recordGroup, context));
                     }
                     if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
                         shouldContinue = shouldContinue(expectedMessages, messages, context);
+
                     }
                 }
-            } while (recievedBytes.length != 0 && shouldContinue);
+            } while (receivedBytes.length != 0 && shouldContinue);
 
         } catch (IOException ex) {
             LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
@@ -136,7 +138,8 @@ public class ReceiveMessageHelper {
     }
 
     private static byte[] receiveByteArray(TlsContext context) throws IOException {
-        return context.getTransportHandler().fetchData();
+        byte[] received = context.getTransportHandler().fetchData();
+        return received;
     }
 
     private static List<AbstractRecord> parseRecords(byte[] recordBytes, TlsContext context) {
@@ -188,28 +191,33 @@ public class ReceiveMessageHelper {
                 } else {
                     result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                 }
-            } catch (ParserException | AdjustmentException E) {
+            } catch (ParserException | AdjustmentException exCorrectMsg) {
                 LOGGER.warn("Could not parse Message as a CorrectMessage");
-                LOGGER.debug(E);
+                LOGGER.debug(exCorrectMsg);
                 try {
                     if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
                         result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
                                 typeFromRecord, context);
                     }
-                } catch (ParserException ex) {
+                } catch (ParserException exUnknownHandshakeMsg) {
                     LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");
-                    LOGGER.debug(ex);
+                    LOGGER.debug(exUnknownHandshakeMsg);
+
+                    try {
+                        result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                    } catch (ParserException | AdjustmentException exUnknownHMsg) {
+                        LOGGER.warn("Could not parse Message as UnknownMessage");
+                        LOGGER.debug(exUnknownHMsg);
+                        break;
+                    }
                 }
-                if (result == null) {
-                    result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
-                }
+                throw new ConfigurationException();
             }
             if (result != null) {
                 dataPointer = result.getParserPosition();
                 LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
                 receivedMessages.add(result.getMessage());
             }
-
         }
         return receivedMessages;
     }

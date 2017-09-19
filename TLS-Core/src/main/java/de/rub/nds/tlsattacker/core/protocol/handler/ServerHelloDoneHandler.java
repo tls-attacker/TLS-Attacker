@@ -40,7 +40,7 @@ public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloD
     }
 
     @Override
-    protected void adjustTLSContext(ServerHelloDoneMessage message) {
+    public void adjustTLSContext(ServerHelloDoneMessage message) {
         // nothing to adjust here
     }
 }

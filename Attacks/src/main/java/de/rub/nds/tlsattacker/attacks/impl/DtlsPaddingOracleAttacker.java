@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparato
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -291,15 +292,17 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     }
 
     private void initExecuteAttack() {
-        tlsContext = new TlsContext(tlsConfig);
+
+        State state = new State(tlsConfig);
+        tlsContext = state.getTlsContext();
+        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         tlsContext.getConfig().setWorkflowExecutorShouldOpen(false);
-        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(),
-                tlsConfig.getPort());
+        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
+                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
         tlsContext.setTransportHandler(transportHandler);
-        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(),
-                tlsContext);
+
         recordLayer = tlsContext.getRecordLayer();
-        trace = tlsContext.getWorkflowTrace();
+        trace = state.getWorkflowTrace();
         actionList = trace.getTlsActions();
         modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
         modifiedMacArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C },
@@ -314,7 +317,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTimeout(tlsConfig.getTimeout());
+            transportHandler.setTimeout(tlsConfig.getConnectionEnd().getTimeout());
         }
     }
 

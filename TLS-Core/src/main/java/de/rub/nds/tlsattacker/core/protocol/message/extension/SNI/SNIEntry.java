@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension.SNI;
 
 import de.rub.nds.tlsattacker.core.constants.NameType;
+import java.util.Objects;
 
 /**
  *
@@ -18,6 +19,14 @@ public class SNIEntry {
 
     private String name;
     private NameType type;
+
+    public SNIEntry() {
+    }
+
+    public SNIEntry(SNIEntry other) {
+        name = other.name;
+        type = other.type;
+    }
 
     public SNIEntry(String name, NameType type) {
         this.name = name;
@@ -38,6 +47,35 @@ public class SNIEntry {
 
     public void setType(NameType type) {
         this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.name);
+        hash = 53 * hash + Objects.hashCode(this.type);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SNIEntry other = (SNIEntry) obj;
+        if (!Objects.equals(this.name, other.name)) {
+            return false;
+        }
+        if (this.type != other.type) {
+            return false;
+        }
+        return true;
     }
 
 }

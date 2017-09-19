@@ -51,7 +51,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     @Override
-    protected void adjustTLSContext(ClientHelloMessage message) {
+    public void adjustTLSContext(ClientHelloMessage message) {
         adjustProtocolVersion(message);
         adjustSessionID(message);
         adjustClientSupportedCipherSuites(message);

@@ -40,7 +40,7 @@ public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage
     }
 
     @Override
-    protected void adjustTLSContext(UnknownMessage message) {
+    public void adjustTLSContext(UnknownMessage message) {
         // Nothing to do
     }
 
