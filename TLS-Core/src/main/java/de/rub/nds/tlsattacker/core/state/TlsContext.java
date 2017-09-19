@@ -350,7 +350,7 @@ public class TlsContext {
 
     private ProtocolVersion highestProtocolVersion;
 
-    private boolean clientAuthentication;
+    private Boolean clientAuthentication;
 
     /**
      * Last application message data received/send by this context. This is
@@ -1282,7 +1282,7 @@ public class TlsContext {
         return clientAuthentication;
     }
 
-    public void setClientAuthentication(boolean clientAuthentication) {
+    public void setClientAuthentication(Boolean clientAuthentication) {
         this.clientAuthentication = clientAuthentication;
     }
 
