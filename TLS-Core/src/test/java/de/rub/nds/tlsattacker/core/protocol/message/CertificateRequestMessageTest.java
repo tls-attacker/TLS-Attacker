@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,15 +17,14 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Pierre Tilhaus
+ * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
  */
-public class ApplicationMessageTest {
-
-    ApplicationMessage message;
+public class CertificateRequestMessageTest {
+    CertificateRequestMessage message;
 
     @Before
     public void setUp() {
-        message = new ApplicationMessage();
+        message = new CertificateRequestMessage();
     }
 
     @After
@@ -34,17 +32,10 @@ public class ApplicationMessageTest {
     }
 
     /**
-     * Test of toString method, of class ApplicationMessage.
+     * Test of toString method, of class CertificateRequestMessage.
      */
     @Test
     public void testToString() {
-        byte[] data = { 123 };
-        message.setData(data);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("APPLICATION\n  Data:").append(ArrayConverter.bytesToHexString(data));
-
-        assertEquals(sb.toString(), message.toString());
     }
 
 }

@@ -8,11 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -29,14 +25,16 @@ public class AlertMessageTest {
         message = new AlertMessage();
     }
 
+    @Test
     public void testToString() {
         byte testBytes = 120;
-        StringBuilder sb = new StringBuilder(AlertMessage.class.toString());
-        sb.append("\nALERT message:\n  Level: 120\n  Description: 120");
+        StringBuilder sb = new StringBuilder();
+        sb.append("AlertMessage:").append("\nALERT message:\n  Level: ").append(testBytes).append("\n  Description: ")
+                .append(testBytes);
 
         message.setDescription(testBytes);
         message.setLevel(testBytes);
-        assertEquals(sb, message.toString());
+        assertEquals(sb.toString(), message.toString());
     }
 
 }
