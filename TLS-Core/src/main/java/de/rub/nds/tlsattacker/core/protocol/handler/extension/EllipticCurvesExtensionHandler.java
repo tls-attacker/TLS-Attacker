@@ -53,6 +53,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
         }
 
         context.setClientNamedCurvesList(curveList);
+        markExtensionAsProposed(message);
     }
 
     @Override

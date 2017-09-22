@@ -76,6 +76,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         } else {
             context.setClientKSEntryList(ksEntryList);
         }
+        markExtensionAsProposed(message);
     }
 
     private void adjustHandshakeTrafficSecrets() {

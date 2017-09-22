@@ -44,6 +44,7 @@ public class CertificateStatusRequestV2ExtensionHandler extends
 
     @Override
     public void adjustTLSContext(CertificateStatusRequestV2ExtensionMessage message) {
+        markExtensionAsProposed(message);
         context.setStatusRequestV2RequestList(message.getStatusRequestList());
     }
 

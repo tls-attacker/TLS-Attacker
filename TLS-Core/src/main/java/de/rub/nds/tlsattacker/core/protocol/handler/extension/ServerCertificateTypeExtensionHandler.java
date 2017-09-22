@@ -44,6 +44,7 @@ public class ServerCertificateTypeExtensionHandler extends ExtensionHandler<Serv
     public void adjustTLSContext(ServerCertificateTypeExtensionMessage message) {
         context.setServerCertificateTypeDesiredTypes(CertificateType.getCertificateTypesAsList(message
                 .getCertificateTypes().getValue()));
+        markExtensionAsProposed(message);
     }
 
 }

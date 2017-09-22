@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.UserMappingExtensionParser;
@@ -38,9 +39,8 @@ public class UserMappingExtensionHandlerTest {
     public void testAdjustTLSContext() {
         UserMappingExtensionMessage msg = new UserMappingExtensionMessage();
         msg.setUserMappingType(hintType.getValue());
-
         handler.adjustTLSContext(msg);
-
+        assertTrue(context.isProposedTlsExtensionClient(ExtensionType.USER_MAPPING));
         assertEquals(hintType.getValue(), context.getUserMappingExtensionHintType().getValue());
     }
 

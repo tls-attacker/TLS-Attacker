@@ -44,7 +44,7 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         } else {
             context.setServerPointFormatsList(formatList);
         }
-
+        markExtensionAsProposed(message);
     }
 
     @Override

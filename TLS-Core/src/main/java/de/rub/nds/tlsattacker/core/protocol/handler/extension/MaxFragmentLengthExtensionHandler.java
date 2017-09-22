@@ -38,6 +38,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         } else {
             context.setMaxFragmentLength(length);
         }
+        markExtensionAsProposed(message);
     }
 
     @Override

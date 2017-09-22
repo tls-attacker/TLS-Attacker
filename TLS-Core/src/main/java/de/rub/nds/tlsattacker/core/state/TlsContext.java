@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
@@ -48,6 +49,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlTransient;
@@ -232,21 +234,6 @@ public class TlsContext {
     private byte[] secureRealTimeProtocolMasterKeyIdentifier;
 
     /**
-     * Is the truncated hmac extension present?
-     */
-    private boolean truncatedHmacExtensionIsPresent;
-
-    /**
-     * Is the encrypt then mac extension present?
-     */
-    private boolean encryptThenMacExtensionIsPresent;
-
-    /**
-     * Is the client certificate url extension present?
-     */
-    private boolean clientCertificateUrlExtensionIsPresent;
-
-    /**
      * User mapping extension hint type
      */
     private UserMappingExtensionHintType userMappingExtensionHintType;
@@ -330,7 +317,10 @@ public class TlsContext {
 
     private List<TokenBindingKeyParameters> tokenBindingKeyParameters;
 
-    private boolean tokenBindingNegotiated = false;
+    /**
+     * Whether Token Binding negotiation completed successful or not.
+     */
+    private boolean tokenBindingNegotiatedSuccessfully = false;
 
     private byte[] AlpnAnnouncedProtocols;
 
@@ -358,7 +348,14 @@ public class TlsContext {
      */
     private byte[] lastHandledApplicationMessageData;
 
-    private boolean isSecureRenegotiation = false;
+    /**
+     * The "secure_renegotiation" flag of the Renegotiation Indication Extension
+     * as defined in RFC5746. Indicates whether secure renegotiation is in use
+     * for the connection. Note that this flag reflects a connection "state" and
+     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO).
+     * The latter merely says that the extension was sent by client or server.
+     */
+    private boolean secureRenegotiation = false;
 
     private byte[] lastClientVerifyData;
 
@@ -366,6 +363,16 @@ public class TlsContext {
 
     @XmlTransient
     private Chooser chooser;
+
+    /**
+     * Contains the TLS extensions proposed by the client.
+     */
+    private final EnumSet<ExtensionType> proposedTlsExtensionsClient = EnumSet.noneOf(ExtensionType.class);
+
+    /**
+     * Contains the TLS extensions proposed by the server.
+     */
+    private final EnumSet<ExtensionType> proposedTlsExtensionsServer = EnumSet.noneOf(ExtensionType.class);
 
     public TlsContext() {
         this(Config.createConfig());
@@ -466,12 +473,12 @@ public class TlsContext {
         this.certificateTypeClientDesiredTypes = certificateTypeClientDesiredTypes;
     }
 
-    public boolean isIsSecureRenegotiation() {
-        return isSecureRenegotiation;
+    public boolean isSecureRenegotiation() {
+        return secureRenegotiation;
     }
 
-    public void setIsSecureRenegotiation(boolean isSecureRenegotiation) {
-        this.isSecureRenegotiation = isSecureRenegotiation;
+    public void setSecureRenegotiation(boolean secureRenegotiation) {
+        this.secureRenegotiation = secureRenegotiation;
     }
 
     public List<ProtocolVersion> getClientSupportedProtocolVersions() {
@@ -1050,12 +1057,12 @@ public class TlsContext {
         this.tokenBindingKeyParameters = tokenBindingKeyParameters;
     }
 
-    public void setTokenBindingNegotiated(boolean tokenBindingNegotiated) {
-        this.tokenBindingNegotiated = tokenBindingNegotiated;
+    public void setTokenBindingNegotiatedSuccessfully(boolean tokenBindingNegotiated) {
+        this.tokenBindingNegotiatedSuccessfully = tokenBindingNegotiated;
     }
 
-    public boolean isTokenBindingNegotiated() {
-        return tokenBindingNegotiated;
+    public boolean isTokenBindingNegotiatedSuccessfully() {
+        return tokenBindingNegotiatedSuccessfully;
     }
 
     public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
@@ -1118,14 +1125,15 @@ public class TlsContext {
         this.secureRealTimeProtocolMasterKeyIdentifier = secureRealTimeProtocolMasterKeyIdentifier;
     }
 
-    public boolean isTruncatedHmacExtensionIsPresent() {
-        return truncatedHmacExtensionIsPresent;
-    }
-
-    public void setTruncatedHmacExtensionIsPresent(boolean truncatedHmacExtensionIsPresent) {
-        this.truncatedHmacExtensionIsPresent = truncatedHmacExtensionIsPresent;
-    }
-
+    // public boolean isTruncatedHmacExtensionIsPresent() {
+    // return truncatedHmacExtensionIsPresent;
+    // }
+    //
+    // public void setTruncatedHmacExtensionIsPresent(boolean
+    // truncatedHmacExtensionIsPresent) {
+    // this.truncatedHmacExtensionIsPresent = truncatedHmacExtensionIsPresent;
+    // }
+    //
     public UserMappingExtensionHintType getUserMappingExtensionHintType() {
         return userMappingExtensionHintType;
     }
@@ -1186,13 +1194,14 @@ public class TlsContext {
         this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
     }
 
-    public boolean isEncryptThenMacExtensionIsPresent() {
-        return encryptThenMacExtensionIsPresent;
-    }
-
-    public void setEncryptThenMacExtensionIsPresent(boolean encryptThenMacExtensionIsPresent) {
-        this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
-    }
+    // public boolean isEncryptThenMacExtensionIsPresent() {
+    // return encryptThenMacExtensionIsPresent;
+    // }
+    //
+    // public void setEncryptThenMacExtensionIsPresent(boolean
+    // encryptThenMacExtensionIsPresent) {
+    // this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
+    // }
 
     public boolean isIsCachedInfoExtensionClientState() {
         return isCachedInfoExtensionClientState;
@@ -1210,13 +1219,15 @@ public class TlsContext {
         this.cachedInfoExtensionObjects = cachedInfoExtensionObjects;
     }
 
-    public boolean isClientCertificateUrlExtensionIsPresent() {
-        return clientCertificateUrlExtensionIsPresent;
-    }
-
-    public void setClientCertificateUrlExtensionIsPresent(boolean clientCertificateUrlExtensionIsPresent) {
-        this.clientCertificateUrlExtensionIsPresent = clientCertificateUrlExtensionIsPresent;
-    }
+    // public boolean isClientCertificateUrlExtensionIsPresent() {
+    // return clientCertificateUrlExtensionIsPresent;
+    // }
+    //
+    // public void setClientCertificateUrlExtensionIsPresent(boolean
+    // clientCertificateUrlExtensionIsPresent) {
+    // this.clientCertificateUrlExtensionIsPresent =
+    // clientCertificateUrlExtensionIsPresent;
+    // }
 
     public List<TrustedAuthority> getTrustedCaIndicationExtensionCas() {
         return trustedCaIndicationExtensionCas;
@@ -1292,6 +1303,38 @@ public class TlsContext {
 
     public void setLastHandledApplicationMessageData(byte[] lastHandledApplicationMessageData) {
         this.lastHandledApplicationMessageData = lastHandledApplicationMessageData;
+    }
+
+    /**
+     * Check if the given TLS extension type was proposed by the client.
+     * 
+     * @return true if extension was proposed by client, false otherwise
+     */
+    public boolean isProposedTlsExtensionClient(ExtensionType ext) {
+        return proposedTlsExtensionsClient.contains(ext);
+    }
+
+    /**
+     * Mark the given TLS extension type as client proposed extension.
+     */
+    public void setProposedTlsExtensionClient(ExtensionType ext) {
+        proposedTlsExtensionsClient.add(ext);
+    }
+
+    /**
+     * Check if the given TLS extension type was proposed by the server.
+     * 
+     * @return true if extension was proposed by client, false otherwise
+     */
+    public boolean isProposedTlsExtensionServer(ExtensionType ext) {
+        return proposedTlsExtensionsServer.contains(ext);
+    }
+
+    /**
+     * Mark the given TLS extension type as server proposed extension.
+     */
+    public void setProposedTlsExtensionServer(ExtensionType ext) {
+        proposedTlsExtensionsServer.add(ext);
     }
 
     /**

@@ -40,6 +40,7 @@ public class ServerNameIndicationExtensionHandler extends ExtensionHandler<Serve
             }
         }
         context.setClientSNIEntryList(sniEntryList);
+        markExtensionAsProposed(message);
     }
 
     @Override

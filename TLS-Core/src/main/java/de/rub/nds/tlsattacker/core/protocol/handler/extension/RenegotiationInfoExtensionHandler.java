@@ -54,11 +54,12 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getRenegotiationInfo().getValue().length == 1
                     && message.getRenegotiationInfo().getValue()[0] == 0) {
-                context.setIsSecureRenegotiation(true);
+                context.setSecureRenegotiation(true);
             }
         }
         LOGGER.debug("The context RenegotiationInfo was set to "
                 + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
+        markExtensionAsProposed(message);
     }
 
 }

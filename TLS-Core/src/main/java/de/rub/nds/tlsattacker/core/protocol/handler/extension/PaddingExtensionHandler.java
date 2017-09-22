@@ -52,9 +52,9 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
             LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
         }
         context.setPaddingExtensionBytes(message.getPaddingBytes().getValue());
+        markExtensionAsProposed(message);
         LOGGER.debug("The context PaddingExtension bytes were set to "
                 + ArrayConverter.bytesToHexString(context.getPaddingExtensionBytes()));
-
     }
 
 }

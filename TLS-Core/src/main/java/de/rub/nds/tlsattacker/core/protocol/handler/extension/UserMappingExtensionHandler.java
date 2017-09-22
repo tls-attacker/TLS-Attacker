@@ -46,6 +46,7 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
                 .getUserMappingType().getValue()));
         LOGGER.debug("Adjusted the TLS context user mapping extension hint type to "
                 + context.getUserMappingExtensionHintType().getValue());
+        markExtensionAsProposed(message);
     }
 
 }

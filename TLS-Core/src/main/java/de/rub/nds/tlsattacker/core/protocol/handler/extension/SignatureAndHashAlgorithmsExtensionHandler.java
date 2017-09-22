@@ -51,6 +51,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
             }
         }
         context.setClientSupportedSignatureAndHashAlgorithms(algoList);
+        markExtensionAsProposed(message);
     }
 
     @Override

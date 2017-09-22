@@ -47,6 +47,10 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
      */
     @Override
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
+        markExtensionAsProposed(message);
+
+        // TODO: this should be obsolete due to markExtensionAsProposed() call
+        // above, remove?
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             context.setReceivedMasterSecretExtension(true);
         }

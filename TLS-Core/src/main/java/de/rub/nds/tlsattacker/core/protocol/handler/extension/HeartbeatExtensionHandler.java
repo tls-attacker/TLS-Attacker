@@ -38,6 +38,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
         } else {
             context.setHeartbeatMode(mode);
         }
+        markExtensionAsProposed(message);
     }
 
     @Override

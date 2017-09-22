@@ -87,6 +87,7 @@ public class SignedCertificateTimestampExtensionHandler extends
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSignedCertificateTimestamp(message.getSignedTimestamp().getValue());
+        markExtensionAsProposed(message);
         LOGGER.debug("The context SignedCertificateTimestamp was set to "
                 + ArrayConverter.bytesToHexString(message.getSignedTimestamp()));
     }

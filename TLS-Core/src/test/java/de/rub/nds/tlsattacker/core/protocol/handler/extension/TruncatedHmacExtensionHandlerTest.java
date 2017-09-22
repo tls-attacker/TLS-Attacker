@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.TruncatedHmacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacExtensionPreparator;
@@ -35,10 +36,8 @@ public class TruncatedHmacExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         TruncatedHmacExtensionMessage message = new TruncatedHmacExtensionMessage();
-
         handler.adjustTLSContext(message);
-
-        assertTrue(context.isTruncatedHmacExtensionIsPresent());
+        assertTrue(context.isProposedTlsExtensionClient(ExtensionType.TRUNCATED_HMAC));
     }
 
     @Test

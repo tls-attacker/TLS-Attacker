@@ -42,6 +42,7 @@ public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage>
 
     @Override
     public void adjustTLSContext(AlpnExtensionMessage message) {
+        markExtensionAsProposed(message);
         context.setAlpnAnnouncedProtocols(message.getAlpnAnnouncedProtocols().getValue());
         LOGGER.debug("Adjustet the TLS context ALPN announced protocols to "
                 + ArrayConverter.bytesToHexString(message.getAlpnAnnouncedProtocols()));

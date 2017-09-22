@@ -41,6 +41,7 @@ public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExten
 
     @Override
     public void adjustTLSContext(CachedInfoExtensionMessage message) {
+        markExtensionAsProposed(message);
         context.setCachedInfoExtensionObjects(message.getCachedInfo());
     }
 

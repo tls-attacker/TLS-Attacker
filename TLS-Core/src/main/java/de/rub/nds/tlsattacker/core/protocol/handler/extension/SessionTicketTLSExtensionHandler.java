@@ -77,6 +77,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSessionTicketTLS(message.getTicket().getValue());
+        markExtensionAsProposed(message);
         LOGGER.debug("The context SessionTLS ticket was set to " + ArrayConverter.bytesToHexString(message.getTicket()));
     }
 
