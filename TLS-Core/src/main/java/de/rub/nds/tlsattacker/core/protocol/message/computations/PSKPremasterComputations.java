@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
@@ -19,32 +18,31 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
  */
 public class PSKPremasterComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray PremasterSecret;
+    private ModifiableByteArray premasterSecret;
 
     private ModifiableByteArray psk;
-    private ModifiableInteger psklength;
+    private ModifiableInteger pskLength;
 
     public PSKPremasterComputations() {
     }
 
-    public PSKPremasterComputations(ModifiableInteger psklength, ModifiableByteArray psk) {
-        this.psklength = psklength;
+    public PSKPremasterComputations(ModifiableInteger pskLength, ModifiableByteArray psk) {
+        this.pskLength = pskLength;
         this.psk = psk;
     }
 
     @Override
     public ModifiableByteArray getPremasterSecret() {
-        return PremasterSecret;
+        return premasterSecret;
     }
 
     @Override
     public void setPremasterSecret(ModifiableByteArray PremasterSecret) {
-        this.PremasterSecret = PremasterSecret;
+        this.premasterSecret = PremasterSecret;
     }
 
     @Override
     public void setPremasterSecret(byte[] value) {
-        this.PremasterSecret = ModifiableVariableFactory.safelySetValue(this.PremasterSecret, value);
+        this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, value);
     }
 }

@@ -36,7 +36,7 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByteArray identity_length;
+    private ModifiableByteArray identityLength;
 
     public PSKClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
@@ -49,9 +49,9 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (identity_length != null) {
+        if (identityLength != null) {
             sb.append("\nPSKIdentity Length:");
-            sb.append(identity_length.getValue());
+            sb.append(identityLength.getValue());
         }
         if (identity != null) {
             sb.append("\nPSKIdentity:");
@@ -78,15 +78,15 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     }
 
     public ModifiableByteArray getIdentityLength() {
-        return identity_length;
+        return identityLength;
     }
 
     public void setIdentityLength(ModifiableByteArray identity_length) {
-        this.identity_length = identity_length;
+        this.identityLength = identity_length;
     }
 
     public void setIdentityLength(byte[] identity_length) {
-        this.identity_length = ModifiableVariableFactory.safelySetValue(this.identity_length, identity_length);
+        this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identity_length);
     }
 
     @Override

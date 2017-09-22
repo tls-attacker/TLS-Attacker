@@ -15,6 +15,7 @@ import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 
 /**
  *
@@ -41,9 +42,6 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
         msg.setIdentityLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentity().length, 2));
         msg.prepareComputations();
-        // byte[] random = ArrayConverter.concatenate(chooser.getClientRandom(),
-        // chooser.getServerRandom());
-        // msg.getComputations().setClientRandom(random);
 
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
@@ -53,9 +51,9 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private byte[] generatePremasterSecret() {
         outputStream = new ByteArrayOutputStream();
         try {
-            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, 2));
-            outputStream.write(ArrayConverter.intToBytes(0, chooser.getConfig().getDefaultPSKKey().length));
-            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, 2));
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, HandshakeByteLength.PSK_LENGTH));
+            outputStream.write(ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO, chooser.getConfig().getDefaultPSKKey().length));
+            outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length, HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
         } catch (IOException ex) {
             LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
