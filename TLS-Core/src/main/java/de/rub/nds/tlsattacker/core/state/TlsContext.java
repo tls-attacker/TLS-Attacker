@@ -186,11 +186,6 @@ public class TlsContext {
     private byte[] sessionTicketTLS;
 
     /**
-     * Whether the extended master secret extension is present or not.
-     */
-    private boolean receivedMasterSecretExtension;
-
-    /**
      * The renegotiation info of the RenegotiationInfo extension.
      */
     private byte[] renegotiationInfo;
@@ -348,15 +343,6 @@ public class TlsContext {
      */
     private byte[] lastHandledApplicationMessageData;
 
-    /**
-     * The "secure_renegotiation" flag of the Renegotiation Indication Extension
-     * as defined in RFC5746. Indicates whether secure renegotiation is in use
-     * for the connection. Note that this flag reflects a connection "state" and
-     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO).
-     * The latter merely says that the extension was sent by client or server.
-     */
-    private boolean secureRenegotiation = false;
-
     private byte[] lastClientVerifyData;
 
     private byte[] lastServerVerifyData;
@@ -373,6 +359,24 @@ public class TlsContext {
      * Contains the TLS extensions proposed by the server.
      */
     private final EnumSet<ExtensionType> proposedTlsExtensionsServer = EnumSet.noneOf(ExtensionType.class);
+
+    /**
+     * The "secure_renegotiation" flag of the Renegotiation Indication Extension
+     * as defined in RFC5746. Indicates whether secure renegotiation is in use
+     * for the connection. Note that this flag reflects a connection "state" and
+     * differs from isProposedTlsExtensions*(ExtensionType.RENEGOTIATION_INFO).
+     * The latter merely says that the extension was send by client or server.
+     */
+    private boolean secureRenegotiation = false;
+
+    /**
+     * Whether to use the extended master secret or not. This flag is set if the
+     * EMS extension was send by both peers. Note that this flag reflects a
+     * connection "state" and differs from
+     * isProposedTlsExtensions*(ExtensionType. EXTENDED_MASTER_SECRET). The
+     * latter merely says that the extension was sent by client or server.
+     */
+    private boolean useExtendedMasterSecret;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -759,14 +763,6 @@ public class TlsContext {
         this.paddingExtensionBytes = paddingExtensionBytes;
     }
 
-    public boolean isExtendedMasterSecretExtension() {
-        return receivedMasterSecretExtension;
-    }
-
-    public void setReceivedMasterSecretExtension(boolean receivedMasterSecretExtension) {
-        this.receivedMasterSecretExtension = receivedMasterSecretExtension;
-    }
-
     public List<CompressionMethod> getClientSupportedCompressions() {
         return clientSupportedCompressions;
     }
@@ -1125,15 +1121,6 @@ public class TlsContext {
         this.secureRealTimeProtocolMasterKeyIdentifier = secureRealTimeProtocolMasterKeyIdentifier;
     }
 
-    // public boolean isTruncatedHmacExtensionIsPresent() {
-    // return truncatedHmacExtensionIsPresent;
-    // }
-    //
-    // public void setTruncatedHmacExtensionIsPresent(boolean
-    // truncatedHmacExtensionIsPresent) {
-    // this.truncatedHmacExtensionIsPresent = truncatedHmacExtensionIsPresent;
-    // }
-    //
     public UserMappingExtensionHintType getUserMappingExtensionHintType() {
         return userMappingExtensionHintType;
     }
@@ -1194,15 +1181,6 @@ public class TlsContext {
         this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
     }
 
-    // public boolean isEncryptThenMacExtensionIsPresent() {
-    // return encryptThenMacExtensionIsPresent;
-    // }
-    //
-    // public void setEncryptThenMacExtensionIsPresent(boolean
-    // encryptThenMacExtensionIsPresent) {
-    // this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
-    // }
-
     public boolean isIsCachedInfoExtensionClientState() {
         return isCachedInfoExtensionClientState;
     }
@@ -1218,16 +1196,6 @@ public class TlsContext {
     public void setCachedInfoExtensionObjects(List<CachedObject> cachedInfoExtensionObjects) {
         this.cachedInfoExtensionObjects = cachedInfoExtensionObjects;
     }
-
-    // public boolean isClientCertificateUrlExtensionIsPresent() {
-    // return clientCertificateUrlExtensionIsPresent;
-    // }
-    //
-    // public void setClientCertificateUrlExtensionIsPresent(boolean
-    // clientCertificateUrlExtensionIsPresent) {
-    // this.clientCertificateUrlExtensionIsPresent =
-    // clientCertificateUrlExtensionIsPresent;
-    // }
 
     public List<TrustedAuthority> getTrustedCaIndicationExtensionCas() {
         return trustedCaIndicationExtensionCas;
@@ -1335,6 +1303,14 @@ public class TlsContext {
      */
     public void setProposedTlsExtensionServer(ExtensionType ext) {
         proposedTlsExtensionsServer.add(ext);
+    }
+
+    public boolean isUseExtendedMasterSecret() {
+        return useExtendedMasterSecret;
+    }
+
+    public void setUseExtendedMasterSecret(boolean useExtendedMasterSecret) {
+        this.useExtendedMasterSecret = useExtendedMasterSecret;
     }
 
     /**

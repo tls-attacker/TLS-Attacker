@@ -41,6 +41,5 @@ public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThen
     @Override
     public void adjustTLSContext(EncryptThenMacExtensionMessage message) {
         markExtensionAsProposed(message);
-        // context.setEncryptThenMacExtensionIsPresent(true);
     }
 }

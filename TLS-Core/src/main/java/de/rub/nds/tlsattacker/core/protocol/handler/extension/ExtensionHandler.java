@@ -62,6 +62,6 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
         } else if (talkingConEndType == ConnectionEndType.SERVER) {
             context.setProposedTlsExtensionServer(extType);
         }
-        LOGGER.debug("Marked extension '" + extType.name() + "' as purposed by " + talkingConEndType);
+        LOGGER.debug("Marked extension '" + extType.name() + "' as proposed by " + talkingConEndType);
     }
 }

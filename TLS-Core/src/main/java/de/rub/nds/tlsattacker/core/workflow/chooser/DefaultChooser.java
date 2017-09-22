@@ -143,8 +143,8 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public boolean isExtendedMasterSecretExtension() {
-        return context.isExtendedMasterSecretExtension();
+    public boolean isUseExtendedMasterSecret() {
+        return context.isUseExtendedMasterSecret();
     }
 
     @Override
