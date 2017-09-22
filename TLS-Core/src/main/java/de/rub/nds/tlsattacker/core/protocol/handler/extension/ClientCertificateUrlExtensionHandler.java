@@ -42,7 +42,6 @@ public class ClientCertificateUrlExtensionHandler extends ExtensionHandler<Clien
     @Override
     public void adjustTLSContext(ClientCertificateUrlExtensionMessage message) {
         markExtensionAsProposed(message);
-        // context.setClientCertificateUrlExtensionIsPresent(true);
     }
 
 }

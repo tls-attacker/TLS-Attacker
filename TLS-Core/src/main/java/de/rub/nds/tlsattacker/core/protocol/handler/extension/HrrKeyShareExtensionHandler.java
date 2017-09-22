@@ -21,9 +21,9 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  * 
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
-public class HRRKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExtensionMessage> {
+public class HrrKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExtensionMessage> {
 
-    public HRRKeyShareExtensionHandler(TlsContext context) {
+    public HrrKeyShareExtensionHandler(TlsContext context) {
         super(context);
     }
 

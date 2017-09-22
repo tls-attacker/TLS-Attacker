@@ -19,14 +19,14 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
+public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
 
     /**
      * Constructor
      *
      * @param context
      */
-    public SessionTicketTLSExtensionHandler(TlsContext context) {
+    public SessionTicketTlsExtensionHandler(TlsContext context) {
         super(context);
     }
 

@@ -21,9 +21,9 @@ import java.util.List;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
+public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
 
-    public ECPointFormatExtensionHandler(TlsContext context) {
+    public EcPointFormatExtensionHandler(TlsContext context) {
         super(context);
     }
 
