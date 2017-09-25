@@ -47,22 +47,22 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
-            <version>2.8.2</version>
+            <version>2.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.8.2</version>
+            <version>2.9.0</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
-            <version>1.35</version>
+            <version>1.69</version>
         </dependency>
         <dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
-            <version>1.30</version>
+            <version>1.34</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -80,17 +80,17 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.55</version>
+            <version>1.58</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-debug-jdk15on</artifactId>
-            <version>1.55</version>
+            <version>1.58</version>
         </dependency>
         <dependency>
             <groupId>com.openpojo</groupId>
             <artifactId>openpojo</artifactId>
-            <version>0.8.4</version>
+            <version>0.8.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
+            <version>3.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -154,9 +154,8 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20.1</version>
                     <configuration>
-                        <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
                         <trimStackTrace>false</trimStackTrace>
                         <includes>
                             <include>**/*.java</include>
@@ -168,7 +167,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20.1</version>
                     <configuration>
                         <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
                         <includes>
@@ -189,7 +188,7 @@
                 <!-- Specify Java Version -->
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.7.0</version>
                     <configuration>
                         <source>1.7</source>
                         <target>1.7</target>
@@ -205,11 +204,11 @@
                 <plugin>
                     <groupId>com.mycila</groupId>
                     <artifactId>license-maven-plugin</artifactId>
-                    <version>2.11</version>
+                    <version>3.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>2.7</version>
+                    <version>2.9</version>
                 </plugin>
             </plugins>
         </pluginManagement> 
@@ -260,7 +259,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <version>3.0.4</version>
+                <version>3.0.5</version>
                 <configuration>
                     <effort>Max</effort>
                     <threshold>Low</threshold>
