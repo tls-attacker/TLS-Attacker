@@ -432,7 +432,6 @@ public enum CipherSuite {
     // GREASE_15(0xFAFA);
 
     private int value;
-    private static TlsContext context = new TlsContext();
 
     private static final Map<Integer, CipherSuite> MAP;
 
@@ -440,7 +439,7 @@ public enum CipherSuite {
         this.value = value;
     }
 
-    public static CipherSuite getRandom() {
+    public static CipherSuite getRandom(TlsContext context) {
         CipherSuite c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

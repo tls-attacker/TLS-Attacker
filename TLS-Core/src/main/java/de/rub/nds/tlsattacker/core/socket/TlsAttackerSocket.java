@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -27,10 +28,12 @@ import java.util.List;
  */
 public class TlsAttackerSocket {
 
+    private final State state;
     private final TlsContext context;
 
-    public TlsAttackerSocket(TlsContext context) {
-        this.context = context;
+    public TlsAttackerSocket(State state) {
+        this.state = state;
+        this.context = this.state.getTlsContext();
     }
 
     /**
@@ -49,7 +52,7 @@ public class TlsAttackerSocket {
      * @return
      * @throws java.io.IOException
      */
-    public byte[] recieveRawBytes() throws IOException {
+    public byte[] receiveRawBytes() throws IOException {
         return context.getTransportHandler().fetchData();
     }
 
@@ -77,15 +80,16 @@ public class TlsAttackerSocket {
     }
 
     /**
-     * Recieves bytes and decrypts ApplicationMessage contents
-     *
-     * @return Recieved bytes
+     * Receives bytes and decrypts ApplicationMessage contents
+     * 
+     * @return Received bytes
      * @throws java.io.IOException
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
-        action.execute(context);
+        action.execute(state);
         List<ProtocolMessage> recievedMessages = action.getReceivedMessages();
+
         List<ApplicationMessage> recievedAppMessages = new LinkedList<>();
         for (ProtocolMessage message : recievedMessages) {
             if (message instanceof ApplicationMessage) {
@@ -100,7 +104,7 @@ public class TlsAttackerSocket {
     }
 
     /**
-     * Recieves bytes and decrypts ApplicationMessage contents in converts them
+     * Receives bytes and decrypts ApplicationMessage contents in converts them
      * to Strings
      *
      * @return
@@ -112,7 +116,7 @@ public class TlsAttackerSocket {
 
     public void send(ProtocolMessage message) {
         SendAction action = new SendAction(message);
-        action.execute(context);
+        action.execute(state);
     }
 
     public void close() throws IOException {

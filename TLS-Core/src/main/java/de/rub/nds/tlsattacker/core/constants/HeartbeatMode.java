@@ -22,7 +22,6 @@ public enum HeartbeatMode {
     PEER_NOT_ALLOWED_TO_SEND((byte) 2);
 
     private byte value;
-    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, HeartbeatMode> MAP;
 
@@ -49,7 +48,7 @@ public enum HeartbeatMode {
         return new byte[] { value };
     }
 
-    public static HeartbeatMode getRandom() {
+    public static HeartbeatMode getRandom(TlsContext context) {
         HeartbeatMode c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

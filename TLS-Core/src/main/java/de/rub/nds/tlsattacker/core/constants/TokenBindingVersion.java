@@ -37,8 +37,6 @@ public enum TokenBindingVersion {
     private final byte[] tokenBindingVersion;
     public static final int LENGTH = 2;
 
-    private static TlsContext context = new TlsContext();
-
     private static final Map<Integer, TokenBindingVersion> MAP;
 
     static {
@@ -73,7 +71,7 @@ public enum TokenBindingVersion {
         return tokenBindingVersion[1];
     }
 
-    public static TokenBindingVersion getRandom() {
+    public static TokenBindingVersion getRandom(TlsContext context) {
         TokenBindingVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

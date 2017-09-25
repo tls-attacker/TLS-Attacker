@@ -100,8 +100,6 @@ public enum NamedCurve {
 
     private String javaName;
 
-    private static TlsContext context = new TlsContext();
-
     private static final Map<Integer, NamedCurve> MAP;
 
     private NamedCurve(byte[] value, String javaName) {
@@ -136,7 +134,7 @@ public enum NamedCurve {
         return value;
     }
 
-    public static NamedCurve getRandom() {
+    public static NamedCurve getRandom(TlsContext context) {
         NamedCurve c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

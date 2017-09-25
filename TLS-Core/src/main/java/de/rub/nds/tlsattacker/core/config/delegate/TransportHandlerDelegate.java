@@ -45,7 +45,7 @@ public class TransportHandlerDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (transportHandlerType != null) {
-            config.setTransportHandlerType(transportHandlerType);
+            config.setDefaultTransportHandlerType(transportHandlerType);
         }
     }
 }

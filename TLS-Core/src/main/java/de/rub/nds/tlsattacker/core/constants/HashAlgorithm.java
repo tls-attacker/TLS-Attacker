@@ -30,8 +30,6 @@ public enum HashAlgorithm {
 
     private final String javaName;
 
-    private static TlsContext context = new TlsContext();
-
     private static final Map<Byte, HashAlgorithm> MAP;
 
     private HashAlgorithm(byte value, String javaName) {
@@ -62,7 +60,7 @@ public enum HashAlgorithm {
         return javaName;
     }
 
-    public static HashAlgorithm getRandom() {
+    public static HashAlgorithm getRandom(TlsContext context) {
         HashAlgorithm c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

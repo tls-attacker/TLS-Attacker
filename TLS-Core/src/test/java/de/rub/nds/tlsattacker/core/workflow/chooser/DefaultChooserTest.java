@@ -56,9 +56,9 @@ public class DefaultChooserTest {
 
     @Before
     public void setUp() {
-        config = Config.createConfig();
-        context = new TlsContext(config);
-        chooser = new DefaultChooser(context, config);
+        context = new TlsContext();
+        chooser = context.getChooser();
+        config = chooser.getConfig();
     }
 
     /**
@@ -197,7 +197,6 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientCertificateTypes() {
-
         List<ClientCertificateType> typeList = new LinkedList<>();
         typeList.add(ClientCertificateType.DSS_EPHEMERAL_DH_RESERVED);
         typeList.add(ClientCertificateType.DSS_FIXED_DH);

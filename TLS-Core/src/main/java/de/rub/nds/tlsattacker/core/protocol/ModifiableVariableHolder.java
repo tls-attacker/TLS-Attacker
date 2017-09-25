@@ -26,8 +26,6 @@ public abstract class ModifiableVariableHolder implements Serializable {
 
     protected static final Logger LOGGER = LogManager.getLogger(ModifiableVariableHolder.class.getName());
 
-    private TlsContext context = new TlsContext();
-
     /**
      * Lists all the modifiable variables declared in the class
      * 
@@ -42,7 +40,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * 
      * @return
      */
-    public Field getRandomModifiableVariableField() {
+    public Field getRandomModifiableVariableField(TlsContext context) {
         List<Field> fields = getAllModifiableVariableFields();
         int randomField = context.getRandom().nextInt(fields.size());
         return fields.get(randomField);
@@ -65,7 +63,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * 
      * @return
      */
-    public ModifiableVariableHolder getRandomModifiableVariableHolder() {
+    public ModifiableVariableHolder getRandomModifiableVariableHolder(TlsContext context) {
         List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
         int randomHolder = context.getRandom().nextInt(holders.size());
         return holders.get(randomHolder);

@@ -51,7 +51,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
             tokenbindingKeyParameters.add(TokenBindingKeyParameters.getTokenBindingKeyParameter(kp));
         }
         context.setTokenBindingKeyParameters(tokenbindingKeyParameters);
-        if (context.getTalkingConnectionEndType() == context.getConfig().getMyConnectionPeer()) {
+        if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
             context.setTokenBindingNegotiated(true);
         }
     }

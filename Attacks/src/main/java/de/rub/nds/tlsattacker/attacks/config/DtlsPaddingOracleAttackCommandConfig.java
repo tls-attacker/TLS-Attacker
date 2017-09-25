@@ -114,7 +114,7 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        config.setTransportHandlerType(TransportHandlerType.UDP);
+        config.getConnectionEnd().setTransportHandlerType(TransportHandlerType.UDP);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
 

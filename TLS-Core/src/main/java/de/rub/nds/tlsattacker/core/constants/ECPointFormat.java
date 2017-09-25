@@ -29,7 +29,6 @@ public enum ECPointFormat {
     ANSIX962_COMPRESSED_CHAR2((byte) 2);
 
     private byte value;
-    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, ECPointFormat> MAP;
 
@@ -52,7 +51,7 @@ public enum ECPointFormat {
         return value;
     }
 
-    public static ECPointFormat getRandom() {
+    public static ECPointFormat getRandom(TlsContext context) {
         ECPointFormat c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

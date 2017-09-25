@@ -41,7 +41,7 @@ public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
     }
 
     @Override
-    protected void adjustTLSContext(HeartbeatMessage message) {
+    public void adjustTLSContext(HeartbeatMessage message) {
         // TODO perhaps something to do here
     }
 }

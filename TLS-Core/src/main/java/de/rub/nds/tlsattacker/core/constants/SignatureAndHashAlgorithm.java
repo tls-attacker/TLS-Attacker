@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -28,7 +29,7 @@ public class SignatureAndHashAlgorithm implements Serializable {
     }
 
     public static SignatureAndHashAlgorithm getRandom() {
-        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(), HashAlgorithm.getRandom());
+        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(context), HashAlgorithm.getRandom(context));
     }
 
     public static SignatureAndHashAlgorithm[] values() {
@@ -44,12 +45,19 @@ public class SignatureAndHashAlgorithm implements Serializable {
         return result;
     }
 
+    private static TlsContext context;
+
     private SignatureAlgorithm signatureAlgorithm;
 
     private HashAlgorithm hashAlgorithm;
 
     public SignatureAndHashAlgorithm() {
 
+    }
+
+    public SignatureAndHashAlgorithm(SignatureAndHashAlgorithm other) {
+        signatureAlgorithm = other.signatureAlgorithm;
+        hashAlgorithm = other.hashAlgorithm;
     }
 
     public SignatureAndHashAlgorithm(byte[] value) {

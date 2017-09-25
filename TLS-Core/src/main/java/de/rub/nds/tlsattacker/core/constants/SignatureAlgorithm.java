@@ -26,8 +26,6 @@ public enum SignatureAlgorithm {
 
     private byte value;
 
-    private static TlsContext context = new TlsContext();
-
     private static final Map<Byte, SignatureAlgorithm> MAP;
 
     private SignatureAlgorithm(byte value) {
@@ -53,7 +51,7 @@ public enum SignatureAlgorithm {
         return new byte[] { value };
     }
 
-    public static SignatureAlgorithm getRandom() {
+    public static SignatureAlgorithm getRandom(TlsContext context) {
         SignatureAlgorithm c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

@@ -40,12 +40,12 @@ public class Main {
                 TlsServer server = new TlsServer();
                 server.startTlsServer(tlsConfig);
             } catch (ConfigurationException E) {
-                LOGGER.info("Encountered a ConfigurationException aborting.");
+                LOGGER.warn("Encountered a ConfigurationException aborting.");
                 LOGGER.debug(E);
                 commander.usage();
             }
         } catch (ParameterException E) {
-            LOGGER.info("Could not parse provided parameters");
+            LOGGER.warn("Could not parse provided parameters");
             LOGGER.debug(E);
             commander.usage();
         }

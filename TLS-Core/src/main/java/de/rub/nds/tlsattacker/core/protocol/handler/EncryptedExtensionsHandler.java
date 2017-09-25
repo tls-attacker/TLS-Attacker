@@ -46,7 +46,7 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     }
 
     @Override
-    protected void adjustTLSContext(EncryptedExtensionsMessage message) {
+    public void adjustTLSContext(EncryptedExtensionsMessage message) {
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
@@ -25,7 +24,6 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +65,7 @@ public class TokenbindingMessagePreparatorTest {
     public void setUp() {
         config = Config.createConfig();
         context = new TlsContext(config);
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, context);
+        chooser = context.getChooser();
         message = new TokenBindingMessage();
         preparator = new TokenbindingMessagePreparator(chooser, message);
         config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,

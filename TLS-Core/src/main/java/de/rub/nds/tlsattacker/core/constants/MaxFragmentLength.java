@@ -24,7 +24,6 @@ public enum MaxFragmentLength {
     TWO_12((byte) 4);
 
     private byte value;
-    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, MaxFragmentLength> MAP;
 
@@ -51,7 +50,7 @@ public enum MaxFragmentLength {
         return new byte[] { value };
     }
 
-    public static MaxFragmentLength getRandom() {
+    public static MaxFragmentLength getRandom(TlsContext context) {
         MaxFragmentLength c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

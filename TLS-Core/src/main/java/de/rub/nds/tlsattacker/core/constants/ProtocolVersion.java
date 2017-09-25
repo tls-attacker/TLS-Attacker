@@ -36,8 +36,6 @@ public enum ProtocolVersion {
 
     private byte[] value;
 
-    private static TlsContext context = new TlsContext();
-
     private static final Map<Integer, ProtocolVersion> MAP;
 
     private ProtocolVersion(byte[] value) {
@@ -90,7 +88,7 @@ public enum ProtocolVersion {
         return versions;
     }
 
-    public static ProtocolVersion getRandom() {
+    public static ProtocolVersion getRandom(TlsContext context) {
         ProtocolVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();

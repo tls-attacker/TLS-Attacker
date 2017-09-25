@@ -28,8 +28,6 @@ import java.security.interfaces.RSAPrivateKey;
  */
 public class SignatureCalculator {
 
-    private static TlsContext context = new TlsContext();
-
     private SignatureCalculator() {
     }
 
@@ -49,10 +47,11 @@ public class SignatureCalculator {
         }
     }
 
-    public static byte[] generateSignature(PrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
+    public static byte[] generateSignature(PrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm,
+            Chooser chooser) {
         try {
             Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key, context.getBadSecureRandom());
+            instance.initSign(key, chooser.getContext().getBadSecureRandom());
             instance.update(toBeSigned);
             return instance.sign();
         } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
@@ -62,17 +61,17 @@ public class SignatureCalculator {
 
     public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm);
+        return generateSignature(key, toBeSigned, algorithm, chooser);
     }
 
     public static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm);
+        return generateSignature(key, toBeSigned, algorithm, chooser);
     }
 
     public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm) {
         ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm);
+        return generateSignature(key, toBeSigned, algorithm, chooser);
     }
 
     public static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,

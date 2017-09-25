@@ -25,7 +25,6 @@ public enum CompressionMethod {
     LZS((byte) 0x40);
 
     private byte value;
-    private static TlsContext context = new TlsContext();
 
     private static final Map<Byte, CompressionMethod> MAP;
 
@@ -57,7 +56,7 @@ public enum CompressionMethod {
         return value;
     }
 
-    public static CompressionMethod getRandom() {
+    public static CompressionMethod getRandom(TlsContext context) {
         CompressionMethod c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
