@@ -44,8 +44,8 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
         markExtensionAsProposed(message);
 
-        if (context.isProposedTlsExtensionClient(ExtensionType.EXTENDED_MASTER_SECRET)
-                && context.isProposedTlsExtensionServer(ExtensionType.EXTENDED_MASTER_SECRET)) {
+        if (context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET)
+                && context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {
             context.setUseExtendedMasterSecret(true);
         }
     }

@@ -41,13 +41,13 @@ public class ExtendedMasterSecretExtensionHandlerTest {
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
         handler.adjustTLSContext(msg);
 
-        assertTrue(context.isProposedTlsExtensionClient(ExtensionType.EXTENDED_MASTER_SECRET));
-        assertFalse(context.isProposedTlsExtensionServer(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertFalse(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
         assertFalse(context.isUseExtendedMasterSecret());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustTLSContext(msg);
-        assertTrue(context.isProposedTlsExtensionClient(ExtensionType.EXTENDED_MASTER_SECRET));
-        assertTrue(context.isProposedTlsExtensionServer(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
         assertTrue(context.isUseExtendedMasterSecret());
     }
 

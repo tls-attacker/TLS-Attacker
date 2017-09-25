@@ -37,7 +37,7 @@ public class TruncatedHmacExtensionHandlerTest {
     public void testAdjustTLSContext() {
         TruncatedHmacExtensionMessage message = new TruncatedHmacExtensionMessage();
         handler.adjustTLSContext(message);
-        assertTrue(context.isProposedTlsExtensionClient(ExtensionType.TRUNCATED_HMAC));
+        assertTrue(context.isExtensionProposed(ExtensionType.TRUNCATED_HMAC));
     }
 
     @Test

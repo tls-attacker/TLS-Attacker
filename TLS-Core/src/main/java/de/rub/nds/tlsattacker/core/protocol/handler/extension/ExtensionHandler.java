@@ -58,9 +58,9 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
         ExtensionType extType = message.getExtensionTypeConstant();
         ConnectionEndType talkingConEndType = context.getTalkingConnectionEndType();
         if (talkingConEndType == ConnectionEndType.CLIENT) {
-            context.setProposedTlsExtensionClient(extType);
+            context.addProposedExtension(extType);
         } else if (talkingConEndType == ConnectionEndType.SERVER) {
-            context.setProposedTlsExtensionServer(extType);
+            context.addNegotiatedExtension(extType);
         }
         LOGGER.debug("Marked extension '" + extType.name() + "' as proposed by " + talkingConEndType);
     }

@@ -353,12 +353,12 @@ public class TlsContext {
     /**
      * Contains the TLS extensions proposed by the client.
      */
-    private final EnumSet<ExtensionType> proposedTlsExtensionsClient = EnumSet.noneOf(ExtensionType.class);
+    private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
     /**
      * Contains the TLS extensions proposed by the server.
      */
-    private final EnumSet<ExtensionType> proposedTlsExtensionsServer = EnumSet.noneOf(ExtensionType.class);
+    private final EnumSet<ExtensionType> negotiatedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
     /**
      * The "secure_renegotiation" flag of the Renegotiation Indication Extension
@@ -1276,33 +1276,37 @@ public class TlsContext {
     /**
      * Check if the given TLS extension type was proposed by the client.
      *
+     * @param ext
      * @return true if extension was proposed by client, false otherwise
      */
-    public boolean isProposedTlsExtensionClient(ExtensionType ext) {
-        return proposedTlsExtensionsClient.contains(ext);
+    public boolean isExtensionProposed(ExtensionType ext) {
+        return proposedExtensionSet.contains(ext);
     }
 
     /**
      * Mark the given TLS extension type as client proposed extension.
+     * 
+     * @param ext
      */
-    public void setProposedTlsExtensionClient(ExtensionType ext) {
-        proposedTlsExtensionsClient.add(ext);
+    public void addProposedExtension(ExtensionType ext) {
+        proposedExtensionSet.add(ext);
     }
 
     /**
-     * Check if the given TLS extension type was proposed by the server.
+     * Check if the given TLS extension type was sent by the server.
      *
-     * @return true if extension was proposed by client, false otherwise
+     * @param ext
+     * @return true if extension was proposed by server, false otherwise
      */
-    public boolean isProposedTlsExtensionServer(ExtensionType ext) {
-        return proposedTlsExtensionsServer.contains(ext);
+    public boolean isExtensionNegotiated(ExtensionType ext) {
+        return negotiatedExtensionSet.contains(ext);
     }
 
     /**
-     * Mark the given TLS extension type as server proposed extension.
+     * Mark the given TLS extension type as server negotiated extension.
      */
-    public void setProposedTlsExtensionServer(ExtensionType ext) {
-        proposedTlsExtensionsServer.add(ext);
+    public void addNegotiatedExtension(ExtensionType ext) {
+        negotiatedExtensionSet.add(ext);
     }
 
     public boolean isUseExtendedMasterSecret() {
