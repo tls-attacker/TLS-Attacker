@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
  */
 public class TransportHandlerDelegate extends Delegate {
 
-    @Parameter(names = "-transport_handler_type", description = "Transport Handler type (TCP, EAP_TLS, UDP)", converter = TransportHandlerTypeConverter.class)
+    @Parameter(names = "-transport_handler_type", description = "Transport Handler type", converter = TransportHandlerTypeConverter.class)
     private TransportHandlerType transportHandlerType = null;
 
     public TransportHandlerDelegate() {

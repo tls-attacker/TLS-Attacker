@@ -37,7 +37,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
 
-    @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries (FAST/FULL)")
+    @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries")
     private Type type = Type.FAST;
 
     public BleichenbacherCommandConfig(GeneralDelegate delegate) {
