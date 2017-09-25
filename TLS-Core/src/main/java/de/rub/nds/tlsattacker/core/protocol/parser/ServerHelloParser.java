@@ -65,9 +65,6 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
         if (version != null) {
             setVersion(version);
         }
-        if (!getVersion().isTLS13()) {
-            parseUnixtime(msg);
-        }
         parseRandom(msg);
         if (!getVersion().isTLS13()) {
             parseSessionIDLength(msg);

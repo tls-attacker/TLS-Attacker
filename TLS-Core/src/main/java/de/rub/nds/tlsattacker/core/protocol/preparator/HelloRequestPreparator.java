@@ -19,8 +19,8 @@ public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequ
 
     private final HelloRequestMessage message;
 
-    public HelloRequestPreparator(Chooser context, HelloRequestMessage message) {
-        super(context, message);
+    public HelloRequestPreparator(Chooser chooser, HelloRequestMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

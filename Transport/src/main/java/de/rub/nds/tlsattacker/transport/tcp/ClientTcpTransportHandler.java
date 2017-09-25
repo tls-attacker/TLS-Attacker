@@ -19,9 +19,9 @@ import java.net.Socket;
  */
 public class ClientTcpTransportHandler extends TransportHandler {
 
-    private Socket socket;
-    private String hostname;
-    private int port;
+    protected Socket socket;
+    protected String hostname;
+    protected int port;
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);

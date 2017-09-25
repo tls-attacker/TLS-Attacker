@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -43,11 +43,11 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
     public void executeAttack() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setClientAuthentication(true);
-        TlsContext tlsContext = new TlsContext(tlsConfig);
+        State state = new State(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
+                tlsConfig.getWorkflowExecutorType(), state);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = state.getWorkflowTrace();
 
         ModifiableByteArray signature = new ModifiableByteArray();
         signature.setModification(ByteArrayModificationFactory.explicitValue(ArrayConverter

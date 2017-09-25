@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -59,11 +59,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
         Config tlsConfig = config.createConfig();
-        TlsContext tlsContext = new TlsContext(tlsConfig);
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
+        State state = new State(tlsConfig);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowTrace trace = state.getWorkflowTrace();
         RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ModifiableByteArray epms = new ModifiableByteArray();
@@ -109,12 +109,12 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         sb.append(']');
         if (protocolMessageSet.size() == 1) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
-                    sb.toString());
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig
+                    .getConnectionEnd().getHostname(), sb.toString());
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getHost(),
-                    sb.toString());
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getConnectionEnd()
+                    .getHostname(), sb.toString());
             return true;
         }
     }

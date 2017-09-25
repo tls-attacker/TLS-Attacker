@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.math.BigInteger;
 import static org.junit.Assert.*;
@@ -161,6 +162,13 @@ public class ParserTest {
         assertTrue(parser.getBytesLeft() == 7);
         parser.parseByteArrayField(7);
         assertTrue(parser.getBytesLeft() == 0);
+    }
+
+    @Test
+    public void testParseString() {
+        byte[] bytesToParse = "This is a test\t\nabc".getBytes();
+        parser = new ParserImpl(0, bytesToParse);
+        assertEquals("This is a test\t\n", parser.parseStringTill((byte) 0x0A));
     }
 
     public class ParserImpl extends Parser {

@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
@@ -38,9 +40,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,6 +87,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
+            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> expectedMessages;
 
@@ -96,26 +102,33 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(ProtocolMessage... messages) {
+    public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
-        expectedMessages = Arrays.asList(messages);
+        this.expectedMessages = Arrays.asList(expectedMessages);
     }
 
     @Override
-    public void execute(TlsContext tlsContext) {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
+
         LOGGER.debug("Receiving Messages...");
         MessageActionResult result = ReceiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
-        records.addAll(result.getRecordList());
-        messages.addAll(result.getMessageList());
+        records = new ArrayList<>(result.getRecordList());
+        messages = new ArrayList<>(result.getMessageList());
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
-        LOGGER.info("Received Messages:" + received);
+        if (contextAlias == null) {
+            LOGGER.info("Received Messages: " + received);
+        } else {
+            LOGGER.info("Received Messages (" + contextAlias + "): " + received);
+        }
     }
 
     @Override
@@ -162,8 +175,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
+        messages = null;
+        records = null;
         setExecuted(null);
     }
 

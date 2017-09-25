@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -59,24 +60,26 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
-        TlsContext tlsContext = new TlsContext(config);
+
+        State state = new State(config);
+        TlsContext tlsContext = state.getTlsContext();
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), tlsContext);
+                config.getWorkflowExecutorType(), state);
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         protocolMessages.add(new ServerHelloMessage(config));
         protocolMessages.add(new CertificateMessage(config));
         protocolMessages.add(new ServerHelloDoneMessage(config));
-        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
+        state.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
         protocolMessages = new LinkedList<>();
         RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(config);
         protocolMessages.add(cke);
         protocolMessages.add(new ChangeCipherSpecMessage(config));
-        tlsContext.getWorkflowTrace().addTlsAction(new SendAction(protocolMessages));
+        state.getWorkflowTrace().addTlsAction(new SendAction(protocolMessages));
 
         protocolMessages = new LinkedList<>();
         protocolMessages.add(new AlertMessage(config));
-        tlsContext.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
+        state.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
 
         ModifiableByteArray pms = new ModifiableByteArray();
         pms.setModification(ByteArrayModificationFactory.explicitValue(msg));

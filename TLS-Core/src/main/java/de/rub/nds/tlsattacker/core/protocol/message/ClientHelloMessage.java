@@ -276,7 +276,7 @@ public class ClientHelloMessage extends HelloMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
         }
         if (getUnixTime() != null && getUnixTime().getValue() != null) {

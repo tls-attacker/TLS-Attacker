@@ -42,8 +42,10 @@ public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClien
     }
 
     @Override
-    protected void adjustTLSContext(DHClientKeyExchangeMessage message) {
+    public void adjustTLSContext(DHClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        setRecordCipher();
+        spawnNewSession();
     }
 }
