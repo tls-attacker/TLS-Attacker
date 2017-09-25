@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -87,14 +88,17 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
+        byte[][] plainVectors = PKCS1VectorGenerator.generatePlainPkcs1Vectors(publicKey, config.getType());
         for (byte[] vector : vectors) {
             ProtocolMessage pm = executeTlsFlow(vector);
             protocolMessages.add(pm);
         }
 
         LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");
-        for (ProtocolMessage pm : protocolMessages) {
-            LOGGER.info("Sent Type: {}", pm.getProtocolMessageType());
+        for (int i = 0; i < protocolMessages.size(); i++) {
+            ProtocolMessage pm = protocolMessages.get(i);
+            LOGGER.info("Tested vector: {}", ArrayConverter.bytesToHexString(plainVectors[i]));
+            LOGGER.info("Last server TLS message: {}", pm.getProtocolMessageType());
             if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
                 AlertMessage alert = (AlertMessage) pm;
                 AlertDescription ad = AlertDescription.getAlertDescription(alert.getDescription().getValue());
