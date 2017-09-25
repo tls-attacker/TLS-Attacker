@@ -30,7 +30,7 @@ public class TokenBindingMitmCommandConfig extends AttackConfig {
     private Boolean chrome;
 
     @ParametersDelegate
-    private final MitmDelegate mitmDelegate;
+    private MitmDelegate mitmDelegate;
 
     public TokenBindingMitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);

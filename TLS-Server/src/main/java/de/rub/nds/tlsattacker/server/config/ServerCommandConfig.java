@@ -36,31 +36,31 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "server";
 
     @ParametersDelegate
-    private final GeneralDelegate generalDelegate;
+    private GeneralDelegate generalDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private final EllipticCurveDelegate ellipticCurveDelegate;
+    private EllipticCurveDelegate ellipticCurveDelegate;
     @ParametersDelegate
-    private final ServerDelegate serverDelegate;
+    private ServerDelegate serverDelegate;
     @ParametersDelegate
-    private final SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
-    private final WorkflowInputDelegate workflowInputDelegate;
+    private WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate
-    private final WorkflowOutputDelegate workflowOutputDelegate;
+    private WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate
-    private final WorkflowTypeDelegate workflowTypeDelegate;
+    private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
-    private final TransportHandlerDelegate transportHandlerDelegate;
+    private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
-    private final HeartbeatDelegate heartbeatDelegate;
+    private HeartbeatDelegate heartbeatDelegate;
     @ParametersDelegate
-    private final MaxFragmentLengthDelegate maxFragmentLengthDelegate;
+    private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
-    private final CertificateDelegate certificateDelegate;
+    private CertificateDelegate certificateDelegate;
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
