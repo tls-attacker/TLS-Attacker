@@ -37,8 +37,8 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
     @Override
     protected void parseHandshakeMessageContent(PSKClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKClientKeyExchangeMessage");
-        parseSerializedPskIdentityLength(msg);
-        parseSerializedPskIdentity(msg);
+        parsePskIdentityLength(msg);
+        parsePskIdentity(msg);
     }
 
     @Override
@@ -53,9 +53,9 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPskIdentityLength(PSKClientKeyExchangeMessage msg) {
+    private void parsePskIdentityLength(PSKClientKeyExchangeMessage msg) {
         msg.setIdentityLength(parseByteArrayField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("SerializedPSL-IdentityLength: " + msg.getIdentityLength().getValue());
+        LOGGER.debug("PskIdentityLength: " + msg.getIdentityLength().getValue());
     }
 
     /**
@@ -65,8 +65,8 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPskIdentity(PSKClientKeyExchangeMessage msg) {
+    private void parsePskIdentity(PSKClientKeyExchangeMessage msg) {
         msg.setIdentity(parseByteArrayField(ArrayConverter.bytesToInt(msg.getIdentityLength().getValue())));
-        LOGGER.debug("SerializedPSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
+        LOGGER.debug("PskIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 }

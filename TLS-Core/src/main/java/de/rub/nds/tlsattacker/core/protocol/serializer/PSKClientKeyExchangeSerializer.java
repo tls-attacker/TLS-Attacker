@@ -36,26 +36,26 @@ public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<P
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing PSKClientKeyExchangeMessage");
-        writePSKIdentityLength(msg);
-        writePSKIdentity(msg);
+        writePskIdentityLength(msg);
+        writePskIdentity(msg);
         return getAlreadySerialized();
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage
-     * into the final byte[]
+     * Writes the PskIdentityLength of the PSKClientKeyExchangeMessage into the
+     * final byte[]
      */
-    private void writePSKIdentityLength(PSKClientKeyExchangeMessage msg) {
+    private void writePskIdentityLength(PSKClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentity().getValue().length, HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
+        LOGGER.debug("PskIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
-     * the final byte[]
+     * Writes the pskIdentity of the PSKClientKeyExchangeMessage into the final
+     * byte[]
      */
-    private void writePSKIdentity(PSKClientKeyExchangeMessage msg) {
+    private void writePskIdentity(PSKClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
-        LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
+        LOGGER.debug("PskIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 }
