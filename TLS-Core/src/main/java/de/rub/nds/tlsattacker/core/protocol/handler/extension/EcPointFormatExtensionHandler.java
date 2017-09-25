@@ -21,14 +21,14 @@ import java.util.List;
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
+public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
 
-    public ECPointFormatExtensionHandler(TlsContext context) {
+    public EcPointFormatExtensionHandler(TlsContext context) {
         super(context);
     }
 
     @Override
-    public void adjustTLSContext(ECPointFormatExtensionMessage message) {
+    public void adjustTLSExtensionContext(ECPointFormatExtensionMessage message) {
         List<ECPointFormat> formatList = new LinkedList<>();
         byte[] pointFormats = message.getPointFormats().getValue();
         for (byte b : pointFormats) {
@@ -44,7 +44,6 @@ public class ECPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         } else {
             context.setServerPointFormatsList(formatList);
         }
-
     }
 
     @Override

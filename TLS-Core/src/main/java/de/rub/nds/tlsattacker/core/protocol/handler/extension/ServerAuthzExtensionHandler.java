@@ -41,7 +41,7 @@ public class ServerAuthzExtensionHandler extends ExtensionHandler<ServerAuthzExt
     }
 
     @Override
-    public void adjustTLSContext(ServerAuthzExtensionMessage message) {
+    public void adjustTLSExtensionContext(ServerAuthzExtensionMessage message) {
         context.setServerAuthzDataFormatList(AuthzDataFormat.byteArrayToList(message.getAuthzFormatList().getValue()));
     }
 

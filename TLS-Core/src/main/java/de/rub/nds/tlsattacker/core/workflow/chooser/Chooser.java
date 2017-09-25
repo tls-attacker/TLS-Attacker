@@ -82,7 +82,7 @@ public abstract class Chooser {
 
     public abstract HeartbeatMode getHeartbeatMode();
 
-    public abstract boolean isExtendedMasterSecretExtension();
+    public abstract boolean isUseExtendedMasterSecret();
 
     public abstract List<CompressionMethod> getClientSupportedCompressions();
 

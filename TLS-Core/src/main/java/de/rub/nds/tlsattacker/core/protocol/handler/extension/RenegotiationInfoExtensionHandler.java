@@ -43,7 +43,7 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
     }
 
     @Override
-    public void adjustTLSContext(RenegotiationInfoExtensionMessage message) {
+    public void adjustTLSExtensionContext(RenegotiationInfoExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. "
                     + "Length was " + message.getExtensionLength().getValue());

@@ -242,10 +242,10 @@ public class DefaultChooserTest {
      * Test of isExtendedMasterSecretExtension method, of class DefaultChooser.
      */
     @Test
-    public void testIsExtendedMasterSecretExtension() {
-        assertEquals(false, chooser.isExtendedMasterSecretExtension());
-        context.setReceivedMasterSecretExtension(true);
-        assertEquals(true, chooser.isExtendedMasterSecretExtension());
+    public void testIsUseExtendedMasterSecret() {
+        assertEquals(false, chooser.isUseExtendedMasterSecret());
+        context.setUseExtendedMasterSecret(true);
+        assertEquals(true, chooser.isUseExtendedMasterSecret());
     }
 
     /**
