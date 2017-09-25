@@ -58,18 +58,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        Config tlsConfig = config.createConfig();
-        tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
-        State state = new State(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
+        State state = new State(config.createConfig());
+        state.getConfig().setWorkflowTraceType(WorkflowTraceType.FULL);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                .getWorkflowExecutorType(), state);
         WorkflowTrace trace = state.getWorkflowTrace();
+
         RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
-        tlsConfig.setWorkflowTrace(trace);
+
         workflowExecutor.executeWorkflow();
         return WorkflowTraceUtil.getLastReceivedMessage(trace);
     }
