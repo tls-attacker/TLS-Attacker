@@ -26,13 +26,13 @@ public class WinshockCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "winshock";
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     @Parameter(names = "-signature_length", description = "Length of the signature in the CertificateVerify protocol message")
     private Integer signatureLength;

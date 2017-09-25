@@ -27,13 +27,13 @@ public class SimpleMitmProxyCommandConfig extends AttackConfig {
     public static final String ATTACK_COMMAND = "simple_mitm_proxy";
 
     @ParametersDelegate
-    private final MitmDelegate mitmDelegate;
+    private MitmDelegate mitmDelegate;
 
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
-    private final ServerCertificateDelegate serverCertificateDelegate;
+    private ServerCertificateDelegate serverCertificateDelegate;
 
     public SimpleMitmProxyCommandConfig(GeneralDelegate delegate) {
         super(delegate);
