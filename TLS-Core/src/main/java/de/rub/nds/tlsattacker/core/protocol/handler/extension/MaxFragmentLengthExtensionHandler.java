@@ -27,7 +27,7 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
     }
 
     @Override
-    public void adjustTLSContext(MaxFragmentLengthExtensionMessage message) {
+    public void adjustTLSExtensionContext(MaxFragmentLengthExtensionMessage message) {
         byte[] maxFragmentLengthBytes = message.getMaxFragmentLength().getValue();
         if (maxFragmentLengthBytes.length != 1) {
             throw new AdjustmentException("Cannot adjust MaxFragmentLength to a resonable value");
@@ -38,7 +38,6 @@ public class MaxFragmentLengthExtensionHandler extends ExtensionHandler<MaxFragm
         } else {
             context.setMaxFragmentLength(length);
         }
-        markExtensionAsProposed(message);
     }
 
     @Override

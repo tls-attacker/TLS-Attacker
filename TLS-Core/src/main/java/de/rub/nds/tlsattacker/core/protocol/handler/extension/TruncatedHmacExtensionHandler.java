@@ -40,9 +40,7 @@ public class TruncatedHmacExtensionHandler extends ExtensionHandler<TruncatedHma
     }
 
     @Override
-    public void adjustTLSContext(TruncatedHmacExtensionMessage message) {
-        LOGGER.debug("Adjusted the tls context. The truncated hmac extension is present.");
-        markExtensionAsProposed(message);
+    public void adjustTLSExtensionContext(TruncatedHmacExtensionMessage message) {
     }
 
 }

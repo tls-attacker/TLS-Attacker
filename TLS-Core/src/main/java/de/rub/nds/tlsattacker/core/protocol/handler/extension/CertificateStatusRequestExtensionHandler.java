@@ -43,8 +43,7 @@ public class CertificateStatusRequestExtensionHandler extends
     }
 
     @Override
-    public void adjustTLSContext(CertificateStatusRequestExtensionMessage message) {
-        markExtensionAsProposed(message);
+    public void adjustTLSExtensionContext(CertificateStatusRequestExtensionMessage message) {
         context.setCertificateStatusRequestExtensionRequestType(CertificateStatusRequestType
                 .getCertificateStatusRequestType(message.getCertificateStatusRequestType().getValue()));
         LOGGER.debug("Adjusted the Certificate Status Request Type in the TLSContext to "

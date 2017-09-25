@@ -71,13 +71,12 @@ public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTi
      * @param message
      */
     @Override
-    public void adjustTLSContext(SessionTicketTLSExtensionMessage message) {
+    public void adjustTLSExtensionContext(SessionTicketTLSExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. "
                     + "Length was " + message.getExtensionLength().getValue());
         }
         context.setSessionTicketTLS(message.getTicket().getValue());
-        markExtensionAsProposed(message);
         LOGGER.debug("The context SessionTLS ticket was set to " + ArrayConverter.bytesToHexString(message.getTicket()));
     }
 

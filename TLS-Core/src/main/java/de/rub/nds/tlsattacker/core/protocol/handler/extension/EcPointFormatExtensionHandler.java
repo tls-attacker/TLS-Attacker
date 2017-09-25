@@ -28,7 +28,7 @@ public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
     }
 
     @Override
-    public void adjustTLSContext(ECPointFormatExtensionMessage message) {
+    public void adjustTLSExtensionContext(ECPointFormatExtensionMessage message) {
         List<ECPointFormat> formatList = new LinkedList<>();
         byte[] pointFormats = message.getPointFormats().getValue();
         for (byte b : pointFormats) {
@@ -44,7 +44,6 @@ public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         } else {
             context.setServerPointFormatsList(formatList);
         }
-        markExtensionAsProposed(message);
     }
 
     @Override

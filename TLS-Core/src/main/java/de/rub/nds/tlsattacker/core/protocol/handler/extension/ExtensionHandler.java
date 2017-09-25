@@ -6,7 +6,6 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -45,23 +44,30 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
      *
      * @param message
      */
-    public abstract void adjustTLSContext(Message message);
+    public final void adjustTLSContext(Message message) {
+        markExtensionInContext(message);
+        adjustTLSExtensionContext(message);
+    }
+
+    public abstract void adjustTLSExtensionContext(Message message);
 
     /**
-     * Tell the context that the extension was proposed. This should be called
-     * in adjustTlsContext(). Makes the extension type available in
-     * TlsContext.isProposedTlsExtension{Client,Server}(extType).
-     * 
+     * Tell the context that the extension was proposed/negotiated. Makes the
+     * extension type available in
+     * TlsContext.isExtension{Proposed,Negotiated}(extType).
+     *
+     *
      * @param message
      */
-    protected void markExtensionAsProposed(Message message) {
+    private void markExtensionInContext(Message message) {
         ExtensionType extType = message.getExtensionTypeConstant();
         ConnectionEndType talkingConEndType = context.getTalkingConnectionEndType();
         if (talkingConEndType == ConnectionEndType.CLIENT) {
             context.addProposedExtension(extType);
+            LOGGER.debug("Marked extension '" + extType.name() + "' as proposed");
         } else if (talkingConEndType == ConnectionEndType.SERVER) {
             context.addNegotiatedExtension(extType);
+            LOGGER.debug("Marked extension '" + extType.name() + "' as negotiated");
         }
-        LOGGER.debug("Marked extension '" + extType.name() + "' as proposed by " + talkingConEndType);
     }
 }

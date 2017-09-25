@@ -33,7 +33,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
     }
 
     @Override
-    public void adjustTLSContext(SignatureAndHashAlgorithmsExtensionMessage message) {
+    public void adjustTLSExtensionContext(SignatureAndHashAlgorithmsExtensionMessage message) {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
         byte[] signatureAndHashBytes = message.getSignatureAndHashAlgorithms().getValue();
         if (signatureAndHashBytes.length % HandshakeByteLength.SIGNATURE_HASH_ALGORITHM != 0) {
@@ -51,7 +51,6 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
             }
         }
         context.setClientSupportedSignatureAndHashAlgorithms(algoList);
-        markExtensionAsProposed(message);
     }
 
     @Override

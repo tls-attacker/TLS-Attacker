@@ -41,11 +41,10 @@ public class SrpExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
     }
 
     @Override
-    public void adjustTLSContext(SRPExtensionMessage message) {
+    public void adjustTLSExtensionContext(SRPExtensionMessage message) {
         context.setSecureRemotePasswordExtensionIdentifier(message.getSrpIdentifier().getValue());
         LOGGER.debug("Adjusted the TLSContext secure remote password extension identifier to "
                 + ArrayConverter.bytesToHexString(context.getSecureRemotePasswordExtensionIdentifier()));
-        markExtensionAsProposed(message);
     }
 
 }

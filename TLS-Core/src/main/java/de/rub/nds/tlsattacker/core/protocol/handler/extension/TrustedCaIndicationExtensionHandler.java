@@ -40,9 +40,8 @@ public class TrustedCaIndicationExtensionHandler extends ExtensionHandler<Truste
     }
 
     @Override
-    public void adjustTLSContext(TrustedCaIndicationExtensionMessage message) {
+    public void adjustTLSExtensionContext(TrustedCaIndicationExtensionMessage message) {
         context.setTrustedCaIndicationExtensionCas(message.getTrustedAuthorities());
-        markExtensionAsProposed(message);
     }
 
 }

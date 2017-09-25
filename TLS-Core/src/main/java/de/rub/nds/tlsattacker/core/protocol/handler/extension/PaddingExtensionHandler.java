@@ -47,12 +47,11 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
      * @param message
      */
     @Override
-    public void adjustTLSContext(PaddingExtensionMessage message) {
+    public void adjustTLSExtensionContext(PaddingExtensionMessage message) {
         if (message.getPaddingBytes().getValue().length > 65535) {
             LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
         }
         context.setPaddingExtensionBytes(message.getPaddingBytes().getValue());
-        markExtensionAsProposed(message);
         LOGGER.debug("The context PaddingExtension bytes were set to "
                 + ArrayConverter.bytesToHexString(context.getPaddingExtensionBytes()));
     }

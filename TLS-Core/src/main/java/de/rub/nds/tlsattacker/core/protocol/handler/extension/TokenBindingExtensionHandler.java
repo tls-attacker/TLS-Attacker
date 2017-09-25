@@ -43,7 +43,7 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
     }
 
     @Override
-    public void adjustTLSContext(TokenBindingExtensionMessage message) {
+    public void adjustTLSExtensionContext(TokenBindingExtensionMessage message) {
         context.setTokenBindingVersion(TokenBindingVersion
                 .getExtensionType(message.getTokenbindingVersion().getValue()));
         ArrayList<TokenBindingKeyParameters> tokenbindingKeyParameters = new ArrayList<>();
@@ -54,7 +54,6 @@ public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingE
         if (context.getTalkingConnectionEndType() == context.getChooser().getMyConnectionPeer()) {
             context.setTokenBindingNegotiatedSuccessfully(true);
         }
-        markExtensionAsProposed(message);
     }
 
 }

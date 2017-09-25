@@ -41,8 +41,7 @@ public class CertificateTypeExtensionHandler extends ExtensionHandler<Certificat
     }
 
     @Override
-    public void adjustTLSContext(CertificateTypeExtensionMessage message) {
-        markExtensionAsProposed(message);
+    public void adjustTLSExtensionContext(CertificateTypeExtensionMessage message) {
         context.setCertificateTypeDesiredTypes(CertificateType.getCertificateTypesAsList(message.getCertificateTypes()
                 .getValue()));
     }

@@ -43,8 +43,7 @@ public class HrrKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExt
     }
 
     @Override
-    public void adjustTLSContext(HRRKeyShareExtensionMessage message) {
-        markExtensionAsProposed(message);
+    public void adjustTLSExtensionContext(HRRKeyShareExtensionMessage message) {
     }
 
 }
