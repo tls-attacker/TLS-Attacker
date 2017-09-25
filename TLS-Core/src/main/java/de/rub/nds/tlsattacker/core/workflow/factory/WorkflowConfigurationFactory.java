@@ -38,6 +38,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -456,6 +457,8 @@ public class WorkflowConfigurationFactory {
                 case DH_RSA:
                     messages.add(new DHClientKeyExchangeMessage(config));
                     break;
+                case PSK:
+                    messages.add(new PSKClientKeyExchangeMessage(config));
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
                             + ", not adding ClientKeyExchange Message");
