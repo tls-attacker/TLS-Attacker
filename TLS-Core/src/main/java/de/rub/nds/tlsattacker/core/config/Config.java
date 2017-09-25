@@ -1785,7 +1785,7 @@ public class Config implements Serializable {
         this.workflowTrace = workflowTrace;
     }
 
-    public boolean isClientAuthentication() {
+    public Boolean isClientAuthentication() {
         return clientAuthentication;
     }
 

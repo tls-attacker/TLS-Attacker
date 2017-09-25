@@ -167,7 +167,7 @@ public class TlsContext {
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
 
-    private boolean isCachedInfoExtensionClientState;
+    private boolean cachedInfoExtensionClientState;
 
     private List<CachedObject> cachedInfoExtensionObjects;
 
@@ -358,7 +358,7 @@ public class TlsContext {
      */
     private byte[] lastHandledApplicationMessageData;
 
-    private boolean isSecureRenegotiation = false;
+    private Boolean secureRenegotiation = false;
 
     private byte[] lastClientVerifyData;
 
@@ -466,12 +466,12 @@ public class TlsContext {
         this.certificateTypeClientDesiredTypes = certificateTypeClientDesiredTypes;
     }
 
-    public boolean isIsSecureRenegotiation() {
-        return isSecureRenegotiation;
+    public boolean isSecureRenegotiation() {
+        return secureRenegotiation;
     }
 
-    public void setIsSecureRenegotiation(boolean isSecureRenegotiation) {
-        this.isSecureRenegotiation = isSecureRenegotiation;
+    public void setSecureRenegotiation(boolean secureRenegotiation) {
+        this.secureRenegotiation = secureRenegotiation;
     }
 
     public List<ProtocolVersion> getClientSupportedProtocolVersions() {
@@ -1194,12 +1194,12 @@ public class TlsContext {
         this.encryptThenMacExtensionIsPresent = encryptThenMacExtensionIsPresent;
     }
 
-    public boolean isIsCachedInfoExtensionClientState() {
-        return isCachedInfoExtensionClientState;
+    public boolean isCachedInfoExtensionClientState() {
+        return cachedInfoExtensionClientState;
     }
 
-    public void setIsCachedInfoExtensionClientState(boolean isCachedInfoExtensionClientState) {
-        this.isCachedInfoExtensionClientState = isCachedInfoExtensionClientState;
+    public void setCachedInfoExtensionClientState(boolean cachedInfoExtensionClientState) {
+        this.cachedInfoExtensionClientState = cachedInfoExtensionClientState;
     }
 
     public List<CachedObject> getCachedInfoExtensionObjects() {
