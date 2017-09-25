@@ -169,7 +169,7 @@ public class TlsContext {
 
     private SignatureAndHashAlgorithm selectedSigHashAlgorithm;
 
-    private boolean isCachedInfoExtensionClientState;
+    private boolean cachedInfoExtensionClientState;
 
     private List<CachedObject> cachedInfoExtensionObjects;
 
@@ -387,7 +387,7 @@ public class TlsContext {
      * This constructor assumes that the config holds exactly one connection
      * end. This is usually used when working with the default connection end in
      * single context scenarios.
-     * 
+     *
      * @param config
      */
     public TlsContext(Config config) {
@@ -1181,12 +1181,12 @@ public class TlsContext {
         this.serverCertificateTypeDesiredTypes = serverCertificateTypeDesiredTypes;
     }
 
-    public boolean isIsCachedInfoExtensionClientState() {
-        return isCachedInfoExtensionClientState;
+    public boolean isCachedInfoExtensionClientState() {
+        return cachedInfoExtensionClientState;
     }
 
-    public void setIsCachedInfoExtensionClientState(boolean isCachedInfoExtensionClientState) {
-        this.isCachedInfoExtensionClientState = isCachedInfoExtensionClientState;
+    public void setCachedInfoExtensionClientState(boolean cachedInfoExtensionClientState) {
+        this.cachedInfoExtensionClientState = cachedInfoExtensionClientState;
     }
 
     public List<CachedObject> getCachedInfoExtensionObjects() {
@@ -1275,7 +1275,7 @@ public class TlsContext {
 
     /**
      * Check if the given TLS extension type was proposed by the client.
-     * 
+     *
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isProposedTlsExtensionClient(ExtensionType ext) {
@@ -1291,7 +1291,7 @@ public class TlsContext {
 
     /**
      * Check if the given TLS extension type was proposed by the server.
-     * 
+     *
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isProposedTlsExtensionServer(ExtensionType ext) {
