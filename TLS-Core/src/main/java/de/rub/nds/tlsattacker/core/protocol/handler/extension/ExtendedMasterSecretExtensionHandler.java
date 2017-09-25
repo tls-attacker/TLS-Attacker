@@ -41,7 +41,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
     }
 
     /**
-     * Adjusts the Chooser.
+     * Adjust the context.
      *
      * @param message
      */

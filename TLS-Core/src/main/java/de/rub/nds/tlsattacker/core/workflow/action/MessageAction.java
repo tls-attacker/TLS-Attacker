@@ -96,28 +96,38 @@ public abstract class MessageAction extends TLSAction {
 
     public MessageAction() {
         messages = new LinkedList<>();
-        records = new LinkedList<>();
+    }
+
+    public MessageAction(List<ProtocolMessage> messages) {
+        this.messages = new ArrayList<>(messages);
     }
 
     public MessageAction(ProtocolMessage... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
-        records = new LinkedList<>();
+    }
+
+    public String getReadableString(ProtocolMessage... messages) {
+        return getReadableString(Arrays.asList(messages));
     }
 
     public String getReadableString(List<ProtocolMessage> messages) {
+        return getReadableString(messages, false);
+    }
+
+    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         for (ProtocolMessage message : messages) {
-            builder.append(message.toCompactString());
+            if (verbose) {
+                builder.append(message.toString());
+            } else {
+                builder.append(message.toCompactString());
+            }
             if (!message.isRequired()) {
                 builder.append("*");
             }
             builder.append(", ");
         }
         return builder.toString();
-    }
-
-    public String getReadableString(ProtocolMessage... messages) {
-        return getReadableString(Arrays.asList(messages));
     }
 
     public List<ProtocolMessage> getMessages() {

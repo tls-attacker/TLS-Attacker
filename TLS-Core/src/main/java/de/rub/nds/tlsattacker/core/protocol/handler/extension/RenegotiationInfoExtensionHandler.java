@@ -48,13 +48,13 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. "
                     + "Length was " + message.getExtensionLength().getValue());
         }
-        if (context.getTalkingConnectionEndType() != context.getConfig().getConnectionEndType()) {
+        if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEnd().getConnectionEndType()) {
             context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getRenegotiationInfo().getValue().length == 1
                     && message.getRenegotiationInfo().getValue()[0] == 0) {
-                context.setIsSecureRenegotiation(true);
+                context.setSecureRenegotiation(true);
             }
         }
         LOGGER.debug("The context RenegotiationInfo was set to "

@@ -9,10 +9,13 @@
 package de.rub.nds.tlsattacker.core.socket;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import static org.junit.Assert.*;
@@ -25,7 +28,7 @@ import org.junit.Test;
 public class TlsAttackerSocketTest {
 
     private TlsAttackerSocket socket;
-
+    private State state;
     private TlsContext context;
 
     private FakeTransportHandler transportHandler;
@@ -35,11 +38,13 @@ public class TlsAttackerSocketTest {
 
     @Before
     public void setUp() {
-        context = new TlsContext();
+        Config config = Config.createConfig();
+        State state = new State(config, new WorkflowTrace(config));
+        context = state.getTlsContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
         context.setTransportHandler(transportHandler);
-        socket = new TlsAttackerSocket(context);
+        socket = new TlsAttackerSocket(state);
         context.setRecordLayer(new TlsRecordLayer(context));
 
     }
@@ -57,9 +62,9 @@ public class TlsAttackerSocketTest {
      * Test of recieveRawBytes method, of class TlsAttackerSocket.
      */
     @Test
-    public void testRecieveRawBytes() throws Exception {
+    public void testReceiveRawBytes() throws Exception {
         transportHandler.setFetchableByte(new byte[] { 1, 2, 3 });
-        byte[] received = socket.recieveRawBytes();
+        byte[] received = socket.receiveRawBytes();
         assertArrayEquals(new byte[] { 1, 2, 3 }, received);
     }
 
