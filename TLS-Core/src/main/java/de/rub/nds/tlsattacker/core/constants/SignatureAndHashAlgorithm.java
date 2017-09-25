@@ -28,7 +28,7 @@ public class SignatureAndHashAlgorithm implements Serializable {
         return new SignatureAndHashAlgorithm(value);
     }
 
-    public static SignatureAndHashAlgorithm getRandom() {
+    public static SignatureAndHashAlgorithm getRandom(TlsContext context) {
         return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(context), HashAlgorithm.getRandom(context));
     }
 
@@ -44,8 +44,6 @@ public class SignatureAndHashAlgorithm implements Serializable {
         }
         return result;
     }
-
-    private static TlsContext context;
 
     private SignatureAlgorithm signatureAlgorithm;
 
