@@ -74,7 +74,7 @@ public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
 
-    private static final int PORT = 4433;
+    private static final int PORT = 44330;
 
     private static final int TIMEOUT = 2000;
 
