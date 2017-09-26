@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
@@ -37,7 +39,7 @@ import org.junit.experimental.categories.Category;
 public class BasicTlsClientServerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsClientServerTest.class);
-    private static final int SERVER_PORT = 4433;
+    private static final int SERVER_PORT = 44335;
 
     public BasicTlsClientServerTest() {
     }
@@ -60,7 +62,8 @@ public class BasicTlsClientServerTest {
                 ;
 
             LOGGER.info("Starting test client");
-            BasicTlsClient client = new BasicTlsClient();
+            BasicTlsClient client = new BasicTlsClient("localhost", SERVER_PORT, ProtocolVersion.TLS12,
+                    CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
             client.setRetryConnect(false);
             Thread clientThread = new Thread(client);
             clientThread.start();
