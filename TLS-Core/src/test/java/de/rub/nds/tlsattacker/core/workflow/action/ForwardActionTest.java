@@ -14,12 +14,15 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.FakeReceiveMessageHelper;
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
@@ -28,11 +31,15 @@ import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.JAXB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Rule;
@@ -126,24 +133,6 @@ public class ForwardActionTest {
     }
 
     /**
-     * TODO Test application data forwarding
-     */
-    // @Test
-    // public void testForwardApplicationMessage() throws Exception {
-    // ApplicationMessage msg = new ApplicationMessage(state.getConfig());
-    // String data = "Forward application message test";
-    // msg.setData(data.getBytes());
-    //
-    // ForwardAction action = new ForwardAction(msg);
-    // action.setReceiveFromAlias("ctx1");
-    // action.setForwardToAlias("ctx2");
-    //
-    // action.execute(state);
-    // assertTrue(action.isExecuted());
-    // assertTrue(action.executedAsPlanned());
-    // }
-
-    /**
      * Test (de-)serialization.
      */
     @Test
@@ -159,5 +148,32 @@ public class ForwardActionTest {
 
         TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardAction.class);
         assertEquals(action, action2);
+    }
+
+    @Test
+    public void testForwardApplicationMessage() throws Exception {
+        ApplicationMessage msg = new ApplicationMessage(state.getConfig());
+        String receivedData = "Forward application message test";
+        msg.setData(receivedData.getBytes());
+        List<ProtocolMessage> receivedMsgs = new ArrayList<>();
+        receivedMsgs.add(msg);
+        FakeReceiveMessageHelper fakeReceiveHelper = new FakeReceiveMessageHelper();
+        fakeReceiveHelper.setMessagesToReturn(receivedMsgs);
+
+        ForwardAction action = new ForwardAction(fakeReceiveHelper);
+        action.setMessages(new ApplicationMessage());
+        action.setReceiveFromAlias("ctx1");
+        action.setForwardToAlias("ctx2");
+
+        action.execute(state);
+        assertTrue(action.isExecuted());
+        assertTrue(action.executedAsPlanned());
+
+        ProtocolMessage forwardedMsgRaw = action.getSendMessages().get(0);
+        assertThat(forwardedMsgRaw.toCompactString(), equalTo("APPLICATION"));
+
+        ApplicationMessage forwardedMsg = (ApplicationMessage) forwardedMsgRaw;
+        String forwardedData = new String(forwardedMsg.getData().getValue());
+        assertThat(forwardedData, equalTo(receivedData));
     }
 }

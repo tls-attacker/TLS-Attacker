@@ -116,7 +116,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = ReceiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
+        ReceiveMessageHelper receiveHelper = new ReceiveMessageHelper();
+        MessageActionResult result = receiveHelper.receiveMessages(expectedMessages, tlsContext);
         records = new ArrayList<>(result.getRecordList());
         messages = new ArrayList<>(result.getMessageList());
         setExecuted(true);
