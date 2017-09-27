@@ -30,7 +30,7 @@ public class ParserTest {
 
     @Before
     public void setUp() {
-        byte[] bytesToParse = new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
+        byte[] bytesToParse = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
         parser = new ParserImpl(0, bytesToParse);
         middleParser = new ParserImpl(3, bytesToParse);
     }
@@ -41,13 +41,13 @@ public class ParserTest {
     @Test
     public void testParseByteField() {
         byte[] result = parser.parseByteArrayField(1);
-        assertArrayEquals(result, new byte[]{0});
+        assertArrayEquals(result, new byte[] { 0 });
         result = parser.parseByteArrayField(2);
-        assertArrayEquals(result, new byte[]{1, 2});
+        assertArrayEquals(result, new byte[] { 1, 2 });
         result = middleParser.parseByteArrayField(1);
-        assertArrayEquals(result, new byte[]{3});
+        assertArrayEquals(result, new byte[] { 3 });
         result = middleParser.parseByteArrayField(2);
-        assertArrayEquals(result, new byte[]{4, 5});
+        assertArrayEquals(result, new byte[] { 4, 5 });
     }
 
     /**
@@ -124,23 +124,23 @@ public class ParserTest {
     public void testAlreadyParsed() {
         assertArrayEquals(parser.getAlreadyParsed(), new byte[0]);
         parser.parseIntField(1);
-        assertArrayEquals(parser.getAlreadyParsed(), new byte[]{0});
+        assertArrayEquals(parser.getAlreadyParsed(), new byte[] { 0 });
         parser.parseIntField(3);
-        assertArrayEquals(parser.getAlreadyParsed(), new byte[]{0, 1, 2, 3});
+        assertArrayEquals(parser.getAlreadyParsed(), new byte[] { 0, 1, 2, 3 });
     }
 
     @Test
     public void testAlreadyParsedMiddle() {
         assertArrayEquals(middleParser.getAlreadyParsed(), new byte[0]);
         middleParser.parseIntField(1);
-        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[]{3});
+        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] { 3 });
         middleParser.parseIntField(3);
-        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[]{3, 4, 5, 6});
+        assertArrayEquals(middleParser.getAlreadyParsed(), new byte[] { 3, 4, 5, 6 });
     }
 
     @Test(expected = ParserException.class)
     public void testConstructorException() {
-        byte[] base = new byte[]{0, 1};
+        byte[] base = new byte[] { 0, 1 };
         new ParserImpl(3, base);
     }
 

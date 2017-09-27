@@ -110,7 +110,7 @@ public class TestCertificates {
      *            Alias of the key in the returned KeyStore
      * @param keyPass
      *            Password of the key in the returned KeyStore
-     * @return 
+     * @return
      * @throws java.io.IOException
      * @throws java.security.NoSuchAlgorithmException
      * @throws java.security.spec.InvalidKeySpecException

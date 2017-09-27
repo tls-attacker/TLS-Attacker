@@ -44,7 +44,7 @@ public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessag
             message.getHeader().add(header);
             pointer = parser.getPointer();
         }
-        LOGGER.info(new String(getAlreadyParsed(),Charset.forName("ASCII")));
+        LOGGER.info(new String(getAlreadyParsed(), Charset.forName("ASCII")));
         return message;
     }
 

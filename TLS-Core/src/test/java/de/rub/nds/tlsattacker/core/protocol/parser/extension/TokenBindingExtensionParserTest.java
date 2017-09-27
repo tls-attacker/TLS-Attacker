@@ -31,9 +31,9 @@ public class TokenBindingExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][]{{ExtensionType.TOKEN_BINDING,
-            new byte[]{0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02}, 4, TokenBindingVersion.DRAFT_13, 1,
-            new byte[]{TokenBindingKeyParameters.ECDSAP256.getValue()}}});
+        return Arrays.asList(new Object[][] { { ExtensionType.TOKEN_BINDING,
+                new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.DRAFT_13, 1,
+                new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() } } });
     }
 
     private final ExtensionType extensionType;
