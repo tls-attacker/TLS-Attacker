@@ -30,9 +30,9 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
 
         switch (TrustedCaIndicationIdentifierType.getIdentifierByByte(authority.getIdentifierType().getValue())) {
             case PRE_AGREED:
-            case CERT_SHA1_HASH:// fall through
                 // nothing to do here
                 break;
+            case CERT_SHA1_HASH:// fall through
             case KEY_SHA1_HASH:
                 authority.setSha1Hash(parseByteArrayField(ExtensionByteLength.TRUSTED_AUTHORITY_HASH));
                 break;

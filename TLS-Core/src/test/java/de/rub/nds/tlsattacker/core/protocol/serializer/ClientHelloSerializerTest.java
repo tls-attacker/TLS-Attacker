@@ -47,7 +47,6 @@ public class ClientHelloSerializerTest {
     private final byte[] extensionBytes;
     private final Byte cookieLength;
     private final byte[] cookie;
-    private final int numberOfExtensions;
 
     public ClientHelloSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
             byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
@@ -70,7 +69,6 @@ public class ClientHelloSerializerTest {
         this.extensionBytes = extensionBytes;
         this.cookieLength = cookieLength;
         this.cookie = cookie;
-        this.numberOfExtensions = numberOfExtensions;
     }
 
     /**
@@ -104,6 +102,5 @@ public class ClientHelloSerializerTest {
         clientMessage.setProtocolVersion(protocolVersion);
         ClientHelloSerializer serializer = new ClientHelloSerializer(clientMessage, version);
         assertArrayEquals(expectedPart, serializer.serialize());
-        assertTrue(clientMessage.getExtensions().size() == numberOfExtensions);
     }
 }
