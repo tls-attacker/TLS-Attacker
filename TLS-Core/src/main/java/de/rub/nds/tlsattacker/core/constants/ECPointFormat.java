@@ -18,6 +18,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -51,11 +52,11 @@ public enum ECPointFormat {
         return value;
     }
 
-    public static ECPointFormat getRandom(TlsContext context) {
+    public static ECPointFormat getRandom(Random random) {
         ECPointFormat c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (ECPointFormat) o[context.getRandom().nextInt(o.length)];
+            c = (ECPointFormat) o[random.nextInt(o.length)];
         }
         return c;
     }

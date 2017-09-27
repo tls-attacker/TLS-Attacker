@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -50,11 +51,11 @@ public enum MaxFragmentLength {
         return new byte[] { value };
     }
 
-    public static MaxFragmentLength getRandom(TlsContext context) {
+    public static MaxFragmentLength getRandom(Random random) {
         MaxFragmentLength c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (MaxFragmentLength) o[context.getRandom().nextInt(o.length)];
+            c = (MaxFragmentLength) o[random.nextInt(o.length)];
         }
         return c;
     }

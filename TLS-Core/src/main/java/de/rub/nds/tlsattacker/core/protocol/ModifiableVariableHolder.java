@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,9 +41,9 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * 
      * @return
      */
-    public Field getRandomModifiableVariableField(TlsContext context) {
+    public Field getRandomModifiableVariableField(Random random) {
         List<Field> fields = getAllModifiableVariableFields();
-        int randomField = context.getRandom().nextInt(fields.size());
+        int randomField = random.nextInt(fields.size());
         return fields.get(randomField);
     }
 

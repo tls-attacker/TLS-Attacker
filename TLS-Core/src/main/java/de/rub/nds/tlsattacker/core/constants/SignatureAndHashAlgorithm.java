@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Construction of a hash and signature algorithm.
@@ -28,8 +29,8 @@ public class SignatureAndHashAlgorithm implements Serializable {
         return new SignatureAndHashAlgorithm(value);
     }
 
-    public static SignatureAndHashAlgorithm getRandom(TlsContext context) {
-        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(context), HashAlgorithm.getRandom(context));
+    public static SignatureAndHashAlgorithm getRandom(Random random) {
+        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(random), HashAlgorithm.getRandom(random));
     }
 
     public static SignatureAndHashAlgorithm[] values() {

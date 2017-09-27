@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  *
@@ -71,11 +72,11 @@ public enum TokenBindingVersion {
         return tokenBindingVersion[1];
     }
 
-    public static TokenBindingVersion getRandom(TlsContext context) {
+    public static TokenBindingVersion getRandom(Random random) {
         TokenBindingVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (TokenBindingVersion) o[context.getRandom().nextInt(o.length)];
+            c = (TokenBindingVersion) o[random.nextInt(o.length)];
         }
         return c;
     }

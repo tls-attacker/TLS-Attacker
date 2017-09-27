@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -41,6 +42,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import java.util.Random;
 
 /**
  *
@@ -51,6 +53,7 @@ public class DefaultChooserTest {
     private Chooser chooser;
     private TlsContext context;
     private Config config;
+    private Random random;
 
     public DefaultChooserTest() {
     }
@@ -60,6 +63,7 @@ public class DefaultChooserTest {
         context = new TlsContext();
         chooser = context.getChooser();
         config = chooser.getConfig();
+        random = new Random(0);
     }
 
     /**
@@ -145,7 +149,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(SignatureAndHashAlgorithm.getRandom(chooser.getContext()));
+        algoList.add(SignatureAndHashAlgorithm.getRandom(random));
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().size() == 1);
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);

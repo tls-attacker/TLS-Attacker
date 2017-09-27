@@ -70,7 +70,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
-        storeTrace(state.getTlsContext());
+        storeTrace();
     }
 
     /**

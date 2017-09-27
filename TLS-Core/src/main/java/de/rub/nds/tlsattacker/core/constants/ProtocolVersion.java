@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -88,11 +89,11 @@ public enum ProtocolVersion {
         return versions;
     }
 
-    public static ProtocolVersion getRandom(TlsContext context) {
+    public static ProtocolVersion getRandom(Random random) {
         ProtocolVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (ProtocolVersion) o[context.getRandom().nextInt(o.length)];
+            c = (ProtocolVersion) o[random.nextInt(o.length)];
         }
         return c;
     }

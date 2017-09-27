@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -439,11 +440,11 @@ public enum CipherSuite {
         this.value = value;
     }
 
-    public static CipherSuite getRandom(TlsContext context) {
+    public static CipherSuite getRandom(Random random) {
         CipherSuite c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (CipherSuite) o[context.getRandom().nextInt(o.length)];
+            c = (CipherSuite) o[random.nextInt(o.length)];
         }
         return c;
     }

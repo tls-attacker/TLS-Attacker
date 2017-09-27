@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -51,11 +52,11 @@ public enum SignatureAlgorithm {
         return new byte[] { value };
     }
 
-    public static SignatureAlgorithm getRandom(TlsContext context) {
+    public static SignatureAlgorithm getRandom(Random random) {
         SignatureAlgorithm c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (SignatureAlgorithm) o[context.getRandom().nextInt(o.length)];
+            c = (SignatureAlgorithm) o[random.nextInt(o.length)];
         }
         return c;
     }

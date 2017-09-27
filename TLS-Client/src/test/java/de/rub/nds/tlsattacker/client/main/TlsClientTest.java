@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.client.main;
 
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -53,6 +54,7 @@ import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -78,6 +80,8 @@ public class TlsClientTest {
 
     private static final int TIMEOUT = 2000;
 
+    private BadRandom random = new BadRandom(new Random(0), null);
+
     @Rule
     public ErrorCollector collector = new ErrorCollector();
 
@@ -92,8 +96,8 @@ public class TlsClientTest {
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
             TimeHelper.setProvider(new FixedTimeProvider(0));
-            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
-            KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
+            KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
@@ -113,8 +117,8 @@ public class TlsClientTest {
     @Category(IntegrationTests.class)
     public void testECWorkflows() throws OperatorCreationException {
         try {
-            KeyPair k = KeyStoreGenerator.createECKeyPair(256);
-            KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+            KeyPair k = KeyStoreGenerator.createECKeyPair(256, random);
+            KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT + 1);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())

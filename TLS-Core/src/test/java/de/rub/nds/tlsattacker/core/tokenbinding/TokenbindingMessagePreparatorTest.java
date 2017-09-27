@@ -80,7 +80,6 @@ public class TokenbindingMessagePreparatorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         Security.addProvider(new BouncyCastleProvider());
-        context.setRandom(new Random(0));
     }
 
     /**

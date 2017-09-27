@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
@@ -83,13 +84,13 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    protected void storeTrace(TlsContext context) {
-
+    protected void storeTrace() {
+        Random random = new Random(0);
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             try {
                 File f = new File(config.getWorkflowOutput());
                 if (f.isDirectory()) {
-                    f = new File(config.getWorkflowOutput() + "trace-" + context.getRandom().nextInt());
+                    f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
                 }
                 WorkflowTraceSerializer.write(f, state.getWorkflowTrace());
             } catch (JAXBException | IOException ex) {
