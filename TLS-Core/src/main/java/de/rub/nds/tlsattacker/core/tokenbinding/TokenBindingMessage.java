@@ -250,8 +250,4 @@ public class TokenBindingMessage extends ProtocolMessage {
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new TokenBindingMessageHandler(context);
     }
-
-    void setKeyParameter(int i) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
