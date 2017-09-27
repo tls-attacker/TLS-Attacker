@@ -149,6 +149,6 @@ public class TestCertificates {
         return keyStoreFromRsaPem(rawPemCert, rawPemKey, keyStoreAlias, keyStorePass);
     }
 
-    private TestCertificates() {
+    public TestCertificates() {
     }
 }
