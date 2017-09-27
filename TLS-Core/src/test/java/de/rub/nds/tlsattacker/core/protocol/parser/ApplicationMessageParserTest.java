@@ -34,10 +34,10 @@ public class ApplicationMessageParserTest {
                                 new byte[] { 2, 3, 4, 5, 6 } } });
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
-    private byte[] data;
+    private final byte[] message;
+    private final int start;
+    private final byte[] expectedPart;
+    private final byte[] data;
 
     public ApplicationMessageParserTest(byte[] message, int start, byte[] expectedPart, byte[] data) {
         this.message = message;

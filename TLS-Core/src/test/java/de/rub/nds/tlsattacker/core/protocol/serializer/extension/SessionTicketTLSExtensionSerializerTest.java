@@ -37,7 +37,6 @@ public class SessionTicketTLSExtensionSerializerTest {
     private final int extensionLength;
     private final byte[] sessionTicket;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private SessionTicketTLSExtensionMessage message;
 
     /**
@@ -55,7 +54,6 @@ public class SessionTicketTLSExtensionSerializerTest {
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
     }
 
     /**

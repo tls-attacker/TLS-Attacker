@@ -33,11 +33,11 @@ public class Cve20162107CommandConfig extends AttackConfig {
     private List<ProtocolVersion> versions;
 
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate cipherSuiteDelegate;
+    private CiphersuiteDelegate cipherSuiteDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
 
     public Cve20162107CommandConfig(GeneralDelegate delegate) {
         super(delegate);

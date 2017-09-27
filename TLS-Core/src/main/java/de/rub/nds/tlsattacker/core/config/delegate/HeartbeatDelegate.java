@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
  */
 public class HeartbeatDelegate extends Delegate {
 
-    @Parameter(names = "-heartbeat_mode", description = "Sets the heartbeat mode (PEER_ALLOWED_TO_SEND or PEER_NOT_ALLOWED_TO_SEND)", converter = HeartbeatModeConverter.class)
+    @Parameter(names = "-heartbeat_mode", description = "Sets the heartbeat mode", converter = HeartbeatModeConverter.class)
     private HeartbeatMode heartbeatMode = null;
 
     public HeartbeatDelegate() {

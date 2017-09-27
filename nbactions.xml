@@ -41,4 +41,11 @@
                 <skipITs>true</skipITs>
             </properties>
     </action>
+    <action>
+            <actionName>CUSTOM-site</actionName>
+            <displayName>site</displayName>
+            <goals>
+                <goal>site</goal>
+            </goals>
+        </action>
 </actions>

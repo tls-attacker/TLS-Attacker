@@ -31,7 +31,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Philip Riese <philip.riese@rub.de>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage extends ModifiableVariableHolder implements Serializable {
+public abstract class ProtocolMessage extends ModifiableVariableHolder {
+
     /**
      * content type
      */

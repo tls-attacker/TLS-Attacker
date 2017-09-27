@@ -211,7 +211,6 @@ public class ReceiveMessageHelper {
                         break;
                     }
                 }
-                throw new ConfigurationException();
             }
             if (result != null) {
                 dataPointer = result.getParserPosition();

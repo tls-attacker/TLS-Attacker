@@ -30,7 +30,6 @@ public class CertificateTypeExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final Integer certificateTypesLength;
     private final List<CertificateType> certificateTypes;
     private final boolean isClientState;
@@ -43,7 +42,6 @@ public class CertificateTypeExtensionSerializerTest {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.certificateTypesLength = certificateTypesLength;
         this.certificateTypes = certificateTypes;
         this.isClientState = isClientState;

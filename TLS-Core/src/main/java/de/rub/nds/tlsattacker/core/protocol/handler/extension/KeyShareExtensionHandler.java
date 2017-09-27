@@ -59,7 +59,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     }
 
     @Override
-    public void adjustTLSContext(KeyShareExtensionMessage message) {
+    public void adjustTLSExtensionContext(KeyShareExtensionMessage message) {
         List<KSEntry> ksEntryList = new LinkedList<>();
         for (KeySharePair pair : message.getKeyShareList()) {
             NamedCurve type = NamedCurve.getNamedCurve(pair.getKeyShareType().getValue());

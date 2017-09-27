@@ -51,7 +51,6 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private BadRandom random;
     private ECDHEServerKeyExchangeMessage msg;
     private ECDHEServerKeyExchangePreparator preparator;
-    private ECDHEServerKeyExchangeMessage message;
 
     @Before
     public void setUp() throws Exception {
@@ -94,9 +93,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0601"), msg.getSignatureAndHashAlgorithm().getValue());
 
         String sigExpected = "543E5CC620CE4CD46062CADAB5DF7FF2A64D61D7D78C8D3D7BC1843406050FF54AA8D8BF60A1FF4CE77E499C0520CD2B697F01E1BCF19EF0E0E242B8FC374184A2C26DE227036C9E6852E3FEE3A4281B6B8CD43760D07B611A9FF45D0DD5EA81ABEF2F11173F58B6E088045A759E7D2AAAE6AF44A5CFDB1A7B3EA8C1DE229840";
-        // String sigExpected =
-        // "4BC4D3D90BFD4106056ACC3FC17894251052384A8F076E6CEA45609F4972B54B131A45EF63BEE15830727254A19FE965E16B1ED4AA9992F7903832C0DF4C0313DA79DE444DCCACFE9B8DFEAED9E6DDCE345353B878F02ED0F44BF134299F9388D2F8E069CA604D932B7C4D89A6AA02A4B4136AE09D139625533465B66043F86F";
-        assertEquals(new Integer(128), msg.getSignatureLength().getValue());
+        assertEquals(128, (int) msg.getSignatureLength().getValue());
         assertEquals(sigExpected, ArrayConverter.bytesToRawHexString(msg.getSignature().getValue()));
 
     }

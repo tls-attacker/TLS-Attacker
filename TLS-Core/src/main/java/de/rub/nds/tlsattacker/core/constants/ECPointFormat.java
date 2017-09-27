@@ -70,7 +70,7 @@ public enum ECPointFormat {
 
     public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats) throws IOException {
         if (pointFormats == null || pointFormats.isEmpty()) {
-            return null;
+            return new byte[0];
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
