@@ -48,6 +48,7 @@ public class SendMessageHelperTest {
 
     /**
      * Test of sendMessages method, of class SendMessageHelper.
+     * @throws java.lang.Exception
      */
     @Test
     public void testSendMessages() throws Exception {

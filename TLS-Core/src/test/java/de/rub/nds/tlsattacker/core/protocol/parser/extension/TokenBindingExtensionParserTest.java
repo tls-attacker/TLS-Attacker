@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,9 +31,9 @@ public class TokenBindingExtensionParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays.asList(new Object[][] { { ExtensionType.TOKEN_BINDING,
-                new byte[] { 0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02 }, 4, TokenBindingVersion.DRAFT_13, 1,
-                new byte[] { TokenBindingKeyParameters.ECDSAP256.getValue() } } });
+        return Arrays.asList(new Object[][]{{ExtensionType.TOKEN_BINDING,
+            new byte[]{0x00, 0x18, 0x00, 0x04, 0x00, 0x0d, 0x01, 0x02}, 4, TokenBindingVersion.DRAFT_13, 1,
+            new byte[]{TokenBindingKeyParameters.ECDSAP256.getValue()}}});
     }
 
     private final ExtensionType extensionType;
@@ -66,6 +67,7 @@ public class TokenBindingExtensionParserTest {
         assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());
         assertEquals(parameterLength, (int) message.getParameterListLength().getValue());
         assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
+        assertTrue(extensionLength == message.getExtensionLength().getValue());
     }
 
 }

@@ -35,10 +35,10 @@ public class ServerNamePairParserTest {
                 rwTestServerType } });
     }
 
-    private byte[] servernamePairBytes;
-    private byte[] serverName;
-    private int serverNameLength;
-    private byte serverType;
+    private final byte[] servernamePairBytes;
+    private final byte[] serverName;
+    private final int serverNameLength;
+    private final byte serverType;
 
     public ServerNamePairParserTest(byte[] servernamePairBytes, byte[] serverName, int serverNameLength, byte serverType) {
         this.servernamePairBytes = servernamePairBytes;

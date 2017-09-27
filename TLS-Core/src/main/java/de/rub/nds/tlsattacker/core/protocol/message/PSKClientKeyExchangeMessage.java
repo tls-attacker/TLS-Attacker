@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
@@ -36,7 +37,7 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByteArray identityLength;
+    private ModifiableInteger identityLength;
 
     public PSKClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
@@ -77,16 +78,16 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
         this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
     }
 
-    public ModifiableByteArray getIdentityLength() {
+    public ModifiableInteger getIdentityLength() {
         return identityLength;
     }
 
-    public void setIdentityLength(ModifiableByteArray identity_length) {
-        this.identityLength = identity_length;
+    public void setIdentityLength(ModifiableInteger identityLength) {
+        this.identityLength = identityLength;
     }
 
-    public void setIdentityLength(byte[] identity_length) {
-        this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identity_length);
+    public void setIdentityLength(int identityLength) {
+        this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
     }
 
     @Override

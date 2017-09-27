@@ -111,7 +111,7 @@ public class Config implements Serializable {
                 try {
                     field.set(c, null);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOGGER.warn("Could not set field in Config!",e);
                 }
             }
         }

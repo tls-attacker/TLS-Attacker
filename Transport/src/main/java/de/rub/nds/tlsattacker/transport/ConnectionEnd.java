@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ConnectionEnd {
+public abstract class ConnectionEnd implements Serializable {
 
     protected String alias = null;
     protected Integer port = null;

@@ -148,7 +148,7 @@ public enum NamedCurve {
 
     public static byte[] namedCurvesToByteArray(List<NamedCurve> curves) throws IOException {
         if (curves == null || curves.isEmpty()) {
-            return null;
+            return new byte[0];
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -160,7 +160,7 @@ public enum NamedCurve {
 
     public static NamedCurve[] namedCurvesFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
-            return null;
+            return new NamedCurve[0];
         }
 
         if (sourceBytes.length % NamedCurve.LENGTH != 0) {

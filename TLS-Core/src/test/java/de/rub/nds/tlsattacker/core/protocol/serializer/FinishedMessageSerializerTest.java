@@ -30,8 +30,6 @@ public class FinishedMessageSerializerTest {
         return FinishedMessageParserTest.generateData();
     }
 
-    private final byte[] message;
-    private final int start;
     private final byte[] expectedPart;
 
     private final HandshakeMessageType type;
@@ -41,8 +39,6 @@ public class FinishedMessageSerializerTest {
 
     public FinishedMessageSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
             int length, byte[] verifyData) {
-        this.message = message;
-        this.start = start;
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;

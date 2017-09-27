@@ -146,15 +146,15 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.handshakeMessageType = handshakeMessageType;
     }
 
-    public List<ExtensionMessage> getExtensions() {
+    public final List<ExtensionMessage> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<ExtensionMessage> extensions) {
+    public final void setExtensions(List<ExtensionMessage> extensions) {
         this.extensions = extensions;
     }
 
-    public void addExtension(ExtensionMessage extension) {
+    public final void addExtension(ExtensionMessage extension) {
         if (this.extensions == null) {
             extensions = new LinkedList<>();
         }

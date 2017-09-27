@@ -34,12 +34,12 @@ public class HeartbeatExtensionParserTest {
                                                                    // TLS11
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private byte[] heartbeatMode;
+    private final byte[] extension;
+    private final int start;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final byte[] heartbeatMode;
 
     public HeartbeatExtensionParserTest(byte[] extension, ExtensionType type, int extensionLength, byte[] heartbeatMode) {
         this.extension = extension;
