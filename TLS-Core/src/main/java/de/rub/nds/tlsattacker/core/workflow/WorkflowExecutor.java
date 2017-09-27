@@ -33,7 +33,6 @@ public abstract class WorkflowExecutor {
     protected static final Logger LOGGER = LogManager.getLogger(WorkflowExecutor.class.getName());
 
     protected final WorkflowExecutorType type;
-    protected final TlsContext context;
 
     protected final State state;
     protected final Config config;
@@ -54,7 +53,6 @@ public abstract class WorkflowExecutor {
         this.type = type;
         this.state = state;
         this.config = state.getConfig();
-        this.context = state.getTlsContext();
         initWorkflowTrace();
     }
 
@@ -85,7 +83,7 @@ public abstract class WorkflowExecutor {
         }
     }
 
-    protected void storeTrace() {
+    protected void storeTrace(TlsContext context) {
 
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             try {
