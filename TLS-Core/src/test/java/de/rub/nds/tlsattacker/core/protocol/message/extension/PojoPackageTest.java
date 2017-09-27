@@ -21,7 +21,7 @@ import org.junit.Test;
 public class PojoPackageTest {
 
     // The package to be tested
-    private final String packageName = "de.rub.nds.tlsattacker.core.protocol.message.extension";
+    private final static String packageName = "de.rub.nds.tlsattacker.core.protocol.message.extension";
 
     @Test
     public void validate() {

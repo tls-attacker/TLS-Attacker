@@ -104,8 +104,8 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer {
      * Writes the SessionIDLength of the SSL2ServerHello into the final byte[]
      */
     private void writeSessionIDLength(SSL2ServerHelloMessage message) {
-        appendInt(message.getSessionIDLength().getValue(), SSL2ByteLength.SESSIONID_LENGTH);
-        LOGGER.debug("SessionIDLength: " + message.getSessionIDLength().getValue());
+        appendInt(message.getSessionIdLength().getValue(), SSL2ByteLength.SESSIONID_LENGTH);
+        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
     }
 
     /**
@@ -128,8 +128,8 @@ public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer {
      * Writes the SessionID of the SSL2ServerHello into the final byte[]
      */
     private void writeSessionID(SSL2ServerHelloMessage message) {
-        appendBytes(message.getSessionID().getValue());
-        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionID().getValue()));
+        appendBytes(message.getSessionId().getValue());
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
     }
 
 }

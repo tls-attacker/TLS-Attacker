@@ -17,11 +17,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequestMessage> {
 
-    private final HelloRequestMessage message;
-
     public HelloRequestPreparator(Chooser chooser, HelloRequestMessage message) {
         super(chooser, message);
-        this.message = message;
     }
 
     @Override

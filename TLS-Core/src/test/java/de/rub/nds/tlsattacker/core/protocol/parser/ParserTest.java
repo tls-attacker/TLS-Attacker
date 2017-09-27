@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,11 +67,11 @@ public class ParserTest {
     @Test
     public void testParseIntField() {
         int result = parser.parseIntField(1);
-        assertSame(result, 0);
+        assertTrue(result == 0);
         result = parser.parseIntField(2);
         assertTrue(result == 0x0102);
         result = middleParser.parseIntField(1);
-        assertSame(result, 3);
+        assertTrue(result == 3);
         result = middleParser.parseIntField(2);
         assertTrue(result == 0x0405);
     }
@@ -81,11 +82,11 @@ public class ParserTest {
     @Test
     public void testParseBigIntField() {
         BigInteger result = parser.parseBigIntField(1);
-        assertSame(result.intValue(), 0);
+        assertTrue(result.intValue() == 0);
         result = parser.parseBigIntField(2);
         assertTrue(result.intValue() == 0x0102);
         result = middleParser.parseBigIntField(1);
-        assertSame(result.intValue(), 3);
+        assertTrue(result.intValue() == 3);
         result = middleParser.parseBigIntField(2);
         assertTrue(result.intValue() == 0x0405);
     }
@@ -140,7 +141,7 @@ public class ParserTest {
     @Test(expected = ParserException.class)
     public void testConstructorException() {
         byte[] base = new byte[] { 0, 1 };
-        ParserImpl parser2 = new ParserImpl(3, base);
+        new ParserImpl(3, base);
     }
 
     @Test
@@ -166,12 +167,12 @@ public class ParserTest {
 
     @Test
     public void testParseString() {
-        byte[] bytesToParse = "This is a test\t\nabc".getBytes();
+        byte[] bytesToParse = "This is a test\t\nabc".getBytes(Charset.defaultCharset());
         parser = new ParserImpl(0, bytesToParse);
         assertEquals("This is a test\t\n", parser.parseStringTill((byte) 0x0A));
     }
 
-    public class ParserImpl extends Parser {
+    public static class ParserImpl extends Parser {
 
         public ParserImpl(int i, byte[] a) {
             super(i, a);

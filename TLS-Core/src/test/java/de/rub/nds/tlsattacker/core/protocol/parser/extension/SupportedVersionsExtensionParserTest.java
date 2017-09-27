@@ -34,13 +34,13 @@ public class SupportedVersionsExtensionParserTest {
                 ArrayConverter.hexStringToByteArray("000203000301030203037F14") } });
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private int versionListLength;
-    private byte[] versionList;
+    private final byte[] extension;
+    private final int start;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final int versionListLength;
+    private final byte[] versionList;
 
     public SupportedVersionsExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
             ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
