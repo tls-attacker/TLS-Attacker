@@ -38,7 +38,6 @@ public class CertificateHandlerTest {
         Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         handler = new CertificateHandler(context);
-        context.getRandom().setSeed(0);
     }
 
     @After

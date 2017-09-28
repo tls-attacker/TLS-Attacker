@@ -409,13 +409,12 @@ public class TlsContext {
 
     private void init(Config config, ConnectionEnd conEnd) {
         this.config = config;
-
         digest = new MessageDigestCollector();
         connectionEnd = conEnd;
         recordLayerType = config.getRecordLayerType();
-
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
+        random = new Random(0);
     }
 
     public Chooser getChooser() {
@@ -1235,9 +1234,6 @@ public class TlsContext {
     }
 
     public Random getRandom() {
-        if (random == null) {
-            random = new Random(0);
-        }
         return random;
     }
 

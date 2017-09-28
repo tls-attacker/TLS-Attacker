@@ -38,7 +38,6 @@ public class HeartbeatMessagePreparatorTest {
         this.context = new TlsContext();
         this.message = new HeartbeatMessage();
         this.preparator = new HeartbeatMessagePreparator(context.getChooser(), message);
-        context.getRandom().setSeed(0);
     }
 
     @After

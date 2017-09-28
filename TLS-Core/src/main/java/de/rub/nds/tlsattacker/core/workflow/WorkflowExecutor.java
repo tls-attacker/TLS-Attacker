@@ -85,7 +85,7 @@ public abstract class WorkflowExecutor {
     }
 
     protected void storeTrace() {
-        Random random = new Random(0);
+        Random random = new Random();
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             try {
                 File f = new File(config.getWorkflowOutput());

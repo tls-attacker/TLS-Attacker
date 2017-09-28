@@ -62,11 +62,12 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random modifiable variable holder
      * 
+     * @param random
      * @return
      */
-    public ModifiableVariableHolder getRandomModifiableVariableHolder(TlsContext context) {
+    public ModifiableVariableHolder getRandomModifiableVariableHolder(Random random) {
         List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
-        int randomHolder = context.getRandom().nextInt(holders.size());
+        int randomHolder = random.nextInt(holders.size());
         return holders.get(randomHolder);
     }
 }

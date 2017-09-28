@@ -44,7 +44,6 @@ public class HelloVerifyRequestPreparatorTest {
      */
     @Test
     public void testPrepare() {
-        context.getRandom().setSeed(0);
         context.getConfig().setDefaultDTLSCookieLength(10);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         preparator.prepare();
