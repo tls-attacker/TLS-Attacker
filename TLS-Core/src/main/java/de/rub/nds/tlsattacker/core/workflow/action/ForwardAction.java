@@ -146,20 +146,15 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     protected List<AbstractRecord> sendRecords;
 
     public ForwardAction() {
-        receiveMessageHelper = new ReceiveMessageHelper();
+        super();
     }
 
     public ForwardAction(List<ProtocolMessage> messages) {
         super(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
     }
 
     public ForwardAction(ProtocolMessage... messages) {
         this(Arrays.asList(messages));
-    }
-
-    public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {
-        this.receiveMessageHelper = receiveMessageHelper;
     }
 
     @Override
