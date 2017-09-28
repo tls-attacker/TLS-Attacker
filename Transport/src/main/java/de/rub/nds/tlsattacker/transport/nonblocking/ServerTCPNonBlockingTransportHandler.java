@@ -17,8 +17,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -90,11 +88,9 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
                     setStreams(clientSocket.getInputStream(), clientSocket.getOutputStream());
                 }
             }
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
             LOGGER.warn("Could not retrieve clientSocket");
             LOGGER.debug(ex);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(ServerTCPNonBlockingTransportHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

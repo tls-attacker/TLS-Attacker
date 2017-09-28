@@ -12,12 +12,16 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.Callable;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class SocketOpenerCallable implements Callable<Socket> {
+
+    protected static final Logger LOGGER = LogManager.getLogger(SocketOpenerCallable.class.getName());
 
     private String host;
     private int port;
@@ -37,7 +41,7 @@ public class SocketOpenerCallable implements Callable<Socket> {
                     return socket;
                 }
             } catch (IOException E) {
-                E.printStackTrace();
+                LOGGER.debug(E);
                 return null;
             }
         }

@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
