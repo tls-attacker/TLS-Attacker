@@ -61,7 +61,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            MessageActionResult result = SendMessageHelper.sendMessages(messages, records, tlsContext);
+            MessageActionResult result = sendMessageHelper.sendMessages(messages, records, tlsContext);
             messages = new ArrayList<>(result.getMessageList());
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);

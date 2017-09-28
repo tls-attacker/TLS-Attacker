@@ -145,18 +145,8 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
 
-    @XmlTransient
-    ReceiveMessageHelper receiveMessageHelper;
-
     public ForwardAction() {
         receiveMessageHelper = new ReceiveMessageHelper();
-    }
-
-    /**
-     * Allow to pass a fake ReceiveMessageHelper helper for testing.
-     */
-    protected ForwardAction(ReceiveMessageHelper receiveMessageHelper) {
-        this.receiveMessageHelper = receiveMessageHelper;
     }
 
     public ForwardAction(List<ProtocolMessage> messages) {
@@ -166,6 +156,10 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
 
     public ForwardAction(ProtocolMessage... messages) {
         this(Arrays.asList(messages));
+    }
+
+    public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {
+        this.receiveMessageHelper = receiveMessageHelper;
     }
 
     @Override
@@ -208,7 +202,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
 
         try {
-            result = SendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx);
+            result = sendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx);
             sendMessages = result.getMessageList();
             sendRecords = result.getRecordList();
             if (executedAsPlanned) {
