@@ -145,23 +145,12 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
 
-    @XmlTransient
-    ReceiveMessageHelper receiveMessageHelper;
-
     public ForwardAction() {
-        receiveMessageHelper = new ReceiveMessageHelper();
-    }
-
-    /**
-     * Allow to pass a fake ReceiveMessageHelper helper for testing.
-     */
-    protected ForwardAction(ReceiveMessageHelper receiveMessageHelper) {
-        this.receiveMessageHelper = receiveMessageHelper;
+        super();
     }
 
     public ForwardAction(List<ProtocolMessage> messages) {
         super(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
     }
 
     public ForwardAction(ProtocolMessage... messages) {
@@ -208,7 +197,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
 
         try {
-            result = SendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx);
+            result = sendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx);
             sendMessages = result.getMessageList();
             sendRecords = result.getRecordList();
             if (executedAsPlanned) {
@@ -335,10 +324,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         if (!Objects.equals(this.sendRecords, other.sendRecords)) {
             return false;
         }
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.messages, other.messages);
     }
 
 }

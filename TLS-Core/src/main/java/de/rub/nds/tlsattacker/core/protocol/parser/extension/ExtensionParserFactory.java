@@ -141,7 +141,6 @@ public class ExtensionParserFactory {
             case HELLO_RETRY_REQUEST:
                 return new HRRKeyShareExtensionParser(pointer, extensionBytes);
             case CLIENT_HELLO:
-                return new KeyShareExtensionParser(pointer, extensionBytes);
             case SERVER_HELLO:
                 return new KeyShareExtensionParser(pointer, extensionBytes);
             default:

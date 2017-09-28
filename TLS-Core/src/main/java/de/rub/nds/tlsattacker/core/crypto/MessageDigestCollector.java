@@ -51,7 +51,7 @@ public class MessageDigestCollector {
 
     public byte[] digest(ProtocolVersion version, CipherSuite suite) {
         try {
-            MessageDigest hash1 = null;
+            MessageDigest hash1;
             MessageDigest hash2 = null;
             DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(version, suite);
             if (algorithm == DigestAlgorithm.LEGACY) {

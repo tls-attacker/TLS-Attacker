@@ -94,7 +94,7 @@ public class WorkflowTraceSerializerTest {
     }
 
     @Test
-    public void TestWrite() {
+    public void testWrite() {
         try {
             WorkflowTrace trace = new WorkflowTrace(config);
             action = new SendAction(new ClientHelloMessage(config));
@@ -102,7 +102,6 @@ public class WorkflowTraceSerializerTest {
             File f = folder.newFile();
             WorkflowTraceSerializer.write(f, trace);
             Assert.assertTrue(f.exists());
-            f.delete();
         } catch (JAXBException | IOException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
             Assert.fail();
@@ -116,7 +115,7 @@ public class WorkflowTraceSerializerTest {
      * connection end should not appear in the serialized workflow trace.
      */
     @Test
-    public void SerializeWithSingleConnectionEndTest() {
+    public void serializeWithSingleConnectionEndTest() {
         try {
 
             WorkflowTrace trace = new WorkflowTrace(config);
@@ -153,7 +152,7 @@ public class WorkflowTraceSerializerTest {
      * end looks as expected.
      */
     @Test
-    public void SerializeWithSingleCustomConnectionEndTest() {
+    public void serializeWithSingleCustomConnectionEndTest() {
         try {
 
             WorkflowTrace trace = new WorkflowTrace();
@@ -198,7 +197,7 @@ public class WorkflowTraceSerializerTest {
      * looks as expected.
      */
     @Test
-    public void SerializeWithMultipleCustomConnectionEndTest() {
+    public void serializeWithMultipleCustomConnectionEndTest() {
         try {
 
             WorkflowTrace trace = new WorkflowTrace();

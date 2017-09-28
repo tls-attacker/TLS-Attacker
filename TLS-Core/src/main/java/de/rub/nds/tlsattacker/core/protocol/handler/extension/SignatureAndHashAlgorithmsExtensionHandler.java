@@ -44,7 +44,7 @@ public class SignatureAndHashAlgorithmsExtensionHandler extends
             byte[] algoBytes = Arrays.copyOfRange(signatureAndHashBytes, i, i
                     + HandshakeByteLength.SIGNATURE_HASH_ALGORITHM);
             SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(algoBytes);
-            if (algo == null || algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
+            if (algo.getSignatureAlgorithm() == null || algo.getHashAlgorithm() == null) {
                 LOGGER.warn("Unknown SignatureAndHashAlgorithm:" + ArrayConverter.bytesToHexString(algoBytes));
             } else {
                 algoList.add(algo);

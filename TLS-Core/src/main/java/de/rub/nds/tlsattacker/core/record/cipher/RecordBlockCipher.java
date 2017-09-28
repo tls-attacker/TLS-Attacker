@@ -231,9 +231,9 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] clientWriteIv, serverWriteIv;
             if (useExplicitIv) {
                 clientWriteIv = new byte[encryptCipher.getBlockSize()];
-                RandomHelper.getRandom().nextBytes(clientWriteIv);
+                tlsContext.getRandom().nextBytes(clientWriteIv);
                 serverWriteIv = new byte[decryptCipher.getBlockSize()];
-                RandomHelper.getRandom().nextBytes(serverWriteIv);
+                tlsContext.getRandom().nextBytes(serverWriteIv);
             } else {
                 clientWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + encryptCipher.getBlockSize());
                 offset += encryptCipher.getBlockSize();

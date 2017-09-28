@@ -160,11 +160,10 @@ public class ForwardActionTest {
         FakeReceiveMessageHelper fakeReceiveHelper = new FakeReceiveMessageHelper();
         fakeReceiveHelper.setMessagesToReturn(receivedMsgs);
 
-        ForwardAction action = new ForwardAction(fakeReceiveHelper);
-        action.setMessages(new ApplicationMessage());
+        ForwardAction action = new ForwardAction(new ApplicationMessage());
         action.setReceiveFromAlias("ctx1");
         action.setForwardToAlias("ctx2");
-
+        action.setReceiveMessageHelper(fakeReceiveHelper);
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());

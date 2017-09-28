@@ -36,13 +36,13 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         byte[] random;
         if (chooser.getConfig().isUseRandomUnixTime()) {
             random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
-            RandomHelper.getRandom().nextBytes(random);
+            chooser.getContext().getRandom().nextBytes(random);
             msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
             random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
             msg.setRandom(random);
         } else {
             random = new byte[HandshakeByteLength.RANDOM];
-            RandomHelper.getRandom().nextBytes(random);
+            chooser.getContext().getRandom().nextBytes(random);
             msg.setRandom(random);
         }
 
