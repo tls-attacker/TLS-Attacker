@@ -55,6 +55,34 @@ public class ServerTCPNonBlockingTransportHandlerTest {
         assertNotNull(ex);
     }
 
+    @Test
+    public void testCloseClientConnection() throws IOException {
+        handler.initialize();
+        new Socket().connect(new InetSocketAddress("localhost", 50000));
+        handler.recheck(1000);
+        Exception ex = null;
+        Socket socket = null;
+        try {
+            socket = new Socket();
+            socket.connect(new InetSocketAddress("localhost", 50000));
+        } catch (IOException E) {
+            ex = E;
+        }
+        assertNotNull(socket);
+        assertTrue(socket.isConnected());
+        handler.closeClientConnection();
+        try {
+            socket.getOutputStream().write(123);
+        } catch (IOException E) {
+            ex = E;
+        }
+        assertNotNull(ex);
+        assertFalse(handler.isClosed());
+        handler.closeConnection();
+        assertNotNull(ex);
+
+    }
+
     /**
      * Test of initialize method, of class ServerTCPNonBlockingTransportHandler.
      */
@@ -99,14 +127,14 @@ public class ServerTCPNonBlockingTransportHandlerTest {
             s.connect(new InetSocketAddress("localhost", 50000));
             handler.recheck(1000);
             assertTrue(handler.isInitialized());
-            handler.sendData(new byte[] { 1, 2, 3 });
+            handler.sendData(new byte[]{1, 2, 3});
             byte[] receive = new byte[3];
             s.getInputStream().read(receive);
-            assertArrayEquals(new byte[] { 1, 2, 3 }, receive);
-            s.getOutputStream().write(new byte[] { 3, 2, 1 });
+            assertArrayEquals(new byte[]{1, 2, 3}, receive);
+            s.getOutputStream().write(new byte[]{3, 2, 1});
             s.getOutputStream().flush();
             byte[] fetchData = handler.fetchData();
-            assertArrayEquals(new byte[] { 3, 2, 1 }, fetchData);
+            assertArrayEquals(new byte[]{3, 2, 1}, fetchData);
         } finally {
             handler.closeConnection();
             if (s != null) {
