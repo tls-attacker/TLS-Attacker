@@ -111,7 +111,7 @@ public class Config implements Serializable {
                 try {
                     field.set(c, null);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOGGER.warn("Could not set field in Config!", e);
                 }
             }
         }
@@ -1780,11 +1780,11 @@ public class Config implements Serializable {
     }
 
     public boolean isDynamicWorkflow() {
-        return dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public void setDynamicWorkflow(boolean dynamicWorkflow) {
-        this.dynamicWorkflow = dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public List<CipherSuite> getDefaultClientSupportedCiphersuites() {

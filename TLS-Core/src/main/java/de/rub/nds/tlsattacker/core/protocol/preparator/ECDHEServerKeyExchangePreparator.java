@@ -59,7 +59,8 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         prepareNamedCurve(msg);
 
         ECDomainParameters ecParams = generateEcParameters(msg);
-        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), ecParams);
+        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(chooser.getContext().getBadSecureRandom(),
+                ecParams);
 
         pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
         privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();

@@ -11,11 +11,13 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -87,11 +89,11 @@ public enum ProtocolVersion {
         return versions;
     }
 
-    public static ProtocolVersion getRandom() {
+    public static ProtocolVersion getRandom(Random random) {
         ProtocolVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (ProtocolVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (ProtocolVersion) o[random.nextInt(o.length)];
         }
         return c;
     }

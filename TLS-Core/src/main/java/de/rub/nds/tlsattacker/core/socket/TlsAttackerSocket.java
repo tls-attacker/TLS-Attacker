@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class TlsAttackerSocket {
      * @param string
      */
     public void send(String string) {
-        send(string.getBytes());
+        send(string.getBytes(Charset.defaultCharset()));
     }
 
     /**
@@ -111,7 +112,7 @@ public class TlsAttackerSocket {
      * @throws java.io.IOException
      */
     public String receiveString() throws IOException {
-        return new String(receiveBytes());
+        return new String(receiveBytes(), Charset.defaultCharset());
     }
 
     public void send(ProtocolMessage message) {

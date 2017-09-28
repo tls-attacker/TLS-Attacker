@@ -23,11 +23,8 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
  */
 public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<PSKClientKeyExchangeMessage> {
 
-    private byte[] padding;
     private byte[] premasterSecret;
     private byte[] clientRandom;
-    private byte[] masterSecret;
-    private byte[] encrypted;
     private final PSKClientKeyExchangeMessage msg;
     private PSKPremasterComputations comps;
     private ByteArrayOutputStream outputStream;
@@ -40,9 +37,8 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     @Override
     public void prepareHandshakeMessageContents() {
         msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
-        msg.setIdentityLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentity().length, 2));
+        msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().length);
         msg.prepareComputations();
-
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
         prepareClientRandom(msg);

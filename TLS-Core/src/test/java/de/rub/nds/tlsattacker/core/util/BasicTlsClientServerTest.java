@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
@@ -24,6 +25,7 @@ import java.security.NoSuchProviderException;
 import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +42,7 @@ public class BasicTlsClientServerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsClientServerTest.class);
     private static final int SERVER_PORT = 44335;
+    private BadRandom random = new BadRandom(new Random(0), null);
 
     public BasicTlsClientServerTest() {
     }
@@ -51,9 +54,9 @@ public class BasicTlsClientServerTest {
 
         try {
             TimeHelper.setProvider(new FixedTimeProvider(0));
-            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
+            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
             KeyStore ks = null;
-            ks = KeyStoreGenerator.createKeyStore(k);
+            ks = KeyStoreGenerator.createKeyStore(k, random);
             BasicTlsServer tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
 
             LOGGER.info("Starting test server");
@@ -83,5 +86,18 @@ public class BasicTlsClientServerTest {
             ex.printStackTrace();
             fail();
         }
+    }
+
+    private Random Random(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 }

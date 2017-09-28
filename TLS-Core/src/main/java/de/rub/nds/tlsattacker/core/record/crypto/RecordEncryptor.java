@@ -32,6 +32,7 @@ public class RecordEncryptor extends Encryptor {
         this.context = context;
     }
 
+    @Override
     public void encrypt(BlobRecord record) {
         LOGGER.debug("Encrypting BlobRecord");
         byte[] encrypted = recordCipher.encrypt(record.getCleanProtocolMessageBytes().getValue());
@@ -45,7 +46,7 @@ public class RecordEncryptor extends Encryptor {
         LOGGER.debug("Encrypting Record:");
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         if (recordCipher.isUseMac()) {
-            byte[] toBeMaced = new byte[0];
+            byte[] toBeMaced;
             try {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 stream.write(ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue()));

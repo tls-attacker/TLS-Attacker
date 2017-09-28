@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.parser.HttpsHeaderParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
+import java.nio.charset.Charset;
 
 /**
  *
@@ -36,13 +37,13 @@ public class HttpsResponseParser extends ProtocolMessageParser<HttpsResponseMess
         message.setResponseStatusCode(request.replaceFirst(split[0] + " ", ""));
         String line = parseStringTill((byte) 0x0A);
         while (!line.equals("\r\n")) {
-            HttpsHeaderParser parser = new HttpsHeaderParser(0, line.getBytes());
+            HttpsHeaderParser parser = new HttpsHeaderParser(0, line.getBytes(Charset.forName("ASCII")));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
             line = parseStringTill((byte) 0x0A);
         }
         byte[] content = parseArrayOrTillEnd(getBytesLeft());
-        message.setResponseContent(new String(content));
+        message.setResponseContent(new String(content, Charset.forName("ASCII")));
         LOGGER.info(new String(getAlreadyParsed()));
         return message;
     }

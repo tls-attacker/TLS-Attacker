@@ -201,6 +201,6 @@ public class WorkflowTraceUtil {
                 }
             }
         }
-        return null;
+        return false;
     }
 }

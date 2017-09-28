@@ -329,10 +329,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         if (!Objects.equals(this.sendRecords, other.sendRecords)) {
             return false;
         }
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.messages, other.messages);
     }
 
 }

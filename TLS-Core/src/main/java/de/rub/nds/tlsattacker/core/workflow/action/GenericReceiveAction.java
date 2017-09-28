@@ -26,6 +26,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
 
     public GenericReceiveAction() {
         super();
+        records = new LinkedList<>();
     }
 
     @Override

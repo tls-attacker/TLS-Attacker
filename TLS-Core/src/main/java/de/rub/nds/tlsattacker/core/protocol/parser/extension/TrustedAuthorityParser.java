@@ -32,6 +32,7 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
             case PRE_AGREED:
                 // nothing to do here
                 break;
+            case CERT_SHA1_HASH:// fall through
             case KEY_SHA1_HASH:
                 authority.setSha1Hash(parseByteArrayField(ExtensionByteLength.TRUSTED_AUTHORITY_HASH));
                 break;
@@ -39,9 +40,6 @@ public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
                 authority
                         .setDistinguishedNameLength(parseIntField(ExtensionByteLength.TRUSTED_AUTHORITY_DISTINGUISHED_NAME_LENGTH));
                 authority.setDistinguishedName(parseByteArrayField(authority.getDistinguishedNameLength().getValue()));
-                break;
-            case CERT_SHA1_HASH:
-                authority.setSha1Hash(parseByteArrayField(ExtensionByteLength.TRUSTED_AUTHORITY_HASH));
                 break;
             default:
                 LOGGER.warn("Couldn't set the trusted authority to reasonable values");

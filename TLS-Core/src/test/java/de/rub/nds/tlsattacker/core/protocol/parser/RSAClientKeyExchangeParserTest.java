@@ -59,14 +59,14 @@ public class RSAClientKeyExchangeParserTest {
                                 ProtocolVersion.TLS10 } });
     }
 
-    private byte[] message;
+    private final byte[] message;
 
-    private HandshakeMessageType type;
-    private int length;
+    private final HandshakeMessageType type;
+    private final int length;
 
-    private int serializedKeyLength;
-    private byte[] serializedKey;
-    private ProtocolVersion version;
+    private final int serializedKeyLength;
+    private final byte[] serializedKey;
+    private final ProtocolVersion version;
 
     public RSAClientKeyExchangeParserTest(byte[] message, HandshakeMessageType type, int length,
             int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
