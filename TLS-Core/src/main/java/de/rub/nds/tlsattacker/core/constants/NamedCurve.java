@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -133,11 +135,11 @@ public enum NamedCurve {
         return value;
     }
 
-    public static NamedCurve getRandom() {
+    public static NamedCurve getRandom(Random random) {
         NamedCurve c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (NamedCurve) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (NamedCurve) o[random.nextInt(o.length)];
         }
         return c;
     }

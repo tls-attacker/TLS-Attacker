@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
@@ -36,7 +37,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
         // By Default we just set a fixed value with ssl2 ciphersuites
         prepareCipherSuites(message);
         byte[] challenge = new byte[16];
-        RandomHelper.getRandom().nextBytes(challenge);
+        chooser.getContext().getRandom().nextBytes(challenge);
         prepareChallenge(message, challenge);
         prepareSessionID(message);
         prepareSessionIDLength(message);

@@ -13,12 +13,14 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
@@ -83,12 +85,12 @@ public abstract class WorkflowExecutor {
     }
 
     protected void storeTrace() {
-
+        Random random = new Random();
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             try {
                 File f = new File(config.getWorkflowOutput());
                 if (f.isDirectory()) {
-                    f = new File(config.getWorkflowOutput() + "trace-" + RandomHelper.getRandom().nextInt());
+                    f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
                 }
                 WorkflowTraceSerializer.write(f, state.getWorkflowTrace());
             } catch (JAXBException | IOException ex) {

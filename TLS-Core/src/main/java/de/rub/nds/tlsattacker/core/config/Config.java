@@ -1780,11 +1780,11 @@ public class Config implements Serializable {
     }
 
     public boolean isDynamicWorkflow() {
-        return dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public void setDynamicWorkflow(boolean dynamicWorkflow) {
-        this.dynamicWorkflow = dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public List<CipherSuite> getDefaultClientSupportedCiphersuites() {

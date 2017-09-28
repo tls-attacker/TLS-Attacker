@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
@@ -48,10 +49,12 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 
@@ -347,6 +350,8 @@ public class TlsContext {
 
     private byte[] lastServerVerifyData;
 
+    private Random random;
+
     @XmlTransient
     private Chooser chooser;
 
@@ -404,13 +409,12 @@ public class TlsContext {
 
     private void init(Config config, ConnectionEnd conEnd) {
         this.config = config;
-
         digest = new MessageDigestCollector();
         connectionEnd = conEnd;
         recordLayerType = config.getRecordLayerType();
-
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
+        random = new Random(0);
     }
 
     public Chooser getChooser() {
@@ -1227,6 +1231,18 @@ public class TlsContext {
 
     public void setClientRSAPrivateKey(BigInteger clientRSAPrivateKey) {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
+    }
+
+    public Random getRandom() {
+        return random;
+    }
+
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    public BadRandom getBadSecureRandom() {
+        return new BadRandom(getRandom(), null);
     }
 
     public Config getConfig() {

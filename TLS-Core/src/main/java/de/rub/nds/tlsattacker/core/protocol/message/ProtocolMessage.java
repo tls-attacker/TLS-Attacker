@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Random;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -98,9 +99,9 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     }
 
     @Override
-    public Field getRandomModifiableVariableField() {
+    public Field getRandomModifiableVariableField(Random random) {
         List<Field> fields = getAllModifiableVariableFields();
-        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        int randomField = random.nextInt(fields.size());
         return fields.get(randomField);
     }
 

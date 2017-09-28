@@ -60,14 +60,14 @@ public class ECDHEServerKeyExchangePreparatorTest {
 
         loadTestVectorsToContext();
 
-        RandomHelper.setRandom(random);
+        tlsContext.setRandom(random);
         msg = new ECDHEServerKeyExchangeMessage();
         preparator = new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), msg);
     }
 
     @After
     public void cleanUp() {
-        RandomHelper.setRandom(null);
+        tlsContext.setRandom(null);
     }
 
     @Test
