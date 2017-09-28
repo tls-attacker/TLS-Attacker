@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.transport.nonblocking;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,6 +30,18 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     @Before
     public void setUp() {
         handler = new ServerTCPNonBlockingTransportHandler(1000, 50000);
+    }
+
+    @After
+    public void clean() {
+        try {
+            handler.closeClientConnection();
+        } catch (IOException ex) {
+        }
+        try {
+            handler.closeConnection();
+        } catch (IOException ex) {
+        }
     }
 
     /**
@@ -58,28 +71,23 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     @Test
     public void testCloseClientConnection() throws IOException {
         handler.initialize();
-        new Socket().connect(new InetSocketAddress("localhost", 50000));
+        Socket socket = new Socket();
+        socket.setTcpNoDelay(true);
+        socket.connect(new InetSocketAddress("localhost", 50000));
+
         handler.recheck(1000);
         Exception ex = null;
-        Socket socket = null;
-        try {
-            socket = new Socket();
-            socket.connect(new InetSocketAddress("localhost", 50000));
-        } catch (IOException E) {
-            ex = E;
-        }
         assertNotNull(socket);
         assertTrue(socket.isConnected());
         handler.closeClientConnection();
         try {
-            socket.getOutputStream().write(123);
+            assertTrue(socket.getInputStream().read() == -1);
         } catch (IOException E) {
             ex = E;
+            fail();
         }
-        assertNotNull(ex);
         assertFalse(handler.isClosed());
         handler.closeConnection();
-        assertNotNull(ex);
 
     }
 
@@ -127,14 +135,14 @@ public class ServerTCPNonBlockingTransportHandlerTest {
             s.connect(new InetSocketAddress("localhost", 50000));
             handler.recheck(1000);
             assertTrue(handler.isInitialized());
-            handler.sendData(new byte[]{1, 2, 3});
+            handler.sendData(new byte[] { 1, 2, 3 });
             byte[] receive = new byte[3];
             s.getInputStream().read(receive);
-            assertArrayEquals(new byte[]{1, 2, 3}, receive);
-            s.getOutputStream().write(new byte[]{3, 2, 1});
+            assertArrayEquals(new byte[] { 1, 2, 3 }, receive);
+            s.getOutputStream().write(new byte[] { 3, 2, 1 });
             s.getOutputStream().flush();
             byte[] fetchData = handler.fetchData();
-            assertArrayEquals(new byte[]{3, 2, 1}, fetchData);
+            assertArrayEquals(new byte[] { 3, 2, 1 }, fetchData);
         } finally {
             handler.closeConnection();
             if (s != null) {
