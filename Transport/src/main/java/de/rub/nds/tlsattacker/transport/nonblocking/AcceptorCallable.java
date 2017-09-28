@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.transport.nonblocking;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +38,6 @@ public class AcceptorCallable implements Callable<Socket> {
         } catch (IOException ex) {
             LOGGER.warn("Could not open Accept connection!");
             LOGGER.debug(ex);
-            ex.printStackTrace();
         }
         return null;
     }

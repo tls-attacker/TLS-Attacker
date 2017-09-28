@@ -17,9 +17,11 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -73,11 +75,21 @@ public class TlsAttackerSocket {
      *            ApplicationMessages to send
      */
     public void send(byte[] bytes) {
-        // If too many bytes we have to split this into multiple application
-        // messages TODO
         ApplicationMessage message = new ApplicationMessage();
-        message.setDataConfig(bytes);
-        send(message);
+        ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        byte[] sendingBytes = new byte[16384];
+        int actuallyRead = 0;
+        do {
+            try {
+                actuallyRead = stream.read(sendingBytes);
+                if (actuallyRead > 0) {
+                    message.setDataConfig(Arrays.copyOf(sendingBytes, actuallyRead));
+                    send(message);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } while (actuallyRead > 0);
     }
 
     /**

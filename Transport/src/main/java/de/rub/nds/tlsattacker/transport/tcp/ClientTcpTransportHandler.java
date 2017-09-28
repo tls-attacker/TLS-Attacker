@@ -42,4 +42,14 @@ public class ClientTcpTransportHandler extends TransportHandler {
         socket = new Socket(hostname, port);
         setStreams(socket.getInputStream(), socket.getOutputStream());
     }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed() || socket.isInputShutdown();
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
+    }
 }
