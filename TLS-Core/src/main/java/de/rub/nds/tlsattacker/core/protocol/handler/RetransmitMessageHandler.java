@@ -40,7 +40,7 @@ public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitM
     }
 
     @Override
-    protected void adjustTLSContext(RetransmitMessage message) {
+    public void adjustTLSContext(RetransmitMessage message) {
         // nothing to adjust
     }
 }

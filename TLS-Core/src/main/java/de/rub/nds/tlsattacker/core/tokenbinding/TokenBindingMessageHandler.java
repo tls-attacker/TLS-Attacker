@@ -37,7 +37,7 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
     }
 
     @Override
-    protected void adjustTLSContext(TokenBindingMessage message) {
+    public void adjustTLSContext(TokenBindingMessage message) {
 
     }
 

@@ -44,7 +44,6 @@ public class DHClientKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new DHClientKeyExchangeMessage();
         preparator = new DHClientKeyExchangePreparator(context.getChooser(), message);
-        RandomHelper.setRandom(new Random(0));
     }
 
     /**

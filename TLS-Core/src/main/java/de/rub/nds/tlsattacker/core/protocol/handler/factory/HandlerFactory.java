@@ -47,24 +47,24 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ECPointFormatExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EcPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.HRRKeyShareExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.HrrKeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SRPExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerNameIndicationExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTLSExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SessionTicketTlsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignatureAndHashAlgorithmsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrpExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SrtpExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.SupportedVersionsExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
@@ -182,7 +182,7 @@ public class HandlerFactory {
                 case CLIENT_CERTIFICATE_URL:
                     return new ClientCertificateUrlExtensionHandler(context);
                 case EC_POINT_FORMATS:
-                    return new ECPointFormatExtensionHandler(context);
+                    return new EcPointFormatExtensionHandler(context);
                 case ELLIPTIC_CURVES:
                     return new EllipticCurvesExtensionHandler(context);
                 case ENCRYPT_THEN_MAC:
@@ -193,7 +193,7 @@ public class HandlerFactory {
                     return new HeartbeatExtensionHandler(context);
                 case KEY_SHARE:
                     if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
-                        return new HRRKeyShareExtensionHandler(context);
+                        return new HrrKeyShareExtensionHandler(context);
                     }
                     return new KeyShareExtensionHandler(context);
                 case MAX_FRAGMENT_LENGTH:
@@ -209,13 +209,13 @@ public class HandlerFactory {
                 case SERVER_NAME_INDICATION:
                     return new ServerNameIndicationExtensionHandler(context);
                 case SESSION_TICKET:
-                    return new SessionTicketTLSExtensionHandler(context);
+                    return new SessionTicketTlsExtensionHandler(context);
                 case SIGNATURE_AND_HASH_ALGORITHMS:
                     return new SignatureAndHashAlgorithmsExtensionHandler(context);
                 case SIGNED_CERTIFICATE_TIMESTAMP:
                     return new SignedCertificateTimestampExtensionHandler(context);
                 case SRP:
-                    return new SRPExtensionHandler(context);
+                    return new SrpExtensionHandler(context);
                 case STATUS_REQUEST:
                     return new CertificateStatusRequestExtensionHandler(context);
                 case STATUS_REQUEST_V2:

@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -53,10 +54,13 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        TlsContext tlsContext = new TlsContext(tlsConfig);
+        State state = new State(tlsConfig);
+        TlsContext tlsContext = state.getTlsContext();
+
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+                tlsConfig.getWorkflowExecutorType(), state);
+        WorkflowTrace trace = state.getWorkflowTrace();
+
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
         // if the padding was {0x02, 0x02, 0x02}, it becomes {0x03, 0x02, 0x02}

@@ -24,13 +24,12 @@ public class TruncatedHmacExtensionParserTest {
     private final ExtensionType extensionType = ExtensionType.TRUNCATED_HMAC;
     private final byte[] expectedBytes = new byte[] { 0x00, 0x04, 0x00, 0x00 };
     private final int extensionLength = 0;
-    private final int startPosition = 0;
     private TruncatedHmacExtensionParser parser;
     private TruncatedHmacExtensionMessage message;
 
     @Before
     public void setUp() {
-        parser = new TruncatedHmacExtensionParser(startPosition, expectedBytes);
+        parser = new TruncatedHmacExtensionParser(0, expectedBytes);
     }
 
     @Test

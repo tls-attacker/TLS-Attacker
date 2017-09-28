@@ -55,11 +55,11 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionSerializer getSerializer(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionSerializer(message, context.getConfig().getConnectionEndType());
+        return new KeyShareExtensionSerializer(message, context.getChooser().getConnectionEnd().getConnectionEndType());
     }
 
     @Override
-    public void adjustTLSContext(KeyShareExtensionMessage message) {
+    public void adjustTLSExtensionContext(KeyShareExtensionMessage message) {
         List<KSEntry> ksEntryList = new LinkedList<>();
         for (KeySharePair pair : message.getKeyShareList()) {
             NamedCurve type = NamedCurve.getNamedCurve(pair.getKeyShareType().getValue());
@@ -91,7 +91,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
-            if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
                 } else {

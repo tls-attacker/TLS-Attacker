@@ -50,7 +50,7 @@ public class MessageDigestCollectorTest {
     @Test
     public void constructorTest() {
         LOGGER.info("testConstructors");
-        MessageDigestCollector d = new MessageDigestCollector();
+        new MessageDigestCollector();
     }
 
     @Before

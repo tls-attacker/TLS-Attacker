@@ -52,6 +52,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -113,7 +114,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddServerNameIndicationExtension()) {
             ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes());
+            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes(Charset.forName("ASCII")));
             pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
             extension.getServerNameList().add(pair);
             addExtension(extension);
@@ -276,7 +277,7 @@ public class ClientHelloMessage extends HelloMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
         }
         if (getUnixTime() != null && getUnixTime().getValue() != null) {

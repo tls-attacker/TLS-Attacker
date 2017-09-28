@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -23,6 +24,7 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.util.Random;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -43,6 +45,8 @@ public class CertificateDelegateTest {
     private CertificateDelegate delegate;
     private JCommander jcommander;
     private String args[];
+    private BadRandom random;
+
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -50,6 +54,7 @@ public class CertificateDelegateTest {
     public void setUp() {
         delegate = new CertificateDelegate();
         jcommander = new JCommander(delegate);
+        random = new BadRandom(new Random(0), null);
         Security.addProvider(new BouncyCastleProvider());
 
     }
@@ -126,7 +131,7 @@ public class CertificateDelegateTest {
     public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,
             InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException,
             OperatorCreationException {
-        KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024));
+        KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024, random), random);
         File keyStoreFile = folder.newFile("key.store");
         store.store(new FileOutputStream(keyStoreFile), "password".toCharArray());
         args = new String[6];

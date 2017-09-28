@@ -95,6 +95,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @XmlElementWrapper
     @XmlElements(value = {
             @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
+            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
             @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
             @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
@@ -145,15 +146,15 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.handshakeMessageType = handshakeMessageType;
     }
 
-    public List<ExtensionMessage> getExtensions() {
+    public final List<ExtensionMessage> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<ExtensionMessage> extensions) {
+    public final void setExtensions(List<ExtensionMessage> extensions) {
         this.extensions = extensions;
     }
 
-    public void addExtension(ExtensionMessage extension) {
+    public final void addExtension(ExtensionMessage extension) {
         if (this.extensions == null) {
             extensions = new LinkedList<>();
         }

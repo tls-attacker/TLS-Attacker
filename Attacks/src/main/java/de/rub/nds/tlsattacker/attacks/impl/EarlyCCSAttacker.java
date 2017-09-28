@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -56,8 +57,8 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setTimeout(1000);
-        TlsContext tlsContext = new TlsContext(tlsConfig);
+        tlsConfig.setDefaultTimeout(1000);
+
         WorkflowTrace workflowTrace = new WorkflowTrace();
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
         List<ProtocolMessage> messageList = new LinkedList<>();
@@ -71,8 +72,12 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         messageList = new LinkedList<>();
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
         tlsConfig.setWorkflowTrace(workflowTrace);
+
+        State state = new State(tlsConfig);
+        TlsContext tlsContext = state.getTlsContext();
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
+                tlsConfig.getWorkflowExecutorType(), state);
+
         workflowExecutor.executeWorkflow();
         if (tlsContext.isReceivedFatalAlert()) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Alert message found");

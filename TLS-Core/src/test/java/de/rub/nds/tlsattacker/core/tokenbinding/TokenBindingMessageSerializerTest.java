@@ -27,7 +27,23 @@ public class TokenBindingMessageSerializerTest {
     @Before
     public void setUp() {
         message = new TokenBindingMessage();
+        message.setExtensionBytes(new byte[0]);
+        message.setExtensionLength(0);
+        message.setKeyLength(0);
+        message.setKeyParameter((byte) 0);
+        message.setKeyParameter((byte) 0);
+        message.setModulus(new byte[0]);
+        message.setModulusLength(0);
+        message.setPoint(new byte[0]);
+        message.setPublicExponent(new byte[0]);
+        message.setPublicExponentLength(0);
+        message.setTokenbindingsLength(0);
+        message.setTokenbindingType((byte) 0);
+        message.setSignature(new byte[0]);
+        message.setSignatureLength(0);
+        message.setPointLength(0);
         version = ProtocolVersion.TLS12;
+
         serializer = new TokenBindingMessageSerializer(message, version);
     }
 
@@ -37,7 +53,7 @@ public class TokenBindingMessageSerializerTest {
      */
     @Test
     public void testSerializeProtocolMessageContent() {
-        // serializer.serialize();
+        serializer.serialize();
     }
 
 }

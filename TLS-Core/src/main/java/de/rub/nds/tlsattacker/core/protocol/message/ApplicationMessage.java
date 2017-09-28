@@ -108,10 +108,7 @@ public class ApplicationMessage extends ProtocolMessage {
             return false;
         }
         final ApplicationMessage other = (ApplicationMessage) obj;
-        if (!Arrays.equals(this.dataConfig, other.dataConfig)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.dataConfig, other.dataConfig);
     }
 
 }

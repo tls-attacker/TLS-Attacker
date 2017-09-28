@@ -53,7 +53,7 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    protected void adjustTLSContext(CertificateVerifyMessage message) {
+    public void adjustTLSContext(CertificateVerifyMessage message) {
         // Maybe check if we can verify signature and set boolean in context
         // //TODO
         // Dont adjust the TLSContext

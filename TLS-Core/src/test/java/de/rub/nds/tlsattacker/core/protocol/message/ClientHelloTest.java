@@ -30,6 +30,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -86,6 +88,7 @@ public class ClientHelloTest {
             m.marshal(cl, writer);
         } catch (JAXBException E) {
             E.printStackTrace();
+            fail();
         }
         String xmlString = writer.toString();
         LOGGER.info(xmlString);
@@ -94,15 +97,16 @@ public class ClientHelloTest {
         writer.append("abcd");
         m.marshal(clu, writer);
         xmlString = writer.toString();
+        assertNotNull(xmlString);
     }
 
     @Test
     public void simpleSerialization2() throws Exception {
-        Config config = Config.createConfig();
-        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(Config.createConfig());
         WorkflowTrace trace = cf.createFullWorkflow();
         m.marshal(trace, writer);
         String xmlString = writer.toString();
+        assertNotNull(xmlString);
     }
 
 }

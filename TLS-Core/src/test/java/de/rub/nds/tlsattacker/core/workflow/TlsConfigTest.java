@@ -42,4 +42,5 @@ public class TlsConfigTest {
         cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultEcCertificate()));
         cert = Certificate.parse(new ByteArrayInputStream(config.getDefaultDsaCertificate()));
     }
+
 }

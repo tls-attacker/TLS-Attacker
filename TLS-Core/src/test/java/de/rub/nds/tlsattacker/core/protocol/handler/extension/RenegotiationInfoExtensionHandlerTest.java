@@ -25,8 +25,8 @@ import org.junit.Test;
  */
 public class RenegotiationInfoExtensionHandlerTest {
 
-    private final int extensionLength = 1;
-    private final byte[] extensionPayload = new byte[] { 0 };
+    private static final int EXTENSION_LENGTH = 1;
+    private static final byte[] EXTENSION_INFO = new byte[] { 0 };
     private TlsContext context;
     private RenegotiationInfoExtensionHandler handler;
 
@@ -40,10 +40,10 @@ public class RenegotiationInfoExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         RenegotiationInfoExtensionMessage message = new RenegotiationInfoExtensionMessage();
-        message.setRenegotiationInfo(extensionPayload);
-        message.setExtensionLength(extensionLength);
+        message.setRenegotiationInfo(EXTENSION_INFO);
+        message.setExtensionLength(EXTENSION_LENGTH);
         handler.adjustTLSContext(message);
-        assertArrayEquals(context.getRenegotiationInfo(), extensionPayload);
+        assertArrayEquals(context.getRenegotiationInfo(), EXTENSION_INFO);
     }
 
     @Test

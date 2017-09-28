@@ -81,7 +81,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      *            A SingedCertificateImestampExtensionMessage
      */
     @Override
-    public void adjustTLSContext(SignedCertificateTimestampExtensionMessage message) {
+    public void adjustTLSExtensionContext(SignedCertificateTimestampExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SingedCertificateTimestamp length shouldn't exceed 2 bytes as defined in RFC 6962. "
                     + "Length was " + message.getExtensionLength().getValue());

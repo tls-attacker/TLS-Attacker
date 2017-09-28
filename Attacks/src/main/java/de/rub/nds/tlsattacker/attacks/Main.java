@@ -17,7 +17,9 @@ import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.TokenBindingMitmCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
@@ -28,7 +30,9 @@ import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
 import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.TokenBindingMitm;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -72,6 +76,10 @@ public class Main {
         jc.addCommand(EarlyCCSCommandConfig.ATTACK_COMMAND, earlyCCS);
         PoodleCommandConfig poodle = new PoodleCommandConfig(generalDelegate);
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
+        SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
+        jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
+        TokenBindingMitmCommandConfig tokenBindingMitm = new TokenBindingMitmCommandConfig(generalDelegate);
+        jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND, tokenBindingMitm);
         jc.parse(args);
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
@@ -117,8 +125,14 @@ public class Main {
             case PoodleCommandConfig.ATTACK_COMMAND:
                 attacker = new PoodleAttacker(poodle);
                 break;
+            case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
+                attacker = new SimpleMitmProxy(simpleMitmProxy);
+                break;
+            case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
+                attacker = new TokenBindingMitm(tokenBindingMitm);
+                break;
             default:
-                throw new ConfigurationException("No command found");
+                throw new ConfigurationException("Command not found");
         }
         if (attacker == null) {
             throw new ConfigurationException("Attacker not found");
@@ -134,7 +148,7 @@ public class Main {
                     Boolean result = attacker.isVulnerable();
                     LOGGER.info("Vulnerable:" + (result == null ? "Uncertain" : result.toString()));
                 } catch (UnsupportedOperationException E) {
-                    LOGGER.info("The selection is currently not implemented");
+                    LOGGER.info("The selected attacker is currently not implemented");
                 }
             }
         }

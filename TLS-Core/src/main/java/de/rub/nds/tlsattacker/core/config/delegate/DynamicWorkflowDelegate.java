@@ -24,18 +24,16 @@ public class DynamicWorkflowDelegate extends Delegate {
     }
 
     public Boolean isDynamicWorkflow() {
-        return dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public void setDynamicWorkflow(boolean dynamicWorkflow) {
-        this.dynamicWorkflow = dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     @Override
     public void applyDelegate(Config config) {
-        if (dynamicWorkflow != null) {
-            config.setDynamicWorkflow(dynamicWorkflow);
-        }
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
 }
