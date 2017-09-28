@@ -77,4 +77,10 @@ public class StreamTransportHandlerTest {
         byte[] fetchData = handler.fetchData();
         assertArrayEquals(new byte[] { 4, 3, 2, 1 }, fetchData);
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCloseClientconnection() throws IOException {
+        handler.initialize();
+        handler.closeClientConnection();
+    }
 }

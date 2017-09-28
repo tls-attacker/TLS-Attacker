@@ -24,6 +24,8 @@ public class StreamTransportHandler extends TransportHandler {
 
     private final OutputStream outputStream;
 
+    private boolean closed = false;
+
     public StreamTransportHandler(long timeout, ConnectionEndType type, InputStream inputStream,
             OutputStream outputStream) {
         super(timeout, type);
@@ -48,6 +50,7 @@ public class StreamTransportHandler extends TransportHandler {
         } else {
             throw new IOException("Could not close StreamTransportHandler. Not Initialised");
         }
+        closed = true;
     }
 
     @Override
@@ -61,5 +64,15 @@ public class StreamTransportHandler extends TransportHandler {
 
     public OutputStream getOutputStream() {
         return outputStream;
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return closed;
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

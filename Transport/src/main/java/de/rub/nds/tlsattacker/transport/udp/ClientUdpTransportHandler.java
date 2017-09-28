@@ -54,4 +54,14 @@ public class ClientUdpTransportHandler extends TransportHandler {
         }
         throw new IOException("Cannot retrieve local Port. Socket not connected");
     }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed();
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
+    }
 }
