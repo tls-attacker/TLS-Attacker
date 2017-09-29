@@ -47,7 +47,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -177,9 +176,9 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         }
 
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = ReceiveMessageHelper.receiveMessages(messages, receivingCtx);
-        receivedRecords = new ArrayList<>(result.getRecordList());
-        receivedMessages = new ArrayList<>(result.getMessageList());
+        MessageActionResult result = receiveMessageHelper.receiveMessages(messages, receivingCtx);
+        receivedRecords = result.getRecordList();
+        receivedMessages = result.getMessageList();
 
         String expected = getReadableString(receivedMessages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
@@ -189,7 +188,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
 
         for (ProtocolMessage msg : receivedMessages) {
-            LOGGER.debug("Applying " + msg.toCompactString() + "to forward context " + forwardToAlias);
+            LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + forwardToAlias);
             ProtocolMessageHandler h = msg.getHandler(state.getTlsContext(forwardToAlias));
             h.adjustTLSContext(msg);
         }
@@ -198,9 +197,9 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
 
         try {
-            result = SendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx);
-            sendMessages = new ArrayList<>(result.getMessageList());
-            sendRecords = new ArrayList<>(result.getRecordList());
+            result = sendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx);
+            sendMessages = result.getMessageList();
+            sendRecords = result.getRecordList();
             if (executedAsPlanned) {
                 executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
             }
