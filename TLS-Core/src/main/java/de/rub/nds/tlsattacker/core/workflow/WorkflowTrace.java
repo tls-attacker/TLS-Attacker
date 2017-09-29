@@ -315,4 +315,9 @@ public class WorkflowTrace implements Serializable {
         errMsg.insert(0, "Action alias '" + alias + "' refers to an unknown connection end - ");
         throw new ConfigurationException(errMsg.toString());
     }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
 }

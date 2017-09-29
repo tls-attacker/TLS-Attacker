@@ -8,12 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.io.File;
@@ -65,6 +63,7 @@ public abstract class WorkflowExecutor {
         } else if (config.getWorkflowInput() != null) {
             try {
                 trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
+                trace.setConfig(config);
             } catch (FileNotFoundException ex) {
                 LOGGER.warn("Could not read WorkflowTrace. File not found.");
                 LOGGER.debug(ex);
