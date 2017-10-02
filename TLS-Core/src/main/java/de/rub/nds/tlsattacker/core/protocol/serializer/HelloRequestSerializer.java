@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
  */
 public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequestMessage> {
 
-    private final HelloRequestMessage message;
-
     /**
      * Constructor for the HelloRequestSerializer
      *
@@ -29,7 +27,6 @@ public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequ
      */
     public HelloRequestSerializer(HelloRequestMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
     }
 
     @Override

@@ -69,6 +69,8 @@ public abstract class TLSAction implements Serializable {
 
     /**
      * Checks that the Action got executed as planned
+     * 
+     * @return True if the Action got executed as planned
      */
     public abstract boolean executedAsPlanned();
 

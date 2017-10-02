@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class UnknownExtensionMessage extends ExtensionMessage {
 
     private byte[] typeConfig;
-    private int lengthConfig;
+    private Integer lengthConfig;
     private byte[] dataConfig;
 
     @ModifiableVariableProperty
@@ -31,7 +31,7 @@ public class UnknownExtensionMessage extends ExtensionMessage {
         super(ExtensionType.UNKNOWN);
     }
 
-    public int getLengthConfig() {
+    public Integer getLengthConfig() {
         return lengthConfig;
     }
 

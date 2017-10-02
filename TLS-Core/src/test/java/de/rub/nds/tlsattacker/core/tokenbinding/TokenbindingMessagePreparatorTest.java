@@ -42,6 +42,7 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,7 +80,6 @@ public class TokenbindingMessagePreparatorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         Security.addProvider(new BouncyCastleProvider());
-        RandomHelper.setRandom(new Random(0));
     }
 
     /**
@@ -92,6 +92,9 @@ public class TokenbindingMessagePreparatorTest {
         Configurator.setRootLevel(Level.ALL);
         Serializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         byte[] serialize = serializer.serialize();
+        TokenBindingMessageParser selfParser = new TokenBindingMessageParser(0, serialize, ProtocolVersion.TLS12);
+        TokenBindingMessage selfParsed = selfParser.parse();
+        assertNotNull(selfParsed);
         String base64 = "AIkAAgBBQM9eQES_uxoyRn0DDoYLcWqvm6Oo3p0lI1s3fRjdIj6dw8wLDf0RWkxuyNAmgAQkUWxm8_JfwS8MziBYVuJ5ECcAQHF_HGcPiSv_X60y5Ql-AxoqaWzwqXvpStEBgY_IX8kT_qAHsb5h38ZuQoWOaZVgqlF1sa70B4GVXxmi2JkdJYcAAA";
         byte[] decode = Base64.getUrlDecoder().decode(base64);
         TokenBindingMessageParser parser = new TokenBindingMessageParser(0, decode, ProtocolVersion.TLS12);
@@ -150,30 +153,5 @@ public class TokenbindingMessagePreparatorTest {
         }
 
         return ecParams;
-    }
-
-    private void decodeASN1(byte[] value) throws Exception {
-        byte[] signature = value;
-        ASN1Primitive asn1 = toAsn1Primitive(signature);
-
-        if (asn1 instanceof ASN1Sequence) {
-            ASN1Sequence asn1Sequence = (ASN1Sequence) asn1;
-            ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
-            for (ASN1Encodable asn1Encodable : asn1Encodables) {
-                ASN1Primitive asn1Primitive = asn1Encodable.toASN1Primitive();
-                if (asn1Primitive instanceof ASN1Integer) {
-                    ASN1Integer asn1Integer = (ASN1Integer) asn1Primitive;
-                    BigInteger integer = asn1Integer.getValue();
-                    System.out.println(integer.toString());
-                }
-            }
-        }
-    }
-
-    private static ASN1Primitive toAsn1Primitive(byte[] data) throws Exception {
-        try (ByteArrayInputStream inStream = new ByteArrayInputStream(data);
-                ASN1InputStream asnInputStream = new ASN1InputStream(inStream);) {
-            return asnInputStream.readObject();
-        }
     }
 }

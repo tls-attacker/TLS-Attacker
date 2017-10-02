@@ -28,7 +28,7 @@ public class ResetConnectionAction extends TLSAction {
         TlsContext tlsContext = state.getTlsContext(getContextAlias());
 
         LOGGER.info("Terminating Connection");
-        tlsContext.getTransportHandler().closeConnection();
+        tlsContext.getTransportHandler().closeClientConnection();
         LOGGER.info("Resseting Cipher");
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
         tlsContext.getRecordLayer().updateDecryptionCipher();

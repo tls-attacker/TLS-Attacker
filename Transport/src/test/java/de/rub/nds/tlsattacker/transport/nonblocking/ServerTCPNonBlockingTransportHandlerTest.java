@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.transport.nonblocking;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -29,6 +30,18 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     @Before
     public void setUp() {
         handler = new ServerTCPNonBlockingTransportHandler(1000, 50000);
+    }
+
+    @After
+    public void clean() {
+        try {
+            handler.closeClientConnection();
+        } catch (IOException ex) {
+        }
+        try {
+            handler.closeConnection();
+        } catch (IOException ex) {
+        }
     }
 
     /**
@@ -53,6 +66,29 @@ public class ServerTCPNonBlockingTransportHandlerTest {
             ex = E;
         }
         assertNotNull(ex);
+    }
+
+    @Test
+    public void testCloseClientConnection() throws IOException {
+        handler.initialize();
+        Socket socket = new Socket();
+        socket.setTcpNoDelay(true);
+        socket.connect(new InetSocketAddress("localhost", 50000));
+
+        handler.recheck(1000);
+        Exception ex = null;
+        assertNotNull(socket);
+        assertTrue(socket.isConnected());
+        handler.closeClientConnection();
+        try {
+            assertTrue(socket.getInputStream().read() == -1);
+        } catch (IOException E) {
+            ex = E;
+            fail();
+        }
+        assertFalse(handler.isClosed());
+        handler.closeConnection();
+
     }
 
     /**

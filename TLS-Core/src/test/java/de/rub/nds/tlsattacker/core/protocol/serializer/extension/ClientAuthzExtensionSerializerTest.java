@@ -27,7 +27,6 @@ public class ClientAuthzExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int authzFormatListLength;
     private final byte[] authzFormatList;
     private ClientAuthzExtensionMessage msg;
@@ -38,7 +37,6 @@ public class ClientAuthzExtensionSerializerTest {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
     }

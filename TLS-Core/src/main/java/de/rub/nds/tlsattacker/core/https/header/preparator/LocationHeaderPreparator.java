@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public class LocationHeaderPreparator extends Preparator<LocationHeader> {
 
-    private LocationHeader header;
+    private final LocationHeader header;
 
     public LocationHeaderPreparator(Chooser chooser, LocationHeader header) {
         super(chooser, header);

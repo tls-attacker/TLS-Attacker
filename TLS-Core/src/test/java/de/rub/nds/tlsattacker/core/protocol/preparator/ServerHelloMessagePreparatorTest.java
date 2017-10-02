@@ -50,7 +50,6 @@ public class ServerHelloMessagePreparatorTest {
      */
     @Test
     public void testPrepare() {
-        RandomHelper.getRandom().setSeed(0);
         TimeHelper.setProvider(new FixedTimeProvider(12345l));
         List<CipherSuite> suiteList = new LinkedList<>();
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.TLS12);

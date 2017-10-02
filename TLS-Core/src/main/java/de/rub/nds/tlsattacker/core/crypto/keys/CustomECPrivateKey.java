@@ -24,9 +24,9 @@ import java.security.spec.InvalidParameterSpecException;
  */
 public class CustomECPrivateKey implements ECPrivateKey {
 
-    private BigInteger privatekey;
+    private final BigInteger privatekey;
 
-    private NamedCurve curve;
+    private final NamedCurve curve;
 
     public CustomECPrivateKey(BigInteger privatekey, NamedCurve curve) {
         this.privatekey = privatekey;

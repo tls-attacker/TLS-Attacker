@@ -36,18 +36,18 @@ public class HelloVerifyRequestParserTest {
                         ArrayConverter.hexStringToByteArray("15520276466763250a851c5b9eaeb44676ff3381"), 0, 23, 0 } });
     }
 
-    private byte[] message;
+    private final byte[] message;
 
-    private HandshakeMessageType type;
-    private int length;
+    private final HandshakeMessageType type;
+    private final int length;
 
-    private byte[] protocolVersion;
-    private byte cookieLength;
-    private byte[] cookie;
+    private final byte[] protocolVersion;
+    private final byte cookieLength;
+    private final byte[] cookie;
 
-    private int fragmentOffset;
-    private int fragmentLength;
-    private int messageSeq;
+    private final int fragmentOffset;
+    private final int fragmentLength;
+    private final int messageSeq;
 
     public HelloVerifyRequestParserTest(byte[] message, HandshakeMessageType type, int length, byte[] protocolVersion,
             byte cookieLength, byte[] cookie, int fragmentOffset, int fragmentLength, int messageSeq) {

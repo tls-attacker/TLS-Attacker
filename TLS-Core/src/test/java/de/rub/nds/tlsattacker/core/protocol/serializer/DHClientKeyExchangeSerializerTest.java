@@ -30,21 +30,17 @@ public class DHClientKeyExchangeSerializerTest {
         return DHClientKeyExchangeParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
+    private final byte[] expectedPart;
 
-    private HandshakeMessageType type;
-    private int length;
+    private final HandshakeMessageType type;
+    private final int length;
 
-    private int serializedKeyLength;
-    private byte[] serializedKey;
-    ProtocolVersion version;
+    private final int serializedKeyLength;
+    private final byte[] serializedKey;
+    private final ProtocolVersion version;
 
     public DHClientKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length,
             int serializedKeyLength, byte[] serializedKey, ProtocolVersion version) {
-        this.message = message;
-        this.start = 0;
         this.expectedPart = message;
         this.type = type;
         this.length = length;

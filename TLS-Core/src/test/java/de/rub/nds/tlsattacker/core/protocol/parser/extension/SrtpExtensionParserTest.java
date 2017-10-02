@@ -37,7 +37,6 @@ public class SrtpExtensionParserTest {
     private final int srtpMkiLength;
     private final byte[] srtpMki;
     private SrtpExtensionParser parser;
-    private SrtpExtensionMessage msg;
 
     public SrtpExtensionParserTest(ExtensionType extensionType, byte[] expectedBytes, int extensionLength,
             int startParsing, int srtpProtectionProfilesLength, byte[] srtpProtectionProfiles, int srtpMkiLength,
@@ -68,7 +67,7 @@ public class SrtpExtensionParserTest {
 
     @Test
     public void testParseExtensionMessageContent() {
-        msg = parser.parse();
+        SrtpExtensionMessage msg = parser.parse();
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
