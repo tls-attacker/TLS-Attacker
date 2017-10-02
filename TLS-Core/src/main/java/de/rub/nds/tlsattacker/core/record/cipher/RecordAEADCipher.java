@@ -54,14 +54,6 @@ public class RecordAEADCipher extends RecordCipher {
      * iv length in byte
      */
     public static final int GCM_IV_LENGTH = 12;
-    /**
-     * client secret
-     */
-    private byte[] clientSecret;
-    /**
-     * server secret
-     */
-    private byte[] serverSecret;
 
     private GCMParameterSpec encryptIV;
 
@@ -127,8 +119,10 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     private void initForTLS13(CipherSuite cipherSuite) {
+        byte[] clientSecret;
+        byte[] serverSecret;
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        if (tlsContext.isUpdateKeys() == false) {
+        if (!tlsContext.isUpdateKeys()) {
             clientSecret = tlsContext.getChooser().getClientHandshakeTrafficSecret();
             serverSecret = tlsContext.getChooser().getServerHandshakeTrafficSecret();
         } else {
