@@ -46,7 +46,9 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         LOGGER.debug("Step 1: Blinding");
         if (this.msgIsPKCS) {
-            LOGGER.debug("Step skipped --> " + "Message is considered as PKCS compliant.");
+            LOGGER.info("Step skipped --> " + "Message is considered as PKCS compliant.");
+            LOGGER.info("Testing the validity of the original message");
+            oracle.checkPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
             m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
@@ -58,17 +60,17 @@ public class Bleichenbacher extends Pkcs1Attack {
         i++;
 
         while (!solutionFound) {
-            LOGGER.debug("Step 2: Searching for PKCS conforming messages.");
+            LOGGER.info("Step 2: Searching for PKCS conforming messages.");
             stepTwo(i);
 
-            LOGGER.debug("Step 3: Narrowing the set of solutions.");
+            LOGGER.info("Step 3: Narrowing the set of solutions.");
             stepThree(i);
 
-            LOGGER.debug("Step 4: Computing the solution.");
+            LOGGER.info("Step 4: Computing the solution.");
             solutionFound = stepFour(i);
             i++;
 
-            LOGGER.debug("// Total # of queries so far: {}", oracle.getNumberOfQueries());
+            LOGGER.info("// Total # of queries so far: {}", oracle.getNumberOfQueries());
         }
     }
 

@@ -38,7 +38,7 @@ public class MangerAttackServerTest {
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
     @Test
-    @Ignore
+    // @Ignore
     public void testMangerAttack() throws Exception {
 
         Security.addProvider(new BouncyCastleProvider());
@@ -60,7 +60,7 @@ public class MangerAttackServerTest {
         byte[] cipherBytes = cipher.doFinal(plainBytes);
 
         config.setDefaultTimeout(50);
-        Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config);
+        Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config, null, "DECRYPT_ERROR");
 
         long start = System.currentTimeMillis();
 
