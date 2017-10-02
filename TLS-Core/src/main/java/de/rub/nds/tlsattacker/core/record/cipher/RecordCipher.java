@@ -106,4 +106,8 @@ public abstract class RecordCipher {
     public int getPlainCipherLengthDifference() {
         return 0;
     }
+
+    public KeySet getKeySet() {
+        return keySet;
+    }
 }

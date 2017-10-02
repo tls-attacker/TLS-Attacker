@@ -113,7 +113,7 @@ public class HKDFunction {
                 i++;
             }
             return Arrays.copyOfRange(stream.toByteArray(), 0, outLen);
-        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException ex) {
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException | IllegalArgumentException ex) {
             throw new CryptoException(ex);
         }
     }
@@ -169,5 +169,4 @@ public class HKDFunction {
         byte[] info = labelEncoder(hashValue, labelIn, outLen);
         return expand(hkdfAlgortihm, prk, info, outLen);
     }
-
 }
