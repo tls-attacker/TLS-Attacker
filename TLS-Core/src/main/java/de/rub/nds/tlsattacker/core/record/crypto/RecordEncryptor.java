@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -48,7 +49,7 @@ public class RecordEncryptor extends Encryptor {
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        if (!context.isEncryptThenMacExtensionSentByServer()) {
+        if (!context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, cleanBytes));
             setMac(record, mac);
         }
@@ -75,7 +76,8 @@ public class RecordEncryptor extends Encryptor {
         setPlainRecordBytes(record, plain);
         recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
-        if (context.isEncryptThenMacExtensionSentByServer() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
+        if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
+                && recordCipher.isUsingMac()) {
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, encrypted));
             setMac(record, mac);
             encrypted = ArrayConverter.concatenate(encrypted, record.getMac().getValue());
@@ -132,7 +134,6 @@ public class RecordEncryptor extends Encryptor {
      * record length.
      *
      * @param record
-     * @param plainCipherDifference
      * @return
      */
     @Override

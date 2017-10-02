@@ -44,7 +44,6 @@ public class CertificateVerifyMessagePreparatorTest {
         message = new CertificateVerifyMessage();
         context = new TlsContext();
         preparator = new CertificateVerifyMessagePreparator(context.getChooser(), message);
-        RandomHelper.getRandom().setSeed(0);
     }
 
     /**

@@ -37,8 +37,7 @@ public class HttpsResponseHandler extends ProtocolMessageHandler<HttpsResponseMe
     }
 
     @Override
-    protected void adjustTLSContext(HttpsResponseMessage message) {
-
+    public void adjustTLSContext(HttpsResponseMessage message) {
     }
 
 }

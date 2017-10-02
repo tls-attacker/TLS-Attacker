@@ -25,7 +25,7 @@ public class SniTestCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "sni_test";
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
 
     @Parameter(names = "-server_name2", description = "Servername for HostName TLS extension, used in the second ClientHello message.")
     private String serverName2;

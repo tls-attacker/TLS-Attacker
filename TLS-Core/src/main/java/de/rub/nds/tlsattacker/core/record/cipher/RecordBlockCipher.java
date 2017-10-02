@@ -114,7 +114,7 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] plaintext;
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
-                if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                     decryptCipher.init(Cipher.DECRYPT_MODE,
                             new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
                 } else {
@@ -189,17 +189,17 @@ public final class RecordBlockCipher extends RecordCipher {
                 offset += decryptCipher.getBlockSize();
                 LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
             }
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 initCipherAndMac(clientWriteIv, serverWriteIv, serverMacWriteSecret, clientMacWriteSecret);
             } else {
                 initCipherAndMac(serverWriteIv, clientWriteIv, clientMacWriteSecret, serverMacWriteSecret);
             }
+            // MAC has to be put into one or more blocks, depending on the
+            // MAC/block length.
+            // Additionally, there is a need for one explicit IV block
             if (offset != keyBlock.length) {
                 throw new CryptoException("Offset exceeded the generated key block length");
-            } // mac has to be put into one or more blocks, depending on the
-              // MAC/block
-              // length
-              // additionally, there is a need for one explicit IV block
+            }
             setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
                     * decryptCipher.getBlockSize());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {

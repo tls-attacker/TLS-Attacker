@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStoreException;
@@ -51,7 +51,6 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private BadRandom random;
     private ECDHEServerKeyExchangeMessage msg;
     private ECDHEServerKeyExchangePreparator preparator;
-    private ECDHEServerKeyExchangeMessage message;
 
     @Before
     public void setUp() throws Exception {
@@ -61,14 +60,14 @@ public class ECDHEServerKeyExchangePreparatorTest {
 
         loadTestVectorsToContext();
 
-        RandomHelper.setRandom(random);
+        tlsContext.setRandom(random);
         msg = new ECDHEServerKeyExchangeMessage();
         preparator = new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), msg);
     }
 
     @After
     public void cleanUp() {
-        RandomHelper.setRandom(null);
+        tlsContext.setRandom(null);
     }
 
     @Test
@@ -92,7 +91,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0601"), msg.getSignatureAndHashAlgorithm().getValue());
 
         String sigExpected = "543E5CC620CE4CD46062CADAB5DF7FF2A64D61D7D78C8D3D7BC1843406050FF54AA8D8BF60A1FF4CE77E499C0520CD2B697F01E1BCF19EF0E0E242B8FC374184A2C26DE227036C9E6852E3FEE3A4281B6B8CD43760D07B611A9FF45D0DD5EA81ABEF2F11173F58B6E088045A759E7D2AAAE6AF44A5CFDB1A7B3EA8C1DE229840";
-        assertEquals(new Integer(128), msg.getSignatureLength().getValue());
+        assertEquals(128, (int) msg.getSignatureLength().getValue());
         assertEquals(sigExpected, ArrayConverter.bytesToRawHexString(msg.getSignature().getValue()));
 
     }
@@ -100,8 +99,9 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private void loadTestVectorsToContext() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
             CertificateException, KeyStoreException, UnrecoverableKeyException {
 
+        tlsContext.setConnectionEnd(new ServerConnectionEnd());
+
         Config config = tlsContext.getConfig();
-        config.setConnectionEndType(ConnectionEndType.SERVER);
         config.setDefaultRSAModulus(new BigInteger(
                 "138176188281796802921728019830883835791466819775862616369528695291051113778191409365728255919237920070170415489798919694047238160141762618463534095589006064306561457254708835463402335256295540403269922932223802187003458396441731541262280889819064536522708759209693618435045828861540756050456047286072194938393"));
         config.setDefaultServerRSAPublicKey(new BigInteger("65537"));

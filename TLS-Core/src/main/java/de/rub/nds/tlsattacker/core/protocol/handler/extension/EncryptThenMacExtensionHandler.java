@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
@@ -42,12 +41,7 @@ public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThen
     }
 
     @Override
-    public void adjustTLSContext(EncryptThenMacExtensionMessage message) {
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-            context.setEncryptThenMacExtensionSentByServer(true);
-        } else {
-            context.setEncryptThenMacExtensionSentByClient(true);
-        }
-        LOGGER.debug("Adjusted the tls context. The encrypt then mac extension is present.");
+    public void adjustTLSExtensionContext(EncryptThenMacExtensionMessage message) {
+
     }
 }

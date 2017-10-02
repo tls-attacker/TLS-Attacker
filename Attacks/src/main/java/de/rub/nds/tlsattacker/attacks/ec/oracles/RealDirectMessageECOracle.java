@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -66,11 +66,13 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), tlsContext);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        State state = new State(config);
+
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
+
+        WorkflowTrace trace = state.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
@@ -105,7 +107,7 @@ public class RealDirectMessageECOracle extends ECOracle {
             numberOfQueries++;
         }
 
-        if (!tlsContext.getWorkflowTrace().executedAsPlanned()) {
+        if (!state.getWorkflowTrace().executedAsPlanned()) {
             valid = false;
         }
 
@@ -138,11 +140,12 @@ public class RealDirectMessageECOracle extends ECOracle {
      * further validation purposes.
      */
     private void executeValidWorkflowAndExtractCheckValues() {
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), tlsContext);
+        State state = new State(config);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
+
+        WorkflowTrace trace = state.getWorkflowTrace();
 
         workflowExecutor.executeWorkflow();
 

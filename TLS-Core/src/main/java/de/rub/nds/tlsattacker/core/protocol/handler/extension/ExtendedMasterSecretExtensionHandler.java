@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -40,15 +40,11 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
         return new ExtendedMasterSecretExtensionSerializer(message);
     }
 
-    /**
-     * Adjusts the Chooser.
-     *
-     * @param message
-     */
     @Override
-    public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-            context.setReceivedMasterSecretExtension(true);
+    public void adjustTLSExtensionContext(ExtendedMasterSecretExtensionMessage message) {
+        if (context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET)
+                && context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {
+            context.setUseExtendedMasterSecret(true);
         }
     }
 

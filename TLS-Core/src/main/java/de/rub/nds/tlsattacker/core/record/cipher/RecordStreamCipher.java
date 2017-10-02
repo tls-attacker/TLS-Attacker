@@ -85,7 +85,7 @@ public class RecordStreamCipher extends RecordCipher {
             serverWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
             offset += keySize;
             LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 initCipherAndMac(serverMacWriteSecret, clientMacWriteSecret);
             } else {
                 initCipherAndMac(clientMacWriteSecret, serverMacWriteSecret);

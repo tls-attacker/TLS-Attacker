@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
@@ -34,10 +35,8 @@ public class EncryptThenMacExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         EncryptThenMacExtensionMessage message = new EncryptThenMacExtensionMessage();
-
         handler.adjustTLSContext(message);
-
-        assertTrue(context.isEncryptThenMacExtensionSentByClient());
+        assertTrue(context.isExtensionProposed(ExtensionType.ENCRYPT_THEN_MAC));
     }
 
     @Test

@@ -98,7 +98,7 @@ public class RecordAEADCipher extends RecordCipher {
             } else {
                 initForTLS12(cipherSuite, cipherAlg);
             }
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
                 decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
             } else {
@@ -192,7 +192,7 @@ public class RecordAEADCipher extends RecordCipher {
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                     sequenceNumberByte);
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 encryptIV = prepareGCMParameters(nonce, clientWriteIv);
             } else {
                 encryptIV = prepareGCMParameters(nonce, serverWriteIv);
@@ -218,7 +218,7 @@ public class RecordAEADCipher extends RecordCipher {
         try {
             byte[] nonce = ArrayConverter.longToBytes(tlsContext.getWriteSequenceNumber(),
                     RecordByteLength.SEQUENCE_NUMBER);
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 byte[] iv = ArrayConverter.concatenate(clientWriteIv, nonce);
                 encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
             } else {
@@ -244,7 +244,7 @@ public class RecordAEADCipher extends RecordCipher {
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                     sequenceNumberByte);
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
                 decryptIV = prepareGCMParameters(nonce, clientWriteIv);
             } else {
                 decryptIV = prepareGCMParameters(nonce, serverWriteIv);
@@ -263,7 +263,7 @@ public class RecordAEADCipher extends RecordCipher {
         try {
             byte[] nonce = Arrays.copyOf(data, SEQUENCE_NUMBER_LENGTH);
             data = Arrays.copyOfRange(data, SEQUENCE_NUMBER_LENGTH, data.length);
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
                 byte[] iv = ArrayConverter.concatenate(clientWriteIv, nonce);
                 decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
             } else {

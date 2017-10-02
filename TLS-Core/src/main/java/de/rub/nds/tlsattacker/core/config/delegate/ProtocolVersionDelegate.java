@@ -40,9 +40,9 @@ public class ProtocolVersionDelegate extends Delegate {
             config.setHighestProtocolVersion(protocolVersion);
         }
         if (config.getHighestProtocolVersion().isDTLS()) {
-            config.setTransportHandlerType(TransportHandlerType.UDP);
+            config.setDefaultTransportHandlerType(TransportHandlerType.UDP);
         } else {
-            config.setTransportHandlerType(TransportHandlerType.TCP);
+            config.setDefaultTransportHandlerType(TransportHandlerType.TCP);
         }
     }
 

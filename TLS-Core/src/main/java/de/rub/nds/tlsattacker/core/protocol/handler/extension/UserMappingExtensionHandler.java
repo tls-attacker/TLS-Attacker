@@ -41,7 +41,7 @@ public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExt
     }
 
     @Override
-    public void adjustTLSContext(UserMappingExtensionMessage message) {
+    public void adjustTLSExtensionContext(UserMappingExtensionMessage message) {
         context.setUserMappingExtensionHintType(UserMappingExtensionHintType.getExtensionType(message
                 .getUserMappingType().getValue()));
         LOGGER.debug("Adjusted the TLS context user mapping extension hint type to "

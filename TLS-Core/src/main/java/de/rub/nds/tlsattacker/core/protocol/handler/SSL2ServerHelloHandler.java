@@ -43,7 +43,7 @@ public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHel
     }
 
     @Override
-    protected void adjustTLSContext(SSL2ServerHelloMessage message) {
+    public void adjustTLSContext(SSL2ServerHelloMessage message) {
         // we do nothing since we are not supporting ssl2 and only support the
         // hello messages
     }

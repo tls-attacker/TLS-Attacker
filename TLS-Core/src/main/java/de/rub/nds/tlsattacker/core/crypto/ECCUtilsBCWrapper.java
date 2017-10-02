@@ -85,7 +85,7 @@ public class ECCUtilsBCWrapper {
      */
     public static int[] convertNamedCurves(NamedCurve[] namedCurves) {
         if (namedCurves == null || namedCurves.length == 0) {
-            return null;
+            return new int[0];
         }
         int[] nc = new int[namedCurves.length];
         for (int i = 0; i < namedCurves.length; i++) {
@@ -102,7 +102,7 @@ public class ECCUtilsBCWrapper {
      */
     public static short[] convertPointFormats(ECPointFormat[] pointFormats) {
         if (pointFormats == null || pointFormats.length == 0) {
-            return null;
+            return new short[0];
         }
         short[] pf = new short[pointFormats.length];
         for (int i = 0; i < pointFormats.length; i++) {

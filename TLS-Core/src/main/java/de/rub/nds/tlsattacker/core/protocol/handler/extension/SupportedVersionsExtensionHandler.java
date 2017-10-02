@@ -46,7 +46,7 @@ public class SupportedVersionsExtensionHandler extends ExtensionHandler<Supporte
     }
 
     @Override
-    public void adjustTLSContext(SupportedVersionsExtensionMessage message) {
+    public void adjustTLSExtensionContext(SupportedVersionsExtensionMessage message) {
         byte[] versionBytes = message.getSupportedVersions().getValue();
         if (versionBytes.length % HandshakeByteLength.VERSION != 0) {
             throw new AdjustmentException("Could not create resonable ProtocolVersions from VersionBytes");

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -50,7 +51,8 @@ public class RecordDecryptor extends Decryptor {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] addtionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
         recordCipher.setAdditionalAuthenticatedData(addtionalAuthenticatedData);
-        if (context.isEncryptThenMacExtensionSentByServer() && cipherSuite.isCBC() && recordCipher.isUsingMac()) {
+        if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
+                && recordCipher.isUsingMac()) {
             byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
             record.setMac(mac);
             byte[] unmacedBytes = removeMac(record.getProtocolMessageBytes().getValue());

@@ -36,6 +36,8 @@ public class SendMessageHelperTest {
 
     private StreamTransportHandler transportHandler;
 
+    private SendMessageHelper helper;
+
     @Before
     public void setUp() throws IOException {
         context = new TlsContext();
@@ -44,10 +46,13 @@ public class SendMessageHelperTest {
         context.setTransportHandler(transportHandler);
         context.getTransportHandler().initialize();
         context.setRecordLayer(new TlsRecordLayer(context));
+        helper = new SendMessageHelper();
     }
 
     /**
      * Test of sendMessages method, of class SendMessageHelper.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testSendMessages() throws Exception {
@@ -61,7 +66,7 @@ public class SendMessageHelperTest {
         r.setMaxRecordLengthConfig(0);
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);
-        SendMessageHelper.sendMessages(new LinkedList<ProtocolMessage>(), recordList, context);
+        helper.sendMessages(new LinkedList<ProtocolMessage>(), recordList, context);
         System.out.println(ArrayConverter.bytesToHexString(((ByteArrayOutputStream) transportHandler.getOutputStream())
                 .toByteArray()));
         assertArrayEquals(new byte[] { 22, 03, 03, 0, 0 },

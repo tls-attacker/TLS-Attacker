@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -20,7 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -58,18 +59,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        Config tlsConfig = config.createConfig();
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        tlsConfig.setWorkflowTraceType(WorkflowTraceType.FULL);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        State state = new State(config.createConfig());
+        state.getConfig().setWorkflowTraceType(WorkflowTraceType.FULL);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                .getWorkflowExecutorType(), state);
+        WorkflowTrace trace = state.getWorkflowTrace();
+
         RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
-        tlsConfig.setWorkflowTrace(trace);
+
         workflowExecutor.executeWorkflow();
         return WorkflowTraceUtil.getLastReceivedMessage(trace);
     }
@@ -87,14 +88,17 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         List<ProtocolMessage> protocolMessages = new LinkedList<>();
         byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
+        byte[][] plainVectors = PKCS1VectorGenerator.generatePlainPkcs1Vectors(publicKey, config.getType());
         for (byte[] vector : vectors) {
             ProtocolMessage pm = executeTlsFlow(vector);
             protocolMessages.add(pm);
         }
 
         LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");
-        for (ProtocolMessage pm : protocolMessages) {
-            LOGGER.info("Sent Type: {}", pm.getProtocolMessageType());
+        for (int i = 0; i < protocolMessages.size(); i++) {
+            ProtocolMessage pm = protocolMessages.get(i);
+            LOGGER.info("Tested vector: {}", ArrayConverter.bytesToHexString(plainVectors[i]));
+            LOGGER.info("Last server TLS message: {}", pm.getProtocolMessageType());
             if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
                 AlertMessage alert = (AlertMessage) pm;
                 AlertDescription ad = AlertDescription.getAlertDescription(alert.getDescription().getValue());
@@ -109,12 +113,12 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         sb.append(']');
         if (protocolMessageSet.size() == 1) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig.getHost(),
-                    sb.toString());
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig
+                    .getConnectionEnd().getHostname(), sb.toString());
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getHost(),
-                    sb.toString());
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getConnectionEnd()
+                    .getHostname(), sb.toString());
             return true;
         }
     }

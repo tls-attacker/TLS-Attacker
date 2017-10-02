@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.mitm.config;
 
 import com.beust.jcommander.ParametersDelegate;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
@@ -19,13 +18,12 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.MitmWorkflowTypeDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,31 +39,31 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "mitm";
 
     @ParametersDelegate
-    private final GeneralDelegate generalDelegate;
+    private GeneralDelegate generalDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private final EllipticCurveDelegate ellipticCurveDelegate;
+    private EllipticCurveDelegate ellipticCurveDelegate;
     @ParametersDelegate
-    private final MitmDelegate mitmDelegate;
+    private MitmDelegate mitmDelegate;
     @ParametersDelegate
-    private final SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
-    private final WorkflowInputDelegate workflowInputDelegate;
+    private WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate
-    private final WorkflowOutputDelegate workflowOutputDelegate;
+    private WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate
-    private final WorkflowTypeDelegate workflowTypeDelegate;
+    private MitmWorkflowTypeDelegate mitmWorkflowTypeDelegate;
     @ParametersDelegate
-    private final TransportHandlerDelegate transportHandlerDelegate;
+    private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
-    private final HeartbeatDelegate heartbeatDelegate;
+    private HeartbeatDelegate heartbeatDelegate;
     @ParametersDelegate
-    private final MaxFragmentLengthDelegate maxFragmentLengthDelegate;
+    private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
-    private final CertificateDelegate certificateDelegate;
+    private CertificateDelegate certificateDelegate;
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -77,9 +75,9 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.mitmDelegate = new MitmDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowTypeDelegate = new WorkflowTypeDelegate();
+        this.workflowInputDelegate = new WorkflowInputDelegate();
+        this.mitmWorkflowTypeDelegate = new MitmWorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.certificateDelegate = new CertificateDelegate();
         addDelegate(maxFragmentLengthDelegate);
@@ -89,20 +87,11 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(mitmDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
         addDelegate(heartbeatDelegate);
-        addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
-        addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);
-    }
-
-    @Override
-    public Config createConfig() {
-        Config config = super.createConfig();
-        if (config.getWorkflowTraceType() == null) {
-            LOGGER.warn("Setting workflowTraceType to MITM");
-            config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        }
-        return config;
+        addDelegate(workflowInputDelegate);
+        addDelegate(workflowOutputDelegate);
+        addDelegate(mitmWorkflowTypeDelegate);
     }
 }

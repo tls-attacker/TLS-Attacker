@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -42,21 +43,23 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-
 import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinPool;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,9 +76,23 @@ public class Config implements Serializable {
 
     protected static final Logger LOGGER = LogManager.getLogger(Config.class);
 
+    /**
+     * Alias of the default connection end. This is/should be used whenever a
+     * single connection end is needed only. In the default single context
+     * scenarios (as are used in TLS-Client/TLS-Server), this will also be the
+     * alias of the default context.
+     */
+    public static final String DEFAULT_CONNECTION_END_ALIAS = "defaultConnectionEnd";
+
+    /**
+     * The default Config file to load.
+     */
+    private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
+
     public static Config createConfig() {
-        InputStream stream = Config.class.getResourceAsStream("/default_config.xml");
+        InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
         return ConfigIO.read(stream);
+
     }
 
     public static Config createConfig(File f) {
@@ -94,7 +111,7 @@ public class Config implements Serializable {
                 try {
                     field.set(c, null);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOGGER.warn("Could not set field in Config!", e);
                 }
             }
         }
@@ -102,11 +119,9 @@ public class Config implements Serializable {
     }
 
     public static Config mergeWithDefaultValues(Config c) {
-        String host = c.getHost(); // host is transient and will be resetted
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ConfigIO.write(c, byteArrayOutputStream);
         c = ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
-        c.setHost(host);
         return c;
     }
 
@@ -116,19 +131,20 @@ public class Config implements Serializable {
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 
     /**
-     * Indicates which ConnectionEndType we are
-     */
-    private ConnectionEndType connectionEndType = ConnectionEndType.CLIENT;
-
-    /**
      * The Workflow Trace that should be executed
      */
     private WorkflowTrace workflowTrace = null;
+
     /**
-     * host to connect
+     * Connection ends that we know for workflow execution. For a default
+     * config, this will be initialized with a default connection end, that is:
+     * (CLIENT connecting to 127.0.0.1:443 with alias DEFAULT_CONTEXT_ALIAS)
      */
-    @XmlTransient
-    private String host = "127.0.0.1";
+    @XmlElements(value = { @XmlElement(type = ConnectionEnd.class, name = "ConnectionEnd"),
+            @XmlElement(type = ServerConnectionEnd.class, name = "ServerConnectionEnd"),
+            @XmlElement(type = ClientConnectionEnd.class, name = "ClientConnectionEnd") })
+    private List<ConnectionEnd> connectionEnds;
+
     /**
      * If default generated WorkflowTraces should contain client Authentication
      */
@@ -138,10 +154,12 @@ public class Config implements Serializable {
      * Which Signature and Hash algorithms we support
      */
     private List<SignatureAndHashAlgorithm> supportedSignatureAndHashAlgorithms;
+
     /**
      * Which Ciphersuites we support by default
      */
     private List<CipherSuite> defaultClientSupportedCiphersuites;
+
     /**
      * Which Ciphersuites we support by default
      */
@@ -151,6 +169,7 @@ public class Config implements Serializable {
      * If we are a dynamic workflow //TODO implement
      */
     private Boolean dynamicWorkflow = false;
+
     /**
      * Supported namedCurves by default
      */
@@ -160,86 +179,99 @@ public class Config implements Serializable {
      * Default clientSupportedNamed Curves
      */
     private List<NamedCurve> defaultClientNamedCurves;
+
     /**
      * Supported ProtocolVersions by default
      */
     private List<ProtocolVersion> supportedVersions;
+
     /**
      * Which heartBeat mode we are in
      */
     private HeartbeatMode heartbeatMode = HeartbeatMode.PEER_ALLOWED_TO_SEND;
+
     /**
      * Padding length for TLS 1.3 messages
      */
     private Integer paddingLength = 0;
+
     /**
      * Public key for KeyShareExtension
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] keySharePublic = ArrayConverter
             .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
+
     /**
      * Key type for KeyShareExtension
      */
     private NamedCurve keyShareType = NamedCurve.ECDH_X25519;
+
     /**
      * Private key for KeyShareExtension
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] keySharePrivate = ArrayConverter
             .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
+
     /**
      * Hostname in SNI Extension
      */
     private String sniHostname = "localhost";
+
     /**
      * SNI HostnameType
      */
     private NameType sniType = NameType.HOST_NAME;
+
     /**
      * Should we terminate the connection on a wrong SNI ?
      */
     private Boolean sniHostnameFatal = false;
-    /**
-     * Server port used
-     */
-    private Integer port = 443;
+
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
      */
     private MaxFragmentLength maxFragmentLength = MaxFragmentLength.TWO_9;
+
     /**
      * SessionTLSTicket for the SessionTLSTicketExtension. It's an empty session
      * ticket since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] TLSSessionTicket = new byte[0];
+
     /**
      * Renegotiation info for the RenegotiationInfo extension for the Client.
      * It's an empty info since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultClientRenegotiationInfo = new byte[0];
+
     /**
      * Renegotiation info for the RenegotiationInfo extension for the Client.
      * It's an empty info since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultServerRenegotiationInfo = new byte[0];
+
     /**
      * SignedCertificateTimestamp for the SignedCertificateTimestampExtension.
      * It's an emty timestamp, since the server sends it.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSignedCertificateTimestamp = new byte[0];
+
     /**
      * TokenBinding default version. To be defined later.
      */
     private TokenBindingVersion defaultTokenBindingVersion = TokenBindingVersion.DRAFT_13;
+
     /**
      * Default TokenBinding Key Parameters.
      */
     private List<TokenBindingKeyParameters> defaultTokenBindingKeyParameters;
+
     /**
      * This is the request type of the CertificateStatusRequest extension
      */
@@ -264,220 +296,275 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
+
     /**
      * Default SRP Identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] secureRemotePasswordExtensionIdentifier = new byte[0];
+
     /**
      * Default SRTP extension protection profiles The list contains every
      * protection profile as in RFC 5764
      */
     private List<SrtpProtectionProfiles> secureRealTimeTransportProtocolProtectionProfiles;
+
     /**
      * Default SRTP extension master key identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[] {};
+
     /**
      * Default user mapping extension hint type
      */
     private UserMappingExtensionHintType userMappingExtensionHintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
+
     /**
      * Default certificate type extension desired types
      */
     private List<CertificateType> certificateTypeDesiredTypes;
+
     /**
      * Default client certificate type extension desired types
      */
     private List<CertificateType> clientCertificateTypeDesiredTypes;
+
     /**
      * Default server certificate type extension desired types
      */
     private List<CertificateType> serverCertificateTypeDesiredTypes;
+
     /**
      * Default client authz extension data format list
      */
     private List<AuthzDataFormat> clientAuthzExtensionDataFormat;
+
     /**
      * Default state for the certificate type extension message. State "client"
      */
     private Boolean certificateTypeExtensionMessageState = true;
+
     /**
-     * Default sever authz extension data format list
+     * Default sever authz extension data format list.
      */
     private List<AuthzDataFormat> serverAuthzExtensionDataFormat;
+
     /**
-     * Default trusted ca indication extension trusted cas
+     * Default trusted ca indication extension trusted CAs.
      */
     private List<TrustedAuthority> trustedCaIndicationExtensionAuthorties;
+
     /**
-     * Default state for the client certificate type extension message. State
-     * "client"
+     * Default state for the client certificate type extension message (state
+     * "client").
      */
     private Boolean clientCertificateTypeExtensionMessageState = true;
+
     /**
-     * Default state for the cached info extension message. State "client"
+     * Default state for the cached info extension message (state "client").
      */
     private Boolean cachedInfoExtensionIsClientState = true;
+
     /**
-     * Default cached objects for the cached info extension
+     * Default cached objects for the cached info extension.
      */
     private List<CachedObject> cachedObjectList;
+
     /**
-     * Default certificate status request v2 extension request list
+     * Default certificate status request v2 extension request list.
      */
     private List<RequestItemV2> statusRequestV2RequestList;
+
     /**
-     * Default Timeout for the Connection
+     * Default timeout for the connections. If not explicitly specified,
+     * connection ends will be initialized with this timeout.
      */
-    private Integer timeout = 1000;
+    private Integer defaultTimeout = 1000;
+
     /**
-     * Transporthandler Type that shall be used
+     * Default TransportHandlerType that shall be used. If not explicitly
+     * specified, connection ends will be initialized with this type.
      */
-    private TransportHandlerType transportHandlerType = TransportHandlerType.TCP;
+    private TransportHandlerType defaultTransportHandlerType = TransportHandlerType.TCP;
+
     /**
      * If we should use a workflow trace specified in File
      */
     private String workflowInput = null;
+
     /**
      * If we should output an executed workflowtrace to a specified file
      */
     private String workflowOutput = null;
+
     /**
      * The Type of workflow trace that should be generated
      */
     private WorkflowTraceType workflowTraceType = null;
+
     /**
      * If the Default generated workflowtrace should contain Application data
      * send by servers
      */
     private Boolean serverSendsApplicationData = false;
+
     /**
      * If we generate ClientHello with the ECPointFormat extension
      */
     private Boolean addECPointFormatExtension = true;
+
     /**
      * If we generate ClientHello with the EllipticCurve extension
      */
     private Boolean addEllipticCurveExtension = true;
+
     /**
      * If we generate ClientHello with the Heartbeat extension
      */
     private Boolean addHeartbeatExtension = false;
+
     /**
      * If we generate ClientHello with the MaxFragmentLength extension
      */
     private Boolean addMaxFragmentLengthExtenstion = false;
+
     /**
      * If we generate ClientHello with the ServerNameIndication extension
      */
     private Boolean addServerNameIndicationExtension = false;
+
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
     private Boolean addSignatureAndHashAlgrorithmsExtension = false;
+
     /**
      * If we generate ClientHello with the SupportedVersion extension
      */
     private Boolean addSupportedVersionsExtension = false;
+
     /**
      * If we generate ClientHello with the KeyShare extension
      */
     private Boolean addKeyShareExtension = false;
+
     /**
      * If we generate ClientHello with the Padding extension
      */
     private Boolean addPaddingExtension = false;
+
     /**
      * If we generate ClientHello with the ExtendedMasterSecret extension
      */
     private Boolean addExtendedMasterSecretExtension = false;
+
     /**
      * If we generate ClientHello with the SessionTicketTLS extension
      */
     private Boolean addSessionTicketTLSExtension = false;
+
     /**
      * If we generate ClientHello with SignedCertificateTimestamp extension
      */
     private Boolean addSignedCertificateTimestampExtension = false;
+
     /**
      * If we generate ClientHello with RenegotiationInfo extension
      */
     private Boolean addRenegotiationInfoExtension = false;
+
     /**
      * If we generate ClientHello with TokenBinding extension.
      */
     private Boolean addTokenBindingExtension = false;
+
     /**
      * If we generate ClientHello with CertificateStatusRequest extension
      */
     private Boolean addCertificateStatusRequestExtension = false;
+
     /**
      * If we generate ClientHello with ALPN extension
      */
     private Boolean addAlpnExtension = false;
+
     /**
      * If we generate ClientHello with SRP extension
      */
     private Boolean addSRPExtension = false;
+
     /**
      * If we generate ClientHello with SRTP extension
      */
     private Boolean addSRTPExtension = false;
+
     /**
      * If we generate ClientHello with truncated hmac extension
      */
     private Boolean addTruncatedHmacExtension = false;
+
     /**
      * If we generate ClientHello with user mapping extension
      */
     private Boolean addUserMappingExtension = false;
+
     /**
      * If we generate ClientHello with certificate type extension
      */
     private Boolean addCertificateTypeExtension = false;
+
     /**
      * If we generate ClientHello with client authz extension
      */
     private Boolean addClientAuthzExtension = false;
+
     /**
      * If we generate ClientHello with server authz extension
      */
     private Boolean addServerAuthzExtension = false;
+
     /**
      * If we generate ClientHello with client certificate type extension
      */
     private Boolean addClientCertificateTypeExtension = false;
+
     /**
      * If we generate ClientHello with server certificate type extension
      */
     private Boolean addServerCertificateTypeExtension = false;
+
     /**
      * If we generate ClientHello with encrypt then mac extension
      */
     private Boolean addEncryptThenMacExtension = false;
+
     /**
      * If we generate ClientHello with cached info extension
      */
     private Boolean addCachedInfoExtension = false;
+
     /**
      * If we generate ClientHello with client certificate url extension
      */
     private Boolean addClientCertificateUrlExtension = false;
+
     /**
      * If we generate ClientHello with trusted ca indication extension
      */
     private Boolean addTrustedCaIndicationExtension = false;
+
     /**
      * If we generate ClientHello with status request v2 extension
      */
     private Boolean addCertificateStatusRequestV2Extension = false;
+
     /**
      * If set to true, timestamps will be updated upon execution of a
      * workflowTrace
      */
     private Boolean updateTimestamps = true;
+
     /**
      * The Certificate we initialize CertificateMessages with
      */
@@ -521,6 +608,8 @@ public class Config implements Serializable {
 
     private BigInteger defaultClientDhPublicKey = new BigInteger(
             "14480301636124364131011109953533209419584138262785800536726427889263750026424833537662211230987987661789535497502943331312908532241011314347509704298395798883527739408059572");
+
+    private BigInteger defaultServerDsaPrivateKey;
 
     private String defaultApplicationMessageData = "Test";
 
@@ -701,6 +790,12 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("7dc0cb485a3edb56811aeab12cdcda8e48b023298dd453a37b4d75d9e0bbba27c98f0e4852c16fd52341ffb673f64b580b7111abf14bf323e53a2dfa92727364ddb34f541f74a478a077f15277c013606aea839307e6f5fec23fdd72506feea7cbe362697949b145fe8945823a39a898ac6583fc5fbaefa1e77cbc95b3b475e66106e92b906bdbb214b87bcc94020f317fc1c056c834e9cee0ad21951fbdca088274c4ef9d8c2004c6294f49b370fb249c1e2431fb80ce5d3dc9e342914501ef4c162e54e1ee4fed9369b82afc00821a29f4979a647e60935420d44184d98f9cb75122fb604642c6d1ff2b3a51dc32eefdc57d9a9407ad6a06d10e83e2965481"));// TODO
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultPSKKey = ArrayConverter.hexStringToByteArray("1a2b3c4d");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultPSKIdentity = ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479");
+
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
     private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
@@ -732,6 +827,10 @@ public class Config implements Serializable {
     private boolean httpsParsingEnabled = false;
 
     private Config() {
+        connectionEnds = new ArrayList<>();
+        ConnectionEnd defaultConEnd = new ClientConnectionEnd(DEFAULT_CONNECTION_END_ALIAS, 443, "127.0.0.1");
+        addConnectionEnd(defaultConEnd);
+
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA512));
@@ -991,6 +1090,22 @@ public class Config implements Serializable {
         this.stopRecievingAfterFatal = stopRecievingAfterFatal;
     }
 
+    public byte[] getDefaultPSKKey() {
+        return defaultPSKKey;
+    }
+
+    public void setDefaultPSKKey(byte[] defaultPSKKey) {
+        this.defaultPSKKey = defaultPSKKey;
+    }
+
+    public byte[] getDefaultPSKIdentity() {
+        return defaultPSKIdentity;
+    }
+
+    public void setDefaultPSKIdentity(byte[] defaultPSKIdentity) {
+        this.defaultPSKIdentity = defaultPSKIdentity;
+    }
+
     public BigInteger getDefaultClientRSAPrivateKey() {
         return defaultClientRSAPrivateKey;
     }
@@ -1113,6 +1228,14 @@ public class Config implements Serializable {
 
     public void setDefaultServerDhPrivateKey(BigInteger defaultServerDhPrivateKey) {
         this.defaultServerDhPrivateKey = defaultServerDhPrivateKey;
+    }
+
+    public BigInteger getDefaultServerDsaPrivateKey() {
+        return defaultServerDsaPrivateKey;
+    }
+
+    public void setDefaultServerDsaPrivateKey(BigInteger defaultServerDsaPrivateKey) {
+        this.defaultServerDsaPrivateKey = defaultServerDsaPrivateKey;
     }
 
     public PRFAlgorithm getDefaultPRFAlgorithm() {
@@ -1599,28 +1722,33 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public TransportHandlerType getTransportHandlerType() {
-        return transportHandlerType;
+    public TransportHandlerType getDefaultTransportHandlerType() {
+        return defaultTransportHandlerType;
     }
 
-    public void setTransportHandlerType(TransportHandlerType transportHandlerType) {
-        this.transportHandlerType = transportHandlerType;
+    public void setDefaultTransportHandlerType(TransportHandlerType transportHandlerType) {
+        defaultTransportHandlerType = transportHandlerType;
+        for (ConnectionEnd conEnd : connectionEnds) {
+            conEnd.setDefaultTransportHandlerType(defaultTransportHandlerType);
+        }
     }
 
-    public int getTimeout() {
-        return timeout;
+    public Integer getDefaultTimeout() {
+        return defaultTimeout;
     }
 
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
+    /**
+     * Sets the Default timeout and sets the default Timeout in every
+     * ConnectionEnd
+     * 
+     * @param timeout
+     *            Timeout to be set
+     */
+    public void setDefaultTimeout(Integer timeout) {
+        defaultTimeout = timeout;
+        for (ConnectionEnd conEnd : connectionEnds) {
+            conEnd.setDefaultTimeout(defaultTimeout);
+        }
     }
 
     public boolean isSniHostnameFatal() {
@@ -1656,11 +1784,11 @@ public class Config implements Serializable {
     }
 
     public boolean isDynamicWorkflow() {
-        return dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public void setDynamicWorkflow(boolean dynamicWorkflow) {
-        this.dynamicWorkflow = dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public List<CipherSuite> getDefaultClientSupportedCiphersuites() {
@@ -1675,18 +1803,6 @@ public class Config implements Serializable {
         this.defaultClientSupportedCiphersuites = Arrays.asList(defaultClientSupportedCiphersuites);
     }
 
-    public ConnectionEndType getConnectionEndType() {
-        return connectionEndType;
-    }
-
-    public void setConnectionEndType(ConnectionEndType connectionEndType) {
-        this.connectionEndType = connectionEndType;
-    }
-
-    public ConnectionEndType getMyConnectionPeer() {
-        return connectionEndType == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER : ConnectionEndType.CLIENT;
-    }
-
     public WorkflowTrace getWorkflowTrace() {
         return workflowTrace;
     }
@@ -1695,15 +1811,7 @@ public class Config implements Serializable {
         this.workflowTrace = workflowTrace;
     }
 
-    public String getHost() {
-        return host;
-    }
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public boolean isClientAuthentication() {
+    public Boolean isClientAuthentication() {
         return clientAuthentication;
     }
 
@@ -2223,6 +2331,48 @@ public class Config implements Serializable {
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
         this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
+    }
+
+    public void clearConnectionEnds() {
+        if (connectionEnds != null) {
+            connectionEnds.clear();
+        }
+    }
+
+    public final void addConnectionEnd(ConnectionEnd conEnd) {
+        if (connectionEnds == null) {
+            connectionEnds = new ArrayList<>();
+        }
+
+        // Make sure that the connection end will fallback to out defaults
+        conEnd.setDefaultTimeout(defaultTimeout);
+        conEnd.setDefaultTransportHandlerType(defaultTransportHandlerType);
+
+        connectionEnds.add(conEnd);
+    }
+
+    /**
+     * Convenience method for getting a (default) connection end if working with
+     * a single end. This should be used when working with a single connection
+     * end only, which usually is the default connection end.
+     * 
+     * @return the connection end, if there is only one
+     */
+    public ConnectionEnd getConnectionEnd() {
+        if (connectionEnds == null) {
+            return null;
+        } else if (connectionEnds.size() > 1) {
+            throw new ConfigurationException("This method can only be used if exactly one connection"
+                    + " end is defined, but multiple connection ends are set.");
+        }
+        return connectionEnds.get(0);
+    }
+
+    public List<ConnectionEnd> getConnectionEnds() {
+        if (connectionEnds == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(connectionEnds);
     }
 
     public boolean isStopActionsAfterFatal() {
