@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -116,10 +117,10 @@ public final class RecordBlockCipher extends RecordCipher {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
                 if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                     decryptCipher.init(Cipher.DECRYPT_MODE,
-                            new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
+                            new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName()), decryptIv);
                 } else {
                     decryptCipher.init(Cipher.DECRYPT_MODE,
-                            new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName()), decryptIv);
+                            new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName()), decryptIv);
                 }
                 plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
             } else {
@@ -160,45 +161,14 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                     PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
             LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
-            int offset = 0;
-            byte[] clientMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + readMac.getMacLength());
-            offset += readMac.getMacLength();
-            LOGGER.debug("Client MAC write Secret: {}", ArrayConverter.bytesToHexString(clientMacWriteSecret));
-            byte[] serverMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + writeMac.getMacLength());
-            offset += writeMac.getMacLength();
-            LOGGER.debug("Server MAC write Secret:  {}", ArrayConverter.bytesToHexString(serverMacWriteSecret));
-            clientWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
-            offset += keySize;
-            LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(clientWriteKey));
-            serverWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
-            offset += keySize;
-            LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-            byte[] clientWriteIv, serverWriteIv;
-            if (useExplicitIv) {
-                clientWriteIv = new byte[encryptCipher.getBlockSize()];
-                RandomHelper.getRandom().nextBytes(clientWriteIv);
-                LOGGER.debug("Random Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
-                serverWriteIv = new byte[decryptCipher.getBlockSize()];
-                RandomHelper.getRandom().nextBytes(serverWriteIv);
-                LOGGER.debug("Random Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
-            } else {
-                clientWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + encryptCipher.getBlockSize());
-                offset += encryptCipher.getBlockSize();
-                LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
-                serverWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + decryptCipher.getBlockSize());
-                offset += decryptCipher.getBlockSize();
-                LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
-            }
+            KeyBlockParser parser = new KeyBlockParser(keyBlock, tlsContext.getRandom(), cipherSuite, protocolVersion);
+            keySet = parser.parse();
             if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                initCipherAndMac(clientWriteIv, serverWriteIv, serverMacWriteSecret, clientMacWriteSecret);
+                initCipherAndMac(keySet.getClientWriteIv(), keySet.getServerWriteIv(),
+                        keySet.getServerWriteMacSecret(), keySet.getClientWriteMacSecret());
             } else {
-                initCipherAndMac(serverWriteIv, clientWriteIv, clientMacWriteSecret, serverMacWriteSecret);
-            }
-            // MAC has to be put into one or more blocks, depending on the
-            // MAC/block length.
-            // Additionally, there is a need for one explicit IV block
-            if (offset != keyBlock.length) {
-                throw new CryptoException("Offset exceeded the generated key block length");
+                initCipherAndMac(keySet.getServerWriteIv(), keySet.getClientWriteIv(),
+                        keySet.getClientWriteMacSecret(), keySet.getServerWriteMacSecret());
             }
             setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
                     * decryptCipher.getBlockSize());
@@ -212,8 +182,15 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] macWriteBytes) throws UnsupportedOperationException {
         encryptIv = new IvParameterSpec(encryptIvBytes);
         decryptIv = new IvParameterSpec(decryptIvBytes);
-        SecretKey encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-        SecretKey decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
+        SecretKey encryptKey;
+        SecretKey decryptKey;
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            encryptKey = new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName());
+            decryptKey = new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName());
+        } else {
+            decryptKey = new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName());
+            encryptKey = new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName());
+        }
         try {
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIv);

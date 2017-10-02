@@ -40,14 +40,8 @@ public abstract class RecordCipher {
      * CipherAlgorithm algorithm (AES, ...)
      */
     protected BulkCipherAlgorithm bulkCipherAlg;
-    /**
-     * client encryption key
-     */
-    protected byte[] clientWriteKey;
-    /**
-     * server encryption key
-     */
-    protected byte[] serverWriteKey;
+
+    protected KeySet keySet;
     /**
      * TLS context
      */

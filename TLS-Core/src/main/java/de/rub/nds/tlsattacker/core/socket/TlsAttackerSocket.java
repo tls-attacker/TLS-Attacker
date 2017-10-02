@@ -32,11 +32,9 @@ import java.util.List;
 public class TlsAttackerSocket {
 
     private final State state;
-    private final TlsContext context;
 
     public TlsAttackerSocket(State state) {
         this.state = state;
-        this.context = this.state.getTlsContext();
     }
 
     /**
@@ -46,7 +44,7 @@ public class TlsAttackerSocket {
      * @throws java.io.IOException
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
-        context.getTransportHandler().sendData(bytes);
+        state.getTlsContext().getTransportHandler().sendData(bytes);
     }
 
     /**
@@ -56,7 +54,7 @@ public class TlsAttackerSocket {
      * @throws java.io.IOException
      */
     public byte[] receiveRawBytes() throws IOException {
-        return context.getTransportHandler().fetchData();
+        return state.getTlsContext().getTransportHandler().fetchData();
     }
 
     /**
@@ -136,7 +134,7 @@ public class TlsAttackerSocket {
         AlertMessage closeNotify = new AlertMessage();
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         send(closeNotify);
-        context.getTransportHandler().closeConnection();
+        state.getTlsContext().getTransportHandler().closeConnection();
     }
 
 }
