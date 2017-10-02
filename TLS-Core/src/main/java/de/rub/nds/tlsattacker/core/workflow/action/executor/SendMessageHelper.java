@@ -70,9 +70,7 @@ public class SendMessageHelper {
                 context.getRecordLayer().updateDecryptionCipher();
                 context.getRecordLayer().updateEncryptionCipher();
                 context.setWriteSequenceNumber(0);
-                // todo: this should better be set while receiving a CCS
-                // message, we should move it there, with parameter 0
-                context.setReadSequenceNumber(-1);
+                context.setReadSequenceNumber(0);
             }
         }
         if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {

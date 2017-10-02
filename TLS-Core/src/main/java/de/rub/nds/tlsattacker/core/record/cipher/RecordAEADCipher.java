@@ -218,6 +218,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     private byte[] decryptTLS13(byte[] data) {
         try {
+            LOGGER.debug("Decrypting using SQN:" + tlsContext.getReadSequenceNumber());
             byte[] sequenceNumberByte = ArrayConverter.longToBytes(tlsContext.getReadSequenceNumber(),
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
@@ -263,7 +264,11 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public boolean isUsingPadding() {
-        return false;
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

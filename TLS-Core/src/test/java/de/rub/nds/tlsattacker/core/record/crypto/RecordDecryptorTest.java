@@ -62,9 +62,9 @@ public class RecordDecryptorTest {
         decryptor.decrypt(record);
         // assertTrue(record.getContentMessageType() ==
         // ProtocolMessageType.HANDSHAKE);
-        assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 7);
+        assertTrue(record.getCleanProtocolMessageBytes().getValue().length == 6);
         assertArrayEquals(record.getCleanProtocolMessageBytes().getValue(),
-                ArrayConverter.hexStringToByteArray("08000002000016"));
+                ArrayConverter.hexStringToByteArray("080000020000"));
     }
 
 }

@@ -101,7 +101,9 @@ public class RecordDecryptor extends Decryptor {
     private void adjustPaddingTLS13(Record record) {
         byte[] unpadded = parseUnpaddedTLS13(record.getPlainRecordBytes().getValue());
         byte contentMessageType = parseContentMessageType(unpadded);
+        LOGGER.info("Parsed ContentMessageType:" + contentMessageType);
         record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
+        LOGGER.info("ContentMessageType:" + record.getContentMessageType());
         byte[] unpaddedAndWithoutType = Arrays.copyOf(unpadded, unpadded.length - 1);
         record.setUnpaddedRecordBytes(unpaddedAndWithoutType);
         LOGGER.debug("UnpaddedRecordBytes: "
@@ -182,7 +184,7 @@ public class RecordDecryptor extends Decryptor {
 
     private byte parseContentMessageType(byte[] unpadded) {
         if (unpadded.length == 0) {
-            throw new CryptoException("Could not extract content tpye of message.");
+            throw new CryptoException("Could not extract content type of message.");
         }
         return unpadded[unpadded.length - 1];
     }

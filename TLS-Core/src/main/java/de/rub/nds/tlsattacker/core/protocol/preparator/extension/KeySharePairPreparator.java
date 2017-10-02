@@ -27,7 +27,7 @@ public class KeySharePairPreparator extends Preparator<KeySharePair> {
 
     @Override
     public void prepare() {
-        LOGGER.debug("Preparing ServerNamePairMessage");
+        LOGGER.debug("Preparing KeySharePairExtension");
         prepareKeyShare(pair);
         prepareKeyShareType(pair);
         prepareKeyShareLength(pair);
