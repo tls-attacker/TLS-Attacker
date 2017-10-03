@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class WorkflowTrace implements Serializable {
      * Workflow
      */
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
+    @XmlElements(value = { @XmlElement(type = TlsAction.class, name = "TLSAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
@@ -84,7 +84,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
             @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
-    private List<TLSAction> tlsActions;
+    private List<TlsAction> tlsActions;
 
     private String name = null;
     private String description = null;
@@ -99,7 +99,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void reset() {
-        for (TLSAction action : getTlsActions()) {
+        for (TlsAction action : getTlsActions()) {
             action.reset();
         }
     }
@@ -112,37 +112,37 @@ public class WorkflowTrace implements Serializable {
         this.description = description;
     }
 
-    public void addTlsAction(TLSAction action) {
+    public void addTlsAction(TlsAction action) {
         tlsActions.add(action);
     }
 
-    public void addTlsActions(List<TLSAction> actions) {
-        for (TLSAction action : actions) {
+    public void addTlsActions(List<TlsAction> actions) {
+        for (TlsAction action : actions) {
             addTlsAction(action);
         }
     }
 
-    public void addTlsActions(TLSAction... actions) {
+    public void addTlsActions(TlsAction... actions) {
         addTlsActions(Arrays.asList(actions));
     }
 
-    public void addTlsAction(int position, TLSAction action) {
+    public void addTlsAction(int position, TlsAction action) {
         tlsActions.add(position, action);
     }
 
-    public TLSAction removeTlsAction(int index) {
+    public TlsAction removeTlsAction(int index) {
         return tlsActions.remove(index);
     }
 
-    public List<TLSAction> getTlsActions() {
+    public List<TlsAction> getTlsActions() {
         return tlsActions;
     }
 
-    public void setTlsActions(List<TLSAction> tlsActions) {
+    public void setTlsActions(List<TlsAction> tlsActions) {
         this.tlsActions = tlsActions;
     }
 
-    public void setTlsActions(TLSAction... tlsActions) {
+    public void setTlsActions(TlsAction... tlsActions) {
         this.tlsActions = Arrays.asList(tlsActions);
     }
 
@@ -184,7 +184,7 @@ public class WorkflowTrace implements Serializable {
 
     public List<MessageAction> getMessageActions() {
         List<MessageAction> messageActions = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (action instanceof MessageAction) {
                 messageActions.add((MessageAction) action);
             }
@@ -194,7 +194,7 @@ public class WorkflowTrace implements Serializable {
 
     public List<ReceivingAction> getReceivingActions() {
         List<ReceivingAction> receiveActions = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (action instanceof ReceivingAction) {
                 receiveActions.add((ReceivingAction) action);
             }
@@ -204,7 +204,7 @@ public class WorkflowTrace implements Serializable {
 
     public List<SendingAction> getSendingActions() {
         List<SendingAction> sendActions = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (action instanceof SendingAction) {
                 sendActions.add((SendingAction) action);
             }
@@ -212,7 +212,7 @@ public class WorkflowTrace implements Serializable {
         return sendActions;
     }
 
-    public TLSAction getLastAction() {
+    public TlsAction getLastAction() {
         int size = tlsActions.size();
         return tlsActions.get(size - 1);
     }
@@ -246,7 +246,7 @@ public class WorkflowTrace implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Trace Actions:");
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             sb.append("\n");
             sb.append(action.toString());
         }
@@ -284,7 +284,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public boolean executedAsPlanned() {
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (!action.executedAsPlanned()) {
                 return false;
             }

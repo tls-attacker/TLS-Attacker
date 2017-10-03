@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.LinkedList;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -129,7 +129,7 @@ public class WorkflowTraceTest {
      */
     @Test
     public void testSetTlsActions() {
-        LinkedList<TLSAction> actionList = new LinkedList<>();
+        LinkedList<TlsAction> actionList = new LinkedList<>();
         actionList.add(new SendAction());
         actionList.add(new ReceiveAction());
         trace.setTlsActions(actionList);

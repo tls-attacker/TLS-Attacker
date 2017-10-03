@@ -18,7 +18,7 @@ import java.util.Objects;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeCompressionAction extends TLSAction {
+public class ChangeCompressionAction extends TlsAction {
 
     private CompressionMethod newValue = null;
     private CompressionMethod oldValue = null;

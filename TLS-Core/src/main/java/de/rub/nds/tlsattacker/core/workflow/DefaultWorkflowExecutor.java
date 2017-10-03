@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
@@ -51,8 +51,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         state.getWorkflowTrace().reset();
 
-        List<TLSAction> tlsActions = state.getWorkflowTrace().getTlsActions();
-        for (TLSAction action : tlsActions) {
+        List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
+        for (TlsAction action : tlsActions) {
             try {
                 if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                     action.execute(state);

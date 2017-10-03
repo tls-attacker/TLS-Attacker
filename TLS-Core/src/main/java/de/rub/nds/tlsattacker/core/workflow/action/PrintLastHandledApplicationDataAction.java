@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
  * 
  * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
-public class PrintLastHandledApplicationDataAction extends TLSAction {
+public class PrintLastHandledApplicationDataAction extends TlsAction {
 
     private String lastHandledApplicationData = null;
 

@@ -18,7 +18,7 @@ import java.io.IOException;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class ResetConnectionAction extends TLSAction {
+public class ResetConnectionAction extends TlsAction {
 
     public ResetConnectionAction() {
     }

@@ -114,7 +114,7 @@ public class ChangeServerRandomActionTest {
     public void testJAXB() {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
+        TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
                 ChangeServerRandomAction.class);
         assertEquals(action, action2);
     }

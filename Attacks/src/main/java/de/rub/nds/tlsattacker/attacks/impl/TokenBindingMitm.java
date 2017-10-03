@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -77,7 +77,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
 
         // Build a simple rsa TLS 1.2 workflow (no ephemeral KE, no client auth)
         // from client
-        TLSAction action = new ReceiveAction(new ClientHelloMessage(conf));
+        TlsAction action = new ReceiveAction(new ClientHelloMessage(conf));
         action.setContextAlias(clientConAlias);
         trace.addTlsAction(action);
 

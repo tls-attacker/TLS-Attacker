@@ -31,7 +31,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private TlsContext tlsContext;
 
     private RecordLayer recordLayer;
-    private List<TLSAction> actionList;
+    private List<TlsAction> actionList;
 
     private TimingClientUdpTransportHandler transportHandler;
 

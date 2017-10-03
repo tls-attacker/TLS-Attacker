@@ -146,7 +146,7 @@ public class ForwardActionTest {
         JAXB.marshal(action, writer);
         LOGGER.debug(writer.getBuffer().toString());
 
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardAction.class);
+        TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardAction.class);
         assertEquals(action, action2);
     }
 

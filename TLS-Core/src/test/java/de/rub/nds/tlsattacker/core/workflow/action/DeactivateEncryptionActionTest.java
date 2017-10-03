@@ -82,7 +82,7 @@ public class DeactivateEncryptionActionTest {
     public void testJAXB() {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
+        TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
                 DeactivateEncryptionAction.class);
         assertEquals(action, action2);
     }

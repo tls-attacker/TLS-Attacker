@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class WaitingAction extends TLSAction {
+public class WaitingAction extends TlsAction {
 
     private long time;
 

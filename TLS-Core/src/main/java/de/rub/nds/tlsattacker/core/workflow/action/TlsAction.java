@@ -23,9 +23,9 @@ import org.apache.logging.log4j.Logger;
  * @author Robert Merget - robert.merget@rub.de
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class TLSAction implements Serializable {
+public abstract class TlsAction implements Serializable {
 
-    protected static final Logger LOGGER = LogManager.getLogger(TLSAction.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger(TlsAction.class.getName());
     private static final boolean EXECUTED_DEFAULT = false;
 
     private Boolean executed = null;

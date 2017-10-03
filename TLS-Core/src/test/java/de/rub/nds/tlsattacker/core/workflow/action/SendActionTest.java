@@ -92,7 +92,7 @@ public class SendActionTest {
     public void testJAXB() {
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), SendAction.class);
+        TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), SendAction.class);
         assertEquals(action, action2);
     }
 }

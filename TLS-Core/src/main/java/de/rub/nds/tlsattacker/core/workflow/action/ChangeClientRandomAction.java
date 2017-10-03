@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeClientRandomAction extends TLSAction {
+public class ChangeClientRandomAction extends TlsAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;

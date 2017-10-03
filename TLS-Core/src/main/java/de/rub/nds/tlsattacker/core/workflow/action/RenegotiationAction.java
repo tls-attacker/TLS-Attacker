@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class RenegotiationAction extends TLSAction {
+public class RenegotiationAction extends TlsAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {

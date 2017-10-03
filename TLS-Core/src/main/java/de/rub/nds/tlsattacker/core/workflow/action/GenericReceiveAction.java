@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
-import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
+import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.util.LinkedList;

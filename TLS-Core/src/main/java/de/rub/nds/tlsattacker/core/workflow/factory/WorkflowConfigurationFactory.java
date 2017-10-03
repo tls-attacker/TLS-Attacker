@@ -48,7 +48,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
@@ -307,7 +307,7 @@ public class WorkflowConfigurationFactory {
 
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace tempTrace = this.createResumptionWorkflow();
-        for (TLSAction resumption : tempTrace.getTlsActions()) {
+        for (TlsAction resumption : tempTrace.getTlsActions()) {
             trace.addTlsAction(resumption);
         }
         return trace;
@@ -334,7 +334,7 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace trace = createHandshakeWorkflow(conEnd);
         trace.addTlsAction(new RenegotiationAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
-        for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
         }
         return trace;
@@ -348,7 +348,7 @@ public class WorkflowConfigurationFactory {
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
                 new HelloRequestMessage(config));
         trace.addTlsAction(action);
-        for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
         }
         return trace;

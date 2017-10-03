@@ -12,14 +12,14 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
+import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import java.util.Objects;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeProtocolVersionAction extends TLSAction {
+public class ChangeProtocolVersionAction extends TlsAction {
 
     private ProtocolVersion newValue;
     private ProtocolVersion oldValue = null;
