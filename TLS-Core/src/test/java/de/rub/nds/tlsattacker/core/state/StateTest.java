@@ -10,10 +10,9 @@ package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
-import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -42,7 +41,7 @@ public class StateTest {
         assertNotNull(s.getConfig());
         assertNull(s.getWorkflowTrace());
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("No context defined, perhaps because no workflow trace is loaded yet");
+        exception.expectMessage("No workflow trace loaded. Operation getTlsContext not permitted");
         assertNull(s.getTlsContext());
     }
 
@@ -63,7 +62,7 @@ public class StateTest {
 
         assertNull(s.getWorkflowTrace());
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("No context defined, perhaps because no workflow trace is loaded yet");
+        exception.expectMessage("No workflow trace loaded. Operation getTlsContext not permitted");
         assertNull(s.getTlsContext());
     }
 
@@ -85,23 +84,7 @@ public class StateTest {
         assertNotNull(s.getWorkflowTrace());
         assertNotNull(s.getTlsContext());
 
-        assertEquals(s.getTlsContext().getConnectionEnd(), trace.getConnectionEnds().get(0));
-    }
-
-    /**
-     * Be thorough with the context map and make sure that it can only be
-     * modified via methods provided by State.
-     */
-    @Test
-    public void testImmutableContextList() {
-        Config config = Config.createConfig();
-        WorkflowTrace trace = new WorkflowTrace(config);
-        State s = new State(config, trace);
-
-        TlsContext ctx = new TlsContext();
-        Map<String, TlsContext> cMap = s.getTlsContexts();
-        exception.expect(UnsupportedOperationException.class);
-        cMap.put("ctxAlias", ctx);
+        assertEquals(s.getTlsContext().getConnection(), trace.getConnections().get(0));
     }
 
     /**
@@ -111,8 +94,8 @@ public class StateTest {
     public void testDuplicateAlias() {
         State s = new State();
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addConnectionEnd(new ClientConnectionEnd("conEnd1"));
-        trace.addConnectionEnd(new ServerConnectionEnd("conEnd1"));
+        trace.addConnection(new OutboundConnection("conEnd1"));
+        trace.addConnection(new InboundConnection("conEnd1"));
 
         exception.expect(ConfigurationException.class);
         exception.expectMessage("Connection end alias already in use:");
@@ -128,8 +111,8 @@ public class StateTest {
     public void testGetContextAliasRequired() {
         State s = new State();
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addConnectionEnd(new ClientConnectionEnd("conEnd1"));
-        trace.addConnectionEnd(new ServerConnectionEnd("conEnd2"));
+        trace.addConnection(new OutboundConnection("conEnd1"));
+        trace.addConnection(new InboundConnection("conEnd2"));
         s.setWorkflowTrace(trace);
 
         exception.expect(ConfigurationException.class);

@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
@@ -40,16 +41,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -79,7 +79,7 @@ public class TlsContext {
     /**
      * The end point of the TLS connection that this context represents.
      */
-    private ConnectionEnd connectionEnd;
+    private AliasedConnection connection;
 
     /**
      * Shared key established during the handshake.
@@ -396,21 +396,31 @@ public class TlsContext {
      * @param config
      */
     public TlsContext(Config config) {
-        if (config.getConnectionEnds().size() > 1) {
-            throw new ConfigurationException("Attempting to create context from a config containing"
-                    + " multiple connection ends. Please specify the connection end to use.");
-        }
-        init(config, config.getConnectionEnd());
+        RunningModeType mode = config.getDefaulRunningMode();
+        if (null == mode) {
+            throw new ConfigurationException("Cannot create connection for, running mode not set");
+        } else
+            switch (mode) {
+                case CLIENT:
+                    init(config, config.getDefaultClientConnection());
+                    break;
+                case SERVER:
+                    init(config, config.getDefaultServerConnection());
+                    break;
+                default:
+                    throw new ConfigurationException("Cannot create connection for unknown running mode " + "'" + mode
+                            + "'");
+            }
     }
 
-    public TlsContext(Config config, ConnectionEnd conEnd) {
-        init(config, conEnd);
+    public TlsContext(Config config, AliasedConnection connection) {
+        init(config, connection);
     }
 
-    private void init(Config config, ConnectionEnd conEnd) {
+    private void init(Config config, AliasedConnection connection) {
         this.config = config;
         digest = new MessageDigestCollector();
-        connectionEnd = conEnd;
+        this.connection = connection;
         recordLayerType = config.getRecordLayerType();
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
@@ -1249,12 +1259,12 @@ public class TlsContext {
         return config;
     }
 
-    public ConnectionEnd getConnectionEnd() {
-        return connectionEnd;
+    public AliasedConnection getConnection() {
+        return connection;
     }
 
-    public void setConnectionEnd(ConnectionEnd connectionEnd) {
-        this.connectionEnd = connectionEnd;
+    public void setConnection(AliasedConnection connection) {
+        this.connection = connection;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -1340,19 +1350,19 @@ public class TlsContext {
     public void initTransportHandler() {
 
         if (transportHandler == null) {
-            if (connectionEnd == null) {
+            if (connection == null) {
                 throw new ConfigurationException("Connection end not set");
             }
-            transportHandler = TransportHandlerFactory.createTransportHandler(connectionEnd);
+            transportHandler = TransportHandlerFactory.createTransportHandler(connection);
         }
 
         try {
             transportHandler.initialize();
         } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values in " + connectionEnd.toString(), ex);
+            throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
             throw new ConfigurationException("Unable to initialize the transport handler with: "
-                    + connectionEnd.toString(), ex);
+                    + connection.toString(), ex);
         }
     }
 
@@ -1369,14 +1379,18 @@ public class TlsContext {
     @Override
     public String toString() {
         StringBuilder info = new StringBuilder();
-        info.append("TlsContext{ '").append(connectionEnd.getAlias()).append("'");
-        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
-            info.append(", listening on port ").append(connectionEnd.getPort());
+        if (connection == null) {
+            info.append("TlsContext{ (no connection set) }");
         } else {
-            info.append(", connected to ").append(connectionEnd.getHostname()).append(":")
-                    .append(connectionEnd.getPort());
+            info.append("TlsContext{'").append(connection.getAlias()).append("'");
+            if (connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                info.append(", listening on port ").append(connection.getPort());
+            } else {
+                info.append(", connected to ").append(connection.getHostname()).append(":")
+                        .append(connection.getPort());
+            }
+            info.append("}");
         }
-        info.append("}");
         return info.toString();
     }
 

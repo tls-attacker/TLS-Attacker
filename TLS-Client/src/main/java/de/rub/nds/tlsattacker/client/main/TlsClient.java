@@ -46,11 +46,11 @@ public class TlsClient {
                 TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
             } catch (ConfigurationException E) {
-                LOGGER.warn("Encountered a ConfigurationException aborting.");
+                LOGGER.warn("Encountered a ConfigurationException aborting. See debug for more info.");
                 LOGGER.debug(E);
             }
         } catch (ParameterException E) {
-            LOGGER.warn("Could not parse provided parameters");
+            LOGGER.warn("Could not parse provided parameters. See debug for more info.");
             LOGGER.debug(E);
             commander.usage();
             ex = E;

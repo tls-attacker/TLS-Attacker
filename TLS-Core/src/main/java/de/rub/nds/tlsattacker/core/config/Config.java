@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
@@ -33,32 +34,25 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -75,14 +69,6 @@ import org.apache.logging.log4j.Logger;
 public class Config implements Serializable {
 
     protected static final Logger LOGGER = LogManager.getLogger(Config.class);
-
-    /**
-     * Alias of the default connection end. This is/should be used whenever a
-     * single connection end is needed only. In the default single context
-     * scenarios (as are used in TLS-Client/TLS-Server), this will also be the
-     * alias of the default context.
-     */
-    public static final String DEFAULT_CONNECTION_END_ALIAS = "defaultConnectionEnd";
 
     /**
      * The default Config file to load.
@@ -131,19 +117,20 @@ public class Config implements Serializable {
     private ProtocolVersion highestProtocolVersion = ProtocolVersion.TLS12;
 
     /**
-     * The Workflow Trace that should be executed
+     * The default connection parameters to use when running TLS-Client.
+     * 
+     * @return
      */
-    private WorkflowTrace workflowTrace = null;
+    private OutboundConnection defaultClientConnection;
 
     /**
-     * Connection ends that we know for workflow execution. For a default
-     * config, this will be initialized with a default connection end, that is:
-     * (CLIENT connecting to 127.0.0.1:443 with alias DEFAULT_CONTEXT_ALIAS)
+     * The default connection parameters to use when running TLS-Server.
+     * 
+     * @return
      */
-    @XmlElements(value = { @XmlElement(type = ConnectionEnd.class, name = "ConnectionEnd"),
-            @XmlElement(type = ServerConnectionEnd.class, name = "ServerConnectionEnd"),
-            @XmlElement(type = ClientConnectionEnd.class, name = "ClientConnectionEnd") })
-    private List<ConnectionEnd> connectionEnds;
+    private InboundConnection defaultServerConnection;
+
+    private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
     /**
      * If default generated WorkflowTraces should contain client Authentication
@@ -375,18 +362,6 @@ public class Config implements Serializable {
      * Default certificate status request v2 extension request list.
      */
     private List<RequestItemV2> statusRequestV2RequestList;
-
-    /**
-     * Default timeout for the connections. If not explicitly specified,
-     * connection ends will be initialized with this timeout.
-     */
-    private Integer defaultTimeout = 1000;
-
-    /**
-     * Default TransportHandlerType that shall be used. If not explicitly
-     * specified, connection ends will be initialized with this type.
-     */
-    private TransportHandlerType defaultTransportHandlerType = TransportHandlerType.TCP;
 
     /**
      * If we should use a workflow trace specified in File
@@ -823,9 +798,8 @@ public class Config implements Serializable {
     private boolean httpsParsingEnabled = false;
 
     private Config() {
-        connectionEnds = new ArrayList<>();
-        ConnectionEnd defaultConEnd = new ClientConnectionEnd(DEFAULT_CONNECTION_END_ALIAS, 443, "127.0.0.1");
-        addConnectionEnd(defaultConEnd);
+        defaultClientConnection = new OutboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "127.0.0.1");
+        defaultServerConnection = new InboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "127.0.0.1");
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -1718,35 +1692,6 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public TransportHandlerType getDefaultTransportHandlerType() {
-        return defaultTransportHandlerType;
-    }
-
-    public void setDefaultTransportHandlerType(TransportHandlerType transportHandlerType) {
-        defaultTransportHandlerType = transportHandlerType;
-        for (ConnectionEnd conEnd : connectionEnds) {
-            conEnd.setDefaultTransportHandlerType(defaultTransportHandlerType);
-        }
-    }
-
-    public Integer getDefaultTimeout() {
-        return defaultTimeout;
-    }
-
-    /**
-     * Sets the Default timeout and sets the default Timeout in every
-     * ConnectionEnd
-     * 
-     * @param timeout
-     *            Timeout to be set
-     */
-    public void setDefaultTimeout(Integer timeout) {
-        defaultTimeout = timeout;
-        for (ConnectionEnd conEnd : connectionEnds) {
-            conEnd.setDefaultTimeout(defaultTimeout);
-        }
-    }
-
     public boolean isSniHostnameFatal() {
         return sniHostnameFatal;
     }
@@ -1797,14 +1742,6 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedCiphersuites(CipherSuite... defaultClientSupportedCiphersuites) {
         this.defaultClientSupportedCiphersuites = Arrays.asList(defaultClientSupportedCiphersuites);
-    }
-
-    public WorkflowTrace getWorkflowTrace() {
-        return workflowTrace;
-    }
-
-    public void setWorkflowTrace(WorkflowTrace workflowTrace) {
-        this.workflowTrace = workflowTrace;
     }
 
     public Boolean isClientAuthentication() {
@@ -2329,46 +2266,28 @@ public class Config implements Serializable {
         this.defaultServerSupportedCompressionMethods = Arrays.asList(defaultServerSupportedCompressionMethods);
     }
 
-    public void clearConnectionEnds() {
-        if (connectionEnds != null) {
-            connectionEnds.clear();
-        }
+    public OutboundConnection getDefaultClientConnection() {
+        return defaultClientConnection;
     }
 
-    public final void addConnectionEnd(ConnectionEnd conEnd) {
-        if (connectionEnds == null) {
-            connectionEnds = new ArrayList<>();
-        }
-
-        // Make sure that the connection end will fallback to out defaults
-        conEnd.setDefaultTimeout(defaultTimeout);
-        conEnd.setDefaultTransportHandlerType(defaultTransportHandlerType);
-
-        connectionEnds.add(conEnd);
+    public void setDefaultClientConnection(OutboundConnection defaultClientConnection) {
+        this.defaultClientConnection = defaultClientConnection;
     }
 
-    /**
-     * Convenience method for getting a (default) connection end if working with
-     * a single end. This should be used when working with a single connection
-     * end only, which usually is the default connection end.
-     * 
-     * @return the connection end, if there is only one
-     */
-    public ConnectionEnd getConnectionEnd() {
-        if (connectionEnds == null) {
-            return null;
-        } else if (connectionEnds.size() > 1) {
-            throw new ConfigurationException("This method can only be used if exactly one connection"
-                    + " end is defined, but multiple connection ends are set.");
-        }
-        return connectionEnds.get(0);
+    public InboundConnection getDefaultServerConnection() {
+        return defaultServerConnection;
     }
 
-    public List<ConnectionEnd> getConnectionEnds() {
-        if (connectionEnds == null) {
-            return null;
-        }
-        return Collections.unmodifiableList(connectionEnds);
+    public void setDefaultServerConnection(InboundConnection defaultServerConnection) {
+        this.defaultServerConnection = defaultServerConnection;
+    }
+
+    public RunningModeType getDefaulRunningMode() {
+        return defaultRunningMode;
+    }
+
+    public void setDefaulRunningMode(RunningModeType defaulRunningMode) {
+        this.defaultRunningMode = defaulRunningMode;
     }
 
     public boolean isStopActionsAfterFatal() {

@@ -8,20 +8,122 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class WorkflowTraceUtil {
+
+    protected static final Logger LOGGER = LogManager.getLogger(WorkflowTraceUtil.class);
+
+    public static void mixInDefaultsForExecution(WorkflowTrace trace, Config config) {
+        mixInDefaultsForExecution(trace, config, config.getDefaulRunningMode());
+    }
+
+    /**
+     * Merge in default values from Config if necessary.
+     */
+    public static void mixInDefaultsForExecution(WorkflowTrace trace, Config config, RunningModeType mode) {
+        List<AliasedConnection> traceConnections = trace.getConnections();
+        AliasedConnection defaultInCon = config.getDefaultServerConnection();
+        AliasedConnection defaultOutCon = config.getDefaultClientConnection();
+
+        if (traceConnections == null) {
+            traceConnections = new ArrayList<>();
+            trace.setConnections(traceConnections);
+        }
+
+        if (traceConnections.isEmpty()) {
+            if (null == mode) {
+                LOGGER.debug("No running mode defined, assuming mode is CLIENT");
+                mode = RunningModeType.CLIENT;
+            }
+            switch (mode) {
+                case CLIENT:
+                    traceConnections.add(defaultOutCon);
+                    break;
+                case SERVER:
+                    traceConnections.add(defaultInCon);
+                    break;
+                default:
+                    throw new ConfigurationException("No connections defined in workflow trace and"
+                            + "default configuration for this running mode (" + mode + ") is not "
+                            + "supported. Please define some connections in the workflow trace.\n");
+            }
+        }
+
+        for (AliasedConnection traceCon : traceConnections) {
+            ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
+            if (null == localConEndType) {
+                throw new ConfigurationException("WorkflowTrace defines a connection with an"
+                        + "empty localConnectionEndType. Don't know how to handle this!");
+            } else
+                switch (traceCon.getLocalConnectionEndType()) {
+                    case CLIENT:
+                        traceCon.mixInDefaults(defaultOutCon);
+                        break;
+                    case SERVER:
+                        traceCon.mixInDefaults(defaultInCon);
+                        break;
+                    default:
+                        throw new ConfigurationException("WorkflowTrace defines a connection with an"
+                                + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
+                                + "how to handle this!");
+                }
+        }
+    }
+
+    public static void stripDefaultsForSerialization(WorkflowTrace trace, Config config) {
+        stripDefaultsForSerialization(trace, config, config.getDefaulRunningMode());
+    }
+
+    /**
+     * Reverse mergeInDefaultsForExecution(). Results in a WorkflowTrace ready
+     * for serialization with JAXB.
+     */
+    public static void stripDefaultsForSerialization(WorkflowTrace trace, Config config, RunningModeType mode) {
+        List<AliasedConnection> traceConnections = trace.getConnections();
+        AliasedConnection defaultInCon = config.getDefaultServerConnection();
+        AliasedConnection defaultOutCon = config.getDefaultClientConnection();
+
+        for (AliasedConnection traceCon : traceConnections) {
+            ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
+            if (null == localConEndType) {
+                throw new ConfigurationException("WorkflowTrace defines a connection with an"
+                        + "empty localConnectionEndType. Don't know how to handle this!");
+            } else
+                switch (traceCon.getLocalConnectionEndType()) {
+                    case CLIENT:
+                        traceCon.stripDefaults(defaultOutCon);
+                        break;
+                    case SERVER:
+                        traceCon.stripDefaults(defaultInCon);
+                        break;
+                    default:
+                        throw new ConfigurationException("WorkflowTrace defines a connection with an"
+                                + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
+                                + "how to handle this!");
+                }
+
+        }
+    }
 
     public static ProtocolMessage getFirstReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {
         List<ProtocolMessage> messageList = getAllReceivedMessages(trace);

@@ -18,14 +18,14 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.FakeReceiveMessageHelper;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -76,8 +76,8 @@ public class ForwardActionTest {
         alert.setLevel(AlertLevel.FATAL.getValue());
 
         WorkflowTrace trace = new WorkflowTrace();
-        trace.addConnectionEnd(new ClientConnectionEnd(ctx1Alias));
-        trace.addConnectionEnd(new ServerConnectionEnd(ctx2Alias));
+        trace.addConnection(new OutboundConnection(ctx1Alias));
+        trace.addConnection(new InboundConnection(ctx2Alias));
 
         state = new State(config, trace);
         ctx1 = state.getTlsContext(ctx1Alias);

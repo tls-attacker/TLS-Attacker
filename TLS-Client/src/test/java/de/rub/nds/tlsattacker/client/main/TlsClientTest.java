@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -25,6 +26,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -33,8 +36,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -143,10 +144,11 @@ public class TlsClientTest {
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
+        TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
+        timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
         clientDelegate.setHost("localhost:" + port);
         Config config = clientCommandConfig.createConfig();
-        config.setDefaultTimeout(TIMEOUT);
         config.setEnforceSettings(false);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
@@ -174,7 +176,6 @@ public class TlsClientTest {
                 cslist.add(cs);
                 config.setDefaultClientSupportedCiphersuites(cslist);
                 config.setDefaultSelectedCipherSuite(cs);
-                config.setWorkflowTrace(null);
                 boolean result = testExecuteWorkflow(config);
                 LOGGER.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
                         + result);
@@ -210,25 +211,26 @@ public class TlsClientTest {
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
+        TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
+        timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
         clientDelegate.setHost("localhost:" + PORT);
         Config config = clientCommandConfig.createConfig();
-        config.setDefaultTimeout(TIMEOUT);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
         State state = new State(config, new WorkflowTrace(config));
-        ConnectionEnd ourConnectionEnd = new ClientConnectionEnd();
+        AliasedConnection con = new OutboundConnection();
 
         WorkflowTrace trace = state.getWorkflowTrace();
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-                new ClientHelloMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
-                new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.CLIENT, new ClientHelloMessage(
+                config)));
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER, new ServerHelloMessage(
+                config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.CLIENT,
                 new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
                         config)));
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);

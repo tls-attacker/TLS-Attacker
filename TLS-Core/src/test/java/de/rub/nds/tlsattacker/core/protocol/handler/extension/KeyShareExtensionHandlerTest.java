@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        context.setConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();

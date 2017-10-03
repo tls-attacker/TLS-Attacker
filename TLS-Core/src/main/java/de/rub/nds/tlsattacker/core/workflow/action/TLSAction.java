@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
 import java.io.Serializable;
@@ -51,7 +51,7 @@ public abstract class TLSAction implements Serializable {
 
     public String getContextAlias() {
         if (contextAlias == null) {
-            return Config.DEFAULT_CONNECTION_END_ALIAS;
+            return AliasedConnection.DEFAULT_CONNECTION_ALIAS;
         } else {
             return contextAlias;
         }

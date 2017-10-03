@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.TransportHandlerTypeConverter;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 /**
@@ -44,8 +46,18 @@ public class TransportHandlerDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        if (transportHandlerType != null) {
-            config.setDefaultTransportHandlerType(transportHandlerType);
+        if (transportHandlerType == null) {
+            return;
         }
+
+        if (config.getDefaultClientConnection() == null) {
+            config.setDefaultClientConnection(new OutboundConnection());
+        }
+        if (config.getDefaultServerConnection() == null) {
+            config.setDefaultServerConnection(new InboundConnection());
+        }
+
+        config.getDefaultClientConnection().setTransportHandlerType(transportHandlerType);
+        config.getDefaultServerConnection().setTransportHandlerType(transportHandlerType);
     }
 }

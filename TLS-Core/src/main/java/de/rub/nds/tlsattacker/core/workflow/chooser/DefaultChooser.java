@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -524,17 +524,13 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public ConnectionEnd getConnectionEnd() {
-        if (context.getConnectionEnd() != null) {
-            return context.getConnectionEnd();
-        } else {
-            return config.getConnectionEnd();
-        }
+    public Connection getConnection() {
+        return context.getConnection();
     }
 
     @Override
     public ConnectionEndType getMyConnectionPeer() {
-        return getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
                 : ConnectionEndType.CLIENT;
     }
 

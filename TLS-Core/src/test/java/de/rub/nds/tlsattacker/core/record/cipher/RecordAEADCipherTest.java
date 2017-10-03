@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testEncrypt() {
-        context.setConnectionEnd(new ServerConnectionEnd());
+        context.setConnection(new InboundConnection());
         this.cipher = new RecordAEADCipher(context);
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
         byte[] ciphertext = cipher.encrypt(plaintext);
@@ -59,7 +59,7 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testDecrypt() {
-        context.setConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         this.cipher = new RecordAEADCipher(context);
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         byte[] plaintext = cipher.decrypt(ciphertext);

@@ -13,8 +13,8 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import java.math.BigInteger;
 import java.security.Security;
 import java.security.interfaces.RSAPublicKey;
@@ -44,8 +44,9 @@ public class MangerAttackServerTest {
         Security.addProvider(new BouncyCastleProvider());
 
         Config config = Config.createConfig();
-        config.clearConnectionEnds();
-        config.addConnectionEnd(new ClientConnectionEnd(Config.DEFAULT_CONNECTION_END_ALIAS, PORT, HOSTNAME));
+        OutboundConnection clientCon = new OutboundConnection(PORT, HOSTNAME);
+        clientCon.setTimeout(50);
+        config.setDefaultClientConnection(clientCon);
 
         List<CipherSuite> ciphersuites = new LinkedList<>();
         ciphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
@@ -59,7 +60,6 @@ public class MangerAttackServerTest {
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-        config.setDefaultTimeout(50);
         Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config);
 
         long start = System.currentTimeMillis();

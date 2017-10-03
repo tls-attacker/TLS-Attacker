@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 
 /**
  *
@@ -41,23 +41,23 @@ public class ClientDelegate extends Delegate {
             throw new ParameterException("Could not parse provided host: " + host);
         }
 
-        ClientConnectionEnd conEnd = new ClientConnectionEnd(Config.DEFAULT_CONNECTION_END_ALIAS);
+        OutboundConnection con = config.getDefaultClientConnection();
+        if (con == null) {
+            con = new OutboundConnection();
+            config.setDefaultClientConnection(con);
+        }
         String[] parsedHost = host.split(":");
         switch (parsedHost.length) {
             case 1:
-                conEnd.setHostname(host);
-                conEnd.setPort(config.getConnectionEnd().getPort());
+                con.setHostname(host);
                 break;
             case 2:
-                conEnd.setHostname(parsedHost[0]);
-                conEnd.setPort(parsePort(parsedHost[1]));
+                con.setHostname(parsedHost[0]);
+                con.setPort(parsePort(parsedHost[1]));
                 break;
             default:
                 throw new ParameterException("Could not parse provided host: " + host);
         }
-        config.clearConnectionEnds();
-        config.addConnectionEnd(conEnd);
-
     }
 
     private int parsePort(String portStr) {

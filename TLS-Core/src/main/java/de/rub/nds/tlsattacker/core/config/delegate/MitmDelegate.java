@@ -12,10 +12,8 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
-import java.util.ArrayList;
-import java.util.List;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import org.apache.logging.log4j.LogManager;
 
 /**
@@ -31,90 +29,84 @@ public class MitmDelegate extends Delegate {
 
     @Parameter(names = "-accept", required = true, description = "A MiTM client can connect to this connection end."
             + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
-    protected List<String> acceptingConnectionEnds = new ArrayList<>();
+    protected String inboundConnectionStr;
 
     @Parameter(names = "-connect", required = true, description = "Add a server to which the MiTM will connect to."
             + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
-    protected List<String> connectingConnectionEnds = new ArrayList<>();
+    protected String outboundConnectionStr;
 
     public MitmDelegate() {
     }
 
-    public List<String> getAcceptingConnectionEnds() {
-        return acceptingConnectionEnds;
+    public String getInboundConnectionStr() {
+        return inboundConnectionStr;
     }
 
-    public void setAcceptingConnectionEnds(List<String> acceptingConnectionEnds) {
-        this.acceptingConnectionEnds = acceptingConnectionEnds;
+    public void setInboundConnectionStr(String inboundConnectionStr) {
+        this.inboundConnectionStr = inboundConnectionStr;
     }
 
-    public List<String> getConnectingConnectionEnds() {
-        return connectingConnectionEnds;
+    public String getOutboundConnectionStr() {
+        return outboundConnectionStr;
     }
 
-    public void setConnectingConnectionEnds(List<String> connectingConnectionEnds) {
-        this.connectingConnectionEnds = connectingConnectionEnds;
+    public void setOutboundConnectionStr(String outboundConnectionStr) {
+        this.outboundConnectionStr = outboundConnectionStr;
     }
 
-    /**
-     * Parse provided connections into ConnectionEnds before adding them to
-     * config.
-     * 
-     * @param config
-     */
     @Override
     public void applyDelegate(Config config) {
 
-        if ((acceptingConnectionEnds == null) || (connectingConnectionEnds == null)) {
-            // Though {accepting,connecting}ConnectionEnds are required
-            // parameters we can get here if we call applyDelegate
-            // manually, e.g. in tests.
-            throw new ParameterException("{accepting|connecting}ConnectionEnds is empty!");
+        if ((inboundConnectionStr == null) || (outboundConnectionStr == null)) {
+            // Though {inbound, outbound}Connections are required parameters we
+            // can get
+            // here if we call applyDelegate manually, e.g. in tests.
+            throw new ParameterException("{inbound|outbound}ConnectionStr is empty!");
         }
 
-        config.clearConnectionEnds();
-
-        for (String conEndStr : acceptingConnectionEnds) {
-            ServerConnectionEnd serverConEnd = new ServerConnectionEnd();
-
-            String[] parsedPort = conEndStr.split(":");
-            switch (parsedPort.length) {
-                case 1:
-                    serverConEnd.setAlias("accept:" + parsedPort[0]);
-                    serverConEnd.setPort(parsePort(parsedPort[0]));
-                    break;
-                case 2:
-                    serverConEnd.setAlias(parsedPort[0]);
-                    serverConEnd.setPort(parsePort(parsedPort[1]));
-                    break;
-                default:
-                    throw new ConfigurationException("Could not parse provided accepting connection" + " end: "
-                            + conEndStr + ". Expected [CONNECTION_ALIAS:]<PORT>");
-            }
-            config.addConnectionEnd(serverConEnd);
+        InboundConnection inboundConnection = config.getDefaultServerConnection();
+        if (inboundConnection == null) {
+            inboundConnection = new InboundConnection();
+            config.setDefaultServerConnection(inboundConnection);
         }
-
-        for (String conEndStr : connectingConnectionEnds) {
-            ClientConnectionEnd clientConEnd = new ClientConnectionEnd();
-
-            String[] parsedHost = conEndStr.split(":");
-            switch (parsedHost.length) {
-                case 2:
-                    clientConEnd.setHostname(parsedHost[0]);
-                    clientConEnd.setPort(parsePort(parsedHost[1]));
-                    clientConEnd.setAlias(conEndStr);
-                    break;
-                case 3:
-                    clientConEnd.setAlias(parsedHost[0]);
-                    clientConEnd.setHostname(parsedHost[1]);
-                    clientConEnd.setPort(parsePort(parsedHost[2]));
-                    break;
-                default:
-                    throw new ConfigurationException("Could not parse provided server address: " + conEndStr
-                            + ". Expected [CONNECTION_ALIAS:]<HOSTNAME>:<PORT>");
-            }
-            config.addConnectionEnd(clientConEnd);
+        String[] parsedPort = inboundConnectionStr.split(":");
+        switch (parsedPort.length) {
+            case 1:
+                inboundConnection.setAlias("accept:" + parsedPort[0]);
+                inboundConnection.setPort(parsePort(parsedPort[0]));
+                break;
+            case 2:
+                inboundConnection.setAlias(parsedPort[0]);
+                inboundConnection.setPort(parsePort(parsedPort[1]));
+                break;
+            default:
+                throw new ConfigurationException("Could not parse provided accepting connection" + " end: "
+                        + inboundConnectionStr + ". Expected [CONNECTION_ALIAS:]<PORT>");
         }
+        config.setDefaultServerConnection(inboundConnection);
+
+        OutboundConnection outboundConnection = config.getDefaultClientConnection();
+        if (outboundConnection == null) {
+            outboundConnection = new OutboundConnection();
+            config.setDefaultClientConnection(outboundConnection);
+        }
+        String[] parsedHost = outboundConnectionStr.split(":");
+        switch (parsedHost.length) {
+            case 2:
+                outboundConnection.setHostname(parsedHost[0]);
+                outboundConnection.setPort(parsePort(parsedHost[1]));
+                outboundConnection.setAlias(outboundConnectionStr);
+                break;
+            case 3:
+                outboundConnection.setAlias(parsedHost[0]);
+                outboundConnection.setHostname(parsedHost[1]);
+                outboundConnection.setPort(parsePort(parsedHost[2]));
+                break;
+            default:
+                throw new ConfigurationException("Could not parse provided server address: " + outboundConnectionStr
+                        + ". Expected [CONNECTION_ALIAS:]<HOSTNAME>:<PORT>");
+        }
+        config.setDefaultClientConnection(outboundConnection);
     }
 
     private int parsePort(String portStr) {
@@ -124,5 +116,4 @@ public class MitmDelegate extends Delegate {
         }
         return port;
     }
-
 }

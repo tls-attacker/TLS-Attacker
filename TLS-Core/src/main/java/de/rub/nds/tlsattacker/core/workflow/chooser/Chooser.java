@@ -27,7 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -170,7 +170,7 @@ public abstract class Chooser {
 
     public abstract BigInteger getServerRSAPrivateKey();
 
-    public abstract ConnectionEnd getConnectionEnd();
+    public abstract Connection getConnection();
 
     public abstract ConnectionEndType getMyConnectionPeer();
 

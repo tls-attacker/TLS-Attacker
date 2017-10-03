@@ -55,8 +55,7 @@ public class BasicTlsClientServerTest {
         try {
             TimeHelper.setProvider(new FixedTimeProvider(0));
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
-            KeyStore ks = null;
-            ks = KeyStoreGenerator.createKeyStore(k, random);
+            KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
             BasicTlsServer tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", SERVER_PORT);
 
             LOGGER.info("Starting test server");

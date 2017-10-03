@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
@@ -19,15 +19,15 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MessageActionFactory {
-    public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEndType,
-            ProtocolMessage... protocolMessages) {
+    public static MessageAction createAction(AliasedConnection myConnectionEnd,
+            ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
         return createAction(myConnectionEnd, sendingConnectionEndType, Arrays.asList(protocolMessages));
     }
 
-    public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEnd,
+    public static MessageAction createAction(AliasedConnection myConnectionEnd, ConnectionEndType sendingConnectionEnd,
             List<ProtocolMessage> protocolMessages) {
         MessageAction action;
-        if (myConnectionEnd.getConnectionEndType() == sendingConnectionEnd) {
+        if (myConnectionEnd.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);
         } else {
             action = new ReceiveAction(protocolMessages);

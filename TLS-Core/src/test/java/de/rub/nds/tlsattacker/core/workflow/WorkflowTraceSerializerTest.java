@@ -11,15 +11,17 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -64,7 +66,7 @@ public class WorkflowTraceSerializerTest {
     @Test
     public void testWriteRead() throws Exception {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createFullWorkflow();
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
         // pick random protocol message and initialize a record with modifiable
         // variable
         List<AbstractRecord> records = new LinkedList<>();
@@ -156,19 +158,19 @@ public class WorkflowTraceSerializerTest {
         try {
 
             WorkflowTrace trace = new WorkflowTrace();
-            ConnectionEnd conEnd = new ClientConnectionEnd("theAlias", 1111, "host1111");
-            trace.addConnectionEnd(conEnd);
+            AliasedConnection con = new OutboundConnection("theAlias", 1111, "host1111");
+            trace.addConnection(con);
             action = new SendAction(new ClientHelloMessage(config));
-            action.setContextAlias(conEnd.getAlias());
+            action.setContextAlias(con.getAlias());
             trace.addTlsAction(action);
 
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
             sb.append("<workflowTrace>\n");
-            sb.append("    <ClientConnectionEnd>\n");
+            sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>theAlias</alias>\n");
             sb.append("        <port>1111</port>\n");
             sb.append("        <hostname>host1111</hostname>\n");
-            sb.append("    </ClientConnectionEnd>\n");
+            sb.append("    </OutboundConnection>\n");
             sb.append("    <SendAction>\n");
             sb.append("        <contextAlias>theAlias</contextAlias>\n");
             sb.append("        <messages>\n");
@@ -184,7 +186,7 @@ public class WorkflowTraceSerializerTest {
             String expected = sb.toString();
 
             String actual = WorkflowTraceSerializer.write(trace);
-            Assert.assertEquals(actual, expected);
+            Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);
@@ -201,32 +203,32 @@ public class WorkflowTraceSerializerTest {
         try {
 
             WorkflowTrace trace = new WorkflowTrace();
-            ConnectionEnd conEnd1 = new ClientConnectionEnd("alias1", 1111, "host1111");
-            ConnectionEnd conEnd2 = new ClientConnectionEnd("alias2", 1122, "host2222");
-            ConnectionEnd conEnd3 = new ServerConnectionEnd("alias3", 1313);
-            trace.addConnectionEnd(conEnd1);
-            trace.addConnectionEnd(conEnd2);
-            trace.addConnectionEnd(conEnd3);
+            AliasedConnection con1 = new OutboundConnection("alias1", 1111, "host1111");
+            AliasedConnection con2 = new OutboundConnection("alias2", 1122, "host2222");
+            AliasedConnection con3 = new InboundConnection("alias3", 1313);
+            trace.addConnection(con1);
+            trace.addConnection(con2);
+            trace.addConnection(con3);
             action = new SendAction(new ClientHelloMessage(config));
-            action.setContextAlias(conEnd3.getAlias());
+            action.setContextAlias(con3.getAlias());
             trace.addTlsAction(action);
 
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
             sb.append("<workflowTrace>\n");
-            sb.append("    <ClientConnectionEnd>\n");
+            sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>alias1</alias>\n");
             sb.append("        <port>1111</port>\n");
             sb.append("        <hostname>host1111</hostname>\n");
-            sb.append("    </ClientConnectionEnd>\n");
-            sb.append("    <ClientConnectionEnd>\n");
+            sb.append("    </OutboundConnection>\n");
+            sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>alias2</alias>\n");
             sb.append("        <port>1122</port>\n");
             sb.append("        <hostname>host2222</hostname>\n");
-            sb.append("    </ClientConnectionEnd>\n");
-            sb.append("    <ServerConnectionEnd>\n");
+            sb.append("    </OutboundConnection>\n");
+            sb.append("    <InboundConnection>\n");
             sb.append("        <alias>alias3</alias>\n");
             sb.append("        <port>1313</port>\n");
-            sb.append("    </ServerConnectionEnd>\n");
+            sb.append("    </InboundConnection>\n");
             sb.append("    <SendAction>\n");
             sb.append("        <contextAlias>alias3</contextAlias>\n");
             sb.append("        <messages>\n");
@@ -242,7 +244,7 @@ public class WorkflowTraceSerializerTest {
             String expected = sb.toString();
 
             String actual = WorkflowTraceSerializer.write(trace);
-            Assert.assertEquals(actual, expected);
+            Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {
             LOGGER.error(ex.getLocalizedMessage(), ex);

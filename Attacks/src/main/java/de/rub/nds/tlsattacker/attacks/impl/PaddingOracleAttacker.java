@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -28,6 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +63,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     }
 
     public void executeAttackRound(Record record) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(tlsConfig);
+        WorkflowTrace trace = cf.createWorkflowTrace(WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         state.setWorkflowTrace(trace);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction sendAction = new SendAction(applicationMessage);
@@ -180,12 +183,12 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
 
         if (pmSet.size() == 1) {
-            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getConnectionEnd().getHostname(),
-                    pmSetList);
+            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getDefaultClientConnection()
+                    .getHostname(), pmSetList);
             return false;
         } else {
             LOGGER.info("{}, Vulnerable (?), more messages found, recheck in debug mode: {}", tlsConfig
-                    .getConnectionEnd().getHostname(), pmSetList);
+                    .getDefaultClientConnection().getHostname(), pmSetList);
             return true;
         }
     }

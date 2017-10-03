@@ -10,7 +10,9 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
@@ -29,9 +31,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,10 +60,10 @@ public class WorkflowTrace implements Serializable {
     @XmlTransient
     Config config;
 
-    @XmlElements(value = { @XmlElement(type = ConnectionEnd.class, name = "ConnectionEnd"),
-            @XmlElement(type = ServerConnectionEnd.class, name = "ServerConnectionEnd"),
-            @XmlElement(type = ClientConnectionEnd.class, name = "ClientConnectionEnd") })
-    private List<ConnectionEnd> connectionEnds;
+    @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
+            @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
+            @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
+    private List<AliasedConnection> connections;
 
     /**
      * Workflow
@@ -114,7 +113,6 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addTlsAction(TLSAction action) {
-        assertValidAlias(action.getContextAlias());
         tlsActions.add(action);
     }
 
@@ -129,7 +127,6 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addTlsAction(int position, TLSAction action) {
-        assertValidAlias(action.getContextAlias());
         tlsActions.add(position, action);
     }
 
@@ -149,42 +146,39 @@ public class WorkflowTrace implements Serializable {
         this.tlsActions = Arrays.asList(tlsActions);
     }
 
-    public boolean addConnectionEnd(ConnectionEnd con) {
-        if (connectionEnds == null) {
-            connectionEnds = new ArrayList<>();
+    public boolean addConnection(AliasedConnection con) {
+        if (connections == null) {
+            connections = new ArrayList<>();
         }
-        return connectionEnds.add(con);
+        return connections.add(con);
     }
 
-    public void addConnectionEnd(int position, ConnectionEnd con) {
-        connectionEnds.add(position, con);
-    }
-
-    public ConnectionEnd removeConnectionEnd(int index) {
-        return connectionEnds.remove(index);
-    }
-
-    public List<ConnectionEnd> getConnectionEnds() {
-        if (connectionEnds == null) {
-            if ((config != null) && (config.getConnectionEnds() != null)) {
-                return config.getConnectionEnds();
-            }
-            throw new ConfigurationException("This workflow trace does not know about any " + "connection end(s).");
+    public void addConnection(int position, AliasedConnection con) {
+        if (connections == null) {
+            connections = new ArrayList<>();
         }
-        return connectionEnds;
+        connections.add(position, con);
     }
 
-    public void setConnectionEnds(List<ConnectionEnd> conEnds) {
-        this.connectionEnds = conEnds;
+    public AliasedConnection removeConnection(int index) {
+        return connections.remove(index);
     }
 
-    public void setConnectionEnds(ConnectionEnd... conEnds) {
-        this.connectionEnds = Arrays.asList(conEnds);
+    public List<AliasedConnection> getConnections() {
+        return connections;
     }
 
-    public void clearConnectionEnds() {
-        if (connectionEnds != null) {
-            connectionEnds.clear();
+    public void setConnections(List<AliasedConnection> cons) {
+        this.connections = cons;
+    }
+
+    public void setConnections(AliasedConnection... cons) {
+        setConnections(Arrays.asList(cons));
+    }
+
+    public void clearConnection() {
+        if (connections != null) {
+            connections.clear();
         }
     }
 
@@ -296,28 +290,6 @@ public class WorkflowTrace implements Serializable {
             }
         }
         return true;
-    }
-
-    /**
-     * Check if the given alias matches one of our connection ends.
-     */
-    private void assertValidAlias(String alias) {
-        StringBuilder errMsg = new StringBuilder("known aliases: ");
-        List<ConnectionEnd> conEnds = getConnectionEnds();
-        if ((conEnds != null) && (!conEnds.isEmpty())) {
-            for (ConnectionEnd conEnd : conEnds) {
-                if (conEnd.getAlias().equals(alias)) {
-                    return;
-                }
-                errMsg.append(conEnd.getAlias()).append(' ');
-            }
-        }
-        errMsg.insert(0, "Action alias '" + alias + "' refers to an unknown connection end - ");
-        throw new ConfigurationException(errMsg.toString());
-    }
-
-    public void setConfig(Config config) {
-        this.config = config;
     }
 
 }

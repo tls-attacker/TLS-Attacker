@@ -52,8 +52,8 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
-                LOGGER.debug("Connection End: " + chooser.getConnectionEnd().getConnectionEndType());
-                if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+                LOGGER.debug("Connection End: " + chooser.getConnection().getLocalConnectionEndType());
+                if (chooser.getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                     finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getServerHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
@@ -78,7 +78,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
             byte[] handshakeMessageHash = chooser.getContext().getDigest()
                     .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
-            if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (chooser.getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                 // TODO put this in seperate config option
                 return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                         PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,

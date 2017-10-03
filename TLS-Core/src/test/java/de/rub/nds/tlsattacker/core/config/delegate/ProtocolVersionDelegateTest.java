@@ -14,7 +14,9 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,18 +77,21 @@ public class ProtocolVersionDelegateTest {
     public void testApplyDelegate() {
         Config config = Config.createConfig();
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
-        config.setDefaultTransportHandlerType(TransportHandlerType.EAP_TLS);
+        config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.EAP_TLS);
+        config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.EAP_TLS);
         args = new String[2];
         args[0] = "-version";
         args[1] = "TLS12";
+        assertThat(config.getHighestProtocolVersion(), equalTo(ProtocolVersion.SSL2));
+        assertThat(config.getDefaultClientConnection().getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
+        assertThat(config.getDefaultServerConnection().getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
+
         jcommander.parse(args);
-        assertTrue(config.getHighestProtocolVersion() == ProtocolVersion.SSL2);
-        assertTrue(config.getDefaultTransportHandlerType() == TransportHandlerType.EAP_TLS);
-        assertTrue(config.getConnectionEnd().getTransportHandlerType() == TransportHandlerType.EAP_TLS);
         delegate.applyDelegate(config);
-        assertTrue(config.getHighestProtocolVersion() == ProtocolVersion.TLS12);
-        assertTrue(config.getDefaultTransportHandlerType() == TransportHandlerType.TCP);
-        assertTrue(config.getConnectionEnd().getTransportHandlerType() == TransportHandlerType.TCP);
+
+        assertThat(config.getHighestProtocolVersion(), equalTo(ProtocolVersion.TLS12));
+        assertThat(config.getDefaultClientConnection().getTransportHandlerType(), equalTo(TransportHandlerType.TCP));
+        assertThat(config.getDefaultServerConnection().getTransportHandlerType(), equalTo(TransportHandlerType.TCP));
     }
 
     @Test

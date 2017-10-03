@@ -11,12 +11,14 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -72,41 +74,42 @@ public class ServerDelegateTest {
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
-        config.clearConnectionEnds();
+        int expectedDefaultTimeout = 390121;
+        config.getDefaultServerConnection().setTimeout(expectedDefaultTimeout);
         args = new String[2];
         args[0] = "-port";
         args[1] = "1234";
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        ConnectionEnd newConEnd = config.getConnectionEnd();
-        assertNotNull(newConEnd);
-        assertTrue(newConEnd.getPort() == 1234);
-        assertTrue(newConEnd.getConnectionEndType() == ConnectionEndType.SERVER);
+        AliasedConnection actual = config.getDefaultServerConnection();
+        assertNotNull(actual);
+        assertThat(actual.getPort(), equalTo(1234));
+        assertThat(actual.getLocalConnectionEndType(), equalTo(ConnectionEndType.SERVER));
+        assertThat(actual.getTimeout(), equalTo(expectedDefaultTimeout));
+
     }
 
     /**
      * Make sure that applying with port = null fails properly.
      */
     @Test
-    public void testApplyDelegateNullPort() {
+    public void applyingEmptyDelegateThrowsException() {
         Config config = Config.createConfig();
         exception.expect(ParameterException.class);
-        exception.expectMessage("port must be in interval [0,65535], but is null");
+        exception.expectMessage("Port must be set, but was not specified");
         delegate.applyDelegate(config);
     }
 
-    /**
-     * Make sure that applying this delegate removes all previously known
-     * connection ends.
-     */
     @Test
-    public void testApplyDelegateClearsOldConnectionEnds() {
+    public void testApplyDelegateWithEmptyConfig() {
         Config config = Config.createConfig();
-        delegate.setPort(9013);
+        config.setDefaultServerConnection(null);
+        int expectedPort = 8777;
+        delegate.setPort(expectedPort);
         delegate.applyDelegate(config);
-        assertTrue(config.getConnectionEnds().size() == 1);
-        // This should pass without ConfigurationException, too.
-        ConnectionEnd ourEnd = config.getConnectionEnd();
+        AliasedConnection actual = config.getDefaultServerConnection();
+        assertNotNull(actual);
+        assertThat(actual.getPort(), equalTo(expectedPort));
     }
 
     @Test

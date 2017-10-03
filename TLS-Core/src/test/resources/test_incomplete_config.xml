@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <tlsConfig>
+    <defaultClientConnection>
+        <alias>client</alias>
+        <port>8002</port>
+        <hostname>testHostname</hostname>
+    </defaultClientConnection>      
     <highestProtocolVersion>TLS12</highestProtocolVersion>
-    <connectionEnd>CLIENT</connectionEnd>
     <alias>default</alias>
     <password>password</password>
     <clientAuthentication>false</clientAuthentication>

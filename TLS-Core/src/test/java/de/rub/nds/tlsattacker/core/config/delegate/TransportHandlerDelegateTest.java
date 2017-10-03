@@ -13,7 +13,9 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,14 +75,17 @@ public class TransportHandlerDelegateTest {
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
+        config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.TCP);
+        config.getDefaultServerConnection().setTransportHandlerType(TransportHandlerType.TCP);
         args = new String[2];
         args[0] = "-transport_handler_type";
         args[1] = "UDP";
+
         jcommander.parse(args);
-        config.setDefaultTransportHandlerType(TransportHandlerType.TCP);
-        assertFalse(config.getDefaultTransportHandlerType() == TransportHandlerType.UDP);
         delegate.applyDelegate(config);
-        assertTrue(config.getDefaultTransportHandlerType() == TransportHandlerType.UDP);
+
+        assertThat(config.getDefaultClientConnection().getTransportHandlerType(), equalTo(TransportHandlerType.UDP));
+        assertThat(config.getDefaultServerConnection().getTransportHandlerType(), equalTo(TransportHandlerType.UDP));
     }
 
     @Test

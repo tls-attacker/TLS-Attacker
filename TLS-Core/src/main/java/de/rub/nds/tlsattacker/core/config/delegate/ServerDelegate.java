@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
 
 /**
  *
@@ -30,23 +30,28 @@ public class ServerDelegate extends Delegate {
     }
 
     public void setPort(int port) {
-        if (port < 0 || port > 65535) {
-            throw new ParameterException("port must be in interval [0,65535], but is " + port);
-        }
         this.port = port;
     }
 
     @Override
     public void applyDelegate(Config config) {
-        if (port == null) {
-            // Though port is a required parameter we can get here if
-            // we call applyDelegate manually, e.g. in tests.
-            throw new ParameterException("port must be in interval [0,65535], but is " + port);
+        int parsedPort = parsePort(port);
+        InboundConnection inboundConnection = config.getDefaultServerConnection();
+        if (inboundConnection != null) {
+            inboundConnection.setPort(parsedPort);
+        } else {
+            inboundConnection = new InboundConnection(parsedPort);
+            config.setDefaultServerConnection(inboundConnection);
         }
-        ServerConnectionEnd conEnd = new ServerConnectionEnd();
-        conEnd.setPort(port);
-        config.clearConnectionEnds();
-        config.addConnectionEnd(conEnd);
     }
 
+    private int parsePort(Integer portStr) {
+        if (port == null) {
+            throw new ParameterException("Port must be set, but was not specified");
+        }
+        if (port < 0 || port > 65535) {
+            throw new ParameterException("Port must be in interval [0,65535], but is " + port);
+        }
+        return port;
+    }
 }

@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
@@ -54,6 +55,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
+    private TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate
     private WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate
     private WorkflowOutputDelegate workflowOutputDelegate;
@@ -75,6 +78,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.clientDelegate = new ClientDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
+        this.timeoutDelegate = new TimeoutDelegate();
         this.workflowInputDelegate = new WorkflowInputDelegate();
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
@@ -92,6 +96,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
+        addDelegate(timeoutDelegate);
         addDelegate(certificateDelegate);
     }
 
@@ -99,8 +104,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public Config createConfig() {
         Config config = super.createConfig();
 
-        // Perform a HANDSHAKE if no workflow trace (type) is set explicitly
-        if (config.getWorkflowTraceType() == null && config.getWorkflowTrace() == null) {
+        if (config.getWorkflowTraceType() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }
         return config;

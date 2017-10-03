@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<config>
-    <ClientConnectionEnd>
-        <alias>testConnectionEnd</alias>
-        <hostname>testHostname</hostname>
-        <port>8002</port>
-    </ClientConnectionEnd>
-</config>

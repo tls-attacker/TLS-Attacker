@@ -57,7 +57,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setDefaultTimeout(1000);
+        tlsConfig.getDefaultClientConnection().setTimeout(1000);
 
         WorkflowTrace workflowTrace = new WorkflowTrace();
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
@@ -71,9 +71,9 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         workflowTrace.addTlsAction(new SendAction(messageList));
         messageList = new LinkedList<>();
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
-        tlsConfig.setWorkflowTrace(workflowTrace);
 
         State state = new State(tlsConfig);
+        state.setWorkflowTrace(workflowTrace);
         TlsContext tlsContext = state.getTlsContext();
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);

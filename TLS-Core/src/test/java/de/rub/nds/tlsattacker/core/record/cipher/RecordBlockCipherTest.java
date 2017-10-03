@@ -12,12 +12,14 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.GeneralConnectionEnd;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
+import java.util.ArrayList;
+import java.util.List;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +45,9 @@ public class RecordBlockCipherTest {
     @Test
     public void testConstructors() {
         // This test just checks that the init() method will not break
+        List<AliasedConnection> mixedConnections = new ArrayList<>();
+        mixedConnections.add(new InboundConnection());
+        mixedConnections.add(new OutboundConnection());
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
@@ -51,9 +56,8 @@ public class RecordBlockCipherTest {
                     && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
-                context.setConnectionEnd(new GeneralConnectionEnd());
-                for (ConnectionEndType end : ConnectionEndType.values()) {
-                    ((GeneralConnectionEnd) context.getConnectionEnd()).setConnectionEndType(end);
+                for (AliasedConnection con : mixedConnections) {
+                    context.setConnection(con);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
                         if (version == ProtocolVersion.SSL2 || version == ProtocolVersion.SSL3) {
                             continue;
@@ -73,7 +77,7 @@ public class RecordBlockCipherTest {
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
-        context.setConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         RecordBlockCipher cipher = new RecordBlockCipher(context);
     }
 

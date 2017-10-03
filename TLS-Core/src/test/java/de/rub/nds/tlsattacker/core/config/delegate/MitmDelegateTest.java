@@ -11,17 +11,19 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import java.util.ArrayList;
 import java.util.List;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import org.hamcrest.Matcher;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -38,11 +40,13 @@ public class MitmDelegateTest {
     private MitmDelegate delegate;
     private JCommander jcommander;
     private String[] args;
-    List<String> expectedAccepting = new ArrayList<>();
-    List<String> expectedConnecting = new ArrayList<>();
-    List<ConnectionEnd> expected = new ArrayList<>();
+    String expectedClientConStr;
+    String expectedServerConStr;
     Config config;
-    ServerConnectionEnd dummyConEnd = new ServerConnectionEnd();
+    InboundConnection dummyServerCon;
+    OutboundConnection dummyClientCon;
+    InboundConnection expectedServerCon;
+    OutboundConnection expectedClientCon;
 
     @Before
     public void setUp() {
@@ -52,127 +56,57 @@ public class MitmDelegateTest {
     }
 
     @Test
-    public void testGetSingleConnectionEnds() {
-        expectedAccepting.clear();
-        expectedConnecting.clear();
-        expectedAccepting.add("1234");
-        expectedConnecting.add("localhost:1234");
+    public void testParseValidParameters() {
+        expectedServerConStr = "1234";
+        expectedClientConStr = "localhost:1234";
         args = new String[4];
         args[0] = "-accept";
-        args[1] = expectedAccepting.get(0);
+        args[1] = expectedServerConStr;
         args[2] = "-connect";
-        args[3] = expectedConnecting.get(0);
+        args[3] = expectedClientConStr;
 
-        assertTrue(delegate.getAcceptingConnectionEnds().isEmpty());
-        assertTrue(delegate.getConnectingConnectionEnds().isEmpty());
+        assertNull(delegate.getInboundConnectionStr());
+        assertNull(delegate.getOutboundConnectionStr());
         jcommander.parse(args);
-        List<String> accConEndStrs = delegate.getAcceptingConnectionEnds();
-        assertNotNull(accConEndStrs);
-        assertEquals(accConEndStrs.size(), 1);
-        assertEquals(accConEndStrs, expectedAccepting);
 
-        List<String> conConEndStrs = delegate.getConnectingConnectionEnds();
-        assertNotNull(conConEndStrs);
-        assertEquals(conConEndStrs.size(), 1);
-        assertEquals(conConEndStrs, expectedConnecting);
+        String actualInConStr = delegate.getInboundConnectionStr();
+        assertNotNull(actualInConStr);
+        assertThat(actualInConStr, equalTo(expectedServerConStr));
+
+        String actualOutConStr = delegate.getOutboundConnectionStr();
+        assertNotNull(actualOutConStr);
+        assertThat(actualOutConStr, equalTo(expectedClientConStr));
     }
 
     @Test
-    public void testGetSingleConnectionEndsWithAlias() {
-        expectedAccepting.clear();
-        expectedConnecting.clear();
-        expectedAccepting.add("someAlias:1234");
-        expectedConnecting.add("anotherAlias:localhost:1234");
+    public void testParseValidParametersWithAlias() {
+        expectedServerConStr = "someAlias:1234";
+        expectedClientConStr = "anotherAlias:localhost:1234";
         args = new String[4];
         args[0] = "-accept";
-        args[1] = expectedAccepting.get(0);
+        args[1] = expectedServerConStr;
         args[2] = "-connect";
-        args[3] = expectedConnecting.get(0);
+        args[3] = expectedClientConStr;
 
-        assertTrue(delegate.getAcceptingConnectionEnds().isEmpty());
-        assertTrue(delegate.getConnectingConnectionEnds().isEmpty());
+        assertNull(delegate.getInboundConnectionStr());
+        assertNull(delegate.getOutboundConnectionStr());
         jcommander.parse(args);
-        List<String> accConEndStrs = delegate.getAcceptingConnectionEnds();
-        assertNotNull(accConEndStrs);
-        assertEquals(accConEndStrs.size(), 1);
-        assertEquals(accConEndStrs, expectedAccepting);
 
-        List<String> conConEndStrs = delegate.getConnectingConnectionEnds();
-        assertNotNull(conConEndStrs);
-        assertEquals(conConEndStrs.size(), 1);
-        assertEquals(conConEndStrs, expectedConnecting);
+        String actualInConStr = delegate.getInboundConnectionStr();
+        assertNotNull(actualInConStr);
+        assertThat(actualInConStr, equalTo(expectedServerConStr));
+
+        String actualOutConStr = delegate.getOutboundConnectionStr();
+        assertNotNull(actualOutConStr);
+        assertThat(actualOutConStr, equalTo(expectedClientConStr));
     }
 
     @Test
-    public void testGetMultipleConnectionEndsWithAlias() {
-        expectedAccepting.clear();
-        expectedConnecting.clear();
-        expectedAccepting.add("alias1:1");
-        expectedAccepting.add("alias2:22");
-        expectedAccepting.add("alias3:333");
-        expectedConnecting.add("anotherAlias1:localhost:1");
-        expectedConnecting.add("anotherAlias2:remotehost:12");
-        expectedConnecting.add("anotherAlias3:nullhost:123");
-
-        args = new String[(expectedAccepting.size() + expectedConnecting.size()) * 2];
-        int i = 0;
-        for (int j = 0; j < expectedAccepting.size(); j++) {
-            args[i] = "-accept";
-            args[i + 1] = expectedAccepting.get(j);
-            i += 2;
-        }
-
-        for (int j = 0; j < expectedConnecting.size(); j++) {
-            args[i] = "-connect";
-            args[i + 1] = expectedConnecting.get(j);
-            i += 2;
-        }
-
-        assertTrue(delegate.getAcceptingConnectionEnds().isEmpty());
-        assertTrue(delegate.getConnectingConnectionEnds().isEmpty());
-        jcommander.parse(args);
-        List<String> accConEndStrs = delegate.getAcceptingConnectionEnds();
-        assertNotNull(accConEndStrs);
-        assertEquals(accConEndStrs.size(), 3);
-        assertEquals(accConEndStrs, expectedAccepting);
-
-        List<String> conConEndStrs = delegate.getConnectingConnectionEnds();
-        assertNotNull(conConEndStrs);
-        assertEquals(conConEndStrs.size(), 3);
-        assertEquals(conConEndStrs, expectedConnecting);
-    }
-
-    @Test
-    public void testApplyDelegateSingleConnectionEnds() {
-        config.clearConnectionEnds();
-        config.addConnectionEnd(dummyConEnd);
-
-        expected.clear();
-        expected.add(new ServerConnectionEnd("accept:1234", 1234));
-        expected.add(new ClientConnectionEnd("remotehost:4321", 4321, "remotehost"));
-        args = new String[4];
-        args[0] = "-accept";
-        args[1] = "1234";
-        args[2] = "-connect";
-        args[3] = "remotehost:4321";
-
-        assertEquals(config.getConnectionEnds().size(), 1);
-        jcommander.parse(args);
-        delegate.applyDelegate(config);
-        List<ConnectionEnd> actual = config.getConnectionEnds();
-        assertNotNull(actual);
-        assertEquals(actual.size(), 2);
-        assertEquals(expected, actual);
-    }
-
-    @Test
-    public void testApplyDelegateMultipleConnectionEnds() {
-        config.clearConnectionEnds();
-        config.addConnectionEnd(dummyConEnd);
-
-        expected.clear();
-        expected.add(new ServerConnectionEnd("accept:1234", 1234));
-        expected.add(new ClientConnectionEnd("remotehost:4321", 4321, "remotehost"));
+    public void testApplyDelegate() {
+        config.setDefaultClientConnection(dummyClientCon);
+        config.setDefaultServerConnection(dummyServerCon);
+        expectedServerCon = new InboundConnection("accept:1234", 1234);
+        expectedClientCon = new OutboundConnection("remotehost:4321", 4321, "remotehost");
         args = new String[4];
         args[0] = "-accept";
         args[1] = "1234";
@@ -181,10 +115,11 @@ public class MitmDelegateTest {
 
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        List<ConnectionEnd> actual = config.getConnectionEnds();
-        assertNotNull(actual);
-        assertEquals(actual.size(), 2);
-        assertEquals(expected, actual);
+
+        InboundConnection actualServerCon = config.getDefaultServerConnection();
+        OutboundConnection actualClientCon = config.getDefaultClientConnection();
+        assertThat(actualServerCon, equalTo(expectedServerCon));
+        assertThat(actualClientCon, equalTo(expectedClientCon));
     }
 
     /**
@@ -193,56 +128,56 @@ public class MitmDelegateTest {
     @Test
     public void testApplyDelegateInvalidPorts() {
         Matcher expectedExMsg = startsWith("port must be in interval [0,65535], but is");
-        List<String> validPorts = new ArrayList<>();
-        validPorts.add("aliasOrHost:8420");
+        String validPort = "aliasOrHost:8420";
         List<String> invalidPorts = new ArrayList<>();
-        invalidPorts.add("aliasOrHost:0");
-        delegate.setAcceptingConnectionEnds(invalidPorts);
-        delegate.setConnectingConnectionEnds(validPorts);
-        exception.expect(ParameterException.class);
-        exception.expectMessage(expectedExMsg);
-        delegate.applyDelegate(config);
+        invalidPorts.add("badPort:0");
+        invalidPorts.add("badPort:-1");
+        invalidPorts.add("badPort:65536");
+        for (String badPort : invalidPorts) {
+            delegate.setInboundConnectionStr(badPort);
+            delegate.setOutboundConnectionStr(validPort);
+            exception.expect(ParameterException.class);
+            exception.expectMessage(expectedExMsg);
+            delegate.applyDelegate(config);
 
-        delegate.setAcceptingConnectionEnds(validPorts);
-        delegate.setConnectingConnectionEnds(invalidPorts);
-        exception.expect(ParameterException.class);
-        exception.expectMessage(expectedExMsg);
-        delegate.applyDelegate(config);
-
-        invalidPorts.set(0, "hostOrAlias:65536");
-        delegate.setAcceptingConnectionEnds(validPorts);
-        delegate.setConnectingConnectionEnds(invalidPorts);
-        exception.expect(ParameterException.class);
-        exception.expectMessage(expectedExMsg);
-        delegate.applyDelegate(config);
-
-        delegate.setAcceptingConnectionEnds(validPorts);
-        delegate.setConnectingConnectionEnds(invalidPorts);
-        exception.expect(ParameterException.class);
-        exception.expectMessage(expectedExMsg);
-        delegate.applyDelegate(config);
+            delegate.setInboundConnectionStr(validPort);
+            delegate.setOutboundConnectionStr(badPort);
+            exception.expect(ParameterException.class);
+            exception.expectMessage(expectedExMsg);
+            delegate.applyDelegate(config);
+        }
     }
 
-    /**
-     * Make sure that applying this delegate removes all previously known
-     * connection ends.
-     */
     @Test
-    public void testApplyDelegateClearsOldConnectionEnds() {
-        config.clearConnectionEnds();
-        config.addConnectionEnd(dummyConEnd);
-        expected.clear();
-        expected.add(new ClientConnectionEnd("alias1", 1111, "hostname1"));
-        List<String> s = new ArrayList<>();
-        s.add("alias1:hostname1:1111");
+    public void testApplyDelegateWithEmptyConfig() {
+        Config config = Config.createConfig();
+        config.setDefaultServerConnection(null);
+        config.setDefaultClientConnection(null);
+        String expectedHostOrAlias = "aliasOrHost";
+        String expectedPort = "8420";
+        StringBuilder sb = new StringBuilder();
+        String param = sb.append(expectedHostOrAlias).append(':').append(expectedPort).toString();
 
-        delegate.setConnectingConnectionEnds(s);
+        delegate.setInboundConnectionStr(param);
+        delegate.setOutboundConnectionStr(param);
         delegate.applyDelegate(config);
-        assertTrue(config.getConnectionEnds().size() == 1);
-        // Intentionally try single context access. Should pass without
-        // problems.
-        ConnectionEnd actual = config.getConnectionEnd();
-        assertEquals(expected.get(0), actual);
+
+        AliasedConnection actualServerCon = config.getDefaultServerConnection();
+        AliasedConnection actualClientCon = config.getDefaultClientConnection();
+        assertNotNull(actualServerCon);
+        assertNotNull(actualClientCon);
+
+        assertThat(actualServerCon.getAlias(), equalTo(expectedHostOrAlias));
+        assertThat(actualServerCon.getPort(), equalTo(Integer.parseInt(expectedPort)));
+        assertThat(actualServerCon.getHostname(), equalTo(null));
+        assertThat(actualClientCon.getAlias(), equalTo(param));
+        assertThat(actualClientCon.getPort(), equalTo(Integer.parseInt(expectedPort)));
+        assertThat(actualClientCon.getHostname(), equalTo(expectedHostOrAlias));
     }
 
+    @Test
+    @Ignore("Implement me!")
+    public void testApplyDelegateWithMissingConnection() {
+
+    }
 }

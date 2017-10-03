@@ -59,11 +59,12 @@ public abstract class WorkflowExecutor {
         WorkflowTrace trace = null;
 
         if (state.getWorkflowTrace() != null) {
-            trace = state.getWorkflowTrace();
-        } else if (config.getWorkflowInput() != null) {
+            return;
+        }
+
+        if (config.getWorkflowInput() != null) {
             try {
                 trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
-                trace.setConfig(config);
             } catch (FileNotFoundException ex) {
                 LOGGER.warn("Could not read WorkflowTrace. File not found.");
                 LOGGER.debug(ex);
@@ -73,7 +74,7 @@ public abstract class WorkflowExecutor {
             }
         } else if (config.getWorkflowTraceType() != null) {
             WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-            trace = factory.createWorkflowTrace(config.getWorkflowTraceType());
+            trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), state.getRunningMode());
         }
 
         if (trace == null) {
@@ -91,6 +92,8 @@ public abstract class WorkflowExecutor {
                 if (f.isDirectory()) {
                     f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
                 }
+                WorkflowTraceUtil.stripDefaultsForSerialization(state.getWorkflowTrace(), config,
+                        state.getRunningMode());
                 WorkflowTraceSerializer.write(f, state.getWorkflowTrace());
             } catch (JAXBException | IOException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.");

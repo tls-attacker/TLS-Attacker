@@ -114,11 +114,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         sb.append(']');
         if (protocolMessageSet.size() == 1) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig
-                    .getConnectionEnd().getHostname(), sb.toString());
+                    .getDefaultClientConnection().getHostname(), sb.toString());
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getConnectionEnd()
-                    .getHostname(), sb.toString());
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig
+                    .getDefaultClientConnection().getHostname(), sb.toString());
             return true;
         }
     }

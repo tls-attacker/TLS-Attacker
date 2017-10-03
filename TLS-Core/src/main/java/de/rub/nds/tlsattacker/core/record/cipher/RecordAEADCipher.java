@@ -153,7 +153,7 @@ public class RecordAEADCipher extends RecordCipher {
                 serverWriteIv = HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
                         GCM_IV_LENGTH);
                 LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
-                if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                if (context.getChooser().getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                     encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
                     decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
                 } else {
@@ -174,7 +174,7 @@ public class RecordAEADCipher extends RecordCipher {
             byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberEnc, RecordByteLength.SEQUENCE_NUMBER);
             byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                     sequenceNumberByte);
-            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (context.getChooser().getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                 byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
                     newClientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);
@@ -203,7 +203,7 @@ public class RecordAEADCipher extends RecordCipher {
             byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberDec, RecordByteLength.SEQUENCE_NUMBER);
             byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                     sequenceNumberByte);
-            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (context.getChooser().getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                 byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
                 for (int i = 0; i < GCM_IV_LENGTH; i++) {
                     newClientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);

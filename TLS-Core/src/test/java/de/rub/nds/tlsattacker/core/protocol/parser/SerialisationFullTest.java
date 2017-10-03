@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -59,6 +60,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -104,7 +106,8 @@ public class SerialisationFullTest {
         config.setAddSupportedVersionsExtension(true);
         config.setAddTokenBindingExtension(true);
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createFullWorkflow();
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
+        WorkflowTrace trace = cf.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
         trace.addTlsAction(new ChangeCipherSuiteAction(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         trace.addTlsAction(new ChangeClientRandomAction(new byte[] { 0x00, 0x11, 0x22, 0x33 }));
         trace.addTlsAction(new ChangeCompressionAction(CompressionMethod.LZS));

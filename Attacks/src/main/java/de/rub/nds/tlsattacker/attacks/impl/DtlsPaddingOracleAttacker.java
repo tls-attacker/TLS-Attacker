@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
@@ -297,8 +296,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         tlsContext = state.getTlsContext();
         workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
         tlsContext.getConfig().setWorkflowExecutorShouldOpen(false);
-        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
-                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
+        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getDefaultClientConnection());
         tlsContext.setTransportHandler(transportHandler);
 
         recordLayer = tlsContext.getRecordLayer();
@@ -317,7 +315,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTimeout(tlsConfig.getConnectionEnd().getTimeout());
+            transportHandler.setTimeout(tlsConfig.getDefaultClientConnection().getTimeout());
         }
     }
 
