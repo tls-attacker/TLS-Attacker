@@ -48,15 +48,17 @@ public class RecordEncryptor extends Encryptor {
         record.setMac(new byte[0]);
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        if (!context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
+        if (!isEncryptThenMac(cipherSuite)) {
 
             LOGGER.trace("EncryptThenMac is not active");
             record.setNonMetaDataMaced(cleanBytes);
             byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
             recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
-            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, record
-                    .getNonMetaDataMaced().getValue()));
-            setMac(record, mac);
+            if (cipherSuite.isUsingMac()) {
+                byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, record
+                        .getNonMetaDataMaced().getValue()));
+                setMac(record, mac);
+            }
         }
         setUnpaddedRecordBytes(record, cleanBytes);
 
@@ -80,8 +82,7 @@ public class RecordEncryptor extends Encryptor {
         }
         setPlainRecordBytes(record, plain);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
-        if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
-                && recordCipher.isUsingMac()) {
+        if (isEncryptThenMac(cipherSuite)) {
             LOGGER.debug("EncryptThenMac Extension active");
             record.setNonMetaDataMaced(encrypted);
             byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
@@ -92,6 +93,11 @@ public class RecordEncryptor extends Encryptor {
         }
         setProtocolMessageBytes(record, encrypted);
         context.increaseWriteSequenceNumber();
+    }
+
+    private boolean isEncryptThenMac(CipherSuite cipherSuite) {
+        return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
+                && recordCipher.isUsingMac();
     }
 
     private void setMac(Record record, byte[] mac) {

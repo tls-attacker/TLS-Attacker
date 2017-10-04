@@ -51,9 +51,11 @@ public class RecordDecryptor extends Decryptor {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         if (isEncryptThenMac(cipherSuite)) {
             prepareAdditionalMetadata(record, encrypted);
-            byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
-            record.setMac(mac);
-            encrypted = removeMac(record.getProtocolMessageBytes().getValue());
+            if (cipherSuite.isUsingMac()) {
+                byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
+                record.setMac(mac);
+                encrypted = removeMac(record.getProtocolMessageBytes().getValue());
+            }
         }
         byte[] decrypted = recordCipher.decrypt(encrypted);
         record.setPlainRecordBytes(decrypted);
@@ -67,9 +69,13 @@ public class RecordDecryptor extends Decryptor {
         } else {
             useNoPadding(record);
         }
-        if (recordCipher.isUsingMac() && !isEncryptThenMac(cipherSuite)) {
+        if (!isEncryptThenMac(cipherSuite)) {
             prepareAdditionalMetadata(record, record.getUnpaddedRecordBytes().getValue());
-            adjustMac(record);
+            if (cipherSuite.isUsingMac()) {
+                adjustMac(record);
+            } else {
+                useNoMac(record);
+            }
         } else {
             useNoMac(record);
         }
@@ -223,7 +229,7 @@ public class RecordDecryptor extends Decryptor {
             return new byte[0];
         }
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
-        byte[] contentType = {record.getContentType().getValue()};
+        byte[] contentType = { record.getContentType().getValue() };
         int length = record.getNonMetaDataMaced().getValue().length;
         byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
         byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
