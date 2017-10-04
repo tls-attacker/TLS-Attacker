@@ -69,7 +69,6 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         tlsContext.setMasterSecret(masterSecret);
         LOGGER.debug("Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
         setRecordCipher();
-        spawnNewSession();
     }
 
     protected void setRecordCipher() {
