@@ -49,11 +49,8 @@ public class RecordDecryptor extends Decryptor {
         record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
-                && recordCipher.isUsingMac()) {
-            record.setNonMetaDataMaced(encrypted);
-            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
-            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
+        if (isEncryptThenMac(cipherSuite)) {
+            prepareAdditionalMetadata(record, encrypted);
             byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
             record.setMac(mac);
             encrypted = removeMac(record.getProtocolMessageBytes().getValue());
@@ -61,7 +58,6 @@ public class RecordDecryptor extends Decryptor {
         byte[] decrypted = recordCipher.decrypt(encrypted);
         record.setPlainRecordBytes(decrypted);
         LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
-        byte[] plainBytes = record.getPlainRecordBytes().getValue();
         if (recordCipher.isUsingPadding()) {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()) {
                 adjustPaddingTLS(record);
@@ -71,15 +67,25 @@ public class RecordDecryptor extends Decryptor {
         } else {
             useNoPadding(record);
         }
-        if (recordCipher.isUsingMac() && !context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
-            record.setNonMetaDataMaced(record.getUnpaddedRecordBytes());
-            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
-            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
+        if (recordCipher.isUsingMac() && !isEncryptThenMac(cipherSuite)) {
+            prepareAdditionalMetadata(record, record.getUnpaddedRecordBytes().getValue());
             adjustMac(record);
         } else {
             useNoMac(record);
         }
         context.increaseReadSequenceNumber();
+    }
+
+    private void prepareAdditionalMetadata(Record record, byte[] payload) {
+        record.setNonMetaDataMaced(payload);
+        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+        recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
+
+    }
+
+    private boolean isEncryptThenMac(CipherSuite cipherSuite) {
+        return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
+                && recordCipher.isUsingMac();
     }
 
     private void adjustMac(Record record) {
@@ -217,7 +223,7 @@ public class RecordDecryptor extends Decryptor {
             return new byte[0];
         }
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
-        byte[] contentType = { record.getContentType().getValue() };
+        byte[] contentType = {record.getContentType().getValue()};
         int length = record.getNonMetaDataMaced().getValue().length;
         byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
         byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
