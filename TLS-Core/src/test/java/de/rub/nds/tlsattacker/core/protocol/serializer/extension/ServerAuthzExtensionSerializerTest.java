@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ClientAuthzExtensionParserTest;
 import java.util.Collection;
@@ -28,7 +27,6 @@ public class ServerAuthzExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int authzFormatListLength;
     private final byte[] authzFormatList;
     private ServerAuthzExtensionMessage msg;
@@ -39,7 +37,6 @@ public class ServerAuthzExtensionSerializerTest {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
     }

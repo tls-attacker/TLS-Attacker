@@ -45,7 +45,7 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     private byte[] createSignature() {
         byte[] toBeSigned = chooser.getContext().getDigest().getRawBytes();
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
-            if (chooser.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 toBeSigned = ArrayConverter
                         .concatenate(
                                 ArrayConverter

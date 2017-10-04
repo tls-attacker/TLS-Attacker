@@ -64,33 +64,21 @@ public class RecordStreamCipher extends RecordCipher {
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
             int secretSetSize = (2 * keySize) + readMac.getMacLength() + writeMac.getMacLength();
-            byte[] masterSecret = tlsContext.getMasterSecret();
-            byte[] seed = ArrayConverter.concatenate(tlsContext.getServerRandom(), tlsContext.getClientRandom());
+            byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
+            byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser()
+                    .getClientRandom());
 
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
             byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                     PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
             LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
-            int offset = 0;
-            byte[] clientMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + readMac.getMacLength());
-            offset += readMac.getMacLength();
-            LOGGER.debug("Client MAC write Secret: {}", ArrayConverter.bytesToHexString(clientMacWriteSecret));
-            byte[] serverMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + writeMac.getMacLength());
-            offset += writeMac.getMacLength();
-            LOGGER.debug("Server MAC write Secret:  {}", ArrayConverter.bytesToHexString(serverMacWriteSecret));
-            clientWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
-            offset += keySize;
-            LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(clientWriteKey));
-            serverWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
-            offset += keySize;
-            LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                initCipherAndMac(serverMacWriteSecret, clientMacWriteSecret);
+            KeyBlockParser keyBlockParser = new KeyBlockParser(keyBlock, tlsContext.getRandom(), cipherSuite,
+                    protocolVersion);
+            keySet = keyBlockParser.parse();
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                initCipherAndMac(keySet.getServerWriteMacSecret(), keySet.getClientWriteMacSecret());
             } else {
-                initCipherAndMac(clientMacWriteSecret, serverMacWriteSecret);
-            }
-            if (offset != keyBlock.length) {
-                throw new CryptoException("Offset exceeded the generated key block length");
+                initCipherAndMac(keySet.getClientWriteMacSecret(), keySet.getServerWriteMacSecret());
             }
             setMinimalEncryptedRecordLength(readMac.getMacLength());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
@@ -100,8 +88,15 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     private void initCipherAndMac(byte[] macReadBytes, byte[] macWriteBytes) throws UnsupportedOperationException {
-        SecretKey encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-        SecretKey decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
+        SecretKey encryptKey;
+        SecretKey decryptKey;
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            encryptKey = new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName());
+            decryptKey = new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName());
+        } else {
+            decryptKey = new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName());
+            encryptKey = new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName());
+        }
         try {
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);

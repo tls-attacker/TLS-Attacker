@@ -34,8 +34,8 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.util.encoders.Base64;
 import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 /**
@@ -110,7 +110,12 @@ public class TestCertificates {
      *            Alias of the key in the returned KeyStore
      * @param keyPass
      *            Password of the key in the returned KeyStore
+     * @return
+     * @throws java.io.IOException
      * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.spec.InvalidKeySpecException
+     * @throws java.security.cert.CertificateException
+     * @throws java.security.KeyStoreException
      */
     public static KeyStore keyStoreFromRsaPem(byte[] rawPemCert, byte[] rawPemKey, String keyAlias, String keyPass)
             throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, CertificateException,
@@ -125,7 +130,7 @@ public class TestCertificates {
 
         byte[] encPubKey = certHolder.getSubjectPublicKeyInfo().getEncoded();
         PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(encPubKey));
-
+        assertNotNull(pubKey);
         pemParser = new PEMParser(new InputStreamReader(new ByteArrayInputStream(rawPemKey)));
         PrivateKeyInfo privKeyInfo = (PrivateKeyInfo) pemParser.readObject();
         PKCS8EncodedKeySpec privKeySpec = new PKCS8EncodedKeySpec(privKeyInfo.getEncoded());

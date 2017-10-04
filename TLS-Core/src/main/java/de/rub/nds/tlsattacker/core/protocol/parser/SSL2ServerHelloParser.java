@@ -131,7 +131,7 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
      */
     private void parseSessionIDLength(SSL2ServerHelloMessage message) {
         message.setSessionIDLength(parseIntField(SSL2ByteLength.SESSIONID_LENGTH));
-        LOGGER.debug("SessionIDLength: " + message.getSessionIDLength().getValue());
+        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
     }
 
     /**
@@ -163,7 +163,7 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
      *            Message to write in
      */
     private void parseSessionID(SSL2ServerHelloMessage message) {
-        message.setSessionID(parseByteArrayField(message.getSessionIDLength().getValue()));
-        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionID().getValue()));
+        message.setSessionID(parseByteArrayField(message.getSessionIdLength().getValue()));
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
     }
 }

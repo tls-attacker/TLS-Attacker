@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
@@ -26,15 +26,16 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
 
     public GenericReceiveAction() {
         super();
+        records = new LinkedList<>();
     }
 
     @Override
-    public void execute(TlsContext tlsContext) {
+    public void execute(State state) {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = ReceiveMessageHelper.receiveMessages(tlsContext);
+        MessageActionResult result = receiveMessageHelper.receiveMessages(state.getTlsContext(contextAlias));
         records.addAll(result.getRecordList());
         messages.addAll(result.getMessageList());
         setExecuted(true);

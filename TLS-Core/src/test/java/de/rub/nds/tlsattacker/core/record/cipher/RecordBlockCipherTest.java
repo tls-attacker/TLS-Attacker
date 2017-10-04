@@ -16,7 +16,9 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.GeneralConnectionEnd;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Security;
 import java.util.Random;
@@ -56,8 +58,9 @@ public class RecordBlockCipherTest {
                     && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
+                context.setConnectionEnd(new GeneralConnectionEnd());
                 for (ConnectionEndType end : ConnectionEndType.values()) {
-                    context.getConfig().setConnectionEndType(end);
+                    ((GeneralConnectionEnd) context.getConnectionEnd()).setConnectionEndType(end);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
                         if (version == ProtocolVersion.SSL2 || version == ProtocolVersion.SSL3) {
                             continue;
@@ -77,7 +80,7 @@ public class RecordBlockCipherTest {
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setConnectionEnd(new ClientConnectionEnd());
         RecordBlockCipher cipher = new RecordBlockCipher(context);
     }
 
@@ -86,7 +89,7 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testCalculateMac() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(ArrayConverter
@@ -109,7 +112,7 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testEncryptTls10() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(ArrayConverter
@@ -140,7 +143,7 @@ public class RecordBlockCipherTest {
     @Test
     public void testEncryptTls12() {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(ArrayConverter
@@ -170,7 +173,7 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testDecrypt10() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(ArrayConverter
@@ -195,7 +198,7 @@ public class RecordBlockCipherTest {
     @Test
     public void testDecrypt12() {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(ArrayConverter

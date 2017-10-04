@@ -9,11 +9,27 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.socket.TlsAttackerSocket;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
+import java.io.IOException;
+import java.security.Security;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,6 +46,7 @@ public class RecordAEADCipherTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         this.context = new TlsContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -44,7 +61,7 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testEncrypt() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.SERVER);
+        context.setConnectionEnd(new ServerConnectionEnd());
         this.cipher = new RecordAEADCipher(context);
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
         byte[] ciphertext = cipher.encrypt(plaintext);
@@ -58,11 +75,35 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testDecrypt() {
-        context.getConfig().setConnectionEndType(ConnectionEndType.CLIENT);
+        context.setConnectionEnd(new ClientConnectionEnd());
         this.cipher = new RecordAEADCipher(context);
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         byte[] plaintext = cipher.decrypt(ciphertext);
         byte[] plaintext_correct = ArrayConverter.hexStringToByteArray("08000002000016");
         assertArrayEquals(plaintext, plaintext_correct);
+    }
+
+    @Test
+    public void testInit() {
+        context.setConnectionEnd(new ClientConnectionEnd());
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
+        context.setHandshakeSecret(ArrayConverter
+                .hexStringToByteArray("B2ED61DCDF8DD56D444A37827CF16C0C7D3AF4F95ACE1520746634F8EFED58E2"));
+        context.setClientHandshakeTrafficSecret(ArrayConverter
+                .hexStringToByteArray("0DEE9BF2778DEE8AB18379C94B05C96F1ED1C28B3C51744180E2D47F97E46101"));
+        context.setServerHandshakeTrafficSecret(ArrayConverter
+                .hexStringToByteArray("12756B2CA0395F1A1C3E268EF8610FBBAC8773E22F43BDABA385CE7E780A08B5"));
+
+        this.cipher = new RecordAEADCipher(context);
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("B8FF433DBB565709C9A6703B"), cipher.getKeySet()
+                .getClientWriteIv());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("549EC618891BCA1E676D9A60"), cipher.getKeySet()
+                .getServerWriteIv());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("B176715B3DD8D62B26E9FB4F19FDDAF8"), cipher.getKeySet()
+                .getClientWriteKey());
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("7DD498D9EA924142CD3BF45CD8A1B4B9"), cipher.getKeySet()
+                .getServerWriteKey());
+        assertNull(cipher.getKeySet().getClientWriteMacSecret());
+        assertNull(cipher.getKeySet().getServerWriteMacSecret());
     }
 }

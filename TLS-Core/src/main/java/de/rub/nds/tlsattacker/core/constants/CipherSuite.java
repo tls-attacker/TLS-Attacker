@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -438,11 +440,11 @@ public enum CipherSuite {
         this.value = value;
     }
 
-    public static CipherSuite getRandom() {
+    public static CipherSuite getRandom(Random random) {
         CipherSuite c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (CipherSuite) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (CipherSuite) o[random.nextInt(o.length)];
         }
         return c;
     }
@@ -528,6 +530,22 @@ public enum CipherSuite {
 
     public boolean isSCSV() {
         return (this.name().contains("SCSV"));
+    }
+
+    public boolean isGCM() {
+        return (this.name().contains("_GCM"));
+    }
+
+    public boolean isCCM() {
+        return (this.name().contains("_CCM"));
+    }
+
+    public boolean isOCB() {
+        return (this.name().contains("_OCB"));
+    }
+
+    public boolean usesSHA384() {
+        return this.name().endsWith("SHA384");
     }
 
     /**

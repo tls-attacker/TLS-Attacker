@@ -45,4 +45,14 @@ public class ServerUdpTransportHandler extends TransportHandler {
         setStreams(new UdpInputStream(socket), new UdpOutputStream(socket));
     }
 
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed();
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
+    }
+
 }

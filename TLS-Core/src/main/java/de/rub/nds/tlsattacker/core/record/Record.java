@@ -80,6 +80,12 @@ public class Record extends AbstractRecord {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray unpaddedRecordBytes;
 
+    /**
+     * Bytes which are not meta data which are going to be maced
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    private ModifiableByteArray nonMetaDataMaced;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
@@ -212,6 +218,18 @@ public class Record extends AbstractRecord {
     public void setUnpaddedRecordBytes(byte[] unpaddedRecordBytes) {
         this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes,
                 unpaddedRecordBytes);
+    }
+
+    public ModifiableByteArray getNonMetaDataMaced() {
+        return nonMetaDataMaced;
+    }
+
+    public void setNonMetaDataMaced(ModifiableByteArray nonMetaDataMaced) {
+        this.nonMetaDataMaced = nonMetaDataMaced;
+    }
+
+    public void setNonMetaDataMaced(byte[] nonMetaDataMaced) {
+        this.nonMetaDataMaced = ModifiableVariableFactory.safelySetValue(this.nonMetaDataMaced, nonMetaDataMaced);
     }
 
     @Override

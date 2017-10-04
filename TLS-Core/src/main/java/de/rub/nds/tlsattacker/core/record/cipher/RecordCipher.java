@@ -27,7 +27,7 @@ public abstract class RecordCipher {
     /**
      * additional authenticated data
      */
-    protected byte[] aad;
+    protected byte[] additionalAuthenticatedData;
     /**
      * cipher for decryption
      */
@@ -40,14 +40,8 @@ public abstract class RecordCipher {
      * CipherAlgorithm algorithm (AES, ...)
      */
     protected BulkCipherAlgorithm bulkCipherAlg;
-    /**
-     * client encryption key
-     */
-    protected byte[] clientWriteKey;
-    /**
-     * server encryption key
-     */
-    protected byte[] serverWriteKey;
+
+    protected KeySet keySet;
     /**
      * TLS context
      */
@@ -89,12 +83,12 @@ public abstract class RecordCipher {
         this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
     }
 
-    public void setAad(byte[] aad) {
-        this.aad = aad;
+    public void setAdditionalAuthenticatedData(byte[] additionalAuthenticatedData) {
+        this.additionalAuthenticatedData = additionalAuthenticatedData;
     }
 
-    public byte[] getAad() {
-        return aad;
+    public byte[] getAdditionalAuthenticatedData() {
+        return additionalAuthenticatedData;
     }
 
     /**
@@ -111,5 +105,9 @@ public abstract class RecordCipher {
      */
     public int getPlainCipherLengthDifference() {
         return 0;
+    }
+
+    public KeySet getKeySet() {
+        return keySet;
     }
 }

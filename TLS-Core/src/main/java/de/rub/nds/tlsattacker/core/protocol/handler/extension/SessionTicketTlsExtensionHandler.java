@@ -19,14 +19,14 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
+public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
 
     /**
      * Constructor
      *
      * @param context
      */
-    public SessionTicketTLSExtensionHandler(TlsContext context) {
+    public SessionTicketTlsExtensionHandler(TlsContext context) {
         super(context);
     }
 
@@ -71,7 +71,7 @@ public class SessionTicketTLSExtensionHandler extends ExtensionHandler<SessionTi
      * @param message
      */
     @Override
-    public void adjustTLSContext(SessionTicketTLSExtensionMessage message) {
+    public void adjustTLSExtensionContext(SessionTicketTLSExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SessionTLS ticket length shouldn't exceed 2 bytes as defined in RFC 4507. "
                     + "Length was " + message.getExtensionLength().getValue());

@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.security.KeyPairGenerator;
@@ -46,7 +47,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         // the number of random bytes in the pkcs1 message
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
         padding = new byte[randomByteLength];
-        RandomHelper.getRandom().nextBytes(padding);
+        chooser.getContext().getRandom().nextBytes(padding);
         ArrayConverter.makeArrayNonZero(padding);
         preparePadding(msg);
         premasterSecret = generatePremasterSecret();
@@ -70,7 +71,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
-        RandomHelper.getRandom().nextBytes(tempPremasterSecret);
+        chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
         tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
         tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
         return tempPremasterSecret;
@@ -116,7 +117,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
         msg.setPublicKey(encrypted);
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {

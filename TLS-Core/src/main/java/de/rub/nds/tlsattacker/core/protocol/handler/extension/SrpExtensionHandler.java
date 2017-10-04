@@ -19,9 +19,9 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
-public class SRPExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
+public class SrpExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
 
-    public SRPExtensionHandler(TlsContext context) {
+    public SrpExtensionHandler(TlsContext context) {
         super(context);
     }
 
@@ -41,7 +41,7 @@ public class SRPExtensionHandler extends ExtensionHandler<SRPExtensionMessage> {
     }
 
     @Override
-    public void adjustTLSContext(SRPExtensionMessage message) {
+    public void adjustTLSExtensionContext(SRPExtensionMessage message) {
         context.setSecureRemotePasswordExtensionIdentifier(message.getSrpIdentifier().getValue());
         LOGGER.debug("Adjusted the TLSContext secure remote password extension identifier to "
                 + ArrayConverter.bytesToHexString(context.getSecureRemotePasswordExtensionIdentifier()));

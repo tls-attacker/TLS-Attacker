@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.client.main;
 
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -23,7 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -31,6 +33,8 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -50,6 +54,7 @@ import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -71,9 +76,11 @@ public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
 
-    private static final int PORT = 4433;
+    private static final int PORT = 44330;
 
     private static final int TIMEOUT = 2000;
+
+    private BadRandom random = new BadRandom(new Random(0), null);
 
     @Rule
     public ErrorCollector collector = new ErrorCollector();
@@ -89,8 +96,8 @@ public class TlsClientTest {
     public void testRSAWorkflows() throws OperatorCreationException {
         try {
             TimeHelper.setProvider(new FixedTimeProvider(0));
-            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
-            KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+            KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
+            KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
@@ -110,8 +117,8 @@ public class TlsClientTest {
     @Category(IntegrationTests.class)
     public void testECWorkflows() throws OperatorCreationException {
         try {
-            KeyPair k = KeyStoreGenerator.createECKeyPair(256);
-            KeyStore ks = KeyStoreGenerator.createKeyStore(k);
+            KeyPair k = KeyStoreGenerator.createECKeyPair(256, random);
+            KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
             tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT + 1);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
@@ -136,10 +143,10 @@ public class TlsClientTest {
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
+        ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
+        clientDelegate.setHost("localhost:" + port);
         Config config = clientCommandConfig.createConfig();
-        config.setHost("localhost");
-        config.setPort(port);
-        config.setTimeout(TIMEOUT);
+        config.setDefaultTimeout(TIMEOUT);
         config.setEnforceSettings(false);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
@@ -179,17 +186,20 @@ public class TlsClientTest {
 
     private boolean testExecuteWorkflow(Config config) {
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        TlsContext tlsContext = new TlsContext(config);
+        State state = new State(config);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), tlsContext);
+                config.getWorkflowExecutorType(), state);
+
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
             E.printStackTrace();
         }
-        String workflowString = tlsContext.getWorkflowTrace().toString();
-        boolean result = tlsContext.getWorkflowTrace().executedAsPlanned();
+
+        String workflowString = state.getWorkflowTrace().toString();
+        boolean result = state.getWorkflowTrace().executedAsPlanned();
+
         if (!result) {
             LOGGER.info(workflowString);
             return result;
@@ -200,28 +210,28 @@ public class TlsClientTest {
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
+        ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
+        clientDelegate.setHost("localhost:" + PORT);
         Config config = clientCommandConfig.createConfig();
-        config.setHost("localhost");
-        config.setPort(port);
-        config.setTimeout(TIMEOUT);
+        config.setDefaultTimeout(TIMEOUT);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
-        TlsContext tlsContext = new TlsContext(config);
-        config.setWorkflowTrace(new WorkflowTrace());
+        State state = new State(config, new WorkflowTrace(config));
+        ConnectionEnd ourConnectionEnd = new ClientConnectionEnd();
 
-        WorkflowTrace trace = config.getWorkflowTrace();
-        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+        WorkflowTrace trace = state.getWorkflowTrace();
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
                 new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
-        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
                 new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
                         config)));
-        trace.addTlsAction(MessageActionFactory.createAction(ConnectionEndType.CLIENT, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), tlsContext);
+                config.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {

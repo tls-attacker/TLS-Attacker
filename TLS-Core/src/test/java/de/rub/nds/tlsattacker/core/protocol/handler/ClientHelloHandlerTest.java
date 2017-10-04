@@ -71,7 +71,7 @@ public class ClientHelloHandlerTest {
     public void testAdjustTLSContext() {
         ClientHelloMessage message = new ClientHelloMessage();
         message.setUnixTime(new byte[] { 0, 1, 2 });
-        message.setRandom(new byte[] { 3, 4, 5 });
+        message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
         message.setCompressions(new byte[] { 0, 1 });
         message.setCipherSuites(new byte[] { 0x00, 0x01, 0x00, 0x02 });
         message.setSessionId(new byte[] { 6, 6, 6 });
@@ -94,7 +94,7 @@ public class ClientHelloHandlerTest {
     public void testAdjustTLSContextWithCookie() {
         ClientHelloMessage message = new ClientHelloMessage();
         message.setUnixTime(new byte[] { 0, 1, 2 });
-        message.setRandom(new byte[] { 3, 4, 5 });
+        message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
         message.setCompressions(new byte[] { 0, 1 });
         message.setCipherSuites(new byte[] { 0x00, 0x01, 0x00, 0x02 });
         message.setSessionId(new byte[] { 6, 6, 6 });

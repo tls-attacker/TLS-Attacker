@@ -79,7 +79,7 @@ public class SerializerTest {
         assertArrayEquals(result, new byte[] { 0, 1, 2, 3 });
     }
 
-    public class SerializerImpl extends Serializer {
+    public static class SerializerImpl extends Serializer {
 
         public SerializerImpl() {
             super();

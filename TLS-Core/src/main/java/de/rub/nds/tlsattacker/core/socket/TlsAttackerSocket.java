@@ -13,11 +13,15 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,10 +31,10 @@ import java.util.List;
  */
 public class TlsAttackerSocket {
 
-    private final TlsContext context;
+    private final State state;
 
-    public TlsAttackerSocket(TlsContext context) {
-        this.context = context;
+    public TlsAttackerSocket(State state) {
+        this.state = state;
     }
 
     /**
@@ -40,7 +44,7 @@ public class TlsAttackerSocket {
      * @throws java.io.IOException
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
-        context.getTransportHandler().sendData(bytes);
+        state.getTlsContext().getTransportHandler().sendData(bytes);
     }
 
     /**
@@ -49,8 +53,8 @@ public class TlsAttackerSocket {
      * @return
      * @throws java.io.IOException
      */
-    public byte[] recieveRawBytes() throws IOException {
-        return context.getTransportHandler().fetchData();
+    public byte[] receiveRawBytes() throws IOException {
+        return state.getTlsContext().getTransportHandler().fetchData();
     }
 
     /**
@@ -59,7 +63,7 @@ public class TlsAttackerSocket {
      * @param string
      */
     public void send(String string) {
-        send(string.getBytes());
+        send(string.getBytes(Charset.defaultCharset()));
     }
 
     /**
@@ -69,23 +73,34 @@ public class TlsAttackerSocket {
      *            ApplicationMessages to send
      */
     public void send(byte[] bytes) {
-        // If too many bytes we have to split this into multiple application
-        // messages TODO
         ApplicationMessage message = new ApplicationMessage();
-        message.setDataConfig(bytes);
-        send(message);
+        ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        byte[] sendingBytes = new byte[16384];
+        int actuallyRead = 0;
+        do {
+            try {
+                actuallyRead = stream.read(sendingBytes);
+                if (actuallyRead > 0) {
+                    message.setDataConfig(Arrays.copyOf(sendingBytes, actuallyRead));
+                    send(message);
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } while (actuallyRead > 0);
     }
 
     /**
-     * Recieves bytes and decrypts ApplicationMessage contents
-     *
-     * @return Recieved bytes
+     * Receives bytes and decrypts ApplicationMessage contents
+     * 
+     * @return Received bytes
      * @throws java.io.IOException
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
-        action.execute(context);
+        action.execute(state);
         List<ProtocolMessage> recievedMessages = action.getReceivedMessages();
+
         List<ApplicationMessage> recievedAppMessages = new LinkedList<>();
         for (ProtocolMessage message : recievedMessages) {
             if (message instanceof ApplicationMessage) {
@@ -100,26 +115,26 @@ public class TlsAttackerSocket {
     }
 
     /**
-     * Recieves bytes and decrypts ApplicationMessage contents in converts them
+     * Receives bytes and decrypts ApplicationMessage contents in converts them
      * to Strings
      *
      * @return
      * @throws java.io.IOException
      */
     public String receiveString() throws IOException {
-        return new String(receiveBytes());
+        return new String(receiveBytes(), Charset.defaultCharset());
     }
 
     public void send(ProtocolMessage message) {
         SendAction action = new SendAction(message);
-        action.execute(context);
+        action.execute(state);
     }
 
     public void close() throws IOException {
         AlertMessage closeNotify = new AlertMessage();
         closeNotify.setConfig(AlertLevel.WARNING, AlertDescription.CLOSE_NOTIFY);
         send(closeNotify);
-        context.getTransportHandler().closeConnection();
+        state.getTlsContext().getTransportHandler().closeConnection();
     }
 
 }

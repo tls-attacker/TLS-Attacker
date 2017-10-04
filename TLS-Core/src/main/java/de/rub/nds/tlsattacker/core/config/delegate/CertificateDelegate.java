@@ -89,14 +89,16 @@ public class CertificateDelegate extends Delegate {
                     if (CertificateUtils.hasDHParameters(cert)) {
                         DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
                         applyDHParameters(config, dhParameters);
-                        config.setDefaultDsaCertificate(stream.toByteArray());// TODO
+                        config.setDefaultDsaCertificate(stream.toByteArray()); // TODO
+                        LOGGER.warn("DH/DSA certificates not fully supported yet");
                     } else if (CertificateUtils.hasECParameters(cert)) {
-                        ECPublicKeyParameters ecParameters = CertificateUtils.extractECPublicKeyParameters(cert);
-                        applyECParameters(config, ecParameters);
+                        applyECParameters(config, CertificateUtils.extractECPublicKeyParameters(cert), CertificateUtils
+                                .ecPrivateKeyFromPrivateKey(key).getS());
                         config.setDefaultEcCertificate(stream.toByteArray());
                     } else if (CertificateUtils.hasRSAParameters(cert)) {
                         applyRSAParameters(config, CertificateUtils.extractRSAModulus(cert),
-                                CertificateUtils.extractRSAPublicKey(cert));
+                                CertificateUtils.extractRSAPublicKey(cert), CertificateUtils
+                                        .rsaPrivateKeyFromPrivateKey(key).getPrivateExponent());
                         config.setDefaultRsaCertificate(stream.toByteArray());
                     }
                 } catch (IOException E) {
@@ -115,18 +117,22 @@ public class CertificateDelegate extends Delegate {
         config.setDefaultServerDhPublicKey(dhParameters.getY());
     }
 
-    private void applyECParameters(Config config, ECPublicKeyParameters ecParameters) {
+    private void applyECParameters(Config config, ECPublicKeyParameters ecParameters, BigInteger privateKey) {
         config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
                 .getCurve()));
         CustomECPoint publicKey = new CustomECPoint(ecParameters.getQ().getRawXCoord().toBigInteger(), ecParameters
                 .getQ().getRawYCoord().toBigInteger());
         config.setDefaultClientEcPublicKey(publicKey);
         config.setDefaultServerEcPublicKey(publicKey);
+        config.setDefaultClientEcPrivateKey(privateKey);
+        config.setDefaultServerEcPrivateKey(privateKey);
     }
 
-    private void applyRSAParameters(Config config, BigInteger modulus, BigInteger publicKey) {
+    private void applyRSAParameters(Config config, BigInteger modulus, BigInteger publicKey, BigInteger privateKey) {
         config.setDefaultRSAModulus(modulus);
         config.setDefaultClientRSAPublicKey(publicKey);
         config.setDefaultServerRSAPublicKey(publicKey);
+        config.setDefaultClientRSAPrivateKey(privateKey);
+        config.setDefaultServerRSAPrivateKey(privateKey);
     }
 }

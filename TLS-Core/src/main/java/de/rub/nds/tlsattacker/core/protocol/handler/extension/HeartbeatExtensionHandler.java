@@ -27,7 +27,7 @@ public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensi
     }
 
     @Override
-    public void adjustTLSContext(HeartbeatExtensionMessage message) {
+    public void adjustTLSExtensionContext(HeartbeatExtensionMessage message) {
         byte[] heartbeatMode = message.getHeartbeatMode().getValue();
         if (heartbeatMode.length != 1) {
             throw new AdjustmentException("Cannot set Heartbeatmode to a resonable Value");

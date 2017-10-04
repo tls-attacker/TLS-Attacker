@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import java.math.BigInteger;
 import java.security.Security;
 import java.security.interfaces.RSAPublicKey;
@@ -32,7 +33,8 @@ import org.junit.Test;
  */
 public class MangerAttackServerTest {
 
-    public static final String CONNECT = "localhost:4433";
+    public static final String HOSTNAME = "localhost";
+    public static final Integer PORT = 4433;
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
     @Test
@@ -42,7 +44,9 @@ public class MangerAttackServerTest {
         Security.addProvider(new BouncyCastleProvider());
 
         Config config = Config.createConfig();
-        config.setHost(CONNECT);
+        config.clearConnectionEnds();
+        config.addConnectionEnd(new ClientConnectionEnd(Config.DEFAULT_CONNECTION_END_ALIAS, PORT, HOSTNAME));
+
         List<CipherSuite> ciphersuites = new LinkedList<>();
         ciphersuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         config.setDefaultClientSupportedCiphersuites(ciphersuites);
@@ -55,7 +59,7 @@ public class MangerAttackServerTest {
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-        config.setTimeout(50);
+        config.setDefaultTimeout(50);
         Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config);
 
         long start = System.currentTimeMillis();

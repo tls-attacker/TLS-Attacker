@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
@@ -39,13 +41,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -81,6 +86,8 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
+            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> messages;
 
@@ -90,30 +97,60 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> records;
 
+    @XmlTransient
+    protected ReceiveMessageHelper receiveMessageHelper;
+
+    @XmlTransient
+    protected SendMessageHelper sendMessageHelper;
+
     public MessageAction() {
         messages = new LinkedList<>();
-        records = new LinkedList<>();
+        receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();
+    }
+
+    public MessageAction(List<ProtocolMessage> messages) {
+        this.messages = new ArrayList<>(messages);
+        receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(ProtocolMessage... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
-        records = new LinkedList<>();
+        receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();
+    }
+
+    public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {
+        this.receiveMessageHelper = receiveMessageHelper;
+    }
+
+    public void setSendMessageHelper(SendMessageHelper sendMessageHelper) {
+        this.sendMessageHelper = sendMessageHelper;
+    }
+
+    public String getReadableString(ProtocolMessage... messages) {
+        return getReadableString(Arrays.asList(messages));
     }
 
     public String getReadableString(List<ProtocolMessage> messages) {
+        return getReadableString(messages, false);
+    }
+
+    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         for (ProtocolMessage message : messages) {
-            builder.append(message.toCompactString());
+            if (verbose) {
+                builder.append(message.toString());
+            } else {
+                builder.append(message.toCompactString());
+            }
             if (!message.isRequired()) {
                 builder.append("*");
             }
             builder.append(", ");
         }
         return builder.toString();
-    }
-
-    public String getReadableString(ProtocolMessage... messages) {
-        return getReadableString(Arrays.asList(messages));
     }
 
     public List<ProtocolMessage> getMessages() {

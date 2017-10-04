@@ -26,8 +26,7 @@ public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMe
     }
 
     @Override
-    public void adjustTLSContext(UnknownExtensionMessage message) {
-
+    public void adjustTLSExtensionContext(UnknownExtensionMessage message) {
     }
 
     @Override
