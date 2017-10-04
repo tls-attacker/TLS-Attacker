@@ -44,6 +44,7 @@ public class ServerDelegate extends Delegate {
             throw new ParameterException("port must be in interval [0,65535], but is " + port);
         }
         ServerConnectionEnd conEnd = new ServerConnectionEnd();
+        conEnd.setAlias(Config.DEFAULT_CONNECTION_END_ALIAS);
         conEnd.setPort(port);
         config.clearConnectionEnds();
         config.addConnectionEnd(conEnd);
