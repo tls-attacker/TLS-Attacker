@@ -49,14 +49,14 @@ public class RecordDecryptor extends Decryptor {
         record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        byte[] addtionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
-        recordCipher.setAdditionalAuthenticatedData(addtionalAuthenticatedData);
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
                 && recordCipher.isUsingMac()) {
+            record.setNonMetaDataMaced(encrypted);
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
             byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
             record.setMac(mac);
-            byte[] unmacedBytes = removeMac(record.getProtocolMessageBytes().getValue());
-            record.setUnpaddedRecordBytes(unmacedBytes);// ???
+            encrypted = removeMac(record.getProtocolMessageBytes().getValue());
         }
         byte[] decrypted = recordCipher.decrypt(encrypted);
         record.setPlainRecordBytes(decrypted);
@@ -71,7 +71,10 @@ public class RecordDecryptor extends Decryptor {
         } else {
             useNoPadding(record);
         }
-        if (recordCipher.isUsingMac()) {
+        if (recordCipher.isUsingMac() && !context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
+            record.setNonMetaDataMaced(record.getUnpaddedRecordBytes());
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
             adjustMac(record);
         } else {
             useNoMac(record);
@@ -205,7 +208,6 @@ public class RecordDecryptor extends Decryptor {
      * record length.
      *
      * @param record
-     * @param plainCipherDifference
      * @return
      */
     @Override
@@ -216,8 +218,7 @@ public class RecordDecryptor extends Decryptor {
         }
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         byte[] contentType = { record.getContentType().getValue() };
-        int length = record.getProtocolMessageBytes().getValue().length;
-        length -= recordCipher.getPlainCipherLengthDifference();
+        int length = record.getNonMetaDataMaced().getValue().length;
         byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
         byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
                 byteLength);

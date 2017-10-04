@@ -47,10 +47,15 @@ public class RecordEncryptor extends Encryptor {
         // initialising mac
         record.setMac(new byte[0]);
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
-        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         if (!context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC)) {
-            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, cleanBytes));
+
+            LOGGER.trace("EncryptThenMac is not active");
+            record.setNonMetaDataMaced(cleanBytes);
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, record
+                    .getNonMetaDataMaced().getValue()));
             setMac(record, mac);
         }
         setUnpaddedRecordBytes(record, cleanBytes);
@@ -74,10 +79,13 @@ public class RecordEncryptor extends Encryptor {
                     .getValue());
         }
         setPlainRecordBytes(record, plain);
-        recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
         byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
         if (context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
                 && recordCipher.isUsingMac()) {
+            LOGGER.debug("EncryptThenMac Extension active");
+            record.setNonMetaDataMaced(encrypted);
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, encrypted));
             setMac(record, mac);
             encrypted = ArrayConverter.concatenate(encrypted, record.getMac().getValue());
@@ -144,10 +152,11 @@ public class RecordEncryptor extends Encryptor {
         }
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         byte[] contentType = { record.getContentType().getValue() };
-        int length = record.getCleanProtocolMessageBytes().getValue().length;
+        int length = record.getNonMetaDataMaced().getValue().length;
         byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
         byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
                 byteLength);
+        LOGGER.debug("Additional Authenticated Data:" + ArrayConverter.bytesToHexString(result));
         return result;
     }
 }
