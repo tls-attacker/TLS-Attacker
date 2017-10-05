@@ -89,7 +89,7 @@ public class SerialisationFullTest {
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddHeartbeatExtension(true);
-        config.setAddMaxFragmentLengthExtenstion(true);
+        config.setAddMaxFragmentLengthExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgrorithmsExtension(true);
         config.setAddExtendedMasterSecretExtension(true);

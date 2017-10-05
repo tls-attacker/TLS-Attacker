@@ -76,7 +76,7 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddECPointFormatExtension()) {
             addExtension(new ECPointFormatExtensionMessage());
         }
-        if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
+        if (tlsConfig.isAddMaxFragmentLengthExtension()) {
             addExtension(new MaxFragmentLengthExtensionMessage());
         }
         if (tlsConfig.isAddServerNameIndicationExtension()) {

@@ -369,7 +369,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with the MaxFragmentLength extension
      */
-    private Boolean addMaxFragmentLengthExtenstion = false;
+    private Boolean addMaxFragmentLengthExtension = false;
     /**
      * If we generate ClientHello with the ServerNameIndication extension
      */
@@ -1751,12 +1751,12 @@ public class Config implements Serializable {
         this.addHeartbeatExtension = addHeartbeatExtension;
     }
 
-    public boolean isAddMaxFragmentLengthExtenstion() {
-        return addMaxFragmentLengthExtenstion;
+    public boolean isAddMaxFragmentLengthExtension() {
+        return addMaxFragmentLengthExtension;
     }
 
-    public void setAddMaxFragmentLengthExtenstion(boolean addMaxFragmentLengthExtenstion) {
-        this.addMaxFragmentLengthExtenstion = addMaxFragmentLengthExtenstion;
+    public void setAddMaxFragmentLengthExtension(boolean addMaxFragmentLengthExtenstion) {
+        this.addMaxFragmentLengthExtension = addMaxFragmentLengthExtenstion;
     }
 
     public boolean isAddServerNameIndicationExtension() {

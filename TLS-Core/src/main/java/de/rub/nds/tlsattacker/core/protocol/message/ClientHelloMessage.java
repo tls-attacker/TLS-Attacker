@@ -107,7 +107,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddEllipticCurveExtension()) {
             addExtension(new EllipticCurvesExtensionMessage());
         }
-        if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
+        if (tlsConfig.isAddMaxFragmentLengthExtension()) {
             addExtension(new MaxFragmentLengthExtensionMessage());
         }
         if (tlsConfig.isAddServerNameIndicationExtension()) {
