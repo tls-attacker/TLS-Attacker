@@ -56,6 +56,8 @@ public class MultiReceiveAction extends GenericReceiveAction {
                 break;
             }
         }
+        if (selectedAction.earlyCleanShutdown != null)
+            tlsContext.setEarlyCleanShutdown(selectedAction.earlyCleanShutdown);
         selectedAction.setReceivedMessages(super.getReceivedMessages());
         selectedAction.setReceivedRecords(super.getReceivedRecords());
         selectedAction.setExecuted(super.isExecuted());
