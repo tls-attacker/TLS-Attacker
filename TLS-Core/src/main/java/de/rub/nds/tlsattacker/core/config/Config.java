@@ -89,12 +89,13 @@ public class Config implements Serializable {
     public static Config createEmptyConfig() {
         Config c = new Config();
         for (Field field : c.getClass().getDeclaredFields()) {
-            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()) {
+            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()
+                    && !field.getName().contains("Extension")) {
                 field.setAccessible(true);
                 try {
                     field.set(c, null);
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    LOGGER.warn(e);
                 }
             }
         }
