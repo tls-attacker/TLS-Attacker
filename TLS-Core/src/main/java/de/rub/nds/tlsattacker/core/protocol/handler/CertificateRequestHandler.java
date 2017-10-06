@@ -45,7 +45,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     @Override
-    protected void adjustTLSContext(CertificateRequestMessage message) {
+    public void adjustTLSContext(CertificateRequestMessage message) {
         adjustClientCertificateTypes(message);
         adjustDistinguishedNames(message);
         adjustServerSupportedSignatureAndHashAlgorithms(message);
@@ -98,12 +98,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             copied[0] = bytesToConvert[i];
             copied[1] = bytesToConvert[i + 1];
             SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(copied);
-            if (algo == null) {
-                LOGGER.warn("Cannot convert:" + ArrayConverter.bytesToHexString(copied)
-                        + " to a SignatureAndHashAlgorithm");
-            } else {
-                list.add(algo);
-            }
+            list.add(algo);
         }
         return list;
     }

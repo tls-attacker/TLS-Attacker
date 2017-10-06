@@ -23,9 +23,9 @@ import java.util.List;
  */
 public class EllipticCurveDelegate extends Delegate {
 
-    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma eg. UNCOMPRESSED,ANSIX962_COMPRESSED_PRIME", converter = PointFormatConverter.class)
+    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma", converter = PointFormatConverter.class)
     private List<ECPointFormat> pointFormats = null;
-    @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma eg. SECT163K1,SECT193R2 ", converter = NamedCurveConverter.class)
+    @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma", converter = NamedCurveConverter.class)
     private List<NamedCurve> namedCurves = null;
 
     public EllipticCurveDelegate() {

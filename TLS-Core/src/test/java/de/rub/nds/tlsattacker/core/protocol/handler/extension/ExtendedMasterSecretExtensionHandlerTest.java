@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
@@ -38,13 +39,16 @@ public class ExtendedMasterSecretExtensionHandlerTest {
     public void testAdjustTLSContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-
         handler.adjustTLSContext(msg);
 
-        assertFalse(context.isExtendedMasterSecretExtension());
+        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertFalse(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertFalse(context.isUseExtendedMasterSecret());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustTLSContext(msg);
-        assertTrue(context.isExtendedMasterSecretExtension());
+        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(context.isUseExtendedMasterSecret());
     }
 
     @Test

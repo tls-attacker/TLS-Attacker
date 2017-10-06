@@ -50,7 +50,7 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableInteger cipherSuitesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger sessionIDLength;
+    private ModifiableInteger sessionIdLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CERTIFICATE)
     private ModifiableByteArray certificate;
@@ -59,7 +59,7 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableByteArray cipherSuites;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray sessionID;
+    private ModifiableByteArray sessionId;
 
     public SSL2ServerHelloMessage() {
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
@@ -164,16 +164,16 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         this.cipherSuitesLength = ModifiableVariableFactory.safelySetValue(this.cipherSuitesLength, cipherSuitesLength);
     }
 
-    public ModifiableInteger getSessionIDLength() {
-        return sessionIDLength;
+    public ModifiableInteger getSessionIdLength() {
+        return sessionIdLength;
     }
 
-    public void setSessionIDLength(ModifiableInteger sessionIDLength) {
-        this.sessionIDLength = sessionIDLength;
+    public void setSessionIdLength(ModifiableInteger sessionIdLength) {
+        this.sessionIdLength = sessionIdLength;
     }
 
     public void setSessionIDLength(int connectionIDLength) {
-        this.sessionIDLength = ModifiableVariableFactory.safelySetValue(this.sessionIDLength, connectionIDLength);
+        this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, connectionIDLength);
     }
 
     public ModifiableByteArray getCertificate() {
@@ -200,16 +200,16 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         this.cipherSuites = ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
     }
 
-    public ModifiableByteArray getSessionID() {
-        return sessionID;
+    public ModifiableByteArray getSessionId() {
+        return sessionId;
     }
 
-    public void setSessionID(ModifiableByteArray sessionID) {
-        this.sessionID = sessionID;
+    public void setSessionId(ModifiableByteArray sessionId) {
+        this.sessionId = sessionId;
     }
 
     public void setSessionID(byte[] sessionID) {
-        this.sessionID = ModifiableVariableFactory.safelySetValue(this.sessionID, sessionID);
+        this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionID);
     }
 
     @Override
@@ -232,8 +232,8 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         if (getCertificate() != null && getCertificate().getValue() != null) {
             sb.append("\n Certificate: ").append(ArrayConverter.bytesToHexString(getCertificate().getValue()));
         }
-        if (getSessionID() != null && getSessionID().getValue() != null) {
-            sb.append("\n SessionID: ").append(ArrayConverter.bytesToHexString(getSessionID().getValue()));
+        if (getSessionId() != null && getSessionId().getValue() != null) {
+            sb.append("\n SessionID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
         }
         return sb.toString();
     }

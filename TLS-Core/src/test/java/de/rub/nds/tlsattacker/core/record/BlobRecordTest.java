@@ -9,16 +9,16 @@
 package de.rub.nds.tlsattacker.core.record;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.BlobRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.BlobRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,9 +35,11 @@ public class BlobRecordTest {
 
     @Before
     public void setUp() {
-        record = new BlobRecord(Config.createConfig());
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext());
-
+        Config config = Config.createConfig();
+        record = new BlobRecord(config);
+        TlsContext ctx = new TlsContext(config);
+        chooser = ctx.getChooser();
+        encryptor = new RecordEncryptor(new RecordNullCipher(), ctx);
     }
 
     /**

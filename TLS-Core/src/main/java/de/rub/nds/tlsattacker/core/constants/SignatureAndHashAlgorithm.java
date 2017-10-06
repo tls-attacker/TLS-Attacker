@@ -10,8 +10,10 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Construction of a hash and signature algorithm.
@@ -27,8 +29,8 @@ public class SignatureAndHashAlgorithm implements Serializable {
         return new SignatureAndHashAlgorithm(value);
     }
 
-    public static SignatureAndHashAlgorithm getRandom() {
-        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(), HashAlgorithm.getRandom());
+    public static SignatureAndHashAlgorithm getRandom(Random random) {
+        return new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(random), HashAlgorithm.getRandom(random));
     }
 
     public static SignatureAndHashAlgorithm[] values() {
@@ -50,6 +52,11 @@ public class SignatureAndHashAlgorithm implements Serializable {
 
     public SignatureAndHashAlgorithm() {
 
+    }
+
+    public SignatureAndHashAlgorithm(SignatureAndHashAlgorithm other) {
+        signatureAlgorithm = other.signatureAlgorithm;
+        hashAlgorithm = other.hashAlgorithm;
     }
 
     public SignatureAndHashAlgorithm(byte[] value) {

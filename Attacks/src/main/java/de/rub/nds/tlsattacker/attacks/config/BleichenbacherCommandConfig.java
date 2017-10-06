@@ -29,15 +29,15 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     public static final String ATTACK_COMMAND = "bleichenbacher";
 
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
-    @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries (FAST/FULL)")
+    @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries")
     private Type type = Type.FAST;
 
     public BleichenbacherCommandConfig(GeneralDelegate delegate) {

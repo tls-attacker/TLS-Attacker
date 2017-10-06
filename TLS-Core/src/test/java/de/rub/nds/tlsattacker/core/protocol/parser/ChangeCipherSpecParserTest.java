@@ -32,10 +32,9 @@ public class ChangeCipherSpecParserTest {
                 { new byte[] { 0x01 }, (byte) 1, ProtocolVersion.TLS11 } });
     }
 
-    private byte[] message;
-    private ProtocolVersion version;
-
-    private byte ccsType;
+    private final byte[] message;
+    private final ProtocolVersion version;
+    private final byte ccsType;
 
     public ChangeCipherSpecParserTest(byte[] message, byte ccsType, ProtocolVersion version) {
         this.message = message;

@@ -49,7 +49,7 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
     }
 
     @Override
-    protected void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
+    public void adjustTLSContext(ECDHEServerKeyExchangeMessage message) {
         adjustECParameter(message);
         if (message.getComputations() != null) {
             tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());

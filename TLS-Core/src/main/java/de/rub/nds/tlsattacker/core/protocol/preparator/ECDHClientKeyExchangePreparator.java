@@ -64,10 +64,8 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
                 clientPublicKey.getRawYCoord().toBigInteger());
         msg.getComputations().setClientPublicKey(customClientPublicKey);
         try {
-            premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(
-                    new ECPublicKeyParameters(ecParams.getCurve().createPoint(
-                            msg.getComputations().getServerPublicKeyX().getValue(),
-                            msg.getComputations().getServerPublicKeyY().getValue()), ecParams),
+            premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(new ECPublicKeyParameters(ecParams.getCurve()
+                    .createPoint(serverPublicKey.getX(), serverPublicKey.getY()), ecParams),
                     new ECPrivateKeyParameters(privateKey, ecParams));
         } catch (IllegalArgumentException E) {
             premasterSecret = chooser.getPreMasterSecret();

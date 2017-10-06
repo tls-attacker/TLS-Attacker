@@ -9,12 +9,11 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
@@ -36,9 +35,11 @@ public class SignatureCalculatorTest {
      */
     @Test
     public void testGenerateRSASignature() {
-        byte[] signature = SignatureCalculator.generateSignature(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA1), ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext()), new byte[] { 0,
-                12, 3 });
+        SignatureAndHashAlgorithm sigAndHash = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1);
+        TlsContext ctx = new TlsContext();
+        Chooser chooser = ctx.getChooser();
+
+        byte[] signature = SignatureCalculator.generateSignature(sigAndHash, chooser, new byte[] { 0, 12, 3 });
         System.out.println(ArrayConverter.bytesToHexString(signature));
     }
 

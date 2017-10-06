@@ -29,16 +29,19 @@ public class SendMessageHelper {
 
     protected static final Logger LOGGER = LogManager.getLogger(SendMessageHelper.class.getName());
 
-    private SendMessageHelper() {
+    public SendMessageHelper() {
     }
 
-    public static MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context) throws IOException {
-        context.setTalkingConnectionEndType(context.getConfig().getConnectionEndType());
+
+        context.setTalkingConnectionEndType(context.getChooser().getConnectionEnd().getConnectionEndType());
+
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
             records = new LinkedList<>();
         }
+
         int recordPosition = 0;
         ProtocolMessageType lastType = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
@@ -69,12 +72,33 @@ public class SendMessageHelper {
                 context.setSequenceNumber(0);
             }
         }
-        flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+            context.getRecordLayer().updateEncryptionCipher();
+            context.setSequenceNumber(0);
+        }
+        recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
         sendData(messageBytesCollector, context);
+        if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
+            int current = 0;
+            for (AbstractRecord record : records) {
+                if (current >= recordPosition) {
+                    if (record.getMaxRecordLengthConfig() == null) {
+                        record.setMaxRecordLengthConfig(context.getConfig().getDefaultMaxRecordData());
+                    }
+                    List<AbstractRecord> emptyRecords = new LinkedList<>();
+                    emptyRecords.add(record);
+                    messageBytesCollector.appendRecordBytes(context.getRecordLayer().prepareRecords(
+                            messageBytesCollector.getProtocolMessageBytesStream(), record.getContentMessageType(),
+                            emptyRecords));
+                    sendData(messageBytesCollector, context);
+                }
+                current++;
+            }
+        }
         return new MessageActionResult(records, messages);
     }
 
-    private static int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
+    private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
             List<AbstractRecord> records, int recordPosition, TlsContext context) {
         int length = collector.getProtocolMessageBytesStream().length;
         List<AbstractRecord> toFillList = getEnoughRecords(length, recordPosition, records, context);
@@ -84,7 +108,7 @@ public class SendMessageHelper {
         return recordPosition + toFillList.size();
     }
 
-    private static List<AbstractRecord> getEnoughRecords(int length, int position, List<AbstractRecord> records,
+    private List<AbstractRecord> getEnoughRecords(int length, int position, List<AbstractRecord> records,
             TlsContext context) {
         List<AbstractRecord> toFillList = new LinkedList<>();
         int recordLength = 0;
@@ -119,13 +143,12 @@ public class SendMessageHelper {
      * @throws IOException
      *             Thrown if something goes wrong while sending
      */
-    private static void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
+    private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
         collector.flushRecordBytes();
     }
 
-    private static byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {
-        LOGGER.debug("Preparing the following protocol message to send: {}", message.toCompactString());
+    private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {
         ProtocolMessageHandler handler = message.getHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;

@@ -25,7 +25,9 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -141,8 +143,8 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public boolean isExtendedMasterSecretExtension() {
-        return context.isExtendedMasterSecretExtension();
+    public boolean isUseExtendedMasterSecret() {
+        return context.isUseExtendedMasterSecret();
     }
 
     @Override
@@ -427,8 +429,8 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public EllipticCurveType getEcCurveType() {
-        return EllipticCurveType.NAMED_CURVE; // We currentlyo nly support named
-        // curves TODO
+        // We currently only support named curves TODO
+        return EllipticCurveType.NAMED_CURVE;
     }
 
     @Override
@@ -491,6 +493,75 @@ public class DefaultChooser extends Chooser {
             return context.getServerKSEntry();
         } else {
             return config.getDefaultServerKSEntry();
+        }
+    }
+
+    @Override
+    public RecordLayerType getRecordLayerType() {
+        if (context.getRecordLayerType() != null) {
+            return context.getRecordLayerType();
+        } else {
+            return config.getRecordLayerType();
+        }
+    }
+
+    @Override
+    public BigInteger getClientRSAPrivateKey() {
+        if (context.getClientRSAPrivateKey() != null) {
+            return context.getClientRSAPrivateKey();
+        } else {
+            return config.getDefaultClientRSAPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getServerRSAPrivateKey() {
+        if (context.getServerRSAPrivateKey() != null) {
+            return context.getServerRSAPrivateKey();
+        } else {
+            return config.getDefaultServerRSAPrivateKey();
+        }
+    }
+
+    @Override
+    public ConnectionEnd getConnectionEnd() {
+        if (context.getConnectionEnd() != null) {
+            return context.getConnectionEnd();
+        } else {
+            return config.getConnectionEnd();
+        }
+    }
+
+    @Override
+    public ConnectionEndType getMyConnectionPeer() {
+        return getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
+                : ConnectionEndType.CLIENT;
+    }
+
+    @Override
+    public ProtocolVersion getHighestProtocolVersion() {
+        if (context.getHighestProtocolVersion() != null) {
+            return context.getHighestProtocolVersion();
+        } else {
+            return config.getHighestProtocolVersion();
+        }
+    }
+
+    @Override
+    public boolean isClientAuthentication() {
+        if (context.isClientAuthentication() != null) {
+            return context.isClientAuthentication();
+        } else {
+            return config.isClientAuthentication();
+        }
+    }
+
+    @Override
+    public byte[] getLastHandledApplicationMessageData() {
+        if (context.getLastHandledApplicationMessageData() != null) {
+            return context.getLastHandledApplicationMessageData();
+        } else {
+            return config.getDefaultApplicationMessageData().getBytes();
         }
     }
 }

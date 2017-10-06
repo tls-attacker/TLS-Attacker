@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class RecordEncryptorTest {
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
         context.setServerHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("ACC9DB33EE0968FAE7E06DAA34D642B146092CE7F9C9CF47670C66A0A6CE1C8C"));
-        context.getConfig().setConnectionEndType(ConnectionEndType.SERVER);
+        context.setConnectionEnd(new ServerConnectionEnd());
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         record.setContentMessageType(ProtocolMessageType.HANDSHAKE);
         record.setPaddingLength(0);

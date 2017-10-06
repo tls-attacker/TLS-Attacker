@@ -194,7 +194,9 @@ public enum ExtensionType {
         list.add(SERVER_NAME_INDICATION);
         list.add(SIGNATURE_AND_HASH_ALGORITHMS);
         list.add(SUPPORTED_VERSIONS);
-
+        list.add(TOKEN_BINDING);
+        list.add(RENEGOTIATION_INFO);
+        list.add(HEARTBEAT);
         return list;
     }
 }

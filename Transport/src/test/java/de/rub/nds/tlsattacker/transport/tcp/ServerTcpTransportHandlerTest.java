@@ -46,6 +46,42 @@ public class ServerTcpTransportHandlerTest {
         handler.closeConnection();
     }
 
+    @Test
+    public void testCloseClientConnection() throws IOException, InterruptedException, ExecutionException {
+        handler.closeClientConnection(); // should do nothing
+        SocketOpenerCallable callable = new SocketOpenerCallable("localhost", 50005);
+        FutureTask task = new FutureTask(callable);
+        Thread t = new Thread(task);
+        t.start();
+        handler.initialize();
+        assertTrue(handler.isInitialized());
+        Socket socket = (Socket) task.get();
+        assertNotNull(socket);
+        assertTrue(socket.isConnected());
+        try {
+            socket.getOutputStream().write(123);
+            socket.getOutputStream().flush();
+        } catch (IOException E) {
+            fail();
+        }
+
+        handler.closeServerSocket();
+        try {
+            socket.getOutputStream().write(123);
+            socket.getOutputStream().flush();
+        } catch (IOException E) {
+            fail();
+        }
+        handler.closeClientConnection();
+        try {
+            socket.getOutputStream().write(123);
+            socket.getOutputStream().flush();
+            fail();
+        } catch (IOException E) {
+            // Should happen
+        }
+    }
+
     /**
      * Test of initialize method, of class ServerTcpTransportHandler.
      */

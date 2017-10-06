@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<ChangeCipherSpecMessage> {
 
     private final ChangeCipherSpecMessage msg;
-    private final byte CCS_PROTOCOL_TYPE = 1;
+    private final static byte CCS_PROTOCOL_TYPE = 1;
 
     public ChangeCipherSpecPreparator(Chooser chooser, ChangeCipherSpecMessage message) {
         super(chooser, message);

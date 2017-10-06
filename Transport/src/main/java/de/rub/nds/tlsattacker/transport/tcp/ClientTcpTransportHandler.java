@@ -19,9 +19,9 @@ import java.net.Socket;
  */
 public class ClientTcpTransportHandler extends TransportHandler {
 
-    private Socket socket;
-    private String hostname;
-    private int port;
+    protected Socket socket;
+    protected String hostname;
+    protected int port;
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
@@ -41,5 +41,15 @@ public class ClientTcpTransportHandler extends TransportHandler {
     public void initialize() throws IOException {
         socket = new Socket(hostname, port);
         setStreams(socket.getInputStream(), socket.getOutputStream());
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed() || socket.isInputShutdown();
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
     }
 }

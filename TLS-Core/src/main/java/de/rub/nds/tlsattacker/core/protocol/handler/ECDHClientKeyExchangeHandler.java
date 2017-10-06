@@ -40,10 +40,12 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
     }
 
     @Override
-    protected void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
+    public void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         adjustClientPublicKey(message);
+        setRecordCipher();
+        spawnNewSession();
     }
 
     private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {
