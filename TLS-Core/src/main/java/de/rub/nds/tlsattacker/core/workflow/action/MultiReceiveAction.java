@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 import javax.xml.bind.annotation.XmlTransient;
@@ -47,8 +48,8 @@ public class MultiReceiveAction extends GenericReceiveAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext) {
-        super.execute(tlsContext);
+    public void execute(State state) {
+        super.execute(state);
         selectedAction = new ReceiveAction();
         for (ReceiveAction receiveAction : expectedActionCandidates) {
             if (compareExpectedActionsWithReceivedActions2(receiveAction)) {
@@ -57,7 +58,7 @@ public class MultiReceiveAction extends GenericReceiveAction {
             }
         }
         if (selectedAction.earlyCleanShutdown != null)
-            tlsContext.setEarlyCleanShutdown(selectedAction.earlyCleanShutdown);
+            state.getTlsContext().setEarlyCleanShutdown(selectedAction.earlyCleanShutdown);
         selectedAction.setReceivedMessages(super.getReceivedMessages());
         selectedAction.setReceivedRecords(super.getReceivedRecords());
         selectedAction.setExecuted(super.isExecuted());

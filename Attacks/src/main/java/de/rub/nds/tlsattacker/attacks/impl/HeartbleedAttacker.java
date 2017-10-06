@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -48,11 +48,12 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
+        State state = new State(tlsConfig);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), state);
+
+        WorkflowTrace trace = state.getWorkflowTrace();
 
         ModifiableByte heartbeatMessageType = new ModifiableByte();
         ModifiableInteger payloadLength = new ModifiableInteger();

@@ -14,10 +14,11 @@ import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
-
+import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -78,8 +79,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(ProtocolMessage... messages) {
-        this(Arrays.asList(messages));
+    public ReceiveAction(ProtocolMessage... expectedMessages) {
+        super();
+        this.expectedMessages = Arrays.asList(expectedMessages);
     }
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage> messages) {
@@ -108,21 +110,27 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext) {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
+
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = ReceiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
-        records.addAll(result.getRecordList());
-        messages.addAll(result.getMessageList());
+        MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
+        records = new ArrayList<>(result.getRecordList());
+        messages = new ArrayList<>(result.getMessageList());
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
-        LOGGER.info("Received Messages:" + received);
-
+        if (contextAlias == null) {
+            LOGGER.info("Received Messages: " + received);
+        } else {
+            LOGGER.info("Received Messages (" + contextAlias + "): " + received);
+        }
         tlsContext.setEarlyCleanShutdown(earlyCleanShutdown == null ? false : earlyCleanShutdown);
     }
 
@@ -179,8 +187,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void reset() {
-        messages = new LinkedList<>();
-        records = new LinkedList<>();
+        messages = null;
+        records = null;
         setExecuted(null);
     }
 

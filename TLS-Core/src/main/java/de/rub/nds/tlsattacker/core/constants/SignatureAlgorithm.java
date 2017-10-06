@@ -9,8 +9,10 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -50,11 +52,11 @@ public enum SignatureAlgorithm {
         return new byte[] { value };
     }
 
-    public static SignatureAlgorithm getRandom() {
+    public static SignatureAlgorithm getRandom(Random random) {
         SignatureAlgorithm c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (SignatureAlgorithm) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (SignatureAlgorithm) o[random.nextInt(o.length)];
         }
         return c;
     }

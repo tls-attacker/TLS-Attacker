@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer
  */
 public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<TokenBindingMessage> {
 
-    private TokenBindingMessage message;
+    private final TokenBindingMessage message;
 
     public TokenBindingMessageSerializer(TokenBindingMessage message, ProtocolVersion version) {
         super(message, version);

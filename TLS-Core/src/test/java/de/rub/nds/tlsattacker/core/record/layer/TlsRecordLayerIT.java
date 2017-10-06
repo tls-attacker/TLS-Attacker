@@ -39,10 +39,10 @@ public class TlsRecordLayerIT {
     @Test
     @Category(IntegrationTests.class)
     public void testParseRecords() {
-        Random r = RandomHelper.getRandom();
+        Random random = new Random(0);
         for (int i = 0; i < 1000; i++) {
-            byte[] data = new byte[r.nextInt(1000)];
-            r.nextBytes(data);
+            byte[] data = new byte[random.nextInt(1000)];
+            random.nextBytes(data);
             layer.parseRecordsSoftly(data);
         }
     }

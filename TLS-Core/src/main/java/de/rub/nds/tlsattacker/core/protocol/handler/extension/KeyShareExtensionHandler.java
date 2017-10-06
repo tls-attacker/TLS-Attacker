@@ -34,7 +34,7 @@ import javax.crypto.Mac;
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
  * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
- * 
+ *
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
@@ -55,11 +55,11 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionSerializer getSerializer(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionSerializer(message, context.getConfig().getConnectionEndType());
+        return new KeyShareExtensionSerializer(message, context.getChooser().getConnectionEnd().getConnectionEndType());
     }
 
     @Override
-    public void adjustTLSContext(KeyShareExtensionMessage message) {
+    public void adjustTLSExtensionContext(KeyShareExtensionMessage message) {
         List<KSEntry> ksEntryList = new LinkedList<>();
         for (KeySharePair pair : message.getKeyShareList()) {
             NamedCurve type = NamedCurve.getNamedCurve(pair.getKeyShareType().getValue());
@@ -71,7 +71,9 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             // The server has only one key
-            context.setServerKSEntry(ksEntryList.get(0));
+            if (ksEntryList.size() > 0) {
+                context.setServerKSEntry(ksEntryList.get(0));
+            }
             adjustHandshakeTrafficSecrets();
         } else {
             context.setClientKSEntryList(ksEntryList);
@@ -89,7 +91,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
-            if (context.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
                 } else {
@@ -128,7 +130,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     /**
      * Computes the shared secret for ECDH_X25519
-     * 
+     *
      * @return
      */
     private byte[] computeSharedSecretECDH(KSEntry keyShare) {

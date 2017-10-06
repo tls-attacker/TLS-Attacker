@@ -65,7 +65,8 @@ public class TimeoutDelegateTest {
         args[1] = "123";
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.getTimeout() == 123);
+        System.out.println("conend is: " + config.getConnectionEnd());
+        assertTrue(config.getConnectionEnd().getTimeout() == 123);
     }
 
     @Test

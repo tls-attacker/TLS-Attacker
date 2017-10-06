@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -50,11 +52,11 @@ public enum ECPointFormat {
         return value;
     }
 
-    public static ECPointFormat getRandom() {
+    public static ECPointFormat getRandom(Random random) {
         ECPointFormat c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (ECPointFormat) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (ECPointFormat) o[random.nextInt(o.length)];
         }
         return c;
     }
@@ -69,7 +71,7 @@ public enum ECPointFormat {
 
     public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats) throws IOException {
         if (pointFormats == null || pointFormats.isEmpty()) {
-            return null;
+            return new byte[0];
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

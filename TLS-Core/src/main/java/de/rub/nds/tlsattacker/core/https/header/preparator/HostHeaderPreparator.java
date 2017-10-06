@@ -28,7 +28,7 @@ public class HostHeaderPreparator extends Preparator<HostHeader> {
     @Override
     public void prepare() {
         header.setHeaderName("Host");
-        header.setHeaderValue(chooser.getConfig().getHost());
+        header.setHeaderValue(chooser.getConfig().getConnectionEnd().getHostname());
     }
 
 }

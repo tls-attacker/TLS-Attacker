@@ -30,21 +30,17 @@ public class CertificateVerifyMessageSerializerTest {
         return CertificateVerifyMessageParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
+    private final byte[] expectedPart;
 
-    private HandshakeMessageType type;
-    private int length;
+    private final HandshakeMessageType type;
+    private final int length;
 
-    private byte[] sigHashAlgo;
-    private int signatureLength;
-    private byte[] signature;
+    private final byte[] sigHashAlgo;
+    private final int signatureLength;
+    private final byte[] signature;
 
     public CertificateVerifyMessageSerializerTest(byte[] message, int start, byte[] expectedPart,
             HandshakeMessageType type, int length, byte[] sigHashAlgo, int signatureLength, byte[] signature) {
-        this.message = message;
-        this.start = start;
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;

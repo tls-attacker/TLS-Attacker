@@ -17,6 +17,7 @@
  */
 package de.rub.nds.tlsattacker.core.record;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -44,7 +45,8 @@ public class RecordTest {
     @Before
     public void setUp() {
         record = new Record();
-        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext());
+        Config config = Config.createConfig();
+        chooser = ChooserFactory.getChooser(ChooserType.DEFAULT, new TlsContext(config), config);
     }
 
     /**

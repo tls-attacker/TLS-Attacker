@@ -67,19 +67,19 @@ public class InvalidCurveAttackConfig extends AttackConfig {
             "4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
 
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
 
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
 
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     @ParametersDelegate
-    private final AttackDelegate attackDelegate;
+    private AttackDelegate attackDelegate;
 
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);

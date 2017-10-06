@@ -48,7 +48,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         Chooser chooser = tlsContext.getChooser();
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
                 chooser.getSelectedCipherSuite());
-        if (tlsContext.isExtendedMasterSecretExtension()) {
+        if (chooser.isUseExtendedMasterSecret()) {
             LOGGER.debug("Calculating ExtendedMasterSecret");
             byte[] sessionHash = tlsContext.getDigest().digest(chooser.getSelectedProtocolVersion(),
                     chooser.getSelectedCipherSuite());

@@ -30,26 +30,22 @@ public class ECDHEServerKeyExchangeSerializerTest {
         return ECDHEServerKeyExchangeParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
+    private final byte[] expectedPart;
 
-    private HandshakeMessageType type;
-    private int length;
-    private byte curveType;
-    private byte[] namedCurve;
-    private int pubKeyLength;
-    private byte[] pubKey;
-    private byte[] signatureAndHashAlgo;
-    private int sigLength;
-    private byte[] signature;
-    private ProtocolVersion version;
+    private final HandshakeMessageType type;
+    private final int length;
+    private final byte curveType;
+    private final byte[] namedCurve;
+    private final int pubKeyLength;
+    private final byte[] pubKey;
+    private final byte[] signatureAndHashAlgo;
+    private final int sigLength;
+    private final byte[] signature;
+    private final ProtocolVersion version;
 
     public ECDHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, byte curveType,
             byte[] namedCurve, int pubKeyLength, byte[] pubKey, byte[] signatureAndHashAlgo, int sigLength,
             byte[] signature, ProtocolVersion version) {
-        this.message = message;
-        this.start = 0;
         this.expectedPart = message;
         this.type = type;
         this.length = length;
