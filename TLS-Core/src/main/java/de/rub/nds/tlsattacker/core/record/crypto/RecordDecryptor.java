@@ -9,7 +9,9 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
@@ -17,6 +19,7 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import static de.rub.nds.tlsattacker.core.record.crypto.Encryptor.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -49,15 +52,17 @@ public class RecordDecryptor extends Decryptor {
         record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        prepareAdditionalMetadata(record, encrypted);
+
         if (isEncryptThenMac(cipherSuite)) {
-            prepareAdditionalMetadata(record, encrypted);
-            if (cipherSuite.isUsingMac()) {
-                byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
-                record.setMac(mac);
-                encrypted = removeMac(record.getProtocolMessageBytes().getValue());
-            }
+            LOGGER.trace("EncryptThenMac is active");
+            byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
+            record.setMac(mac);
+            encrypted = removeMac(record.getProtocolMessageBytes().getValue());
         }
+        LOGGER.debug("Decrypting:" + ArrayConverter.bytesToHexString(encrypted));
         byte[] decrypted = recordCipher.decrypt(encrypted);
+
         record.setPlainRecordBytes(decrypted);
         LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
         if (recordCipher.isUsingPadding()) {
@@ -69,7 +74,8 @@ public class RecordDecryptor extends Decryptor {
         } else {
             useNoPadding(record);
         }
-        if (!isEncryptThenMac(cipherSuite)) {
+        if (!isEncryptThenMac(cipherSuite) && recordCipher.isUsingMac()) {
+            LOGGER.trace("EncryptThenMac is not active");
             prepareAdditionalMetadata(record, record.getUnpaddedRecordBytes().getValue());
             if (cipherSuite.isUsingMac()) {
                 adjustMac(record);
@@ -83,10 +89,22 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private void prepareAdditionalMetadata(Record record, byte[] payload) {
-        record.setNonMetaDataMaced(payload);
+        prepareNonMetaDataMaced(record, payload);
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
         recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
+    }
 
+    private void prepareNonMetaDataMaced(Record record, byte[] payload) {
+        if (recordCipher.isUsingTags() && !context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            if (payload.length < recordCipher.getTagSize()) {
+                throw new CryptoException("Ciphertext contains no tag");
+            } else {
+                record.setNonMetaDataMaced(Arrays.copyOfRange(payload, recordCipher.getTagSize(), payload.length));
+            }
+        } else {
+            record.setNonMetaDataMaced(payload);
+        }
+        LOGGER.debug("Setting NonMetaData Maced:" + ArrayConverter.bytesToHexString(record.getNonMetaDataMaced()));
     }
 
     private boolean isEncryptThenMac(CipherSuite cipherSuite) {
@@ -224,10 +242,6 @@ public class RecordDecryptor extends Decryptor {
      */
     @Override
     protected byte[] collectAdditionalAuthenticatedData(Record record) {
-        if (record.getSequenceNumber() == null || record.getContentType() == null
-                || record.getProtocolMessageBytes() == null) {
-            return new byte[0];
-        }
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         byte[] contentType = { record.getContentType().getValue() };
         int length = record.getNonMetaDataMaced().getValue().length;
