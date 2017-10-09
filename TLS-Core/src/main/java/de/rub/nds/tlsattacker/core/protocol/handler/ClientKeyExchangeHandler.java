@@ -15,11 +15,14 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -71,8 +74,9 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
     }
 
     protected void setRecordCipher() {
+        KeySet keySet = getKeySet(tlsContext);
         LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
         tlsContext.getRecordLayer().setRecordCipher(recordCipher);
     }
 
@@ -81,5 +85,14 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
                 .getMasterSecret());
         tlsContext.addNewSession(session);
         LOGGER.debug("Spawning new resumable Session");
+    }
+
+    private KeySet getKeySet(TlsContext context) {
+        try {
+            LOGGER.debug("Generating new KeySet");
+            return KeySetGenerator.generateKeySet(context);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
     }
 }

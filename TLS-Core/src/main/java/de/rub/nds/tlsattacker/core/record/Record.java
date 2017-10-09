@@ -86,6 +86,13 @@ public class Record extends AbstractRecord {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray nonMetaDataMaced;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    private ModifiableByteArray authenticatedMetaData;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    // TODO check types
+    private ModifiableByteArray initialisationVector;
+
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
 
@@ -230,6 +237,32 @@ public class Record extends AbstractRecord {
 
     public void setNonMetaDataMaced(byte[] nonMetaDataMaced) {
         this.nonMetaDataMaced = ModifiableVariableFactory.safelySetValue(this.nonMetaDataMaced, nonMetaDataMaced);
+    }
+
+    public ModifiableByteArray getAuthenticatedMetaData() {
+        return authenticatedMetaData;
+    }
+
+    public void setAuthenticatedMetaData(ModifiableByteArray authenticatedMetaData) {
+        this.authenticatedMetaData = authenticatedMetaData;
+    }
+
+    public void setAuthenticatedMetaData(byte[] authenticatedMetaData) {
+        this.authenticatedMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData,
+                authenticatedMetaData);
+    }
+
+    public ModifiableByteArray getInitialisationVector() {
+        return initialisationVector;
+    }
+
+    public void setInitialisationVector(ModifiableByteArray initialisationVector) {
+        this.initialisationVector = initialisationVector;
+    }
+
+    public void setInitialisationVector(byte[] initialisationVector) {
+        this.initialisationVector = ModifiableVariableFactory.safelySetValue(this.initialisationVector,
+                initialisationVector);
     }
 
     @Override

@@ -6,7 +6,9 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.record.cipher;
+package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
+
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -70,5 +72,29 @@ public class KeySet {
 
     public void setServerWriteIv(byte[] serverWriteIv) {
         this.serverWriteIv = serverWriteIv;
+    }
+
+    public byte[] getKey(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.CLIENT) {
+            return clientWriteKey;
+        } else {
+            return serverWriteKey;
+        }
+    }
+
+    public byte[] getMacSecret(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.CLIENT) {
+            return clientWriteMacSecret;
+        } else {
+            return serverWriteMacSecret;
+        }
+    }
+
+    public byte[] getIv(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.CLIENT) {
+            return clientWriteIv;
+        } else {
+            return serverWriteIv;
+        }
     }
 }

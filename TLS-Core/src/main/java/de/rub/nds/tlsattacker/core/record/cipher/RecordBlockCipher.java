@@ -8,24 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.ByteArrayInputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -61,10 +60,20 @@ public final class RecordBlockCipher extends RecordCipher {
      */
     private IvParameterSpec decryptIv;
 
-    public RecordBlockCipher(TlsContext tlsContext) {
-        super(0);
-        this.tlsContext = tlsContext;
-        init();
+    public RecordBlockCipher(TlsContext context, KeySet keySet) {
+        super(context, keySet);
+        ProtocolVersion version = context.getChooser().getSelectedProtocolVersion();
+        if (version == ProtocolVersion.TLS11 || version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS10
+                || version == ProtocolVersion.DTLS12) {
+            useExplicitIv = true;
+        }
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            initCipherAndMac(keySet.getClientWriteIv(), keySet.getServerWriteIv(), keySet.getServerWriteMacSecret(),
+                    keySet.getClientWriteMacSecret());
+        } else {
+            initCipherAndMac(keySet.getServerWriteIv(), keySet.getClientWriteIv(), keySet.getClientWriteMacSecret(),
+                    keySet.getServerWriteMacSecret());
+        }
     }
 
     @Override
@@ -79,24 +88,26 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param data
-     *            correctly padded data
+     * @param request
      * @return
      * @throws CryptoException
      */
     @Override
-    public byte[] encrypt(byte[] data) throws CryptoException {
+    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
         try {
             byte[] ciphertext;
             if (useExplicitIv) {
-                // Note: here we always use the same IV that was generated from
-                // the master secret
-                ciphertext = ArrayConverter.concatenate(encryptIv.getIV(), encryptCipher.doFinal(data));
+                encryptIv = new IvParameterSpec(request.getInitialisationVector());
+                encryptCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(getKeySet().getKey(context.getTalkingConnectionEndType()),bulkCipherAlg.getJavaName()),encryptIv);
+                ciphertext = encryptCipher.doFinal(request.getPlainText());
+                return new EncryptionResult(encryptIv.getIV(), ciphertext, useExplicitIv);
+
             } else {
-                ciphertext = encryptCipher.update(data);
+                byte[] iv = encryptCipher.getIV();
+                ciphertext = encryptCipher.update(request.getPlainText());
+                return new EncryptionResult(ciphertext, iv, false);
             }
-            return ciphertext;
-        } catch (BadPaddingException | IllegalBlockSizeException ex) {
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException | BadPaddingException | IllegalBlockSizeException ex) {
             throw new CryptoException(ex);
         }
     }
@@ -115,12 +126,12 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] plaintext;
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
-                if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    decryptCipher.init(Cipher.DECRYPT_MODE,
-                            new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName()), decryptIv);
+                if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getServerWriteKey(),
+                            bulkCipherAlg.getJavaName()), decryptIv);
                 } else {
-                    decryptCipher.init(Cipher.DECRYPT_MODE,
-                            new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName()), decryptIv);
+                    decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getClientWriteKey(),
+                            bulkCipherAlg.getJavaName()), decryptIv);
                 }
                 plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
             } else {
@@ -133,63 +144,30 @@ public final class RecordBlockCipher extends RecordCipher {
         }
     }
 
-    private void init() {
-        try {
-            ProtocolVersion protocolVersion = tlsContext.getChooser().getSelectedProtocolVersion();
-            CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
-            if (protocolVersion == ProtocolVersion.TLS11 || protocolVersion == ProtocolVersion.TLS12
-                    || protocolVersion == ProtocolVersion.DTLS10 || protocolVersion == ProtocolVersion.DTLS12) {
-                useExplicitIv = true;
-            }
-            bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
-            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-            int keySize = cipherAlg.getKeySize();
-            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
-            readMac = Mac.getInstance(macAlg.getJavaName());
-            writeMac = Mac.getInstance(macAlg.getJavaName());
-            int secretSetSize = (2 * keySize) + readMac.getMacLength() + writeMac.getMacLength();
-            if (!useExplicitIv) {
-                secretSetSize += encryptCipher.getBlockSize() + decryptCipher.getBlockSize();
-            }
-            byte[] masterSecret = tlsContext.getChooser().getMasterSecret();
-            byte[] seed = ArrayConverter.concatenate(tlsContext.getChooser().getServerRandom(), tlsContext.getChooser()
-                    .getClientRandom());
-
-            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-            byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                    PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
-            LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
-            KeyBlockParser parser = new KeyBlockParser(keyBlock, tlsContext.getRandom(), cipherSuite, protocolVersion);
-            keySet = parser.parse();
-            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                initCipherAndMac(keySet.getClientWriteIv(), keySet.getServerWriteIv(),
-                        keySet.getServerWriteMacSecret(), keySet.getClientWriteMacSecret());
-            } else {
-                initCipherAndMac(keySet.getServerWriteIv(), keySet.getClientWriteIv(),
-                        keySet.getClientWriteMacSecret(), keySet.getServerWriteMacSecret());
-            }
-            setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
-                    * decryptCipher.getBlockSize());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize RecordBlocKCipher with Ciphersuite:"
-                    + tlsContext.getChooser().getSelectedCipherSuite().name(), ex);
-        }
-    }
-
     private void initCipherAndMac(byte[] encryptIvBytes, byte[] decryptIvBytes, byte[] macReadBytes,
             byte[] macWriteBytes) throws UnsupportedOperationException {
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(context.getChooser().getSelectedCipherSuite());
+        try {
+            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
+            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
+            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedCipherSuite());
+            readMac = Mac.getInstance(macAlg.getJavaName());
+            writeMac = Mac.getInstance(macAlg.getJavaName());
+
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+            throw new UnsupportedOperationException("Cipher not supported: "
+                    + context.getChooser().getSelectedCipherSuite().name(), ex);
+        }
         encryptIv = new IvParameterSpec(encryptIvBytes);
         decryptIv = new IvParameterSpec(decryptIvBytes);
         SecretKey encryptKey;
         SecretKey decryptKey;
-        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            encryptKey = new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName());
-            decryptKey = new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName());
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            encryptKey = new SecretKeySpec(getKeySet().getClientWriteKey(), bulkCipherAlg.getJavaName());
+            decryptKey = new SecretKeySpec(getKeySet().getServerWriteKey(), bulkCipherAlg.getJavaName());
         } else {
-            decryptKey = new SecretKeySpec(keySet.getClientWriteKey(), bulkCipherAlg.getJavaName());
-            encryptKey = new SecretKeySpec(keySet.getServerWriteKey(), bulkCipherAlg.getJavaName());
+            decryptKey = new SecretKeySpec(getKeySet().getClientWriteKey(), bulkCipherAlg.getJavaName());
+            encryptKey = new SecretKeySpec(getKeySet().getServerWriteKey(), bulkCipherAlg.getJavaName());
         }
         try {
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIv);
@@ -198,7 +176,7 @@ public final class RecordBlockCipher extends RecordCipher {
             writeMac.init(new SecretKeySpec(macWriteBytes, writeMac.getAlgorithm()));
         } catch (InvalidAlgorithmParameterException | InvalidKeyException E) {
             throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                    + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
+                    + context.getChooser().getSelectedCipherSuite().name(), E);
         }
     }
 
@@ -233,11 +211,7 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     @Override
-    public int getPlainCipherLengthDifference() {
-        int diff = readMac.getMacLength();
-        if (useExplicitIv) {
-            diff += decryptCipher.getBlockSize();
-        }
-        return diff;
+    public boolean isUsingTags() {
+        return false;
     }
 }

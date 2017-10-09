@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -23,7 +25,7 @@ public class RecordNullCipherTest {
 
     @Before
     public void setUp() {
-        record = new RecordNullCipher();
+        record = new RecordNullCipher(new TlsContext());
         data = new byte[] { 1, 2 };
     }
 
@@ -32,7 +34,7 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testEncrypt() {
-        assertArrayEquals(record.encrypt(data), data);
+        assertArrayEquals(record.encrypt(new EncryptionRequest(data)).getCompleteEncryptedCipherText(), data);
     }
 
     /**

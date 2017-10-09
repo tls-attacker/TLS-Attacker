@@ -8,28 +8,19 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.socket.TlsAttackerSocket;
-import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
-import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -58,13 +49,15 @@ public class RecordAEADCipherTest {
 
     /**
      * Test of the encrypt method, of class RecordAEADCipher.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testEncrypt() {
+    public void testEncrypt() throws NoSuchAlgorithmException {
         context.setConnectionEnd(new ServerConnectionEnd());
-        this.cipher = new RecordAEADCipher(context);
+        this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
-        byte[] ciphertext = cipher.encrypt(plaintext);
+        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(plaintext)).getCompleteEncryptedCipherText();
         byte[] ciphertext_correct = ArrayConverter
                 .hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         assertArrayEquals(ciphertext, ciphertext_correct);
@@ -72,11 +65,13 @@ public class RecordAEADCipherTest {
 
     /**
      * Test of the decrypt method, of class RecordAEADCipher.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testDecrypt() {
+    public void testDecrypt() throws NoSuchAlgorithmException {
         context.setConnectionEnd(new ClientConnectionEnd());
-        this.cipher = new RecordAEADCipher(context);
+        this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         byte[] plaintext = cipher.decrypt(ciphertext);
         byte[] plaintext_correct = ArrayConverter.hexStringToByteArray("08000002000016");
@@ -84,7 +79,7 @@ public class RecordAEADCipherTest {
     }
 
     @Test
-    public void testInit() {
+    public void testInit() throws NoSuchAlgorithmException {
         context.setConnectionEnd(new ClientConnectionEnd());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setHandshakeSecret(ArrayConverter
@@ -94,7 +89,7 @@ public class RecordAEADCipherTest {
         context.setServerHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("12756B2CA0395F1A1C3E268EF8610FBBAC8773E22F43BDABA385CE7E780A08B5"));
 
-        this.cipher = new RecordAEADCipher(context);
+        this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         assertArrayEquals(ArrayConverter.hexStringToByteArray("B8FF433DBB565709C9A6703B"), cipher.getKeySet()
                 .getClientWriteIv());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("549EC618891BCA1E676D9A60"), cipher.getKeySet()

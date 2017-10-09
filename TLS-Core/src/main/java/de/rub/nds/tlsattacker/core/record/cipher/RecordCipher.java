@@ -8,6 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.crypto.Cipher;
@@ -39,25 +43,33 @@ public abstract class RecordCipher {
     /**
      * CipherAlgorithm algorithm (AES, ...)
      */
-    protected BulkCipherAlgorithm bulkCipherAlg;
+    protected final BulkCipherAlgorithm bulkCipherAlg;
 
-    protected KeySet keySet;
+    private final KeySet keySet;
     /**
      * TLS context
      */
-    protected TlsContext tlsContext;
+    protected TlsContext context;
 
-    public RecordCipher(int minimalEncryptedRecordLength) {
-        this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
+    public RecordCipher(TlsContext context, KeySet keySet) {
+        this.keySet = keySet;
+        this.context = context;
+        this.bulkCipherAlg = AlgorithmResolver.getBulkCipherAlgorithm(context.getChooser().getSelectedCipherSuite());
     }
 
-    public abstract byte[] encrypt(byte[] data);
+    public abstract EncryptionResult encrypt(EncryptionRequest encryptionRequest);
 
     public abstract byte[] decrypt(byte[] data);
 
     public abstract boolean isUsingPadding();
 
     public abstract boolean isUsingMac();
+
+    public abstract boolean isUsingTags();
+
+    public int getTagSize() {
+        return 0;
+    }
 
     public byte[] calculateMac(byte[] data) {
         return new byte[0];
@@ -75,14 +87,6 @@ public abstract class RecordCipher {
         return 0;
     }
 
-    public int getMinimalEncryptedRecordLength() {
-        return minimalEncryptedRecordLength;
-    }
-
-    public void setMinimalEncryptedRecordLength(int minimalEncryptedRecordLength) {
-        this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
-    }
-
     public void setAdditionalAuthenticatedData(byte[] additionalAuthenticatedData) {
         this.additionalAuthenticatedData = additionalAuthenticatedData;
     }
@@ -91,23 +95,7 @@ public abstract class RecordCipher {
         return additionalAuthenticatedData;
     }
 
-    /**
-     * This function computes the difference between the plaintext size and the
-     * size of the encrypted payload. In case of AES-CBC cipher suites, it
-     * returns a sum of the IV length and MAC length. In case of AEAD cipher
-     * suites, it sums the IV length and tag length.
-     * 
-     * This functionality is needed when decrypting and verifying records. The
-     * number used for MAC/GMAC computation is based on the plaintext length
-     * (and not the ciphertext length).
-     * 
-     * @return
-     */
-    public int getPlainCipherLengthDifference() {
-        return 0;
-    }
-
-    public KeySet getKeySet() {
+    public final KeySet getKeySet() {
         return keySet;
     }
 }

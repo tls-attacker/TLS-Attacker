@@ -8,25 +8,30 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class RecordNullCipher extends RecordCipher {
 
-    public RecordNullCipher() {
-        super(0);
+    public RecordNullCipher(TlsContext context) {
+        super(context, null);
     }
 
     /**
      * Null Cipher just passes the data through
      *
-     * @param data
+     * @param request
      * @return
      */
     @Override
-    public byte[] encrypt(byte[] data) {
-        return data;
+    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
+        return new EncryptionResult(request.getPlainText());
     }
 
     /**
@@ -50,4 +55,8 @@ public class RecordNullCipher extends RecordCipher {
         return false;
     }
 
+    @Override
+    public boolean isUsingTags() {
+        return false;
+    }
 }

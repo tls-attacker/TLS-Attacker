@@ -6,8 +6,9 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.record.cipher;
+package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -87,8 +88,10 @@ public class KeyBlockParser extends Parser<KeySet> {
     private void generateRandomIv(KeySet keys) throws NoSuchAlgorithmException, NoSuchPaddingException {
         byte[] clientWriteIv = new byte[getBlockSize()];
         random.nextBytes(clientWriteIv);
+        LOGGER.debug("Client Write IV:" + ArrayConverter.bytesToHexString(clientWriteIv));
         byte[] serverWriteIv = new byte[getBlockSize()];
         random.nextBytes(serverWriteIv);
+        LOGGER.debug("Server Write IV:" + ArrayConverter.bytesToHexString(serverWriteIv));
         keys.setClientWriteIv(clientWriteIv);
         keys.setServerWriteIv(serverWriteIv);
     }

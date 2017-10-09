@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import static de.rub.nds.tlsattacker.core.record.crypto.Encryptor.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -35,7 +36,9 @@ public class RecordEncryptor extends Encryptor {
     @Override
     public void encrypt(BlobRecord record) {
         LOGGER.debug("Encrypting BlobRecord");
-        byte[] encrypted = recordCipher.encrypt(record.getCleanProtocolMessageBytes().getValue());
+        byte[] encrypted = recordCipher
+                .encrypt(new EncryptionRequest(record.getCleanProtocolMessageBytes().getValue()))
+                .getCompleteEncryptedCipherText();
         record.setProtocolMessageBytes(encrypted);
         LOGGER.debug("ProtocolMessageBytes: "
                 + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
@@ -53,10 +56,11 @@ public class RecordEncryptor extends Encryptor {
             LOGGER.trace("EncryptThenMac is not active");
             record.setNonMetaDataMaced(cleanBytes);
             byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
-            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
+            record.setAuthenticatedMetaData(additionalAuthenticatedData);
+            recordCipher.setAdditionalAuthenticatedData(record.getAuthenticatedMetaData().getValue());
             if (cipherSuite.isUsingMac()) {
-                byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, record
-                        .getNonMetaDataMaced().getValue()));
+                byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getAuthenticatedMetaData()
+                        .getValue(), record.getNonMetaDataMaced().getValue()));
                 setMac(record, mac);
             }
         }
@@ -81,13 +85,16 @@ public class RecordEncryptor extends Encryptor {
                     .getValue());
         }
         setPlainRecordBytes(record, plain);
-        byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
+        byte[] encrypted = recordCipher.encrypt(new EncryptionRequest(record.getPlainRecordBytes().getValue()))
+                .getCompleteEncryptedCipherText();
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.debug("EncryptThenMac Extension active");
             record.setNonMetaDataMaced(encrypted);
             byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
-            recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
-            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(additionalAuthenticatedData, encrypted));
+            record.setAuthenticatedMetaData(additionalAuthenticatedData);
+            recordCipher.setAdditionalAuthenticatedData(record.getAuthenticatedMetaData().getValue());
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getAuthenticatedMetaData()
+                    .getValue(), encrypted));
             setMac(record, mac);
             encrypted = ArrayConverter.concatenate(encrypted, record.getMac().getValue());
         }
@@ -152,10 +159,6 @@ public class RecordEncryptor extends Encryptor {
      */
     @Override
     protected byte[] collectAdditionalAuthenticatedData(Record record) {
-        if (record.getSequenceNumber() == null || record.getContentType() == null
-                || record.getCleanProtocolMessageBytes() == null) {
-            return new byte[0];
-        }
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         byte[] contentType = { record.getContentType().getValue() };
         int length = record.getNonMetaDataMaced().getValue().length;
