@@ -105,11 +105,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         return attackDelegate.isExecuteAttack();
     }
 
-    public enum Type {
-
-        FULL,
-        FAST
-    }
 
     public String getValidResponseContent() {
         return validResponseContent;
@@ -125,6 +120,11 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public boolean isMsgPkcsConform() {
         return msgPkcsConform;
+    }
+    public enum Type {
+        
+        FULL,
+        FAST
     }
 
 }
