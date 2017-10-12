@@ -21,6 +21,7 @@ public class AttackDelegate extends Delegate {
 
     @Parameter(names = "-executeAttack", description = "If this value is set the Attack is not only Tested, but also executed (WARNING)")
     private boolean executeAttack = false;
+
     public AttackDelegate() {
     }
 
@@ -31,7 +32,6 @@ public class AttackDelegate extends Delegate {
     public void setExecuteAttack(boolean executeAttack) {
         this.executeAttack = executeAttack;
     }
-
 
     @Override
     public void applyDelegate(Config config) throws ConfigurationException {
