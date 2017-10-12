@@ -64,7 +64,8 @@ public class ForensicAnalyzer {
             }
             byte[] joinedRecordBytes = joinRecordBytes(joinedActions);
 
-            context.setTransportHandler(new StreamTransportHandler(1, ConnectionEndType.CLIENT, new ByteArrayInputStream(joinedRecordBytes), new ByteArrayOutputStream()));
+            context.setTransportHandler(new StreamTransportHandler(1, ConnectionEndType.CLIENT,
+                    new ByteArrayInputStream(joinedRecordBytes), new ByteArrayOutputStream()));
             context.getTransportHandler().initialize();
             MessageActionResult parsedMessageResult = ReceiveMessageHelper.receiveMessages(context);
             tracePosition += joinedActions.size();
