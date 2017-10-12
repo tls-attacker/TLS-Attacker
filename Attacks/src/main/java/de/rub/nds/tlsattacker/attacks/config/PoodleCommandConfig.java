@@ -22,9 +22,9 @@ public class PoodleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "poodle";
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
 
     public PoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);

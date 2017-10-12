@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -45,19 +45,18 @@ public class CertificateFetcher {
     }
 
     public static Certificate fetchServerCertificate(Config config) {
-        TlsContext context = new TlsContext(config);
+        State state = new State(config);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
-        // config.setSupportedCiphersuites(new
-        // LinkedList<>(Arrays.asList(CipherSuite.values())));
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                WorkflowExecutorType.DEFAULT, context);
+                WorkflowExecutorType.DEFAULT, state);
+
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
             LOGGER.warn("Could not fetch ServerCertificate");
             LOGGER.debug(E);
         }
-        return context.getServerCertificate();
+        return state.getTlsContext().getServerCertificate();
     }
 
     private CertificateFetcher() {

@@ -26,6 +26,8 @@ public class PlayBackTransportHandler extends TransportHandler {
 
     private final Recording recording;
 
+    private boolean closed = false;
+
     PlayBackTransportHandler(Recording recording) {
         super(0, ConnectionEndType.SERVER);
         this.recording = recording;
@@ -34,6 +36,7 @@ public class PlayBackTransportHandler extends TransportHandler {
 
     @Override
     public void closeConnection() throws IOException {
+        closed = true;
     }
 
     @Override
@@ -55,5 +58,24 @@ public class PlayBackTransportHandler extends TransportHandler {
         RecordedLine data = linesToSend.get(position);
         position++;
         return data.getRecordedMessage();
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return closed;
     }
 }

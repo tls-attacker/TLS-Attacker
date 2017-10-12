@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>2.0Beta2</version>
+        <version>2.0Beta3</version>
     </parent>
     <artifactId>TLS-Mitm</artifactId>
     <packaging>jar</packaging>
@@ -21,7 +21,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tlsattacker.mitm.main.TlsMitm</mainClass>
+                            <mainClass>de.rub.nds.tlsattacker.mitm.main.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

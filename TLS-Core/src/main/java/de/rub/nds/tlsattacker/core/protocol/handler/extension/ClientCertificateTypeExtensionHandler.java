@@ -41,7 +41,7 @@ public class ClientCertificateTypeExtensionHandler extends ExtensionHandler<Clie
     }
 
     @Override
-    public void adjustTLSContext(ClientCertificateTypeExtensionMessage message) {
+    public void adjustTLSExtensionContext(ClientCertificateTypeExtensionMessage message) {
         context.setClientCertificateTypeDesiredTypes(CertificateType.getCertificateTypesAsList(message
                 .getCertificateTypes().getValue()));
     }

@@ -9,10 +9,12 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -55,11 +57,11 @@ public enum CompressionMethod {
         return value;
     }
 
-    public static CompressionMethod getRandom() {
+    public static CompressionMethod getRandom(Random random) {
         CompressionMethod c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (CompressionMethod) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (CompressionMethod) o[random.nextInt(o.length)];
         }
         return c;
     }

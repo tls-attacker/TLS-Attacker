@@ -49,7 +49,7 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
     }
 
     @Override
-    protected void adjustTLSContext(HelloRetryRequestMessage message) {
+    public void adjustTLSContext(HelloRetryRequestMessage message) {
         adjustProtocolVersion(message);
         adjustSelectedCiphersuite(message);
         if (message.getExtensions() != null) {

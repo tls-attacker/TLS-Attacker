@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -29,8 +30,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * TODO: currently does not work correctly, will be fixed after some
- * refactorings.
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
@@ -56,9 +55,8 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setTimeout(1000);
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowTrace workflowTrace = new WorkflowTrace();
+        tlsConfig.setDefaultTimeout(1000);
+        WorkflowTrace workflowTrace = new WorkflowTrace(tlsConfig);
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
         List<ProtocolMessage> messageList = new LinkedList<>();
         messageList.add(new ServerHelloMessage(tlsConfig));
@@ -71,14 +69,16 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         messageList = new LinkedList<>();
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
         tlsConfig.setWorkflowTrace(workflowTrace);
+        State state = new State(tlsConfig, workflowTrace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
+                tlsConfig.getWorkflowExecutorType(), state);
+
         workflowExecutor.executeWorkflow();
-        if (tlsContext.isReceivedFatalAlert()) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Alert message found");
+        if (state.getTlsContext().isReceivedFatalAlert()) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), Alert message found");
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Alert message found");
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), no Alert message found");
             return true;
         }
     }

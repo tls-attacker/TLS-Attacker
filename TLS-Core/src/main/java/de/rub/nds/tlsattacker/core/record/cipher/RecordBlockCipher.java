@@ -127,7 +127,8 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param data correctly padded data
+     * @param data
+     *            correctly padded data
      * @return
      * @throws CryptoException
      */
@@ -156,7 +157,8 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes ciphertexts and decrypts it
      *
-     * @param data correctly padded data
+     * @param data
+     *            correctly padded data
      * @return
      * @throws CryptoException
      */
@@ -167,7 +169,7 @@ public final class RecordBlockCipher extends RecordCipher {
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
             }
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName()),
                         decryptIv);
             } else {
@@ -175,8 +177,7 @@ public final class RecordBlockCipher extends RecordCipher {
                         decryptIv);
             }
             if (useExplicitIv) {
-                if(decryptCipher.getBlockSize() > data.length)
-                {
+                if (decryptCipher.getBlockSize() > data.length) {
                     throw new CryptoException("Data smaller than a single cipher Block");
                 }
                 plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
@@ -239,9 +240,9 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] clientWriteIv, serverWriteIv;
             if (useExplicitIv) {
                 clientWriteIv = new byte[encryptCipher.getBlockSize()];
-                RandomHelper.getRandom().nextBytes(clientWriteIv);
+                tlsContext.getRandom().nextBytes(clientWriteIv);
                 serverWriteIv = new byte[decryptCipher.getBlockSize()];
-                RandomHelper.getRandom().nextBytes(serverWriteIv);
+                tlsContext.getRandom().nextBytes(serverWriteIv);
             } else {
                 clientWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + encryptCipher.getBlockSize());
                 offset += encryptCipher.getBlockSize();
@@ -250,7 +251,7 @@ public final class RecordBlockCipher extends RecordCipher {
                 offset += decryptCipher.getBlockSize();
                 LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
             }
-            if (tlsContext.getConfig().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 encryptIv = new IvParameterSpec(clientWriteIv);
                 decryptIv = new IvParameterSpec(serverWriteIv);
                 encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
@@ -279,12 +280,12 @@ public final class RecordBlockCipher extends RecordCipher {
                             + tlsContext.getChooser().getSelectedCipherSuite().name(), E);
                 }
             }
+            // MAC has to be put into one or more blocks, depending on the
+            // MAC/block length.
+            // Additionally, there is a need for one explicit IV block
             if (offset != keyBlock.length) {
                 throw new CryptoException("Offset exceeded the generated key block length");
-            } // mac has to be put into one or more blocks, depending on the
-            // MAC/block
-            // length
-            // additionally, there is a need for one explicit IV block
+            }
             setMinimalEncryptedRecordLength(((readMac.getMacLength() / decryptCipher.getBlockSize()) + 2)
                     * decryptCipher.getBlockSize());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {

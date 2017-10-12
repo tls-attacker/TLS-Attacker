@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
@@ -40,6 +42,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
@@ -50,6 +53,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -84,7 +88,8 @@ public class SerialisationFullTest {
 
     @Test
     public void test() throws JAXBException, IOException {
-        Config config = Config.createConfig();
+        State state = new State();
+        Config config = state.getConfig();
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setAddHeartbeatExtension(true);
@@ -111,6 +116,7 @@ public class SerialisationFullTest {
         trace.addTlsAction(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));
         trace.addTlsAction(new DeactivateEncryptionAction());
         trace.addTlsAction(new RenegotiationAction());
+        trace.addTlsAction(new GenericReceiveAction());
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(new AlertMessage());
         messages.add(new ApplicationMessage());
@@ -136,6 +142,10 @@ public class SerialisationFullTest {
         messages.add(new UnknownHandshakeMessage());
         messages.add(new UnknownMessage());
         messages.add(new ServerHelloMessage());
+        HttpsRequestMessage message = new HttpsRequestMessage();
+        message.setRequestPath("someString");
+        message.getRequestPath().setModification(new StringExplicitValueModification("replacedString"));
+        messages.add(message);
         SendAction action = new SendAction(messages);
         List<AbstractRecord> records = new LinkedList<>();
         records.add(new BlobRecord());

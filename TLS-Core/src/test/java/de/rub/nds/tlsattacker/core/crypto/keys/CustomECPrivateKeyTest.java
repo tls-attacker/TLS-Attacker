@@ -10,9 +10,11 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import java.math.BigInteger;
+import java.security.spec.ECParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -48,12 +50,9 @@ public class CustomECPrivateKeyTest {
      */
     @Test
     public void testGetParams() {
-        try {
-            CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
-            key.getParams();
-            System.out.println("Supported: " + curve.name());
-        } catch (Exception E) {
-            Assert.fail(curve.name() + " is not supported!");
-        }
+        CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
+        ECParameterSpec params = key.getParams();
+        System.out.println("Supported: " + curve.name());
+        assertNotNull(params);
     }
 }

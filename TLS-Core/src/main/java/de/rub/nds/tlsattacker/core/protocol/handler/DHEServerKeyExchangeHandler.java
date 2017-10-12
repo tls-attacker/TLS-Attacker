@@ -41,7 +41,7 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     }
 
     @Override
-    protected void adjustTLSContext(DHEServerKeyExchangeMessage message) {
+    public void adjustTLSContext(DHEServerKeyExchangeMessage message) {
         adjustDhGenerator(message);
         adjustDhModulus(message);
         adjustServerPublicKey(message);

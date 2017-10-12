@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.state.http.HttpContext;
  */
 public abstract class HttpsHeaderHandler extends Handler<HttpsHeader> {
 
-    private HttpContext context;
+    private final HttpContext context;
 
     public HttpsHeaderHandler(HttpContext context) {
         this.context = context;

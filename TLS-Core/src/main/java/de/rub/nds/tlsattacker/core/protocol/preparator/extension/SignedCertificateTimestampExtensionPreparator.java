@@ -26,6 +26,7 @@ public class SignedCertificateTimestampExtensionPreparator extends
      * 
      * @param chooser
      * @param message
+     * @param serializer
      */
     public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
             SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {

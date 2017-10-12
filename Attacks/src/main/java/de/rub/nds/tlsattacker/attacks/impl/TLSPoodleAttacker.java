@@ -18,12 +18,14 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,11 +54,9 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        State state = new State(tlsConfig, trace);
+
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
         // if the padding was {0x02, 0x02, 0x02}, it becomes {0x03, 0x02, 0x02}
@@ -73,6 +73,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         trace.addTlsAction(sendAction);
         trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
+            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                    tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow");
@@ -80,7 +82,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
             return null;
         }
         System.out.println(trace.toString());
-        if (tlsContext.isReceivedFatalAlert()) {
+        if (state.getTlsContext().isReceivedFatalAlert()) {
             LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
         } else {

@@ -24,46 +24,48 @@ import de.rub.nds.tlsattacker.transport.udp.timing.TimingServerUdpTransportHandl
  */
 public class TransportHandlerFactory {
 
-    public static TransportHandler createTransportHandler(String hostname, int port, ConnectionEndType end,
-            int timeout, TransportHandlerType type) {
-        switch (type) {
+    public static TransportHandler createTransportHandler(ConnectionEnd conEnd) {
+        ConnectionEndType ourConEndType = conEnd.getConnectionEndType();
+        Long timeout = new Long(conEnd.getTimeout());
+
+        switch (conEnd.getTransportHandlerType()) {
             case TCP:
-                if (end == ConnectionEndType.CLIENT) {
-                    return new ClientTcpTransportHandler(timeout, hostname, port);
+                if (ourConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientTcpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
                 } else {
-                    return new ServerTcpTransportHandler(timeout, port);
+                    return new ServerTcpTransportHandler(timeout, conEnd.getPort());
                 }
             case EAP_TLS:
                 throw new UnsupportedOperationException("EAP_TLS is currently not supported");
             case UDP:
-                if (end == ConnectionEndType.CLIENT) {
-                    return new ClientUdpTransportHandler(timeout, hostname, port);
+                if (ourConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientUdpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
                 } else {
-                    return new ServerUdpTransportHandler(timeout, port);
+                    return new ServerUdpTransportHandler(timeout, conEnd.getPort());
                 }
             case NON_BLOCKING_TCP:
-                if (end == ConnectionEndType.CLIENT) {
+                if (ourConEndType == ConnectionEndType.CLIENT) {
                     throw new UnsupportedOperationException("NON_BLOCKING_TCP-Transporthandler is not supported");
                 } else {
-                    return new ServerTCPNonBlockingTransportHandler(timeout, port);
+                    return new ServerTCPNonBlockingTransportHandler(timeout, conEnd.getPort());
                 }
             case STREAM:
                 throw new UnsupportedOperationException("STREAM TransportHandler can only be created manually");
             case TCP_TIMING:
-                if (end == ConnectionEndType.CLIENT) {
-                    return new TimingClientTcpTransportHandler(timeout, hostname, port);
+                if (ourConEndType == ConnectionEndType.CLIENT) {
+                    return new TimingClientTcpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
                 } else {
-                    return new TimingServerTcpTransportHandler(timeout, port);
+                    return new TimingServerTcpTransportHandler(timeout, conEnd.getPort());
                 }
             case UDP_TIMING:
-                if (end == ConnectionEndType.CLIENT) {
-                    return new TimingClientUdpTransportHandler(timeout, hostname, port);
+                if (ourConEndType == ConnectionEndType.CLIENT) {
+                    return new TimingClientUdpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
                 } else {
-                    return new TimingServerUdpTransportHandler(timeout, port);
+                    return new TimingServerUdpTransportHandler(timeout, conEnd.getPort());
                 }
             case TCP_NO_DELAY:
-                if (end == ConnectionEndType.CLIENT) {
-                    return new ClientTcpNoDelayTransportHandler(timeout, hostname, port);
+                if (ourConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientTcpNoDelayTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
                 } else {
                     throw new UnsupportedOperationException(
                             "This transport handler type is only supported in client mode");
