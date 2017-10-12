@@ -44,13 +44,6 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         this.config = config;
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
-
-        // LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        // Configuration ctxConfig = ctx.getConfiguration();
-        // LoggerConfig loggerConfig =
-        // ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-        // loggerConfig.setLevel(Level.INFO);
-        // ctx.updateLoggers();
     }
 
     @Override

@@ -250,7 +250,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             solution = s0.modInverse(publicKey.getModulus());
             solution = solution.multiply(m[0].upper).mod(publicKey.getModulus());
 
-            LOGGER.debug("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
+            LOGGER.info("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
 
             result = true;
         }

@@ -20,6 +20,8 @@ import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  *
@@ -67,6 +69,10 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
+
+        if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
+        }
     }
 
     public Type getType() {
