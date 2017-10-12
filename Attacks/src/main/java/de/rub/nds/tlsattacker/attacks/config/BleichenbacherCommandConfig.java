@@ -49,9 +49,11 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             + "exchange message. You can retrieve this message from the Wireshark traffic. Find the client key exchange "
             + "message, right click on the \"EncryptedPremaster\" value and copy this value as a Hex Stream.")
     private String encryptedPremasterSecret;
-
     @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries")
     private Type type = Type.FAST;
+    @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the original "
+            + "message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts with 0x00 0x02.")
+    private boolean msgPkcsConform = true;
 
     public BleichenbacherCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -113,6 +115,10 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public String getEncryptedPremasterSecret() {
         return encryptedPremasterSecret;
+    }
+
+    public boolean isMsgPkcsConform() {
+        return msgPkcsConform;
     }
 
 }

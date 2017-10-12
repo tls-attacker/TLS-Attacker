@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
-import de.rub.nds.tlsattacker.attacks.pkcs1.Manger;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -82,13 +81,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedPremasterSecret());
         if ((pms.length * 8) != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
-                    + "is not equal to the server public key length. Have you selected the correct " + "value?");
+                    + "is not equal to the server public key length. Have you selected the correct value?");
         }
 
         RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, tlsConfig,
                 config.getValidResponseContent(), config.getInvalidResponseContent());
 
-        Bleichenbacher attacker = new Bleichenbacher(pms, oracle, true);
+        Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
         attacker.attack();
         BigInteger solution = attacker.getSolution();
 

@@ -195,14 +195,14 @@ public class State {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
         }
 
-        LOGGER.info("Adding context " + alias);
+        LOGGER.debug("Adding context " + alias);
         tlsContexts.put(alias, context);
 
         if (conEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
-            LOGGER.debug("Adding context " + alias + " to listeningCtxs");
+            LOGGER.trace("Adding context " + alias + " to listeningCtxs");
             listeningTlsContexts.add(context);
         } else {
-            LOGGER.debug("Adding context " + alias + " to connectingCtxs");
+            LOGGER.trace("Adding context " + alias + " to connectingCtxs");
             connectingTlsContexts.add(context);
         }
     }

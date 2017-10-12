@@ -57,12 +57,14 @@ Currently, the following features are supported:
 - DTLS 1.2 (RFC-6347)(Currently under Development)
 - SSL 2 (Client/Server Hello)
 - (EC)DH and RSA key exchange algorithms
-- CBC, GCM, CCM and Streamciphers
+- CBC and Streamciphers
 - TLS client and server
 - HTTPS
-- MitM
+- MitM (experimental)
 - Lots of Extensions
 - Tokenbinding (EC) and Tokenbinding over HTTP
+- Sockets
+- PSK
 
 
 Full support for the following Extensions: 
@@ -70,7 +72,15 @@ Full support for the following Extensions:
 - EllipticCurves
 - ExtendedMasterSecret
 - KeyShare
-- MaxFragmentLength, Padding, SNI, Signature and Hash Algorithms, Supported Versions, Heartbeat, Renegotiation, Tokenbinding
+- MaxFragmentLength
+- Padding
+- SNI
+- Signature and Hash Algorithms
+- Supported Versions
+- Heartbeat
+- Renegotiation
+- Tokenbinding
+
 The following Extesions are sendable and receivable but are currently not completely functional:
 - ALPN
 - Cached Info
@@ -236,8 +246,8 @@ Further examples on attacks and further explanations on TLS-Attacker can be foun
 
 ## Advanced Features
 Some Actions require context, or configuration to be executed correctly. For exmaple, if TLS-Attacker tries to send a ClientHello message, it needs to know which values to
-put into the message like which Ciphersuites or which protocol version to put. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
-Values which are determined at runtime are stored in the TlsContext. When a value which is normally selected from the current connection state is missing (because a message was not yet received), the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you dont explicitly define a default value in the config file, TLS-Attacker fills
+put into the message, eg. which Ciphersuites or which protocol version to use. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
+Values which are determined at runtime are stored in the TlsContext. When a value which is normally selected from the context is missing (because a message was not yet received), the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you do not explicitly define a default value in the config file, TLS-Attacker fills
 this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the wiki.
 
 ## Acknowledgements
@@ -249,6 +259,10 @@ The following people have contributed code to the TLS-Attacker Project:
 - Matthias Terlinde: More TLS-Extensions
 - Nurullah Erinola: TLS 1.3 Support
 - Lucas Hartmann: TLS-MitM Workflows
+- Florian Linsner: PSK
+- Pierre Tilhaus: Code quality improvements
+
+Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.
 
