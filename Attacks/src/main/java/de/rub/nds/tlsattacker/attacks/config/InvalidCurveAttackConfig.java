@@ -169,8 +169,17 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         Config config = super.createConfig();
         List<CipherSuite> cipherSuites = new LinkedList<>();
         cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256);
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384);
         cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_256_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384);
+        config.setAddECPointFormatExtension(true);
+        config.setAddEllipticCurveExtension(true);
         config.setDefaultClientSupportedCiphersuites(cipherSuites);
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
         List<NamedCurve> namedCurves = new LinkedList<>();
         namedCurves.add(namedCurve);
         config.setNamedCurves(namedCurves);

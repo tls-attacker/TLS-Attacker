@@ -40,13 +40,11 @@ public class PoodleAttacker extends Attacker {
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
         State state = new State(tlsConfig);
-        TlsContext context = state.getTlsContext();
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.SSL3);
-        context.getConfig().setDefaultClientSupportedCiphersuites(getCbcCiphers());
-        context.getConfig().setWorkflowTraceType(WorkflowTraceType.HELLO);
+        tlsConfig.setHighestProtocolVersion(ProtocolVersion.SSL3);
+        tlsConfig.setDefaultClientSupportedCiphersuites(getCbcCiphers());
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
-
         return WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, state.getWorkflowTrace());
     }
 
