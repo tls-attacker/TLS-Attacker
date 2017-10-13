@@ -45,13 +45,10 @@ public class KeyBlockParser extends Parser<KeySet> {
 
     private final ProtocolVersion version;
 
-    private final Random random;
-
-    public KeyBlockParser(byte[] keyBlock, Random random, CipherSuite suite, ProtocolVersion version) {
+    public KeyBlockParser(byte[] keyBlock, CipherSuite suite, ProtocolVersion version) {
         super(0, keyBlock);
         this.suite = suite;
         this.version = version;
-        this.random = random;
     }
 
     @Override
@@ -65,9 +62,7 @@ public class KeyBlockParser extends Parser<KeySet> {
             parseClientWriteKey(keys);
             parseServerWriteKey(keys);
             if (AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
-                if (isUsingExplicitIv()) {
-                    generateRandomIv(keys);
-                } else {
+                if (!isUsingExplicitIv()) {
                     parseClientWriteIvBlock(keys);
                     parseServerWriteIvBlock(keys);
                 }
@@ -83,17 +78,6 @@ public class KeyBlockParser extends Parser<KeySet> {
 
     private int getAeadSaltSize() {
         return GCM_IV_LENGTH - SEQUENCE_NUMBER_LENGTH;
-    }
-
-    private void generateRandomIv(KeySet keys) throws NoSuchAlgorithmException, NoSuchPaddingException {
-        byte[] clientWriteIv = new byte[getBlockSize()];
-        random.nextBytes(clientWriteIv);
-        LOGGER.debug("Client Write IV:" + ArrayConverter.bytesToHexString(clientWriteIv));
-        byte[] serverWriteIv = new byte[getBlockSize()];
-        random.nextBytes(serverWriteIv);
-        LOGGER.debug("Server Write IV:" + ArrayConverter.bytesToHexString(serverWriteIv));
-        keys.setClientWriteIv(clientWriteIv);
-        keys.setServerWriteIv(serverWriteIv);
     }
 
     private void parseClientWriteIvBlock(KeySet keys) throws NoSuchAlgorithmException, NoSuchPaddingException {

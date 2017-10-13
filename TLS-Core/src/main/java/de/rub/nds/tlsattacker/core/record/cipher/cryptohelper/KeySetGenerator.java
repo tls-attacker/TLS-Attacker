@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
@@ -21,7 +20,6 @@ import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
@@ -88,7 +86,7 @@ public class KeySetGenerator {
         byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                 PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, getSecretSetSize(protocolVersion, cipherSuite));
         LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
-        KeyBlockParser parser = new KeyBlockParser(keyBlock, context.getRandom(), cipherSuite, protocolVersion);
+        KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
         KeySet keySet = parser.parse();
         return keySet;
     }

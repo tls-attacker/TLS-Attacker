@@ -36,8 +36,7 @@ public class RecordEncryptor extends Encryptor {
     @Override
     public void encrypt(BlobRecord record) {
         LOGGER.debug("Encrypting BlobRecord");
-        byte[] encrypted = recordCipher
-                .encrypt(new EncryptionRequest(record.getCleanProtocolMessageBytes().getValue()))
+        byte[] encrypted = recordCipher.encrypt(getEncryptionRequest(record.getCleanProtocolMessageBytes().getValue()))
                 .getCompleteEncryptedCipherText();
         record.setProtocolMessageBytes(encrypted);
         LOGGER.debug("ProtocolMessageBytes: "
@@ -85,7 +84,7 @@ public class RecordEncryptor extends Encryptor {
                     .getValue());
         }
         setPlainRecordBytes(record, plain);
-        byte[] encrypted = recordCipher.encrypt(new EncryptionRequest(record.getPlainRecordBytes().getValue()))
+        byte[] encrypted = recordCipher.encrypt(getEncryptionRequest(record.getPlainRecordBytes().getValue()))
                 .getCompleteEncryptedCipherText();
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.debug("EncryptThenMac Extension active");
@@ -167,5 +166,9 @@ public class RecordEncryptor extends Encryptor {
                 byteLength);
         LOGGER.debug("Additional Authenticated Data:" + ArrayConverter.bytesToHexString(result));
         return result;
+    }
+
+    private EncryptionRequest getEncryptionRequest(byte[] data) {
+        return new EncryptionRequest(data, recordCipher.getEncryptionIV());
     }
 }

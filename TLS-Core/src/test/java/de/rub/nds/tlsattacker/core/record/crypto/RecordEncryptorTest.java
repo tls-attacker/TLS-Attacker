@@ -85,8 +85,9 @@ public class RecordEncryptorTest {
     @Test
     public void testEncryptTLS12Block() throws NoSuchAlgorithmException {
         Random random = new TestRandomData(
-                ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259C948E1D0B39BB9560CD5409B6ECAFEDB"));// explicit
-                                                                                                                         // IV's
+                ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259C948E1D0B39BB9560CD5409B6ECAFEDB"));//
+        // explicit
+        // IV's
         context.setRandom(random);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

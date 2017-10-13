@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -128,16 +129,18 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("1400000CCE92FBEC9131F48A63FED31F71573F726479AA9108FB86A4FA16BC1D5CB5753003030303");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(data)).getCompleteEncryptedCipherText();
+        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(data, cipher.getEncryptionIV()))
+                .getCompleteEncryptedCipherText();
         byte[] correctCiphertext = ArrayConverter
                 .hexStringToByteArray("C34B06D54CDE2A5AF25EE0AE1896F6F149720FA9EC205C6629B2C7F52A7F3A72931E351D4AD26E23");
-        assertArrayEquals(ciphertext, correctCiphertext);
-
+        assertArrayEquals(correctCiphertext, ciphertext);
         data = ArrayConverter.hexStringToByteArray("54657374EDE63C0E2BDAB2875D35FFC30ED4C327F7B54CCB0707070707070707");
-        ciphertext = cipher.encrypt(new EncryptionRequest(data)).getCompleteEncryptedCipherText();
+        System.out.println(ArrayConverter.bytesToHexString(cipher.getEncryptionIV()));
+        ciphertext = cipher.encrypt(new EncryptionRequest(data, cipher.getEncryptionIV()))
+                .getCompleteEncryptedCipherText();
         correctCiphertext = ArrayConverter
                 .hexStringToByteArray("7829006A6B93FA6348E1074E58CCEFA9EBBEA3202ABA82F9A2B7BC26D187AF08");
-        assertArrayEquals(ciphertext, correctCiphertext);
+        assertArrayEquals(correctCiphertext, ciphertext);
     }
 
     /**
@@ -157,19 +160,23 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("60e4c0b6e3c608e9009b9ea6f3b363b2ffba6c68aae03e238906e1d39fc28ff2"));
         context.setMasterSecret(ArrayConverter
                 .hexStringToByteArray("E2C53BF814820DBBDEE155136C3D1266366E15DF235C8409CEBA95F66B7F3471D093308CA889162888B1B2AF59C12E66"));
+        byte[] iv = ArrayConverter.hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399B");
         byte[] data = ArrayConverter
                 .hexStringToByteArray("1400000C085BE7DCDCC455020E3B578A9812C4AAD8FDCA97E7B389632B6DD1F3D61A3878413B995C942EA842CE8B2E4B0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F0F");
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(data)).getCompleteEncryptedCipherText();
+        EncryptionResult encryptionResult = cipher.encrypt(new EncryptionRequest(data, iv));
+
         byte[] correctCiphertext = ArrayConverter
                 .hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BB7556D6BBB782F6B13EF212326DEE109ED896514DD83AB9DDB7C9B8ACB79E738E0A928C05217E90DC98D6F3E326C2751A0B12C06E2C3D852E72075098F3387E1");
-        assertArrayEquals(ciphertext, correctCiphertext);
+        assertArrayEquals(correctCiphertext, encryptionResult.getCompleteEncryptedCipherText());
+        assertArrayEquals(iv, encryptionResult.getInitialisationVector());
 
         data = ArrayConverter.hexStringToByteArray("54657374EDE63C0E2BDAB2875D35FFC30ED4C327F7B54CCB0707070707070707");
-        ciphertext = cipher.encrypt(new EncryptionRequest(data)).getCompleteEncryptedCipherText();
         correctCiphertext = ArrayConverter
                 .hexStringToByteArray("60B420BB3851D9D47ACB933DBE70399BE55651CF88774ED9990F91F4BD25C30881331F16DC8FBD609F0E7714CD4678EF");
-        assertArrayEquals(ciphertext, correctCiphertext);
+        encryptionResult = cipher.encrypt(new EncryptionRequest(data, iv));
+        assertArrayEquals(correctCiphertext, encryptionResult.getCompleteEncryptedCipherText());
+        assertArrayEquals(iv, encryptionResult.getInitialisationVector());
     }
 
     /**

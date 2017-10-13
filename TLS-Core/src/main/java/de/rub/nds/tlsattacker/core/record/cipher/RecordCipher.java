@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
@@ -24,10 +26,7 @@ import org.apache.logging.log4j.Logger;
 public abstract class RecordCipher {
 
     protected static final Logger LOGGER = LogManager.getLogger(RecordCipher.class.getName());
-    /**
-     * minimalRecordLength an encrypted record should have
-     */
-    private int minimalEncryptedRecordLength;
+
     /**
      * additional authenticated data
      */
@@ -51,9 +50,15 @@ public abstract class RecordCipher {
      */
     protected TlsContext context;
 
+    protected final CipherSuite cipherSuite;
+
+    protected final ProtocolVersion version;
+
     public RecordCipher(TlsContext context, KeySet keySet) {
         this.keySet = keySet;
         this.context = context;
+        this.cipherSuite = context.getChooser().getSelectedCipherSuite();
+        this.version = context.getChooser().getSelectedProtocolVersion();
         this.bulkCipherAlg = AlgorithmResolver.getBulkCipherAlgorithm(context.getChooser().getSelectedCipherSuite());
     }
 
@@ -98,4 +103,8 @@ public abstract class RecordCipher {
     public final KeySet getKeySet() {
         return keySet;
     }
+
+    public abstract byte[] getEncryptionIV();
+
+    public abstract byte[] getDecryptionIV();
 }

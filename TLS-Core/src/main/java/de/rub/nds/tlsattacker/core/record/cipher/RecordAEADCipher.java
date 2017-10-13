@@ -69,19 +69,18 @@ public class RecordAEADCipher extends RecordCipher {
             encryptKey = new SecretKeySpec(getKeySet().getServerWriteKey(), bulkCipherAlg.getJavaName());
         }
         try {
-            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(context.getChooser().getSelectedCipherSuite());
+            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new UnsupportedOperationException("Could not initialize with:"
-                    + context.getChooser().getSelectedCipherSuite(), ex);
+            throw new UnsupportedOperationException("Could not initialize with:" + cipherSuite, ex);
         }
 
     }
 
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
-        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (version.isTLS13()) {
             return encryptTLS13(request);
         } else {
             return encryptTLS12(request);
@@ -90,7 +89,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public byte[] decrypt(byte[] data) {
-        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (version.isTLS13()) {
             return decryptTLS13(data);
         } else {
             return decryptTLS12(data);
@@ -197,7 +196,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public boolean isUsingPadding() {
-        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (version.isTLS13()) {
             return true;
         } else {
             return false;
@@ -217,5 +216,25 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public int getTagSize() {
         return SEQUENCE_NUMBER_LENGTH + GCM_TAG_LENGTH;
+    }
+
+    @Override
+    public byte[] getEncryptionIV() {
+        byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            return ArrayConverter.concatenate(getKeySet().getClientWriteIv(), nonce);
+        } else {
+            return ArrayConverter.concatenate(getKeySet().getServerWriteIv(), nonce);
+        }
+    }
+
+    @Override
+    public byte[] getDecryptionIV() {
+        byte[] nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            return ArrayConverter.concatenate(getKeySet().getServerWriteIv(), nonce);
+        } else {
+            return ArrayConverter.concatenate(getKeySet().getClientWriteIv(), nonce);
+        }
     }
 }

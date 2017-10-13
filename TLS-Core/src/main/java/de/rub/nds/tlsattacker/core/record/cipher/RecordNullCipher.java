@@ -59,4 +59,14 @@ public class RecordNullCipher extends RecordCipher {
     public boolean isUsingTags() {
         return false;
     }
+
+    @Override
+    public byte[] getEncryptionIV() {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] getDecryptionIV() {
+        return new byte[0];
+    }
 }

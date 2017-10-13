@@ -74,8 +74,16 @@ public class KeySet {
         this.serverWriteIv = serverWriteIv;
     }
 
-    public byte[] getKey(ConnectionEndType connectionEndType) {
+    public byte[] getWriteKey(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.CLIENT) {
+            return clientWriteKey;
+        } else {
+            return serverWriteKey;
+        }
+    }
+
+    public byte[] getReadKey(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.SERVER) {
             return clientWriteKey;
         } else {
             return serverWriteKey;
@@ -90,8 +98,16 @@ public class KeySet {
         }
     }
 
-    public byte[] getIv(ConnectionEndType connectionEndType) {
+    public byte[] getWriteIv(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.CLIENT) {
+            return clientWriteIv;
+        } else {
+            return serverWriteIv;
+        }
+    }
+
+    public byte[] getReadIv(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.SERVER) {
             return clientWriteIv;
         } else {
             return serverWriteIv;

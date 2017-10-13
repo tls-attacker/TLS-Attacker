@@ -57,17 +57,16 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     private void initCipherAndMac(byte[] macReadBytes, byte[] macWriteBytes) throws UnsupportedOperationException {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(context.getChooser().getSelectedCipherSuite());
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         try {
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedCipherSuite());
+            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
 
         } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new UnsupportedOperationException("Cipher not supported: "
-                    + context.getChooser().getSelectedCipherSuite().name(), ex);
+            throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
         }
         SecretKey encryptKey;
         SecretKey decryptKey;
@@ -84,8 +83,7 @@ public class RecordStreamCipher extends RecordCipher {
             readMac.init(new SecretKeySpec(macReadBytes, readMac.getAlgorithm()));
             writeMac.init(new SecretKeySpec(macWriteBytes, writeMac.getAlgorithm()));
         } catch (InvalidKeyException E) {
-            throw new UnsupportedOperationException("Unsupported Ciphersuite:"
-                    + context.getChooser().getSelectedCipherSuite().name(), E);
+            throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), E);
         }
     }
 
@@ -136,5 +134,15 @@ public class RecordStreamCipher extends RecordCipher {
     @Override
     public boolean isUsingTags() {
         return false;
+    }
+
+    @Override
+    public byte[] getEncryptionIV() {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] getDecryptionIV() {
+        return new byte[0];
     }
 }
