@@ -18,11 +18,12 @@ import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -59,40 +60,37 @@ public final class RecordBlockCipher extends RecordCipher {
 
     public RecordBlockCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
-        if (version == ProtocolVersion.TLS11 || version == ProtocolVersion.TLS12 || version == ProtocolVersion.DTLS10
-                || version == ProtocolVersion.DTLS12) {
+        if (version.usesExplicitIv()) {
             useExplicitIv = true;
         }
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            initCipherAndMac(keySet.getServerWriteMacSecret(), keySet.getClientWriteMacSecret());
-        } else {
-            initCipherAndMac(keySet.getClientWriteMacSecret(), keySet.getServerWriteMacSecret());
-        }
+        initCipherAndMac();
+
     }
 
-    private void initCipherAndMac(byte[] macReadBytes, byte[] macWriteBytes) throws UnsupportedOperationException {
+    private void initCipherAndMac() throws UnsupportedOperationException {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+
         try {
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
-        }
-        try {
-            readMac.init(new SecretKeySpec(macReadBytes, readMac.getAlgorithm()));
-            writeMac.init(new SecretKeySpec(macWriteBytes, writeMac.getAlgorithm()));
-        } catch (InvalidKeyException E) {
+
+            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(
+                    context.getConnectionEnd().getConnectionEndType()), readMac.getAlgorithm()));
+            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(
+                    context.getConnectionEnd().getConnectionEndType()), writeMac.getAlgorithm()));
+            if (getKeySet().getClientWriteIv() != null && getKeySet().getServerWriteIv() != null) {
+                encryptIv = new IvParameterSpec(getKeySet().getWriteIv(
+                        context.getConnectionEnd().getConnectionEndType()));
+                decryptIv = new IvParameterSpec(getKeySet()
+                        .getReadIv(context.getConnectionEnd().getConnectionEndType()));
+            }
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException E) {
             throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), E);
         }
-        if (getKeySet().getClientWriteIv() != null && getKeySet().getServerWriteIv() != null) {
-            encryptIv = new IvParameterSpec(getKeySet().getWriteIv(context.getConnectionEnd().getConnectionEndType()));
-            decryptIv = new IvParameterSpec(getKeySet().getReadIv(context.getConnectionEnd().getConnectionEndType()));
-        } else {
-            LOGGER.trace("No IV in KeySet");
-        }
+
     }
 
     @Override

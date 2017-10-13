@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -17,10 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
-import static de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher.GCM_IV_LENGTH;
-import static de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher.SEQUENCE_NUMBER_LENGTH;
 import java.security.NoSuchAlgorithmException;
-import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;

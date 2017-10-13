@@ -21,6 +21,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
@@ -49,42 +51,31 @@ public class RecordStreamCipher extends RecordCipher {
      */
     public RecordStreamCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            initCipherAndMac(getKeySet().getServerWriteMacSecret(), getKeySet().getClientWriteMacSecret());
-        } else {
-            initCipherAndMac(getKeySet().getClientWriteMacSecret(), getKeySet().getServerWriteMacSecret());
-        }
+        initCipherAndMac();
     }
 
-    private void initCipherAndMac(byte[] macReadBytes, byte[] macWriteBytes) throws UnsupportedOperationException {
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+    private void initCipherAndMac() throws UnsupportedOperationException {
         try {
+            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
-
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
-        }
-        SecretKey encryptKey;
-        SecretKey decryptKey;
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            encryptKey = new SecretKeySpec(getKeySet().getClientWriteKey(), bulkCipherAlg.getJavaName());
-            decryptKey = new SecretKeySpec(getKeySet().getServerWriteKey(), bulkCipherAlg.getJavaName());
-        } else {
-            decryptKey = new SecretKeySpec(getKeySet().getClientWriteKey(), bulkCipherAlg.getJavaName());
-            encryptKey = new SecretKeySpec(getKeySet().getServerWriteKey(), bulkCipherAlg.getJavaName());
-        }
-        try {
+            SecretKey encryptKey = new SecretKeySpec(getKeySet().getWriteKey(
+                    context.getConnectionEnd().getConnectionEndType()), bulkCipherAlg.getJavaName());
+            SecretKey decryptKey = new SecretKeySpec(getKeySet().getReadKey(
+                    context.getConnectionEnd().getConnectionEndType()), bulkCipherAlg.getJavaName());
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
-            readMac.init(new SecretKeySpec(macReadBytes, readMac.getAlgorithm()));
-            writeMac.init(new SecretKeySpec(macWriteBytes, writeMac.getAlgorithm()));
-        } catch (InvalidKeyException E) {
-            throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), E);
+            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(
+                    context.getConnectionEnd().getConnectionEndType()), readMac.getAlgorithm()));
+            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(
+                    context.getConnectionEnd().getConnectionEndType()), writeMac.getAlgorithm()));
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException ex) {
+            throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
         }
+
     }
 
     @Override

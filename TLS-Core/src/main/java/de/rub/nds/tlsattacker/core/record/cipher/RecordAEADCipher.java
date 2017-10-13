@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -61,13 +60,10 @@ public class RecordAEADCipher extends RecordCipher {
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
-        if (this.context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            encryptKey = new SecretKeySpec(getKeySet().getClientWriteKey(), bulkCipherAlg.getJavaName());
-            decryptKey = new SecretKeySpec(getKeySet().getServerWriteKey(), bulkCipherAlg.getJavaName());
-        } else {
-            decryptKey = new SecretKeySpec(getKeySet().getClientWriteKey(), bulkCipherAlg.getJavaName());
-            encryptKey = new SecretKeySpec(getKeySet().getServerWriteKey(), bulkCipherAlg.getJavaName());
-        }
+        encryptKey = new SecretKeySpec(keySet.getWriteKey(this.context.getConnectionEnd().getConnectionEndType()),
+                bulkCipherAlg.getJavaName());
+        decryptKey = new SecretKeySpec(keySet.getReadKey(this.context.getConnectionEnd().getConnectionEndType()),
+                bulkCipherAlg.getJavaName());
         try {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
@@ -102,11 +98,7 @@ public class RecordAEADCipher extends RecordCipher {
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                     sequenceNumberByte);
-            if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                encryptIV = prepareAeadParameters(nonce, getKeySet().getClientWriteIv());
-            } else {
-                encryptIV = prepareAeadParameters(nonce, getKeySet().getServerWriteIv());
-            }
+            encryptIV = prepareAeadParameters(nonce, getEncryptionIV());
             LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV.getIV()));
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIV);
             return new EncryptionResult(encryptIV.getIV(), encryptCipher.doFinal(request.getPlainText()), false);
@@ -128,13 +120,9 @@ public class RecordAEADCipher extends RecordCipher {
         try {
             byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                     RecordByteLength.SEQUENCE_NUMBER);
-            if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                byte[] iv = ArrayConverter.concatenate(getKeySet().getClientWriteIv(), nonce);
-                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
-            } else {
-                byte[] iv = ArrayConverter.concatenate(getKeySet().getServerWriteIv(), nonce);
-                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
-            }
+            byte[] iv = ArrayConverter.concatenate(
+                    getKeySet().getWriteIv(context.getConnectionEnd().getConnectionEndType()), nonce);
+            encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
             LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV.getIV()));
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIV);
             LOGGER.debug("Encrypting GCM with the following AAD: {}",
@@ -155,11 +143,7 @@ public class RecordAEADCipher extends RecordCipher {
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
                     sequenceNumberByte);
-            if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
-                decryptIV = prepareAeadParameters(nonce, getKeySet().getClientWriteIv());
-            } else {
-                decryptIV = prepareAeadParameters(nonce, getKeySet().getServerWriteIv());
-            }
+            decryptIV = prepareAeadParameters(nonce, getDecryptionIV());
             LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV.getIV()));
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
             LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
@@ -174,13 +158,9 @@ public class RecordAEADCipher extends RecordCipher {
         try {
             byte[] nonce = Arrays.copyOf(data, SEQUENCE_NUMBER_LENGTH);
             data = Arrays.copyOfRange(data, SEQUENCE_NUMBER_LENGTH, data.length);
-            if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
-                byte[] iv = ArrayConverter.concatenate(getKeySet().getClientWriteIv(), nonce);
-                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
-            } else {
-                byte[] iv = ArrayConverter.concatenate(getKeySet().getServerWriteIv(), nonce);
-                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
-            }
+            byte[] iv = ArrayConverter.concatenate(
+                    getKeySet().getReadIv(context.getConnectionEnd().getConnectionEndType()), nonce);
+            decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
             LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV.getIV()));
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
             LOGGER.debug("Decrypting GCM with the following AAD: {}",
@@ -221,20 +201,14 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public byte[] getEncryptionIV() {
         byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
-            return ArrayConverter.concatenate(getKeySet().getClientWriteIv(), nonce);
-        } else {
-            return ArrayConverter.concatenate(getKeySet().getServerWriteIv(), nonce);
-        }
+        return ArrayConverter.concatenate(getKeySet().getWriteIv(context.getConnectionEnd().getConnectionEndType()),
+                nonce);
     }
 
     @Override
     public byte[] getDecryptionIV() {
         byte[] nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
-            return ArrayConverter.concatenate(getKeySet().getServerWriteIv(), nonce);
-        } else {
-            return ArrayConverter.concatenate(getKeySet().getClientWriteIv(), nonce);
-        }
+        return ArrayConverter.concatenate(getKeySet().getReadIv(context.getConnectionEnd().getConnectionEndType()),
+                nonce);
     }
 }

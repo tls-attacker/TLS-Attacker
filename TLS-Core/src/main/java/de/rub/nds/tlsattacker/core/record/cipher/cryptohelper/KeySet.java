@@ -90,7 +90,15 @@ public class KeySet {
         }
     }
 
-    public byte[] getMacSecret(ConnectionEndType connectionEndType) {
+    public byte[] getReadMacSecret(ConnectionEndType connectionEndType) {
+        if (connectionEndType == ConnectionEndType.SERVER) {
+            return clientWriteMacSecret;
+        } else {
+            return serverWriteMacSecret;
+        }
+    }
+
+    public byte[] getWriteMacSecret(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.CLIENT) {
             return clientWriteMacSecret;
         } else {
