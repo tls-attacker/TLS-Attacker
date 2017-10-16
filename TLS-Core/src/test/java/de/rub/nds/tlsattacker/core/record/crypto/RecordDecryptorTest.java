@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.math.BigInteger;
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import java.security.NoSuchAlgorithmException;
 import static org.junit.Assert.assertArrayEquals;
