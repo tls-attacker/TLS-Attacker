@@ -221,33 +221,4 @@ public class RecordDecryptor extends Decryptor {
         }
         return unpadded[unpadded.length - 1];
     }
-
-    /**
-     * This function collects data needed for computing MACs and other
-     * authentication tags in CBC/CCM/GCM cipher suites.
-     *
-     * From the Lucky13 paper: An individual record R (viewed as a byte sequence
-     * of length at least zero) is processed as follows. The sender maintains an
-     * 8-byte sequence number SQN which is incremented for each record sent, and
-     * forms a 5-byte field HDR consisting of a 1-byte type field, a 2-byte
-     * version field, and a 2-byte length field. It then calculates a MAC over
-     * the bytes SQN || HDR || R.
-     *
-     * When we are decrypting a ciphertext, the difference between the
-     * ciphertext length and plaintext length has to be subtracted from the
-     * record length.
-     *
-     * @param record
-     * @return
-     */
-    @Override
-    protected byte[] collectAdditionalAuthenticatedData(Record record) {
-        byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
-        byte[] contentType = { record.getContentType().getValue() };
-        int length = record.getNonMetaDataMaced().getValue().length;
-        byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
-        byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
-                byteLength);
-        return result;
-    }
 }
