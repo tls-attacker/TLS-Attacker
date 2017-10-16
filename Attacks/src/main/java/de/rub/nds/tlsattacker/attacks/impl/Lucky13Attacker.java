@@ -78,7 +78,6 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     public void executeAttackRound(Record record) throws IOException {
         Config tlsConfig = config.createConfig();
-
         State state = new State(tlsConfig);
         TlsContext tlsContext = state.getTlsContext();
 

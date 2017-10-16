@@ -197,6 +197,14 @@ public class ReceiveMessageHelper {
                     if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
                         result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
                                 typeFromRecord, context);
+                    } else {
+                        try {
+                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        } catch (ParserException | AdjustmentException exUnknownHMsg) {
+                            LOGGER.warn("Could not parse Message as UnknownMessage");
+                            LOGGER.debug(exUnknownHMsg);
+                            break;
+                        }
                     }
                 } catch (ParserException exUnknownHandshakeMsg) {
                     LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");

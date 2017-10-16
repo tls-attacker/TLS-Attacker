@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -30,8 +29,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * TODO: currently does not work correctly, will be fixed after some
- * refactorings.
  *
  * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
@@ -57,9 +54,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        tlsConfig.getDefaultClientConnection().setTimeout(1000);
-
-        WorkflowTrace workflowTrace = new WorkflowTrace();
+        WorkflowTrace workflowTrace = new WorkflowTrace(tlsConfig);
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
         List<ProtocolMessage> messageList = new LinkedList<>();
         messageList.add(new ServerHelloMessage(tlsConfig));
@@ -71,19 +66,16 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         workflowTrace.addTlsAction(new SendAction(messageList));
         messageList = new LinkedList<>();
         workflowTrace.addTlsAction(new ReceiveAction(messageList));
-
-        State state = new State(tlsConfig);
-        state.setWorkflowTrace(workflowTrace);
-        TlsContext tlsContext = state.getTlsContext();
+        State state = new State(tlsConfig, workflowTrace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
-
+        state.getTlsContext().getConnection().setTimeout(1000);
         workflowExecutor.executeWorkflow();
-        if (tlsContext.isReceivedFatalAlert()) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), no Alert message found");
+        if (state.getTlsContext().isReceivedFatalAlert()) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), Alert message found");
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Alert message found");
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), no Alert message found");
             return true;
         }
     }

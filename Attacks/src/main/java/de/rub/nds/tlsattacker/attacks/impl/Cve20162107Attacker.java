@@ -64,7 +64,6 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
         Config tlsConfig = config.createConfig();
-        State state = new State(tlsConfig);
 
         List<CipherSuite> suiteList = new LinkedList<>();
         suiteList.add(suite);
@@ -97,8 +96,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
-        state.setWorkflowTrace(trace);
-
+        State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
 
@@ -111,7 +109,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         // The Server has to answer to our ClientHello with a ServerHello
         // Message, else he does not support the offered Ciphersuite and
         // protocol version
-        if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
+        if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
+            LOGGER.info("Did not receive ServerHello. Skipping...");
             return false;
         }
         ProtocolMessage lm = WorkflowTraceUtil.getLastReceivedMessage(trace);
@@ -126,11 +125,11 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         }
 
         if (lm.getProtocolMessageType() == ProtocolMessageType.ALERT
-                && ((AlertMessage) lm).getDescription().getValue() == 22) {
+                && AlertDescription.getAlertDescription(((AlertMessage) lm).getDescription().getValue()) == AlertDescription.RECORD_OVERFLOW) {
             LOGGER.info("  Vulnerable");
             return true;
         } else {
-            LOGGER.info("  Not Vulnerable / Not supported");
+            LOGGER.info(suite.name() + " - " + version.name() + ": Not Vulnerable / Not supported");
             return false;
         }
     }
