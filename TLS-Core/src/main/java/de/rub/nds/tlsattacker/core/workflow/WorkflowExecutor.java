@@ -59,7 +59,7 @@ public abstract class WorkflowExecutor {
         WorkflowTrace trace = null;
 
         if (state.getWorkflowTrace() != null) {
-            trace = state.getWorkflowTrace();
+            return;
         } else if (config.getWorkflowInput() != null) {
             try {
                 trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
