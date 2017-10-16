@@ -104,7 +104,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
-        this.expectedMessages = Arrays.asList(expectedMessages);
+        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
     @Override
@@ -170,7 +170,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     public void setExpectedMessages(ProtocolMessage... expectedMessages) {
-        this.expectedMessages = Arrays.asList(expectedMessages);
+        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
     @Override

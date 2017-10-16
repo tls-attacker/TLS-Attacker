@@ -125,7 +125,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addTlsActions(TLSAction... actions) {
-        addTlsActions(Arrays.asList(actions));
+        addTlsActions(new ArrayList(Arrays.asList(actions)));
     }
 
     public void addTlsAction(int position, TLSAction action) {
@@ -146,7 +146,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void setTlsActions(TLSAction... tlsActions) {
-        this.tlsActions = Arrays.asList(tlsActions);
+        this.tlsActions = new ArrayList(Arrays.asList(tlsActions));
     }
 
     public boolean addConnectionEnd(ConnectionEnd con) {
@@ -179,7 +179,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void setConnectionEnds(ConnectionEnd... conEnds) {
-        this.connectionEnds = Arrays.asList(conEnds);
+        this.connectionEnds = new ArrayList(Arrays.asList(conEnds));
     }
 
     public void clearConnectionEnds() {

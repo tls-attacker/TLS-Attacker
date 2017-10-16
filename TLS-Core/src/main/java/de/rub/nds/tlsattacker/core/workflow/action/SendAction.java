@@ -42,7 +42,7 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     public SendAction(ProtocolMessage... messages) {
-        this(Arrays.asList(messages));
+        this(new ArrayList(Arrays.asList(messages)));
     }
 
     @Override
