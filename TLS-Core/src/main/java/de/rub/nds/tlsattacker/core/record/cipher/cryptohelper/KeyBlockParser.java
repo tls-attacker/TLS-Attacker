@@ -58,7 +58,7 @@ public class KeyBlockParser extends Parser<KeySet> {
             parseClientWriteKey(keys);
             parseServerWriteKey(keys);
             if (AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
-                if (!isUsingExplicitIv()) {
+                if (!version.usesExplicitIv()) {
                     parseClientWriteIvBlock(keys);
                     parseServerWriteIvBlock(keys);
                 }
@@ -116,11 +116,6 @@ public class KeyBlockParser extends Parser<KeySet> {
     private int getKeySize() throws NoSuchAlgorithmException {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(suite);
         return cipherAlg.getKeySize();
-    }
-
-    private boolean isUsingExplicitIv() {
-        return version == ProtocolVersion.TLS11 || version == ProtocolVersion.TLS12
-                || version == ProtocolVersion.DTLS10 || version == ProtocolVersion.DTLS12;
     }
 
     private int getBlockSize() throws NoSuchAlgorithmException, NoSuchPaddingException {
