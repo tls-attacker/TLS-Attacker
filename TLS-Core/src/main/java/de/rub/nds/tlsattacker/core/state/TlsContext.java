@@ -657,7 +657,8 @@ public class TlsContext {
 
     public void setClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
-        this.clientSupportedSignatureAndHashAlgorithms = new ArrayList(Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
+        this.clientSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -811,7 +812,8 @@ public class TlsContext {
 
     public void setServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
-        this.serverSupportedSignatureAndHashAlgorithms = new ArrayList(Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
+        this.serverSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {

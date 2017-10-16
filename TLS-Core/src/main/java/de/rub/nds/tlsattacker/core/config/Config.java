@@ -1360,7 +1360,8 @@ public class Config implements Serializable {
 
     public final void setDefaultClientSupportedCompressionMethods(
             CompressionMethod... defaultClientSupportedCompressionMethods) {
-        this.defaultClientSupportedCompressionMethods = new ArrayList(Arrays.asList(defaultClientSupportedCompressionMethods));
+        this.defaultClientSupportedCompressionMethods = new ArrayList(
+                Arrays.asList(defaultClientSupportedCompressionMethods));
     }
 
     public HeartbeatMode getDefaultHeartbeatMode() {
@@ -2326,7 +2327,8 @@ public class Config implements Serializable {
 
     public void setDefaultServerSupportedCompressionMethods(
             CompressionMethod... defaultServerSupportedCompressionMethods) {
-        this.defaultServerSupportedCompressionMethods = new ArrayList(Arrays.asList(defaultServerSupportedCompressionMethods));
+        this.defaultServerSupportedCompressionMethods = new ArrayList(
+                Arrays.asList(defaultServerSupportedCompressionMethods));
     }
 
     public void clearConnectionEnds() {
