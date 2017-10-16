@@ -107,12 +107,8 @@ public class KeySetGenerator {
 
     private static int getBlockSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         try {
-            boolean useExplicitIv = false;
-            if (protocolVersion == ProtocolVersion.TLS11 || protocolVersion == ProtocolVersion.TLS12
-                    || protocolVersion == ProtocolVersion.DTLS10 || protocolVersion == ProtocolVersion.DTLS12) {
-                useExplicitIv = true;
-            }
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+            boolean useExplicitIv = protocolVersion.usesExplicitIv();
             int keySize = cipherAlg.getKeySize();
             Cipher cipher = Cipher.getInstance(cipherAlg.getJavaName());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
