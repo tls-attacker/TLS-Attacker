@@ -83,7 +83,6 @@ public class State {
 
     public State(Config config) {
         this.config = config;
-        setWorkflowTrace(config.getWorkflowTrace());
     }
 
     public State(Config config, WorkflowTrace trace) {
