@@ -33,7 +33,8 @@ public enum HandshakeMessageType {
     SERVER_HELLO_DONE((byte) 14),
     CERTIFICATE_VERIFY((byte) 15),
     CLIENT_KEY_EXCHANGE((byte) 16),
-    FINISHED((byte) 20);
+    FINISHED((byte) 20),
+    SUPPLEMENTAL_DATA((byte) 23);
 
     private int value;
 
