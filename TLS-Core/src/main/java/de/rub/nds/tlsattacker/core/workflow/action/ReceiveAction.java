@@ -149,7 +149,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (messages.size() != expectedMessages.size()) {
+        if (messages == null || messages.size() != expectedMessages.size()) {
             return false;
         } else {
             for (int i = 0; i < messages.size(); i++) {
