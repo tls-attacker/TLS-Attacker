@@ -1742,8 +1742,11 @@ public class Config implements Serializable {
      */
     public void setDefaultTimeout(Integer timeout) {
         defaultTimeout = timeout;
-        for (ConnectionEnd conEnd : connectionEnds) {
-            conEnd.setDefaultTimeout(defaultTimeout);
+        
+        if(connectionEnds != null) {
+        	for (ConnectionEnd conEnd : connectionEnds) {
+        		conEnd.setDefaultTimeout(defaultTimeout);
+        	}
         }
     }
 
