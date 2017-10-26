@@ -179,6 +179,14 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         this(receiveFromAlias, forwardToAlias, Arrays.asList(messages));
     }
 
+    public void setReceiveFromAlias(String receiveFromAlias) {
+        this.receiveFromAlias = receiveFromAlias;
+    }
+
+    public void setForwardToAlias(String forwardToAlias) {
+        this.forwardToAlias = forwardToAlias;
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
         if (isExecuted()) {
