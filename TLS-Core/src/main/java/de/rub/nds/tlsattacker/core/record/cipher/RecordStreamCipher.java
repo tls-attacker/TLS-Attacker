@@ -116,7 +116,7 @@ public class RecordStreamCipher extends RecordCipher {
             serverWriteKey = Arrays.copyOfRange(keyBlock, offset, offset + keySize);
             offset += keySize;
             LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-            if (tlsContext.getChooser().getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
                 decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
                 try {

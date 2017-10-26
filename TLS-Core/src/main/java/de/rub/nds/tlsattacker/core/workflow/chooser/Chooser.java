@@ -172,6 +172,8 @@ public abstract class Chooser {
 
     public abstract Connection getConnection();
 
+    public abstract ConnectionEndType getConnectionEndType();
+
     public abstract ConnectionEndType getMyConnectionPeer();
 
     public abstract ProtocolVersion getHighestProtocolVersion();

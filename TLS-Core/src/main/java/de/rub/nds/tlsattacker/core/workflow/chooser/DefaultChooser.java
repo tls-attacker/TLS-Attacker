@@ -560,4 +560,9 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultApplicationMessageData().getBytes();
         }
     }
+
+    @Override
+    public ConnectionEndType getConnectionEndType() {
+        return getConnection().getLocalConnectionEndType();
+    }
 }

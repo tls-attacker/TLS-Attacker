@@ -41,8 +41,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnection()
-                .getLocalConnectionEndType()) {
+        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
         }
     }
