@@ -13,14 +13,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class Connection {

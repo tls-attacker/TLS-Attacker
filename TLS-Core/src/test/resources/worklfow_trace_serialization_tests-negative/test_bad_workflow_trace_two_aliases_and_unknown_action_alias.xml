@@ -13,7 +13,7 @@
     </OutboundConnection>
     <InboundConnection>
         <alias>alias2</alias>
-        <port>4433</port>
+        <port>443</port>
     </InboundConnection>        
     <ReceiveAction>
         <contextAlias>UnknownAlias</contextAlias>        

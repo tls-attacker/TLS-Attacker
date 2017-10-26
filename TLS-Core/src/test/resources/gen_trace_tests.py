@@ -24,7 +24,7 @@ A test vector file used by the tests has the following contents:
   <workflowTrace>
       <OutboundConnection>
           <alias>defaultConnection</alias>
-          <port>4433</port>
+          <port>443</port>
           <hostname>localhost</hostname>
           <timeout>1000</timeout>
           <transportHandlerType>TCP</transportHandlerType>

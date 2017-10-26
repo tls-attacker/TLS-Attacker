@@ -29,7 +29,7 @@ import org.junit.rules.ExpectedException;
 public class DefaultWorkflowExecutorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(DefaultWorkflowExecutorTest.class);
-    private static final int PORT = 4433;
+    private static final int PORT = 443;
     private static final int TIMEOUT = 2000;
     private BasicTlsServer tlsServer;
 

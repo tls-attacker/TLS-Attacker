@@ -806,8 +806,8 @@ public class Config implements Serializable {
     private boolean httpsParsingEnabled = false;
 
     private Config() {
-        defaultClientConnection = new OutboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "localhost");
-        defaultServerConnection = new InboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "localhost");
+        defaultClientConnection = new OutboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 443, "localhost");
+        defaultServerConnection = new InboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 443, "localhost");
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,

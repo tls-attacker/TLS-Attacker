@@ -20,10 +20,6 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 @XmlType(propOrder = { "alias", "port", "hostname", "timeout", "transportHandlerType" })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
@@ -31,7 +27,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
     public static final String DEFAULT_HOSTNAME = "localhost";
-    public static final Integer DEFAULT_PORT = 4433;
+    public static final Integer DEFAULT_PORT = 443;
 
     protected String alias = null;
     @XmlTransient

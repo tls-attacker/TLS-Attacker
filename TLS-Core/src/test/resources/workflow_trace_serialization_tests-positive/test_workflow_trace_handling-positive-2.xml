@@ -4,14 +4,14 @@
     <defaulRunningMode>CLIENT</defaulRunningMode>
     <defaultClientConnection>
         <alias>defaultConnection</alias>
-        <port>4433</port>
+        <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
         <transportHandlerType>TCP</transportHandlerType>
     </defaultClientConnection>
     <defaultServerConnection>
         <alias>defaultConnection</alias>
-        <port>4433</port>
+        <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
         <transportHandlerType>TCP</transportHandlerType>
@@ -28,7 +28,7 @@
 <workflowTrace>
     <OutboundConnection>
         <alias>defaultConnection</alias>
-        <port>4433</port>
+        <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
         <transportHandlerType>TCP</transportHandlerType>
