@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
-    <ClientConnectionEnd>
-        <alias>defaultConnectionEnd</alias>
+    <defaultClientConnection>
+        <alias>defaultConnection</alias>
         <port>443</port>
-        <hostname>127.0.0.1</hostname>
-    </ClientConnectionEnd>
+        <hostname>localhost</hostname>
+    </defaultClientConnection>
+    <defaultServerConnection>
+        <alias>defaultConnection</alias>
+        <port>443</port>
+        <hostname>localhost</hostname>
+    </defaultServerConnection>    
     <clientAuthentication>false</clientAuthentication>
     <supportedSignatureAndHashAlgorithms>
         <hashAlgorithm>SHA512</hashAlgorithm>
