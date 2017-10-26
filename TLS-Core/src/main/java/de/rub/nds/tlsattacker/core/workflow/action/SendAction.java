@@ -13,10 +13,10 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -37,12 +37,23 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     public SendAction(List<ProtocolMessage> messages) {
-        super();
-        this.messages = messages;
+        super(messages);
     }
 
     public SendAction(ProtocolMessage... messages) {
-        this(Arrays.asList(messages));
+        this(new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public SendAction(String contextAlias) {
+        super(contextAlias);
+    }
+
+    public SendAction(String contextAlias, List<ProtocolMessage> messages) {
+        super(contextAlias, messages);
+    }
+
+    public SendAction(String contextAlias, ProtocolMessage... messages) {
+        super(contextAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
@@ -54,10 +65,10 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         String sending = getReadableString(messages);
-        if (contextAlias == null) {
+        if (getContextAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             LOGGER.info("Sending messages: " + sending);
         } else {
-            LOGGER.info("Sending messages (" + contextAlias + "): " + sending);
+            LOGGER.info("Sending messages (" + getContextAlias() + "): " + sending);
         }
 
         try {
@@ -74,10 +85,30 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Send Action:\n");
-        sb.append("Messages:\n");
-        for (ProtocolMessage message : messages) {
-            sb.append(message.toCompactString());
-            sb.append(", ");
+        sb.append("\tMessages:");
+        if (messages != null) {
+            for (ProtocolMessage message : messages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append("null (no messages set)");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder(super.toCompactString());
+        if ((messages != null) && (!messages.isEmpty())) {
+            sb.append(" (");
+            for (ProtocolMessage message : messages) {
+                sb.append(message.toCompactString());
+                sb.append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+        } else {
+            sb.append(" (no messages set)");
         }
         return sb.toString();
     }
@@ -172,4 +203,5 @@ public class SendAction extends MessageAction implements SendingAction {
 
         return hash;
     }
+
 }

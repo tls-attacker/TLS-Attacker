@@ -18,7 +18,7 @@ import java.util.Objects;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeCipherSuiteAction extends TlsAction {
+public class ChangeCipherSuiteAction extends SingleContextAction {
 
     private CipherSuite newValue = null;
     private CipherSuite oldValue = null;

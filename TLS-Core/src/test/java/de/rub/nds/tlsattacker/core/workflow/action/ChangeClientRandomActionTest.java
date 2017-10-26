@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
@@ -40,13 +39,15 @@ public class ChangeClientRandomActionTest {
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        Config config = Config.createConfig();
-        state = new State(config, new WorkflowTrace(config));
+        action = new ChangeClientRandomAction(new byte[] { 0, 1 });
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(action);
+        state = new State(trace);
+
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
-        action = new ChangeClientRandomAction(new byte[] { 0, 1 });
     }
 
     @After

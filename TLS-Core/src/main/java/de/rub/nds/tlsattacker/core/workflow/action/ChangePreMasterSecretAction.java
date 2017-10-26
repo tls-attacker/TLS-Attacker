@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangePreMasterSecretAction extends TlsAction {
+public class ChangePreMasterSecretAction extends SingleContextAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;

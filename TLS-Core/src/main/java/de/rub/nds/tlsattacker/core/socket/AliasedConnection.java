@@ -113,7 +113,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     }
 
     @Override
-    public boolean containsAllAliases(Collection<? extends String> aliases) {
+    public boolean containsAllAliases(Collection<String> aliases) {
         if (aliases == null || aliases.isEmpty()) {
             return false;
         }
@@ -156,8 +156,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         return true;
     }
 
-    public void mixInDefaults(AliasedConnection defaultCon) {
-        if (alias == null) {
+    public void normalize(AliasedConnection defaultCon) {
+        if ((alias == null) || alias.isEmpty()) {
             alias = defaultCon.getAlias();
             if (alias == null || alias.isEmpty()) {
                 alias = getDefaultConnectionAlias();
@@ -177,7 +177,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 timeout = DEFAULT_TIMEOUT;
             }
         }
-        if (hostname == null) {
+        if (hostname == null || hostname.isEmpty()) {
             hostname = defaultCon.getHostname();
             if (hostname == null || hostname.isEmpty()) {
                 hostname = DEFAULT_HOSTNAME;
@@ -195,7 +195,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         }
     }
 
-    public void stripDefaults(AliasedConnection defaultCon) {
+    public void filter(AliasedConnection defaultCon) {
         if (alias.equals(defaultCon.getAlias()) || alias.equals(getDefaultConnectionAlias())) {
             alias = null;
         }

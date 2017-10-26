@@ -14,6 +14,9 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
+import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
+import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -65,6 +68,7 @@ public abstract class WorkflowExecutor {
         if (config.getWorkflowInput() != null) {
             try {
                 trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
+                LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
             } catch (FileNotFoundException ex) {
                 LOGGER.warn("Could not read WorkflowTrace. File not found.");
                 LOGGER.debug(ex);
@@ -78,7 +82,7 @@ public abstract class WorkflowExecutor {
         }
 
         if (trace == null) {
-            throw new ConfigurationException("Could not initialize WorkflowTrace in TLSContext");
+            throw new ConfigurationException("Could not initialize WorkflowTrace");
         } else {
             state.setWorkflowTrace(trace);
         }
@@ -92,9 +96,19 @@ public abstract class WorkflowExecutor {
                 if (f.isDirectory()) {
                     f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
                 }
-                WorkflowTraceUtil.stripDefaultsForSerialization(state.getWorkflowTrace(), config,
-                        state.getRunningMode());
-                WorkflowTraceSerializer.write(f, state.getWorkflowTrace());
+
+                // Always remove defaults from the trace and add back the
+                // original connection definitions as supplied by the user.
+                Filter filter = FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
+                WorkflowTrace filteredTrace = filter.filteredCopy(state.getWorkflowTrace(), config);
+                filteredTrace.setConnections(state.getOriginalWorkflowTrace().getConnections());
+
+                // Apply optional filter
+                for (FilterType filterType : config.getOptionalOutputFilters()) {
+                    filter = FilterFactory.createWorkflowTraceFilter(filterType, config);
+                    filteredTrace = filter.filteredCopy(filteredTrace, config);
+                }
+                WorkflowTraceSerializer.write(f, filteredTrace);
             } catch (JAXBException | IOException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.");
                 LOGGER.debug(ex);

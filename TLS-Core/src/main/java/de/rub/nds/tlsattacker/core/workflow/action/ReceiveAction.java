@@ -40,13 +40,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
@@ -90,11 +89,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
             @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
-    protected List<ProtocolMessage> expectedMessages;
+    protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
     public ReceiveAction() {
         super();
-        this.expectedMessages = new LinkedList<>();
     }
 
     public ReceiveAction(List<ProtocolMessage> expectedMessages) {
@@ -104,7 +102,20 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
-        this.expectedMessages = Arrays.asList(expectedMessages);
+        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+    }
+
+    public ReceiveAction(String contextAlias) {
+        super(contextAlias);
+    }
+
+    public ReceiveAction(String contextAlias, List<ProtocolMessage> messages) {
+        super(contextAlias);
+        this.expectedMessages = messages;
+    }
+
+    public ReceiveAction(String contextAlias, ProtocolMessage... messages) {
+        this(contextAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
@@ -124,25 +135,51 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
-        if (contextAlias == null) {
+        if (getContextAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             LOGGER.info("Received Messages: " + received);
         } else {
-            LOGGER.info("Received Messages (" + contextAlias + "): " + received);
+            LOGGER.info("Received Messages (" + getContextAlias() + "): " + received);
         }
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
+
         sb.append("\tExpected:");
-        for (ProtocolMessage message : expectedMessages) {
-            sb.append(message.toCompactString());
-            sb.append(", ");
+        if ((expectedMessages != null)) {
+            for (ProtocolMessage message : expectedMessages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no messages set)");
         }
         sb.append("\n\tActual:");
-        for (ProtocolMessage message : messages) {
-            sb.append(message.toCompactString());
-            sb.append(", ");
+        if ((messages != null) && (!messages.isEmpty())) {
+            for (ProtocolMessage message : messages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append(" (no messages set)");
+        }
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder(super.toCompactString());
+        if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
+            sb.append(" (");
+            for (ProtocolMessage message : expectedMessages) {
+                sb.append(message.toCompactString());
+                sb.append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+        } else {
+            sb.append(" (no messages set)");
         }
         return sb.toString();
     }
@@ -216,11 +253,49 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
         if (!Objects.equals(this.messages, other.messages)) {
+            System.out.println(this.messages);
+            System.out.println(other.messages);
             return false;
         }
         if (!Objects.equals(this.records, other.records)) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void normalize() {
+        super.normalize();
+        initEmptyLists();
+    }
+
+    @Override
+    public void normalize(TlsAction defaultAction) {
+        super.normalize(defaultAction);
+        initEmptyLists();
+    }
+
+    @Override
+    public void filter() {
+        super.filter();
+        filterEmptyLists();
+    }
+
+    @Override
+    public void filter(TlsAction defaultCon) {
+        super.filter(defaultCon);
+        filterEmptyLists();
+    }
+
+    private void filterEmptyLists() {
+        if (expectedMessages == null || expectedMessages.isEmpty()) {
+            expectedMessages = null;
+        }
+    }
+
+    private void initEmptyLists() {
+        if (expectedMessages == null) {
+            expectedMessages = new ArrayList<>();
+        }
     }
 }

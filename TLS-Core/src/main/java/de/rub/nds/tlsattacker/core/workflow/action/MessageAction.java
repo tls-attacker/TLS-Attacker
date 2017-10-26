@@ -45,7 +45,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -56,7 +55,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public abstract class MessageAction extends TlsAction {
+public abstract class MessageAction extends SingleContextAction {
 
     @XmlElementWrapper
     @HoldsModifiableVariable
@@ -89,13 +88,13 @@ public abstract class MessageAction extends TlsAction {
             @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
             @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
-    protected List<ProtocolMessage> messages;
+    protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> records;
+    protected List<AbstractRecord> records = new ArrayList<>();
 
     @XmlTransient
     protected ReceiveMessageHelper receiveMessageHelper;
@@ -104,7 +103,6 @@ public abstract class MessageAction extends TlsAction {
     protected SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
-        messages = new LinkedList<>();
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
@@ -119,6 +117,23 @@ public abstract class MessageAction extends TlsAction {
         this.messages = new ArrayList<>(Arrays.asList(messages));
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
+    }
+
+    public MessageAction(String contextAlias) {
+        super(contextAlias);
+        receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();
+    }
+
+    public MessageAction(String contextAlias, List<ProtocolMessage> messages) {
+        super(contextAlias);
+        this.messages = new ArrayList<>(messages);
+        receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();
+    }
+
+    public MessageAction(String contextAlias, ProtocolMessage... messages) {
+        this(contextAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {
@@ -139,6 +154,9 @@ public abstract class MessageAction extends TlsAction {
 
     public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
+        if (messages == null) {
+            return builder.toString();
+        }
         for (ProtocolMessage message : messages) {
             if (verbose) {
                 builder.append(message.toString());
@@ -176,4 +194,47 @@ public abstract class MessageAction extends TlsAction {
     public void setRecords(AbstractRecord... records) {
         this.records = new ArrayList<>(Arrays.asList(records));
     }
+
+    @Override
+    public void normalize() {
+        super.normalize();
+        initEmptyLists();
+    }
+
+    @Override
+    public void normalize(TlsAction defaultAction) {
+        super.normalize(defaultAction);
+        initEmptyLists();
+    }
+
+    @Override
+    public void filter() {
+        super.filter();
+        stripEmptyLists();
+    }
+
+    @Override
+    public void filter(TlsAction defaultAction) {
+        super.filter(defaultAction);
+        stripEmptyLists();
+    }
+
+    private void stripEmptyLists() {
+        if (messages == null || messages.isEmpty()) {
+            messages = null;
+        }
+        if (records == null || records.isEmpty()) {
+            records = null;
+        }
+    }
+
+    private void initEmptyLists() {
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
+        if (records == null) {
+            records = new ArrayList<>();
+        }
+    }
+
 }

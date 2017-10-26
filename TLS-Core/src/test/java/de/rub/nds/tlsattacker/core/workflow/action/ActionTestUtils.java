@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.unittest.helper.DefaultNormalizeFilter;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class ActionTestUtils {
     public static <T extends TlsAction> void marshalingEmptyActionYieldsMinimalOutput(Class<T> actionClass,
             Logger logger) {
         try {
-            WorkflowTrace trace = new WorkflowTrace(Config.createConfig());
+            WorkflowTrace trace = new WorkflowTrace();
             T action = actionClass.newInstance();
             trace.addTlsAction(action);
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
@@ -53,7 +54,9 @@ public class ActionTestUtils {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            String actual = WorkflowTraceSerializer.write(trace);
+            WorkflowTrace normalizeAndFiltered = DefaultNormalizeFilter
+                    .normalizeAndFilter(trace, Config.createConfig());
+            String actual = WorkflowTraceSerializer.write(normalizeAndFiltered);
             logger.info(actual);
 
             assertThat(actual, equalTo(expected));
@@ -73,8 +76,13 @@ public class ActionTestUtils {
         try {
             T action = actionClass.newInstance();
             StringWriter writer = new StringWriter();
+
+            action.filter();
             JAXB.marshal(action, writer);
             TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), actionClass);
+            action.normalize();
+            actual.normalize();
+
             assertEquals(action, actual);
         } catch (InstantiationException | IllegalAccessException ex) {
             logger.error(ex.getLocalizedMessage(), ex);
@@ -94,8 +102,13 @@ public class ActionTestUtils {
     public static <T extends TlsAction> void marshalingAndUnmarshalingFilledObjectYieldsEqualObject(T action,
             Logger logger) {
         StringWriter writer = new StringWriter();
+
+        action.filter();
         JAXB.marshal(action, writer);
         TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), action.getClass());
+        action.normalize();
+        actual.normalize();
+
         assertEquals(action, actual);
     }
 }

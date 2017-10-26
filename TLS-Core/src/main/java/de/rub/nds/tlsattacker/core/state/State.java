@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,10 +32,10 @@ import org.apache.logging.log4j.Logger;
  * dynamic objects, representing TLS connections, calculations and other data
  * exchanged during the TLS actual workflow execution.
  * <p>
- * 
+ *
  * <p>
- * Therefore, there is no interface for setting TLS contexts manually. They are
- * always automatically created based on the connection ends defined in the
+ * Therefore, there is no public interface for setting TLS contexts manually.
+ * They are always automatically created based on the connections defined in the
  * workflow trace.
  * <p>
  * 
@@ -44,22 +44,25 @@ import org.apache.logging.log4j.Logger;
  * initialization examples with expected behavior.
  * </p>
  * 
- * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class State {
 
     protected static final Logger LOGGER = LogManager.getLogger(State.class.getName());
 
+    private final ContextContainer contextContainer = new ContextContainer();
     private Config config = null;
-    private ContextContainer contextContainer = new ContextContainer();
     private RunningModeType runningMode = null;
 
     @HoldsModifiableVariable
     private WorkflowTrace workflowTrace = null;
+    private WorkflowTrace originalWorkflowTrace;
 
     public State() {
         this(Config.createConfig());
+    }
+
+    public State(WorkflowTrace trace) {
+        this(Config.createConfig(), trace);
     }
 
     public State(Config config) {
@@ -75,20 +78,25 @@ public class State {
 
     /**
      * Set a new workflow trace. Existing TLS contexts are discarded and fresh
-     * contexts are initialized based on the config and the given connection
-     * ends in the trace. If the trace does not define any connection ends,
-     * default values are loaded from config, if any.
+     * contexts are initialized based on the config and the given connections in
+     * the trace. The trace will be supplemented with default values and
+     * verified before execution.
      * 
      * @param trace
      *            The workflow trace to execute.
      */
     public final void setWorkflowTrace(WorkflowTrace trace) {
         if (!contextContainer.isEmpty()) {
-            LOGGER.debug("Setting new workflow trace, clearing old contexts (if any)");
+            LOGGER.debug("Setting new workflow trace, clearing old contexts");
             contextContainer.clear();
         }
 
-        WorkflowTraceUtil.mixInDefaultsForExecution(trace, config, runningMode);
+        // Snapshot might be used to access the unnormalized trace.
+        originalWorkflowTrace = WorkflowTrace.copy(trace);
+
+        WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
+        normalizer.normalize(trace, config, runningMode);
+        trace.setDirty(false);
 
         for (AliasedConnection con : trace.getConnections()) {
             TlsContext ctx = new TlsContext(config, con);
@@ -103,6 +111,10 @@ public class State {
 
     public WorkflowTrace getWorkflowTrace() {
         return workflowTrace;
+    }
+
+    public WorkflowTrace getOriginalWorkflowTrace() {
+        return originalWorkflowTrace;
     }
 
     /**

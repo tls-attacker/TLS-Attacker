@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class DeactivateEncryptionAction extends TlsAction {
+public class DeactivateEncryptionAction extends SingleContextAction {
 
     public DeactivateEncryptionAction() {
     }

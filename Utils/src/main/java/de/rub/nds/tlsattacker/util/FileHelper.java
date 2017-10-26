@@ -40,13 +40,17 @@ public class FileHelper {
     }
 
     public static String getResourceAsString(Class currentClass, String resourceFilePath) {
-        String testFilePath = "/mitm_stdout_help.txt";
-        InputStream is = currentClass.getResourceAsStream(resourceFilePath);
+        InputStream is;
+        if (!resourceFilePath.startsWith("/")) {
+            is = currentClass.getResourceAsStream("/" + resourceFilePath);
+        } else {
+            is = currentClass.getResourceAsStream(resourceFilePath);
+        }
         String contents = null;
         try {
             contents = inputStreamToString(is);
         } catch (IOException ex) {
-            LOGGER.error("Unable to load resource file " + testFilePath);
+            LOGGER.error("Unable to load resource file " + resourceFilePath);
             return null;
         }
         return contents;

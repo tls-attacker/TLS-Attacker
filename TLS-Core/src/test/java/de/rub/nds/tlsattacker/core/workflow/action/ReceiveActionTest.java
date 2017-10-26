@@ -27,6 +27,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.JAXB;
+import static org.hamcrest.CoreMatchers.equalTo;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -50,15 +51,17 @@ public class ReceiveActionTest {
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
+        action = new ReceiveAction(alert);
 
-        Config config = Config.createConfig();
-        state = new State(config, new WorkflowTrace(config));
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(action);
+        state = new State(trace);
+
         tlsContext = state.getTlsContext();
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
-        action = new ReceiveAction(alert);
     }
 
     @After
@@ -96,9 +99,22 @@ public class ReceiveActionTest {
     @Test
     public void testJAXB() {
         StringWriter writer = new StringWriter();
+        action.filter();
         JAXB.marshal(action, writer);
         TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ReceiveAction.class);
-        assertEquals(action, action2);
+        action.normalize();
+        action2.normalize();
+        assertThat(action, equalTo(action2));
+    }
+
+    @Test
+    public void marshalingEmptyActionYieldsMinimalOutput() {
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ReceiveAction.class);
+    }
+
+    @Test
+    public void marshalingAndUnmarshalingYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ReceiveAction.class);
     }
 
 }

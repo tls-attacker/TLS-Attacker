@@ -27,7 +27,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -216,12 +215,9 @@ public class TlsClientTest {
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
         clientDelegate.setHost("localhost:" + PORT);
         Config config = clientCommandConfig.createConfig();
-        config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
-        State state = new State(config, new WorkflowTrace(config));
-        AliasedConnection con = new OutboundConnection();
-
-        WorkflowTrace trace = state.getWorkflowTrace();
+        AliasedConnection con = config.getDefaultClientConnection();
+        WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.CLIENT, new ClientHelloMessage(
                 config)));
         trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER, new ServerHelloMessage(
@@ -232,6 +228,8 @@ public class TlsClientTest {
                         config)));
         trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+
+        State state = new State(config, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);
         try {

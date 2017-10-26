@@ -13,21 +13,17 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 /**
  * A simple action to print the last handled application data to console. Per
  * default, this prints the raw byte values of the application data as a hex
  * string. An charset for simple encoding can be given to get readable output
  * (if possible).
- *
- * TODO: Don't know if it's useful to have the data in worfklow trace output.
- *
- * TODO: If bored, build a similar action that can decode chunked + gziped HTTP
- * data :-)
  * 
  * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
-public class PrintLastHandledApplicationDataAction extends TlsAction {
+public class PrintLastHandledApplicationDataAction extends SingleContextAction {
 
     private String lastHandledApplicationData = null;
 
@@ -39,9 +35,16 @@ public class PrintLastHandledApplicationDataAction extends TlsAction {
      */
     private Charset stringEncoding = null;
 
+    public PrintLastHandledApplicationDataAction() {
+    }
+
+    public PrintLastHandledApplicationDataAction(String contextAlias) {
+        super(contextAlias);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        byte[] rawBytes = state.getTlsContext(contextAlias).getChooser().getLastHandledApplicationMessageData();
+        byte[] rawBytes = state.getTlsContext(getContextAlias()).getChooser().getLastHandledApplicationMessageData();
         if (stringEncoding != null) {
             lastHandledApplicationData = new String(rawBytes, stringEncoding);
         } else {
@@ -76,4 +79,32 @@ public class PrintLastHandledApplicationDataAction extends TlsAction {
         lastHandledApplicationData = null;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.lastHandledApplicationData);
+        hash = 53 * hash + Objects.hashCode(this.stringEncoding);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PrintLastHandledApplicationDataAction other = (PrintLastHandledApplicationDataAction) obj;
+        if (!Objects.equals(this.lastHandledApplicationData, other.lastHandledApplicationData)) {
+            return false;
+        }
+        if (!Objects.equals(this.stringEncoding, other.stringEncoding)) {
+            return false;
+        }
+        return true;
+    }
 }

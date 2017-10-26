@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
@@ -46,17 +47,11 @@ public class ClientTcpTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        socket = new Socket(hostname, port);
-        // TODO:
-        // The init below is non-blocking. The above init will block if we
-        // try to connect to a bad target, say a targetHost:closedPort.
-        // Why would we want to have the blocking call?
-        // socket = new Socket();
-        // socket.connect(new InetSocketAddress(hostname, port), (int) timeout);
-        // if (!socket.isConnected()) {
-        // throw new IOException("Could not connect to " + hostname + ":" +
-        // "port");
-        // }
+        socket = new Socket();
+        socket.connect(new InetSocketAddress(hostname, port), (int) timeout);
+        if (!socket.isConnected()) {
+            throw new IOException("Could not connect to " + hostname + ":" + "port");
+        }
         setStreams(socket.getInputStream(), socket.getOutputStream());
     }
 

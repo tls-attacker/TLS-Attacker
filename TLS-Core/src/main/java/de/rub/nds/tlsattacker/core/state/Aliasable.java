@@ -31,5 +31,5 @@ public interface Aliasable {
 
     public abstract boolean containsAlias(String alias);
 
-    public abstract boolean containsAllAliases(Collection<? extends String> aliases);
+    public abstract boolean containsAllAliases(Collection<String> aliases);
 }

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.socket.InboundConnection;
 import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
@@ -31,18 +32,24 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,19 +64,14 @@ public class WorkflowTrace implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowTrace.class);
 
-    @XmlTransient
-    Config config;
-
     @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
             @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
             @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
-    private List<AliasedConnection> connections;
+    private List<AliasedConnection> connections = new ArrayList<>();
 
-    /**
-     * Workflow
-     */
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = TlsAction.class, name = "TLSAction"),
+    @XmlElements(value = { @XmlElement(type = TlsAction.class, name = "TlsAction"),
+            @XmlElement(type = ForwardAction.class, name = "ForwardAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
@@ -84,18 +86,22 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
             @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
-    private List<TlsAction> tlsActions;
+    private List<TlsAction> tlsActions = new ArrayList<>();
 
     private String name = null;
     private String description = null;
+
+    // A dirty flag used to determine if the WorkflowTrace is well defined or
+    // not.
+    @XmlTransient
+    private boolean dirty = true;
 
     public WorkflowTrace() {
         this.tlsActions = new LinkedList<>();
     }
 
-    public WorkflowTrace(Config config) {
-        this.tlsActions = new LinkedList<>();
-        this.config = config;
+    public WorkflowTrace(List<AliasedConnection> cons) {
+        this.connections = cons;
     }
 
     public void reset() {
@@ -112,8 +118,17 @@ public class WorkflowTrace implements Serializable {
         this.description = description;
     }
 
+    public List<TlsAction> getTlsActions() {
+        return tlsActions;
+    }
+
     public void addTlsAction(TlsAction action) {
+        dirty = true;
         tlsActions.add(action);
+    }
+
+    public void addTlsActions(TlsAction... actions) {
+        addTlsActions(Arrays.asList(actions));
     }
 
     public void addTlsActions(List<TlsAction> actions) {
@@ -122,64 +137,53 @@ public class WorkflowTrace implements Serializable {
         }
     }
 
-    public void addTlsActions(TlsAction... actions) {
-        addTlsActions(Arrays.asList(actions));
-    }
-
     public void addTlsAction(int position, TlsAction action) {
+        dirty = true;
         tlsActions.add(position, action);
     }
 
     public TlsAction removeTlsAction(int index) {
+        dirty = true;
         return tlsActions.remove(index);
     }
 
-    public List<TlsAction> getTlsActions() {
-        return tlsActions;
-    }
-
     public void setTlsActions(List<TlsAction> tlsActions) {
+        dirty = true;
         this.tlsActions = tlsActions;
     }
 
     public void setTlsActions(TlsAction... tlsActions) {
-        this.tlsActions = Arrays.asList(tlsActions);
-    }
-
-    public boolean addConnection(AliasedConnection con) {
-        if (connections == null) {
-            connections = new ArrayList<>();
-        }
-        return connections.add(con);
-    }
-
-    public void addConnection(int position, AliasedConnection con) {
-        if (connections == null) {
-            connections = new ArrayList<>();
-        }
-        connections.add(position, con);
-    }
-
-    public AliasedConnection removeConnection(int index) {
-        return connections.remove(index);
+        setTlsActions(new ArrayList<>(Arrays.asList(tlsActions)));
     }
 
     public List<AliasedConnection> getConnections() {
         return connections;
     }
 
-    public void setConnections(List<AliasedConnection> cons) {
-        this.connections = cons;
+    /**
+     * Set connections of the workflow trace. Use only if you know what you are
+     * doing. Unless you are manually configuring workflow traces (say for MiTM
+     * or unit tests), there shouldn't be any need to call this method.
+     * 
+     * @param connections
+     *            new connection to use with this workflow trace
+     */
+    public void setConnections(List<AliasedConnection> connections) {
+        dirty = true;
+        this.connections = connections;
     }
 
-    public void setConnections(AliasedConnection... cons) {
-        setConnections(Arrays.asList(cons));
-    }
-
-    public void clearConnection() {
-        if (connections != null) {
-            connections.clear();
-        }
+    /**
+     * Add a connection to the workflow trace. Use only if you know what you are
+     * doing. Unless you are manually configuring workflow traces (say for MiTM
+     * or unit tests), there shouldn't be any need to call this method.
+     * 
+     * @param connection
+     *            new connection to add to the workflow trace
+     */
+    public void addConnection(AliasedConnection connection) {
+        dirty = true;
+        this.connections.add(connection);
     }
 
     public List<MessageAction> getMessageActions() {
@@ -290,6 +294,26 @@ public class WorkflowTrace implements Serializable {
             }
         }
         return true;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    public static WorkflowTrace copy(WorkflowTrace orig) {
+        WorkflowTrace copy = null;
+        try {
+            String origTraceStr = WorkflowTraceSerializer.write(orig);
+            InputStream is = new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
+            copy = WorkflowTraceSerializer.read(is);
+        } catch (JAXBException | IOException | XMLStreamException ex) {
+            throw new ConfigurationException("Could not copy workflow trace: " + ex);
+        }
+        return copy;
     }
 
 }

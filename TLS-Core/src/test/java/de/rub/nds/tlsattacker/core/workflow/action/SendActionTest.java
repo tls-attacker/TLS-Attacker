@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -26,7 +25,6 @@ import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
 import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.JAXB;
 import org.junit.After;
@@ -52,15 +50,17 @@ public class SendActionTest {
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
-        Config config = Config.createConfig();
-        state = new State(config, new WorkflowTrace(config));
+        action = new SendAction(alert);
+
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(action);
+        state = new State(trace);
+
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
-        action = new SendAction(alert);
-        action.setRecords(new LinkedList<AbstractRecord>());
     }
 
     @After
@@ -91,8 +91,13 @@ public class SendActionTest {
     @Test
     public void testJAXB() {
         StringWriter writer = new StringWriter();
+        action.filter();
         JAXB.marshal(action, writer);
+        action.normalize();
+
         TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), SendAction.class);
+        action2.normalize();
+
         assertEquals(action, action2);
     }
 }

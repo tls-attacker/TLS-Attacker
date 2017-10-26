@@ -20,10 +20,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class StateTest {
 
     @Rule
@@ -75,7 +71,7 @@ public class StateTest {
         String expected = "testInitFromConfig";
         Config config = Config.createConfig();
         config.setDefaultApplicationMessageData(expected);
-        WorkflowTrace trace = new WorkflowTrace(config);
+        WorkflowTrace trace = new WorkflowTrace();
         State s = new State(config, trace);
         assertNotNull(s.getConfig());
         assertEquals(s.getConfig(), config);
@@ -98,7 +94,7 @@ public class StateTest {
         trace.addConnection(new InboundConnection("conEnd1"));
 
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("Connection end alias already in use:");
+        exception.expectMessage("Workflow trace not well defined. Trace contains connections with the same alias");
         s.setWorkflowTrace(trace);
     }
 

@@ -19,7 +19,7 @@ import java.util.Objects;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeProtocolVersionAction extends TlsAction {
+public class ChangeProtocolVersionAction extends SingleContextAction {
 
     private ProtocolVersion newValue;
     private ProtocolVersion oldValue = null;

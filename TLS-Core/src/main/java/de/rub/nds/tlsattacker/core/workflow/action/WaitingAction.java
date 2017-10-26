@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class WaitingAction extends TlsAction {
+public class WaitingAction extends ContextlessAction {
 
     private long time;
 
@@ -32,11 +31,11 @@ public class WaitingAction extends TlsAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        Boolean success;
+        Boolean success = true;
+
         LOGGER.info("Wating " + time + "ms...");
         try {
             Thread.sleep(time);
-            success = true;
         } catch (InterruptedException ex) {
             Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
             success = false;

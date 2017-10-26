@@ -42,12 +42,14 @@ public class ChangeProtocolVersionActionTest {
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
         Config config = Config.createConfig();
-        state = new State(config, new WorkflowTrace(config));
+        action = new ChangeProtocolVersionAction(ProtocolVersion.SSL2);
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(action);
+        state = new State(config, trace);
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
-        action = new ChangeProtocolVersionAction(ProtocolVersion.SSL2);
     }
 
     @After

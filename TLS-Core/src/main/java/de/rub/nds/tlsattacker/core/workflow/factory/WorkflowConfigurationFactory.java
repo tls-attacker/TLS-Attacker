@@ -133,7 +133,7 @@ public class WorkflowConfigurationFactory {
      * Create a hello workflow for the given connection end.
      */
     private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
-        WorkflowTrace workflowTrace = new WorkflowTrace(config);
+        WorkflowTrace workflowTrace = new WorkflowTrace();
 
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
@@ -279,7 +279,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createShortHelloWorkflow() {
         AliasedConnection connection = getSafeSingleContextConnectionEnd();
-        WorkflowTrace trace = new WorkflowTrace(config);
+        WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
@@ -289,7 +289,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createSsl2HelloWorkflow() {
         AliasedConnection connection = getSafeSingleContextConnectionEnd();
-        WorkflowTrace trace = new WorkflowTrace(config);
+        WorkflowTrace trace = new WorkflowTrace();
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new SSL2ClientHelloMessage(config));
         action.setRecords(new BlobRecord());
@@ -315,7 +315,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createResumptionWorkflow() {
         AliasedConnection connection = getSafeSingleContextConnectionEnd();
-        WorkflowTrace trace = new WorkflowTrace(config);
+        WorkflowTrace trace = new WorkflowTrace();
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config));
         trace.addTlsAction(action);
@@ -390,39 +390,28 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace clientToMitmHandshake = createHandshakeWorkflow(inboundConnection);
         WorkflowTrace mitmToServerHandshake = createHandshakeWorkflow(outboundConnection);
 
-        WorkflowTrace trace = new WorkflowTrace(config);
+        WorkflowTrace trace = new WorkflowTrace();
         trace.addConnection(inboundConnection);
         trace.addConnection(outboundConnection);
         trace.addTlsActions(clientToMitmHandshake.getTlsActions());
         trace.addTlsActions(mitmToServerHandshake.getTlsActions());
 
         // Forward request client -> server
-        List<ProtocolMessage> messages = new LinkedList<>();
-        ForwardAction f = new ForwardAction(new ApplicationMessage(config));
-        // TODO FIX should not depend on contextAlias if receive/forward
-        // alias is set. Add a flag to fix it.
-        f.setContextAlias(clientToMitmAlias);
-        f.setReceiveFromAlias(clientToMitmAlias);
-        f.setForwardToAlias(mitmToServerAlias);
+        ForwardAction f = new ForwardAction(clientToMitmAlias, mitmToServerAlias, new ApplicationMessage(config));
         trace.addTlsAction(f);
 
         // Print the application data contents to console
-        PrintLastHandledApplicationDataAction p = new PrintLastHandledApplicationDataAction();
-        p.setContextAlias(mitmToServerAlias);
+        PrintLastHandledApplicationDataAction p = new PrintLastHandledApplicationDataAction(clientToMitmAlias);
         p.setStringEncoding(StandardCharsets.US_ASCII);
         trace.addTlsAction(p);
 
         // Forward response server -> client
-        messages = new LinkedList<>();
-        f = new ForwardAction(new ApplicationMessage(config));
-        f.setContextAlias(clientToMitmAlias);
-        f.setReceiveFromAlias(mitmToServerAlias);
-        f.setForwardToAlias(clientToMitmAlias);
+        List<ProtocolMessage> messages = new LinkedList<>();
+        f = new ForwardAction(mitmToServerAlias, clientToMitmAlias, new ApplicationMessage(config));
         trace.addTlsAction(f);
 
         // Print the server's answer
-        p = new PrintLastHandledApplicationDataAction();
-        p.setContextAlias(clientToMitmAlias);
+        p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
         p.setStringEncoding(StandardCharsets.US_ASCII);
         trace.addTlsAction(p);
 

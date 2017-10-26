@@ -45,9 +45,11 @@ import de.rub.nds.tlsattacker.core.socket.InboundConnection;
 import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -110,6 +112,12 @@ public class Config implements Serializable {
         c = ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
         return c;
     }
+
+    /**
+     * List of optional filters to apply on workflow traces before
+     * serialization.
+     */
+    private List<FilterType> optionalOutputFilters;
 
     /**
      * Default value for ProtocolVerionFields
@@ -798,8 +806,8 @@ public class Config implements Serializable {
     private boolean httpsParsingEnabled = false;
 
     private Config() {
-        defaultClientConnection = new OutboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "127.0.0.1");
-        defaultServerConnection = new InboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "127.0.0.1");
+        defaultClientConnection = new OutboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "localhost");
+        defaultServerConnection = new InboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 4433, "localhost");
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -882,6 +890,7 @@ public class Config implements Serializable {
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
         statusRequestV2RequestList = new LinkedList<>();
+        optionalOutputFilters = new ArrayList<>();
     }
 
     public boolean isHttpsParsingEnabled() {
@@ -2296,6 +2305,14 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    public List<FilterType> getOptionalOutputFilters() {
+        return optionalOutputFilters;
+    }
+
+    public void setOptionalOutputFilters(List<FilterType> optionalOutputFilters) {
+        this.optionalOutputFilters = optionalOutputFilters;
     }
 
 }

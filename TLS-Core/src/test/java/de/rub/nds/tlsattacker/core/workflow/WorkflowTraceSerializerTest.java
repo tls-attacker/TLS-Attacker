@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.socket.InboundConnection;
 import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.unittest.helper.DefaultNormalizeFilter;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -98,7 +99,7 @@ public class WorkflowTraceSerializerTest {
     @Test
     public void testWrite() {
         try {
-            WorkflowTrace trace = new WorkflowTrace(config);
+            WorkflowTrace trace = new WorkflowTrace();
             action = new SendAction(new ClientHelloMessage(config));
             trace.addTlsAction(action);
             File f = folder.newFile();
@@ -120,7 +121,7 @@ public class WorkflowTraceSerializerTest {
     public void serializeWithSingleConnectionEndTest() {
         try {
 
-            WorkflowTrace trace = new WorkflowTrace(config);
+            WorkflowTrace trace = new WorkflowTrace();
             action = new SendAction(new ClientHelloMessage(config));
             trace.addTlsAction(action);
 
@@ -139,7 +140,8 @@ public class WorkflowTraceSerializerTest {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            String actual = WorkflowTraceSerializer.write(trace);
+            WorkflowTrace actualTrace = DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+            String actual = WorkflowTraceSerializer.write(actualTrace);
             LOGGER.info(actual);
             Assert.assertEquals(actual, expected);
 
@@ -185,7 +187,8 @@ public class WorkflowTraceSerializerTest {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            String actual = WorkflowTraceSerializer.write(trace);
+            WorkflowTrace filtered = DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+            String actual = WorkflowTraceSerializer.write(filtered);
             Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {
@@ -211,6 +214,7 @@ public class WorkflowTraceSerializerTest {
             trace.addConnection(con3);
             action = new SendAction(new ClientHelloMessage(config));
             action.setContextAlias(con3.getAlias());
+            action.normalize();
             trace.addTlsAction(action);
 
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
@@ -243,7 +247,8 @@ public class WorkflowTraceSerializerTest {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            String actual = WorkflowTraceSerializer.write(trace);
+            WorkflowTrace filtered = DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+            String actual = WorkflowTraceSerializer.write(filtered);
             Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {

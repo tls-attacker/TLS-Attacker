@@ -1,0 +1,43 @@
+# Given this config:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+</config>
+
+# And this input trace
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <SendAction>
+        <messages>
+            <ClientHello/>
+        </messages>
+    </SendAction>
+</workflowTrace>
+
+# We expect this normalized trace
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <OutboundConnection>
+        <alias>defaultConnection</alias>
+        <port>4433</port>
+        <hostname>localhost</hostname>
+        <timeout>1000</timeout>
+        <transportHandlerType>TCP</transportHandlerType>
+    </OutboundConnection>
+    <SendAction>
+        <contextAlias>defaultConnection</contextAlias>
+        <messages>
+            <ClientHello/>
+        </messages>
+        <records/>
+    </SendAction>
+</workflowTrace>
+
+# And this after default filter application:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <SendAction>
+        <messages>
+            <ClientHello/>
+        </messages>
+    </SendAction>
+</workflowTrace>

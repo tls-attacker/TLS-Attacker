@@ -137,7 +137,7 @@ public class OutboundConnectionTest {
         assertNull(con.getAlias());
         assertNull(con.getPort());
 
-        con.mixInDefaults(defaultCon);
+        con.normalize(defaultCon);
         assertThat(con.getTimeout(), equalTo(2300));
         assertThat(con.getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
         assertThat(con.getHostname(), equalTo("testDefaultHost"));
@@ -156,7 +156,7 @@ public class OutboundConnectionTest {
         assertNull(con.getAlias());
         assertNull(con.getPort());
 
-        con.mixInDefaults(null);
+        con.normalize(null);
         assertThat(con.getTimeout(), equalTo(OutboundConnection.DEFAULT_TIMEOUT));
         assertThat(con.getTransportHandlerType(), equalTo(OutboundConnection.DEFAULT_TRANSPORT_HANDLER_TYPE));
         assertThat(con.getHostname(), equalTo(OutboundConnection.DEFAULT_HOSTNAME));
@@ -175,14 +175,14 @@ public class OutboundConnectionTest {
         assertNull(con.getAlias());
         assertNull(con.getPort());
 
-        con.mixInDefaults(null);
+        con.normalize(null);
         assertThat(con.getTimeout(), equalTo(OutboundConnection.DEFAULT_TIMEOUT));
         assertThat(con.getTransportHandlerType(), equalTo(OutboundConnection.DEFAULT_TRANSPORT_HANDLER_TYPE));
         assertThat(con.getHostname(), equalTo(OutboundConnection.DEFAULT_HOSTNAME));
         assertThat(con.getAlias(), equalTo(OutboundConnection.DEFAULT_CONNECTION_ALIAS));
         assertThat(con.getPort(), equalTo(OutboundConnection.DEFAULT_PORT));
 
-        con.stripDefaults(null);
+        con.filter(null);
         assertNull(con.getTimeout());
         assertNull(con.getTransportHandlerType());
         assertNull(con.getHostname());
@@ -208,14 +208,14 @@ public class OutboundConnectionTest {
         assertNull(con.getAlias());
         assertNull(con.getPort());
 
-        con.mixInDefaults(defaultCon);
+        con.normalize(defaultCon);
         assertThat(con.getTimeout(), equalTo(2300));
         assertThat(con.getTransportHandlerType(), equalTo(TransportHandlerType.EAP_TLS));
         assertThat(con.getHostname(), equalTo("testDefaultHost"));
         assertThat(con.getAlias(), equalTo("testDefaultAlias"));
         assertThat(con.getPort(), equalTo(9772));
 
-        con.stripDefaults(defaultCon);
+        con.filter(defaultCon);
         assertNull(con.getTimeout());
         assertNull(con.getTransportHandlerType());
         assertNull(con.getHostname());

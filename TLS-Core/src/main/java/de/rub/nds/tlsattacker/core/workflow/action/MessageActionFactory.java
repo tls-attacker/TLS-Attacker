@@ -19,20 +19,20 @@ import java.util.List;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class MessageActionFactory {
-    public static MessageAction createAction(AliasedConnection myConnectionEnd,
-            ConnectionEndType sendingConnectionEndType, ProtocolMessage... protocolMessages) {
-        return createAction(myConnectionEnd, sendingConnectionEndType, Arrays.asList(protocolMessages));
+    public static MessageAction createAction(AliasedConnection connection, ConnectionEndType sendingConnectionEndType,
+            ProtocolMessage... protocolMessages) {
+        return createAction(connection, sendingConnectionEndType, Arrays.asList(protocolMessages));
     }
 
-    public static MessageAction createAction(AliasedConnection myConnectionEnd, ConnectionEndType sendingConnectionEnd,
+    public static MessageAction createAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
             List<ProtocolMessage> protocolMessages) {
         MessageAction action;
-        if (myConnectionEnd.getLocalConnectionEndType() == sendingConnectionEnd) {
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);
         } else {
             action = new ReceiveAction(protocolMessages);
         }
-        action.setContextAlias(myConnectionEnd.getAlias());
+        action.setAlias(connection.getAlias());
         return action;
     }
 

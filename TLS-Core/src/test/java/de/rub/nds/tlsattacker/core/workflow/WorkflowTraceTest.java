@@ -31,7 +31,7 @@ public class WorkflowTraceTest {
     @Before
     public void setUp() {
         config = Config.createConfig();
-        trace = new WorkflowTrace(config);
+        trace = new WorkflowTrace();
     }
 
     /**

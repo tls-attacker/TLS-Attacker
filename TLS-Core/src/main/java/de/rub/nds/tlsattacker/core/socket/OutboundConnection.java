@@ -58,18 +58,18 @@ public class OutboundConnection extends AliasedConnection {
     }
 
     @Override
-    public void mixInDefaults(AliasedConnection defaultCon) {
+    public void normalize(AliasedConnection defaultCon) {
         if (defaultCon == null) {
             defaultCon = new OutboundConnection();
         }
-        super.mixInDefaults(defaultCon);
+        super.normalize(defaultCon);
     }
 
     @Override
-    public void stripDefaults(AliasedConnection defaultCon) {
+    public void filter(AliasedConnection defaultCon) {
         if (defaultCon == null) {
             defaultCon = new OutboundConnection();
         }
-        super.stripDefaults(defaultCon);
+        super.filter(defaultCon);
     }
 }
