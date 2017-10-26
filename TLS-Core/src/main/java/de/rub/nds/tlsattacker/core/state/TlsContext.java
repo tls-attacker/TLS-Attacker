@@ -49,7 +49,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -301,7 +300,7 @@ public class TlsContext {
 
     private List<SNIEntry> clientSNIEntryList;
 
-    private List<KSEntry> clientKSEntryList;
+    private List<KSEntry> clientKeyShareEntryList;
 
     private KSEntry serverKSEntry;
 
@@ -1000,16 +999,16 @@ public class TlsContext {
         this.handshakeSecret = handshakeSecret;
     }
 
-    public List<KSEntry> getClientKSEntryList() {
-        return clientKSEntryList;
+    public List<KSEntry> getClientKeyShareEntryList() {
+        return clientKeyShareEntryList;
     }
 
-    public void setClientKSEntryList(List<KSEntry> clientKSEntryList) {
-        this.clientKSEntryList = clientKSEntryList;
+    public void setClientKeyShareEntryList(List<KSEntry> clientKeyShareEntryList) {
+        this.clientKeyShareEntryList = clientKeyShareEntryList;
     }
 
     public void setClientKSEntryList(KSEntry... clientKSEntryList) {
-        this.clientKSEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
+        this.clientKeyShareEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
     }
 
     public KSEntry getServerKSEntry() {
