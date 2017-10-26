@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
@@ -25,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class BleichenbacherAttackPlaintextTest {
@@ -41,7 +40,6 @@ public class BleichenbacherAttackPlaintextTest {
 
     @Test
     public void testBleichenbacherAttack() throws Exception {
-
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         context.getBadSecureRandom().setSeed(0);

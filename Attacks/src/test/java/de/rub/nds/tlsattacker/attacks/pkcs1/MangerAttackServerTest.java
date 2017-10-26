@@ -60,7 +60,7 @@ public class MangerAttackServerTest {
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         byte[] cipherBytes = cipher.doFinal(plainBytes);
 
-        Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config);
+        Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config, null, "DECRYPT_ERROR");
 
         long start = System.currentTimeMillis();
 
