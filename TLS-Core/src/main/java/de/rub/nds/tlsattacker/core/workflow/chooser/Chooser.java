@@ -59,7 +59,7 @@ public abstract class Chooser {
     public TlsContext getContext() {
         return context;
     }
-    
+
     public abstract List<KSEntry> getClientKeyShareEntryList();
 
     public abstract List<ECPointFormat> getClientSupportedPointFormats();

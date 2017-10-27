@@ -571,7 +571,8 @@ public class DefaultChooser extends Chooser {
         if (context.getClientKeyShareEntryList() != null) {
             return context.getClientKeyShareEntryList();
         } else {
-            return new LinkedList<>(); //Todo, maybe add defaultClientKeyShare list to config
+            return new LinkedList<>(); // Todo, maybe add defaultClientKeyShare
+                                       // list to config
         }
     }
 }
