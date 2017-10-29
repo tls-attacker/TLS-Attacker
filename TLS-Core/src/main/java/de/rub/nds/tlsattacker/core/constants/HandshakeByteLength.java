@@ -189,10 +189,22 @@ public class HandshakeByteLength {
      * Lenght of PSK_Identity
      */
     public static final int PSK_IDENTITY_LENGTH = 2;
-    
+
     public static final int PSK_LENGTH = 2;
-    
+
     public static final int PSK_ZERO = 0;
+
+    public static final int LENGTH_FIELD = 2;
+
+    public static final int SRP_MODULUS_LENGTH = 2;
+
+    public static final int SRP_SALT_LENGTH = 1;
+
+    public static final int SRP_GENERATOR_LENGTH = 2;
+
+    public static final int SRP_PUBLICKEY_LENGTH = 2;
+
+    public static final int SRP_ZERO_PADDING = 0;
 
     private HandshakeByteLength() {
     }

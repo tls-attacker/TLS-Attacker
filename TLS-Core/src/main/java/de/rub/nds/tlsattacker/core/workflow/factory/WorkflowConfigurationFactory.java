@@ -39,6 +39,13 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKRSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SRPClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SRPServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
@@ -214,6 +221,21 @@ public class WorkflowConfigurationFactory {
                     break;
                 case PSK:
                     messages.add(new PSKClientKeyExchangeMessage(config));
+                    break;
+                case DHE_PSK:
+                    messages.add(new PSKDHClientKeyExchangeMessage(config));
+                    break;
+                case ECDHE_PSK:
+                    messages.add(new PSKECDHClientKeyExchangeMessage(config));
+                    break;
+                case RSA_PSK:
+                    messages.add(new PSKRSAClientKeyExchangeMessage(config));
+                    break;
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    messages.add(new SRPClientKeyExchangeMessage(config));
+                    break;
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
                             + ", not adding ClientKeyExchange Message");
@@ -235,6 +257,17 @@ public class WorkflowConfigurationFactory {
                 case DHE_DSS:
                 case DHE_RSA:
                     messages.add(new DHEServerKeyExchangeMessage(config));
+                    break;
+                case DHE_PSK:
+                    messages.add(new PSKDHEServerKeyExchangeMessage(config));
+                    break;
+                case ECDHE_PSK:
+                    messages.add(new PSKECDHEServerKeyExchangeMessage(config));
+                    break;
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    messages.add(new SRPServerKeyExchangeMessage(config));
                     break;
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)

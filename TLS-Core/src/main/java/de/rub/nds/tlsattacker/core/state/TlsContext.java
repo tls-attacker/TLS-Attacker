@@ -277,6 +277,24 @@ public class TlsContext {
 
     private BigInteger clientDhPublicKey;
 
+    private BigInteger srpModulus;
+
+    private BigInteger srpGenerator;
+
+    private BigInteger serverSRPPublicKey;
+
+    private BigInteger serverSRPPrivateKey;
+
+    private BigInteger clientSRPPublicKey;
+
+    private BigInteger clientSRPPrivateKey;
+
+    private byte[] srpSalt;
+
+    private byte[] srpPassword;
+
+    private byte[] srpIdentity;
+
     private NamedCurve selectedCurve;
 
     private CustomECPoint clientEcPublicKey;
@@ -517,6 +535,78 @@ public class TlsContext {
 
     public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
+    }
+
+    public BigInteger getSRPGenerator() {
+        return srpGenerator;
+    }
+
+    public void setSRPGenerator(BigInteger srpGenerator) {
+        this.srpGenerator = srpGenerator;
+    }
+
+    public BigInteger getSRPModulus() {
+        return srpModulus;
+    }
+
+    public void setSRPModulus(BigInteger srpModulus) {
+        this.srpModulus = srpModulus;
+    }
+
+    public BigInteger getServerSRPPublicKey() {
+        return serverSRPPublicKey;
+    }
+
+    public void setServerSRPPublicKey(BigInteger serverSRPPublicKey) {
+        this.serverSRPPublicKey = serverSRPPublicKey;
+    }
+
+    public BigInteger getServerSRPPrivateKey() {
+        return serverSRPPrivateKey;
+    }
+
+    public void setServerSRPPrivateKey(BigInteger serverSRPPrivateKey) {
+        this.serverSRPPrivateKey = serverSRPPrivateKey;
+    }
+
+    public BigInteger getClientSRPPublicKey() {
+        return clientSRPPublicKey;
+    }
+
+    public void setClientSRPPublicKey(BigInteger clientSRPPublicKey) {
+        this.clientSRPPublicKey = clientSRPPublicKey;
+    }
+
+    public BigInteger getClientSRPPrivateKey() {
+        return clientSRPPrivateKey;
+    }
+
+    public void setClientSRPPrivateKey(BigInteger clientSRPPrivateKey) {
+        this.clientSRPPrivateKey = clientSRPPrivateKey;
+    }
+
+    public byte[] getSRPSalt() {
+        return srpSalt;
+    }
+
+    public void setSRPSalt(byte[] srpSalt) {
+        this.srpSalt = srpSalt;
+    }
+
+    public byte[] getSRPPassword() {
+        return srpPassword;
+    }
+
+    public void setSRPPassword(byte[] srpPassword) {
+        this.srpPassword = srpPassword;
+    }
+
+    public byte[] getSRPIdentity() {
+        return srpIdentity;
+    }
+
+    public void setSRPIdentity(byte[] srpIdentity) {
+        this.srpIdentity = srpIdentity;
     }
 
     public BigInteger getDhGenerator() {

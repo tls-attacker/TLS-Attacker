@@ -136,6 +136,24 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
+    public abstract BigInteger getSRPModulus();
+
+    public abstract BigInteger getSRPGenerator();
+
+    public abstract BigInteger getSRPServerPrivateKey();
+
+    public abstract BigInteger getSRPServerPublicKey();
+
+    public abstract BigInteger getSRPClientPrivateKey();
+
+    public abstract BigInteger getSRPClientPublicKey();
+
+    public abstract byte[] getSRPSalt();
+
+    public abstract byte[] getSRPPassword();
+
+    public abstract byte[] getSRPIdentity();
+
     public abstract BigInteger getServerEcPrivateKey();
 
     public abstract BigInteger getClientEcPrivateKey();

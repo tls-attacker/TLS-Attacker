@@ -268,7 +268,7 @@ public class Config implements Serializable {
      * Default SRP Identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRemotePasswordExtensionIdentifier = new byte[0];
+    private byte[] secureRemotePasswordExtensionIdentifier = ArrayConverter.hexStringToByteArray("557365724E616D65");
     /**
      * Default SRTP extension protection profiles The list contains every
      * protection profile as in RFC 5764
@@ -420,7 +420,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with SRP extension
      */
-    private Boolean addSRPExtension = false;
+    private Boolean addSRPExtension = true;
     /**
      * If we generate ClientHello with SRTP extension
      */
@@ -706,6 +706,32 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPSKIdentity = ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultPSKIdentityHint = null;
+
+    private BigInteger defaultSRPModulus = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE48E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B297BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9AFD5138FE8376435B9FC61D2FC0EB06E3"));
+
+    private BigInteger defaultSRPGenerator = new BigInteger("2");
+
+    private BigInteger defaultSRPServerPrivateKey = new BigInteger("3");
+
+    private BigInteger defaultSRPClientPrivateKey = new BigInteger("5");
+
+    private BigInteger defaultSRPServerPublicKey = null;
+
+    private BigInteger defaultSRPClientPublicKey = null;
+
+    private byte[] defaultSRPSalt = new byte[0];
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultSRPIdentity = ArrayConverter.hexStringToByteArray("557365724E616D65");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultSRPPassword = ArrayConverter.hexStringToByteArray("50617373776F7264");
 
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
@@ -1007,6 +1033,86 @@ public class Config implements Serializable {
 
     public void setDefaultPSKIdentity(byte[] defaultPSKIdentity) {
         this.defaultPSKIdentity = defaultPSKIdentity;
+    }
+
+    public byte[] getDefaultPSKIdentityHint() {
+        return defaultPSKIdentityHint;
+    }
+
+    public void setDefaultPSKIdentityHint(byte[] defaultPSKIdentityHint) {
+        this.defaultPSKIdentityHint = defaultPSKIdentityHint;
+    }
+
+    public BigInteger getDefaultSRPModulus() {
+        return defaultSRPModulus;
+    }
+
+    public void setDefaultSRPModulus(BigInteger defaultSRPModulus) {
+        this.defaultSRPModulus = defaultSRPModulus;
+    }
+
+    public BigInteger getDefaultSRPServerPrivateKey() {
+        return defaultSRPServerPrivateKey;
+    }
+
+    public void setDefaultSRPServerPrivateKey(BigInteger defaultSRPServerPrivateKey) {
+        this.defaultSRPServerPrivateKey = defaultSRPServerPrivateKey;
+    }
+
+    public BigInteger getDefaultSRPServerPublicKey() {
+        return defaultSRPServerPublicKey;
+    }
+
+    public void setDefaultSRPServerPublicKey(BigInteger defaultSRPServerPublicKey) {
+        this.defaultSRPServerPublicKey = defaultSRPServerPublicKey;
+    }
+
+    public BigInteger getDefaultSRPClientPrivateKey() {
+        return defaultSRPClientPrivateKey;
+    }
+
+    public void setDefaultSRPClientPrivateKey(BigInteger defaultSRPClientPrivateKey) {
+        this.defaultSRPClientPrivateKey = defaultSRPClientPrivateKey;
+    }
+
+    public BigInteger getDefaultSRPClientPublicKey() {
+        return defaultSRPClientPublicKey;
+    }
+
+    public void setDefaultSRPClientPublicKey(BigInteger defaultSRPClientPublicKey) {
+        this.defaultSRPClientPublicKey = defaultSRPClientPublicKey;
+    }
+
+    public BigInteger getDefaultSRPGenerator() {
+        return defaultSRPGenerator;
+    }
+
+    public void setDefaultSRPGenerator(BigInteger defaultSRPGenerator) {
+        this.defaultSRPGenerator = defaultSRPGenerator;
+    }
+
+    public byte[] getDefaultSRPSalt() {
+        return defaultSRPSalt;
+    }
+
+    public void setDefaultSRPSalt(byte[] defaultSRPSalt) {
+        this.defaultSRPSalt = defaultSRPSalt;
+    }
+
+    public byte[] getDefaultSRPIdentity() {
+        return defaultSRPIdentity;
+    }
+
+    public void setDefaultSRPIdentity(byte[] defaultSRPIdentity) {
+        this.defaultSRPIdentity = defaultSRPIdentity;
+    }
+
+    public byte[] getDefaultSRPPassword() {
+        return defaultSRPPassword;
+    }
+
+    public void setDefaultSRPPassword(byte[] defaultSRPPassword) {
+        this.defaultSRPPassword = defaultSRPPassword;
     }
 
     public BigInteger getDefaultClientRSAPrivateKey() {
