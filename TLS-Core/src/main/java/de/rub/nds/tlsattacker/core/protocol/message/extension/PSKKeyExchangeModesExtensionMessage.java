@@ -29,7 +29,6 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
     
     public PSKKeyExchangeModesExtensionMessage() {
         super(ExtensionType.PSK_KEY_EXCHANGE_MODES);
-        LOGGER.debug("############################## >>>>> I GOT CALLED :)");
     }
     
     
