@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
@@ -61,6 +62,7 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class WorkflowConfigurationFactory {
 
@@ -96,6 +98,8 @@ public class WorkflowConfigurationFactory {
                 return createFullResumptionWorkflow();
             case SIMPLE_MITM_PROXY:
                 return createSimpleMitmProxyWorkflow();
+            case ZERO_RTT:
+                return createZeroRttWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -431,6 +435,28 @@ public class WorkflowConfigurationFactory {
         p.setContextAlias(clientToMitmAlias);
         p.setStringEncoding(StandardCharsets.US_ASCII);
         trace.addTlsAction(p);
+
+        return trace;
+    }
+
+    private WorkflowTrace createZeroRttWorkflow() {
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = new WorkflowTrace(config);
+        List<ProtocolMessage> messages = new LinkedList<>();
+
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config)));
+
+        messages.add(new ServerHelloMessage(config));
+        messages.add(new EncryptedExtensionsMessage(config));
+        messages.add(new FinishedMessage(config));
+
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER, messages));
+
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                new EndOfEarlyDataMessage(config)));
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                new FinishedMessage(config)));
 
         return trace;
     }

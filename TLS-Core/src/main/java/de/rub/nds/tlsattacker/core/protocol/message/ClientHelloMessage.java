@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
@@ -36,7 +37,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
@@ -132,6 +135,15 @@ public class ClientHelloMessage extends HelloMessage {
             pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
             extension.getKeyShareList().add(pair);
             addExtension(extension);
+        }
+        if (tlsConfig.isAddEarlyDataExtension()) {                                                                      
+            addExtension(new EarlyDataExtensionMessage());
+        }
+        if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
+            addExtension(new PSKKeyExchangeModesExtensionMessage());
+        }
+        if (tlsConfig.isAddPreSharedKeyExtension()) {
+            addExtension(new PreSharedKeyExtensionMessage());
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());

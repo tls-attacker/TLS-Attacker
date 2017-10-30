@@ -448,7 +448,20 @@ public class Config implements Serializable {
      * If we generate ClientHello with the KeyShare extension
      */
     private Boolean addKeyShareExtension = false;
+    /**
+     * If we generate ClientHello with the EarlyData extension
+     */
+    private Boolean addEarlyDataExtension = false;
 
+    /**
+     * If we generate ClientHello with the PSKKeyExchangeModes extension
+     */
+    private Boolean addPSKKeyExchangeModesExtension = false;
+
+    /**
+     * If we generate ClientHello with the PreSharedKey extension
+     */
+    private Boolean addPreSharedKeyExtension = false;
     /**
      * If we generate ClientHello with the Padding extension
      */
@@ -564,7 +577,14 @@ public class Config implements Serializable {
      * workflowTrace
      */
     private Boolean updateTimestamps = true;
-
+    
+    /**
+     * PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption)
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] pskKeyExchangeModes = ArrayConverter
+            .hexStringToByteArray("00");
+    
     /**
      * The Certificate we initialize CertificateMessages with
      */
@@ -1742,11 +1762,11 @@ public class Config implements Serializable {
      */
     public void setDefaultTimeout(Integer timeout) {
         defaultTimeout = timeout;
-        
-        if(connectionEnds != null) {
-        	for (ConnectionEnd conEnd : connectionEnds) {
-        		conEnd.setDefaultTimeout(defaultTimeout);
-        	}
+
+        if (connectionEnds != null) {
+            for (ConnectionEnd conEnd : connectionEnds) {
+                conEnd.setDefaultTimeout(defaultTimeout);
+            }
         }
     }
 
@@ -1926,6 +1946,40 @@ public class Config implements Serializable {
 
     public void setAddKeyShareExtension(boolean addKeyShareExtension) {
         this.addKeyShareExtension = addKeyShareExtension;
+    }
+
+    public boolean isAddEarlyDataExtension() {
+        return addEarlyDataExtension;
+    }
+
+    public void setAddEarlyDataExtension(boolean addEarlyDataExtension) {
+        this.addEarlyDataExtension = addEarlyDataExtension;
+    }
+
+    public boolean isAddPSKKeyExchangeModesExtension() {
+        return addPSKKeyExchangeModesExtension;
+    }
+
+    public void setAddPSKKeyExchangeModesExtension(boolean addPSKKeyExchangeModesExtension) {
+        this.addPSKKeyExchangeModesExtension = addPSKKeyExchangeModesExtension;
+    }
+
+    public boolean isAddPreSharedKeyExtension() {
+        return addPreSharedKeyExtension;
+    }
+
+    public void setAddPreSharedKeyExtension(boolean addPreSharedKeyExtension) {
+        this.addPreSharedKeyExtension = addPreSharedKeyExtension;
+    }
+    
+    public void setPSKKeyExchangeModes(byte[] pskKeyExchangeModes)
+    {
+        this.pskKeyExchangeModes = pskKeyExchangeModes;
+    }
+    
+    public byte[] getPSKKeyExchangeModes()
+    {
+        return pskKeyExchangeModes;
     }
 
     public int getDefaultDTLSCookieLength() {

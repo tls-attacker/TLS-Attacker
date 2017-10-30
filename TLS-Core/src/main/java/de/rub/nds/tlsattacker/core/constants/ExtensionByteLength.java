@@ -66,6 +66,22 @@ public class ExtensionByteLength {
      */
     public static final int KEY_SHARE_LIST_LENGTH = 2;
     /**
+     * KeyExchangeModes length in the PSKKeyExchgangeModesExtension
+     */
+    public static final int PSK_KEY_EXCHANGE_MODES_LENGTH = 1;
+    /**
+     * PSKIdentity length in the PreSharedKeyExtension
+     */
+    public static final int PSK_IDENTITY_LENGTH = 2;
+    /**
+     * PSKList length in the PreSharedKeyExtension
+     */
+    public static final int PRE_SHARED_KEY_LIST_LENGTH = 2;
+    /**
+     * TicketAge length in the PreSharedKeyExtension
+     */
+    public static final int TIICKET_AGE_LENGTH = 4;
+    /**
      * Length of the Signature and HashAlgorithm Length field of the
      * SignatureAndHashAlgorithms Extension
      */

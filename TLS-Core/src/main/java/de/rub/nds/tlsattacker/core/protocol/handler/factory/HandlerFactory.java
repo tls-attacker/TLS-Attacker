@@ -47,6 +47,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateTypeExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ClientCertificateUrlExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.EarlyDataExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EcPointFormatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.EncryptThenMacExtensionHandler;
@@ -56,7 +57,9 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.HrrKeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.HeartbeatExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.MaxFragmentLengthExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PSKKeyExchangeModesExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerAuthzExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ServerCertificateTypeExtensionHandler;
@@ -181,6 +184,8 @@ public class HandlerFactory {
                     return new ClientCertificateTypeExtensionHandler(context);
                 case CLIENT_CERTIFICATE_URL:
                     return new ClientCertificateUrlExtensionHandler(context);
+                case EARLY_DATA:
+                    return new EarlyDataExtensionHandler(context);
                 case EC_POINT_FORMATS:
                     return new EcPointFormatExtensionHandler(context);
                 case ELLIPTIC_CURVES:
@@ -200,6 +205,10 @@ public class HandlerFactory {
                     return new MaxFragmentLengthExtensionHandler(context);
                 case PADDING:
                     return new PaddingExtensionHandler(context);
+                case PRE_SHARED_KEY:
+                    return new PreSharedKeyExtensionHandler(context);
+                case PSK_KEY_EXCHANGE_MODES:
+                    return new PSKKeyExchangeModesExtensionHandler(context);
                 case RENEGOTIATION_INFO:
                     return new RenegotiationInfoExtensionHandler(context);
                 case SERVER_AUTHZ:
