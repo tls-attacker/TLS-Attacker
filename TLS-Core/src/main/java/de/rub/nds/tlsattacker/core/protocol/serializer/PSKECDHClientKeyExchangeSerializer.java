@@ -22,7 +22,7 @@ public class PSKECDHClientKeyExchangeSerializer extends HandshakeMessageSerializ
     private final PSKECDHClientKeyExchangeMessage msg;
 
     /**
-     * Constructor for the PSKClientKeyExchangeSerializer
+     * Constructor for the PSKECDHClientKeyExchangeSerializer
      *
      * @param message
      *            Message that should be serialized
@@ -36,7 +36,7 @@ public class PSKECDHClientKeyExchangeSerializer extends HandshakeMessageSerializ
 
     @Override
     public byte[] serializeHandshakeMessageContent() {
-        LOGGER.debug("Serializing PSKDHClientKeyExchangeMessage");
+        LOGGER.debug("Serializing PSKECDHClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);
         writeSerializedPublicKeyLength(msg);
@@ -45,7 +45,7 @@ public class PSKECDHClientKeyExchangeSerializer extends HandshakeMessageSerializ
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage
+     * Writes the SerializedPublicKeyLength of the PSKECDHClientKeyExchangeMessage
      * into the final byte[]
      */
     private void writePSKIdentityLength(PSKECDHClientKeyExchangeMessage msg) {
@@ -54,7 +54,7 @@ public class PSKECDHClientKeyExchangeSerializer extends HandshakeMessageSerializ
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the PSKECDHClientKeyExchangeMessage into
      * the final byte[]
      */
     private void writePSKIdentity(PSKECDHClientKeyExchangeMessage msg) {

@@ -23,7 +23,7 @@ public class PSKECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerial
     private final PSKECDHEServerKeyExchangeMessage msg;
 
     /**
-     * Constructor for the PSKDHServerKeyExchangeSerializer
+     * Constructor for the PSKECDHEServerKeyExchangeSerializer
      *
      * @param message
      *            Message that should be serialized
@@ -53,7 +53,7 @@ public class PSKECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerial
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the PSKECDHEServerKeyExchangeMessage into
      * the final byte[]
      */
     private void writePSKIdentityHint(PSKECDHEServerKeyExchangeMessage msg) {
@@ -62,7 +62,7 @@ public class PSKECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerial
     }
 
     /**
-     * Writes the CurveType of the ECDHEServerKeyExchangeMessage into the final
+     * Writes the CurveType of the PSKECDHEServerKeyExchangeMessage into the final
      * byte[]
      */
     private void writeCurveType(PSKECDHEServerKeyExchangeMessage msg) {
@@ -71,7 +71,7 @@ public class PSKECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerial
     }
 
     /**
-     * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final
+     * Writes the NamedCurve of the PSKECDHEServerKeyExchangeMessage into the final
      * byte[]
      */
     private void writeNamedCurve(PSKECDHEServerKeyExchangeMessage msg) {
@@ -80,7 +80,7 @@ public class PSKECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerial
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the ECDHEServerKeyExchangeMessage
+     * Writes the SerializedPublicKeyLength of the PSKECDHEServerKeyExchangeMessage
      * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(PSKECDHEServerKeyExchangeMessage msg) {
@@ -89,7 +89,7 @@ public class PSKECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerial
     }
 
     /**
-     * Writes the SerializedPublicKey of the ECDHEServerKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the PSKECDHEServerKeyExchangeMessage into
      * the final byte[]
      */
     private void writeSerializedPublicKey(PSKECDHEServerKeyExchangeMessage msg) {

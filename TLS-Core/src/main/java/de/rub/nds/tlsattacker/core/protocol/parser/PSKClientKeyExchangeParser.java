@@ -47,7 +47,7 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
     }
 
     /**
-     * Reads the next bytes as the SerializedPSKIdentityLength and writes them
+     * Reads the next bytes as the PSKIdentityLength and writes them
      * in the message
      *
      * @param msg
@@ -59,7 +59,7 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
     }
 
     /**
-     * Reads the next bytes as the SerializedPSKIdentity and writes them in the
+     * Reads the next bytes as the PSKIdentity and writes them in the
      * message
      *
      * @param msg

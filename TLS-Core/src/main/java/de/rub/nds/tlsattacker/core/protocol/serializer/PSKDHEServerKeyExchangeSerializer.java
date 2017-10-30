@@ -107,7 +107,7 @@ public class PSKDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the PSKDHEServerKeyExchangeMessage into
      * the final byte[]
      */
     private void writePSKIdentityHint(PSKDHEServerKeyExchangeMessage msg) {

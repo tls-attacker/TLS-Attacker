@@ -22,7 +22,7 @@ public class PSKRSAClientKeyExchangeSerializer extends HandshakeMessageSerialize
     private final PSKRSAClientKeyExchangeMessage msg;
 
     /**
-     * Constructor for the PSKClientKeyExchangeSerializer
+     * Constructor for the PSKRSAClientKeyExchangeSerializer
      *
      * @param message
      *            Message that should be serialized
@@ -45,7 +45,7 @@ public class PSKRSAClientKeyExchangeSerializer extends HandshakeMessageSerialize
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage
+     * Writes the SerializedPublicKeyLength of the PSKRSAClientKeyExchangeMessage
      * into the final byte[]
      */
     private void writePSKIdentityLength(PSKRSAClientKeyExchangeMessage msg) {
@@ -54,7 +54,7 @@ public class PSKRSAClientKeyExchangeSerializer extends HandshakeMessageSerialize
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the PSKRSAClientKeyExchangeMessage into
      * the final byte[]
      */
     private void writePSKIdentity(PSKRSAClientKeyExchangeMessage msg) {

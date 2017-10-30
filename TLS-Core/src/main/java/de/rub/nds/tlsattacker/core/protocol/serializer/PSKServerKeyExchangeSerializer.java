@@ -23,7 +23,7 @@ public class PSKServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     private final PSKServerKeyExchangeMessage msg;
 
     /**
-     * Constructor for the PSKDHServerKeyExchangeSerializer
+     * Constructor for the PSKServerKeyExchangeSerializer
      *
      * @param message
      *            Message that should be serialized
@@ -49,7 +49,7 @@ public class PSKServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
+     * Writes the SerializedPublicKey of the PSKServerKeyExchangeMessage into
      * the final byte[]
      */
     private void writePSKIdentityHint(PSKServerKeyExchangeMessage msg) {

@@ -37,7 +37,7 @@ public class PSKRSAClientKeyExchangeParser extends ClientKeyExchangeParser<PSKRS
 
     @Override
     protected void parseHandshakeMessageContent(PSKRSAClientKeyExchangeMessage msg) {
-        LOGGER.debug("Parsing PSKClientKeyExchangeMessage");
+        LOGGER.debug("Parsing PSKRSAClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);
         parseEncryptedPreMasterSecretLength(msg);
@@ -50,7 +50,7 @@ public class PSKRSAClientKeyExchangeParser extends ClientKeyExchangeParser<PSKRS
     }
 
     /**
-     * Reads the next bytes as the SerializedPSKIdentityLength and writes them
+     * Reads the next bytes as the PSKIdentityLength and writes them
      * in the message
      *
      * @param msg
@@ -62,7 +62,7 @@ public class PSKRSAClientKeyExchangeParser extends ClientKeyExchangeParser<PSKRS
     }
 
     /**
-     * Reads the next bytes as the SerializedPSKIdentity and writes them in the
+     * Reads the next bytes as the PSKIdentity and writes them in the
      * message
      *
      * @param msg

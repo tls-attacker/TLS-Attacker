@@ -63,7 +63,7 @@ public class PSKDHClientKeyExchangeSerializer extends HandshakeMessageSerializer
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the DHClientKeyExchangeMessage
+     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage
      * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(PSKDHClientKeyExchangeMessage msg) {
@@ -72,7 +72,7 @@ public class PSKDHClientKeyExchangeSerializer extends HandshakeMessageSerializer
     }
 
     /**
-     * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the
+     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into the
      * final byte[]
      */
     private void writeSerializedPublicKey(PSKDHClientKeyExchangeMessage msg) {
