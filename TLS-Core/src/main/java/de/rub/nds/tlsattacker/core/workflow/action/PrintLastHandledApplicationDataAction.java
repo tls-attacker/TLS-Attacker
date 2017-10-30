@@ -23,7 +23,7 @@ import java.util.Objects;
  * 
  * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
-public class PrintLastHandledApplicationDataAction extends SingleContextAction {
+public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
 
     private String lastHandledApplicationData = null;
 
@@ -44,7 +44,7 @@ public class PrintLastHandledApplicationDataAction extends SingleContextAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        byte[] rawBytes = state.getTlsContext(getContextAlias()).getChooser().getLastHandledApplicationMessageData();
+        byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getChooser().getLastHandledApplicationMessageData();
         if (stringEncoding != null) {
             lastHandledApplicationData = new String(rawBytes, stringEncoding);
         } else {

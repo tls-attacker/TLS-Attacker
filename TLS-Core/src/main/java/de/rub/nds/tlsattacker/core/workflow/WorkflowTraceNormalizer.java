@@ -9,9 +9,10 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
@@ -83,13 +84,19 @@ public class WorkflowTraceNormalizer {
             }
         }
 
-        boolean isSingleConnectionWorkflow = false;
+        boolean isSingleConnectionWorkflow = true;
+        TlsAction customDefaults = new GeneralAction(trace.getConnections().get(0).getAlias());
         if (trace.getConnections().size() > 1) {
-            isSingleConnectionWorkflow = true;
+            isSingleConnectionWorkflow = false;
         }
+
         for (TlsAction action : trace.getTlsActions()) {
-            action.normalize();
-            action.setSingleConnectionWorkflow(isSingleConnectionWorkflow);
+            if (isSingleConnectionWorkflow) {
+                action.normalize(customDefaults);
+                action.setSingleConnectionWorkflow(isSingleConnectionWorkflow);
+            } else {
+                action.normalize();
+            }
         }
 
         assertNormalizedWorkflowTrace(trace);
@@ -144,7 +151,8 @@ public class WorkflowTraceNormalizer {
 
             if (!knownAliases.containsAll(action.getAllAliases())) {
                 throw new ConfigurationException("Workflow trace not well defined. "
-                        + "Trace has action with reference to unknown connection alias" + " (" + action + ")");
+                        + "Trace has action with reference to unknown connection alias, action: "
+                        + action.toCompactString());
             }
         }
     }

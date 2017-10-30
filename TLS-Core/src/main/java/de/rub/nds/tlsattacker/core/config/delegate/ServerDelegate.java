@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 
 /**
  *

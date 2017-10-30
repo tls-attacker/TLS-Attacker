@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.tlsattacker.core.workflow.action.GeneralAction;
@@ -25,8 +24,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Internal default filter that strips unnecessary default values.
  * 
- * This filter currently works on a normalized workflow trace only. It is the
- * default filter used before workflow trace serialization.
+ * This filter works on a normalized workflow trace only. It is the default
+ * filter that is normally used before workflow trace serialization.
  */
 public class DefaultFilter extends Filter {
 
@@ -36,18 +35,18 @@ public class DefaultFilter extends Filter {
         super(config);
     }
 
+    /**
+     * Apply filter to trace.
+     * 
+     * @param trace
+     *            The workflow trace that should be filtered.
+     */
     @Override
-    public WorkflowTrace filteredCopy(WorkflowTrace trace, Config config) {
-        return filteredCopy(trace, config, config.getDefaulRunningMode());
-    }
-
-    public WorkflowTrace filteredCopy(WorkflowTrace trace, Config config, RunningModeType mode) {
+    public void applyFilter(WorkflowTrace trace) {
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         normalizer.assertNormalizedWorkflowTrace(trace);
 
-        WorkflowTrace filteredTrace = WorkflowTrace.copy(trace);
-
-        List<AliasedConnection> traceConnections = filteredTrace.getConnections();
+        List<AliasedConnection> traceConnections = trace.getConnections();
         List<AliasedConnection> strippedTraceConnections = new ArrayList<>();
         AliasedConnection defaultInCon = config.getDefaultServerConnection();
         AliasedConnection defaultOutCon = config.getDefaultClientConnection();
@@ -80,25 +79,42 @@ public class DefaultFilter extends Filter {
         // connections exactly, do not add them to output.
         if (traceConnections.size() <= 2) {
             for (AliasedConnection traceCon : traceConnections) {
-                if (traceCon.equals(defaultInCon)) {
-                    lastDefaultCon = defaultInCon;
-                } else if (traceCon.equals(defaultOutCon)) {
-                    lastDefaultCon = defaultOutCon;
-                } else {
+                if (!traceCon.equals(defaultInCon) && !traceCon.equals(defaultOutCon)) {
                     strippedTraceConnections.add(traceCon);
                 }
+                lastDefaultCon = traceCon;
             }
         }
 
-        if (filteredTrace.getTlsActions() != null) {
-            TlsAction defaultAction = new GeneralAction(lastDefaultCon.getAlias());
-            for (TlsAction action : filteredTrace.getTlsActions()) {
+        TlsAction defaultAction = new GeneralAction(lastDefaultCon.getAlias());
+        if (trace.getTlsActions() != null) {
+            for (TlsAction action : trace.getTlsActions()) {
                 action.filter(defaultAction);
             }
         }
 
-        filteredTrace.setConnections(strippedTraceConnections);
-        return filteredTrace;
+        trace.setConnections(strippedTraceConnections);
+    }
+
+    /**
+     * Restoring workflow trace values that where explicitly set by the user.
+     * Currently, this method restores only the workflow trace connections set
+     * by the user.
+     * 
+     * @param trace
+     *            Apply postFilter to this trace
+     * @param reference
+     *            A trace holding the original user defined values.
+     * 
+     */
+    @Override
+    public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {
+        trace.setConnections(reference.getConnections());
+    }
+
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.DEFAULT;
     }
 
 }

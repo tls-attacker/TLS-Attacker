@@ -18,14 +18,14 @@ import java.io.IOException;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class ResetConnectionAction extends SingleContextAction {
+public class ResetConnectionAction extends ConnectionBoundAction {
 
     public ResetConnectionAction() {
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         LOGGER.info("Terminating Connection");
         tlsContext.getTransportHandler().closeClientConnection();

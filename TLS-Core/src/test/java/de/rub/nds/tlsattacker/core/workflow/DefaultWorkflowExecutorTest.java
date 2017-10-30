@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -22,10 +20,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class DefaultWorkflowExecutorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(DefaultWorkflowExecutorTest.class);
@@ -51,20 +45,6 @@ public class DefaultWorkflowExecutorTest {
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
         State state = new State(config);
 
-        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
-    }
-
-    @Test
-    public void executingSingleContextWorkflowWithUnsupportedModeThrows() {
-
-        Config config = Config.createConfig();
-        config.setDefaulRunningMode(RunningModeType.MITM);
-        config.setWorkflowTraceType(WorkflowTraceType.HELLO);
-        State state = new State(config);
-
-        exception.expect(ConfigurationException.class);
-        exception.expectMessage("This workflow can only be configured for modes CLIENT and "
-                + "SERVER, but actual mode was MITM");
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
     }
 }

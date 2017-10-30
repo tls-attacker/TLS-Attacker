@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
@@ -58,17 +58,17 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
         String sending = getReadableString(messages);
-        if (getContextAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
+        if (getConnectionAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             LOGGER.info("Sending messages: " + sending);
         } else {
-            LOGGER.info("Sending messages (" + getContextAlias() + "): " + sending);
+            LOGGER.info("Sending messages (" + getConnectionAlias() + "): " + sending);
         }
 
         try {

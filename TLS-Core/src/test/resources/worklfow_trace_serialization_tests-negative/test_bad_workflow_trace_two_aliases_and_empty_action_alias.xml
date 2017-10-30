@@ -12,7 +12,7 @@
         <hostname>host1111</hostname>
     </OutboundConnection>
     <SendAction>
-        <contextAlias>UnknownAlias</contextAlias>
+        <connectionAlias>UnknownAlias</connectionAlias>
         <messages>
             <ClientHello>
                 <extensions>

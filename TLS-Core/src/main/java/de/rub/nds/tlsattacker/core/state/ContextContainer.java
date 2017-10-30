@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,11 +20,11 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.connection.Aliasable;
 
 /**
- * Manage contexts needed for execution.
+ * Manage TLS contexts.
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class ContextContainer {
 
@@ -86,7 +86,7 @@ public class ContextContainer {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
         }
 
-        LOGGER.info("Adding context " + alias);
+        LOGGER.debug("Adding context " + alias);
         tlsContexts.put(alias, context);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {

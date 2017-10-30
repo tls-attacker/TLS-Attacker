@@ -10,6 +10,9 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.TokenBindingMitmCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -19,9 +22,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -73,17 +73,16 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         trace.addConnection(serverCon);
         String clientConAlias = clientCon.getAlias();
         String serverConAlias = serverCon.getAlias();
-        State state = new State(conf, trace);
 
         // Build a simple rsa TLS 1.2 workflow (no ephemeral KE, no client auth)
         // from client
         MessageAction action = new ReceiveAction(new ClientHelloMessage(conf));
-        action.setContextAlias(clientConAlias);
+        action.setConnectionAlias(clientConAlias);
         trace.addTlsAction(action);
 
         // to server
         action = new SendAction(new ClientHelloMessage(conf));
-        action.setContextAlias(serverConAlias);
+        action.setConnectionAlias(serverConAlias);
         trace.addTlsAction(action);
 
         // from client
@@ -92,7 +91,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         messages.add(new CertificateMessage(conf));
         messages.add(new ServerHelloDoneMessage(conf));
         action = new SendAction(messages);
-        action.setContextAlias(clientConAlias);
+        action.setConnectionAlias(clientConAlias);
         trace.addTlsAction(action);
 
         // to server
@@ -101,7 +100,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         messages.add(new CertificateMessage(conf));
         messages.add(new ServerHelloDoneMessage(conf));
         action = new ReceiveAction(messages);
-        action.setContextAlias(serverConAlias);
+        action.setConnectionAlias(serverConAlias);
         trace.addTlsAction(action);
 
         // from client
@@ -110,7 +109,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         messages.add(new ChangeCipherSpecMessage(conf));
         messages.add(new FinishedMessage(conf));
         action = new ReceiveAction(messages);
-        action.setContextAlias(clientConAlias);
+        action.setConnectionAlias(clientConAlias);
         trace.addTlsAction(action);
 
         // to server
@@ -119,7 +118,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         messages.add(new ChangeCipherSpecMessage(conf));
         messages.add(new FinishedMessage(conf));
         action = new SendAction(messages);
-        action.setContextAlias(serverConAlias);
+        action.setConnectionAlias(serverConAlias);
         trace.addTlsAction(action);
 
         // to client
@@ -127,7 +126,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         messages.add(new ChangeCipherSpecMessage(conf));
         messages.add(new FinishedMessage(conf));
         action = new SendAction(messages);
-        action.setContextAlias(clientConAlias);
+        action.setConnectionAlias(clientConAlias);
         trace.addTlsAction(action);
 
         ApplicationMessage appMsg = new ApplicationMessage(conf);
@@ -137,8 +136,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         f.setForwardToAlias(serverConAlias);
         trace.addTlsAction(f);
 
-        state.setWorkflowTrace(trace);
-
+        State state = new State(conf, trace);
         WorkflowExecutor workflowExecutor;
         workflowExecutor = new DefaultWorkflowExecutor(state);
         LOGGER.info("Executing workflow");

@@ -13,10 +13,6 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class Main {
 
     // Loosely based on sysexits.h

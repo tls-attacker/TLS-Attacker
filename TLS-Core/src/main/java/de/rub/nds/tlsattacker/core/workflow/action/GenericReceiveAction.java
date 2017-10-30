@@ -34,7 +34,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
             throw new WorkflowExecutionException("Action already executed!");
         }
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = receiveMessageHelper.receiveMessages(state.getTlsContext(getContextAlias()));
+        MessageActionResult result = receiveMessageHelper.receiveMessages(state.getTlsContext(getConnectionAlias()));
         records.addAll(result.getRecordList());
         messages.addAll(result.getMessageList());
         setExecuted(true);

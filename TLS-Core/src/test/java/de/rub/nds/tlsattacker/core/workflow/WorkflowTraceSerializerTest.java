@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.singlebyte.ByteExplicitValueModification;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.unittest.helper.DefaultNormalizeFilter;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -118,7 +118,7 @@ public class WorkflowTraceSerializerTest {
      * connection end should not appear in the serialized workflow trace.
      */
     @Test
-    public void serializeWithSingleConnectionEndTest() {
+    public void serializeWithSingleConnectionTest() {
         try {
 
             WorkflowTrace trace = new WorkflowTrace();
@@ -156,14 +156,14 @@ public class WorkflowTraceSerializerTest {
      * end looks as expected.
      */
     @Test
-    public void serializeWithSingleCustomConnectionEndTest() {
+    public void serializeWithSingleCustomConnectionTest() {
         try {
 
             WorkflowTrace trace = new WorkflowTrace();
             AliasedConnection con = new OutboundConnection("theAlias", 1111, "host1111");
             trace.addConnection(con);
             action = new SendAction(new ClientHelloMessage(config));
-            action.setContextAlias(con.getAlias());
+            action.setConnectionAlias(con.getAlias());
             trace.addTlsAction(action);
 
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
@@ -174,7 +174,6 @@ public class WorkflowTraceSerializerTest {
             sb.append("        <hostname>host1111</hostname>\n");
             sb.append("    </OutboundConnection>\n");
             sb.append("    <SendAction>\n");
-            sb.append("        <contextAlias>theAlias</contextAlias>\n");
             sb.append("        <messages>\n");
             sb.append("            <ClientHello>\n");
             sb.append("                <extensions>\n");
@@ -202,7 +201,7 @@ public class WorkflowTraceSerializerTest {
      * looks as expected.
      */
     @Test
-    public void serializeWithMultipleCustomConnectionEndTest() {
+    public void serializeWithMultipleCustomConnectionTest() {
         try {
 
             WorkflowTrace trace = new WorkflowTrace();
@@ -213,7 +212,7 @@ public class WorkflowTraceSerializerTest {
             trace.addConnection(con2);
             trace.addConnection(con3);
             action = new SendAction(new ClientHelloMessage(config));
-            action.setContextAlias(con3.getAlias());
+            action.setConnectionAlias(con3.getAlias());
             action.normalize();
             trace.addTlsAction(action);
 
@@ -234,7 +233,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("        <port>1313</port>\n");
             sb.append("    </InboundConnection>\n");
             sb.append("    <SendAction>\n");
-            sb.append("        <contextAlias>alias3</contextAlias>\n");
+            sb.append("        <connectionAlias>alias3</connectionAlias>\n");
             sb.append("        <messages>\n");
             sb.append("            <ClientHello>\n");
             sb.append("                <extensions>\n");

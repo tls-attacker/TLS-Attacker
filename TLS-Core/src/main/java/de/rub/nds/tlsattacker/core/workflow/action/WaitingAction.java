@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class WaitingAction extends ContextlessAction {
+public class WaitingAction extends TlsAction {
 
     private long time;
 
@@ -60,4 +60,5 @@ public class WaitingAction extends ContextlessAction {
     public boolean executedAsPlanned() {
         return isExecuted();
     }
+
 }

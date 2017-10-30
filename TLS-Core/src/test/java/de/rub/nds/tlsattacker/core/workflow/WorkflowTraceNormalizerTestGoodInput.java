@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
-import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
-import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import static de.rub.nds.tlsattacker.util.FileHelper.inputStreamToString;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,7 +41,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Find the files for this test at
  * src/test/resources/workflow_trace_serialization_tests-positive
  */
-// @Category(SlowTests.class)
+@Category(SlowTests.class)
 @RunWith(Parameterized.class)
 public class WorkflowTraceNormalizerTestGoodInput {
 
@@ -102,14 +103,12 @@ public class WorkflowTraceNormalizerTestGoodInput {
         assertNotNull(trace);
         normalizer.normalize(trace, config);
         String actual = WorkflowTraceSerializer.write(trace).trim();
-        assertEquals("Normalized output should be fine", expectedNormalizedXml, actual);
 
-        filter = FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
-        filteredTrace = filter.filteredCopy(trace, config);
-        filteredTrace.setConnections(origTrace.getConnections());
-        normalizer.normalize(trace, config);
-        actual = WorkflowTraceSerializer.write(filteredTrace).trim();
-        assertEquals("Filtered output should be fine", expectedFilteredXml, actual);
+        filter = new DefaultFilter(config);
+        filter.applyFilter(trace);
+        filter.postFilter(trace, origTrace);
+        actual = WorkflowTraceSerializer.write(trace).trim();
+        assertEquals("Filtered output should be fine", actual, expectedFilteredXml);
     }
 
     /**

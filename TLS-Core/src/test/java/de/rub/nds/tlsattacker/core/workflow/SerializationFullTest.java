@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.protocol.parser;
+package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.string.StringExplicitValueModification;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -81,9 +81,9 @@ import org.junit.rules.TemporaryFolder;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class SerialisationFullTest {
+public class SerializationFullTest {
 
-    protected static final Logger LOGGER = LogManager.getLogger(SerialisationFullTest.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger(SerializationFullTest.class.getName());
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();

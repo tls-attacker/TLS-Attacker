@@ -12,27 +12,39 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+ * An action that can be used for testing or to provide defaults for the filter/
+ * normalize methods.
  */
 public class GeneralAction extends TlsAction {
+
+    @XmlTransient
+    private final Set<String> aliases = new LinkedHashSet<>();
 
     public GeneralAction() {
     }
 
     public GeneralAction(String alias) {
-        super(alias);
+        this.aliases.add(alias);
     }
 
     public GeneralAction(Collection aliases) {
-        super(aliases);
+        this.aliases.addAll(aliases);
     }
 
     public GeneralAction(String... aliases) {
-        super(aliases);
+        this.aliases.addAll(Arrays.asList(aliases));
+    }
+
+    @Override
+    public Set<String> getAllAliases() {
+        return aliases;
     }
 
     @Override

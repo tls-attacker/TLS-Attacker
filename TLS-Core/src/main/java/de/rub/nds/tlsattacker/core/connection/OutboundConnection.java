@@ -6,34 +6,35 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.tlsattacker.core.socket;
+package de.rub.nds.tlsattacker.core.connection;
 
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-public class InboundConnection extends AliasedConnection {
+public class OutboundConnection extends AliasedConnection {
 
-    private static final ConnectionEndType LOCAL_CONNECTION_END_TYPE = ConnectionEndType.SERVER;
+    private static final ConnectionEndType LOCAL_CONNECTION_END_TYPE = ConnectionEndType.CLIENT;
 
-    public InboundConnection() {
+    public OutboundConnection() {
     }
 
-    public InboundConnection(Integer port) {
+    public OutboundConnection(Integer port) {
         super(port);
     }
 
-    public InboundConnection(Integer port, String hostname) {
+    public OutboundConnection(Integer port, String hostname) {
         super(port, hostname);
     }
 
-    public InboundConnection(String alias) {
+    public OutboundConnection(String alias) {
         super(alias);
     }
 
-    public InboundConnection(String alias, Integer port) {
+    public OutboundConnection(String alias, Integer port) {
         super(alias, port);
     }
 
-    public InboundConnection(String alias, Integer port, String hostname) {
+    public OutboundConnection(String alias, Integer port, String hostname) {
         super(alias, port, hostname);
     }
 
@@ -44,7 +45,7 @@ public class InboundConnection extends AliasedConnection {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("InboundConnection{");
+        StringBuilder sb = new StringBuilder("OutboundConnection{");
         sb.append(" alias=").append(alias);
         sb.append(" port=").append(port);
         sb.append(" type=").append(transportHandlerType);
@@ -56,7 +57,7 @@ public class InboundConnection extends AliasedConnection {
     @Override
     public void normalize(AliasedConnection defaultCon) {
         if (defaultCon == null) {
-            defaultCon = new InboundConnection();
+            defaultCon = new OutboundConnection();
         }
         super.normalize(defaultCon);
     }
@@ -64,7 +65,7 @@ public class InboundConnection extends AliasedConnection {
     @Override
     public void filter(AliasedConnection defaultCon) {
         if (defaultCon == null) {
-            defaultCon = new InboundConnection();
+            defaultCon = new OutboundConnection();
         }
         super.filter(defaultCon);
     }

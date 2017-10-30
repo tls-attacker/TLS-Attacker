@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
@@ -79,7 +79,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
-        storeTrace();
+        state.storeTrace();
     }
 
     /**

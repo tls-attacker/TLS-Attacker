@@ -114,7 +114,7 @@ class Action:
     def __str__(self):
         xml = '<' + self.action_type + '>\n'
         if hasattr(self, 'alias'):
-            xml += '    <contextAlias>%(a)s</contextAlias>\n' % {'a': self.alias}
+            xml += '    <connectionAlias>%(a)s</connectionAlias>\n' % {'a': self.alias}
         xml += '    <messages>\n'
         xml += '        <ClientHello/>\n'
         xml += '    </messages>\n'

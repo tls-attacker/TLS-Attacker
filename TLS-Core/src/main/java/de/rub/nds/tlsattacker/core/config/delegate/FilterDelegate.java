@@ -41,7 +41,7 @@ public class FilterDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (filters != null) {
-            config.setOptionalOutputFilters(filters);
+            config.setOutputFilters(filters);
         }
     }
 

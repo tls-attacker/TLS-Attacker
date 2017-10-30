@@ -40,7 +40,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;

@@ -1,4 +1,4 @@
-# Given this config: 
+# Given this config:
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <defaultRunningMode>CLIENT</defaultRunningMode>
@@ -39,7 +39,7 @@
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
     <SendAction>
-        <contextAlias>defaultConnection</contextAlias>
+        <connectionAlias>defaultConnection</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>

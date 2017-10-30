@@ -48,8 +48,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -60,10 +59,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class ForwardAction extends MessageAction implements ReceivingAction, SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger(ForwardAction.class);
@@ -358,20 +353,10 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
 
     @Override
     public Set<String> getAllAliases() {
-        Set<String> aliases = new HashSet<>();
+        Set<String> aliases = new LinkedHashSet<>();
         aliases.add(forwardToAlias);
         aliases.add(receiveFromAlias);
         return aliases;
-    }
-
-    @Override
-    public boolean containsAlias(String alias) {
-        return getAllAliases().contains(alias);
-    };
-
-    @Override
-    public boolean containsAllAliases(Collection<String> aliases) {
-        return getAllAliases().containsAll(aliases);
     }
 
     @Override

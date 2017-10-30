@@ -24,7 +24,7 @@
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
     <SendAction>
-        <contextAlias>defaultConnection</contextAlias>
+        <connectionAlias>defaultConnection</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>

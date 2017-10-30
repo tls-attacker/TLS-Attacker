@@ -12,8 +12,8 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.ProtocolVersionConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 /**

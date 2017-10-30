@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;

@@ -40,9 +40,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
@@ -114,10 +114,25 @@ public class Config implements Serializable {
     }
 
     /**
-     * List of optional filters to apply on workflow traces before
-     * serialization.
+     * List of filters to apply on workflow traces before serialization.
      */
-    private List<FilterType> optionalOutputFilters;
+    private List<FilterType> outputFilters;
+
+    /**
+     * Whether filters return a copy of the input workflow trace or overwrite it
+     * in place. While copying would be preferred in general, overwriting might
+     * be needed for
+     */
+    private Boolean applyFiltersInPlace;
+
+    /**
+     * Whether to keep explicit user settings in the workflow trace when
+     * applying filters or not. Filters might override explicit user definitions
+     * in the filtered workflow trace. For example, the DefaultFilter removes
+     * explicitly overwritten default connections. If this flag is true, the
+     * user defined connections would be restored afterwards.
+     */
+    private Boolean filtersKeepUserSettings;
 
     /**
      * Default value for ProtocolVerionFields
@@ -377,9 +392,14 @@ public class Config implements Serializable {
     private String workflowInput = null;
 
     /**
-     * If we should output an executed workflowtrace to a specified file
+     * If set, save the workflow trace to this file after trace execution.
      */
     private String workflowOutput = null;
+
+    /**
+     * If set, save the actually used config to this file after trace execution.
+     */
+    private String configOutput = null;
 
     /**
      * The Type of workflow trace that should be generated
@@ -808,6 +828,7 @@ public class Config implements Serializable {
     private Config() {
         defaultClientConnection = new OutboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 443, "localhost");
         defaultServerConnection = new InboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 443, "localhost");
+        workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
         supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
@@ -890,7 +911,10 @@ public class Config implements Serializable {
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
         statusRequestV2RequestList = new LinkedList<>();
-        optionalOutputFilters = new ArrayList<>();
+        outputFilters = new ArrayList<>();
+        outputFilters.add(FilterType.DEFAULT);
+        applyFiltersInPlace = false;
+        filtersKeepUserSettings = true;
     }
 
     public boolean isHttpsParsingEnabled() {
@@ -1693,6 +1717,14 @@ public class Config implements Serializable {
         this.workflowOutput = workflowOutput;
     }
 
+    public String getConfigOutput() {
+        return configOutput;
+    }
+
+    public void setConfigOutput(String configOutput) {
+        this.configOutput = configOutput;
+    }
+
     public String getWorkflowInput() {
         return workflowInput;
     }
@@ -2307,12 +2339,28 @@ public class Config implements Serializable {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 
-    public List<FilterType> getOptionalOutputFilters() {
-        return optionalOutputFilters;
+    public List<FilterType> getOutputFilters() {
+        return outputFilters;
     }
 
-    public void setOptionalOutputFilters(List<FilterType> optionalOutputFilters) {
-        this.optionalOutputFilters = optionalOutputFilters;
+    public void setOutputFilters(List<FilterType> outputFilters) {
+        this.outputFilters = outputFilters;
+    }
+
+    public Boolean isApplyFiltersInPlace() {
+        return applyFiltersInPlace;
+    }
+
+    public void setApplyFiltersInPlace(Boolean applyFiltersInPlace) {
+        this.applyFiltersInPlace = applyFiltersInPlace;
+    }
+
+    public Boolean isFiltersKeepUserSettings() {
+        return filtersKeepUserSettings;
+    }
+
+    public void setFiltersKeepUserSettings(Boolean filtersKeepUserSettings) {
+        this.filtersKeepUserSettings = filtersKeepUserSettings;
     }
 
 }

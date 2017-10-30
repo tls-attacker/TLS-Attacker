@@ -100,7 +100,7 @@ public class TlsAttackerSocket {
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
-        action.setContextAlias(context.getConnection().getAlias());
+        action.setConnectionAlias(context.getConnection().getAlias());
         action.execute(state);
         List<ProtocolMessage> recievedMessages = action.getReceivedMessages();
 
@@ -130,7 +130,7 @@ public class TlsAttackerSocket {
 
     public void send(ProtocolMessage message) {
         SendAction action = new SendAction(message);
-        action.setContextAlias(context.getConnection().getAlias());
+        action.setConnectionAlias(context.getConnection().getAlias());
         action.execute(state);
     }
 

@@ -9,10 +9,10 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;

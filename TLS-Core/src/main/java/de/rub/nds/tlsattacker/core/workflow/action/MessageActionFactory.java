@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +32,7 @@ public class MessageActionFactory {
         } else {
             action = new ReceiveAction(protocolMessages);
         }
-        action.setAlias(connection.getAlias());
+        action.setConnectionAlias(connection.getAlias());
         return action;
     }
 

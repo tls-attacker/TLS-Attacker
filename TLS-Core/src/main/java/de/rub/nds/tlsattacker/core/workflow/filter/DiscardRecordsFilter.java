@@ -26,18 +26,24 @@ public class DiscardRecordsFilter extends Filter {
         super(config);
     }
 
+    /**
+     * Apply filter to trace.
+     * 
+     * @param trace
+     *            The workflow trace that should be filtered.
+     */
     @Override
-    public WorkflowTrace filteredCopy(WorkflowTrace trace, Config config) {
-
-        WorkflowTrace filteredTrace = WorkflowTrace.copy(trace);
-
-        for (TlsAction action : filteredTrace.getTlsActions()) {
+    public void applyFilter(WorkflowTrace trace) {
+        for (TlsAction action : trace.getTlsActions()) {
             if (action.isMessageAction()) {
                 ((MessageAction) action).setRecords();
             }
         }
+    }
 
-        return filteredTrace;
+    @Override
+    public FilterType getFilterType() {
+        return FilterType.DISCARD_RECORDS;
     }
 
 }

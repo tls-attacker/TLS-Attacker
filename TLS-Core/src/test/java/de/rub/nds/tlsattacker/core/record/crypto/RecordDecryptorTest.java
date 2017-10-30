@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;

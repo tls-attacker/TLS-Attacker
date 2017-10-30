@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.socket;
 
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.StringReader;
 import java.io.StringWriter;

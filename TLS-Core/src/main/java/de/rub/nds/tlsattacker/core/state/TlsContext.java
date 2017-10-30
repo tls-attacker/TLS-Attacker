@@ -41,7 +41,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;

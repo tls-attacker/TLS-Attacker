@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

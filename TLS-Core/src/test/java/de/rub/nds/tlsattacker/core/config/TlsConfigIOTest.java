@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

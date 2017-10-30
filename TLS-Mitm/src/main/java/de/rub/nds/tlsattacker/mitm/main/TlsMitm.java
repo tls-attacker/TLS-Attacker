@@ -23,10 +23,6 @@ import de.rub.nds.tlsattacker.mitm.config.MitmCommandConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class TlsMitm implements Runnable {
 
     public static final Logger LOGGER = LogManager.getLogger(TlsMitm.class);
@@ -39,7 +35,6 @@ public class TlsMitm implements Runnable {
 
     public void run() throws ParameterException, WorkflowExecutionException, ConfigurationException {
 
-        LOGGER.error("Could not parse provided parameters.");
         MitmCommandConfig cmdConfig = new MitmCommandConfig(new GeneralDelegate());
         JCommander commander = new JCommander(cmdConfig);
 

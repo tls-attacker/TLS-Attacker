@@ -31,10 +31,11 @@ public class DefaultNormalizeFilter {
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         normalizer.normalize(trace, config);
         Filter filter = FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
-        WorkflowTrace filteredTrace = filter.filteredCopy(trace, config);
+        WorkflowTrace filteredTrace = WorkflowTrace.copy(trace);
+        filter.applyFilter(filteredTrace);
 
-        // Restore the original connections
-        filteredTrace.setConnections(origTrace.getConnections());
+        // Restore user defined connections, if any
+        filter.postFilter(filteredTrace, origTrace);
 
         return filteredTrace;
     }

@@ -19,22 +19,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class TlsMitmCommonUsageTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsMitmCommonUsageTest.class.getName());
 
-    @Test
     @Category(IntegrationTests.class)
+    @Test
     public void showHelp() {
         String expected = getResourceAsString(this.getClass(), "/mitm_stdout_help.txt");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -47,7 +42,7 @@ public class TlsMitmCommonUsageTest {
             System.setOut(console);
         }
 
-        assertThat(bytes.toString(), equalTo(expected));
+        assertEquals(expected, bytes.toString());
     }
 
     @Test

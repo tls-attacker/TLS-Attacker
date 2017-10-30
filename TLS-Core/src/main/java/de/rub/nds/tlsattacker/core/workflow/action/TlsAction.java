@@ -8,14 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.connection.Aliasable;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.state.Aliasable;
 import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -45,23 +44,10 @@ public abstract class TlsAction implements Serializable, Aliasable {
     @XmlTransient
     private Boolean singleConnectionWorkflow = true;
 
-    // Use LinkedHashSet to get constant order for serialization.
     @XmlTransient
     private final Set<String> aliases = new LinkedHashSet<>();
 
     public TlsAction() {
-    }
-
-    public TlsAction(String alias) {
-        this.aliases.add(alias);
-    }
-
-    public TlsAction(Collection<? extends String> aliases) {
-        this.aliases.addAll(aliases);
-    }
-
-    public TlsAction(String... aliases) {
-        this.aliases.addAll(Arrays.asList(aliases));
     }
 
     public boolean isExecuted() {
@@ -90,22 +76,52 @@ public abstract class TlsAction implements Serializable, Aliasable {
     /**
      * Add default values and initialize empty fields.
      */
-    public abstract void normalize();
+    public void normalize() {
+        // We don't need any defaults
+    }
 
     /**
      * Add default values from given defaultAction and initialize empty fields.
      */
-    public abstract void normalize(TlsAction defaultAction);
+    public void normalize(TlsAction defaultAction) {
+        // We don't need any defaults
+    }
 
     /**
      * Filter empty fields and default values.
      */
-    public abstract void filter();
+    public void filter() {
+    }
 
     /**
      * Filter empty fields and default values given in defaultAction.
      */
-    public abstract void filter(TlsAction defaultAction);
+    public void filter(TlsAction defaultCon) {
+    }
+
+    @Override
+    public String getFirstAlias() {
+        return getAllAliases().iterator().next();
+    }
+
+    @Override
+    public boolean containsAllAliases(Collection<String> aliases) {
+        return getAllAliases().containsAll(aliases);
+    };
+
+    @Override
+    public boolean containsAlias(String alias) {
+        return getAllAliases().contains(alias);
+    };
+
+    @Override
+    public void assertAliasesSetProperly() throws ConfigurationException {
+    }
+
+    @Override
+    public Set<String> getAllAliases() {
+        return aliases;
+    }
 
     /**
      * Check that the Action got executed as planned.
@@ -115,31 +131,6 @@ public abstract class TlsAction implements Serializable, Aliasable {
     public boolean isMessageAction() {
         return this instanceof MessageAction;
     }
-
-    @Override
-    public String getFirstAlias() {
-        return getAllAliases().iterator().next();
-    }
-
-    @Override
-    public Set<String> getAllAliases() {
-        return Collections.unmodifiableSet(aliases);
-    }
-
-    protected void setAlias(String alias) {
-        aliases.clear();
-        aliases.add(alias);
-    }
-
-    @Override
-    public boolean containsAllAliases(Collection<String> aliases) {
-        return this.aliases.containsAll(aliases);
-    };
-
-    @Override
-    public boolean containsAlias(String alias) {
-        return this.aliases.contains(alias);
-    };
 
     @Override
     public String aliasesToString() {

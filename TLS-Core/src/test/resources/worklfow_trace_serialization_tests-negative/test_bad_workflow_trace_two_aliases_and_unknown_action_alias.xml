@@ -16,7 +16,7 @@
         <port>443</port>
     </InboundConnection>        
     <ReceiveAction>
-        <contextAlias>UnknownAlias</contextAlias>        
+        <connectionAlias>UnknownAlias</connectionAlias>        
         <messages>
             <ClientHello>
                 <extensions>

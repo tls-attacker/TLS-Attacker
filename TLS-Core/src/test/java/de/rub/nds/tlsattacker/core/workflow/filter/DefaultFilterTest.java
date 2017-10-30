@@ -21,8 +21,8 @@ public class DefaultFilterTest {
     public final ExpectedException exception = ExpectedException.none();
 
     private WorkflowTrace trace;
-    private Config config;
-    private DefaultFilter filter;
+    private final Config config;
+    private final DefaultFilter filter;
 
     public DefaultFilterTest() {
         config = Config.createConfig();
@@ -35,7 +35,7 @@ public class DefaultFilterTest {
 
         exception.expect(ConfigurationException.class);
         exception.expectMessage("Workflow trace not well defined. Trace does not define any connections.");
-        filter.filteredCopy(trace, config);
+        filter.applyFilter(trace);
     }
 
 }

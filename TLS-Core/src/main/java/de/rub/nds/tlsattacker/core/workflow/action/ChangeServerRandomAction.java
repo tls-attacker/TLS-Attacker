@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeServerRandomAction extends SingleContextAction {
+public class ChangeServerRandomAction extends ConnectionBoundAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
@@ -50,7 +50,7 @@ public class ChangeServerRandomAction extends SingleContextAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

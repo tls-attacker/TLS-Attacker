@@ -18,7 +18,7 @@ import java.util.Objects;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ChangeCompressionAction extends SingleContextAction {
+public class ChangeCompressionAction extends ConnectionBoundAction {
 
     private CompressionMethod newValue = null;
     private CompressionMethod oldValue = null;
@@ -45,7 +45,7 @@ public class ChangeCompressionAction extends SingleContextAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

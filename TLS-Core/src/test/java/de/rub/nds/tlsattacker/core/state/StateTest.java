@@ -9,13 +9,14 @@
 package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -25,49 +26,45 @@ public class StateTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
 
-    /**
-     * Check if parameterless initialization behaves properly. Using this
-     * initialization method is expected to result in loading the default config
-     * but keeping the workflow trace unset. Consequently, there shouldn't be
-     * any TLS contexts, too.
-     */
     @Test
-    public void testInitNoParameters() {
+    public void emptyInitUsesWorklfowTraceTypeFromConfig() {
         State s = new State();
         assertNotNull(s.getConfig());
-        assertNull(s.getWorkflowTrace());
-        exception.expect(ConfigurationException.class);
-        exception.expectMessage("No workflow trace loaded. Operation getTlsContext not permitted");
-        assertNull(s.getTlsContext());
+        assertNotNull(s.getWorkflowTrace());
+        assertNotNull(s.getTlsContext());
+        // TOOD: assertThat(workflowTrace.getType(),
+        // isEqual(config.getWorklfowTraceType());
     }
 
-    /**
-     * Check if initialization from config behaves properly. Should keeping the
-     * workflow trace unset. Consequently, there shouldn't be any TLS contexts,
-     * too.
-     */
     @Test
-    public void testInitFromConfig() {
+    public void initWithoutWorkflowTraceFailsProperly() {
+        Config config = Config.createConfig();
+        config.setWorkflowInput(null);
+        config.setWorkflowTraceType(null);
+        exception.expect(ConfigurationException.class);
+        exception.expectMessage("Could not load WorkflowTrace. Both workflow_trace_type"
+                + " and workflow_trace_input are unspecified.");
+        State s = new State(config);
+    }
+
+    @Test
+    public void initFromGoodConfig() {
         String expected = "testInitFromConfig";
         Config config = Config.createConfig();
+        config.setWorkflowTraceType(WorkflowTraceType.SHORT_HELLO);
         config.setDefaultApplicationMessageData(expected);
         State s = new State(config);
         assertNotNull(s.getConfig());
         assertEquals(s.getConfig(), config);
+        assertNotNull(s.getWorkflowTrace());
+        assertNotNull(s.getTlsContext());
         assertEquals(config.getDefaultApplicationMessageData(), expected);
-
-        assertNull(s.getWorkflowTrace());
-        exception.expect(ConfigurationException.class);
-        exception.expectMessage("No workflow trace loaded. Operation getTlsContext not permitted");
-        assertNull(s.getTlsContext());
+        // TOOD: assertThat(workflowTrace.getType(),
+        // isEqual(WorkflowTraceType.SHORT_HELLO));
     }
 
-    /**
-     * Check if initialization from config and workflow trace behaves properly.
-     * Corresponding TLS contexts should be generated.
-     */
     @Test
-    public void testInitFromConfigAndWorkflowTrace() {
+    public void initFromConfigAndWorkflowTrace() {
         String expected = "testInitFromConfig";
         Config config = Config.createConfig();
         config.setDefaultApplicationMessageData(expected);
@@ -84,18 +81,17 @@ public class StateTest {
     }
 
     /**
-     * Assure that aliases are unique.
+     * Assure that connection aliases are unique.
      */
     @Test
-    public void testDuplicateAlias() {
-        State s = new State();
+    public void settingDifferentConnectionsWithSameAliasFails() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.addConnection(new OutboundConnection("conEnd1"));
         trace.addConnection(new InboundConnection("conEnd1"));
 
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("Workflow trace not well defined. Trace contains connections with the same alias");
-        s.setWorkflowTrace(trace);
+        exception.expectMessage("Workflow trace not well defined. Trace contains" + " connections with the same alias");
+        State s = new State(trace);
     }
 
     /**
@@ -104,16 +100,27 @@ public class StateTest {
      * appropriate context.
      */
     @Test
-    public void testGetContextAliasRequired() {
-        State s = new State();
+    public void getContextRequiresAliasForMultipleDefinedContexts() {
         WorkflowTrace trace = new WorkflowTrace();
         trace.addConnection(new OutboundConnection("conEnd1"));
         trace.addConnection(new InboundConnection("conEnd2"));
-        s.setWorkflowTrace(trace);
+        State s = new State(trace);
 
         exception.expect(ConfigurationException.class);
         exception.expectMessage("getTlsContext requires an alias if multiple contexts are defined");
         TlsContext c = s.getTlsContext();
     }
 
+    @Test
+    public void settingSingleContextWorkflowWithUnsupportedModeFails() {
+
+        Config config = Config.createConfig();
+        config.setDefaulRunningMode(RunningModeType.MITM);
+        config.setWorkflowTraceType(WorkflowTraceType.HELLO);
+
+        exception.expect(ConfigurationException.class);
+        exception.expectMessage("This workflow can only be configured for modes CLIENT and "
+                + "SERVER, but actual mode was MITM");
+        State state = new State(config);
+    }
 }

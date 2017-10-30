@@ -9,21 +9,9 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
-import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
-import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Random;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,65 +43,6 @@ public abstract class WorkflowExecutor {
         this.type = type;
         this.state = state;
         this.config = state.getConfig();
-        initWorkflowTrace();
-    }
-
-    private void initWorkflowTrace() {
-        WorkflowTrace trace = null;
-
-        if (state.getWorkflowTrace() != null) {
-            return;
-        }
-
-        if (config.getWorkflowInput() != null) {
-            try {
-                trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
-                LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
-            } catch (FileNotFoundException ex) {
-                LOGGER.warn("Could not read WorkflowTrace. File not found.");
-                LOGGER.debug(ex);
-            } catch (JAXBException | IOException | XMLStreamException ex) {
-                LOGGER.warn("Could not read WorkflowTrace.");
-                LOGGER.debug(ex);
-            }
-        } else if (config.getWorkflowTraceType() != null) {
-            WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-            trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), state.getRunningMode());
-        }
-
-        if (trace == null) {
-            throw new ConfigurationException("Could not initialize WorkflowTrace");
-        } else {
-            state.setWorkflowTrace(trace);
-        }
-    }
-
-    protected void storeTrace() {
-        Random random = new Random();
-        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
-            try {
-                File f = new File(config.getWorkflowOutput());
-                if (f.isDirectory()) {
-                    f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
-                }
-
-                // Always remove defaults from the trace and add back the
-                // original connection definitions as supplied by the user.
-                Filter filter = FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
-                WorkflowTrace filteredTrace = filter.filteredCopy(state.getWorkflowTrace(), config);
-                filteredTrace.setConnections(state.getOriginalWorkflowTrace().getConnections());
-
-                // Apply optional filter
-                for (FilterType filterType : config.getOptionalOutputFilters()) {
-                    filter = FilterFactory.createWorkflowTraceFilter(filterType, config);
-                    filteredTrace = filter.filteredCopy(filteredTrace, config);
-                }
-                WorkflowTraceSerializer.write(f, filteredTrace);
-            } catch (JAXBException | IOException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.");
-                LOGGER.debug(ex);
-            }
-        }
     }
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;

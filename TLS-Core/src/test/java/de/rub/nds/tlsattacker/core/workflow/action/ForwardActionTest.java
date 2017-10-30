@@ -19,17 +19,16 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.socket.InboundConnection;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.FakeReceiveMessageHelper;
+import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
-import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
-import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.io.StringReader;
@@ -165,10 +164,10 @@ public class ForwardActionTest {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            Filter filter = FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
-            WorkflowTrace filteredTrace = filter.filteredCopy(trace, config);
-            filteredTrace.setConnections(state.getOriginalWorkflowTrace().getConnections());
-            String actual = WorkflowTraceSerializer.write(filteredTrace);
+            Filter filter = new DefaultFilter(config);
+            filter.applyFilter(trace);
+            filter.postFilter(trace, state.getOriginalWorkflowTrace());
+            String actual = WorkflowTraceSerializer.write(trace);
             LOGGER.info(actual);
 
             Assert.assertThat(actual, equalTo(expected));

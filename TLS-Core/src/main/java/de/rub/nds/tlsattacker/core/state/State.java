@@ -10,12 +10,24 @@ package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
+import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
+import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
+import java.util.Random;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,7 +66,7 @@ public class State {
     private RunningModeType runningMode = null;
 
     @HoldsModifiableVariable
-    private WorkflowTrace workflowTrace = null;
+    private final WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
     public State() {
@@ -68,41 +80,61 @@ public class State {
     public State(Config config) {
         this.config = config;
         runningMode = config.getDefaulRunningMode();
+        this.workflowTrace = loadWorkflowTrace();
+        initState();
     }
 
-    public State(Config config, WorkflowTrace trace) {
+    public State(Config config, WorkflowTrace workflowTrace) {
         this.config = config;
         runningMode = config.getDefaulRunningMode();
-        setWorkflowTrace(trace);
+        this.workflowTrace = workflowTrace;
+        initState();
     }
 
     /**
-     * Set a new workflow trace. Existing TLS contexts are discarded and fresh
-     * contexts are initialized based on the config and the given connections in
-     * the trace. The trace will be supplemented with default values and
-     * verified before execution.
-     * 
-     * @param trace
-     *            The workflow trace to execute.
+     * Normalize trace and initialize TLS contexts. *
      */
-    public final void setWorkflowTrace(WorkflowTrace trace) {
-        if (!contextContainer.isEmpty()) {
-            LOGGER.debug("Setting new workflow trace, clearing old contexts");
-            contextContainer.clear();
+    public final void initState() {
+        // Keep a snapshot to restore user defined trace values after filtering.
+        if (config.isFiltersKeepUserSettings()) {
+            originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
         }
 
-        // Snapshot might be used to access the unnormalized trace.
-        originalWorkflowTrace = WorkflowTrace.copy(trace);
-
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
-        normalizer.normalize(trace, config, runningMode);
-        trace.setDirty(false);
+        normalizer.normalize(workflowTrace, config, runningMode);
+        workflowTrace.setDirty(false);
 
-        for (AliasedConnection con : trace.getConnections()) {
+        for (AliasedConnection con : workflowTrace.getConnections()) {
             TlsContext ctx = new TlsContext(config, con);
             addTlsContext(ctx);
         }
-        this.workflowTrace = trace;
+    }
+
+    private WorkflowTrace loadWorkflowTrace() {
+        WorkflowTrace trace = null;
+
+        if (config.getWorkflowInput() != null) {
+            try {
+                trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
+                LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
+            } catch (FileNotFoundException ex) {
+                LOGGER.warn("Could not read WorkflowTrace. File not found.");
+                LOGGER.debug(ex);
+            } catch (JAXBException | IOException | XMLStreamException ex) {
+                LOGGER.warn("Could not read WorkflowTrace.");
+                LOGGER.debug(ex);
+            }
+        } else if (config.getWorkflowTraceType() != null) {
+            WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+            trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
+            LOGGER.debug("Created new " + config.getWorkflowTraceType() + " workflow trace");
+        }
+
+        if (trace == null) {
+            throw new ConfigurationException("Could not load WorkflowTrace. Both"
+                    + " workflow_trace_type and workflow_trace_input are unspecified.");
+        }
+        return trace;
     }
 
     public Config getConfig() {
@@ -169,6 +201,73 @@ public class State {
         contextContainer.addTlsContext(context);
     }
 
+    /**
+     * Get a filtered copy of the state's workflow trace.
+     * 
+     * @return A filtered copy of the input workflow trace
+     */
+    public WorkflowTrace getFilteredTraceCopy() {
+        return getFilteredTraceCopy(workflowTrace);
+    }
+
+    /**
+     * Return a filtered copy of the given workflow trace. This method does not
+     * modify the input trace.
+     * 
+     * @param trace
+     *            The workflow trace that should be filtered
+     * @return A filtered copy of the input workflow trace
+     */
+    private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
+        WorkflowTrace filtered = WorkflowTrace.copy(trace);
+        filterTrace(filtered);
+        return filtered;
+    }
+
+    /**
+     * Apply filters to trace in place.
+     * 
+     * @param trace
+     *            The workflow trace that should be filtered
+     */
+    private void filterTrace(WorkflowTrace trace) {
+        for (FilterType filterType : config.getOutputFilters()) {
+            Filter filter = FilterFactory.createWorkflowTraceFilter(filterType, config);
+            filter.applyFilter(trace);
+            if (config.isFiltersKeepUserSettings()) {
+                filter.postFilter(trace, originalWorkflowTrace);
+            }
+        }
+    }
+
+    /**
+     * Serialize and write states workflow trace to file.
+     */
+    public void storeTrace() {
+        assertWorkflowTraceNotNull("storeTrace");
+
+        Random random = new Random();
+        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+            try {
+                File f = new File(config.getWorkflowOutput());
+                if (f.isDirectory()) {
+                    f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
+                }
+                WorkflowTrace filteredTrace;
+                if (config.isApplyFiltersInPlace()) {
+                    filteredTrace = workflowTrace;
+                    filterTrace(filteredTrace);
+                } else {
+                    filteredTrace = getFilteredTraceCopy(workflowTrace);
+                }
+                WorkflowTraceSerializer.write(f, filteredTrace);
+            } catch (JAXBException | IOException ex) {
+                LOGGER.info("Could not serialize WorkflowTrace.");
+                LOGGER.debug(ex);
+            }
+        }
+    }
+
     private void assertWorkflowTraceNotNull(String operation_name) {
         if (workflowTrace != null) {
             return;
@@ -180,4 +279,5 @@ public class State {
         }
         throw new ConfigurationException(err.toString());
     }
+
 }

@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
-import de.rub.nds.tlsattacker.core.socket.OutboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;

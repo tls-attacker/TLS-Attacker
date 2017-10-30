@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -69,6 +70,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     private CertificateDelegate certificateDelegate;
     @ParametersDelegate
     private FilterDelegate filterDelegate;
+    @ParametersDelegate
+    private ConfigOutputDelegate configOutputDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -88,6 +91,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.certificateDelegate = new CertificateDelegate();
         this.filterDelegate = new FilterDelegate();
+        this.configOutputDelegate = new ConfigOutputDelegate();
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(maxFragmentLengthDelegate);
@@ -103,6 +107,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(timeoutDelegate);
         addDelegate(certificateDelegate);
         addDelegate(filterDelegate);
+        addDelegate(configOutputDelegate);
     }
 
     @Override

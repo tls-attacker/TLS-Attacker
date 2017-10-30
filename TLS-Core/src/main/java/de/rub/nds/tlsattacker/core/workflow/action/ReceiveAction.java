@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -40,7 +41,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.socket.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
@@ -120,7 +120,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -135,10 +135,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
-        if (getContextAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
+        if (getConnectionAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             LOGGER.info("Received Messages: " + received);
         } else {
-            LOGGER.info("Received Messages (" + getContextAlias() + "): " + received);
+            LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
         }
     }
 
