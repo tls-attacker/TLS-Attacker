@@ -150,9 +150,25 @@ public class State {
     }
 
     /**
+     * Replace existing TlsContext with new TlsContext. This can only be done if
+     * existingTlsContext.connection equals newTlsContext.connection.
+     * 
+     * @param newTlsContext
+     */
+    public void replaceTlsContext(TlsContext newTlsContext) {
+        contextContainer.replaceTlsContext(newTlsContext);
+    }
+
+    /**
      * Use this convenience method when working with a single context only. It
      * should be used only if there is exactly one context defined in the state.
      * This would typically be the default context as defined in the config.
+     * 
+     * Note: Be careful when changing the context. I.e. if you change it's
+     * connection, the state can get out of sync.
+     * 
+     * TODO: Ideally, this would return a deep copy to prevent State
+     * invalidation.
      * 
      * @return the only context known to the state
      * @see this.getTlsContext(String)
@@ -165,6 +181,12 @@ public class State {
     /**
      * Get TLS context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
+     * 
+     * Note: Be careful when changing the context. I.e. if you change it's
+     * connection, the state can get out of sync.
+     * 
+     * TODO: Ideally, this would return a deep copy to prevent State
+     * invalidation.
      * 
      * @return the context with the given connection end alias
      * @see convenience method for single context states: getTlsContext()

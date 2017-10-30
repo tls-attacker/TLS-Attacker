@@ -11,12 +11,16 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertThat;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -122,5 +126,65 @@ public class StateTest {
         exception.expectMessage("This workflow can only be configured for modes CLIENT and "
                 + "SERVER, but actual mode was MITM");
         State state = new State(config);
+    }
+
+    @Test
+    public void dynamicallyChangingValidTlsContextSucceeds() {
+        State state = new State();
+        TlsContext origCtx = state.getTlsContext();
+        TlsContext newCtx = new TlsContext();
+        newCtx.setConnection(origCtx.getConnection());
+        origCtx.setSelectedCipherSuite(CipherSuite.TLS_UNKNOWN_CIPHER);
+        newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
+
+        assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_UNKNOWN_CIPHER));
+        state.replaceTlsContext(newCtx);
+        assertNotSame(state.getTlsContext(), origCtx);
+        assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
+    }
+
+    @Test
+    public void changingValidTlsContextInMultiContextStateSucceeds() {
+        WorkflowTrace trace = new WorkflowTrace();
+        String conAlias1 = "con1";
+        String conAlias2 = "con2";
+        trace.addConnection(new OutboundConnection(conAlias1));
+        trace.addConnection(new InboundConnection(conAlias2));
+        State state = new State(trace);
+        TlsContext origCtx1 = state.getTlsContext(conAlias1);
+        TlsContext newCtx = new TlsContext();
+        newCtx.setConnection(origCtx1.getConnection());
+        origCtx1.setSelectedCipherSuite(CipherSuite.TLS_UNKNOWN_CIPHER);
+        newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
+
+        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_UNKNOWN_CIPHER));
+        state.replaceTlsContext(newCtx);
+        assertNotSame(state.getTlsContext(conAlias1), origCtx1);
+        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
+    }
+
+    @Test
+    public void replacingTlsContextWithBadAliasFails() {
+        State state = new State();
+        TlsContext origCtx = state.getTlsContext();
+        TlsContext newCtx = new TlsContext();
+        newCtx.setConnection(new InboundConnection("NewAlias"));
+
+        exception.expect(ConfigurationException.class);
+        exception.expectMessage("No TlsContext to replace for alias");
+        state.replaceTlsContext(newCtx);
+    }
+
+    @Test
+    public void replacingTlsContextWihtBadConnectionFails() {
+        State state = new State();
+        TlsContext origCtx = state.getTlsContext();
+        TlsContext newCtx = new TlsContext();
+        newCtx.setConnection(new InboundConnection(origCtx.getConnection().getAlias(), 87311));
+
+        exception.expect(ConfigurationException.class);
+        exception
+                .expectMessage("Cannot replace TlsContext because the new TlsContext defines " + "another connection.");
+        state.replaceTlsContext(newCtx);
     }
 }

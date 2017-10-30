@@ -108,7 +108,6 @@ public class ClientDelegateTest {
         delegate.setHost(expectedHostname);
         delegate.applyDelegate(config);
         OutboundConnection actual = config.getDefaultClientConnection();
-        System.out.println("actual " + actual);
         assertNotNull(actual);
         // This should pass without ConfigurationException, too.
         assertThat(actual.getHostname(), equalTo(expectedHostname));

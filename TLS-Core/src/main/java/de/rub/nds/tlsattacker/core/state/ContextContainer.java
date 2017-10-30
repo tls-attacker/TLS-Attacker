@@ -8,8 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.state;
 
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.connection.Aliasable;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +21,6 @@ import java.util.Map;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import de.rub.nds.tlsattacker.core.connection.Aliasable;
 
 /**
  * Manage TLS contexts.
@@ -82,12 +82,13 @@ public class ContextContainer {
         if (alias == null) {
             throw new ConfigurationException("Connection end alias not set (null). Can't add the TLS context.");
         }
-        if (tlsContexts.containsKey(alias)) {
+        if (containsAlias(alias)) {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
         }
 
         LOGGER.debug("Adding context " + alias);
         tlsContexts.put(alias, context);
+        knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
             LOGGER.debug("Adding context " + alias + " to inboundTlsContexts");
@@ -122,10 +123,6 @@ public class ContextContainer {
         return knownAliases.containsAll(aliasable.getAllAliases());
     }
 
-    public boolean isValidAlias(String alias) {
-        return false;
-    }
-
     public boolean isEmpty() {
         return tlsContexts.isEmpty();
     }
@@ -135,5 +132,33 @@ public class ContextContainer {
         knownAliases.clear();
         inboundTlsContexts.clear();
         outboundTlsContexts.clear();
+    }
+
+    public void removeTlsContext(String alias) {
+        if (containsAlias(alias)) {
+            TlsContext removeMe = tlsContexts.get(alias);
+            inboundTlsContexts.remove(removeMe);
+            outboundTlsContexts.remove(removeMe);
+            tlsContexts.remove(alias);
+            knownAliases.remove(alias);
+        }
+    }
+
+    /**
+     * Replace existing TlsContext with new TlsContext. This can only be done if
+     * existingTlsContext.connection equals newTlsContext.connection.
+     */
+    public void replaceTlsContext(TlsContext newTlsContext) {
+        String alias = newTlsContext.getConnection().getAlias();
+        if (!containsAlias(alias)) {
+            throw new ConfigurationException("No TlsContext to replace for alias " + alias);
+        }
+        TlsContext replaceMe = tlsContexts.get(alias);
+        if (!replaceMe.getConnection().equals(newTlsContext.getConnection())) {
+            throw new ConfigurationException("Cannot replace TlsContext because the new TlsContext"
+                    + " defines another connection.");
+        }
+        removeTlsContext(alias);
+        addTlsContext(newTlsContext);
     }
 }

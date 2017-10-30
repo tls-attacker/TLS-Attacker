@@ -253,8 +253,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
         if (!Objects.equals(this.messages, other.messages)) {
-            System.out.println(this.messages);
-            System.out.println(other.messages);
             return false;
         }
         if (!Objects.equals(this.records, other.records)) {
