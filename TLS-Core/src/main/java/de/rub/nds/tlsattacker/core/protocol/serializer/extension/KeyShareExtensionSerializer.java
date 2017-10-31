@@ -39,7 +39,7 @@ public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExt
 
     private void writeKeyShareListLength(KeyShareExtensionMessage msg) {
         appendInt(msg.getKeyShareListLength().getValue(), ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-        LOGGER.debug("KyShareListLength: " + msg.getKeyShareListLength().getValue());
+        LOGGER.debug("KeyShareListLength: " + msg.getKeyShareListLength().getValue());
     }
 
     private void writeKeyShareListBytes(KeyShareExtensionMessage msg) {

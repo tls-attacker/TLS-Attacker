@@ -584,6 +584,30 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] pskKeyExchangeModes = ArrayConverter
             .hexStringToByteArray("00");
+    /**
+     * PreSharedKeyIdentity to be used as PSK Identifier
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] preSharedKeyIdentity = ArrayConverter
+            .hexStringToByteArray("0101010101010101010101010101010101010101010101010101010101010101");
+    /**
+     * PreSharedKeyBinder
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] preSharedKeyBinder = ArrayConverter
+            .hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
+    /**
+     * TicketAge value to be used to generate the obfuscated ticket age for the given PSKs
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] ticketAge = ArrayConverter
+            .hexStringToByteArray("00000000");
+    /**
+     * TicketAgeAdd value to be used to obfuscate the ticket age for the given PSKs
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] ticketAgeAdd = ArrayConverter
+            .hexStringToByteArray("00000000");
     
     /**
      * The Certificate we initialize CertificateMessages with
@@ -2434,6 +2458,62 @@ public class Config implements Serializable {
 
     public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
+    }
+
+    /**
+     * @return the preSharedKeyIdentity
+     */
+    public byte[] getPreSharedKeyIdentity() {
+        return preSharedKeyIdentity;
+    }
+
+    /**
+     * @param preSharedKeyIdentity the preSharedKeyIdentity to set
+     */
+    public void setPreSharedKeyIdentity(byte[] preSharedKeyIdentity) {
+        this.preSharedKeyIdentity = preSharedKeyIdentity;
+    }
+
+    /**
+     * @return the preSharedKeyBinder
+     */
+    public byte[] getPreSharedKeyBinder() {
+        return preSharedKeyBinder;
+    }
+
+    /**
+     * @param preSharedKeyBinder the preSharedKeyBinder to set
+     */
+    public void setPreSharedKeyBinder(byte[] preSharedKeyBinder) {
+        this.preSharedKeyBinder = preSharedKeyBinder;
+    }
+
+    /**
+     * @return the ticketAge
+     */
+    public byte[] getTicketAge() {
+        return ticketAge;
+    }
+
+    /**
+     * @param ticketAge the ticketAge to set
+     */
+    public void setTicketAge(byte[] ticketAge) {
+        this.ticketAge = ticketAge;
+    }
+
+    /**
+     * @return the ticketAgeAdd
+     */
+    public byte[] getTicketAgeAdd() {
+        return ticketAgeAdd;
+    }
+
+    /**
+     * @param ticketAgeAdd the ticketAgeAdd to set
+     */
+    public void setTicketAgeAdd(byte[] ticketAgeAdd) {
+        this.ticketAgeAdd = ticketAgeAdd;
     }
 
 }

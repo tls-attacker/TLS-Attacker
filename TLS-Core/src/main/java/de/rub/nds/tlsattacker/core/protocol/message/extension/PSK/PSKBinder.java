@@ -8,10 +8,45 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension.PSK;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+
 /**
+ * RFC draft-ietf-tls-tls13-21
  *
- * @author marcel
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PSKBinder {
+    
+    private ModifiableInteger binderEntryLength;
+    private ModifiableByteArray binderEntry;
+    
+    public PSKBinder(byte[] binderEntry)
+    {
+        this.binderEntry = ModifiableVariableFactory.safelySetValue(this.binderEntry, binderEntry);
+        binderEntryLength = ModifiableVariableFactory.safelySetValue(binderEntryLength, binderEntry.length);
+    }
+    
+    public void setBinderEntry(ModifiableByteArray binderEntry)
+    {
+        this.binderEntry = binderEntry;
+    }
+    
+    public byte[] getBinderEntry()
+    {
+        return binderEntry.getValue();
+    }
+    
+    public void setBinderEntryLength(ModifiableInteger binderEntryLength)
+    {
+        this.binderEntryLength = binderEntryLength;
+    }
+    
+    public int getBinderEntryLength()
+    {
+        return binderEntryLength.getValue();
+    }
+    
     
 }
