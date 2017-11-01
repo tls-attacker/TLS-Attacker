@@ -50,8 +50,8 @@ public class PSKDHClientKeyExchangeParser extends ClientKeyExchangeParser<PSKDHC
     }
 
     /**
-     * Reads the next bytes as the PSKIdentityLength and writes them
-     * in the message
+     * Reads the next bytes as the PSKIdentityLength and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in
@@ -62,8 +62,7 @@ public class PSKDHClientKeyExchangeParser extends ClientKeyExchangeParser<PSKDHC
     }
 
     /**
-     * Reads the next bytes as the PSKIdentity and writes them in the
-     * message
+     * Reads the next bytes as the PSKIdentity and writes them in the message
      *
      * @param msg
      *            Message to write in

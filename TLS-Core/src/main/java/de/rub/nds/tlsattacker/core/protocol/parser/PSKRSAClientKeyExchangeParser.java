@@ -40,8 +40,8 @@ public class PSKRSAClientKeyExchangeParser extends ClientKeyExchangeParser<PSKRS
         LOGGER.debug("Parsing PSKRSAClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);
-        parseEncryptedPreMasterSecretLength(msg);
-        parseEncryptedPreMasterSecret(msg);
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class PSKRSAClientKeyExchangeParser extends ClientKeyExchangeParser<PSKRS
     }
 
     /**
-     * Reads the next bytes as the PSKIdentityLength and writes them
-     * in the message
+     * Reads the next bytes as the PSKIdentityLength and writes them in the
+     * message
      *
      * @param msg
      *            Message to write in
@@ -62,8 +62,7 @@ public class PSKRSAClientKeyExchangeParser extends ClientKeyExchangeParser<PSKRS
     }
 
     /**
-     * Reads the next bytes as the PSKIdentity and writes them in the
-     * message
+     * Reads the next bytes as the PSKIdentity and writes them in the message
      *
      * @param msg
      *            Message to write in
@@ -73,16 +72,28 @@ public class PSKRSAClientKeyExchangeParser extends ClientKeyExchangeParser<PSKRS
         LOGGER.debug("PSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 
-    private void parseEncryptedPreMasterSecret(PSKRSAClientKeyExchangeMessage msg) {
-        msg.getComputations().setEncryptedPremasterSecret(
-                parseByteArrayField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
-        LOGGER.debug("EncryptedPreMasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getEncryptedPremasterSecret().getValue()));
+    /**
+     * Reads the next bytes as the
+     * SerializedPublicKeyLength/EncryptedPremasterSecret Length and writes them
+     * in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSerializedPublicKeyLength(PSKRSAClientKeyExchangeMessage msg) {
+        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void parseEncryptedPreMasterSecretLength(PSKRSAClientKeyExchangeMessage msg) {
-        msg.getComputations().setEncryptedPremasterSecretLength(parseByteArrayField(HandshakeByteLength.LENGTH_FIELD));
-        LOGGER.debug("EncryptedPreMasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getEncryptedPremasterSecret().getValue()));
+    /**
+     * Reads the next bytes as the SerializedPublicKey/EncryptedPremasterSecret
+     * and writes them in the message
+     *
+     * @param msg
+     *            Message to write in
+     */
+    private void parseSerializedPublicKey(PSKRSAClientKeyExchangeMessage msg) {
+        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 }

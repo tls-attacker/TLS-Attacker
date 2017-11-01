@@ -72,8 +72,8 @@ public class PSKDHClientKeyExchangeSerializer extends HandshakeMessageSerializer
     }
 
     /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into the
-     * final byte[]
+     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
+     * the final byte[]
      */
     private void writeSerializedPublicKey(PSKDHClientKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());

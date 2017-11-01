@@ -45,8 +45,8 @@ public class PSKRSAClientKeyExchangeSerializer extends HandshakeMessageSerialize
     }
 
     /**
-     * Writes the SerializedPublicKeyLength of the PSKRSAClientKeyExchangeMessage
-     * into the final byte[]
+     * Writes the SerializedPublicKeyLength of the
+     * PSKRSAClientKeyExchangeMessage into the final byte[]
      */
     private void writePSKIdentityLength(PSKRSAClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentity().getValue().length, HandshakeByteLength.PSK_IDENTITY_LENGTH);
