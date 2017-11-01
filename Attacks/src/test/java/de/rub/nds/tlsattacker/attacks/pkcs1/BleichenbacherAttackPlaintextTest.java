@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.StdPlainPkcs1Oracle;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.TestPkcs1Oracle;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -20,23 +20,30 @@ import java.security.Security;
 import javax.crypto.Cipher;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class BleichenbacherAttackPlaintextTest {
 
     private static final int PREMASTER_SECRET_LENGTH = 48;
 
+    private TlsContext context;
+
+    @Before
+    public void setUp() {
+        context = new TlsContext();
+    }
+
     @Test
     public void testBleichenbacherAttack() throws Exception {
-
         Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        RandomHelper.getBadSecureRandom().setSeed(0);
-        keyPairGenerator.initialize(2048, RandomHelper.getBadSecureRandom());
+        context.getBadSecureRandom().setSeed(0);
+        keyPairGenerator.initialize(2048, context.getBadSecureRandom());
         KeyPair keyPair = keyPairGenerator.genKeyPair();
 
         SecureRandom sr = new SecureRandom();

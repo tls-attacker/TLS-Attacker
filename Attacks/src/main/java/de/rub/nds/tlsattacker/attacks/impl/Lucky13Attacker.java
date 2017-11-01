@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -34,7 +35,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -78,16 +78,17 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     public void executeAttackRound(Record record) throws IOException {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setWorkflowExecutorShouldOpen(false);
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getTimeout(), tlsConfig.getHost(),
-                tlsConfig.getPort());
+        State state = new State(tlsConfig);
+        TlsContext tlsContext = state.getTlsContext();
+
+        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
+                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
         transportHandler.initialize();
         tlsContext.setTransportHandler(transportHandler);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), tlsContext);
+                tlsConfig.getWorkflowExecutorType(), state);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowTrace trace = state.getWorkflowTrace();
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);

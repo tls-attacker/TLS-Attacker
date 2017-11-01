@@ -41,7 +41,7 @@ public class SRPServerKeyExchangeHandler extends ServerKeyExchangeHandler<SRPSer
     }
 
     @Override
-    protected void adjustTLSContext(SRPServerKeyExchangeMessage message) {
+    public void adjustTLSContext(SRPServerKeyExchangeMessage message) {
         adjustSRPGenerator(message);
         adjustSRPModulus(message);
         adjustSalt(message);

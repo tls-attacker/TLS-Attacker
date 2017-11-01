@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
  * @author Florian Linsner - florian.linsner@rub.de
  */
 public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClientKeyExchangeMessage> {
+
     /**
      * Constructor for the Parser class
      *
@@ -37,8 +38,8 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
     @Override
     protected void parseHandshakeMessageContent(PSKClientKeyExchangeMessage msg) {
         LOGGER.debug("Parsing PSKClientKeyExchangeMessage");
-        parseSerializedPskIdentityLength(msg);
-        parseSerializedPskIdentity(msg);
+        parsePskIdentityLength(msg);
+        parsePskIdentity(msg);
     }
 
     @Override
@@ -53,9 +54,9 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPskIdentityLength(PSKClientKeyExchangeMessage msg) {
-        msg.setIdentityLength(parseByteArrayField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
-        LOGGER.debug("SerializedPSL-IdentityLength: " + msg.getIdentityLength().getValue());
+    private void parsePskIdentityLength(PSKClientKeyExchangeMessage msg) {
+        msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        LOGGER.debug("PskIdentityLength: " + msg.getIdentityLength().getValue());
     }
 
     /**
@@ -64,8 +65,8 @@ public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClien
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPskIdentity(PSKClientKeyExchangeMessage msg) {
-        msg.setIdentity(parseByteArrayField(ArrayConverter.bytesToInt(msg.getIdentityLength().getValue())));
-        LOGGER.debug("SerializedPSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
+    private void parsePskIdentity(PSKClientKeyExchangeMessage msg) {
+        msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));
+        LOGGER.debug("PskIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 }

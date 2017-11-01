@@ -35,10 +35,8 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     @Override
     public void prepareHandshakeMessageContents() {
         msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
-        msg.setIdentityLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentity().length,
-                HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().length);
         msg.prepareComputations();
-
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
         prepareClientRandom(msg);

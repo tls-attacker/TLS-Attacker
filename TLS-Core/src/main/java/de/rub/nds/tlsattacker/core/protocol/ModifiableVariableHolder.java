@@ -11,10 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,9 +41,9 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * 
      * @return
      */
-    public Field getRandomModifiableVariableField() {
+    public Field getRandomModifiableVariableField(Random random) {
         List<Field> fields = getAllModifiableVariableFields();
-        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        int randomField = random.nextInt(fields.size());
         return fields.get(randomField);
     }
 
@@ -60,11 +62,12 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random modifiable variable holder
      * 
+     * @param random
      * @return
      */
-    public ModifiableVariableHolder getRandomModifiableVariableHolder() {
+    public ModifiableVariableHolder getRandomModifiableVariableHolder(Random random) {
         List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
-        int randomHolder = RandomHelper.getRandom().nextInt(holders.size());
+        int randomHolder = random.nextInt(holders.size());
         return holders.get(randomHolder);
     }
 }

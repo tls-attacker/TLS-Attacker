@@ -40,7 +40,7 @@ public class PSKRSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<PSK
     }
 
     @Override
-    protected void adjustTLSContext(PSKRSAClientKeyExchangeMessage message) {
+    public void adjustTLSContext(PSKRSAClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
     }

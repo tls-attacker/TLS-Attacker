@@ -36,33 +36,33 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "client";
 
     @ParametersDelegate
-    private final GeneralDelegate generalDelegate;
+    private GeneralDelegate generalDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private final MaxFragmentLengthDelegate maxFragmentLengthDelegate;
+    private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private final EllipticCurveDelegate ellipticCurveDelegate;
+    private EllipticCurveDelegate ellipticCurveDelegate;
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
-    private final TransportHandlerDelegate transportHandlerDelegate;
+    private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
-    private final WorkflowInputDelegate workflowInputDelegate;
+    private WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate
-    private final WorkflowOutputDelegate workflowOutputDelegate;
+    private WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate
-    private final WorkflowTypeDelegate workflowTypeDelegate;
+    private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
-    private final HeartbeatDelegate heartbeatDelegate;
+    private HeartbeatDelegate heartbeatDelegate;
     @ParametersDelegate
-    private final CertificateDelegate certificateDelegate;
+    private CertificateDelegate certificateDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -98,6 +98,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
+
+        // Perform a HANDSHAKE if no workflow trace (type) is set explicitly
         if (config.getWorkflowTraceType() == null && config.getWorkflowTrace() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }

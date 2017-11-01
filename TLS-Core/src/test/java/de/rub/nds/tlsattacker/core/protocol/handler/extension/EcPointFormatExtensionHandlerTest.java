@@ -22,19 +22,19 @@ import org.junit.Test;
  *
  * @author Robert Merget - robert.merget@rub.de
  */
-public class ECPointFormatExtensionHandlerTest {
+public class EcPointFormatExtensionHandlerTest {
 
-    private ECPointFormatExtensionHandler handler;
+    private EcPointFormatExtensionHandler handler;
     private TlsContext context;
 
     @Before
     public void setUp() {
         context = new TlsContext();
-        handler = new ECPointFormatExtensionHandler(context);
+        handler = new EcPointFormatExtensionHandler(context);
     }
 
     /**
-     * Test of adjustTLSContext method, of class ECPointFormatExtensionHandler.
+     * Test of adjustTLSContext method, of class EcPointFormatExtensionHandler.
      */
     @Test
     public void testAdjustTLSContext() {
@@ -54,7 +54,7 @@ public class ECPointFormatExtensionHandlerTest {
     }
 
     /**
-     * Test of getParser method, of class ECPointFormatExtensionHandler.
+     * Test of getParser method, of class EcPointFormatExtensionHandler.
      */
     @Test
     public void testGetParser() {
@@ -62,7 +62,7 @@ public class ECPointFormatExtensionHandlerTest {
     }
 
     /**
-     * Test of getPreparator method, of class ECPointFormatExtensionHandler.
+     * Test of getPreparator method, of class EcPointFormatExtensionHandler.
      */
     @Test
     public void testGetPreparator() {
@@ -70,7 +70,7 @@ public class ECPointFormatExtensionHandlerTest {
     }
 
     /**
-     * Test of getSerializer method, of class ECPointFormatExtensionHandler.
+     * Test of getSerializer method, of class EcPointFormatExtensionHandler.
      */
     @Test
     public void testGetSerializer() {

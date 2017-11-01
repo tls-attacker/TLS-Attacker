@@ -52,7 +52,9 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -99,8 +101,28 @@ public class WorkflowConfigurationFactory {
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
 
+    private ConnectionEnd getSafeSingleContextConnectionEnd() {
+        // Let's be explicit here
+        if (config.getConnectionEnds().size() != 1) {
+            throw new ConfigurationException("This workflow type can only be created for"
+                    + " a single context, but multiple contexts are defined in the config.");
+        }
+        return config.getConnectionEnd();
+    }
+
+    /**
+     * Create a hello workflow for the default connection end defined in config.
+     */
     public WorkflowTrace createHelloWorkflow() {
-        WorkflowTrace workflowTrace = new WorkflowTrace();
+        return createHelloWorkflow(getSafeSingleContextConnectionEnd());
+    }
+    
+/**
+     * Create a hello workflow for the given connection end.
+     */
+    private WorkflowTrace createHelloWorkflow(ConnectionEnd ourConnectionEnd) {
+        WorkflowTrace workflowTrace = new WorkflowTrace(config);
+
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
@@ -112,8 +134,8 @@ public class WorkflowConfigurationFactory {
         }
         messages.add(clientHello);
 
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.CLIENT, messages));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                messages));
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
                 || config.getHighestProtocolVersion() == ProtocolVersion.DTLS12) {
 
@@ -122,13 +144,13 @@ public class WorkflowConfigurationFactory {
             messages = new LinkedList<>();
 
             messages.add(helloVerifyRequestMessage);
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                    ConnectionEndType.SERVER, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                    messages));
             clientHello = new ClientHelloMessage(config);
             messages = new LinkedList<>();
             messages.add(clientHello);
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                    ConnectionEndType.CLIENT, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                    messages));
         }
         messages = new LinkedList<>();
         messages.add(new ServerHelloMessage(config));
@@ -139,7 +161,7 @@ public class WorkflowConfigurationFactory {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
                 messages.add(certRequest);
             }
-            if (config.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 messages.add(new CertificateMessage());
             } else {
                 messages.add(new CertificateMessage(config));
@@ -147,7 +169,7 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (config.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
                 messages.add(new CertificateMessage());
             } else {
                 messages.add(new CertificateMessage(config));
@@ -161,13 +183,26 @@ public class WorkflowConfigurationFactory {
             }
             messages.add(new ServerHelloDoneMessage(config));
         }
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.SERVER, messages));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                messages));
+
         return workflowTrace;
+}
+
+       /**
+     * Create a handshake workflow for the default connection end defined in
+     * config.
+     */
+    public WorkflowTrace createHandshakeWorkflow() {
+        return createHandshakeWorkflow(getSafeSingleContextConnectionEnd());
     }
 
-    public WorkflowTrace createHandshakeWorkflow() {
-        WorkflowTrace workflowTrace = this.createHelloWorkflow();
+    /**
+     * Create a hello workflow for the given connection end.
+     */
+    private WorkflowTrace createHandshakeWorkflow(ConnectionEnd ourConnectionEnd) {
+
+        WorkflowTrace workflowTrace = this.createHelloWorkflow(ourConnectionEnd);
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.getHighestProtocolVersion().isTLS13()) {
             if (config.isClientAuthentication()) {
@@ -185,18 +220,20 @@ public class WorkflowConfigurationFactory {
             messages.add(new ChangeCipherSpecMessage(config));
         }
         messages.add(new FinishedMessage(config));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.CLIENT, messages));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                messages));
         if (!config.getHighestProtocolVersion().isTLS13()) {
             messages = new LinkedList<>();
             messages.add(new ChangeCipherSpecMessage(config));
             messages.add(new FinishedMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                    ConnectionEndType.SERVER, messages));
-        }
-        return workflowTrace;
-    }
 
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                    messages));
+        }
+
+        return workflowTrace;
+        }
+    
     private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
@@ -279,54 +316,58 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    /**
+     /**
      * Creates an extended TLS workflow including an application data and
      * heartbeat messages
      *
      * @return
      */
     public WorkflowTrace createFullWorkflow() {
-        WorkflowTrace workflowTrace = this.createHandshakeWorkflow();
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+
+        WorkflowTrace workflowTrace = this.createHandshakeWorkflow(ourConnectionEnd);
         List<ProtocolMessage> messages = new LinkedList<>();
         if (config.isServerSendsApplicationData()) {
             messages.add(new ApplicationMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                    ConnectionEndType.SERVER, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                    messages));
             messages = new LinkedList<>();
         }
         messages.add(new ApplicationMessage(config));
 
         if (config.isAddHeartbeatExtension()) {
             messages.add(new HeartbeatMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                    ConnectionEndType.CLIENT, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                    messages));
             messages = new LinkedList<>();
             messages.add(new HeartbeatMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                    ConnectionEndType.SERVER, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                    messages));
         } else {
-            workflowTrace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(),
-                    ConnectionEndType.CLIENT, messages));
+            workflowTrace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                    messages));
         }
         return workflowTrace;
     }
 
     private WorkflowTrace createShortHelloWorkflow() {
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = new WorkflowTrace(config);
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
                 new ServerHelloMessage(config)));
         return trace;
     }
 
     private WorkflowTrace createSsl2HelloWorkflow() {
-        WorkflowTrace trace = new WorkflowTrace();
-        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.CLIENT, new SSL2ClientHelloMessage(config));
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = new WorkflowTrace(config);
+        MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                new SSL2ClientHelloMessage(config));
         action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+        action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
                 new SSL2ServerHelloMessage(config));
         action.setRecords(new BlobRecord());
         trace.addTlsAction(action);
@@ -334,7 +375,9 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createFullResumptionWorkflow() {
-        WorkflowTrace trace = this.createHandshakeWorkflow();
+        ConnectionEnd conEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = this.createHandshakeWorkflow(conEnd);
+
         trace.addTlsAction(new ResetConnectionAction());
         WorkflowTrace tempTrace = this.createResumptionWorkflow();
         for (TLSAction resumption : tempTrace.getTlsActions()) {
@@ -344,14 +387,15 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createResumptionWorkflow() {
-        WorkflowTrace trace = new WorkflowTrace();
-        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.CLIENT, new ClientHelloMessage(config));
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = new WorkflowTrace(config);
+        MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                new ClientHelloMessage(config));
         trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
-                new ServerHelloMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(config));
+        action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER, new ServerHelloMessage(
+                config), new ChangeCipherSpecMessage(config), new FinishedMessage(config));
         trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.CLIENT,
+        action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config));
         trace.addTlsAction(action);
 
@@ -359,9 +403,10 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createClientRenegotiationWorkflow() {
-        WorkflowTrace trace = this.createHandshakeWorkflow();
+        ConnectionEnd conEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = createHandshakeWorkflow(conEnd);
         trace.addTlsAction(new RenegotiationAction());
-        WorkflowTrace renegotiationTrace = this.createHandshakeWorkflow();
+        WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
         }
@@ -369,11 +414,12 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createServerRenegotiationWorkflow() {
-        WorkflowTrace trace = this.createHandshakeWorkflow();
-        WorkflowTrace renegotiationTrace = this.createHandshakeWorkflow();
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = createHandshakeWorkflow(ourConnectionEnd);
+        WorkflowTrace renegotiationTrace = createHandshakeWorkflow(ourConnectionEnd);
         trace.addTlsAction(new RenegotiationAction());
-        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.SERVER, new HelloRequestMessage(config));
+        MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                new HelloRequestMessage(config));
         trace.addTlsAction(action);
         for (TLSAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
@@ -382,11 +428,12 @@ public class WorkflowConfigurationFactory {
     }
 
     private WorkflowTrace createHttpsWorkflow() {
-        WorkflowTrace trace = createHandshakeWorkflow();
-        MessageAction action = MessageActionFactory.createAction(config.getConnectionEndType(),
-                ConnectionEndType.CLIENT, new HttpsRequestMessage(config));
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = createHandshakeWorkflow(ourConnectionEnd);
+        MessageAction action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                new HttpsRequestMessage(config));
         trace.addTlsAction(action);
-        action = MessageActionFactory.createAction(config.getConnectionEndType(), ConnectionEndType.SERVER,
+        action = MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
                 new HttpsResponseMessage(config));
         trace.addTlsAction(action);
         return trace;

@@ -18,10 +18,14 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
  */
 public abstract class AbstractRecordParser<AbstractRecord> extends Parser<AbstractRecord> {
 
-    protected ProtocolVersion version;
+    private ProtocolVersion version;
 
     public AbstractRecordParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array);
         this.version = version;
+    }
+
+    public ProtocolVersion getVersion() {
+        return version;
     }
 }

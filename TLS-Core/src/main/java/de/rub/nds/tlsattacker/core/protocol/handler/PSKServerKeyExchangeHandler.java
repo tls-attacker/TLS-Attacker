@@ -39,6 +39,6 @@ public class PSKServerKeyExchangeHandler extends ServerKeyExchangeHandler<PSKSer
     }
 
     @Override
-    protected void adjustTLSContext(PSKServerKeyExchangeMessage message) {
+    public void adjustTLSContext(PSKServerKeyExchangeMessage message) {
     }
 }

@@ -17,8 +17,8 @@ import java.security.interfaces.RSAPrivateKey;
  */
 public class CustomRSAPrivateKey implements RSAPrivateKey {
 
-    private BigInteger modulus;
-    private BigInteger privateExponent;
+    private final BigInteger modulus;
+    private final BigInteger privateExponent;
 
     public CustomRSAPrivateKey(BigInteger modulus, BigInteger privateExponent) {
         this.modulus = modulus;

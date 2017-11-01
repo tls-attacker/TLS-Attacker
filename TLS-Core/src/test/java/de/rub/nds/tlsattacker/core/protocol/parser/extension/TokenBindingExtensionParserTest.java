@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,6 +67,7 @@ public class TokenBindingExtensionParserTest {
         assertArrayEquals(tokenbindingVersion.getByteValue(), message.getTokenbindingVersion().getValue());
         assertEquals(parameterLength, (int) message.getParameterListLength().getValue());
         assertArrayEquals(keyParameter, message.getTokenbindingKeyParameters().getValue());
+        assertTrue(extensionLength == message.getExtensionLength().getValue());
     }
 
 }

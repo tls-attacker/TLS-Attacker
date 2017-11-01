@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -31,12 +32,13 @@ public class RecordLayerTest {
 
     @Before
     public void setUp() {
-        Config config = Config.createConfig();
+        State state = new State();
+        Config config = state.getConfig();
+        config.setRecordLayerType(RecordLayerType.RECORD);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace = factory.createHandshakeWorkflow();
-        config.setWorkflowTrace(trace);
-        config.setRecordLayerType(RecordLayerType.RECORD);
-        TlsContext context = new TlsContext(config);
+        state.setWorkflowTrace(trace);
+        TlsContext context = state.getTlsContext();
         context.setRecordLayer(new TlsRecordLayer(context));
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         recordHandler = context.getRecordLayer();

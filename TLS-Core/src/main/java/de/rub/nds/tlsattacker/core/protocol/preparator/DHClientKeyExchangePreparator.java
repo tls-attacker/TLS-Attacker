@@ -61,14 +61,6 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         return BigIntegers.asUnsignedByteArray(publicKey.modPow(privateKey, modulus));
     }
 
-    private byte[] calculateMasterSecret(byte[] random, byte[] premasterSecret) {
-        PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
-        masterSecret = PseudoRandomFunction.compute(prfAlgorithm, premasterSecret,
-                PseudoRandomFunction.MASTER_SECRET_LABEL, random, HandshakeByteLength.MASTER_SECRET);
-        return masterSecret;
-
-    }
-
     private void setComputationGenerator(DHClientKeyExchangeMessage msg) {
         msg.getComputations().setGenerator(chooser.getDhGenerator());
         LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue());

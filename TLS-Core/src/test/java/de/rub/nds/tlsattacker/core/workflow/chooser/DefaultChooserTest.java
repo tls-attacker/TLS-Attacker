@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.chooser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -41,6 +42,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import java.util.Random;
 
 /**
  *
@@ -51,15 +53,17 @@ public class DefaultChooserTest {
     private Chooser chooser;
     private TlsContext context;
     private Config config;
+    private Random random;
 
     public DefaultChooserTest() {
     }
 
     @Before
     public void setUp() {
-        config = Config.createConfig();
-        context = new TlsContext(config);
-        chooser = new DefaultChooser(context, config);
+        context = new TlsContext();
+        chooser = context.getChooser();
+        config = chooser.getConfig();
+        random = new Random(0);
     }
 
     /**
@@ -145,7 +149,7 @@ public class DefaultChooserTest {
     @Test
     public void testGetClientSupportedSignatureAndHashAlgorithms() {
         List<SignatureAndHashAlgorithm> algoList = new LinkedList<>();
-        algoList.add(SignatureAndHashAlgorithm.getRandom());
+        algoList.add(SignatureAndHashAlgorithm.getRandom(random));
         config.setDefaultClientSupportedSignatureAndHashAlgorithms(algoList);
         assertTrue(config.getDefaultClientSupportedSignatureAndHashAlgorithms().size() == 1);
         assertTrue(chooser.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
@@ -198,7 +202,6 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetClientCertificateTypes() {
-
         List<ClientCertificateType> typeList = new LinkedList<>();
         typeList.add(ClientCertificateType.DSS_EPHEMERAL_DH_RESERVED);
         typeList.add(ClientCertificateType.DSS_FIXED_DH);
@@ -243,10 +246,10 @@ public class DefaultChooserTest {
      * Test of isExtendedMasterSecretExtension method, of class DefaultChooser.
      */
     @Test
-    public void testIsExtendedMasterSecretExtension() {
-        assertEquals(false, chooser.isExtendedMasterSecretExtension());
-        context.setReceivedMasterSecretExtension(true);
-        assertEquals(true, chooser.isExtendedMasterSecretExtension());
+    public void testIsUseExtendedMasterSecret() {
+        assertEquals(false, chooser.isUseExtendedMasterSecret());
+        context.setUseExtendedMasterSecret(true);
+        assertEquals(true, chooser.isUseExtendedMasterSecret());
     }
 
     /**

@@ -41,7 +41,7 @@ public class SRPClientKeyExchangeHandler extends ClientKeyExchangeHandler<SRPCli
     }
 
     @Override
-    protected void adjustTLSContext(SRPClientKeyExchangeMessage message) {
+    public void adjustTLSContext(SRPClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
         setRecordCipher();

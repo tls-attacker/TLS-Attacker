@@ -37,7 +37,7 @@ public class HttpsRequestHandler extends ProtocolMessageHandler<HttpsRequestMess
     }
 
     @Override
-    protected void adjustTLSContext(HttpsRequestMessage message) {
+    public void adjustTLSContext(HttpsRequestMessage message) {
         tlsContext.getHttpContext().setLastRequestPath(message.getRequestPath().getValue());
     }
 

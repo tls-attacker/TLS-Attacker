@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
@@ -38,13 +39,13 @@ public class PoodleAttacker extends Attacker {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        TlsContext context = new TlsContext(tlsConfig);
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.SSL3);
-        context.getConfig().setDefaultClientSupportedCiphersuites(getCbcCiphers());
-        context.getConfig().setWorkflowTraceType(WorkflowTraceType.HELLO);
-        DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
+        State state = new State(tlsConfig);
+        tlsConfig.setHighestProtocolVersion(ProtocolVersion.SSL3);
+        tlsConfig.setDefaultClientSupportedCiphersuites(getCbcCiphers());
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);
+        DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
-        return WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, context.getWorkflowTrace());
+        return WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, state.getWorkflowTrace());
     }
 
     private List<CipherSuite> getCbcCiphers() {

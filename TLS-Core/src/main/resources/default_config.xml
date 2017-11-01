@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
-    <connectionEndType>CLIENT</connectionEndType>
+    <ClientConnectionEnd>
+        <alias>defaultConnectionEnd</alias>
+        <port>443</port>
+        <hostname>127.0.0.1</hostname>
+    </ClientConnectionEnd>
     <clientAuthentication>false</clientAuthentication>
     <supportedSignatureAndHashAlgorithms>
         <hashAlgorithm>SHA512</hashAlgorithm>
@@ -146,7 +150,6 @@
     <sniHostname>localhost</sniHostname>
     <sniType>HOST_NAME</sniType>
     <sniHostnameFatal>false</sniHostnameFatal>
-    <port>443</port>
     <maxFragmentLength>TWO_9</maxFragmentLength>
     <TLSSessionTicket></TLSSessionTicket>
     <defaultClientRenegotiationInfo></defaultClientRenegotiationInfo>
@@ -188,8 +191,8 @@
     <serverAuthzExtensionDataFormat>SAML_ASSERTION_URL</serverAuthzExtensionDataFormat>
     <clientCertificateTypeExtensionMessageState>true</clientCertificateTypeExtensionMessageState>
     <cachedInfoExtensionIsClientState>true</cachedInfoExtensionIsClientState>
-    <timeout>1000</timeout>
-    <transportHandlerType>TCP</transportHandlerType>
+    <defaultTimeout>1000</defaultTimeout>
+    <defaultTransportHandlerType>TCP</defaultTransportHandlerType>
     <serverSendsApplicationData>false</serverSendsApplicationData>
     <addECPointFormatExtension>true</addECPointFormatExtension>
     <addEllipticCurveExtension>true</addEllipticCurveExtension>
