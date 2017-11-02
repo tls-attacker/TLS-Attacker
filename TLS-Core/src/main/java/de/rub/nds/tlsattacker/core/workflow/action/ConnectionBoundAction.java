@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends TlsAction {
 
-    private String connectionAlias = null;
+    protected String connectionAlias = null;
 
     @XmlTransient
     private final Set<String> aliases = new HashSet<>();

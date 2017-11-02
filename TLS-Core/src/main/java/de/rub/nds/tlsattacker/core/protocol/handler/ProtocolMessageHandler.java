@@ -50,8 +50,21 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * @return message in bytes
      */
     public byte[] prepareMessage(Message message) {
-        Preparator preparator = getPreparator(message);
-        preparator.prepare();
+        return prepareMessage(message, true);
+    }
+
+    /**
+     * Prepare message for sending. This method invokes before and after method
+     * hooks.
+     *
+     * @param message
+     * @return message in bytes
+     */
+    public byte[] prepareMessage(Message message, boolean withPrepare) {
+        if (withPrepare) {
+            Preparator preparator = getPreparator(message);
+            preparator.prepare();
+        }
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);

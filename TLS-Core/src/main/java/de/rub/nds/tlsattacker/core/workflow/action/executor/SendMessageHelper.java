@@ -34,6 +34,11 @@ public class SendMessageHelper {
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context) throws IOException {
+        return sendMessages(messages, records, context, true);
+    }
+
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
+            TlsContext context, boolean prepareMessages) throws IOException {
 
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
 
@@ -55,8 +60,13 @@ public class SendMessageHelper {
                 }
             }
             lastType = message.getProtocolMessageType();
-            LOGGER.debug("Preparing " + message.toCompactString());
-            byte[] protocolMessageBytes = handleProtocolMessage(message, context);
+            byte[] protocolMessageBytes;
+            if (prepareMessages) {
+                LOGGER.debug("Preparing " + message.toCompactString());
+                protocolMessageBytes = handleProtocolMessage(message, context);
+            } else {
+                protocolMessageBytes = handleProtocolMessageWithoutPrepare(message, context);
+            }
             if (message.isGoingToBeSent()) {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
             }
@@ -146,6 +156,12 @@ public class SendMessageHelper {
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
         collector.flushRecordBytes();
+    }
+
+    private byte[] handleProtocolMessageWithoutPrepare(ProtocolMessage message, TlsContext context) {
+        ProtocolMessageHandler handler = message.getHandler(context);
+        byte[] protocolMessageBytes = handler.prepareMessage(message, false);
+        return protocolMessageBytes;
     }
 
     private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {

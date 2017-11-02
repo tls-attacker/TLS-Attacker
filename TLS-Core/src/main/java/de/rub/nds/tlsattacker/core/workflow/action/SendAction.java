@@ -58,17 +58,17 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
         String sending = getReadableString(messages);
-        if (getConnectionAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
+        if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             LOGGER.info("Sending messages: " + sending);
         } else {
-            LOGGER.info("Sending messages (" + getConnectionAlias() + "): " + sending);
+            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
 
         try {

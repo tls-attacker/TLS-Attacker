@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -33,15 +34,16 @@ import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
@@ -353,6 +355,12 @@ public class TlsContext {
     private Random random;
 
     @XmlTransient
+    private LinkedList<ProtocolMessage> messageBuffer;
+
+    @XmlTransient
+    private LinkedList<AbstractRecord> recordBuffer;
+
+    @XmlTransient
     private Chooser chooser;
 
     /**
@@ -425,6 +433,8 @@ public class TlsContext {
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
         random = new Random(0);
+        messageBuffer = new LinkedList<>();
+        recordBuffer = new LinkedList<>();        
     }
 
     public Chooser getChooser() {
@@ -432,6 +442,22 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public LinkedList<ProtocolMessage> getMessageBuffer() {
+        return messageBuffer;
+    }
+
+    public void setMessageBuffer(LinkedList<ProtocolMessage> messageBuffer) {
+        this.messageBuffer = messageBuffer;
+    }
+
+    public LinkedList<AbstractRecord> getRecordBuffer() {
+        return recordBuffer;
+    }
+
+    public void setRecordBuffer(LinkedList<AbstractRecord> recordBuffer) {
+        this.recordBuffer = recordBuffer;
     }
 
     public HttpContext getHttpContext() {
