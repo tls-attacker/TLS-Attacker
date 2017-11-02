@@ -105,17 +105,17 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(String contextAlias) {
-        super(contextAlias);
+    public ReceiveAction(String connectionAlias) {
+        super(connectionAlias);
     }
 
-    public ReceiveAction(String contextAlias, List<ProtocolMessage> messages) {
-        super(contextAlias);
+    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage> messages) {
+        super(connectionAliasAlias);
         this.expectedMessages = messages;
     }
 
-    public ReceiveAction(String contextAlias, ProtocolMessage... messages) {
-        this(contextAlias, new ArrayList<>(Arrays.asList(messages)));
+    public ReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
+        this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override

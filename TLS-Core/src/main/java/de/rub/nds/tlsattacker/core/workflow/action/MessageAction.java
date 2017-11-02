@@ -119,21 +119,21 @@ public abstract class MessageAction extends ConnectionBoundAction {
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String contextAlias) {
-        super(contextAlias);
+    public MessageAction(String connectionAlias) {
+        super(connectionAlias);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String contextAlias, List<ProtocolMessage> messages) {
-        super(contextAlias);
+    public MessageAction(String connectionAlias, List<ProtocolMessage> messages) {
+        super(connectionAlias);
         this.messages = new ArrayList<>(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String contextAlias, ProtocolMessage... messages) {
-        this(contextAlias, new ArrayList<>(Arrays.asList(messages)));
+    public MessageAction(String connectionAlias, ProtocolMessage... messages) {
+        this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {

@@ -38,8 +38,8 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
     public PrintLastHandledApplicationDataAction() {
     }
 
-    public PrintLastHandledApplicationDataAction(String contextAlias) {
-        super(contextAlias);
+    public PrintLastHandledApplicationDataAction(String connectionAlias) {
+        super(connectionAlias);
     }
 
     @Override

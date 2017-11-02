@@ -44,16 +44,16 @@ public class SendAction extends MessageAction implements SendingAction {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public SendAction(String contextAlias) {
-        super(contextAlias);
+    public SendAction(String connectionAlias) {
+        super(connectionAlias);
     }
 
-    public SendAction(String contextAlias, List<ProtocolMessage> messages) {
-        super(contextAlias, messages);
+    public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
+        super(connectionAlias, messages);
     }
 
-    public SendAction(String contextAlias, ProtocolMessage... messages) {
-        super(contextAlias, new ArrayList<>(Arrays.asList(messages)));
+    public SendAction(String connectionAlias, ProtocolMessage... messages) {
+        super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
