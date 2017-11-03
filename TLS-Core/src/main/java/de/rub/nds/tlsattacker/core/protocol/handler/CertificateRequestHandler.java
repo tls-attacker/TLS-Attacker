@@ -59,10 +59,14 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustDistinguishedNames(CertificateRequestMessage message) {
-        byte[] distinguishedNames = message.getDistinguishedNames().getValue();
-        tlsContext.setDistinguishedNames(distinguishedNames);
-        LOGGER.debug("Set DistinguishedNames in Context to "
-                + ArrayConverter.bytesToHexString(distinguishedNames, false));
+        if (message.getDistinguishedNames() != null && message.getDistinguishedNames().getValue() != null) {
+            byte[] distinguishedNames = message.getDistinguishedNames().getValue();
+            tlsContext.setDistinguishedNames(distinguishedNames);
+            LOGGER.debug("Set DistinguishedNames in Context to "
+                    + ArrayConverter.bytesToHexString(distinguishedNames, false));
+        } else {
+            LOGGER.debug("Not adjusting DistinguishedNames");
+        }
     }
 
     private void adjustClientCertificateTypes(CertificateRequestMessage message) {
