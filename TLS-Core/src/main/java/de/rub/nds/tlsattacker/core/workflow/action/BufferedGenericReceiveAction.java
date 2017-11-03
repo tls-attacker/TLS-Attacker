@@ -24,7 +24,7 @@ public class BufferedGenericReceiveAction extends GenericReceiveAction {
     public BufferedGenericReceiveAction(String connectionAlias) {
         super(connectionAlias);
     }
-    
+
     @Override
     public void execute(State state) {
         super.execute(state);

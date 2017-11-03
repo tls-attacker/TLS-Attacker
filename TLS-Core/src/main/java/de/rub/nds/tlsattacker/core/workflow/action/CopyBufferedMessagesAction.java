@@ -26,14 +26,14 @@ public class CopyBufferedMessagesAction extends CopyContextFieldAction {
     public CopyBufferedMessagesAction(String srconnectionAlias, String dstConnectionAlias) {
         super(srconnectionAlias, dstConnectionAlias);
     }
-    
+
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setMessageBuffer(src.getMessageBuffer());
         LOGGER.debug("Src:" + ArrayConverter.bytesToHexString(src.getServerRandom(), true, true));
         LOGGER.debug("Dst:" + ArrayConverter.bytesToHexString(dst.getServerRandom(), true, true));
 
-    }    
+    }
 
     @Override
     public boolean executedAsPlanned() {

@@ -23,7 +23,7 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     public PopAndSendRecordAction() {
         super();
     }
-    
+
     public PopAndSendRecordAction(String connectionAlias) {
         super(connectionAlias);
     }

@@ -434,7 +434,7 @@ public class TlsContext {
         sessionList = new LinkedList<>();
         random = new Random(0);
         messageBuffer = new LinkedList<>();
-        recordBuffer = new LinkedList<>();        
+        recordBuffer = new LinkedList<>();
     }
 
     public Chooser getChooser() {

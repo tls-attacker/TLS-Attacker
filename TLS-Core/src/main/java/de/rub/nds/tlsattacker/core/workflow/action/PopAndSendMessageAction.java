@@ -28,7 +28,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
     public PopAndSendMessageAction(String connectionAlias) {
         super(connectionAlias);
     }
-    
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         TlsContext tlsContext = state.getTlsContext(connectionAlias);

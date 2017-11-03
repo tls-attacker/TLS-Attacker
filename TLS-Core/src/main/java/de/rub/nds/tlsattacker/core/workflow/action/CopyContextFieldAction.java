@@ -104,7 +104,7 @@ public abstract class CopyContextFieldAction extends TlsAction {
         }
         return true;
     }
-    
+
     @Override
     public Set<String> getAllAliases() {
         Set<String> aliases = new LinkedHashSet<>();

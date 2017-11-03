@@ -30,10 +30,10 @@ public class BufferedSendAction extends MessageAction implements SendingAction {
     public BufferedSendAction() {
         super();
     }
-    
+
     public BufferedSendAction(String connectionAlias) {
         super(connectionAlias);
-    }    
+    }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
