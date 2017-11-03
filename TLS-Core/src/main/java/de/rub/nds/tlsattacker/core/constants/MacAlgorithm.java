@@ -15,6 +15,8 @@ public enum MacAlgorithm {
 
     NULL("null"),
     AEAD("null"),
+    SSLMAC_MD5("SslMacMD5"), // supported by SunJCE
+    SSLMAC_SHA1("SslMacSHA1"), // supported by SunJCE
     HMAC_MD5("HmacMD5"),
     HMAC_SHA1("HmacSHA1"),
     HMAC_SHA256("HmacSHA256"),

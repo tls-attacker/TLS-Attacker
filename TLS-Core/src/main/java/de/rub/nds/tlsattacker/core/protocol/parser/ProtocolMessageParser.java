@@ -62,4 +62,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
         LOGGER.debug("CompleteResultMessage: "
                 + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }
+
+    protected ProtocolVersion getVersion() {
+        return version;
+    }
 }

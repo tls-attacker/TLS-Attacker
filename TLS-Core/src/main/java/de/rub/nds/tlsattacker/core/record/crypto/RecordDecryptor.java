@@ -9,17 +9,13 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import static de.rub.nds.tlsattacker.core.record.crypto.Encryptor.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -90,7 +86,8 @@ public class RecordDecryptor extends Decryptor {
 
     private void prepareAdditionalMetadata(Record record, byte[] payload) {
         prepareNonMetaDataMaced(record, payload);
-        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
+                .getSelectedProtocolVersion());
         recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
     }
 

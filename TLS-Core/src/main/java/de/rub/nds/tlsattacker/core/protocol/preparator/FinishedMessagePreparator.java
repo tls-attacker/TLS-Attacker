@@ -8,6 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
@@ -15,14 +21,11 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
+import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
@@ -69,6 +72,13 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
             }
+        } else if (chooser.getSelectedProtocolVersion().isSSL()) {
+            LOGGER.trace("Calculating VerifyData:");
+            final byte[] handshakeMessageContent = chooser.getContext().getDigest().getRawBytes();
+            final byte[] masterSecret = chooser.getMasterSecret();
+            LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
+            final ConnectionEndType endType = chooser.getConnectionEnd().getConnectionEndType();
+            return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
             LOGGER.trace("Calculating VerifyData:");
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();

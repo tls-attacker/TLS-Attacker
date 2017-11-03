@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -16,7 +19,6 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import static de.rub.nds.tlsattacker.core.record.crypto.Encryptor.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
@@ -54,7 +56,8 @@ public class RecordEncryptor extends Encryptor {
         if (!isEncryptThenMac(cipherSuite)) {
             LOGGER.trace("EncryptThenMac is not active");
             record.setNonMetaDataMaced(cleanBytes);
-            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
+                    .getSelectedProtocolVersion());
             record.setAuthenticatedMetaData(additionalAuthenticatedData);
             recordCipher.setAdditionalAuthenticatedData(record.getAuthenticatedMetaData().getValue());
             if (cipherSuite.isUsingMac()) {
@@ -89,7 +92,8 @@ public class RecordEncryptor extends Encryptor {
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.debug("EncryptThenMac Extension active");
             record.setNonMetaDataMaced(encrypted);
-            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record);
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
+                    .getSelectedProtocolVersion());
             record.setAuthenticatedMetaData(additionalAuthenticatedData);
             recordCipher.setAdditionalAuthenticatedData(record.getAuthenticatedMetaData().getValue());
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getAuthenticatedMetaData()

@@ -132,8 +132,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustPRF(ServerHelloMessage message) {
         Chooser chooser = tlsContext.getChooser();
-        tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                chooser.getSelectedCipherSuite()));
+        if (!chooser.getSelectedProtocolVersion().isSSL()) {
+            tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite()));
+        }
     }
 
     private void setRecordCipher() {

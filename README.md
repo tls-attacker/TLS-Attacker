@@ -132,9 +132,8 @@ WorkflowTrace trace = new WorkflowTrace();
 trace.add(new SendAction(new ClientHelloMessage()));
 trace.add(new ReceiveAction(new ServerHelloMessage())));
 trace.add(new SendAction(new FinishedMessage()));
-config.setWorkflowTrace(trace);
-TlsContext context = new TlsContext(config);
-DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
+State state = new State(config, trace);
+DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 executor.execute();
 
 ```
@@ -225,17 +224,16 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
         <Finished/>
     </ReceiveAction>
     <SendAction>
-        <Application/>
-        <Heartbeat/>
-    </SendAction>
-    <ReceiveAction>
-		<Heartbeat>
+	<Heartbeat>
             <payloadLength>
                 <integerExplicitValueModification>
                     <explicitValue>20000</explicitValue>
                 </integerExplicitValueModification>
             </payloadLength>
-        </Heartbeat>
+        </Heartbeat><Heartbeat/>
+    </SendAction>
+    <ReceiveAction>
+	<Heartbeat/>
     </ReceiveAction>
 </workflowTrace>
 ```

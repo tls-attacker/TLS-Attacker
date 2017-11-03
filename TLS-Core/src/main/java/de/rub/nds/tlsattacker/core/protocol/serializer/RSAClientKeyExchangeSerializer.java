@@ -37,7 +37,9 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing RSAClientKeyExchangeMessage");
-        writeSerializedPublicKeyLength(msg);
+        if (!version.isSSL()) {
+            writeSerializedPublicKeyLength(msg);
+        }
         writeSerializedPublickey(msg);
         return getAlreadySerialized();
     }

@@ -311,16 +311,24 @@ public class AlgorithmResolver {
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
 
-    public static MacAlgorithm getMacAlgorithm(CipherSuite cipherSuite) {
+    public static MacAlgorithm getMacAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         MacAlgorithm result = null;
         if (getCipherType(cipherSuite) == CipherType.AEAD) {
             result = MacAlgorithm.AEAD;
         } else {
             String cipher = cipherSuite.toString();
             if (cipher.contains("MD5")) {
-                result = MacAlgorithm.HMAC_MD5;
+                if (protocolVersion.isSSL()) {
+                    result = MacAlgorithm.SSLMAC_MD5;
+                } else {
+                    result = MacAlgorithm.HMAC_MD5;
+                }
             } else if (cipher.endsWith("SHA")) {
-                result = MacAlgorithm.HMAC_SHA1;
+                if (protocolVersion.isSSL()) {
+                    result = MacAlgorithm.SSLMAC_SHA1;
+                } else {
+                    result = MacAlgorithm.HMAC_SHA1;
+                }
             } else if (cipher.contains("SHA256")) {
                 result = MacAlgorithm.HMAC_SHA256;
             } else if (cipher.contains("SHA384")) {

@@ -55,7 +55,11 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
-        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        if (getVersion().isSSL()) {
+            msg.setPublicKeyLength(getBytesLeft());
+        } else {
+            msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        }
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 

@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
+import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -82,9 +83,16 @@ public class KeySetGenerator {
         byte[] seed = ArrayConverter.concatenate(context.getChooser().getServerRandom(), context.getChooser()
                 .getClientRandom());
 
-        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-        byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, getSecretSetSize(protocolVersion, cipherSuite));
+        byte[] keyBlock;
+        if (protocolVersion.isSSL()) {
+            keyBlock = SSLUtils.calculateKeyBlockSSL3(masterSecret, seed,
+                    getSecretSetSize(protocolVersion, cipherSuite));
+            ;
+        } else {
+            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
+            keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                    PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, getSecretSetSize(protocolVersion, cipherSuite));
+        }
         LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
         KeySet keySet = parser.parse();
@@ -111,7 +119,7 @@ public class KeySetGenerator {
             boolean useExplicitIv = protocolVersion.usesExplicitIv();
             int keySize = cipherAlg.getKeySize();
             Cipher cipher = Cipher.getInstance(cipherAlg.getJavaName());
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
+            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
             Mac mac = Mac.getInstance(macAlg.getJavaName());
             int secretSetSize = 2 * keySize + 2 * mac.getMacLength();
             if (!useExplicitIv) {
@@ -138,7 +146,7 @@ public class KeySetGenerator {
             throws NoSuchAlgorithmException {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         int keySize = cipherAlg.getKeySize();
-        MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
+        MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
         Mac mac = Mac.getInstance(macAlg.getJavaName());
         int secretSetSize = (2 * keySize) + mac.getMacLength() + mac.getMacLength();
         return secretSetSize;

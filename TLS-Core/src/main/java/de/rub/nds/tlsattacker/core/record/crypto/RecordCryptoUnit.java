@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -18,6 +19,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
  * @author Robert Merget <robert.merget@rub.de>
  */
 public abstract class RecordCryptoUnit {
+
     protected RecordCipher recordCipher;
 
     public RecordCryptoUnit(RecordCipher recordCipher) {
@@ -48,15 +50,23 @@ public abstract class RecordCryptoUnit {
      * record length.
      *
      * @param record
+     * @param protocolVersion
+     *            According to which ProtocolVersion the
+     *            AdditionalAuthenticationData is collected
      * @return
      */
-    protected final byte[] collectAdditionalAuthenticatedData(Record record) {
+    protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
         byte[] contentType = { record.getContentType().getValue() };
         int length = record.getNonMetaDataMaced().getValue().length;
         byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
-        byte[] result = ArrayConverter.concatenate(seqNumber, contentType, record.getProtocolVersion().getValue(),
-                byteLength);
+        byte[] version;
+        if (!protocolVersion.isSSL()) {
+            version = record.getProtocolVersion().getValue();
+        } else {
+            version = new byte[0];
+        }
+        byte[] result = ArrayConverter.concatenate(seqNumber, contentType, version, byteLength);
         return result;
     }
 }

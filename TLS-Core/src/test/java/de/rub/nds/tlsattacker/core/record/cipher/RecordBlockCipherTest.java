@@ -66,7 +66,10 @@ public class RecordBlockCipherTest {
                 for (ConnectionEndType end : ConnectionEndType.values()) {
                     ((GeneralConnectionEnd) context.getConnectionEnd()).setConnectionEndType(end);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
-                        if (version == ProtocolVersion.SSL2 || version == ProtocolVersion.SSL3 || version.isTLS13()) {
+                        if (version == ProtocolVersion.SSL2 || version.isTLS13()) {
+                            continue;
+                        }
+                        if (!suite.isSupportedInProtocol(version)) {
                             continue;
                         }
                         context.setSelectedProtocolVersion(version);
@@ -75,8 +78,24 @@ public class RecordBlockCipherTest {
                 }
             }
         }
+        // test FORTEZZA for SSLv3 ... Fortezza unterstützen wir "noch" garnicht
+        // for (CipherSuite suite : CipherSuite.values()) {
+        // if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV()
+        // && suite.name().contains("FORTEZZA")
+        // && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
+        // context.setSelectedCipherSuite(suite);
+        // context.setConnectionEnd(new GeneralConnectionEnd());
+        // context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
+        // for (ConnectionEndType end : ConnectionEndType.values()) {
+        // ((GeneralConnectionEnd)
+        // context.getConnectionEnd()).setConnectionEndType(end);
+        // RecordBlockCipher cipher = new RecordBlockCipher(context);
+        // }
+        // }
+        // }
     }
 
+    @SuppressWarnings("unused")
     @Test
     public void test() throws NoSuchAlgorithmException {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

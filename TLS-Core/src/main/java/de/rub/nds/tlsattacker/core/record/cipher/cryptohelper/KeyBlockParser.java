@@ -109,7 +109,7 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getMacLength() throws NoSuchAlgorithmException {
-        MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(suite);
+        MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(version, suite);
         return Mac.getInstance(macAlg.getJavaName()).getMacLength();
     }
 
