@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.mitm.main;
 
 import static de.rub.nds.tlsattacker.util.FileHelper.getResourceAsString;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import org.apache.logging.log4j.LogManager;
@@ -17,25 +16,29 @@ import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 public class TlsMitmCommonUsageTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsMitmCommonUsageTest.class.getName());
 
-    @Category(IntegrationTests.class)
+    // @Category(IntegrationTests.class)
     @Test
     public void showHelp() {
         String expected = getResourceAsString(this.getClass(), "/mitm_stdout_help.txt");
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         PrintStream console = System.out;
+        PrintStream errconsole = System.err;
 
         try {
             System.setOut(new PrintStream(bytes));
+            System.setErr(new PrintStream(bytes));
             (new TlsMitm("-help")).run();
         } finally {
             System.setOut(console);
+            System.setErr(errconsole);
         }
+
+        System.out.println(bytes.toString());
 
         assertEquals(expected, bytes.toString());
     }
