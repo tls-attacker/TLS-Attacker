@@ -39,7 +39,7 @@ Usage: <main class> [options]
       Named curves to be used, divided by a comma
     -output_filter
       Apply given filters to the workflow trace before writing to ouput file. 
-      Comma divided list, e.g. DISCARD_RECORDS,OTHER_FILTER,...
+      Supply as comma separated list. Try also: -list filters.
     -password
       Java Key Store (JKS) file password
     -point_formats

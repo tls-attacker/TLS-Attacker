@@ -14,14 +14,13 @@ import de.rub.nds.tlsattacker.core.config.converters.FilterConverter;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class FilterDelegate extends Delegate {
 
+    // Currently, "Possible Values" suggestion is not automatically generated
+    // for List<Enum>.
+    // Known issue: https://github.com/cbeust/jcommander/issues/402
     @Parameter(names = "-output_filter", description = "Apply given filters to the workflow trace "
-            + "before writing to ouput file. Comma divided list, e.g. " + "DISCARD_RECORDS,OTHER_FILTER,...", converter = FilterConverter.class)
+            + "before writing to ouput file. Supply as comma separated list. Try also: -list filters.", converter = FilterConverter.class)
     private List<FilterType> filters = null;
 
     public FilterDelegate() {

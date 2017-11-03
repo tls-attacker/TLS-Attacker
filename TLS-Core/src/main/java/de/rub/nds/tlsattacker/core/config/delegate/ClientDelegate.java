@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.core.constants.RunningModeType;
  */
 public class ClientDelegate extends Delegate {
 
-    @Parameter(names = "-connect", required = true, description = "who to connect to")
+    @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")
     private String host = null;
 
     public ClientDelegate() {
