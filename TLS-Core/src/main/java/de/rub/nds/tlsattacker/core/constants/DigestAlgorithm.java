@@ -13,6 +13,7 @@ package de.rub.nds.tlsattacker.core.constants;
  */
 public enum DigestAlgorithm {
 
+    SSL_DIGEST(""),
     LEGACY(""),
     SHA256("SHA-256"),
     SHA384("SHA-384");

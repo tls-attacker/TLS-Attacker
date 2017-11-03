@@ -54,11 +54,11 @@ public class MessageDigestCollector {
             MessageDigest hash1;
             MessageDigest hash2 = null;
             DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(version, suite);
-            if (algorithm == DigestAlgorithm.LEGACY) {
-
+            if (algorithm == DigestAlgorithm.SSL_DIGEST) {
+                throw new RuntimeException("Unsupported DigestAlgorithm SSL_DIGEST");
+            } else if (algorithm == DigestAlgorithm.LEGACY) {
                 hash1 = MessageDigest.getInstance("MD5");
                 hash2 = MessageDigest.getInstance("SHA-1");
-
             } else {
                 hash1 = MessageDigest.getInstance(algorithm.getJavaName());
             }

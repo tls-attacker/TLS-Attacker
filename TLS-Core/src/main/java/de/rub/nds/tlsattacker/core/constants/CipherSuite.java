@@ -8,15 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -542,11 +545,28 @@ public enum CipherSuite {
      * @return
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
+        if (version == ProtocolVersion.SSL3) {
+            return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
+        }
         if (this.name().endsWith("256") || this.name().endsWith("384")) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;
     }
+
+    public static final Set<CipherSuite> SSL3_SUPPORTED_CIPHERSUITES = Collections.unmodifiableSet(new HashSet<>(Arrays
+            .asList(TLS_NULL_WITH_NULL_NULL, TLS_RSA_WITH_NULL_MD5, TLS_RSA_WITH_NULL_SHA,
+                    TLS_RSA_EXPORT_WITH_RC4_40_MD5, TLS_RSA_WITH_RC4_128_MD5, TLS_RSA_WITH_RC4_128_SHA,
+                    TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5, TLS_RSA_WITH_IDEA_CBC_SHA, TLS_RSA_EXPORT_WITH_DES40_CBC_SHA,
+                    TLS_RSA_WITH_DES_CBC_SHA, TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA,
+                    TLS_DH_DSS_WITH_DES_CBC_SHA, TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA,
+                    TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_RSA_WITH_DES_CBC_SHA,
+                    TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA,
+                    TLS_DHE_DSS_WITH_DES_CBC_SHA, TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA,
+                    TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DHE_RSA_WITH_DES_CBC_SHA,
+                    TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_anon_EXPORT_WITH_RC4_40_MD5,
+                    TLS_DH_anon_WITH_RC4_128_MD5, TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_anon_WITH_DES_CBC_SHA,
+                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA)));
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();

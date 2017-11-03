@@ -8,6 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.Before;
+import org.junit.Test;
+
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
@@ -17,10 +23,6 @@ import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.GeneralConnectionEnd;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
@@ -55,17 +57,37 @@ public class RecordBlockCipherTest {
                 for (ConnectionEndType end : ConnectionEndType.values()) {
                     ((GeneralConnectionEnd) context.getConnectionEnd()).setConnectionEndType(end);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
-                        if (version == ProtocolVersion.SSL2 || version == ProtocolVersion.SSL3) {
+                        if (version == ProtocolVersion.SSL2) {
+                            continue;
+                        }
+                        if (!suite.isSupportedInProtocol(version)) {
                             continue;
                         }
                         context.setSelectedProtocolVersion(version);
+                        @SuppressWarnings("unused")
                         RecordBlockCipher cipher = new RecordBlockCipher(context);
                     }
                 }
             }
         }
+        // test FORTEZZA for SSLv3 ... Fortezza unterstützen wir "noch" garnicht
+        // for (CipherSuite suite : CipherSuite.values()) {
+        // if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV()
+        // && suite.name().contains("FORTEZZA")
+        // && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK) {
+        // context.setSelectedCipherSuite(suite);
+        // context.setConnectionEnd(new GeneralConnectionEnd());
+        // context.setSelectedProtocolVersion(ProtocolVersion.SSL3);
+        // for (ConnectionEndType end : ConnectionEndType.values()) {
+        // ((GeneralConnectionEnd)
+        // context.getConnectionEnd()).setConnectionEndType(end);
+        // RecordBlockCipher cipher = new RecordBlockCipher(context);
+        // }
+        // }
+        // }
     }
 
+    @SuppressWarnings("unused")
     @Test
     public void test() {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

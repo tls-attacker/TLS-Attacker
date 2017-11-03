@@ -8,16 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import static de.rub.nds.tlsattacker.core.record.crypto.Encryptor.LOGGER;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * @author Robert Merget <robert.merget@rub.de>
@@ -51,7 +51,9 @@ public class RecordEncryptor extends Encryptor {
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 stream.write(ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue()));
                 stream.write(record.getContentType().getValue());
-                stream.write(record.getProtocolVersion().getValue());
+                if (!context.getChooser().getSelectedProtocolVersion().isSSL()) {
+                    stream.write(record.getProtocolVersion().getValue());
+                }
                 stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
                         RecordByteLength.RECORD_LENGTH)); // TODO
                 stream.write(record.getCleanProtocolMessageBytes().getValue());

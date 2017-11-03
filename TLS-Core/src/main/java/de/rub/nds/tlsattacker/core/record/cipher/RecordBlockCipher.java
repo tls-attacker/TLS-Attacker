@@ -8,23 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -33,6 +21,20 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
+import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -200,7 +202,7 @@ public final class RecordBlockCipher extends RecordCipher {
             int keySize = cipherAlg.getKeySize();
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(cipherSuite);
+            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
             int secretSetSize = (2 * keySize) + readMac.getMacLength() + writeMac.getMacLength();
@@ -211,9 +213,14 @@ public final class RecordBlockCipher extends RecordCipher {
             byte[] seed = ArrayConverter.concatenate(tlsContext.getServerRandom(), tlsContext.getClientRandom());
             LOGGER.debug("Keyblock Seed:" + ArrayConverter.bytesToHexString(seed));
 
-            PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
-            byte[] keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                    PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
+            byte[] keyBlock;
+            if (protocolVersion == ProtocolVersion.SSL3) {
+                keyBlock = SSLUtils.calculateKeyBlockSSL3(masterSecret, seed, secretSetSize);
+            } else {
+                PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
+                keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
+                        PseudoRandomFunction.KEY_EXPANSION_LABEL, seed, secretSetSize);
+            }
             LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
             int offset = 0;
             byte[] clientMacWriteSecret = Arrays.copyOfRange(keyBlock, offset, offset + readMac.getMacLength());
@@ -237,11 +244,11 @@ public final class RecordBlockCipher extends RecordCipher {
             } else {
                 clientWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + encryptCipher.getBlockSize());
                 offset += encryptCipher.getBlockSize();
-                LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
                 serverWriteIv = Arrays.copyOfRange(keyBlock, offset, offset + decryptCipher.getBlockSize());
                 offset += decryptCipher.getBlockSize();
-                LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
             }
+            LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
+            LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
             if (tlsContext.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 encryptIv = new IvParameterSpec(clientWriteIv);
                 decryptIv = new IvParameterSpec(serverWriteIv);

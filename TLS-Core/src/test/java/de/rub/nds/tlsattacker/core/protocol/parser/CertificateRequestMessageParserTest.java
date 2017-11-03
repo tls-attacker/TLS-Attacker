@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -25,6 +26,10 @@ import org.junit.runners.Parameterized;
  */
 @RunWith(Parameterized.class)
 public class CertificateRequestMessageParserTest {
+
+    // private static byte[] SSL3_CERTREQ_MSG =
+    // ArrayConverter.hexStringToByteArray("0d000006030102400000");
+    private static byte[] RSA_DSS_ECDSA_TYPES = ArrayConverter.hexStringToByteArray("010240");
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
@@ -38,28 +43,35 @@ public class CertificateRequestMessageParserTest {
                         HandshakeMessageType.CERTIFICATE_REQUEST,
                         38,
                         3,
-                        ArrayConverter.hexStringToByteArray("010240"),
+                        RSA_DSS_ECDSA_TYPES,
                         30,
                         ArrayConverter
                                 .hexStringToByteArray("060106020603050105020503040104020403030103020303020102020203"),
-                        0, null }, });
+                        0, null, ProtocolVersion.TLS12 },
+                /*
+                 * { SSL3_CERTREQ_MSG, 0, SSL3_CERTREQ_MSG,
+                 * HandshakeMessageType.CERTIFICATE_REQUEST, 6, 3,
+                 * RSA_DSS_ECDSA_TYPES, 0,null, 0, null,ProtocolVersion.SSL3 }
+                 */});
+        // Testdata is correct, however Certificate request and other
+        // Client-Authentication related messages are not yet supported for
+        // TLS-Version < 1.2
     }
 
     private byte[] message;
-
     private HandshakeMessageType type;
     private int length;
-
     private int certTypesCount;
     private byte[] certTypes;
     private int sigHashAlgsLength;
     private byte[] sigHashAlgs;
     private int distinguishedNamesLength;
     private byte[] disitinguishedNames;
+    private ProtocolVersion version;
 
     public CertificateRequestMessageParserTest(byte[] message, int start, byte[] expectedPart,
             HandshakeMessageType type, int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength,
-            byte[] sigHashAlgs, int distinguishedNamesLength, byte[] disitinguishedNames) {
+            byte[] sigHashAlgs, int distinguishedNamesLength, byte[] disitinguishedNames, ProtocolVersion version) {
         this.message = message;
         this.type = type;
         this.length = length;
@@ -69,7 +81,7 @@ public class CertificateRequestMessageParserTest {
         this.sigHashAlgs = sigHashAlgs;
         this.distinguishedNamesLength = distinguishedNamesLength;
         this.disitinguishedNames = disitinguishedNames;
-
+        this.version = version;
     }
 
     /**
@@ -77,7 +89,7 @@ public class CertificateRequestMessageParserTest {
      */
     @Test
     public void testParse() {
-        CertificateRequestMessageParser parser = new CertificateRequestMessageParser(0, message, ProtocolVersion.TLS12);
+        CertificateRequestMessageParser parser = new CertificateRequestMessageParser(0, message, version);
         CertificateRequestMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

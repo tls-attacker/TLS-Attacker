@@ -159,4 +159,12 @@ public enum ProtocolVersion {
     public boolean isTLS13() {
         return this == TLS13 || this == TLS13_DRAFT20 || this == TLS13_DRAFT21;
     }
+
+    /**
+     * 
+     * @return true, if protocol version SSL 2 or 3
+     */
+    public boolean isSSL() {
+        return this == SSL2 || this == SSL3;
+    }
 }
