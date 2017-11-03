@@ -20,8 +20,6 @@ import java.util.Objects;
  * default, this prints the raw byte values of the application data as a hex
  * string. An charset for simple encoding can be given to get readable output
  * (if possible).
- * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
 
@@ -29,11 +27,13 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
 
     /**
      * If set, the lastHandledApplicationData will be encoded as String using
-     * the given charset (that is StandardCharsets.UTF_8,
-     * StandardCharsets.ISO_8859_1,...) before printing. If unset, plot raw
-     * bytes as hex string.
+     * the given charset (that is UTF_8, ISO_8859_1,...) before printing. If
+     * unset, plot raw bytes as hex string.
+     * 
+     * Note: we are using String instead of Charset for serialization
+     * purposes...
      */
-    private Charset stringEncoding = null;
+    private String stringEncoding = null;
 
     public PrintLastHandledApplicationDataAction() {
     }
@@ -46,7 +46,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
     public void execute(State state) throws WorkflowExecutionException, IOException {
         byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getChooser().getLastHandledApplicationMessageData();
         if (stringEncoding != null) {
-            lastHandledApplicationData = new String(rawBytes, stringEncoding);
+            lastHandledApplicationData = new String(rawBytes, Charset.forName(stringEncoding));
         } else {
             lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
         }
@@ -61,11 +61,18 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
         this.lastHandledApplicationData = lastHandledApplicationData;
     }
 
-    public Charset getStringEncoding() {
+    public String getStringEncoding() {
         return stringEncoding;
     }
 
-    public void setStringEncoding(Charset stringEncoding) {
+    /**
+     * Set encoding. Supplied String must match an element from Charset.
+     * Example: US_ASCII.
+     * 
+     * @param stringEncoding
+     * @see Available charsets can be found in StandardCharsets
+     */
+    public void setStringEncoding(String stringEncoding) {
         this.stringEncoding = stringEncoding;
     }
 

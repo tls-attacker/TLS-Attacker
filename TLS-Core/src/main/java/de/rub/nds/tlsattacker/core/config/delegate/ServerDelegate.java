@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 
 /**
  *
@@ -35,6 +36,9 @@ public class ServerDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
+
+        config.setDefaulRunningMode(RunningModeType.SERVER);
+
         int parsedPort = parsePort(port);
         InboundConnection inboundConnection = config.getDefaultServerConnection();
         if (inboundConnection != null) {

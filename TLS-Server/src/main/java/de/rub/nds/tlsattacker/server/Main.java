@@ -38,7 +38,7 @@ public class Main {
             try {
                 tlsConfig = config.createConfig();
                 TlsServer server = new TlsServer();
-                server.startTlsServer(tlsConfig);
+                server.run(tlsConfig);
             } catch (ConfigurationException E) {
                 LOGGER.warn("Encountered a ConfigurationException aborting.");
                 LOGGER.debug(E);

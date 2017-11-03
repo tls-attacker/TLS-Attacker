@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.connection;
 
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class InboundConnection extends AliasedConnection {

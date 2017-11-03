@@ -36,6 +36,9 @@ public abstract class Connection {
 
     public Connection(Connection other) {
         port = other.port;
+        hostname = other.hostname;
+        transportHandlerType = other.transportHandlerType;
+        timeout = other.timeout;
     }
 
     public Integer getPort() {

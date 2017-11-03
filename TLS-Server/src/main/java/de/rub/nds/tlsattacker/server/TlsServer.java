@@ -25,7 +25,7 @@ public class TlsServer {
     private static final Logger LOGGER = LogManager.getLogger(TlsServer.class.getName());
 
     // TODO rename method
-    public void startTlsServer(Config config) {
+    public void run(Config config) {
         State state = new State(config);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(

@@ -28,6 +28,7 @@
     <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
         <word>Aliasable</word>
         <word>charset</word>
+        <word>charsets</word>
         <word>config</word>
         <word>workflow</word>
     </spellchecker-wordlist>

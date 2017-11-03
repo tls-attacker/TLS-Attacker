@@ -13,7 +13,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -71,7 +70,6 @@ public class TlsMitm implements Runnable {
     public void executeMitmWorkflow(Config config) throws ConfigurationException, WorkflowExecutionException {
         LOGGER.debug("Creating and launching mitm.");
         State state = new State(config);
-        state.setRunningMode(RunningModeType.MITM);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();

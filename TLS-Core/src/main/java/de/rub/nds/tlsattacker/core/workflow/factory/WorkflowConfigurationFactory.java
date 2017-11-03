@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -40,7 +41,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -50,7 +50,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -402,18 +401,19 @@ public class WorkflowConfigurationFactory {
 
         // Print the application data contents to console
         PrintLastHandledApplicationDataAction p = new PrintLastHandledApplicationDataAction(clientToMitmAlias);
-        p.setStringEncoding(StandardCharsets.US_ASCII);
+        p.setStringEncoding("US_ASCII");
         trace.addTlsAction(p);
 
-        // Forward response server -> client
-        List<ProtocolMessage> messages = new LinkedList<>();
-        f = new ForwardAction(mitmToServerAlias, clientToMitmAlias, new ApplicationMessage(config));
-        trace.addTlsAction(f);
-
-        // Print the server's answer
-        p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
-        p.setStringEncoding(StandardCharsets.US_ASCII);
-        trace.addTlsAction(p);
+        // // Forward response server -> client
+        // List<ProtocolMessage> messages = new LinkedList<>();
+        // f = new ForwardAction(mitmToServerAlias, clientToMitmAlias, new
+        // ApplicationMessage(config));
+        // trace.addTlsAction(f);
+        //
+        // // Print the server's answer
+        // p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
+        // p.setStringEncoding(StandardCharsets.US_ASCII);
+        // trace.addTlsAction(p);
 
         return trace;
     }

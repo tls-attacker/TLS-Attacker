@@ -12,6 +12,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 
 /**
  *
@@ -35,6 +36,9 @@ public class ClientDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
+
+        config.setDefaulRunningMode(RunningModeType.CLIENT);
+
         if (host == null) {
             // Though host is a required parameter we can get here if
             // we call applyDelegate manually, e.g. in tests.

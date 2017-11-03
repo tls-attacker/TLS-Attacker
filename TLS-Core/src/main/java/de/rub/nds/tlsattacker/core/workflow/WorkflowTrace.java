@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
@@ -20,10 +22,22 @@ import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ConnectionBoundAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedMessagesAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedRecordsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyClientRandomAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyContextFieldAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
+import de.rub.nds.tlsattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendMessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendRecordAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
@@ -70,22 +84,38 @@ public class WorkflowTrace implements Serializable {
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = TlsAction.class, name = "TlsAction"),
-            @XmlElement(type = ForwardAction.class, name = "ForwardAction"),
+    @XmlElements(value = {
+            @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
+            @XmlElement(type = CopyContextFieldAction.class, name = "CopyContextFieldAction"),
+            @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecordsAction"),
+            @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
+            @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessageAction"),
+            @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
+            @XmlElement(type = CopyBufferedMessagesAction.class, name = "CopyBufferedMessagesAction"),
             @XmlElement(type = SendAction.class, name = "SendAction"),
+            @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
+            @XmlElement(type = TlsAction.class, name = "TlsAction"),
+            @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBoundAction"),
+            @XmlElement(type = BufferedSendAction.class, name = "BufferedSendAction"),
+            @XmlElement(type = GenericReceiveAction.class, name = "GenericReceiveAction"),
+            @XmlElement(type = CopyClientRandomAction.class, name = "CopyClientRandomAction"),
+            @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
+            @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
+            @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceiveAction"),
+            @XmlElement(type = ForwardAction.class, name = "ForwardAction"),
+            @XmlElement(type = ResetConnectionAction.class, name = "ResetConnectionAction"),
+            @XmlElement(type = GeneralAction.class, name = "GeneralAction"),
+            @XmlElement(type = PopAndSendRecordAction.class, name = "PopAndSendRecordAction"),
+            @XmlElement(type = MessageAction.class, name = "MessageAction"),
+            @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction"),
+            @XmlElement(type = WaitingAction.class, name = "WaitingAction"),
+            @XmlElement(type = PopBufferedMessageAction.class, name = "PopBufferedMessageAction"),
+            @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
+            @XmlElement(type = CopyServerRandomAction.class, name = "CopyServerRandomAction"),
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
-            @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
-            @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
-            @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
-            @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
-            @XmlElement(type = WaitingAction.class, name = "Wait"),
-            @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
-            @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
-            @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
-            @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
-            @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
-            @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
+            @XmlElement(type = PopBufferedRecordAction.class, name = "PopBufferedRecordAction"),
+            @XmlElement(type = PrintLastHandledApplicationDataAction.class, name = "PrintLastHandledApplicationDataAction") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 
     private String name = null;
