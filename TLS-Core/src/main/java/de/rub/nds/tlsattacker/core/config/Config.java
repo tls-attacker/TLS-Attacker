@@ -800,6 +800,10 @@ public class Config implements Serializable {
 
     private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
 
+    private byte[] defaultClientApplicationTrafficSecret = new byte[0];
+
+    private byte[] defaultServerApplicationTrafficSecret = new byte[0];
+
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
     private CustomECPoint defaultTokenBindingECPublicKey = null;
@@ -2382,4 +2386,19 @@ public class Config implements Serializable {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 
+    public byte[] getDefaultClientApplicationTrafficSecret() {
+        return defaultClientApplicationTrafficSecret;
+    }
+
+    public void setDefaultClientApplicationTrafficSecret(byte[] defaultClientApplicationTrafficSecret) {
+        this.defaultClientApplicationTrafficSecret = defaultClientApplicationTrafficSecret;
+    }
+
+    public byte[] getDefaultServerApplicationTrafficSecret() {
+        return defaultServerApplicationTrafficSecret;
+    }
+
+    public void setDefaultServerApplicationTrafficSecret(byte[] defaultServerApplicationTrafficSecret) {
+        this.defaultServerApplicationTrafficSecret = defaultServerApplicationTrafficSecret;
+    }
 }

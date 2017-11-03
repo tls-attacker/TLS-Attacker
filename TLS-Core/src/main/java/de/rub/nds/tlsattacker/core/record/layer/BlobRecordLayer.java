@@ -42,7 +42,7 @@ public class BlobRecordLayer extends RecordLayer {
 
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
-        cipher = new RecordNullCipher();
+        cipher = new RecordNullCipher(context);
         encryptor = new RecordEncryptor(cipher, context);
         decryptor = new RecordDecryptor(cipher, context);
     }

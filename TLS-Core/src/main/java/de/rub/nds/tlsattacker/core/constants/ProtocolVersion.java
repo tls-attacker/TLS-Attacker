@@ -167,4 +167,9 @@ public enum ProtocolVersion {
     public boolean isSSL() {
         return this == SSL2 || this == SSL3;
     }
+
+    public boolean usesExplicitIv() {
+        return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
+                || this == ProtocolVersion.DTLS12;
+    }
 }

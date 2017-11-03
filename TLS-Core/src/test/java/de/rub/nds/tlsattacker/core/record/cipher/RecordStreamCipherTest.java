@@ -18,10 +18,13 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.GeneralConnectionEnd;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -44,7 +47,7 @@ public class RecordStreamCipherTest {
     // TODO check why cipher.contains("WITH_NULL") in
     // AlgorithmResolver.getCipherType(suite) is always assocaited with STREAM
     @Test
-    public void testConstructors() {
+    public void testConstructors() throws NoSuchAlgorithmException {
         // This test just checks that the init() method will not break
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
@@ -60,7 +63,7 @@ public class RecordStreamCipherTest {
                 for (ConnectionEndType end : ConnectionEndType.values()) {
                     ((GeneralConnectionEnd) context.getConnectionEnd()).setConnectionEndType(end);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
-                        if (version == ProtocolVersion.SSL2) {
+                        if (version == ProtocolVersion.SSL2 || version.isTLS13()) {
                             continue;
                         }
                         if (!suite.isSupportedInProtocol(version)) {
@@ -68,7 +71,8 @@ public class RecordStreamCipherTest {
                         }
                         context.setSelectedProtocolVersion(version);
                         @SuppressWarnings("unused")
-                        RecordStreamCipher cipher = new RecordStreamCipher(context);
+                        RecordStreamCipher cipher = new RecordStreamCipher(context,
+                                KeySetGenerator.generateKeySet(context));
                     }
                 }
             }

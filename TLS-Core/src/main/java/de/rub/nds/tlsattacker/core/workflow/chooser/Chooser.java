@@ -162,6 +162,10 @@ public abstract class Chooser {
 
     public abstract byte[] getClientHandshakeTrafficSecret();
 
+    public abstract byte[] getClientApplicationTrafficSecret();
+
+    public abstract byte[] getServerApplicationTrafficSecret();
+
     public abstract KSEntry getServerKSEntry();
 
     public abstract RecordLayerType getRecordLayerType();

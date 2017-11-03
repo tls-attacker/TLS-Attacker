@@ -191,6 +191,8 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a handshake workflow for the default connection end defined in
      * config.
+     * 
+     * @return
      */
     public WorkflowTrace createHandshakeWorkflow() {
         return createHandshakeWorkflow(getSafeSingleContextConnectionEnd());

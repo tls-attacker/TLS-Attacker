@@ -29,7 +29,7 @@ public class DeactivateEncryptionAction extends TLSAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Deactivated Encryption/Decryption");
