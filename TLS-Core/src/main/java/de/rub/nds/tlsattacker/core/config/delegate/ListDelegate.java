@@ -18,9 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.EnumSet;
+import de.rub.nds.tlsattacker.util.StringHelper;
 
 /**
  * Plot a list of supported parameters.
@@ -50,42 +48,24 @@ public class ListDelegate extends Delegate {
         String list = null;
         switch (listDelegateType) {
             case ciphers:
-                list = join(CipherSuite.getImplemented());
+                list = StringHelper.join(CipherSuite.getImplemented());
                 break;
             case filters:
-                list = enumToString(FilterType.class);
+                list = StringHelper.enumToString(FilterType.class);
                 break;
             case curves:
-                list = enumToString(NamedCurve.class);
+                list = StringHelper.enumToString(NamedCurve.class);
                 break;
             case sign_hash_algos:
-                list = join(SignatureAndHashAlgorithm.values());
+                list = StringHelper.join(SignatureAndHashAlgorithm.values());
                 break;
             case workflow_trace_types:
-                list = enumToString(WorkflowTraceType.class);
-                ;
+                list = StringHelper.enumToString(WorkflowTraceType.class);
         }
         return list;
     }
 
     @Override
     public void applyDelegate(Config config) {
-    }
-
-    public <E extends Enum<E>> String enumToString(Class<E> e) {
-        return join(EnumSet.allOf(e));
-    }
-
-    public String join(Object[] objects) {
-        return join(Arrays.asList(objects));
-    }
-
-    public String join(Collection collection) {
-        StringBuilder sb = new StringBuilder();
-        for (Object o : collection) {
-            sb.append(o.toString()).append(System.lineSeparator());
-        }
-        sb.deleteCharAt(sb.lastIndexOf(System.lineSeparator()));
-        return sb.toString();
     }
 }

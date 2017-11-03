@@ -10,13 +10,14 @@ package de.rub.nds.tlsattacker.tracetool.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import config.TraceToolCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.tracetool.config.TraceToolCommandConfig;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
@@ -58,6 +59,11 @@ public class TraceTool {
 
         if (cmdConfig.getGeneralDelegate().isHelp()) {
             commander.usage();
+            return;
+        }
+        ListDelegate list = (ListDelegate) cmdConfig.getDelegate(ListDelegate.class);
+        if (list.isSet()) {
+            list.plotListing();
             return;
         }
 

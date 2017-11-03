@@ -6,7 +6,7 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-package config;
+package de.rub.nds.tlsattacker.tracetool.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
@@ -41,6 +42,8 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
     private FilterDelegate filterDelegate;
     @ParametersDelegate
     private ConfigOutputDelegate configOutputDelegate;
+    @ParametersDelegate
+    private ListDelegate listDelegate;
 
     public TraceToolCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -51,12 +54,14 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.filterDelegate = new FilterDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
+        this.listDelegate = new ListDelegate();
         addDelegate(protocolVersionDelegate);
         addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(filterDelegate);
         addDelegate(configOutputDelegate);
+        addDelegate(listDelegate);
     }
 
     @Override

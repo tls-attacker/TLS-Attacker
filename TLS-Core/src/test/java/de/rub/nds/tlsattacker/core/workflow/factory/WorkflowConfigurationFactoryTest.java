@@ -84,8 +84,8 @@ public class WorkflowConfigurationFactoryTest {
                 return false;
             }
             for (int j = 0; j < leftMessageAction.getMessages().size(); j++) {
-                if (!leftMessageAction.getMessages().get(i).getClass()
-                        .equals(rightMessageAction.getMessages().get(i).getClass())) {
+                if (!leftMessageAction.getMessages().get(j).getClass()
+                        .equals(rightMessageAction.getMessages().get(j).getClass())) {
                     return false;
                 }
             }
@@ -99,8 +99,8 @@ public class WorkflowConfigurationFactoryTest {
                     return false;
                 }
                 for (int j = 0; j < leftReceiveAction.getMessages().size(); j++) {
-                    if (!leftReceiveAction.getExpectedMessages().get(i).getClass()
-                            .equals(rightReceiveAction.getExpectedMessages().get(i).getClass())) {
+                    if (!leftReceiveAction.getExpectedMessages().get(j).getClass()
+                            .equals(rightReceiveAction.getExpectedMessages().get(j).getClass())) {
                         return false;
                     }
                 }

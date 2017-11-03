@@ -13,6 +13,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -47,6 +48,11 @@ public class TlsMitm implements Runnable {
 
         if (cmdConfig.getGeneralDelegate().isHelp()) {
             commander.usage();
+            return;
+        }
+        ListDelegate list = (ListDelegate) cmdConfig.getDelegate(ListDelegate.class);
+        if (list.isSet()) {
+            list.plotListing();
             return;
         }
 

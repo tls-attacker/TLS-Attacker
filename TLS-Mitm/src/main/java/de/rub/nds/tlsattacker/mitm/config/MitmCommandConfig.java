@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmWorkflowTypeDelegate;
@@ -62,6 +63,8 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     private CertificateDelegate certificateDelegate;
     @ParametersDelegate
     private FilterDelegate filterDelegate;
+    @ParametersDelegate
+    private ListDelegate listDelegate;
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -79,6 +82,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.certificateDelegate = new CertificateDelegate();
         this.filterDelegate = new FilterDelegate();
+        this.listDelegate = new ListDelegate();
 
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -93,5 +97,6 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(workflowOutputDelegate);
         addDelegate(mitmWorkflowTypeDelegate);
         addDelegate(filterDelegate);
+        addDelegate(listDelegate);
     }
 }
