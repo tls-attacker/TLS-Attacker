@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketMessageSerializer;
-import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -21,29 +20,29 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  * 
  * @author Timon Wern <timon.wern@rub.de>
  */
-public class NewSessionTicketHandler extends ProtocolMessageHandler<NewSessionTicketMessage> {
+public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
 
-    public NewSessionTicketHandler(TlsContext tlsContext) {
-        super(tlsContext);
+    public NewSessionTicketHandler(TlsContext context) {
+        super(context);
     }
 
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        return new NewSessionTicketMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ProtocolMessagePreparator getPreparator(NewSessionTicketMessage message) {
+    public NewSessionTicketMessagePreparator getPreparator(NewSessionTicketMessage message) {
         return new NewSessionTicketMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public ProtocolMessageSerializer getSerializer(NewSessionTicketMessage message) {
+    public NewSessionTicketMessageSerializer getSerializer(NewSessionTicketMessage message) {
         return new NewSessionTicketMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public void adjustTLSContext(NewSessionTicketMessage message) {
-        // TODO search other handler for references what to do here
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

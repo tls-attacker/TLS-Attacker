@@ -564,4 +564,40 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultApplicationMessageData().getBytes();
         }
     }
+
+    @Override
+    public long getSessionTicketLifetimeHint() {
+        if (context.getSessionTicketLifetimeHint() != 0) {
+            return context.getSessionTicketLifetimeHint();
+        } else {
+            return config.getSessionTicketLifetimeHint();
+        }
+    }
+
+    @Override
+    public byte[] getSessionTicketKeyAES() {
+        if (context.getSessionTicketKeyAES() != null) {
+            return context.getSessionTicketKeyAES();
+        } else {
+            return config.getSessionTicketKeyAES();
+        }
+    }
+
+    @Override
+    public byte[] getSessionTicketKeyHMAC() {
+        if (context.getSessionTicketKeyHMAC() != null) {
+            return context.getSessionTicketKeyHMAC();
+        } else {
+            return config.getSessionTicketKeyHMAC();
+        }
+    }
+
+    @Override
+    public byte[] getSessionTicketKeyName() {
+        if (context.getSessionTicketKeyName() != null) {
+            return context.getSessionTicketKeyName();
+        } else {
+            return config.getSessionTicketKeyName();
+        }
+    }
 }

@@ -8,62 +8,79 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
-import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
+import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import java.util.List;
 
 /**
  * 
  * @author Timon Wern <timon.wern@rub.de>
  */
 @XmlRootElement
-public class NewSessionTicketMessage extends ProtocolMessage {
+public class NewSessionTicketMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty()
-    ModifiableInteger ticketLifetimeHint;
+    private ModifiableLong ticketLifetimeHint; // simulates uint32
 
     @ModifiableVariableProperty()
-    ModifiableByteArray ticket;
-    
+    private ModifiableInteger ticketLength;
+
+    @HoldsModifiableVariable
+    private SessionTicket ticket;
+
     public NewSessionTicketMessage() {
-        super();
+        super(HandshakeMessageType.NEW_SESSION_TICKET);
     }
-    
+
     public NewSessionTicketMessage(Config tlsConfig) {
-        super();
+        super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
     }
-    
-    public ModifiableInteger getTicketLifetimeHint() {
+
+    public ModifiableLong getTicketLifetimeHint() {
         return ticketLifetimeHint;
     }
-    
-    public void setTicketLifetimeHint(ModifiableInteger ticketLifetimeHint) {
+
+    public void setTicketLifetimeHint(ModifiableLong ticketLifetimeHint) {
         this.ticketLifetimeHint = ticketLifetimeHint;
     }
-    
-    public void setTicketLifetimeHint(int ticketLifetimeHint) {
+
+    public void setTicketLifetimeHint(long ticketLifetimeHint) {
         this.ticketLifetimeHint = ModifiableVariableFactory.safelySetValue(this.ticketLifetimeHint, ticketLifetimeHint);
     }
-    
-    public ModifiableByteArray getTicket() {
+
+    public SessionTicket getTicket() {
         return ticket;
     }
-    
-    public void setTicket(ModifiableByteArray ticket) {
-        this.ticket = ticket;
+
+    public void prepareTicket() {
+        if (ticket == null) {
+            ticket = new SessionTicket();
+        }
     }
-    
-    public void setTicket(byte[] ticket) {
-        this.ticket = ModifiableVariableFactory.safelySetValue(this.ticket, ticket);
+
+    public ModifiableInteger getTicketLength() {
+        return ticketLength;
     }
-    
+
+    public void setTicketLength(int ticketLength) {
+        this.ticketLength = ModifiableVariableFactory.safelySetValue(this.ticketLength, ticketLength);
+    }
+
+    public void setTicketLength(ModifiableInteger ticketLength) {
+        this.ticketLength = ticketLength;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -73,19 +90,35 @@ public class NewSessionTicketMessage extends ProtocolMessage {
         } else {
             sb.append("null");
         }
-        
+
+        sb.append("\n  TicketLength: ");
+        if (ticketLength != null) {
+            sb.append(ticketLength.getValue());
+        } else {
+            sb.append("null");
+        }
+
         sb.append("\n  Ticket: ");
         if (ticket != null) {
-            sb.append(ArrayConverter.bytesToHexString(ticket.getValue())); // TODO remove or trim the complete ticket
+            sb.append(ticket.toString());
         } else {
             sb.append("null");
         }
         return sb.toString();
     }
-    
+
     @Override
     public String toCompactString() {
         return "NewSessionTicket";
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (ticket != null) {
+            holders.add(ticket);
+        }
+        return holders;
     }
 
     @Override

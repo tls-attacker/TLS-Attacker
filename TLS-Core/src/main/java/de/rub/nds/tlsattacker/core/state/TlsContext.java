@@ -383,6 +383,15 @@ public class TlsContext {
      */
     private boolean useExtendedMasterSecret;
 
+    /**
+     * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
+     * Extension defined in RFC5077.
+     */
+    private long sessionTicketLifetimeHint;
+    private byte[] sessionTicketKeyAES;
+    private byte[] sessionTicketKeyHMAC;
+    private byte[] sessionTicketKeyName;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -1380,4 +1389,35 @@ public class TlsContext {
         return info.toString();
     }
 
+    public long getSessionTicketLifetimeHint() {
+        return sessionTicketLifetimeHint;
+    }
+
+    public void setSessionTicketLifetimeHint(long sessionTicketLifetimeHint) {
+        this.sessionTicketLifetimeHint = sessionTicketLifetimeHint;
+    }
+
+    public byte[] getSessionTicketKeyAES() {
+        return sessionTicketKeyAES;
+    }
+
+    public void setSessionTicketKeyAES(byte[] sessionTicketKeyAES) {
+        this.sessionTicketKeyAES = sessionTicketKeyAES;
+    }
+
+    public byte[] getSessionTicketKeyHMAC() {
+        return sessionTicketKeyHMAC;
+    }
+
+    public void setSessionTicketKeyHMAC(byte[] sessionTicketKeyHMAC) {
+        this.sessionTicketKeyHMAC = sessionTicketKeyHMAC;
+    }
+
+    public byte[] getSessionTicketKeyName() {
+        return sessionTicketKeyName;
+    }
+
+    public void setSessionTicketKeyName(byte[] sessionTicketKeyName) {
+        this.sessionTicketKeyName = sessionTicketKeyName;
+    }
 }

@@ -822,6 +822,17 @@ public class Config implements Serializable {
 
     private boolean httpsParsingEnabled = false;
 
+    /**
+     * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
+     * Extension defined in RFC5077.
+     */
+    private long sessionTicketLifetimeHint = 0;
+    private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
+    private byte[] sessionTicketKeyHMAC = ArrayConverter
+            .hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
+    private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
+                                                                                                                   // Key
+
     private Config() {
         connectionEnds = new ArrayList<>();
         ConnectionEnd defaultConEnd = new ClientConnectionEnd(DEFAULT_CONNECTION_END_ALIAS, 443, "127.0.0.1");
@@ -908,6 +919,38 @@ public class Config implements Serializable {
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
         statusRequestV2RequestList = new LinkedList<>();
+    }
+
+    public long getSessionTicketLifetimeHint() {
+        return sessionTicketLifetimeHint;
+    }
+
+    public void setSessionTicketLifetimeHint(long sessionTicketLifetimeHint) {
+        this.sessionTicketLifetimeHint = sessionTicketLifetimeHint;
+    }
+
+    public byte[] getSessionTicketKeyAES() {
+        return sessionTicketKeyAES;
+    }
+
+    public void setSessionTicketKeyAES(byte[] sessionTicketKeyAES) {
+        this.sessionTicketKeyAES = sessionTicketKeyAES;
+    }
+
+    public byte[] getSessionTicketKeyHMAC() {
+        return sessionTicketKeyHMAC;
+    }
+
+    public void setSessionTicketKeyHMAC(byte[] sessionTicketKeyHMAC) {
+        this.sessionTicketKeyHMAC = sessionTicketKeyHMAC;
+    }
+
+    public byte[] getSessionTicketKeyName() {
+        return sessionTicketKeyName;
+    }
+
+    public void setSessionTicketKeyName(byte[] sessionTicketKeyName) {
+        this.sessionTicketKeyName = sessionTicketKeyName;
     }
 
     public boolean isHttpsParsingEnabled() {
@@ -2378,5 +2421,4 @@ public class Config implements Serializable {
     public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
-
 }

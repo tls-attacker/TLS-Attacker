@@ -179,4 +179,12 @@ public abstract class Chooser {
     public abstract boolean isClientAuthentication();
 
     public abstract byte[] getLastHandledApplicationMessageData();
+
+    public abstract long getSessionTicketLifetimeHint();
+
+    public abstract byte[] getSessionTicketKeyAES();
+
+    public abstract byte[] getSessionTicketKeyHMAC();
+
+    public abstract byte[] getSessionTicketKeyName();
 }
