@@ -58,8 +58,8 @@ public class AlgorithmResolverTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetDigestUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+    public void testGetPRFUnsupportedProtocolVersionSSL3() {
+        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -68,8 +68,8 @@ public class AlgorithmResolverTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetPRFUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+    public void testGetDigestUnsupportedProtocolVersionSSL3() {
+        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
     /**
@@ -308,7 +308,8 @@ public class AlgorithmResolverTest {
     public void getAllMacAlgorithms() {
         for (CipherSuite suite : CipherSuite.values()) {
             try {
-                AlgorithmResolver.getMacAlgorithm(suite);
+                AlgorithmResolver.getMacAlgorithm(ProtocolVersion.SSL3, suite);
+                AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, suite);
             } catch (IllegalArgumentException E) {
 
             }
@@ -317,17 +318,17 @@ public class AlgorithmResolverTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACUnknown() {
-        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACReno() {
-        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACFallback() {
-        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test

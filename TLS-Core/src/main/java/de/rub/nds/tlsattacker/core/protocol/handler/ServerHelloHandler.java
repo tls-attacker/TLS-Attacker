@@ -24,9 +24,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -73,6 +76,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             setRecordCipher();
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
+                tlsContext.setReadSequenceNumber(0);
+                tlsContext.setWriteSequenceNumber(0);
                 tlsContext.getRecordLayer().updateDecryptionCipher();
                 tlsContext.getRecordLayer().updateEncryptionCipher();
                 tlsContext.setEncryptActive(true);
@@ -126,13 +131,25 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustPRF(ServerHelloMessage message) {
         Chooser chooser = tlsContext.getChooser();
-        tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
-                chooser.getSelectedCipherSuite()));
+        if (!chooser.getSelectedProtocolVersion().isSSL()) {
+            tlsContext.setPrfAlgorithm(AlgorithmResolver.getPRFAlgorithm(chooser.getSelectedProtocolVersion(),
+                    chooser.getSelectedCipherSuite()));
+        }
     }
 
     private void setRecordCipher() {
+        KeySet keySet = getKeySet(tlsContext);
         LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
         tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+    }
+
+    private KeySet getKeySet(TlsContext context) {
+        try {
+            LOGGER.debug("Generating new KeySet");
+            return KeySetGenerator.generateKeySet(context);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
     }
 }

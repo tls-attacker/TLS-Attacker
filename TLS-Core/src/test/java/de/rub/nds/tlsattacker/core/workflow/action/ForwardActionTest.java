@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
@@ -91,12 +92,12 @@ public class ForwardActionTest {
         th.setFetchableByte(alertMsg);
         ctx1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         ctx1.setRecordLayer(new TlsRecordLayer(ctx1));
-        ctx1.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx1));
+        ctx1.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx1, KeySetGenerator.generateKeySet(ctx1)));
         ctx1.setTransportHandler(th);
 
         ctx2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         ctx2.setRecordLayer(new TlsRecordLayer(ctx2));
-        ctx2.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx2));
+        ctx2.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx2, KeySetGenerator.generateKeySet(ctx2)));
         ctx2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 

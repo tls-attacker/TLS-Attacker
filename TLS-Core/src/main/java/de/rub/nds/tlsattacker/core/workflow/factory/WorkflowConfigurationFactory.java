@@ -203,6 +203,8 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a handshake workflow for the default connection end defined in
      * config.
+     * 
+     * @return
      */
     private WorkflowTrace createHandshakeWorkflow() {
         return createHandshakeWorkflow(getConnection());

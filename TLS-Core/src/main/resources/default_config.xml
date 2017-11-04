@@ -465,4 +465,6 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <outputFilter>DEFAULT</outputFilter>
     <applyFiltersInPlace>false</applyFiltersInPlace>
     <filtersKeepUserSettings>true</filtersKeepUserSettings>
+    <defaultServerApplicationTrafficSecret></defaultServerApplicationTrafficSecret>
+    <defaultClientApplicationTrafficSecret></defaultClientApplicationTrafficSecret>
 </config>

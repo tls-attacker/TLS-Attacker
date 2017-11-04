@@ -192,12 +192,12 @@ public class SendAction extends MessageAction implements SendingAction {
         if (!Objects.equals(this.records, other.records)) {
             return false;
         }
-        return true;
+        return super.equals(obj);
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
 

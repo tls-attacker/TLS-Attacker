@@ -91,11 +91,14 @@ public class TlsContext {
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
-
-    private byte[] clientApplicationTrafficSecret0;
-
-    private byte[] serverApplicationTrafficSecret0;
-
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientApplicationTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverApplicationTrafficSecret;
     /**
      * Master secret established during the handshake.
      */
@@ -305,9 +308,14 @@ public class TlsContext {
     private List<KSEntry> clientKSEntryList;
 
     private KSEntry serverKSEntry;
-
-    private int sequenceNumber = 0;
-
+    /**
+     * sequence number used for the encryption
+     */
+    private long writeSequenceNumber = 0;
+    /**
+     * sequence number used for the decryption
+     */
+    private long readSequenceNumber = 0;
     /**
      * supported protocol versions
      */
@@ -815,12 +823,28 @@ public class TlsContext {
         this.clientSupportedCompressions = Arrays.asList(clientSupportedCompressions);
     }
 
-    public int getSequenceNumber() {
-        return sequenceNumber;
+    public long getWriteSequenceNumber() {
+        return writeSequenceNumber;
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public void setWriteSequenceNumber(long writeSequenceNumber) {
+        this.writeSequenceNumber = writeSequenceNumber;
+    }
+
+    public void increaseWriteSequenceNumber() {
+        this.writeSequenceNumber++;
+    }
+
+    public long getReadSequenceNumber() {
+        return readSequenceNumber;
+    }
+
+    public void setReadSequenceNumber(long readSequenceNumber) {
+        this.readSequenceNumber = readSequenceNumber;
+    }
+
+    public void increaseReadSequenceNumber() {
+        this.readSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -1009,20 +1033,20 @@ public class TlsContext {
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
-    public byte[] getClientApplicationTrafficSecret0() {
-        return clientApplicationTrafficSecret0;
+    public byte[] getClientApplicationTrafficSecret() {
+        return clientApplicationTrafficSecret;
     }
 
-    public void setClientApplicationTrafficSecret0(byte[] clientApplicationTrafficSecret0) {
-        this.clientApplicationTrafficSecret0 = clientApplicationTrafficSecret0;
+    public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
-    public byte[] getServerApplicationTrafficSecret0() {
-        return serverApplicationTrafficSecret0;
+    public byte[] getServerApplicationTrafficSecret() {
+        return serverApplicationTrafficSecret;
     }
 
-    public void setServerApplicationTrafficSecret0(byte[] serverApplicationTrafficSecret0) {
-        this.serverApplicationTrafficSecret0 = serverApplicationTrafficSecret0;
+    public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
     public byte[] getHandshakeSecret() {

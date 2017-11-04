@@ -8,6 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,45 +28,83 @@ public abstract class RecordCipher {
     protected static final Logger LOGGER = LogManager.getLogger(RecordCipher.class.getName());
 
     /**
-     * minimalRecordLength an encrypted record should have
+     * additional authenticated data
      */
-    private int minimalEncryptedRecordLength;
+    protected byte[] additionalAuthenticatedData;
+    /**
+     * cipher for decryption
+     */
+    protected Cipher decryptCipher;
+    /**
+     * cipher for encryption
+     */
+    protected Cipher encryptCipher;
+    /**
+     * CipherAlgorithm algorithm (AES, ...)
+     */
+    protected final BulkCipherAlgorithm bulkCipherAlg;
 
-    private final boolean usePadding;
+    private final KeySet keySet;
+    /**
+     * TLS context
+     */
+    protected TlsContext context;
 
-    private final boolean useMac;
+    protected final CipherSuite cipherSuite;
 
-    public RecordCipher(int minimalEncryptedRecordLength, boolean usePadding, boolean useMac) {
-        this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
-        this.usePadding = usePadding;
-        this.useMac = useMac;
+    protected final ProtocolVersion version;
+
+    public RecordCipher(TlsContext context, KeySet keySet) {
+        this.keySet = keySet;
+        this.context = context;
+        this.cipherSuite = context.getChooser().getSelectedCipherSuite();
+        this.version = context.getChooser().getSelectedProtocolVersion();
+        this.bulkCipherAlg = AlgorithmResolver.getBulkCipherAlgorithm(context.getChooser().getSelectedCipherSuite());
     }
 
-    public abstract byte[] encrypt(byte[] data);
+    public abstract EncryptionResult encrypt(EncryptionRequest encryptionRequest);
 
     public abstract byte[] decrypt(byte[] data);
 
-    public abstract byte[] calculateMac(byte[] data);
+    public abstract boolean isUsingPadding();
 
-    public abstract byte[] calculatePadding(int paddingLength);
+    public abstract boolean isUsingMac();
 
-    public abstract int getMacLength();
+    public abstract boolean isUsingTags();
 
-    public abstract int getPaddingLength(int dataLength);
-
-    public int getMinimalEncryptedRecordLength() {
-        return minimalEncryptedRecordLength;
+    public int getTagSize() {
+        return 0;
     }
 
-    public void setMinimalEncryptedRecordLength(int minimalEncryptedRecordLength) {
-        this.minimalEncryptedRecordLength = minimalEncryptedRecordLength;
+    public byte[] calculateMac(byte[] data) {
+        return new byte[0];
     }
 
-    public boolean isUsePadding() {
-        return usePadding;
+    public int getMacLength() {
+        return 0;
     }
 
-    public boolean isUseMac() {
-        return useMac;
+    public byte[] calculatePadding(int paddingLength) {
+        return new byte[0];
     }
+
+    public int calculatePaddingLength(int dataLength) {
+        return 0;
+    }
+
+    public void setAdditionalAuthenticatedData(byte[] additionalAuthenticatedData) {
+        this.additionalAuthenticatedData = additionalAuthenticatedData;
+    }
+
+    public byte[] getAdditionalAuthenticatedData() {
+        return additionalAuthenticatedData;
+    }
+
+    public final KeySet getKeySet() {
+        return keySet;
+    }
+
+    public abstract byte[] getEncryptionIV();
+
+    public abstract byte[] getDecryptionIV();
 }

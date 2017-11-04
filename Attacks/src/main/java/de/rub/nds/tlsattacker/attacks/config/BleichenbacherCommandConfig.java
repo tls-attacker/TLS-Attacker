@@ -97,6 +97,8 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
+        config.setQuickReceive(true);
+        config.setEarlyStop(true);
         return config;
     }
 

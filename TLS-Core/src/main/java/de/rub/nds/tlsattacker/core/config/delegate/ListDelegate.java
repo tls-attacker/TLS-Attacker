@@ -18,7 +18,8 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import de.rub.nds.tlsattacker.util.StringHelper;
+import java.util.EnumSet;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Plot a list of supported parameters.
@@ -48,19 +49,19 @@ public class ListDelegate extends Delegate {
         String list = null;
         switch (listDelegateType) {
             case ciphers:
-                list = StringHelper.join(CipherSuite.getImplemented());
+                list = StringUtils.join(CipherSuite.getImplemented(), '\n');
                 break;
             case filters:
-                list = StringHelper.enumToString(FilterType.class);
+                list = StringUtils.join(EnumSet.allOf(FilterType.class), '\n');
                 break;
             case curves:
-                list = StringHelper.enumToString(NamedCurve.class);
+                list = StringUtils.join(EnumSet.allOf(NamedCurve.class), '\n');
                 break;
             case sign_hash_algos:
-                list = StringHelper.join(SignatureAndHashAlgorithm.values());
+                list = StringUtils.join(SignatureAndHashAlgorithm.values(), '\n');
                 break;
             case workflow_trace_types:
-                list = StringHelper.enumToString(WorkflowTraceType.class);
+                list = StringUtils.join(EnumSet.allOf(WorkflowTraceType.class), '\n');
         }
         return list;
     }

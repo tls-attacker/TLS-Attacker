@@ -9,16 +9,18 @@
 package de.rub.nds.tlsattacker.core.record.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
-import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.security.NoSuchAlgorithmException;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -48,7 +50,7 @@ public class RecordPreparatorTest {
      * Test of the prepare method for TLS 1.3, of class RecordPreparator.
      */
     @Test
-    public void testPrepare() {
+    public void testPrepare() throws NoSuchAlgorithmException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setEncryptActive(true);
@@ -59,7 +61,7 @@ public class RecordPreparatorTest {
                 .hexStringToByteArray("ACC9DB33EE0968FAE7E06DAA34D642B146092CE7F9C9CF47670C66A0A6CE1C8C"));
         context.setConnection(new InboundConnection());
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
-        recordCipher = new RecordAEADCipher(context);
+        recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         encryptor = new RecordEncryptor(recordCipher, context);
         preparator = new RecordPreparator(context.getChooser(), record, encryptor, ProtocolMessageType.HANDSHAKE);
         preparator.prepare();

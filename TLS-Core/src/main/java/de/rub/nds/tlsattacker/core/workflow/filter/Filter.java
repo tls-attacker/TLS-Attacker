@@ -49,7 +49,7 @@ public abstract class Filter {
     /**
      * Apply filter to trace.
      * 
-     * @param input
+     * @param trace
      *            The workflow trace that should be filtered.
      */
     public abstract void applyFilter(WorkflowTrace trace);

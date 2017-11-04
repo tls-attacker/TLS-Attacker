@@ -37,7 +37,9 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing DHClientKeyExchangeMessage");
-        writeSerializedPublicKeyLength(msg);
+        if (!version.isSSL()) {
+            writeSerializedPublicKeyLength(msg);
+        }
         writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }

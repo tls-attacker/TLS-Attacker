@@ -229,7 +229,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.expectedMessages);
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
@@ -258,7 +258,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (!Objects.equals(this.records, other.records)) {
             return false;
         }
-        return true;
+        return super.equals(obj);
     }
 
     @Override

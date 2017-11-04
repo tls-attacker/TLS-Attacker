@@ -117,7 +117,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
         msg.setPublicKey(encrypted);
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getPublicKey().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private void prepareSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {

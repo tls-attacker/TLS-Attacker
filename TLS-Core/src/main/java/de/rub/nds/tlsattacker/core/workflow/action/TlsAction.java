@@ -96,7 +96,7 @@ public abstract class TlsAction implements Serializable, Aliasable {
     /**
      * Filter empty fields and default values given in defaultAction.
      */
-    public void filter(TlsAction defaultCon) {
+    public void filter(TlsAction defaultAction) {
     }
 
     @Override

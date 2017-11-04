@@ -29,18 +29,6 @@ import static org.junit.Assert.fail;
  */
 public class ActionTestUtils {
 
-    private static Config config = null;
-
-    private static Config getConfig() {
-        if (config != null) {
-            return config;
-        }
-        config = Config.createConfig();
-        // We don't need to keep user settings. Skip for better performance.
-        config.setFiltersKeepUserSettings(false);
-        return config;
-    }
-
     /**
      * Verify that the given TlsACtion can be marshaled to minimal output.
      * <p>
@@ -72,9 +60,7 @@ public class ActionTestUtils {
      * <p>
      * Calling this method is expensive, since it goes through the whole
      * normalize/filter/serialize procedure. <b>Should be invoked by tests in
-     * 
-     * @Category(SlowTests.class) only</b>
-     *                            <p>
+     * Category(SlowTests.class) only</b>
      * 
      * @param actionClass
      *            the Class to test
@@ -94,7 +80,10 @@ public class ActionTestUtils {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            DefaultNormalizeFilter.normalizeAndFilter(trace, getConfig());
+            Config config = Config.createConfig();
+            // We don't need to keep user settings. Skip for better performance.
+            config.setFiltersKeepUserSettings(false);
+            DefaultNormalizeFilter.normalizeAndFilter(trace, config);
             String actual = WorkflowTraceSerializer.write(trace);
             logger.info(actual);
 
@@ -190,9 +179,8 @@ public class ActionTestUtils {
      * some custom values set.
      * <p>
      * Calling this method is expensive. <b>Should be invoked by tests in
-     * 
-     * @Category(SlowTests.class) only</b>
-     *                            <p>
+     * Category(SlowTests.class) only</b>
+     * <p>
      * 
      * @param action
      *            an instance of the TlsAction class under test, filled with

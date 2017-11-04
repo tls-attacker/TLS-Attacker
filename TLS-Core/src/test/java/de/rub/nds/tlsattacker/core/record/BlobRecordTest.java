@@ -39,7 +39,7 @@ public class BlobRecordTest {
         record = new BlobRecord(config);
         TlsContext ctx = new TlsContext(config);
         chooser = ctx.getChooser();
-        encryptor = new RecordEncryptor(new RecordNullCipher(), ctx);
+        encryptor = new RecordEncryptor(new RecordNullCipher(ctx), ctx);
     }
 
     /**

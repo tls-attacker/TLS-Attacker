@@ -497,6 +497,25 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public byte[] getClientApplicationTrafficSecret() {
+        if (context.getClientApplicationTrafficSecret() != null) {
+            return context.getClientApplicationTrafficSecret();
+        } else {
+            return config.getDefaultClientApplicationTrafficSecret();
+        }
+
+    }
+
+    @Override
+    public byte[] getServerApplicationTrafficSecret() {
+        if (context.getServerApplicationTrafficSecret() != null) {
+            return context.getServerApplicationTrafficSecret();
+        } else {
+            return config.getDefaultServerApplicationTrafficSecret();
+        }
+    }
+
+    @Override
     public RecordLayerType getRecordLayerType() {
         if (context.getRecordLayerType() != null) {
             return context.getRecordLayerType();
