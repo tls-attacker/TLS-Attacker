@@ -46,7 +46,6 @@ public class WorkflowTraceNormalizer {
 
         if (traceConnections.isEmpty()) {
             if (null == mode) {
-                LOGGER.debug("No running mode defined, assuming mode is CLIENT");
                 mode = RunningModeType.CLIENT;
             }
             switch (mode) {
