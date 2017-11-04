@@ -20,17 +20,16 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.io.StringReader;
-import java.io.StringWriter;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.JAXB;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
@@ -89,15 +88,20 @@ public class SendActionTest {
     }
 
     @Test
-    public void testJAXB() {
-        StringWriter writer = new StringWriter();
-        action.filter();
-        JAXB.marshal(action, writer);
-        action.normalize();
+    @Category(SlowTests.class)
+    public void marshalingEmptyActionYieldsMinimalOutput() {
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(SendAction.class);
+    }
 
-        TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), SendAction.class);
-        action2.normalize();
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(SendAction.class);
+    }
 
-        assertEquals(action, action2);
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
     }
 }

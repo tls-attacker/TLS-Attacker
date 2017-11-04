@@ -16,27 +16,54 @@ import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 
 /**
- * Normalize and apply default filter to workflow trace. This helper emulates
- * what happens during normal program execution to the trace. That is, it is
- * normalized before execution and default values are filtered before
- * serialization.
+ * Normalize and apply default filter to workflow trace.
+ * <p>
+ * Emulate the normalize and filter procedure a trace goes through during normal
+ * program execution.
  */
 public class DefaultNormalizeFilter {
 
-    public static WorkflowTrace normalizeAndFilter(WorkflowTrace trace, Config config) {
+    /**
+     * Normalized and filtered the given workflow trace.
+     * 
+     * @param trace
+     *            the workflow trace that should be normalized and filtered
+     * @param config
+     *            the Config used for normalization/filtering
+     */
+    public static void normalizeAndFilter(WorkflowTrace trace, Config config) {
 
-        WorkflowTrace origTrace = WorkflowTrace.copy(trace);
+        WorkflowTrace origTrace = null;
+        if (config.isFiltersKeepUserSettings()) {
+            origTrace = WorkflowTrace.copy(trace);
+        }
 
         // Normalize and filter defaults
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         normalizer.normalize(trace, config);
         Filter filter = FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
+        filter.applyFilter(trace);
+
+        if (config.isFiltersKeepUserSettings()) {
+            // Restore user defined connections, if any
+            filter.postFilter(trace, origTrace);
+        }
+    }
+
+    /**
+     * Return a normalized and filtered copy of the given workflow trace.
+     * <p>
+     * This method does not modify the input trace.
+     * 
+     * @param trace
+     *            the workflow trace that should be normalized and filtered
+     * @param config
+     *            the Config used for normalization/filtering
+     * @return a normalized and filtered copy of the input workflow trace
+     */
+    public static WorkflowTrace getNormalizedAndFilteredCopy(WorkflowTrace trace, Config config) {
         WorkflowTrace filteredTrace = WorkflowTrace.copy(trace);
-        filter.applyFilter(filteredTrace);
-
-        // Restore user defined connections, if any
-        filter.postFilter(filteredTrace, origTrace);
-
+        normalizeAndFilter(filteredTrace, config);
         return filteredTrace;
     }
 }

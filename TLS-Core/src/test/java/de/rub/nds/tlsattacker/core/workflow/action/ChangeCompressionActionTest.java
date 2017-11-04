@@ -16,17 +16,16 @@ import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import java.io.StringReader;
-import java.io.StringWriter;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.JAXB;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
@@ -112,12 +111,21 @@ public class ChangeCompressionActionTest {
     }
 
     @Test
-    public void testJAXB() {
-        StringWriter writer = new StringWriter();
-        JAXB.marshal(action, writer);
-        TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
-                ChangeCompressionAction.class);
-        assertEquals(action, action2);
+    @Category(SlowTests.class)
+    public void marshalingEmptyActionYieldsMinimalOutput() {
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ChangeCompressionAction.class);
+    }
+
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ChangeCompressionAction.class);
+    }
+
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
     }
 
 }

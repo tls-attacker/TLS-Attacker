@@ -97,14 +97,14 @@ public class DefaultFilter extends Filter {
     }
 
     /**
-     * Restoring workflow trace values that where explicitly set by the user.
-     * Currently, this method restores only the workflow trace connections set
-     * by the user.
+     * Restore workflow trace values that were explicitly set by the user.
+     * <p>
+     * Currently restores only workflow trace connections set by the user.
      * 
      * @param trace
-     *            Apply postFilter to this trace
+     *            the trace to which the postFilter should be applied
      * @param reference
-     *            A trace holding the original user defined values.
+     *            the reference trace holding the original user defined values
      * 
      */
     @Override

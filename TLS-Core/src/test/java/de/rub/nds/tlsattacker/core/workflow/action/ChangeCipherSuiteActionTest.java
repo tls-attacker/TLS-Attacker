@@ -15,18 +15,17 @@ import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import java.io.StringReader;
-import java.io.StringWriter;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.JAXB;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
@@ -116,12 +115,21 @@ public class ChangeCipherSuiteActionTest {
     }
 
     @Test
-    public void testJAXB() {
-        StringWriter writer = new StringWriter();
-        JAXB.marshal(action, writer);
-        TlsAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()),
-                ChangeCipherSuiteAction.class);
-        assertEquals(action, action2);
+    @Category(SlowTests.class)
+    public void marshalingEmptyActionYieldsMinimalOutput() {
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ChangeCipherSuiteAction.class);
+    }
+
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ChangeCipherSuiteAction.class);
+    }
+
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
     }
 
 }

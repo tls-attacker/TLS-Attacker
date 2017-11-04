@@ -30,6 +30,8 @@
         <word>charset</word>
         <word>charsets</word>
         <word>config</word>
+        <word>unmarshal</word>
         <word>workflow</word>
+        <word>workflows</word>
     </spellchecker-wordlist>
 </project-shared-configuration>

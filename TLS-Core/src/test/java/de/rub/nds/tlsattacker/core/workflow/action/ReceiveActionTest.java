@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -32,6 +33,7 @@ import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
@@ -108,13 +110,21 @@ public class ReceiveActionTest {
     }
 
     @Test
+    @Category(SlowTests.class)
     public void marshalingEmptyActionYieldsMinimalOutput() {
         ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(ReceiveAction.class);
     }
 
     @Test
-    public void marshalingAndUnmarshalingYieldsEqualObject() {
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
         ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(ReceiveAction.class);
+    }
+
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
     }
 
 }

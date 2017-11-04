@@ -140,8 +140,8 @@ public class WorkflowTraceSerializerTest {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            WorkflowTrace actualTrace = DefaultNormalizeFilter.normalizeAndFilter(trace, config);
-            String actual = WorkflowTraceSerializer.write(actualTrace);
+            DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+            String actual = WorkflowTraceSerializer.write(trace);
             LOGGER.info(actual);
             Assert.assertEquals(actual, expected);
 
@@ -186,8 +186,8 @@ public class WorkflowTraceSerializerTest {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            WorkflowTrace filtered = DefaultNormalizeFilter.normalizeAndFilter(trace, config);
-            String actual = WorkflowTraceSerializer.write(filtered);
+            DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+            String actual = WorkflowTraceSerializer.write(trace);
             Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {
@@ -246,8 +246,8 @@ public class WorkflowTraceSerializerTest {
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
-            WorkflowTrace filtered = DefaultNormalizeFilter.normalizeAndFilter(trace, config);
-            String actual = WorkflowTraceSerializer.write(filtered);
+            DefaultNormalizeFilter.normalizeAndFilter(trace, config);
+            String actual = WorkflowTraceSerializer.write(trace);
             Assert.assertEquals(expected, actual);
 
         } catch (JAXBException | IOException ex) {

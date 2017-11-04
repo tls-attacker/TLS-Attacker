@@ -35,21 +35,26 @@ public class ContextContainer {
     private final Map<String, TlsContext> tlsContexts = new HashMap<>();
 
     /**
-     * An inbound TLS context is a context bound to an incoming connection, i.e.
+     * An inbound TLS context is a context bound to an incoming connection. I.e.
      * it represents a connection that we accepted from a connecting client.
      */
     private final List<TlsContext> inboundTlsContexts = new ArrayList<>();
 
     /**
-     * An outbound TLS context is a context bound to an outgoing connection,
-     * i.e. it represents a connection established by us to a remote server.
+     * An outbound TLS context is a context bound to an outgoing connection.
+     * I.e. it represents a connection established by us to a remote server.
      */
     private final List<TlsContext> outboundTlsContexts = new ArrayList<>();
 
     /**
-     * Use this convenience method when working with a single context only.
+     * Get the only defined TLS context.
+     * <p>
+     * Convenience method, useful when working with a single context only.
      *
-     * @return the only context known to this container
+     * @return the only known TLS context
+     * @throws ConfigurationException
+     *             if there is more than one TLS context in the container
+     * 
      * @see this.getTlsContext(String)
      */
     public TlsContext getTlsContext() {
@@ -66,6 +71,9 @@ public class ContextContainer {
      * Get TLS context with the given alias.
      *
      * @return the context with the given connection end alias
+     * @throws ConfigurationException
+     *             if there is no TLS context with the given alias
+     * 
      * @see this.getTlsContext() convenience method for accessing single
      *      contexts
      */
@@ -147,8 +155,15 @@ public class ContextContainer {
     }
 
     /**
-     * Replace existing TlsContext with new TlsContext. This can only be done if
-     * existingTlsContext.connection equals newTlsContext.connection.
+     * Replace existing TlsContext with new TlsContext.
+     * <p>
+     * The TlsContext can only be replaced if the connection of both the new and
+     * the old TlsContext equal.
+     * 
+     * @param newTlsContext
+     *            the new TlsContext, not null
+     * @throws ConfigurationException
+     *             if the connections of new and old TlsContext differ
      */
     public void replaceTlsContext(TlsContext newTlsContext) {
         String alias = newTlsContext.getConnection().getAlias();
