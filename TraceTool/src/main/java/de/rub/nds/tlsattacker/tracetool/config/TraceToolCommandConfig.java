@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.RunningModeDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
@@ -44,6 +45,8 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
     private ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate
     private ListDelegate listDelegate;
+    @ParametersDelegate
+    private RunningModeDelegate runningModeDelegate;
 
     public TraceToolCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -55,6 +58,7 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
         this.filterDelegate = new FilterDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
         this.listDelegate = new ListDelegate();
+        this.runningModeDelegate = new RunningModeDelegate();
         addDelegate(protocolVersionDelegate);
         addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
@@ -62,6 +66,7 @@ public class TraceToolCommandConfig extends TLSDelegateConfig {
         addDelegate(filterDelegate);
         addDelegate(configOutputDelegate);
         addDelegate(listDelegate);
+        addDelegate(runningModeDelegate);
     }
 
     @Override

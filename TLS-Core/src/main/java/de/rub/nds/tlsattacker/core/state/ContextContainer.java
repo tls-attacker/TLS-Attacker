@@ -94,9 +94,6 @@ public class ContextContainer {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
         }
 
-        if (!LOGGER.isDebugEnabled()) {
-            LOGGER.info("Adding context " + alias);
-        }
         tlsContexts.put(alias, context);
         knownAliases.add(alias);
 

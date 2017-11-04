@@ -36,7 +36,7 @@ public class DiscardRecordsFilter extends Filter {
     public void applyFilter(WorkflowTrace trace) {
         for (TlsAction action : trace.getTlsActions()) {
             if (action.isMessageAction()) {
-                ((MessageAction) action).setRecords();
+                ((MessageAction) action).clearRecords();
             }
         }
     }

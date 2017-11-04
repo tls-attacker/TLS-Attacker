@@ -195,6 +195,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this.records = new ArrayList<>(Arrays.asList(records));
     }
 
+    public void clearRecords() {
+        this.records = null;
+    }
+
     @Override
     public void normalize() {
         super.normalize();

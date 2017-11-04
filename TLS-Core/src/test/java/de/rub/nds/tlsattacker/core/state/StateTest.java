@@ -46,8 +46,7 @@ public class StateTest {
         config.setWorkflowInput(null);
         config.setWorkflowTraceType(null);
         exception.expect(ConfigurationException.class);
-        exception.expectMessage("Could not load WorkflowTrace. Both workflow_trace_type"
-                + " and workflow_trace_input are unspecified.");
+        exception.expectMessage("Could not load workflow trace");
         State s = new State(config);
     }
 

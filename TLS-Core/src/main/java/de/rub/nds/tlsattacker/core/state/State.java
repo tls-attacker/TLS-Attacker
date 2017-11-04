@@ -118,10 +118,10 @@ public class State {
                 trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
                 LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
             } catch (FileNotFoundException ex) {
-                LOGGER.warn("Could not read WorkflowTrace. File not found.");
+                LOGGER.warn("Could not read workflow trace. File not found: " + config.getWorkflowInput());
                 LOGGER.debug(ex);
             } catch (JAXBException | IOException | XMLStreamException ex) {
-                LOGGER.warn("Could not read WorkflowTrace.");
+                LOGGER.warn("Could not read workflow trace: " + config.getWorkflowInput());
                 LOGGER.debug(ex);
             }
         } else if (config.getWorkflowTraceType() != null) {
@@ -131,8 +131,7 @@ public class State {
         }
 
         if (trace == null) {
-            throw new ConfigurationException("Could not load WorkflowTrace. Both"
-                    + " workflow_trace_type and workflow_trace_input are unspecified.");
+            throw new ConfigurationException("Could not load workflow trace");
         }
         return trace;
     }

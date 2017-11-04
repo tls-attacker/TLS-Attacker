@@ -67,7 +67,7 @@ public class TlsMitm implements Runnable {
             throw wee;
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
-                    + " - Try -debug for more details.");
+                    + " - See debug messages for more details.");
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         }
