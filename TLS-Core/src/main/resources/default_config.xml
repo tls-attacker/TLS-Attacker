@@ -162,7 +162,7 @@
     <certificateStatusRequestExtensionRequestType>OCSP</certificateStatusRequestExtensionRequestType>
     <certificateStatusRequestExtensionResponderIDList></certificateStatusRequestExtensionResponderIDList>
     <certificateStatusRequestExtensionRequestExtension></certificateStatusRequestExtensionRequestExtension>
-    <applicationLayerProtocolNegotiationAnnouncedProtocols>h2</applicationLayerProtocolNegotiationAnnouncedProtocols>
+    <applicationLayerProtocolNegotiationAnnouncedProtocols>02 68 32</applicationLayerProtocolNegotiationAnnouncedProtocols>
     <sessionId></sessionId>
     <secureRemotePasswordExtensionIdentifier></secureRemotePasswordExtensionIdentifier>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfiles>
