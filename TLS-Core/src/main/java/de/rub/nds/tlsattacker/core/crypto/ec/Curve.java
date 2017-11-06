@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import java.math.BigInteger;
 import java.util.Objects;
 
-/**
- * 
 
- */
 public class Curve {
 
     private String name;

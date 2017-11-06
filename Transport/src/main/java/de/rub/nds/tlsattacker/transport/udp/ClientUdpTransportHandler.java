@@ -16,10 +16,7 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-/**
- *
 
- */
 public class ClientUdpTransportHandler extends TransportHandler {
 
     private final String hostname;

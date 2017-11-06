@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 
-/**
- *
 
- */
 public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<ChangeCipherSpecMessage> {
 
     private final ChangeCipherSpecMessage msg;

@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.state.http;
 
-/**
- *
 
- */
 public class HttpContext {
 
     private String cookie;

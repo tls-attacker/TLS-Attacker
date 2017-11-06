@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.https.header.preparator.HostHeaderPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class HostHeader extends HttpsHeader {
 
     public HostHeader() {

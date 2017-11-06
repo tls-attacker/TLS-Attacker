@@ -14,9 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SupplementalDataMessagePr
 import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
 
- */
 
 public class SupplementalDataMessageHandler extends HandshakeMessageHandler<SupplementalDataMessage> {
     public SupplementalDataMessageHandler(TlsContext tlsContext) {

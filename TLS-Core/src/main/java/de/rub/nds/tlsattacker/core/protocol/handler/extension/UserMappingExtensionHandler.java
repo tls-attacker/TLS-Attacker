@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UserMappingExte
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class UserMappingExtensionHandler extends ExtensionHandler<UserMappingExtensionMessage> {
 
     public UserMappingExtensionHandler(TlsContext context) {

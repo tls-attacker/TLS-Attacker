@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class UnknownMessageParserTest {
 
     private UnknownMessageParser parser;

@@ -22,10 +22,7 @@ import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public abstract class AbstractRecord extends ModifiableVariableHolder {
 
     /**

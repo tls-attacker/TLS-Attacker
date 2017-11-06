@@ -36,9 +36,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
 
- */
 public class ClientHelloTest {
     private static final Logger LOGGER = LogManager.getLogger(ClientHelloTest.class);
 

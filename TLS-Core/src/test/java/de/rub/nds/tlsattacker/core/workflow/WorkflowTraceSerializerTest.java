@@ -35,10 +35,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/**
- *
 
- */
 public class WorkflowTraceSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializerTest.class);

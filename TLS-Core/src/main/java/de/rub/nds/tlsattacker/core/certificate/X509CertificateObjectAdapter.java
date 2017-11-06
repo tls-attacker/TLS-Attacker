@@ -17,10 +17,7 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
-/**
- * 
 
- */
 public class X509CertificateObjectAdapter extends XmlAdapter<String, X509CertificateObject> {
 
     @Override

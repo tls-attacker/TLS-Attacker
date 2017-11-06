@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
-/**
- *
 
- */
 public class EncryptionRequest {
 
     private final byte[] plainText;

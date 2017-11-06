@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class RecordNullCipher extends RecordCipher {
 
     public RecordNullCipher(TlsContext context) {

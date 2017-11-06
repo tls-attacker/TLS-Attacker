@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 
-/**
- *
 
- */
 public class ClientCertificateUrlExtensionSerializer extends ExtensionSerializer<ClientCertificateUrlExtensionMessage> {
 
     public ClientCertificateUrlExtensionSerializer(ClientCertificateUrlExtensionMessage message) {

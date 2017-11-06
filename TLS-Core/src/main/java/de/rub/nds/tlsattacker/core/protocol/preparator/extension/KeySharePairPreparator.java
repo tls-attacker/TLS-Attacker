@@ -13,9 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
 
- */
 public class KeySharePairPreparator extends Preparator<KeySharePair> {
 
     private final KeySharePair pair;

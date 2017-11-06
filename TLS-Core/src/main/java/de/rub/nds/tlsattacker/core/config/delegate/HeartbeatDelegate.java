@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.HeartbeatModeConverter;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 
-/**
- *
 
- */
 public class HeartbeatDelegate extends Delegate {
 
     @Parameter(names = "-heartbeat_mode", description = "Sets the heartbeat mode", converter = HeartbeatModeConverter.class)

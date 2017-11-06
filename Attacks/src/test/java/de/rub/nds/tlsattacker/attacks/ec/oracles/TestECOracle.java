@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 import java.util.Random;
 
-/**
- * 
 
- */
 public class TestECOracle extends ECOracle {
 
     private final ECComputer computer;

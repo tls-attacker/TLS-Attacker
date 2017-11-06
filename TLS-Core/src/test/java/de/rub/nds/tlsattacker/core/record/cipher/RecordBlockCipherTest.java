@@ -31,11 +31,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
-
- */
 public class RecordBlockCipherTest {
 
     private TlsContext context;

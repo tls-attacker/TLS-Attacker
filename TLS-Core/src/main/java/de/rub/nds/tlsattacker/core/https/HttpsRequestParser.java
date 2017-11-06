@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.https.header.parser.HttpsHeaderParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import java.nio.charset.Charset;
 
-/**
- *
 
- */
 public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessage> {
 
     public HttpsRequestParser(int pointer, byte[] array, ProtocolVersion version) {

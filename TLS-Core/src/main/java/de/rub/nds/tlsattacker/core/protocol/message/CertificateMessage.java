@@ -29,10 +29,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
 
-
- */
 @XmlRootElement
 public class CertificateMessage extends HandshakeMessage {
 

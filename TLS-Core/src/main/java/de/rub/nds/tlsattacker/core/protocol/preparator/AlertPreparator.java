@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class AlertPreparator extends ProtocolMessagePreparator<AlertMessage> {
 
     private final AlertMessage msg;

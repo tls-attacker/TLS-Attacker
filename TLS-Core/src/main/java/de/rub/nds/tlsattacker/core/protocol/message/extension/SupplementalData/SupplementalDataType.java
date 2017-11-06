@@ -11,9 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.SupplementalData;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
 
- */
 
 public enum SupplementalDataType {
 

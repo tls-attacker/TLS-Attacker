@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
-/**
 
- */
 public enum TransportHandlerType {
 
     TCP,

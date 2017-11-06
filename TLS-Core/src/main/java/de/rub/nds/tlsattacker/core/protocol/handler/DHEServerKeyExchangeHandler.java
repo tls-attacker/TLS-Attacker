@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.DHEServerKeyExchangeSeria
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 
-/**
 
-
- */
 public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
 
     public DHEServerKeyExchangeHandler(TlsContext tlsContext) {

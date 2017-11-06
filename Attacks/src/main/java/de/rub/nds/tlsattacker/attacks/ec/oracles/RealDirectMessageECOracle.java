@@ -35,10 +35,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.util.BigIntegers;
 
-/**
- *
 
- */
 public class RealDirectMessageECOracle extends ECOracle {
 
     private final Config config;

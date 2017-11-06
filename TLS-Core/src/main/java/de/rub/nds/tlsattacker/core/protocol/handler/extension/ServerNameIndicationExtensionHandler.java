@@ -19,9 +19,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
 
- */
 public class ServerNameIndicationExtensionHandler extends ExtensionHandler<ServerNameIndicationExtensionMessage> {
 
     public ServerNameIndicationExtensionHandler(TlsContext context) {

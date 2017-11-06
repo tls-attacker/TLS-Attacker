@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class ServerAuthzExtensionPreparator extends ExtensionPreparator<ServerAuthzExtensionMessage> {
 
     private final ServerAuthzExtensionMessage msg;

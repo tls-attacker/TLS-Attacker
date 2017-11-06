@@ -24,11 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
 
-
-
- */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
     public ClientHelloHandler(TlsContext tlsContext) {

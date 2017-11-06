@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
 
- */
 public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensionMessage> {
 
     private List<CachedObject> cachedObjectList;

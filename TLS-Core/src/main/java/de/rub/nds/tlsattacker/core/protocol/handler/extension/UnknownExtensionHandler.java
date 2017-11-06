@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMessage> {
 
     public UnknownExtensionHandler(TlsContext context) {

@@ -21,10 +21,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
 
- */
 public class ICEAttacker {
 
     private static Logger LOGGER = LogManager.getLogger(ICEAttacker.class);

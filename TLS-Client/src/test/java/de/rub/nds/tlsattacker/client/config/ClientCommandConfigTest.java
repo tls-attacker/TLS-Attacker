@@ -13,10 +13,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import org.junit.Test;
 
-/**
- * 
 
- */
 public class ClientCommandConfigTest {
 
     /**

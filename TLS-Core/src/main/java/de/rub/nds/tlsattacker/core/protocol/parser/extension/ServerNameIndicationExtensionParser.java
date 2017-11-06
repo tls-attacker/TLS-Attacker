@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicati
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
 
- */
 public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerNameIndicationExtensionMessage> {
 
     private List<ServerNamePair> pairList;

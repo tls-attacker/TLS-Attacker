@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTL
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
 
     /**

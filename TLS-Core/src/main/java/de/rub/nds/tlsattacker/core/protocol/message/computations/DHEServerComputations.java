@@ -14,10 +14,7 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import java.math.BigInteger;
 
-/**
- *
 
- */
 public class DHEServerComputations extends KeyExchangeComputations {
 
     /**

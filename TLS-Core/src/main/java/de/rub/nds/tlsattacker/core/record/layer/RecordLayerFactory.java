@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class RecordLayerFactory {
 
     public static RecordLayer getRecordLayer(RecordLayerType type, TlsContext context) {

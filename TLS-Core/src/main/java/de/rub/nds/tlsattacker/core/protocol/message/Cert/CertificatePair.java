@@ -16,9 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
 
- */
 public class CertificatePair {
 
     private byte[] certificateConfig;

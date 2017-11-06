@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 
-/**
- *
 
- */
 public class UnknownHandshakeMessageParser extends HandshakeMessageParser<UnknownHandshakeMessage> {
 
     /**

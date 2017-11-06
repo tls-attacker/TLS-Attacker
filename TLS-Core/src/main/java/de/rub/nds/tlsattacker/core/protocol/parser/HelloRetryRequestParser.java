@@ -14,9 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 
-/**
 
- */
 public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRequestMessage> {
 
     public HelloRetryRequestParser(int pointer, byte[] array, ProtocolVersion version) {

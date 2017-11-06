@@ -24,9 +24,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
 
- */
 public class RecordAEADCipherTest {
 
     private TlsContext context;

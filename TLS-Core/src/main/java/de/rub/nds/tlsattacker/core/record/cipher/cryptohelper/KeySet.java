@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
 
- */
 public class KeySet {
 
     private byte[] clientWriteMacSecret;

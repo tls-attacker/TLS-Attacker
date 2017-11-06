@@ -14,10 +14,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class RetransmitMessagePreparatorTest {
 
     private RetransmitMessage message;

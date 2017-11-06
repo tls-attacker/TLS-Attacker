@@ -29,10 +29,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
 
- */
 public class KeySetGenerator {
 
     protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());

@@ -22,10 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class CertificateStatusRequestV2ExtensionHandlerTest {
     private final List<RequestItemV2> itemList = Arrays.asList(new RequestItemV2(1, 1, 1, 0, new byte[] { 0x02 }));
     private final List<ResponderId> idList = Arrays.asList(new ResponderId(1, new byte[] { 0x01 }));

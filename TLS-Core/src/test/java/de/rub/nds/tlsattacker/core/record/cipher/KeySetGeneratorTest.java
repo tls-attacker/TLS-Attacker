@@ -23,10 +23,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.experimental.categories.Category;
 
-/**
- *
 
- */
 public class KeySetGeneratorTest {
 
     public KeySetGeneratorTest() {

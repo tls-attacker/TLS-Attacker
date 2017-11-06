@@ -14,9 +14,7 @@ import java.io.ByteArrayOutputStream;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- *
- */
+
 public class CertificateAdapter extends XmlAdapter<String, Certificate> {
 
     @Override

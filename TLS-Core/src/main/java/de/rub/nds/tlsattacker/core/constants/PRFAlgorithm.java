@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
 
- */
 public enum PRFAlgorithm {
 
     TLS_PRF_LEGACY(MacAlgorithm.NULL),

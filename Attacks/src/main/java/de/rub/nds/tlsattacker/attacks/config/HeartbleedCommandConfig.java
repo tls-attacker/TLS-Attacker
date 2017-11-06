@@ -19,10 +19,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
-/**
- *
 
- */
 public class HeartbleedCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "heartbleed";

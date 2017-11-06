@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-/**
- *
 
- */
 public enum WorkflowExecutorType {
     DEFAULT
 }

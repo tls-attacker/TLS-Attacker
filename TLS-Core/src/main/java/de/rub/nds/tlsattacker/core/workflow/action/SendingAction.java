@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import java.util.List;
 
-/**
- *
 
- */
 public interface SendingAction {
     public abstract List<ProtocolMessage> getSendMessages();
 

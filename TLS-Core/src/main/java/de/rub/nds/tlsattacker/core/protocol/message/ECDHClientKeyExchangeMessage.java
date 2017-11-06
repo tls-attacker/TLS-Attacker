@@ -24,9 +24,7 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
 
- */
 @XmlRootElement
 public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 

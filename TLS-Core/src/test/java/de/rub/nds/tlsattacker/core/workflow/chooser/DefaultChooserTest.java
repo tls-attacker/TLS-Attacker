@@ -44,10 +44,7 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.Random;
 
-/**
- *
 
- */
 public class DefaultChooserTest {
 
     private Chooser chooser;

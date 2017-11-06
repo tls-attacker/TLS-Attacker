@@ -21,10 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
 
- */
 @XmlRootElement
 public class SSL2ServerHelloMessage extends ProtocolMessage {
 

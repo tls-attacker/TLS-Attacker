@@ -16,10 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMessage> {
 
     public PaddingExtensionHandler(TlsContext context) {

@@ -39,10 +39,7 @@ import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.math.ec.ECPoint;
 
-/**
- *
 
- */
 public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
 
     private TokenBindingMessage message;

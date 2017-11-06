@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 
-/**
- *
 
- */
 public class ClientAuthzExtensionParser extends ExtensionParser<ClientAuthzExtensionMessage> {
 
     public ClientAuthzExtensionParser(int startposition, byte[] array) {

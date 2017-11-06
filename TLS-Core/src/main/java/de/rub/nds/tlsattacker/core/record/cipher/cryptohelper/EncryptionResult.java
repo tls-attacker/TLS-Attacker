@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
-/**
- *
 
- */
 public class EncryptionResult {
 
     private final byte[] initialisationVector;

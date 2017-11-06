@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.transport;
 
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- * 
 
- */
 public class ServerConnectionEnd extends ConnectionEnd {
 
     private static final ConnectionEndType CONNECTION_END_TYPE = ConnectionEndType.SERVER;

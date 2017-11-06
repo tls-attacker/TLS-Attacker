@@ -14,10 +14,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class ResponderIdSerializerTest {
 
     private final byte[] expectedBytes = new byte[] { 0x00, 0x05, 0x01, 0x02, 0x03, 0x04, 0x05 };

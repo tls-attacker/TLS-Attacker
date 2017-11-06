@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.util;
 
 import java.io.File;
 
-/**
- * 
 
- */
 public class FileHelper {
     public static void deleteFolder(File folder) {
         File[] files = folder.listFiles();

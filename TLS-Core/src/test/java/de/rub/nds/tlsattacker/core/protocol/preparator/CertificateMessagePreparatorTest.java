@@ -25,10 +25,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class CertificateMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class.getName());

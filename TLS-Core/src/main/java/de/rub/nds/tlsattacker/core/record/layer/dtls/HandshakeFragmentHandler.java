@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer.dtls;
 
-/**
 
- */
 public class HandshakeFragmentHandler {
     //
     // private static final Logger LOGGER =

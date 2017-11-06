@@ -33,10 +33,7 @@ import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
 
-
- */
 public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
     public CertificateHandler(TlsContext tlsContext) {

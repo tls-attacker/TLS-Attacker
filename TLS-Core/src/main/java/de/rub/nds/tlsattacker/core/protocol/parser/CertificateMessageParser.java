@@ -21,11 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFact
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
 
-
- */
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
 
     /**

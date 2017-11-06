@@ -26,11 +26,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
-/**
- *
 
-
- */
 public class ServerCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "server";

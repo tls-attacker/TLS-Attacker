@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.https.header.preparator.GenericHttpsHeaderPre
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class GenericHttpsHeader extends HttpsHeader {
 
     private String headerNameConfig;

@@ -26,10 +26,7 @@ import de.rub.nds.tlsattacker.transport.GeneralConnectionEnd;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.NoSuchAlgorithmException;
 
-/**
- *
 
- */
 public class RecordStreamCipherTest {
 
     private TlsContext context;

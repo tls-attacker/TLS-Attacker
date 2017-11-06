@@ -36,10 +36,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 
-/**
 
-
- */
 public class WorkflowConfigurationFactoryTest {
 
     private Config config;

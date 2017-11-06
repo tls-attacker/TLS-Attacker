@@ -12,10 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
-/**
- *
 
- */
 public class PSKPremasterComputations extends KeyExchangeComputations {
 
     private ModifiableByteArray premasterSecret;

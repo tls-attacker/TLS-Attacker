@@ -12,10 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 
-/**
- *
 
- */
 public class ServerNameIndicationExtensionSerializer extends ExtensionSerializer<ServerNameIndicationExtensionMessage> {
 
     private final ServerNameIndicationExtensionMessage msg;

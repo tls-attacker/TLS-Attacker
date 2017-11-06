@@ -19,9 +19,7 @@ import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingServerUdpTransportHandler;
 
-/**
 
- */
 public class TransportHandlerFactory {
 
     public static TransportHandler createTransportHandler(ConnectionEnd conEnd) {

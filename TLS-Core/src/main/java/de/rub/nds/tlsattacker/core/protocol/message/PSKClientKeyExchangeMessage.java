@@ -24,10 +24,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
-/**
- *
 
- */
 @XmlRootElement
 public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 

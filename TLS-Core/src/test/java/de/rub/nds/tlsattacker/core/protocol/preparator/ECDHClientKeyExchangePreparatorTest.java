@@ -26,11 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
-
- */
 public class ECDHClientKeyExchangePreparatorTest {
 
     private final static String RANDOM = "CAFEBABECAFE";

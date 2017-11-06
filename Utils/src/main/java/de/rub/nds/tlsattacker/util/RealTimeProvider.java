@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-/**
- *
 
- */
 public class RealTimeProvider extends TimeProvider {
 
     @Override

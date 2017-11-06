@@ -17,10 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
 
- */
 public class EllipticCurveDelegate extends Delegate {
 
     @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma", converter = PointFormatConverter.class)

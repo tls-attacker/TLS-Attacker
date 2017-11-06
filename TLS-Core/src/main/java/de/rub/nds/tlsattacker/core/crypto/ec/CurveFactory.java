@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 import java.math.BigInteger;
 
-/**
- * 
 
- */
 public class CurveFactory {
 
     public static Curve getNamedCurve(String namedCurve) {

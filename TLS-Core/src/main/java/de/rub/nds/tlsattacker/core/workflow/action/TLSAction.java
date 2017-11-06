@@ -18,10 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
 
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TLSAction implements Serializable {
 

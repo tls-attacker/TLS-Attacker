@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-/**
- *
 
- */
 public class TokenBindingLabel {
 
     public static final String TOKEN_LABEL = "EXPORTER-Token-Binding";

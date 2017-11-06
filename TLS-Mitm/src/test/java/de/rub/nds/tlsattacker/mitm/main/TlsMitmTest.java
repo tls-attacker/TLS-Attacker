@@ -16,10 +16,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-/**
- *
 
- */
 public class TlsMitmTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsMitmTest.class);

@@ -13,9 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
 
- */
 public enum ExtensionType {
 
     SERVER_NAME_INDICATION(new byte[] { (byte) 0, (byte) 0 }),

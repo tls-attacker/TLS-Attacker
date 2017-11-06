@@ -20,9 +20,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
 
- */
 public class CertificatePairPreparator extends Preparator<CertificatePair> {
 
     private final CertificatePair pair;

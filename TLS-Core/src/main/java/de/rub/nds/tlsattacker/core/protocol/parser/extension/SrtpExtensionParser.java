@@ -12,10 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 
-/**
- *
 
- */
 public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
 
     public SrtpExtensionParser(int startposition, byte[] array) {

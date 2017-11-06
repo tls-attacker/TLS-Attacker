@@ -47,10 +47,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/**
- *
 
- */
 public class ForwardActionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ForwardActionTest.class);

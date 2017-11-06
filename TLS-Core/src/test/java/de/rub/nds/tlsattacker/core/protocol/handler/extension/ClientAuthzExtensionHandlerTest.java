@@ -23,10 +23,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class ClientAuthzExtensionHandlerTest {
 
     private final byte[] authzFormatListAsBytes = ArrayConverter.hexStringToByteArray("00010203");

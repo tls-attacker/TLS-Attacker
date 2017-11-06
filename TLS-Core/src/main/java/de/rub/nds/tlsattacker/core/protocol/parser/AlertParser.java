@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 
-/**
- *
 
- */
 public class AlertParser extends ProtocolMessageParser<AlertMessage> {
 
     /**

@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class HttpsRequestPreparator extends ProtocolMessagePreparator<HttpsRequestMessage> {
 
     private final HttpsRequestMessage message;

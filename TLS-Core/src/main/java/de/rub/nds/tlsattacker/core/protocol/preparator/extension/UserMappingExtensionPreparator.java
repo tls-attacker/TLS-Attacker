@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UserMappingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class UserMappingExtensionPreparator extends ExtensionPreparator<UserMappingExtensionMessage> {
 
     private final UserMappingExtensionMessage msg;

@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.attacks.ec;
 
 import java.util.Comparator;
 
-/**
- * 
 
- */
 public class ICEPointCopmparator implements Comparator<ICEPoint> {
 
     @Override

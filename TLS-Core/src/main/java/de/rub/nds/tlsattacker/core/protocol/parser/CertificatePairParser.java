@@ -12,9 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 
-/**
 
- */
 public class CertificatePairParser extends Parser<CertificatePair> {
 
     public CertificatePairParser(int startposition, byte[] array) {

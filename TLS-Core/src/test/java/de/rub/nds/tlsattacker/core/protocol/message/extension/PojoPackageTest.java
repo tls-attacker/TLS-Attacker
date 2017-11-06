@@ -14,10 +14,7 @@ import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class PojoPackageTest {
 
     // The package to be tested

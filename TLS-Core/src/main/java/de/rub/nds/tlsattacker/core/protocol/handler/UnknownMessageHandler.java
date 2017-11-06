@@ -14,10 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class UnknownMessageHandler extends ProtocolMessageHandler<UnknownMessage> {
 
     public UnknownMessageHandler(TlsContext tlsContext) {

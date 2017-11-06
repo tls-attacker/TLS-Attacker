@@ -22,10 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class HeartbeatMessagePreparatorTest {
     private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);
 

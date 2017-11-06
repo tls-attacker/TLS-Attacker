@@ -16,10 +16,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-/**
- * 
 
- */
 public class KeystoreHandler {
 
     public static KeyStore loadKeyStore(final String keyStorePath, final String keyStorePassword)

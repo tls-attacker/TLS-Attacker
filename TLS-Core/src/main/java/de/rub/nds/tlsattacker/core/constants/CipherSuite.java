@@ -21,9 +21,7 @@ import java.util.Set;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 
-/**
 
- */
 public enum CipherSuite {
 
     TLS_NULL_WITH_NULL_NULL(0x00),

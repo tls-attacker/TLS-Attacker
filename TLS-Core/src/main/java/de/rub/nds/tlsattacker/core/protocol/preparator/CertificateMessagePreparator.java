@@ -20,11 +20,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- *
 
-
- */
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 
     private final CertificateMessage msg;

@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer;
 
-/**
- *
 
- */
 public enum RecordLayerType {
     RECORD, // use records
     BLOB // just send raw data

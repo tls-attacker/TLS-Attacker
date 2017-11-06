@@ -27,10 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
 
-
- */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
 
     private byte[] verifyData;

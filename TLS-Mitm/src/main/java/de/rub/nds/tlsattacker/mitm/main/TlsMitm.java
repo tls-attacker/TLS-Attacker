@@ -17,10 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
 
- */
 public class TlsMitm {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsMitm.class);

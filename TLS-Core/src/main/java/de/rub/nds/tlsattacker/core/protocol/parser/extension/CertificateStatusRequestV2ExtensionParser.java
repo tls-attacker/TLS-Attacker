@@ -14,10 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusr
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
 
- */
 public class CertificateStatusRequestV2ExtensionParser extends
         ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 

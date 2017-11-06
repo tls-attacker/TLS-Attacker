@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
 
-/**
- *
 
- */
 public class ClientAuthzExtensionSerializer extends ExtensionSerializer<ClientAuthzExtensionMessage> {
 
     private final ClientAuthzExtensionMessage msg;

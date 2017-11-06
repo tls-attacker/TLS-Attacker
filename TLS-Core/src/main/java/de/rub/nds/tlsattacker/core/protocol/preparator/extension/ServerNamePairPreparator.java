@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class ServerNamePairPreparator extends Preparator<ServerNamePair> {
 
     private final ServerNamePair pair;

@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 
-/**
- *
 
- */
 public class CertificateRequestMessageSerializer extends HandshakeMessageSerializer<CertificateRequestMessage> {
 
     private final CertificateRequestMessage msg;

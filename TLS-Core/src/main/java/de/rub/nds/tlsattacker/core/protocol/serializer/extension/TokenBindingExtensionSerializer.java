@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 
-/**
- *
 
- */
 public class TokenBindingExtensionSerializer extends ExtensionSerializer<TokenBindingExtensionMessage> {
 
     private final TokenBindingExtensionMessage message;

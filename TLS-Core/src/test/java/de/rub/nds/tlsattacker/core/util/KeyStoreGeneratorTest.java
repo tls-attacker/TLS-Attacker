@@ -16,10 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
-/**
- * 
 
- */
 public class KeyStoreGeneratorTest {
 
     private BadRandom random = new BadRandom(new Random(0), null);

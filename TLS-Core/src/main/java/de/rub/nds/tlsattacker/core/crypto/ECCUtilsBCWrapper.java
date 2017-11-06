@@ -17,10 +17,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
 import org.bouncycastle.math.ec.ECPoint;
 
-/**
- * 
 
- */
 public class ECCUtilsBCWrapper {
 
     /**

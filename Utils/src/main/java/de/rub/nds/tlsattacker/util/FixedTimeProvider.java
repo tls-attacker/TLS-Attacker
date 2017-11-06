@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-/**
- *
 
- */
 public class FixedTimeProvider extends TimeProvider {
 
     private long fixedTime;

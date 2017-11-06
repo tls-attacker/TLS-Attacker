@@ -12,10 +12,7 @@ import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
-/**
- *
 
- */
 public class ByteArrayConverter implements IStringConverter<byte[]> {
 
     @Override

@@ -21,10 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParserTest;
 
-/**
- *
 
- */
 @RunWith(Parameterized.class)
 public class RSAClientKeyExchangeSerializerTest {
 

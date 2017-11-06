@@ -34,10 +34,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
 
- */
 public class CertificateVerifyMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);

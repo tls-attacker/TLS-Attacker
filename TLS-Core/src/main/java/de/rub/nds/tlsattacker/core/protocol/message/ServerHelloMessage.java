@@ -53,10 +53,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
 
-
- */
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
 

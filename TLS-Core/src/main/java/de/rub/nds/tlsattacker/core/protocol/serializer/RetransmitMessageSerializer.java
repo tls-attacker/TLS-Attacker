@@ -12,10 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 
-/**
- *
 
- */
 public class RetransmitMessageSerializer extends ProtocolMessageSerializer<RetransmitMessage> {
 
     private final RetransmitMessage msg;

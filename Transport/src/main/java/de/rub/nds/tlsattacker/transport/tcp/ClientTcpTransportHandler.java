@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.net.Socket;
 
-/**
- *
 
- */
 public class ClientTcpTransportHandler extends TransportHandler {
 
     protected Socket socket;

@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
 
- */
 public enum HashAlgorithm {
 
     NONE((byte) 0, ""),

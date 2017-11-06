@@ -13,9 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
-/**
 
- */
 public class KeySharePairSerializer extends Serializer<KeySharePair> {
 
     private final KeySharePair pair;

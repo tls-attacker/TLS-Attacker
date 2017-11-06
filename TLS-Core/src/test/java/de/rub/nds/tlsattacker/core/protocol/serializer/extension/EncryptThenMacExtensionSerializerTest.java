@@ -14,10 +14,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class EncryptThenMacExtensionSerializerTest {
     private final ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;
     private final byte[] expectedBytes = new byte[] { 0x00, 0x16, 0x00, 0x00 };

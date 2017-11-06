@@ -8,11 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
-/**
- * 
 
-
- */
 public enum WorkflowTraceType {
     FULL,
     HANDSHAKE,

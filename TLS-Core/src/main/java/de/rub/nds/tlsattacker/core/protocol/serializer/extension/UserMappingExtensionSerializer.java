@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
 
-/**
- *
 
- */
 public class UserMappingExtensionSerializer extends ExtensionSerializer<UserMappingExtensionMessage> {
 
     private final UserMappingExtensionMessage msg;

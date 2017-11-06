@@ -20,10 +20,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class CertificateStatusRequestExtensionHandlerTest {
     private final CertificateStatusRequestType certificateStatusRequestExtensionRequestType = CertificateStatusRequestType.OCSP;
     private final byte[] certificateStatusRequestExtensionResponderIDList = new byte[] { 0x01 };

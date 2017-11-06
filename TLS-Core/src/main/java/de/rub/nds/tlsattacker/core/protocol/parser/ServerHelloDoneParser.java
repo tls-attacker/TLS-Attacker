@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 
-/**
- *
 
- */
 public class ServerHelloDoneParser extends HandshakeMessageParser<ServerHelloDoneMessage> {
 
     /**

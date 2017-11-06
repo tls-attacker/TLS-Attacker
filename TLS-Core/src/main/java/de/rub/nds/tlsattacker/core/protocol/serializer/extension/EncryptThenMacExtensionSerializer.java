@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 
-/**
- *
 
- */
 public class EncryptThenMacExtensionSerializer extends ExtensionSerializer<EncryptThenMacExtensionMessage> {
 
     public EncryptThenMacExtensionSerializer(EncryptThenMacExtensionMessage message) {

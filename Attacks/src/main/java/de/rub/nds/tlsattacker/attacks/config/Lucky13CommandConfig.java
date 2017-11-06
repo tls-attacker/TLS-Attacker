@@ -21,10 +21,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
 
- */
 public class Lucky13CommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "lucky13";

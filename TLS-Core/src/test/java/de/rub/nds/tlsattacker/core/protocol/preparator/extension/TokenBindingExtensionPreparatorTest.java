@@ -20,10 +20,7 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class TokenBindingExtensionPreparatorTest {
 
     private final TokenBindingVersion tokenbindingVersion = TokenBindingVersion.DRAFT_13;

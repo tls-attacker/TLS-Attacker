@@ -21,10 +21,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
 
-
- */
 public class RecordEncryptor extends Encryptor {
 
     private final TlsContext context;

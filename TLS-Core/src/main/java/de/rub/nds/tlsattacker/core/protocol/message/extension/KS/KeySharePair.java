@@ -15,9 +15,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
-/**
 
- */
 public class KeySharePair extends ModifiableVariableHolder implements Serializable {
 
     private byte[] keyShareTypeConfig;

@@ -40,10 +40,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
 
- */
 public class Main {
 
     private static Logger LOGGER = LogManager.getLogger(Main.class.getName());

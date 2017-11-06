@@ -14,10 +14,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
-/**
- *
 
- */
 public class UserMappingExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty

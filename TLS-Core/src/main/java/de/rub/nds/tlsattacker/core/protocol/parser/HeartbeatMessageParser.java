@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 
-/**
- *
 
- */
 public class HeartbeatMessageParser extends ProtocolMessageParser<HeartbeatMessage> {
 
     /**

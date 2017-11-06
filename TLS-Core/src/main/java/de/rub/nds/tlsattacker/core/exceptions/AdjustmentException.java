@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
- *
 
- */
 public class AdjustmentException extends RuntimeException {
 
     public AdjustmentException() {

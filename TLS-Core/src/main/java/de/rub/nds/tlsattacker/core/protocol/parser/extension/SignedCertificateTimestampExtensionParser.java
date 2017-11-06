@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 
-/**
- *
 
- */
 public class SignedCertificateTimestampExtensionParser extends
         ExtensionParser<SignedCertificateTimestampExtensionMessage> {
 

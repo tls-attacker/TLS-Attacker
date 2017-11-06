@@ -31,11 +31,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
 
-/**
 
-
-
- */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
     public ServerHelloHandler(TlsContext tlsContext) {

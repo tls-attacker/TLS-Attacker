@@ -23,10 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class BleichenbacherAttackPlaintextTest {
 
     private static final int PREMASTER_SECRET_LENGTH = 48;

@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class SignedCertificateTimestampExtensionPreparator extends
         ExtensionPreparator<SignedCertificateTimestampExtensionMessage> {
 

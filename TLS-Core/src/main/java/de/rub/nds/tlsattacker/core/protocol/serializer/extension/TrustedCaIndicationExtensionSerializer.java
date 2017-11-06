@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 
-/**
- *
 
- */
 public class TrustedCaIndicationExtensionSerializer extends ExtensionSerializer<TrustedCaIndicationExtensionMessage> {
 
     private TrustedCaIndicationExtensionMessage msg;

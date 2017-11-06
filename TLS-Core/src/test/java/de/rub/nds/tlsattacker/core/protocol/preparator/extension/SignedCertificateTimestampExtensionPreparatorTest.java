@@ -18,10 +18,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class SignedCertificateTimestampExtensionPreparatorTest {
 
     private final byte[] timestamp = ArrayConverter.hexStringToByteArray("00ef007500ee4bbdb775ce60"

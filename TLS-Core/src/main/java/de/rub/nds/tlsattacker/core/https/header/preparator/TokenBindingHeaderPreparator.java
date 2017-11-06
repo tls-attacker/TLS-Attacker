@@ -16,10 +16,7 @@ import de.rub.nds.tlsattacker.core.tokenbinding.TokenbindingMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.Base64;
 
-/**
- *
 
- */
 public class TokenBindingHeaderPreparator extends Preparator<TokenBindingHeader> {
 
     private final TokenBindingHeader header;

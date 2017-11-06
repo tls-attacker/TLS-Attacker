@@ -12,10 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 
-/**
- *
 
- */
 public class UnknownMessageSerializer extends ProtocolMessageSerializer<UnknownMessage> {
 
     private final UnknownMessage msg;

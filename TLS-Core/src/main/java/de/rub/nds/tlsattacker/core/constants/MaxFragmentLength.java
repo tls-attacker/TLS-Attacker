@@ -14,9 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
 
- */
 public enum MaxFragmentLength {
 
     TWO_9((byte) 1),

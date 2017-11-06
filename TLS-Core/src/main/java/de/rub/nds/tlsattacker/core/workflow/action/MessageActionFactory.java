@@ -14,10 +14,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * 
 
- */
 public class MessageActionFactory {
     public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEndType,
             ProtocolMessage... protocolMessages) {

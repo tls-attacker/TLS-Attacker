@@ -40,10 +40,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.BigIntegers;
 
-/**
- *
 
- */
 public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger(InvalidCurveAttacker.class);

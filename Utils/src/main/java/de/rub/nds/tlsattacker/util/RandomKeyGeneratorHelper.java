@@ -24,10 +24,7 @@ import org.bouncycastle.crypto.params.ECKeyGenerationParameters;
 import org.bouncycastle.math.ec.WNafUtil;
 import org.bouncycastle.util.BigIntegers;
 
-/**
- * 
 
- */
 public class RandomKeyGeneratorHelper {
 
     private static final BigInteger ONE = BigInteger.valueOf(1);

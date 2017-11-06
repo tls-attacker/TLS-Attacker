@@ -28,10 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSeriali
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
 
- */
 public class CertificateHandlerTest {
 
     private CertificateHandler handler;

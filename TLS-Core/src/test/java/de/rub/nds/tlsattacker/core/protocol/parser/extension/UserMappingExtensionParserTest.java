@@ -17,10 +17,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class UserMappingExtensionParserTest {
 
     private final ExtensionType extensionType = ExtensionType.USER_MAPPING;

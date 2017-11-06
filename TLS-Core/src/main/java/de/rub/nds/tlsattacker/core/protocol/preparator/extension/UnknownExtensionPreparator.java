@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMe
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class UnknownExtensionPreparator extends ExtensionPreparator<UnknownExtensionMessage> {
 
     private final UnknownExtensionMessage msg;

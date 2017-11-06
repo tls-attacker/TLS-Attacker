@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
 
     private final HeartbeatMessage msg;

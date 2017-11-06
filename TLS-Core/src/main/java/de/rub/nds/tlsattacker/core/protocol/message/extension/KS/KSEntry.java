@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.KS;
 
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 
-/**
 
- */
 public class KSEntry {
 
     private NamedCurve group;

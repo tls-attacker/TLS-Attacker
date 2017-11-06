@@ -14,10 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 
-/**
- *
 
- */
 public class HelloVerifyRequestParser extends HandshakeMessageParser<HelloVerifyRequestMessage> {
 
     public HelloVerifyRequestParser(int pointer, byte[] array, ProtocolVersion version) {

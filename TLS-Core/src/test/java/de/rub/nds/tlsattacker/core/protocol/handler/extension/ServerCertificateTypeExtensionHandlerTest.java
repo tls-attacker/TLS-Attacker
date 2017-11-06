@@ -22,10 +22,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class ServerCertificateTypeExtensionHandlerTest {
     private final List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509,
             CertificateType.RAW_PUBLIC_KEY);

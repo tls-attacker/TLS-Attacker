@@ -10,10 +10,7 @@ package de.rub.nds.tlsattacker.core.record.compressor.compression;
 
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 
-/**
- *
 
- */
 public abstract class CompressionAlgorithm {
 
     private final CompressionMethod method;

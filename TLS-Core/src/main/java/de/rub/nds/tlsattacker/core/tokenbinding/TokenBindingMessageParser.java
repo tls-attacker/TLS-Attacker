@@ -13,10 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 
-/**
- *
 
- */
 public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindingMessage> {
 
     public TokenBindingMessageParser(int pointer, byte[] array, ProtocolVersion version) {

@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-/**
- *
 
- */
 public abstract class TimeProvider {
     public abstract long getTime();
 }

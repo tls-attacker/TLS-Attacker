@@ -15,10 +15,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class ClientCertificateUrlExtensionParserTest {
 
     private final ExtensionType extensionType = ExtensionType.CLIENT_CERTIFICATE_URL;

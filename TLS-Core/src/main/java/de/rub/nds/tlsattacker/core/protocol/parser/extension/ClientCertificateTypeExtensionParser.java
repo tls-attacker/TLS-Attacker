@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 
-/**
- *
 
- */
 public class ClientCertificateTypeExtensionParser extends ExtensionParser<ClientCertificateTypeExtensionMessage> {
 
     public ClientCertificateTypeExtensionParser(int startposition, byte[] array) {

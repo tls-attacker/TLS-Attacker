@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 
-/**
- *
 
- */
 public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
 
     public AlpnExtensionParser(int startposition, byte[] array) {

@@ -25,10 +25,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class ServerHelloMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ServerHelloMessagePreparatorTest.class);

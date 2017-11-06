@@ -11,9 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.Cert;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.util.List;
 
-/**
 
- */
 public class CertificateEntry {
 
     private byte[] certificate;

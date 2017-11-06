@@ -19,10 +19,7 @@ import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class RequestItemV2SerializerTest {
 
     private final RequestItemV2 item = new RequestItemV2(1, 14, 7, 3, new byte[] { 0x01, 0x02, 0x03 });

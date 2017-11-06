@@ -17,9 +17,7 @@ import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
 
- */
 public class ConnectionHandler implements Runnable {
 
     private final static Logger LOGGER = LogManager.getLogger(ConnectionHandler.class.getName());

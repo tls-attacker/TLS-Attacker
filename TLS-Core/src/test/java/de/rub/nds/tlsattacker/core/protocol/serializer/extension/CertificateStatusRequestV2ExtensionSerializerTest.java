@@ -21,10 +21,7 @@ import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 
-/**
- *
 
- */
 public class CertificateStatusRequestV2ExtensionSerializerTest {
 
     private final byte[] expectedBytes = ArrayConverter

@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer.dtls;
 
-/**
 
- */
 public class HandshakeFragmentHandlerTest {
     //
     // static byte[] serverHelloMessageHeader =

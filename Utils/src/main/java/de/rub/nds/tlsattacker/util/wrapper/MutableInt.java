@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util.wrapper;
 
-/**
- * 
 
- */
 public class MutableInt {
     private int value;
 

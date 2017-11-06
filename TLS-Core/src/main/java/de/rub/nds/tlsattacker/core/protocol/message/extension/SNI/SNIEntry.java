@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- *
 
- */
 public class SNIEntry implements Serializable {
 
     private String name;

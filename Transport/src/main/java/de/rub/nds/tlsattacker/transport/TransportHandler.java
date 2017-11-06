@@ -15,9 +15,7 @@ import java.io.OutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
 
- */
 public abstract class TransportHandler {
 
     protected static final Logger LOGGER = LogManager.getLogger(TransportHandler.class.getName());

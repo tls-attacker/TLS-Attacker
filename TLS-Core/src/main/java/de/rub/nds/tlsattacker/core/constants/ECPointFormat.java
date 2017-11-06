@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-/**
 
- */
 public enum ECPointFormat {
 
     UNCOMPRESSED((byte) 0),

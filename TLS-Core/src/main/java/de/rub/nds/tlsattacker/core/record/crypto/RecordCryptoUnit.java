@@ -14,10 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 
-/**
- *
 
- */
 public abstract class RecordCryptoUnit {
 
     protected RecordCipher recordCipher;

@@ -20,10 +20,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-/**
 
-
- */
 public class RecordDecryptor extends Decryptor {
 
     private final TlsContext context;

@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * 
 
- */
 public enum PublicKeyAlgorithm {
 
     RSA,

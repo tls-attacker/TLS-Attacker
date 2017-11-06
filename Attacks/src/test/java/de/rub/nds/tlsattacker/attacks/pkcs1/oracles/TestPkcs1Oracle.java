@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-/**
- * 
 
- */
 public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
 
     /**

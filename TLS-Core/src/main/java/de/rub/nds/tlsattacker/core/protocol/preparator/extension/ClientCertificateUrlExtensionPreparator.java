@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateU
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class ClientCertificateUrlExtensionPreparator extends ExtensionPreparator<ClientCertificateUrlExtensionMessage> {
 
     public ClientCertificateUrlExtensionPreparator(Chooser chooser, ClientCertificateUrlExtensionMessage message,

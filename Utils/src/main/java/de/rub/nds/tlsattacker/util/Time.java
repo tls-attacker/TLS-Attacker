@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-/**
 
- */
 public class Time {
 
     /**

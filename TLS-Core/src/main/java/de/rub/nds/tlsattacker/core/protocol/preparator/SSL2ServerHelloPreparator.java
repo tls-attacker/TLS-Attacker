@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
 
- */
 public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator {
 
     private final SSL2ServerHelloMessage message;

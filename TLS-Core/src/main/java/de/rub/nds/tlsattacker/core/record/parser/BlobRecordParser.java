@@ -12,10 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 
-/**
- *
 
- */
 public class BlobRecordParser extends AbstractRecordParser<BlobRecord> {
 
     public BlobRecordParser(int startposition, byte[] array, ProtocolVersion version) {

@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
 
- */
 public class MalformedMessageException extends RuntimeException {
 
     public MalformedMessageException() {

@@ -21,10 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParserTest;
 
-/**
- *
 
- */
 @RunWith(Parameterized.class)
 public class HelloVerifyRequestSerializerTest {
 

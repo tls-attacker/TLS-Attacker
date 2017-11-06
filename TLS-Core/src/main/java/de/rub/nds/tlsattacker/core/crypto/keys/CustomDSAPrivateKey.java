@@ -11,10 +11,7 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
 
-/**
- *
 
- */
 public class CustomDSAPrivateKey implements RSAPrivateKey {
 
     private final BigInteger privateExponent;

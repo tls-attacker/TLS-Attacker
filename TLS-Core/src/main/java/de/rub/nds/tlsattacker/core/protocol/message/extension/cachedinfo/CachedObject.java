@@ -15,10 +15,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 
-/**
- *
 
- */
 public class CachedObject extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty
