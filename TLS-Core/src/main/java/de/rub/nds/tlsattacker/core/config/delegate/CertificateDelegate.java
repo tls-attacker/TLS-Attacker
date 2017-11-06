@@ -31,7 +31,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
-
  */
 public class CertificateDelegate extends Delegate {
 

@@ -45,7 +45,9 @@ public class MathHelper {
     /**
      * 
      * @param u
+     *            The u parameter
      * @param v
+     *            The v parameter
      * @return (c,r,s) such that c = r u + s v
      */
     public static BigIntegerTripple extendedEuclid(BigInteger u, BigInteger v) {
@@ -91,8 +93,10 @@ public class MathHelper {
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      * 
      * @param congs
+     *            A BigInteger[] of congestions
      * @param moduli
-     * @return
+     *            A BigInteger[] of moduli
+     * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
     public static BigInteger CRT(BigInteger[] congs, BigInteger[] moduli) {
 
@@ -119,8 +123,10 @@ public class MathHelper {
      * Computes Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      * 
      * @param congs
+     *            A BigInteger[] of congestions
      * @param moduli
-     * @return
+     *            A BigInteger[] of moduli
+     * @return Chinese Reminder Theorem: x == congs[i] mod moduli[i]
      */
     public static BigInteger CRT(List<BigInteger> congs, List<BigInteger> moduli) {
         BigInteger[] cs = ArrayConverter.convertListToArray(congs);
@@ -135,8 +141,10 @@ public class MathHelper {
      * of-a-java-biginteger
      * 
      * @param x
-     * @return
+     *            The x Value
+     * @return BigInteger sqrt root of a number
      * @throws IllegalArgumentException
+     *             If x is negative
      */
     public static BigInteger bigIntSqRootFloor(BigInteger x) throws IllegalArgumentException {
         if (x.compareTo(BigInteger.ZERO) < 0) {
@@ -162,8 +170,10 @@ public class MathHelper {
      * of-a-java-biginteger
      * 
      * @param x
-     * @return
+     *            The x Value
+     * @return BigInteger sqrt root of a number (ceil value)
      * @throws IllegalArgumentException
+     *             If x is negative
      */
     public static BigInteger bigIntSqRootCeil(BigInteger x) throws IllegalArgumentException {
         if (x.compareTo(BigInteger.ZERO) < 0) {
