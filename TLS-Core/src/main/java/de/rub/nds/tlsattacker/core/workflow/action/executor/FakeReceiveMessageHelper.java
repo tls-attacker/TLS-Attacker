@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class FakeReceiveMessageHelper extends ReceiveMessageHelper {
 

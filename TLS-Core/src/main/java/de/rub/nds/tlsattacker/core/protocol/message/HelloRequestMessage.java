@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Philip Riese <philip.riese@rub.de>
+
  */
 @XmlRootElement
 public class HelloRequestMessage extends HandshakeMessage {

@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HRRKeyShareExte
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class HRRKeyShareExtensionPreparator extends ExtensionPreparator<HRRKeyShareExtensionMessage> {
 

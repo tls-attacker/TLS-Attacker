@@ -25,7 +25,7 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class WorkflowInputDelegateTest {
 

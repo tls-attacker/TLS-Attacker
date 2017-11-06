@@ -25,7 +25,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class BleichenbacherCommandConfig extends AttackConfig {
 

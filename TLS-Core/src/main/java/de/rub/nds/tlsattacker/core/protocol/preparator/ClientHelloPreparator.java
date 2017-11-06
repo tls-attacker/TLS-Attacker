@@ -21,8 +21,8 @@ import java.util.List;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 

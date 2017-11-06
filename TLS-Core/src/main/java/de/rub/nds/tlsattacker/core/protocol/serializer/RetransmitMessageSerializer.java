@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class RetransmitMessageSerializer extends ProtocolMessageSerializer<RetransmitMessage> {
 

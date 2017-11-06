@@ -22,8 +22,8 @@ import java.io.IOException;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  */
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 

@@ -37,7 +37,7 @@ import org.bouncycastle.util.BigIntegers;
 
 /**
  *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class RealDirectMessageECOracle extends ECOracle {
 

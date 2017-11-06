@@ -32,9 +32,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
+
  */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 

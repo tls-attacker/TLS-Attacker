@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class InvalidCurveAttackConfig extends AttackConfig {
 

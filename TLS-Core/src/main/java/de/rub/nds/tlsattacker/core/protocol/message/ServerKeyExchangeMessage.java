@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComp
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 

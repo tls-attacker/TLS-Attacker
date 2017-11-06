@@ -19,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class SimpleMitmProxyCommandConfig extends AttackConfig {
 

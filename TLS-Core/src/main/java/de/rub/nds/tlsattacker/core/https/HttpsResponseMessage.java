@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlElements;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class HttpsResponseMessage extends ProtocolMessage {
 

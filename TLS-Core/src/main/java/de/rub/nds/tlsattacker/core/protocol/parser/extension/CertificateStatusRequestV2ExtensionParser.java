@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CertificateStatusRequestV2ExtensionParser extends
         ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {

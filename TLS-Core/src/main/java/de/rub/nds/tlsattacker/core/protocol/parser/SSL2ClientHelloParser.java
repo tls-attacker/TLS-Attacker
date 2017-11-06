@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class SSL2ClientHelloParser extends ProtocolMessageParser {
 

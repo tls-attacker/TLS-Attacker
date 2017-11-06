@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class HeartbeatDelegate extends Delegate {
 

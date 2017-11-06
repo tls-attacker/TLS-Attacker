@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class HRRKeyShareExtensionPreparatorTest {
 

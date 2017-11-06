@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  * @param <AbstractRecord>
  */
 public abstract class AbstractRecordParser<AbstractRecord> extends Parser<AbstractRecord> {

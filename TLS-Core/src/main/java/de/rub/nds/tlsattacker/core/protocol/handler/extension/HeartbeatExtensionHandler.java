@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtens
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensionMessage> {
 

@@ -31,7 +31,7 @@ import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> {
 

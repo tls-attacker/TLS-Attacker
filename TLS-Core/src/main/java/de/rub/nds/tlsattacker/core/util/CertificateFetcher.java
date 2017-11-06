@@ -24,7 +24,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class CertificateFetcher {
 

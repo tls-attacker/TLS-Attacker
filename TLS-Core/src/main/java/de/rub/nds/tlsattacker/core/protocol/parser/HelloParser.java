@@ -18,7 +18,7 @@ import java.util.Arrays;
 /**
  * An abstract Parser class for Hello Messages
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  *            Type of the HelloMessage to parse
  */

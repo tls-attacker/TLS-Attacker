@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  */
 public abstract class ServerKeyExchangePreparator<T extends ServerKeyExchangeMessage> extends

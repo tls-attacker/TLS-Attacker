@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * TLS Alerts
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public enum AlertDescription {
 

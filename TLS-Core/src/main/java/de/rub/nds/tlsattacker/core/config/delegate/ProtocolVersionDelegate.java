@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ProtocolVersionDelegate extends Delegate {
 

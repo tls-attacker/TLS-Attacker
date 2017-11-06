@@ -29,8 +29,8 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  * @param <Message>
  */
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends

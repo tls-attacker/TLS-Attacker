@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.state.http;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class HttpContext {
 

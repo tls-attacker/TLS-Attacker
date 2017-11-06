@@ -30,7 +30,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class MangerAttackPlaintextTest {
 

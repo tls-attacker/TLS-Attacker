@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessa
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class AlpnExtensionSerializer extends ExtensionSerializer<AlpnExtensionMessage> {
 

@@ -19,7 +19,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+ * 
  * @version 0.1
  */
 public class ServerStartCommandExecutor {

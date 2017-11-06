@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
  * Invalid message type exception (thrown when unexpected TLS message appears
  * during the TLS workflow)
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class InvalidMessageTypeException extends RuntimeException {
 

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TLSAction implements Serializable {

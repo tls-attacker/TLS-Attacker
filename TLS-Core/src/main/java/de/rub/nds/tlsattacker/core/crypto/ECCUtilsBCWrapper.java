@@ -19,7 +19,7 @@ import org.bouncycastle.math.ec.ECPoint;
 
 /**
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class ECCUtilsBCWrapper {
 

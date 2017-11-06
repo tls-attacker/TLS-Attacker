@@ -46,7 +46,7 @@ import java.util.Random;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class DefaultChooserTest {
 

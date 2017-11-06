@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResponseMessage> {
 

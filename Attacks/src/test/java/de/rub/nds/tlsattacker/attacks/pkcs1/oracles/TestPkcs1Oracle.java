@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
 

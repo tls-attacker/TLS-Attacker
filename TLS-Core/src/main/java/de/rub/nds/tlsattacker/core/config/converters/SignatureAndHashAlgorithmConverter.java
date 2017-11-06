@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class SignatureAndHashAlgorithmConverter implements IStringConverter<SignatureAndHashAlgorithm> {
 

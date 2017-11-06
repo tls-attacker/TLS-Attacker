@@ -71,7 +71,7 @@ import java.util.logging.Level;
 import org.bouncycastle.operator.OperatorCreationException;
 
 /**
- * @author Felix Kleine-Wilde <felix.kleine-wilde@rub.de>
+
  */
 public class SSL3HandshakeTest {
 

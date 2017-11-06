@@ -30,7 +30,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class CertificateHandlerTest {
 

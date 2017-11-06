@@ -42,7 +42,7 @@ import org.bouncycastle.util.BigIntegers;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 

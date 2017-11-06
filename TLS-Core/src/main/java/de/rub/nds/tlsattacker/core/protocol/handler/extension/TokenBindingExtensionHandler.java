@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
 

@@ -16,7 +16,7 @@ import java.io.OutputStream;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class StreamTransportHandler extends TransportHandler {
 

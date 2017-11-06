@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class RenegotiationInfoExtensionHandlerTest {
 

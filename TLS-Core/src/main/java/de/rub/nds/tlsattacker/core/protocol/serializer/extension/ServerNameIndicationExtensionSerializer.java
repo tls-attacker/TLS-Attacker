@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicati
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ServerNameIndicationExtensionSerializer extends ExtensionSerializer<ServerNameIndicationExtensionMessage> {
 

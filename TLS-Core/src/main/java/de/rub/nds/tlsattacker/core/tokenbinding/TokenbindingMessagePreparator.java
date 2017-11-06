@@ -41,7 +41,7 @@ import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
 

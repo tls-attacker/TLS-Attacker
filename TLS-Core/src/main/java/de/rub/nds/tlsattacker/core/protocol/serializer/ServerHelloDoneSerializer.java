@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ServerHelloDoneSerializer extends HandshakeMessageSerializer<ServerHelloDoneMessage> {
 

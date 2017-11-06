@@ -28,7 +28,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Steve Ehleringer - steve.ehleringer@rub.de
+
  */
 public class WaitingActionTest {
 

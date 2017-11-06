@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class EncryptionRequest {
 

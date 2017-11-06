@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class WaitingAction extends TLSAction {
 

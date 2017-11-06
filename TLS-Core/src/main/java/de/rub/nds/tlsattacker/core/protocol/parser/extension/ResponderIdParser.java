@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class ResponderIdParser extends Parser<ResponderId> {
 

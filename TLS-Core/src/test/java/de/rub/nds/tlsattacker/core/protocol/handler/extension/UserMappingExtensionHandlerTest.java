@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class UserMappingExtensionHandlerTest {
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;

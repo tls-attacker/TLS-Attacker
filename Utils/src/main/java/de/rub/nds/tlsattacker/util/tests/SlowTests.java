@@ -12,7 +12,6 @@ package de.rub.nds.tlsattacker.util.tests;
  * JUnit test category. Slow tests that should not be included in the default
  * packaging process.
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public interface SlowTests {
 

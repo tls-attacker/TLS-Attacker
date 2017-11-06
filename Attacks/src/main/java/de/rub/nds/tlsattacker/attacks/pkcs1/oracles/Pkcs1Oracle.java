@@ -17,8 +17,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Oracle template for Bleichenbacher/Manger attack.
  * 
- * @author Christopher Meyer - christopher.meyer@rub.de
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
+
  * @version 0.1
  * 
  *          Jun 12, 2012

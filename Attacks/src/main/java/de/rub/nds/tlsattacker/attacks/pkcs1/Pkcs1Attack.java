@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class Pkcs1Attack {
 

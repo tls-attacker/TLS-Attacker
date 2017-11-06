@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class HeartbeatMessagePreparatorTest {
     private static final Logger LOGGER = LogManager.getLogger(HeartbeatMessagePreparatorTest.class);

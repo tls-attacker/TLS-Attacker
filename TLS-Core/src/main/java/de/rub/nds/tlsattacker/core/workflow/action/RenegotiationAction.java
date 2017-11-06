@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class RenegotiationAction extends TLSAction {
 

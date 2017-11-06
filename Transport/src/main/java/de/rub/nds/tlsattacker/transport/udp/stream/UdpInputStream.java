@@ -16,7 +16,7 @@ import java.net.SocketTimeoutException;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class UdpInputStream extends InputStream {
 

@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 @RunWith(Parameterized.class)
 public class HRRKeyShareExtensionSerializerTest {

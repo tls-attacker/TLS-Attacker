@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+
  */
 
 // todo implement SupplementalDataMessagePreparator

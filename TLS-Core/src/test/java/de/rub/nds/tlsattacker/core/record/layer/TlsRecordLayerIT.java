@@ -19,7 +19,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TlsRecordLayerIT {
 

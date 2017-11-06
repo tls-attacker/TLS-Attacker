@@ -14,7 +14,7 @@ import javax.crypto.spec.DHParameterSpec;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class CustomDHPrivateKey implements DHPrivateKey {
 

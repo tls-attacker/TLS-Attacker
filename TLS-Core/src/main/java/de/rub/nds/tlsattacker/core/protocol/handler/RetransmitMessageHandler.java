@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.RetransmitMessageSerializ
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitMessage> {
 

@@ -48,7 +48,7 @@ import org.apache.logging.log4j.Logger;
  * Tests if the subject can be used as a padding oracle by sending messages with
  * invalid MACs or invalid paddings.
  *
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
+
  */
 public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackCommandConfig> {
 

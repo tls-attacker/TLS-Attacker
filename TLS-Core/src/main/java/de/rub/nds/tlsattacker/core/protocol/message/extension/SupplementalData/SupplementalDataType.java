@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+
  */
 
 public enum SupplementalDataType {

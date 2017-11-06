@@ -27,7 +27,7 @@ import java.security.interfaces.RSAPublicKey;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 

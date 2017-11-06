@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * An arbitrary protocol message
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 @XmlRootElement
 public class ArbitraryMessage extends ProtocolMessage {

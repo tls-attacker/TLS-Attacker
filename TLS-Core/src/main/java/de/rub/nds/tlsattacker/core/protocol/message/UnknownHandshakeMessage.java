@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 @XmlRootElement
 public class UnknownHandshakeMessage extends HandshakeMessage {

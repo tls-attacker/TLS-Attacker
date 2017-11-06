@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandl
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingServerUdpTransportHandler;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class TransportHandlerFactory {
 

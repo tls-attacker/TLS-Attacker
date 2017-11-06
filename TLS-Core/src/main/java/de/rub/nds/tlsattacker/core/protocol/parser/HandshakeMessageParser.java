@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * An abstract Parser class for HandshakeMessages
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */

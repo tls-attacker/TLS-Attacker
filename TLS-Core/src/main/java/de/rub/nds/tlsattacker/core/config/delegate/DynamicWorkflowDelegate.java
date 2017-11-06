@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class DynamicWorkflowDelegate extends Delegate {
 

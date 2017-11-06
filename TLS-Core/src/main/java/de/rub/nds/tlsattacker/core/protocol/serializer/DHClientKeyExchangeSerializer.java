@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<DHClientKeyExchangeMessage> {
 

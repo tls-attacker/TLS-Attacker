@@ -46,7 +46,7 @@ import org.apache.logging.log4j.Logger;
  * the server responses. In case there are differences in the server responses,
  * it is very likely that it is possible to execute Bleichenbacher attacks.
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 

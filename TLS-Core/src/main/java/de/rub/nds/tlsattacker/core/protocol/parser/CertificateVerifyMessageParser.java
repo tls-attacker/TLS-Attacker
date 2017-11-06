@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class CertificateVerifyMessageParser extends HandshakeMessageParser<CertificateVerifyMessage> {
 

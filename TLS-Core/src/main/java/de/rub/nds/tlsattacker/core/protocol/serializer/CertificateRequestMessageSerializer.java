@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class CertificateRequestMessageSerializer extends HandshakeMessageSerializer<CertificateRequestMessage> {
 

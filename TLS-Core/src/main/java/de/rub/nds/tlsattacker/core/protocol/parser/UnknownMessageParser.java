@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class UnknownMessageParser extends ProtocolMessageParser<UnknownMessage> {
 

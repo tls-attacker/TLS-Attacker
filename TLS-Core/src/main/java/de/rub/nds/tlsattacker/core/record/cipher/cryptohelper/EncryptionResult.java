@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class EncryptionResult {
 

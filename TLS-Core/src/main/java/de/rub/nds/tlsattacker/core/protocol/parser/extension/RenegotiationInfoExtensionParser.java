@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoE
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class RenegotiationInfoExtensionParser extends ExtensionParser<RenegotiationInfoExtensionMessage> {
 

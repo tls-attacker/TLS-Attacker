@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class RSAClientComputations extends KeyExchangeComputations {
 

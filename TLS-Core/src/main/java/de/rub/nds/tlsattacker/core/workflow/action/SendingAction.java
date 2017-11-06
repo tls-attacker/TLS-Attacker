@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public interface SendingAction {
     public abstract List<ProtocolMessage> getSendMessages();

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  *
  * Abstract Parser class which can be used to read a byte array.
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  *            Type of the Object that should be parsed
  */

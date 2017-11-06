@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class SimpleMitmProxy extends Attacker<SimpleMitmProxyCommandConfig> {
 

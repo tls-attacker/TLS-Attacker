@@ -32,8 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  */
 public class TlsRecordLayer extends RecordLayer {
 

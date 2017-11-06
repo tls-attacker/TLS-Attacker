@@ -27,7 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class RecordStreamCipher extends RecordCipher {
 

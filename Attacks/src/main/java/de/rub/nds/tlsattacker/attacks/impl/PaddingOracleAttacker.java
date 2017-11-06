@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
  * Executes a padding oracle attack check. It logs an error in case the tested
  * server is vulnerable to poodle.
  *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
+
  */
 public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
 

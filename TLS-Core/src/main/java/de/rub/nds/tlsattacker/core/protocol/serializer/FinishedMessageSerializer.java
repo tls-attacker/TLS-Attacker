@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class FinishedMessageSerializer extends HandshakeMessageSerializer<FinishedMessage> {
 

@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessage> {
 

@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * s_client -keymatexport “label” -keymatexportlen 20
  * 
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TokenCalculatorTest {
 

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class TokenBindingExtensionParser extends ExtensionParser<TokenBindingExtensionMessage> {
 

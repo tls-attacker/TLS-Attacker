@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  * Handler for DH and DHE ClientKeyExchange messages
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  */
 public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClientKeyExchangeMessage> {
 

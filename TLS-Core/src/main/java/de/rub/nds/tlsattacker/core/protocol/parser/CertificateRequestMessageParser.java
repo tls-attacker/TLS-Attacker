@@ -17,7 +17,7 @@ import java.util.Arrays;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class CertificateRequestMessageParser extends HandshakeMessageParser<CertificateRequestMessage> {
 

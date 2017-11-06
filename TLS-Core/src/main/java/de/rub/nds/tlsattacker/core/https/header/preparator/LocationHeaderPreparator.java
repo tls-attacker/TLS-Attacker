@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class LocationHeaderPreparator extends Preparator<LocationHeader> {
 

@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  * Handler for Heartbeat messages: http://tools.ietf.org/html/rfc6520#page-4
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class HeartbeatHandler extends ProtocolMessageHandler<HeartbeatMessage> {
 

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMe
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMessage> {
 

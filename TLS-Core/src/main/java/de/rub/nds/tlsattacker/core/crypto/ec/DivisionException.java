@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class DivisionException extends Exception {
 

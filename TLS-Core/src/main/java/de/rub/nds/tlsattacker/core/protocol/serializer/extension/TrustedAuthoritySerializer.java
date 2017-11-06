@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class TrustedAuthoritySerializer extends Serializer<TrustedAuthority> {
 

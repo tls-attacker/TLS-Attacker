@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 

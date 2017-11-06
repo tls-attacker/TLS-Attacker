@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * RFC7924
  * 
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public enum CachedInfoType {
     CERT((byte) 1),

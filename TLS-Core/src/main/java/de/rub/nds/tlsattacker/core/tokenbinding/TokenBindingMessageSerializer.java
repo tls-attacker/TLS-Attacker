@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<TokenBindingMessage> {
 

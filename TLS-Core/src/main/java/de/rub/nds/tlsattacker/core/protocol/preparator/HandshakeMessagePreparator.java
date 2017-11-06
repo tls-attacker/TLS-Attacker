@@ -22,7 +22,7 @@ import java.io.IOException;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 /**
- * @author Nurullah Erinola
+
  */
 public enum HKDFAlgorithm {
 

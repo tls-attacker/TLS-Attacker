@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.KS;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class KSEntry {
 

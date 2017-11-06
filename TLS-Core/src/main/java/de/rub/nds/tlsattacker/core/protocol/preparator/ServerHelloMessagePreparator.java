@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  * @param <T>
  */
 public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends HelloMessagePreparator<HelloMessage> {

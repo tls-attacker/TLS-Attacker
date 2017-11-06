@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.record.compressor;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  * @param <T>
  */
 public abstract class Compressor<T> {

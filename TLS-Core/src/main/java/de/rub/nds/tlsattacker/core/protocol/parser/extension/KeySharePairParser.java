@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class KeySharePairParser extends Parser<KeySharePair> {
 

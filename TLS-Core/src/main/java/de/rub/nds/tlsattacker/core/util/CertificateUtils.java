@@ -33,7 +33,7 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class CertificateUtils {
 

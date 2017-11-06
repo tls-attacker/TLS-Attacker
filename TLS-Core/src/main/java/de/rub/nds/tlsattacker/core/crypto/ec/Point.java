@@ -12,7 +12,7 @@ import java.math.BigInteger;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  * @version 0.1
  */
 public class Point {

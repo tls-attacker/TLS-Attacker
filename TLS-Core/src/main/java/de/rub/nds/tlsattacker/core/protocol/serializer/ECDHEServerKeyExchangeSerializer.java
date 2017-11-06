@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ECDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<ECDHEServerKeyExchangeMessage> {
 

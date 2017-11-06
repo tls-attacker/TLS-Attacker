@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.util.tests;
 /**
  * JUnit test category for integration tests.
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public interface IntegrationTests {
 

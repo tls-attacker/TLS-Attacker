@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class UserMappingExtensionMessage extends ExtensionMessage {
 

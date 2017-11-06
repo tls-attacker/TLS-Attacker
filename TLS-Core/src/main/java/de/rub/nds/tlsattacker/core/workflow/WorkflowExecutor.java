@@ -25,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
+
  */
 public abstract class WorkflowExecutor {
 

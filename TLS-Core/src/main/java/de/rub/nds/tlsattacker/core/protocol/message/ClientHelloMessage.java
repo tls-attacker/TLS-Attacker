@@ -58,9 +58,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
+
  */
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement

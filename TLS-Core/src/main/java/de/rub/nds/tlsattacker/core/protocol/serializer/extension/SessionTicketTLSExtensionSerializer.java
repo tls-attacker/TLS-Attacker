@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class SessionTicketTLSExtensionSerializer extends ExtensionSerializer<SessionTicketTLSExtensionMessage> {
 

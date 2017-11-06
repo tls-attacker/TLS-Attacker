@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Alert level
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public enum AlertLevel {
 

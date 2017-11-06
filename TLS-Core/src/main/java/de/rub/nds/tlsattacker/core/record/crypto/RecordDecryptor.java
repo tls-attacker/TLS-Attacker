@@ -21,8 +21,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
- * @author Robert Merget <robert.merget@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  */
 public class RecordDecryptor extends Decryptor {
 

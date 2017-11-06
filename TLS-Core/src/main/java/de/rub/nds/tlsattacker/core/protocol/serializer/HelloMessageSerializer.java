@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 /**
  * Abstract Serializer class for HelloMessages
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  *            Type of the HelloMessage that should be serialized
  */

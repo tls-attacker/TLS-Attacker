@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 @RunWith(Parameterized.class)
 public class ClientHelloParserTest {

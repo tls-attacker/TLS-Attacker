@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ClientDelegate extends Delegate {
 

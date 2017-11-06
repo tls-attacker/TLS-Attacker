@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensi
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class ServerAuthzExtensionSerializer extends ExtensionSerializer<ServerAuthzExtensionMessage> {
 

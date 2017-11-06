@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
  * from command line. It requires at least one "accepting" and one "connecting"
  * connection end.
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class MitmDelegate extends Delegate {
 

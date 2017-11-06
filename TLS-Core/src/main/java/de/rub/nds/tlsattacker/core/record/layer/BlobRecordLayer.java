@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class BlobRecordLayer extends RecordLayer {
 

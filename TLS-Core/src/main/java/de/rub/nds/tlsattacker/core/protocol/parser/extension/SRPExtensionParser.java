@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessag
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class SRPExtensionParser extends ExtensionParser<SRPExtensionMessage> {
 

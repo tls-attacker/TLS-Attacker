@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public abstract class HttpsHeaderHandler extends Handler<HttpsHeader> {
 

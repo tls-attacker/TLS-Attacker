@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class CertificatePairPreparator extends Preparator<CertificatePair> {
 

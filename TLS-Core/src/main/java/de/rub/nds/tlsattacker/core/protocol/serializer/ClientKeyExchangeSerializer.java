@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  */
 public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMessage> extends

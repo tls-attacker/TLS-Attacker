@@ -17,7 +17,7 @@ import java.util.Random;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class TestECOracle extends ECOracle {
 

@@ -37,8 +37,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 
 /**
- * @author Robert Merget <robert.merget@rub.de>
- * @author Felix Kleine-Wilde <felix.kleine-wilde@rub.de>
+
+
  */
 public class WorkflowConfigurationFactoryTest {
 

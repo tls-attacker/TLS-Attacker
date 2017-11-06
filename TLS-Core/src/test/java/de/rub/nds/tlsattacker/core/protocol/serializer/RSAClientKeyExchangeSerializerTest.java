@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParserTes
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 @RunWith(Parameterized.class)
 public class RSAClientKeyExchangeSerializerTest {

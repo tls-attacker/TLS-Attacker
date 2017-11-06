@@ -40,7 +40,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class TestCertificates {
 

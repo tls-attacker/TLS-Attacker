@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  */
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {

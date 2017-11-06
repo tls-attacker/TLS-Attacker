@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<HeartbeatMessage> {
 

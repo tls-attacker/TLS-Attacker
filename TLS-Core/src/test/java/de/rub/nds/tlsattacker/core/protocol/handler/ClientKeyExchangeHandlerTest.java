@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * 
- * @author felix kleine-wilde - felix.kleine-wilde@rub.de
+
  *
  */
 public class ClientKeyExchangeHandlerTest {

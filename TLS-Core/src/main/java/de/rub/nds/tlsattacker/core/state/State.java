@@ -47,7 +47,7 @@ import org.apache.logging.log4j.LogManager;
  * </p>
  * 
  * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class State {
 

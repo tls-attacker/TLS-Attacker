@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public enum TokenBindingType {
     PROVIDED_TOKEN_BINDING((byte) 0),

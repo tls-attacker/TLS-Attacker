@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class TrustedCaIndicationExtensionMessage extends ExtensionMessage {
 

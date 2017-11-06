@@ -16,7 +16,7 @@ import org.junit.Test;
 /**
  * Test cases from: https://tools.ietf.org/html/rfc7748#section-6.1
  * 
- * @author Nurullah Erinola
+
  */
 public class Curve25519Test {
 

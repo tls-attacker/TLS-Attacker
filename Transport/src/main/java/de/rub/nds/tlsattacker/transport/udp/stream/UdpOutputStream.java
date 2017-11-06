@@ -15,7 +15,7 @@ import java.net.DatagramSocket;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class UdpOutputStream extends OutputStream {
 

@@ -19,7 +19,7 @@ import java.io.IOException;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInfoExtensionMessage> {
 

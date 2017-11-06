@@ -25,7 +25,7 @@ import org.junit.rules.ExpectedException;
 
 /**
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class DefaultWorkflowExecutorTest {
 

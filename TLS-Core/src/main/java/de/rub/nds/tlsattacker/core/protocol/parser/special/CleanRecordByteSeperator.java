@@ -17,7 +17,7 @@ import java.util.List;
  * Parser which is designed for Message objects and is called ByteSeperator //I
  * Think another logical abstraction is needed here
  * 
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class CleanRecordByteSeperator extends Parser<List<AbstractRecord>> {
 

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CertificateTypeExtensionHandlerTest {
     private final List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509);

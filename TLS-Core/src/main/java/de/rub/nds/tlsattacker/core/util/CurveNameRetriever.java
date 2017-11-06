@@ -15,7 +15,7 @@ import org.bouncycastle.math.ec.ECCurve;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class CurveNameRetriever {
 

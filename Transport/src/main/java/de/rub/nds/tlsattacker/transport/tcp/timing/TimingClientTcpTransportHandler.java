@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler {
 

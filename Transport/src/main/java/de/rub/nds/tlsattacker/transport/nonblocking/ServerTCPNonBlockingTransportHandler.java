@@ -20,7 +20,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 

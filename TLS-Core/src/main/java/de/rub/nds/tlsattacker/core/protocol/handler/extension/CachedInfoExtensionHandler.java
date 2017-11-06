@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExtensionMessage> {
 

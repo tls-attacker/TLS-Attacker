@@ -36,7 +36,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class BasicTlsClientServerTest {
 

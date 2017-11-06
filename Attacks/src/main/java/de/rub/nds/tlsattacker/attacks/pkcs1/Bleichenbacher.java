@@ -17,8 +17,8 @@ import java.util.ArrayList;
 /**
  * Bleichenbacher algorithm.
  * 
- * @author Christopher Meyer - christopher.meyer@rub.de
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
+
  */
 public class Bleichenbacher extends Pkcs1Attack {
 

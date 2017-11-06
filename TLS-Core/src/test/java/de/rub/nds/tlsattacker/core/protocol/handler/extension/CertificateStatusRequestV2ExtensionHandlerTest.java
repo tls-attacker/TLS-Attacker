@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CertificateStatusRequestV2ExtensionHandlerTest {
     private final List<RequestItemV2> itemList = Arrays.asList(new RequestItemV2(1, 1, 1, 0, new byte[] { 0x02 }));

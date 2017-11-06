@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class HttpsHeaderSerializer extends Serializer<HttpsHeader> {
 

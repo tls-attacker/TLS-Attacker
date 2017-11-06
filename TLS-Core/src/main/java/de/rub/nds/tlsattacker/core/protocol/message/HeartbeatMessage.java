@@ -23,7 +23,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 @XmlRootElement
 public class HeartbeatMessage extends ProtocolMessage {

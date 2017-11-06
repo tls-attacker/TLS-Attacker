@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.record.layer;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public enum RecordLayerType {
     RECORD, // use records

@@ -25,7 +25,7 @@ import org.junit.experimental.categories.Category;
  * be able to deal with everything
  *
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ParserStressTest {
 

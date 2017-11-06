@@ -34,7 +34,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ReceiveMessageHelper {
 

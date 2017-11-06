@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
+
  */
 public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
 

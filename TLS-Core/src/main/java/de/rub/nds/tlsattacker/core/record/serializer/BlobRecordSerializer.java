@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class BlobRecordSerializer extends AbstractRecordSerializer<BlobRecord> {
 

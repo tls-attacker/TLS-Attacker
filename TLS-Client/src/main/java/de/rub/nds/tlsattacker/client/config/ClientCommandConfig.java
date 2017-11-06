@@ -29,7 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class ClientCommandConfig extends TLSDelegateConfig {
 

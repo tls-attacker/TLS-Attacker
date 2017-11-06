@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class GenericReceiveAction extends MessageAction implements ReceivingAction {
 

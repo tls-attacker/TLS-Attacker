@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 
 /**
  *
- * @author Florian Linsner - florian.linsner@rub.de
+
  */
 public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<PSKClientKeyExchangeMessage> {
 

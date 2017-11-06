@@ -18,7 +18,7 @@ import org.junit.BeforeClass;
 
 /**
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class TlsMitmTest {
 

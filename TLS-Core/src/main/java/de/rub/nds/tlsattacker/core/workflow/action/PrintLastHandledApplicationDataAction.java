@@ -25,7 +25,7 @@ import java.nio.charset.Charset;
  * TODO: If bored, build a similar action that can decode chunked + gziped HTTP
  * data :-)
  * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class PrintLastHandledApplicationDataAction extends TLSAction {
 

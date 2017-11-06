@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.transport;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public enum TransportHandlerType {
 

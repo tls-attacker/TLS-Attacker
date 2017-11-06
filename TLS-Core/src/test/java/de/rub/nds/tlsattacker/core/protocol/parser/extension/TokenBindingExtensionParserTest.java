@@ -24,7 +24,7 @@ import org.junit.runners.Parameterized;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 @RunWith(Parameterized.class)
 public class TokenBindingExtensionParserTest {

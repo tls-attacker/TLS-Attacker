@@ -18,7 +18,7 @@ import org.junit.Test;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  * @version 0.1
  */
 public class BleichenbacherOracleTest {

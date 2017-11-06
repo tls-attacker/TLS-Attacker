@@ -16,7 +16,7 @@ import java.net.Socket;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ServerTcpTransportHandler extends TransportHandler {
 

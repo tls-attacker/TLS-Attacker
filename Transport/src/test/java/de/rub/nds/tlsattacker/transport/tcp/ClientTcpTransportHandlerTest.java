@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ClientTcpTransportHandlerTest {
 

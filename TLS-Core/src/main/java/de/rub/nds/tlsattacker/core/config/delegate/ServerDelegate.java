@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ServerDelegate extends Delegate {
 

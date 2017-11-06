@@ -26,7 +26,7 @@ import org.bouncycastle.util.BigIntegers;
 
 /**
  * 
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class RandomKeyGeneratorHelper {
 

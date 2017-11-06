@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * Resolves crypto algorithms and their properties from a given cipehr suite
  * (and TLS version).
  *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class AlgorithmResolver {
 

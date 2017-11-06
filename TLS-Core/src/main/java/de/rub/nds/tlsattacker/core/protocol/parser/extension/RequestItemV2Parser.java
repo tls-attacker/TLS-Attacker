@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class RequestItemV2Parser extends Parser<RequestItemV2> {
 

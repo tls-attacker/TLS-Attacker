@@ -26,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
  * SSLUtils is a class with static methods that are supposed to calculate
  * SSL-specific data.
  * 
- * @author felix kleine-wilde - felix.kleine-wilde@rub.de
+
  */
 public final class SSLUtils {
 

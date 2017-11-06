@@ -19,7 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExtensionMessage> {
 

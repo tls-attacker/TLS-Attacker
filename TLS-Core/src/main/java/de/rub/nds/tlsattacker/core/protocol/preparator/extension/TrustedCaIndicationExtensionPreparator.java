@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class TrustedCaIndicationExtensionPreparator extends ExtensionPreparator<TrustedCaIndicationExtensionMessage> {
 

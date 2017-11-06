@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public enum NamedCurve {
 

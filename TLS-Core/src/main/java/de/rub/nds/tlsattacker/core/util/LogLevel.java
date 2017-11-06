@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Level;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class LogLevel {
 

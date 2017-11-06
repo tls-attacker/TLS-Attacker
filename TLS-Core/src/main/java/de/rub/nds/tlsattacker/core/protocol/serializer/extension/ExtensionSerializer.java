@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  */
 public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer {

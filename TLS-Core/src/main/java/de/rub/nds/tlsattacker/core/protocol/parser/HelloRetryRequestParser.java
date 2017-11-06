@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class HelloRetryRequestParser extends HandshakeMessageParser<HelloRetryRequestMessage> {
 

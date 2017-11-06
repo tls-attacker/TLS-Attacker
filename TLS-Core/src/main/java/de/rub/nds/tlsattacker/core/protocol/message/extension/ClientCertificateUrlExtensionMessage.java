@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class ClientCertificateUrlExtensionMessage extends ExtensionMessage {
 

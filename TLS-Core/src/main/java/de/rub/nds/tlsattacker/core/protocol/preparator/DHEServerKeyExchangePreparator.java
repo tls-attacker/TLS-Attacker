@@ -18,7 +18,7 @@ import java.math.BigInteger;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<DHEServerKeyExchangeMessage> {
 

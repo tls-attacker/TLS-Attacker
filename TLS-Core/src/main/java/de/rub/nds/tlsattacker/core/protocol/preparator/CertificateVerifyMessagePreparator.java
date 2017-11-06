@@ -19,8 +19,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  */
 public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparator<CertificateVerifyMessage> {
 

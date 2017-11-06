@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 /**
  * This extension is defined in RFC7301
  * 
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class AlpnExtensionMessage extends ExtensionMessage {
 

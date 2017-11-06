@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Marcel Maehren
+
  */
 public class WorkflowTraceUtilTest {
 

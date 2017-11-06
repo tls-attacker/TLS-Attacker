@@ -17,7 +17,7 @@ import java.util.Arrays;
  * Converts a heartbeat mode string to a HeartbeatMode (for command line
  * purposes).
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class HeartbeatModeConverter implements IStringConverter<HeartbeatMode> {
 

@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class EncryptThenMacExtensionParserTest {
     private final ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;

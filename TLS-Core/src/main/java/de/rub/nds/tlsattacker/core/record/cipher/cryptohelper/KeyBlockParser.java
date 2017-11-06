@@ -23,7 +23,7 @@ import javax.crypto.NoSuchPaddingException;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class KeyBlockParser extends Parser<KeySet> {
 

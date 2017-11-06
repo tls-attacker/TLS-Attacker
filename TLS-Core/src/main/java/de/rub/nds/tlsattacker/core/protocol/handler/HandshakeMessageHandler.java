@@ -12,8 +12,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
+
+
  * @param <ProtocolMessage>
  */
 public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeMessage> extends

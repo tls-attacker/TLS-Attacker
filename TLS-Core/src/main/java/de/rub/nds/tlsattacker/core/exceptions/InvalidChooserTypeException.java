@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class InvalidChooserTypeException extends RuntimeException {
 

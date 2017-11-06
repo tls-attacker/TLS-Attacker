@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  * @version 0.1
  */
 public class OracleException extends RuntimeException {

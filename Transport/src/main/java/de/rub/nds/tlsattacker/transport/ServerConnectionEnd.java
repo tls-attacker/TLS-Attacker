@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class ServerConnectionEnd extends ConnectionEnd {
 

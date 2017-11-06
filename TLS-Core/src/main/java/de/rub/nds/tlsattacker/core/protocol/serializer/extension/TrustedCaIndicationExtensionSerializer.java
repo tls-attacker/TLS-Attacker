@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class TrustedCaIndicationExtensionSerializer extends ExtensionSerializer<TrustedCaIndicationExtensionMessage> {
 

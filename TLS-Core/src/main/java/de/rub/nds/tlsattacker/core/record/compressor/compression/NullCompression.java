@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class NullCompression extends CompressionAlgorithm {
 

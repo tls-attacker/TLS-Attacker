@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TokenBindingMessageParser extends ProtocolMessageParser<TokenBindingMessage> {
 

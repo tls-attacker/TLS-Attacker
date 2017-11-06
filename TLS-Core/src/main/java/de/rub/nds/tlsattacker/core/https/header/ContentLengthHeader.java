@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ContentLengthHeader extends HttpsHeader {
 

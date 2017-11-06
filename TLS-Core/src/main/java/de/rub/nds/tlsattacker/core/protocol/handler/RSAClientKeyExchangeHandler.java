@@ -15,8 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSeria
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  */
 public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSAClientKeyExchangeMessage> {
 

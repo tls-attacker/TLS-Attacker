@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHClientKeyExchangeMessage> {
 

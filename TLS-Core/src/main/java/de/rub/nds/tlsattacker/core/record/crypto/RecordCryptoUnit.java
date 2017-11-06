@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public abstract class RecordCryptoUnit {
 

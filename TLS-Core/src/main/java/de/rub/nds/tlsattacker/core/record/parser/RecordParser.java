@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.record.Record;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class RecordParser extends AbstractRecordParser<Record> {
 

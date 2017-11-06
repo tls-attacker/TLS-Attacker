@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class ClientHelloTest {
     private static final Logger LOGGER = LogManager.getLogger(ClientHelloTest.class);

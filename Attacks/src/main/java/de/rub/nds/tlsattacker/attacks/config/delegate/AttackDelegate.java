@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class AttackDelegate extends Delegate {
 

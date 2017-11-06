@@ -14,8 +14,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  * @param <Message>
  */
 public abstract class ServerKeyExchangeHandler<Message extends ServerKeyExchangeMessage> extends

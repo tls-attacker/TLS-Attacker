@@ -26,7 +26,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 @RunWith(Parameterized.class)
 public class ServerHelloParserTest {

@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
  * Converts a transport handler type string to a TransportHandlerType value (for
  * command line purposes).
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class TransportHandlerTypeConverter implements IStringConverter<TransportHandlerType> {
 

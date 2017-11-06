@@ -13,7 +13,7 @@ import java.security.interfaces.RSAPrivateKey;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class CustomDSAPrivateKey implements RSAPrivateKey {
 

@@ -17,7 +17,7 @@ import java.nio.charset.Charset;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class HttpsResponseParser extends ProtocolMessageParser<HttpsResponseMessage> {
 

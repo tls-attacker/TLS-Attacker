@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAl
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class SignatureAndHashAlgorithmsExtensionParser extends
         ExtensionParser<SignatureAndHashAlgorithmsExtensionMessage> {

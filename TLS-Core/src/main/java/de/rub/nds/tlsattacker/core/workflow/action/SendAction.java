@@ -28,7 +28,7 @@ import java.util.Objects;
 /**
  * todo print configured records
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class SendAction extends MessageAction implements SendingAction {
 

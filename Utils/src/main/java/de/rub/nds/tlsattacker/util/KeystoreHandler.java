@@ -18,7 +18,7 @@ import java.security.cert.CertificateException;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class KeystoreHandler {
 

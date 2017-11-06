@@ -18,8 +18,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  */
 public class DefaultWorkflowExecutor extends WorkflowExecutor {
 

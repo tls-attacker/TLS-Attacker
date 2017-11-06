@@ -14,8 +14,8 @@ import java.util.Map;
 /**
  * http://tools.ietf.org/html/rfc5246#section-7.4.4
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  */
 public enum ClientCertificateType {
 

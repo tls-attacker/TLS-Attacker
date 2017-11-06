@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
+
+
  */
 public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHEServerKeyExchangeMessage> {
 

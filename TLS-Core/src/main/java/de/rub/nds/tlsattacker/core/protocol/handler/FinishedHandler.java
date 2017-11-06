@@ -25,9 +25,9 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
+
  */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 

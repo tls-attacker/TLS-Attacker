@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExtensionMessage> {
 

@@ -25,9 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
+
  */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 

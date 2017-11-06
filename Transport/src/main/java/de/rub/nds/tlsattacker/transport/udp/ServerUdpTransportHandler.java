@@ -18,7 +18,7 @@ import java.net.InetSocketAddress;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ServerUdpTransportHandler extends TransportHandler {
 

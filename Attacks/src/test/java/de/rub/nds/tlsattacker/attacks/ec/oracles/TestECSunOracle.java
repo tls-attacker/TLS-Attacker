@@ -34,7 +34,7 @@ import javax.crypto.KeyAgreement;
  * the oracle should not work anymore because the SUN implementation has been
  * patched.
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class TestECSunOracle extends ECOracle {
 

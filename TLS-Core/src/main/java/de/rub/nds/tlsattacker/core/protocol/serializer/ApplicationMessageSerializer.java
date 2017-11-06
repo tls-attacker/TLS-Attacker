@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ApplicationMessageSerializer extends ProtocolMessageSerializer<ApplicationMessage> {
 

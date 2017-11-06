@@ -18,7 +18,7 @@ import java.util.Base64;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TokenBindingHeaderPreparator extends Preparator<TokenBindingHeader> {
 

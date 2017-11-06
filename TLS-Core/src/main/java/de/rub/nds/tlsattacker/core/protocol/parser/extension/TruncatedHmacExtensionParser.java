@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExten
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class TruncatedHmacExtensionParser extends ExtensionParser<TruncatedHmacExtensionMessage> {
 

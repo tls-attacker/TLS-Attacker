@@ -20,7 +20,7 @@ import java.math.BigInteger;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class WinshockCommandConfig extends AttackConfig {
 

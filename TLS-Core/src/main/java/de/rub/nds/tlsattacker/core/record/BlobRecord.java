@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  * exisiting record and represents just a collection of bytes. Is used for
  * unparseable Records and for SSLv2
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class BlobRecord extends AbstractRecord {
 

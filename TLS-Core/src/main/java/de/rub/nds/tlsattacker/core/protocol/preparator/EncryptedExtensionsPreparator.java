@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- * @author Nurullah Erinola
+
  */
 public class EncryptedExtensionsPreparator extends HandshakeMessagePreparator<EncryptedExtensionsMessage> {
 

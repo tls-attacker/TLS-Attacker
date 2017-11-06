@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class WorkflowTypeDelegate extends Delegate {
 

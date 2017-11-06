@@ -35,8 +35,8 @@ import org.bouncycastle.math.ec.ECPoint;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
+
  */
 public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage> {
 

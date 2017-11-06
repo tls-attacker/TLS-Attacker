@@ -55,7 +55,7 @@ import javax.xml.bind.annotation.XmlElements;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ReceiveAction extends MessageAction implements ReceivingAction {
 

@@ -22,7 +22,7 @@ import org.junit.runners.Parameterized;
 
 /**
  *
- * @author Florian Linsner - florian.linsner@rub.de
+
  */
 @RunWith(Parameterized.class)
 public class CertificatePairParserTest {

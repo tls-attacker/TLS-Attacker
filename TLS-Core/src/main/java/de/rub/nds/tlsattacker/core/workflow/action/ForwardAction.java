@@ -59,7 +59,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class ForwardAction extends MessageAction implements ReceivingAction, SendingAction {
 

@@ -46,7 +46,7 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
  * http://codereview.stackexchange.com/questions/117944/bouncycastle
  * -implementation-with-x509certificate-signing-keystore-generation-a
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class KeyStoreGenerator {
 

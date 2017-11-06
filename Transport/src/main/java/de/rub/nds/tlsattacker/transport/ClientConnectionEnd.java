@@ -12,7 +12,7 @@ import java.util.Objects;
 
 /**
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class ClientConnectionEnd extends ConnectionEnd {
 

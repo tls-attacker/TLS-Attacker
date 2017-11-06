@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  */
 public abstract class ServerKeyExchangeSerializer<T extends ServerKeyExchangeMessage> extends

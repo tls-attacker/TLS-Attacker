@@ -66,9 +66,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
+
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

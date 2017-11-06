@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.crypto.tls.Certificate;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  */
 @XmlRootElement
 public class CertificateMessage extends HandshakeMessage {

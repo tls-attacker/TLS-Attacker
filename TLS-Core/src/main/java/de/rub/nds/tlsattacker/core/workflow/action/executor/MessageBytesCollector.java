@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class MessageBytesCollector {
 

@@ -12,7 +12,7 @@ import java.io.File;
 
 /**
  * 
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class FileHelper {
     public static void deleteFolder(File folder) {

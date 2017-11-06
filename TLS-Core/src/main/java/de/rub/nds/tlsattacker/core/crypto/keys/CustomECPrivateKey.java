@@ -20,7 +20,7 @@ import java.security.spec.InvalidParameterSpecException;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class CustomECPrivateKey implements ECPrivateKey {
 

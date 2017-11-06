@@ -19,7 +19,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class ClientCertificateUrlExtensionPreparatorTest {
     private final ExtensionType extensionType = ExtensionType.CLIENT_CERTIFICATE_URL;

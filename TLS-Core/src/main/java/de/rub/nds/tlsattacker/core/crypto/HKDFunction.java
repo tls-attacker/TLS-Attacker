@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * HKDF functions computation for TLS 1.3
  * 
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
  */
 public class HKDFunction {
 

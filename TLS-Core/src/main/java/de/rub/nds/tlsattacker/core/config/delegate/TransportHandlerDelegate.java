@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
  * Note: This delegate should always be executed after the Protocolverion
  * delegate
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class TransportHandlerDelegate extends Delegate {
 

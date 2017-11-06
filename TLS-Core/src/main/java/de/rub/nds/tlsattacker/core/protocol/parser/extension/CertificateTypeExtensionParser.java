@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CertificateTypeExtensionParser extends ExtensionParser<CertificateTypeExtensionMessage> {
 

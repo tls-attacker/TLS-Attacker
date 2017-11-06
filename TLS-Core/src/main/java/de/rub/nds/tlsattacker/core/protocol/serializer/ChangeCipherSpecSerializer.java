@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class ChangeCipherSpecSerializer extends ProtocolMessageSerializer<ChangeCipherSpecMessage> {
 

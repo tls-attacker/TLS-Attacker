@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.util;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class Time {
 

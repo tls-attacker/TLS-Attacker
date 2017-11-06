@@ -70,7 +70,7 @@ import org.junit.rules.ErrorCollector;
 
 /**
  *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class TlsClientTest {
 

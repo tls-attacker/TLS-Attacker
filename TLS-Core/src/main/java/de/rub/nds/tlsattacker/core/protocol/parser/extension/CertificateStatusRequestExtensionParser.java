@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusR
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CertificateStatusRequestExtensionParser extends ExtensionParser<CertificateStatusRequestExtensionMessage> {
 

@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class SessionResumptionDelegate extends Delegate {
 

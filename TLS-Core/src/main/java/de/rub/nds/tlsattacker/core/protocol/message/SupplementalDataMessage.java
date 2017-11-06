@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+
  */
 
 @XmlRootElement

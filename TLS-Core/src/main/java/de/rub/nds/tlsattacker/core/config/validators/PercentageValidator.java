@@ -13,7 +13,7 @@ import com.beust.jcommander.ParameterException;
 
 /**
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class PercentageValidator implements IParameterValidator {
     @Override

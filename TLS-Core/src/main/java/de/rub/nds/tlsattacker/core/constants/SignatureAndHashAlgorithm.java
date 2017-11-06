@@ -21,7 +21,7 @@ import java.util.Random;
  * Very confusing, consists of two bytes, the first is hash algorithm:
  * {HashAlgorithm, SignatureAlgorithm}
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class SignatureAndHashAlgorithm implements Serializable {
 

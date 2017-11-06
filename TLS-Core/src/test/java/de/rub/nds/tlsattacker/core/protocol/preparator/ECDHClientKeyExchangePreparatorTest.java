@@ -28,8 +28,8 @@ import org.junit.Test;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Malena Ebert - malena-rub@ebert.li
+
+
  */
 public class ECDHClientKeyExchangePreparatorTest {
 

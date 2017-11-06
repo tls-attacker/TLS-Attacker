@@ -21,7 +21,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class HttpsHeaderParser extends Parser<HttpsHeader> {
 

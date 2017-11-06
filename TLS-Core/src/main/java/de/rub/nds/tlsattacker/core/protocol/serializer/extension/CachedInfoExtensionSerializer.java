@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensio
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CachedInfoExtensionSerializer extends ExtensionSerializer<CachedInfoExtensionMessage> {
 

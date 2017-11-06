@@ -59,10 +59,10 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
+
+
  */
 public class TlsContext {
 

@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  * Sends different server names in the SNI extension in the ClientHello
  * messages.
  *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class SniAttacker extends Attacker<SniTestCommandConfig> {
 

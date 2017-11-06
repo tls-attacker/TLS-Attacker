@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+
  */
 
 // todo Implement SupplementalDataMessageSerializer

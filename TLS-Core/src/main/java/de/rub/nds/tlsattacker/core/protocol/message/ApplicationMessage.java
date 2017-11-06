@@ -20,7 +20,7 @@ import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 @XmlRootElement
 public class ApplicationMessage extends ProtocolMessage {

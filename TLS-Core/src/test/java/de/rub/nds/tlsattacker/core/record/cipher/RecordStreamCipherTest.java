@@ -28,7 +28,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  *
- * @author Felix Kleine-Wilde - felix.kleine-wilde@rub.de
+
  */
 public class RecordStreamCipherTest {
 

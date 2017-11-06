@@ -16,7 +16,7 @@ import java.math.BigInteger;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class DHEServerComputations extends KeyExchangeComputations {
 

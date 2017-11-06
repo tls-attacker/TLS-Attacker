@@ -14,7 +14,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
  */
 public class SimpleMitmProxyCommandConfigTest {
 

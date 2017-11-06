@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  * The Serializer is responsible to write an Object T into a byte[] form. This
  * is comparable to byte[] serialization.
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  *            Type of the Object to write
  */

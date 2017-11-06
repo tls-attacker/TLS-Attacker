@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class AlertSerializer extends ProtocolMessageSerializer<AlertMessage> {
 

@@ -15,7 +15,7 @@ import javax.xml.bind.JAXB;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ConfigIO {
     public static void write(Config config, File f) {

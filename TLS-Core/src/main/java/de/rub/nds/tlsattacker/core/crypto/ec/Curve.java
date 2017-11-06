@@ -13,7 +13,7 @@ import java.util.Objects;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class Curve {
 

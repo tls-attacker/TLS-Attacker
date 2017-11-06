@@ -33,8 +33,8 @@ import org.junit.Test;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
+
  */
 public class RecordBlockCipherTest {
 

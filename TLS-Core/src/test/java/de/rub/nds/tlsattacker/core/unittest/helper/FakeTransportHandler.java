@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * 
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class FakeTransportHandler extends TransportHandler {
     /**

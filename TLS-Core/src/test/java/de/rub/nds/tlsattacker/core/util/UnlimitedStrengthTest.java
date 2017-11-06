@@ -28,7 +28,7 @@ import org.junit.Test;
  * We try to remove this limitation programmatically (see the field setters),
  * but it is possible that this does not work on all platforms.
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class UnlimitedStrengthTest {
 

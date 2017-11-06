@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class TimingServerUdpTransportHandler extends ServerUdpTransportHandler implements TimeableTransportHandler {
 

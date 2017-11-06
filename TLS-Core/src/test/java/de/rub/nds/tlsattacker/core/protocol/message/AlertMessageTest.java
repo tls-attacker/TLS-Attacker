@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Pierre Tilhaus
+
  */
 public class AlertMessageTest {
 

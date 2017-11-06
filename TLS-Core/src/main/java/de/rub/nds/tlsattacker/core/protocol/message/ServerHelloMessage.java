@@ -54,8 +54,8 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  */
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {

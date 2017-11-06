@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMe
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExtensionMessage> {
 

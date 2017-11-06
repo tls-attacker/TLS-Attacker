@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
 

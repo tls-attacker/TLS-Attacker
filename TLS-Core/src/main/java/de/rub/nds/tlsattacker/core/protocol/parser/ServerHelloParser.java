@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 /**
  * Parser class for ServerHelloMessages
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+
+
  */
 public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
 

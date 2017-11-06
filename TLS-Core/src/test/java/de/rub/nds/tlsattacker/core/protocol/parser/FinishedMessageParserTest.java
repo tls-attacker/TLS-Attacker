@@ -21,8 +21,8 @@ import org.junit.runners.Parameterized;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
- * @author Malena Ebert - malena-rub@ebert.li
+
+
  */
 @RunWith(Parameterized.class)
 public class FinishedMessageParserTest {

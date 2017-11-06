@@ -21,7 +21,7 @@ import org.junit.runners.Parameterized;
 
 /**
  *
- * @author Steve Ehleringer - steve.ehleringer@rub.de
+
  */
 
 @RunWith(Parameterized.class)

@@ -18,7 +18,7 @@ import java.util.TimeZone;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public class ExpiresHeaderPreparator extends Preparator<ExpiresHeader> {
 

@@ -17,7 +17,7 @@ import java.util.Arrays;
  * Converts a string named curve to a NamedCurve type (for command line
  * purposes).
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class NamedCurveConverter implements IStringConverter<NamedCurve> {
 

@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class HeartbeatExtensionSerializer extends ExtensionSerializer<HeartbeatExtensionMessage> {
 

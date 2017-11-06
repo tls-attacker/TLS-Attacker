@@ -15,7 +15,7 @@ import java.util.Map;
  * EllipticCurveType defined in rfc4492:
  * https://tools.ietf.org/html/rfc4492#section-5.4
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public enum EllipticCurveType {
 

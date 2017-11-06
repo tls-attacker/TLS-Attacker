@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
 /**
  *
- * @author Florian Linsner - florian.linsner@rub.de
+
  */
 public class PSKPremasterComputations extends KeyExchangeComputations {
 

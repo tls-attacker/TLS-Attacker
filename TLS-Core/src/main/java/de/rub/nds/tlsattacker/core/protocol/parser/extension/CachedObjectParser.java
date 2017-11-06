@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class CachedObjectParser extends Parser<CachedObject> {
 

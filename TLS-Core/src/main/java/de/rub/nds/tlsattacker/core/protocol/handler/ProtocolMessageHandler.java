@@ -22,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  * @param <Message>
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> extends Handler<Message> {

@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  * @param <AbstractRecord>
  */
 public abstract class AbstractRecordSerializer<AbstractRecord> extends Serializer<AbstractRecord> {

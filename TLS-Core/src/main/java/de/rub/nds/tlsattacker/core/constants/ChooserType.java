@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.constants;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public enum ChooserType {
     DEFAULT,

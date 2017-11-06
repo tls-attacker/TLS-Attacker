@@ -17,7 +17,7 @@ import java.io.ByteArrayOutputStream;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMessage> {
 

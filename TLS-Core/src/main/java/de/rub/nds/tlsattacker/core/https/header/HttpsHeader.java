@@ -18,7 +18,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public abstract class HttpsHeader extends ModifiableVariableHolder implements Serializable {
 

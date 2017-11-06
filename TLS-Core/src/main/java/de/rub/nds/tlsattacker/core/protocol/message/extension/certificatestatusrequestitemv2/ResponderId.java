@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
 /**
  *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
+
  */
 public class ResponderId {
 

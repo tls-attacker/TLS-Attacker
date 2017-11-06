@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.util;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public enum ServerCertificateKey {
 

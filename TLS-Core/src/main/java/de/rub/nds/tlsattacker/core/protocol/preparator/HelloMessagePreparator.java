@@ -19,7 +19,7 @@ import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  * @param <T>
  */
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends

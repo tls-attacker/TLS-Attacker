@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class UnknownHandshakeMessageSerializer extends HandshakeMessageSerializer<UnknownHandshakeMessage> {
 

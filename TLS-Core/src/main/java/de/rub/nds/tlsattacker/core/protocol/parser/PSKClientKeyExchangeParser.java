@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 
 /**
  *
- * @author Florian Linsner - florian.linsner@rub.de
+
  */
 public class PSKClientKeyExchangeParser extends ClientKeyExchangeParser<PSKClientKeyExchangeMessage> {
 

@@ -21,7 +21,7 @@ import org.junit.experimental.categories.Category;
 
 /**
  * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
  */
 public class ICEAttackerTest {
 

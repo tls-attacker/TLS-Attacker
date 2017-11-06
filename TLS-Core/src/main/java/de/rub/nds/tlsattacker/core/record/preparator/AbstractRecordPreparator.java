@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  * @param <T>
  */
 public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends Preparator<T> {

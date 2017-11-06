@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
+
  */
 public abstract class AbstractRecord extends ModifiableVariableHolder {
 

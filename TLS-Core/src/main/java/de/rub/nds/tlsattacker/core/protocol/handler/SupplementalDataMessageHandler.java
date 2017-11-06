@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.SupplementalDataMessageSe
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+
  */
 
 public class SupplementalDataMessageHandler extends HandshakeMessageHandler<SupplementalDataMessage> {

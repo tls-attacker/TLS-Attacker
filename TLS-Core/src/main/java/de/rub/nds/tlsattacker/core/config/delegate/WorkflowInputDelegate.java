@@ -14,7 +14,7 @@ import java.io.FileInputStream;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  */
 public class WorkflowInputDelegate extends Delegate {
 

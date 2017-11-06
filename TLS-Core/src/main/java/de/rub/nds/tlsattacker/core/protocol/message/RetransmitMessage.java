@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Robert Merget - robert.merget@rub.de
+
  *
  *         Raw bytes of a previos send message retransmitted
  */

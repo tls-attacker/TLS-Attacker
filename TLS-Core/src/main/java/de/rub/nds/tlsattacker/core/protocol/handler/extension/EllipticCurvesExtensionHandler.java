@@ -27,7 +27,7 @@ import java.util.List;
  * But in TLS 1.3 this extensions renamed to SupportedGroups. See:
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
 
