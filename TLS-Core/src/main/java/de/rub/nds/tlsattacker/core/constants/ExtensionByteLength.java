@@ -113,6 +113,8 @@ public class ExtensionByteLength {
      */
     public static final int ALPN_EXTENSION_LENGTH = 2;
 
+    public static final int ALPN_ENTRY_LENGTH = 1;
+
     /**
      * Length of the SRP extension identifier length field
      */
