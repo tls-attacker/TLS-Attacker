@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- *
- * 
  * @param <T>
  *            The ClientKeyExchangeMessage that should be prepared
  */

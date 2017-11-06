@@ -40,7 +40,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Executes the Lucky13 attack test
- *
  */
 public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 

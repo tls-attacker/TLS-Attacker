@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  * Thrown when problems by in the TLS workflow appear.
- * 
  */
 public class WorkflowExecutionException extends RuntimeException {
 

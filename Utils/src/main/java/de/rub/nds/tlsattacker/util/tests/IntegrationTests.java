@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.util.tests;
 
 /**
  * JUnit test category for integration tests.
- *
  */
 public interface IntegrationTests {
 

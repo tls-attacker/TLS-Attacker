@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 
 /**
  * SerializerClass for ServerHelloMessages
- *
  */
 public class ServerHelloMessageSerializer extends HelloMessageSerializer<ServerHelloMessage> {
 

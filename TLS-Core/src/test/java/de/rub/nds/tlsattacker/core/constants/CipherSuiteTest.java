@@ -34,9 +34,8 @@ public class CipherSuiteTest {
     }
 
     /**
-     * Test of getCiphersuites method, of class CipherSuite.
-     * 
-     * size of Array % 2 == 0
+     * Test of getCiphersuites method, of class CipherSuite. size of Array % 2
+     * == 0
      */
     @Test
     public void testPrepare1() {
@@ -49,9 +48,8 @@ public class CipherSuiteTest {
     }
 
     /**
-     * Test of getCiphersuites method, of class CipherSuite.
-     * 
-     * size of Array % 2 != 0
+     * Test of getCiphersuites method, of class CipherSuite. size of Array % 2
+     * != 0
      */
     @Test(expected = UnknownCiphersuiteException.class)
     public void testPrepare2() {

@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * This extension is defined in RFC7685
- * 
  */
 public class PaddingExtensionMessage extends ExtensionMessage {
 

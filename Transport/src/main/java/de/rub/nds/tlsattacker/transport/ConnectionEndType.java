@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.transport;
 
 /**
  * Defines the connection end. Either client or server.
- * 
  */
 public enum ConnectionEndType {
 

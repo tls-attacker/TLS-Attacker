@@ -22,7 +22,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * 
  * @param <Message>
  *            The ProtocolMessage that should be handled
  */
@@ -36,7 +35,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     protected final TlsContext tlsContext;
 
     /**
-     *
      * @param tlsContext
      *            The Context which should be Adjusted with this Handler
      */

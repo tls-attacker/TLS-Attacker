@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * SSLUtils is a class with static methods that are supposed to calculate
  * SSL-specific data.
- * 
  */
 public final class SSLUtils {
 
@@ -38,19 +37,15 @@ public final class SSLUtils {
     public static final byte[] SHA_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
 
     /**
-     * From RFC-6101:
-     *
-     * 5.6.9. Finished
-     * 
-     * A finished message is always sent immediately after a change cipher spec
-     * message to verify that the key exchange and authentication processes were
-     * successful. The finished message is the first protected with the
-     * just-negotiated algorithms, keys, and secrets. No acknowledgment of the
-     * finished message is required; parties may begin sending encrypted data
-     * immediately after sending the finished message. Recipients of finished
-     * messages must verify that the contents are correct.
-     * 
-     * enum { client(0x434C4E54), server(0x53525652) } Sender;
+     * From RFC-6101: 5.6.9. Finished A finished message is always sent
+     * immediately after a change cipher spec message to verify that the key
+     * exchange and authentication processes were successful. The finished
+     * message is the first protected with the just-negotiated algorithms, keys,
+     * and secrets. No acknowledgment of the finished message is required;
+     * parties may begin sending encrypted data immediately after sending the
+     * finished message. Recipients of finished messages must verify that the
+     * contents are correct. enum { client(0x434C4E54), server(0x53525652) }
+     * Sender;
      */
     private static enum Sender {
         CLIENT("434C4E54"),
@@ -173,7 +168,6 @@ public final class SSLUtils {
     }
 
     /**
-     * 
      * @param chooser
      *            The Chooser to use
      * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
@@ -185,7 +179,6 @@ public final class SSLUtils {
     }
 
     /**
-     * 
      * @param connectionEndType
      *            The ConnectionEndType
      * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
@@ -250,10 +243,9 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101 The MAC is generated as:
-     * 
-     * hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num +
-     * SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
+     * From RFC-6101 The MAC is generated as: hash(MAC_write_secret + pad_2 +
+     * hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type +
+     * SSLCompressed.length + SSLCompressed.fragment));
      * 
      * @param input
      *            is the input for the chosen hashAlgorithm, which is (seq_num +
@@ -283,16 +275,11 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101: 5.6.8. Certificate Verify
-     * 
-     * This message is used to provide explicit verification of a client
-     * certificate. ...
-     * 
-     * struct { Signature signature; } CertificateVerify;
-     * 
-     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 +
-     * MD5(handshake_messages + master_secret + pad_1));
-     * Certificate.signature.sha_hash SHA(master_secret + pad_2 +
+     * From RFC-6101: 5.6.8. Certificate Verify This message is used to provide
+     * explicit verification of a client certificate. ... struct { Signature
+     * signature; } CertificateVerify; CertificateVerify.signature.md5_hash
+     * MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret +
+     * pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 +
      * SHA(handshake_messages + master_secret + pad_1));
      * 
      * @param handshakeMessages
@@ -306,19 +293,12 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101: 5.6.9. Finished
-     * 
-     * A finished message is always sent immediately after a change cipher spec
-     * ...
-     * 
-     * enum { client(0x434C4E54), server(0x53525652) } Sender;
-     * 
-     * struct { opaque md5_hash[16]; opaque sha_hash[20]; } Finished;
-     * 
-     * md5_hash: MD5(master_secret + pad2 + MD5(handshake_messages + Sender +
-     * master_secret + pad1));
-     * 
-     * sha_hash: SHA(master_secret + pad2 + SHA(handshake_messages + Sender +
+     * From RFC-6101: 5.6.9. Finished A finished message is always sent
+     * immediately after a change cipher spec ... enum { client(0x434C4E54),
+     * server(0x53525652) } Sender; struct { opaque md5_hash[16]; opaque
+     * sha_hash[20]; } Finished; md5_hash: MD5(master_secret + pad2 +
+     * MD5(handshake_messages + Sender + master_secret + pad1)); sha_hash:
+     * SHA(master_secret + pad2 + SHA(handshake_messages + Sender +
      * master_secret + pad1));
      * 
      * @param handshakeMessages

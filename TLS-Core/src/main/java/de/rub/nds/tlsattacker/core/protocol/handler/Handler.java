@@ -13,8 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
- *
- * 
  * @param <T>
  *            The Object that should be Handled
  */

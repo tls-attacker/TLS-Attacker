@@ -17,8 +17,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * 
- * 
  * @version 0.1
  */
 public class BleichenbacherOracleTest {

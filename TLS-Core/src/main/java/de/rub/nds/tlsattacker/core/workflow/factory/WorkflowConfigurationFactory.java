@@ -57,7 +57,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Create a WorkflowTace based on a Config instance.
- *
  */
 public class WorkflowConfigurationFactory {
 

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * todo implement SupplementalDataMessagePreparator
- * 
  */
 public class SupplementalDataMessagePreparator extends HandshakeMessagePreparator<SupplementalDataMessage> {
 

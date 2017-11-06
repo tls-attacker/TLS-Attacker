@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
- *
- * 
  * @param <T>
  *            The HelloMessage that should be prepared
  */

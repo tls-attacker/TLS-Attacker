@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  * This handler processes the HelloRetryRequest messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.1.4
- *
  */
 public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetryRequestMessage> {
 

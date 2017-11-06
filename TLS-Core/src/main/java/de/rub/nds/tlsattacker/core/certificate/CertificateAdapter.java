@@ -16,7 +16,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
-
  */
 public class CertificateAdapter extends XmlAdapter<String, Certificate> {
 

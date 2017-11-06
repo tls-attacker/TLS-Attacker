@@ -15,10 +15,8 @@ import java.math.BigInteger;
 
 /**
  * Manger algorithm according to
- * https://www.iacr.org/archive/crypto2001/21390229.pdf
- * 
- * Original Python code written by Tibor Jager
- * 
+ * https://www.iacr.org/archive/crypto2001/21390229.pdf Original Python code
+ * written by Tibor Jager
  * 
  * @version 0.1
  */

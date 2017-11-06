@@ -15,7 +15,6 @@ import java.util.Map;
 
 /**
  * RFC6091 and RFC7250
- * 
  */
 public enum CertificateType {
     X509((byte) 0),

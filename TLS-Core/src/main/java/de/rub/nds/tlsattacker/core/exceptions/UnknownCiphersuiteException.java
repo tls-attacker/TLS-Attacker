@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  * Unknown cipher suite exception
- * 
  */
 public class UnknownCiphersuiteException extends RuntimeException {
 

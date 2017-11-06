@@ -25,7 +25,6 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 /**
  * Pseudo random function computation for TLS 1.0 - 1.2 (for TLS 1.0, bouncy
  * castle TlsUtils are used)
- *
  */
 public class PseudoRandomFunction {
 

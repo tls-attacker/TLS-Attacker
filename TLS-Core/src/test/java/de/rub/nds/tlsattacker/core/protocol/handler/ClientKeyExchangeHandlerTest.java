@@ -41,29 +41,20 @@ public class ClientKeyExchangeHandlerTest {
     }
 
     /**
-     * From RFC 6101:
-     * 
-     * 6.1. Asymmetric Cryptographic Computations
-     *
-     * The asymmetric algorithms are used in the handshake protocol to
-     * authenticate parties and to generate shared keys and secrets.
-     *
-     * For Diffie-Hellman, RSA, and FORTEZZA, the same algorithm is used to
-     * convert the pre_master_secret into the master_secret. The
-     * pre_master_secret should be deleted from memory once the master_secret
-     * has been computed.
-     *
-     * master_secret = MD5(pre_master_secret + SHA('A' + pre_master_secret +
-     * ClientHello.random + ServerHello.random)) + MD5(pre_master_secret +
-     * SHA('BB' + pre_master_secret + ClientHello.random + ServerHello.random))
-     * + MD5(pre_master_secret + SHA('CCC' + pre_master_secret +
-     * ClientHello.random + ServerHello.random));
-     * 
-     * ..... It is hard to read how the Constants have to be implemented. We
-     * will use the ASCII values.
+     * From RFC 6101: 6.1. Asymmetric Cryptographic Computations The asymmetric
+     * algorithms are used in the handshake protocol to authenticate parties and
+     * to generate shared keys and secrets. For Diffie-Hellman, RSA, and
+     * FORTEZZA, the same algorithm is used to convert the pre_master_secret
+     * into the master_secret. The pre_master_secret should be deleted from
+     * memory once the master_secret has been computed. master_secret =
+     * MD5(pre_master_secret + SHA('A' + pre_master_secret + ClientHello.random
+     * + ServerHello.random)) + MD5(pre_master_secret + SHA('BB' +
+     * pre_master_secret + ClientHello.random + ServerHello.random)) +
+     * MD5(pre_master_secret + SHA('CCC' + pre_master_secret +
+     * ClientHello.random + ServerHello.random)); ..... It is hard to read how
+     * the Constants have to be implemented. We will use the ASCII values.
      * 
      * @throws NoSuchAlgorithmException
-     *
      */
     @Test
     public void testMasterSecretCalculationSSL3() throws NoSuchAlgorithmException {

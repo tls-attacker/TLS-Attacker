@@ -178,7 +178,6 @@ public class ECComputer {
     }
 
     /**
-     * 
      * @param p
      *            The point to muliply
      * @return The result of the multiplication

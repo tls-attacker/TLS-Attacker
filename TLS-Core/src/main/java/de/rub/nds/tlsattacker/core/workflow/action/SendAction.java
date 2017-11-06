@@ -27,7 +27,6 @@ import java.util.Objects;
 
 /**
  * todo print configured records
- *
  */
 public class SendAction extends MessageAction implements SendingAction {
 

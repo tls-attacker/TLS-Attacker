@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
- *
- * 
  * @param <AbstractRecord>
  *            The Abstract record that should be parsed
  */

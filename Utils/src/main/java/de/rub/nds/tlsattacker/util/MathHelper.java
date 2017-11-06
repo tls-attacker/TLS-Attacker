@@ -43,7 +43,6 @@ public class MathHelper {
     }
 
     /**
-     * 
      * @param u
      *            The u parameter
      * @param v

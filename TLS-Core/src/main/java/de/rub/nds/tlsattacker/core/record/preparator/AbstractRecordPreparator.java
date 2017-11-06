@@ -15,8 +15,6 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- *
- * 
  * @param <T>
  *            The AbstractRecord that should be prepared
  */

@@ -26,7 +26,6 @@ public class ModifiableVariableAnalyzerTest {
     /**
      * Test of getAllModifiableVariableFields method, of class
      * ModifiableVariableAnalyzer.
-     * 
      */
     @Test
     public void testGetAllModifiableVariableFields() {

@@ -29,7 +29,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Allows to execute the Winshock attack, by setting the CertificateVerify
  * protocol message properties. I
- *
  */
 public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 

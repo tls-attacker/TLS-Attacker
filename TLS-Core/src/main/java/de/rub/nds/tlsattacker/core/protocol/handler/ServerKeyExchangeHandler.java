@@ -13,9 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- *
- * 
- * 
  * @param <Message>
  *            The ServerkeyExchangeMessage that should be handled
  */

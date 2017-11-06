@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * This extension is defined in RFC6962
- * 
  */
 public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage {
 
@@ -30,7 +29,6 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
     }
 
     /**
-     *
      * @return the raw signedTimestamp
      */
     public ModifiableByteArray getSignedTimestamp() {
@@ -38,7 +36,6 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
     }
 
     /**
-     *
      * @param singedTimestamp
      *            - Timestamp as MidifiableByteArray
      */
@@ -47,7 +44,6 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
     }
 
     /**
-     * 
      * @param singedTimestamp
      *            - Timestamp as byte array
      */

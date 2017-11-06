@@ -17,10 +17,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
  * Abstract Parser class which can be used to read a byte array.
  *
- * 
  * @param <T>
  *            Type of the Object that should be parsed
  */

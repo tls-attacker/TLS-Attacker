@@ -16,7 +16,6 @@ import java.util.Arrays;
 /**
  * Converts an EC point format string to an ECPointFormat (for command line
  * purposes).
- * 
  */
 public class PointFormatConverter implements IStringConverter<ECPointFormat> {
 

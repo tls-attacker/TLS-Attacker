@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 
 /**
  * This extension is defined in RFC6520
- * 
  */
 public class HeartbeatExtensionMessage extends ExtensionMessage {
 

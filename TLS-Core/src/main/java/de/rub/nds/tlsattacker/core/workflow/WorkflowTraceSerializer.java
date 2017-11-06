@@ -100,7 +100,6 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     *
      * @param outputStream
      *            The OutputStream to which the Trace should be written to
      * @param workflowTrace
@@ -120,7 +119,6 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     *
      * @param inputStream
      *            The InputStream from which the Parameter should be read
      * @return The deserialized WorkflowTrace

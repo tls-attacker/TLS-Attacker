@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * RFC6066 and RFC6961
- * 
  */
 public enum CertificateStatusRequestType {
     OCSP((int) 1),

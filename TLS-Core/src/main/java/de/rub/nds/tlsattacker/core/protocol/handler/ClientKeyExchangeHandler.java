@@ -28,9 +28,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
 
 /**
- *
- * 
- * 
  * @param <Message>
  *            The ClientKeyExchangeMessage that should be Handled
  */

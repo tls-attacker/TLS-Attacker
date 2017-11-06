@@ -15,8 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- *
- * 
  * @param <T>
  *            The ExtensionMessage that should be prepared
  */

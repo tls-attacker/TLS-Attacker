@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  * This handler processes the EncryptedExtension messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.3.1
- *
  */
 public class EncryptedExtensionsHandler extends HandshakeMessageHandler<EncryptedExtensionsMessage> {
 

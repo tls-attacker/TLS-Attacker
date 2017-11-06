@@ -15,7 +15,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Sends different server names in the SNI extension in the ClientHello
  * messages.
- *
  */
 public class SniAttacker extends Attacker<SniTestCommandConfig> {
 

@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  * Configuration exception
- * 
  */
 public class ConfigurationException extends RuntimeException {
 

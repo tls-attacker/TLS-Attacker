@@ -18,13 +18,9 @@ import java.nio.charset.Charset;
  * A simple action to print the last handled application data to console. Per
  * default, this prints the raw byte values of the application data as a hex
  * string. An charset for simple encoding can be given to get readable output
- * (if possible).
- *
- * TODO: Don't know if it's useful to have the data in worfklow trace output.
- *
- * TODO: If bored, build a similar action that can decode chunked + gziped HTTP
- * data :-)
- * 
+ * (if possible). TODO: Don't know if it's useful to have the data in worfklow
+ * trace output. TODO: If bored, build a similar action that can decode chunked
+ * + gziped HTTP data :-)
  */
 public class PrintLastHandledApplicationDataAction extends TLSAction {
 

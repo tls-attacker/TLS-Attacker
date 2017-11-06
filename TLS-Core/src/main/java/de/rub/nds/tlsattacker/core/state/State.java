@@ -24,23 +24,16 @@ import org.apache.logging.log4j.LogManager;
 /**
  * The central object passed around during program execution. The state
  * initializes and holds the workflow trace, the default configuration and the
- * corresponding TLS contexts.
- *
- * The concept behind this class is as follows: the state is initialized with
- * the user configured values, that is, via default configuration and a given
- * workflow trace (type). On initialization, the state will create the necessary
- * TLS contexts for workflow execution. These contexts should be considered as
- * dynamic objects, representing TLS connections, calculations and other data
- * exchanged during the TLS actual workflow execution.
- * 
- * Therefore, there is no interface for setting TLS contexts manually. They are
- * always automatically created based on the connection ends defined in the
- * workflow trace.
- * 
- * Please also have a look at the tests supplied with this class for some
- * initialization examples with expected behavior.
- * 
- * 
+ * corresponding TLS contexts. The concept behind this class is as follows: the
+ * state is initialized with the user configured values, that is, via default
+ * configuration and a given workflow trace (type). On initialization, the state
+ * will create the necessary TLS contexts for workflow execution. These contexts
+ * should be considered as dynamic objects, representing TLS connections,
+ * calculations and other data exchanged during the TLS actual workflow
+ * execution. Therefore, there is no interface for setting TLS contexts
+ * manually. They are always automatically created based on the connection ends
+ * defined in the workflow trace. Please also have a look at the tests supplied
+ * with this class for some initialization examples with expected behavior.
  */
 public class State {
 

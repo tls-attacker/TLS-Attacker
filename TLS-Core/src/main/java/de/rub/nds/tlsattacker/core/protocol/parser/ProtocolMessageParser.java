@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 /**
  * An abstract Parser class for ProtocolMessages
  *
- * 
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */
@@ -34,7 +33,6 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage> extends P
      *            parse
      * @param version
      *            Version of the Protocol
-     *
      */
     public ProtocolMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array);

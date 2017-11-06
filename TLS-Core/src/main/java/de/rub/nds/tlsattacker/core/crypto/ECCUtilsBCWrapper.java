@@ -27,7 +27,6 @@ public class ECCUtilsBCWrapper {
      * Reads ECC domain parameters from an inputstream, based on given named
      * curves and point formats. It uses the BC functionality.
      *
-     * 
      * @param namedCurves
      *            The Array of namedCurves
      * @param pointFormats

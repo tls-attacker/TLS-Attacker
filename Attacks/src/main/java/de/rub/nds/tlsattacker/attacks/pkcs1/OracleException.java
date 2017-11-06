@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 /**
- * 
- * 
  * @version 0.1
  */
 public class OracleException extends RuntimeException {

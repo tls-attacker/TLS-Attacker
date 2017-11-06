@@ -39,7 +39,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
- *
  */
 public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 

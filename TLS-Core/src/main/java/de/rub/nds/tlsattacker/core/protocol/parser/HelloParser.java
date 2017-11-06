@@ -18,7 +18,6 @@ import java.util.Arrays;
 /**
  * An abstract Parser class for Hello Messages
  *
- * 
  * @param <T>
  *            Type of the HelloMessage to parse
  */

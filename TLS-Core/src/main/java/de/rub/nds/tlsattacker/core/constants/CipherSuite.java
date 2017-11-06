@@ -553,9 +553,8 @@ public enum CipherSuite {
 
     /**
      * Returns true if the cipher suite is supported by the specified protocol
-     * version.
-     *
-     * TODO: this is still very imprecise and must be improved with new ciphers.
+     * version. TODO: this is still very imprecise and must be improved with new
+     * ciphers.
      *
      * @param version
      *            The ProtocolVersion to check

@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * This extension is defined in RFC5746
- * 
  */
 public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
 

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 
 /**
- *
  * TODO
  */
 public class SupplementalDataMessageParser extends HandshakeMessageParser<SupplementalDataMessage> {

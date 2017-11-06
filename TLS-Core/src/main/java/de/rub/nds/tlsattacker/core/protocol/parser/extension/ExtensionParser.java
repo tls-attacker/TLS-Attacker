@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
- *
- * 
  * @param <T>
  *            The ExtensionMessage that should be parsed
  */

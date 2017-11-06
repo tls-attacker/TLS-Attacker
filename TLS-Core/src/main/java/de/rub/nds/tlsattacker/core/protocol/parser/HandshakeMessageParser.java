@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * An abstract Parser class for HandshakeMessages
  *
- * 
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */

@@ -16,7 +16,6 @@ import org.apache.logging.log4j.Level;
 /**
  * Converts a log level string to an Apache log4j Level object (for command line
  * purposes).
- * 
  */
 public class LogLevelConverter implements IStringConverter<Level> {
 

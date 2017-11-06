@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * This extension is defined in RFC6066
- * 
  */
 public class CertificateStatusRequestExtensionMessage extends ExtensionMessage {
 

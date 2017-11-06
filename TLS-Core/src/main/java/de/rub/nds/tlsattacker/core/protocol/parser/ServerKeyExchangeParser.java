@@ -13,8 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 
 /**
- *
- * 
  * @param <T>
  *            The ServerKeyExchangeMessage that should be parsed
  */

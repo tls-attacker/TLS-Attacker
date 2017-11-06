@@ -51,7 +51,6 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
     }
 
     /**
-     *
      * @param context
      */
     private void adjustDhGenerator(DHEServerKeyExchangeMessage message) {

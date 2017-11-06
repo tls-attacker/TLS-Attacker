@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.util.tests;
 
 /**
  * JUnit test category. Default tests executed with every mvn test.
- *
  */
 public interface FastTests {
 

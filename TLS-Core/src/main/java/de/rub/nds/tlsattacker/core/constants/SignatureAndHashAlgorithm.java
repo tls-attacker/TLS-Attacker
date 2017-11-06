@@ -16,11 +16,8 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * Construction of a hash and signature algorithm.
- * 
- * Very confusing, consists of two bytes, the first is hash algorithm:
- * {HashAlgorithm, SignatureAlgorithm}
- * 
+ * Construction of a hash and signature algorithm. Very confusing, consists of
+ * two bytes, the first is hash algorithm: {HashAlgorithm, SignatureAlgorithm}
  */
 public class SignatureAndHashAlgorithm implements Serializable {
 

@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * 
- * 
  * @param <ProtocolMessage>
  *            The ProtocolMessage that should be handled
  */

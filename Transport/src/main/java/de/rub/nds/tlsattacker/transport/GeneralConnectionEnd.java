@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.transport;
 /**
  * A general connection end with the ability to switch connection end type at
  * life time. Useful for testing.
- * 
  */
 public class GeneralConnectionEnd extends ConnectionEnd {
 

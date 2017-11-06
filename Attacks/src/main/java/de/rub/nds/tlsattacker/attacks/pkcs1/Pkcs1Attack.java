@@ -43,7 +43,6 @@ public class Pkcs1Attack {
     }
 
     /**
-     * 
      * @param m
      *            original message to be changed
      * @param si
@@ -59,7 +58,6 @@ public class Pkcs1Attack {
     }
 
     /**
-     * 
      * @param m
      *            original message to be changed
      * @param si

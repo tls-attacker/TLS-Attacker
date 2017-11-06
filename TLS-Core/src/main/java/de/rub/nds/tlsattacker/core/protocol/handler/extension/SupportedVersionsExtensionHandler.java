@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * This handler processes the SupportedVersions extensions, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.1
- * 
  */
 public class SupportedVersionsExtensionHandler extends ExtensionHandler<SupportedVersionsExtensionMessage> {
 

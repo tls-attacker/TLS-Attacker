@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
-
-
- */
 public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
 
     public ChangeCipherSpecHandler(TlsContext tlsContext) {

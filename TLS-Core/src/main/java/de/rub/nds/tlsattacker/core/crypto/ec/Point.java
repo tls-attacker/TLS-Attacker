@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import java.math.BigInteger;
 
 /**
- * 
- * 
  * @version 0.1
  */
 public class Point {

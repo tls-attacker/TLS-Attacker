@@ -23,11 +23,9 @@ import org.junit.Test;
 /**
  * If you run on an Oracle Java platform, it is possible that strong algorithms
  * are not allowed. In this case, you have to install a so called Unlimited
- * Strength Jurisdiction Policy.
- * 
- * We try to remove this limitation programmatically (see the field setters),
- * but it is possible that this does not work on all platforms.
- * 
+ * Strength Jurisdiction Policy. We try to remove this limitation
+ * programmatically (see the field setters), but it is possible that this does
+ * not work on all platforms.
  */
 public class UnlimitedStrengthTest {
 

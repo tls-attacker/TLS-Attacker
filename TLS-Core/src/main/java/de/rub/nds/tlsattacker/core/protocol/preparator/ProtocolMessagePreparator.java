@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- *
- * 
  * @param <T>
  *            The ProtocolMessage that should be prepared
  */

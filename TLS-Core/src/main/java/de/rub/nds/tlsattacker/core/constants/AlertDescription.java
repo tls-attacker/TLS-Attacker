@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * TLS Alerts
- * 
  */
 public enum AlertDescription {
 

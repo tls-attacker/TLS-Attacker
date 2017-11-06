@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * Name Type for Server Name Indication
- * 
  */
 public enum NameType {
 

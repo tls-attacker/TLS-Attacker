@@ -15,9 +15,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * 
- *
  * Raw bytes of a previos send message retransmitted
  */
 @XmlRootElement

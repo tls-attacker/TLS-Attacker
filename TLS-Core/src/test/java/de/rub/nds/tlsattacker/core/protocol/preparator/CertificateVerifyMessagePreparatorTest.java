@@ -55,34 +55,21 @@ public class CertificateVerifyMessagePreparatorTest {
 
     /**
      * Test for correct generation of CertificateVerify.signature for SSLv3 with
-     * empty secret and no handshake_messages. From RFC 6101:
-     * 
-     * 5.6.8. Certificate Verify
-     *
-     * This message is used to provide explicit verification of a client
+     * empty secret and no handshake_messages. From RFC 6101: 5.6.8. Certificate
+     * Verify This message is used to provide explicit verification of a client
      * certificate. This message is only sent following any client certificate
      * that has signing capability (i.e., all certificates except those
-     * containing fixed Diffie-Hellman parameters).
-     *
-     * struct { Signature signature; } CertificateVerify;
-     *
-     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 +
-     * MD5(handshake_messages + master_secret + pad_1));
-     * Certificate.signature.sha_hash SHA(master_secret + pad_2 +
-     * SHA(handshake_messages + master_secret + pad_1));
-     *
-     * pad_1: This is identical to the pad_1 defined in Section 5.2.3.1.
-     *
-     * pad_2: This is identical to the pad_2 defined in Section 5.2.3.1.
-     *
-     * Here, handshake_messages refers to all handshake messages starting at
-     * client hello up to but not including this message.
-     * 
-     * .......
-     * 
-     * pad_1: The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
-     *
-     * pad_2: The character 0x5c repeated 48 times for MD5 or 40 times for SHA.
+     * containing fixed Diffie-Hellman parameters). struct { Signature
+     * signature; } CertificateVerify; CertificateVerify.signature.md5_hash
+     * MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret +
+     * pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 +
+     * SHA(handshake_messages + master_secret + pad_1)); pad_1: This is
+     * identical to the pad_1 defined in Section 5.2.3.1. pad_2: This is
+     * identical to the pad_2 defined in Section 5.2.3.1. Here,
+     * handshake_messages refers to all handshake messages starting at client
+     * hello up to but not including this message. ....... pad_1: The character
+     * 0x36 repeated 48 times for MD5 or 40 times for SHA. pad_2: The character
+     * 0x5c repeated 48 times for MD5 or 40 times for SHA.
      * 
      * @throws NoSuchAlgorithmException
      */

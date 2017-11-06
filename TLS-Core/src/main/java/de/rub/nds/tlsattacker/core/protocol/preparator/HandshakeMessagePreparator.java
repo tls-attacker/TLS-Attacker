@@ -21,8 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- *
- * 
  * @param <T>
  *            The HandshakeMessage that should be prepared
  */

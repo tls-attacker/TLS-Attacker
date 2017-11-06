@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
- *
- * 
  * @param <T>
  *            The ExtensionMessage that should be serialized
  */

@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * TLS Protocol message is the message included in the Record message.
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends ModifiableVariableHolder {

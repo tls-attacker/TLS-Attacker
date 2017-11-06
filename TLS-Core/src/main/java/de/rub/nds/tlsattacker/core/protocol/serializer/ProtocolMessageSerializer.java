@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 
 /**
- *
- * 
  * @param <T>
  *            The ProtocolMessage that should be serialized
  */

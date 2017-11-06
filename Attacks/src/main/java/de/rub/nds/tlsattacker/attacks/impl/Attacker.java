@@ -20,8 +20,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 
 /**
- * 
- * 
  * @param <Config>
  */
 public abstract class Attacker<Config extends AttackConfig> {

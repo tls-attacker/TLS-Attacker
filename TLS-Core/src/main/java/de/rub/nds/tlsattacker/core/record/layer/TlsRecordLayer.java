@@ -52,7 +52,6 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     /**
-     *
      * @param rawRecordData
      *            The RawRecordData that should be parsed
      * @return list of parsed records or null, if there was not enough data

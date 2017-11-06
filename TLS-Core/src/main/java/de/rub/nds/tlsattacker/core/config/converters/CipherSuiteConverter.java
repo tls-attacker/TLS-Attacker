@@ -15,7 +15,6 @@ import java.util.Arrays;
 
 /**
  * Converts a CipherSuite string to a CipherSuite (for command line purposes).
- * 
  */
 public class CipherSuiteConverter implements IStringConverter<CipherSuite> {
 

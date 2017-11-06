@@ -29,9 +29,8 @@ public class HKDFunctionTest {
     }
 
     /**
-     * Test of extract and expand method, of class HKDFunction.
-     * 
-     * Test cases from: https://tools.ietf.org/html/rfc5869#appendix-A
+     * Test of extract and expand method, of class HKDFunction. Test cases from:
+     * https://tools.ietf.org/html/rfc5869#appendix-A
      */
     @Test
     public void testExtractAndExpand() {

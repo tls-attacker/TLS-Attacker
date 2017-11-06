@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * RFC6066
- * 
  */
 public enum TrustedCaIndicationIdentifierType {
     PRE_AGREED((byte) 0),
