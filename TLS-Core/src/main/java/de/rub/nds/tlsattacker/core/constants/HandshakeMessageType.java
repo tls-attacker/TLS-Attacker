@@ -13,9 +13,6 @@ import java.util.Map;
 
 /**
  * Also called Handshake Type
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
  */
 public enum HandshakeMessageType {
 

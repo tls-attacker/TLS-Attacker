@@ -35,10 +35,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SendActionTest {
 
     private State state;

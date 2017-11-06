@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.SupplementalData;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author Christoph Penkert <christoph.penkert@rub.de>
- */
-
 public enum SupplementalDataType {
 
     USER_MAPPING_DATA(new byte[] { (byte) 0, (byte) 0 }),

@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.state;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class Session {
 
     private byte[] sessionId;

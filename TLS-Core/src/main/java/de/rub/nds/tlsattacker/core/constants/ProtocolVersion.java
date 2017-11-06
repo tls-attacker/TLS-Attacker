@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum ProtocolVersion {
 
     SSL2(new byte[] { (byte) 0x00, (byte) 0x02 }),
@@ -111,12 +106,12 @@ public enum ProtocolVersion {
     }
 
     /**
-     * Maps a string protocol version value to an enum.
-     *
-     * It handles specific cases like TLSv1.2 or SSLv3
+     * Maps a string protocol version value to an enum. It handles specific
+     * cases like TLSv1.2 or SSLv3
      *
      * @param protocolVersion
-     * @return
+     *            The ProtocolVersion as a String
+     * @return The ProtocolVersion as an Enum
      */
     public static ProtocolVersion fromString(String protocolVersion) {
         protocolVersion = protocolVersion.replaceFirst("v", "");
@@ -134,7 +129,8 @@ public enum ProtocolVersion {
      * Return the highest protocol version.
      *
      * @param list
-     * @return
+     *            The List of protocolVersions to search in
+     * @return The highest ProtocolVersion
      */
     public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
         ProtocolVersion highestProtocolVersion = null;
@@ -154,14 +150,13 @@ public enum ProtocolVersion {
     /**
      * Return true, if protocol version TLS 1.3
      *
-     * @return
+     * @return True if protocolVersion is TLS.13 or a Draft of TLS 1.3
      */
     public boolean isTLS13() {
         return this == TLS13 || this == TLS13_DRAFT20 || this == TLS13_DRAFT21;
     }
 
     /**
-     * 
      * @return true, if protocol version SSL 2 or 3
      */
     public boolean isSSL() {

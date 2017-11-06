@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class ServerCertificateKeyTest {
 
     /**

@@ -13,10 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import javax.xml.bind.JAXB;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ConfigIO {
     public static void write(Config config, File f) {
         JAXB.marshal(config, f);

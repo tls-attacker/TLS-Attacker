@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class RecordNullCipher extends RecordCipher {
 
     public RecordNullCipher(TlsContext context) {
@@ -27,7 +23,8 @@ public class RecordNullCipher extends RecordCipher {
      * Null Cipher just passes the data through
      *
      * @param request
-     * @return
+     *            The EncryptionRequest
+     * @return The EncryptionResult
      */
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
@@ -38,7 +35,8 @@ public class RecordNullCipher extends RecordCipher {
      * Null Cipher just passes the data through
      *
      * @param data
-     * @return
+     *            The raw data that should be decrypted
+     * @return The raw decrypted Data
      */
     @Override
     public byte[] decrypt(byte[] data) {

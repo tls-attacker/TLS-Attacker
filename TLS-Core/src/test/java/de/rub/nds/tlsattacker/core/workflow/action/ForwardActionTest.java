@@ -47,10 +47,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class ForwardActionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ForwardActionTest.class);
@@ -100,6 +96,8 @@ public class ForwardActionTest {
 
     /**
      * Test normal execution.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecute() throws Exception {
@@ -115,6 +113,8 @@ public class ForwardActionTest {
 
     /**
      * Test execution attempts with missing aliases.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecuteMissingAliases() throws Exception {

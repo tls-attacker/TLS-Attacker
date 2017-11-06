@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class EncryptionResult {
 
     private final byte[] initialisationVector;

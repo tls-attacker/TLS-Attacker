@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.alpn.AlpnEntryParse
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class AlpnExtensionParser extends ExtensionParser<AlpnExtensionMessage> {
 
     public AlpnExtensionParser(int startposition, byte[] array) {

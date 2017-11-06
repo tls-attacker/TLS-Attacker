@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class RecordCipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);

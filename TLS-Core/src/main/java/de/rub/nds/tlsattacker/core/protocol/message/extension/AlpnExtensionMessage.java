@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * This extension is defined in RFC7301
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class AlpnExtensionMessage extends ExtensionMessage {
 

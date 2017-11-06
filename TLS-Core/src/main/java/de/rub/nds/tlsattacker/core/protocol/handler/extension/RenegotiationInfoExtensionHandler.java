@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationIn
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RenegotiationInfoExtensionHandler extends ExtensionHandler<RenegotiationInfoExtensionMessage> {
 
     public RenegotiationInfoExtensionHandler(TlsContext context) {

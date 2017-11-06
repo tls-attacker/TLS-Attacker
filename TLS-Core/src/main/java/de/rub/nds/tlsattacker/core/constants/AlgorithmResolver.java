@@ -27,8 +27,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Resolves crypto algorithms and their properties from a given cipehr suite
  * (and TLS version).
- *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  */
 public class AlgorithmResolver {
 
@@ -42,8 +40,11 @@ public class AlgorithmResolver {
      * the PRF).
      *
      * @param protocolVersion
+     *            The ProtocolVersion for which the PRFAlgorithm should be
+     *            returned
      * @param cipherSuite
-     * @return
+     *            The Ciphersuite for which the PRFAlgorithm should be returned
+     * @return The selected PRFAlgorithm
      */
     public static PRFAlgorithm getPRFAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         PRFAlgorithm result;
@@ -72,8 +73,12 @@ public class AlgorithmResolver {
      * string identifies the digest).
      *
      * @param protocolVersion
+     *            The ProtocolVersion for which the DigestAlgorithm should be
+     *            returned
      * @param cipherSuite
-     * @return
+     *            The Ciphersuite for which the DigestAlgorithm should be
+     *            returned
+     * @return The selected DigestAlgorithm
      */
     public static DigestAlgorithm getDigestAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         DigestAlgorithm result;
@@ -166,12 +171,13 @@ public class AlgorithmResolver {
      * Depending on the provided cipher suite, the server needs to be
      * initialized with proper public key(s). Depending on the cipher suite,
      * there are possibly more than one cipher suites needed.
-     *
+     * 
      * This function returns a list of public key algorithms needed when running
      * a server with a cipher suite.
      *
      * @param cipherSuite
-     * @return
+     *            The selected CipherSuite
+     * @return The Set of publicKeyAlgorithms
      */
     public static Set<PublicKeyAlgorithm> getRequiredKeystoreAlgorithms(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
@@ -254,7 +260,9 @@ public class AlgorithmResolver {
 
     /**
      * @param cipherSuite
-     * @return
+     *            The Ciphersuite for which the BulkCipherAlgorithm should be
+     *            returned
+     * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
@@ -287,9 +295,9 @@ public class AlgorithmResolver {
     }
 
     /**
-     *
      * @param cipherSuite
-     * @return
+     *            The Ciphersuite for which the CipherType should be selected
+     * @return The CipherType of the Ciphersuite
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
         String cs = cipherSuite.toString().toUpperCase();

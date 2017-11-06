@@ -31,10 +31,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class RSAClientKeyExchangePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(RSAClientKeyExchangePreparatorTest.class);

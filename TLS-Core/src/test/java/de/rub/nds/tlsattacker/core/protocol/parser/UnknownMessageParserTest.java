@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class UnknownMessageParserTest {
 
     private UnknownMessageParser parser;

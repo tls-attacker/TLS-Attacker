@@ -29,13 +29,9 @@ import org.apache.logging.log4j.Logger;
 import sun.security.ssl.SSLSocketImpl;
 
 /**
- * BasicTlsClient for integration tests.
- *
- * A TLS Client thread that establishes a default TLS session with the given TLS
- * server. If no server is specified, try to connect to 127.0.0.1:4433 using
- * TLS1.2 and TLS_RSA_WITH_AES_128_CBC_SHA.
- * 
- * @author Robert Merget <robert.merget@rub.de>
+ * BasicTlsClient for integration tests. A TLS Client thread that establishes a
+ * default TLS session with the given TLS server. If no server is specified, try
+ * to connect to 127.0.0.1:4433 using TLS1.2 and TLS_RSA_WITH_AES_128_CBC_SHA.
  */
 public class BasicTlsClient extends Thread {
 

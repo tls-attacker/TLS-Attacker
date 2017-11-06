@@ -9,10 +9,7 @@
 package de.rub.nds.tlsattacker.core.constants.ssl;
 
 /**
- *
  * Length of fields in SSL2 Messages
- * 
- * @author Robert Merget <robert.merget@rub.de>
  */
 public class SSL2ByteLength {
     public static final int LENGTH = 2;

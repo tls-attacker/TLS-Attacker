@@ -39,10 +39,6 @@ import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.math.ec.ECPoint;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
 
     private TokenBindingMessage message;

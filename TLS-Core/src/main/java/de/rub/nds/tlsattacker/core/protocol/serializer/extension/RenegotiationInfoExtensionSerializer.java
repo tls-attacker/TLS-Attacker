@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RenegotiationInfoExtensionSerializer extends ExtensionSerializer<RenegotiationInfoExtensionMessage> {
 
     private final RenegotiationInfoExtensionMessage message;

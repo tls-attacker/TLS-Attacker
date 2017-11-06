@@ -5,7 +5,7 @@ sudo: false
 before_install:
   - chmod +x mvnw
 
-script: ./mvnw -Ptravis clean package
+script: ./mvnw clean package -Dgpg.skip  -Dmaven.javadoc.skip=true
 
 jdk:
   - oraclejdk8

@@ -25,8 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * SSLUtils is a class with static methods that are supposed to calculate
  * SSL-specific data.
- * 
- * @author felix kleine-wilde - felix.kleine-wilde@rub.de
  */
 public final class SSLUtils {
 
@@ -40,16 +38,16 @@ public final class SSLUtils {
 
     /**
      * From RFC-6101:
-     *
-     * 5.6.9. Finished
      * 
-     * A finished message is always sent immediately after a change cipher spec
-     * message to verify that the key exchange and authentication processes were
-     * successful. The finished message is the first protected with the
-     * just-negotiated algorithms, keys, and secrets. No acknowledgment of the
-     * finished message is required; parties may begin sending encrypted data
-     * immediately after sending the finished message. Recipients of finished
-     * messages must verify that the contents are correct.
+     * 5.6.9.
+     * 
+     * Finished A finished message is always sent immediately after a change
+     * cipher spec message to verify that the key exchange and authentication
+     * processes were successful. The finished message is the first protected
+     * with the just-negotiated algorithms, keys, and secrets. No acknowledgment
+     * of the finished message is required; parties may begin sending encrypted
+     * data immediately after sending the finished message. Recipients of
+     * finished messages must verify that the contents are correct.
      * 
      * enum { client(0x434C4E54), server(0x53525652) } Sender;
      */
@@ -82,7 +80,7 @@ public final class SSLUtils {
      * This method is borrowed from package-protected method
      * {@link org.bouncycastle.crypto.tls.TlsUtils#genSSL3Const()} Version 1.58
      * 
-     * @return
+     * @return the generated SSL3 consts
      */
     private static byte[][] genSSL3Const() {
         int n = 10;
@@ -101,7 +99,9 @@ public final class SSLUtils {
      * Version 1.58
      * 
      * @param pre_master_secret
+     *            the premastersecret
      * @param random
+     *            The random bytes to use
      * @return master_secret
      */
     public static byte[] calculateMasterSecretSSL3(byte[] pre_master_secret, byte[] random) {
@@ -136,8 +136,12 @@ public final class SSLUtils {
      * {@link org.bouncycastle.crypto.tls.TlsUtils#calculateKeyBlock_SSL(byte[], byte[], int)}
      * Version 1.58
      * 
-     * @param pre_master_secret
+     * @param master_secret
+     *            The mastersecret
      * @param random
+     *            The Randombytes
+     * @param size
+     *            The size
      * @return master_secret
      */
     public static byte[] calculateKeyBlockSSL3(byte[] master_secret, byte[] random, int size) {
@@ -168,8 +172,8 @@ public final class SSLUtils {
     }
 
     /**
-     * 
      * @param chooser
+     *            The Chooser to use
      * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
      *         RFC-6101: 5.6.9. Finished: enum { client(0x434C4E54),
      *         server(0x53525652) } Sender;
@@ -179,8 +183,8 @@ public final class SSLUtils {
     }
 
     /**
-     * 
      * @param connectionEndType
+     *            The ConnectionEndType
      * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
      *         RFC-6101: 5.6.9. Finished: enum { client(0x434C4E54),
      *         server(0x53525652) } Sender;
@@ -197,8 +201,13 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101: pad_1: The character 0x36 repeated 48 times for MD5 or 40
-     * times for SHA.
+     * From RFC-6101:
+     * 
+     * pad_1: The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
+     * 
+     * @param macAlgorithm
+     *            The macAlgorithm to use
+     * @return the pad_1
      */
     public static byte[] getPad1(MacAlgorithm macAlgorithm) {
         if (macAlgorithm == MacAlgorithm.SSLMAC_MD5) {
@@ -213,6 +222,10 @@ public final class SSLUtils {
     /**
      * From RFC-6101: pad_2: The character 0x5c repeated 48 times for MD5 or 40
      * times for SHA.
+     * 
+     * @param macAlgorithm
+     *            The macalgorithm to use
+     * @return pad_2
      */
     public static byte[] getPad2(MacAlgorithm macAlgorithm) {
         if (macAlgorithm == MacAlgorithm.SSLMAC_MD5) {
@@ -235,7 +248,9 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101 The MAC is generated as:
+     * From RFC-6101
+     * 
+     * The MAC is generated as:
      * 
      * hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num +
      * SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
@@ -268,16 +283,11 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101: 5.6.8. Certificate Verify
-     * 
-     * This message is used to provide explicit verification of a client
-     * certificate. ...
-     * 
-     * struct { Signature signature; } CertificateVerify;
-     * 
-     * CertificateVerify.signature.md5_hash MD5(master_secret + pad_2 +
-     * MD5(handshake_messages + master_secret + pad_1));
-     * Certificate.signature.sha_hash SHA(master_secret + pad_2 +
+     * From RFC-6101: 5.6.8. Certificate Verify This message is used to provide
+     * explicit verification of a client certificate. ... struct { Signature
+     * signature; } CertificateVerify; CertificateVerify.signature.md5_hash
+     * MD5(master_secret + pad_2 + MD5(handshake_messages + master_secret +
+     * pad_1)); Certificate.signature.sha_hash SHA(master_secret + pad_2 +
      * SHA(handshake_messages + master_secret + pad_1));
      * 
      * @param handshakeMessages
@@ -291,19 +301,12 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101: 5.6.9. Finished
-     * 
-     * A finished message is always sent immediately after a change cipher spec
-     * ...
-     * 
-     * enum { client(0x434C4E54), server(0x53525652) } Sender;
-     * 
-     * struct { opaque md5_hash[16]; opaque sha_hash[20]; } Finished;
-     * 
-     * md5_hash: MD5(master_secret + pad2 + MD5(handshake_messages + Sender +
-     * master_secret + pad1));
-     * 
-     * sha_hash: SHA(master_secret + pad2 + SHA(handshake_messages + Sender +
+     * From RFC-6101: 5.6.9. Finished A finished message is always sent
+     * immediately after a change cipher spec ... enum { client(0x434C4E54),
+     * server(0x53525652) } Sender; struct { opaque md5_hash[16]; opaque
+     * sha_hash[20]; } Finished; md5_hash: MD5(master_secret + pad2 +
+     * MD5(handshake_messages + Sender + master_secret + pad1)); sha_hash:
+     * SHA(master_secret + pad2 + SHA(handshake_messages + Sender +
      * master_secret + pad1));
      * 
      * @param handshakeMessages
@@ -325,8 +328,10 @@ public final class SSLUtils {
      * like specified in RFC-6101 for CertificateVerify- and Finished-Messages.
      * 
      * @param input
+     *            The input
      * @param masterSecret
-     * @return
+     *            the mastersecret
+     * @return the calculated sslmd5shasignature
      */
     private static byte[] calculateSSLMd5SHASignature(byte[] input, byte[] masterSecret) {
         try {

@@ -26,10 +26,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Steve Ehleringer - steve.ehleringer@rub.de
- */
 public class WaitingActionTest {
 
     private State state;
@@ -51,6 +47,8 @@ public class WaitingActionTest {
 
     /**
      * Test of execute method, of class WaitingAction.
+     * 
+     * @throws java.io.IOException
      */
     @Test
     public void testExecute() throws WorkflowExecutionException, IOException {
@@ -61,6 +59,8 @@ public class WaitingActionTest {
 
     /**
      * Test of reset method, of class WaitingAction.
+     * 
+     * @throws java.io.IOException
      */
     @Test
     public void testReset() throws WorkflowExecutionException, IOException {

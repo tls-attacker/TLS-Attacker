@@ -20,9 +20,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class SupportedVersionsExtensionHandlerTest {
 
     private SupportedVersionsExtensionHandler handler;

@@ -23,9 +23,6 @@ import org.junit.experimental.categories.Category;
  * This test makes sure that the parsers dont throw other exceptions other than
  * parser exceptions Not every message is always parsable, but the parser should
  * be able to deal with everything
- *
- *
- * @author Robert Merget - robert.merget@rub.de
  */
 public class ParserStressTest {
 

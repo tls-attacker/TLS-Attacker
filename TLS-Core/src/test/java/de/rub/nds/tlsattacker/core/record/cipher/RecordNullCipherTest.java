@@ -14,10 +14,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Pierre Tilhaus
- */
 public class RecordNullCipherTest {
 
     private RecordNullCipher record;

@@ -68,10 +68,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
-/**
- *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);

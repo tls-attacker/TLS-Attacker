@@ -21,10 +21,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class PaddingOracleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "padding_oracle";

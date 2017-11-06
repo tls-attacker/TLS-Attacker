@@ -16,10 +16,6 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerNamePair extends ModifiableVariableHolder implements Serializable {
 
     private byte serverNameTypeConfig;

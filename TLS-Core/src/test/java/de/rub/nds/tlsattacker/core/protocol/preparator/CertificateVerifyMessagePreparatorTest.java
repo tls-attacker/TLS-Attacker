@@ -34,10 +34,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateVerifyMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class);
@@ -56,7 +52,7 @@ public class CertificateVerifyMessagePreparatorTest {
     /**
      * Test for correct generation of CertificateVerify.signature for SSLv3 with
      * empty secret and no handshake_messages. From RFC 6101:
-     * 
+     *
      * 5.6.8. Certificate Verify
      *
      * This message is used to provide explicit verification of a client
@@ -77,13 +73,13 @@ public class CertificateVerifyMessagePreparatorTest {
      *
      * Here, handshake_messages refers to all handshake messages starting at
      * client hello up to but not including this message.
-     * 
+     *
      * .......
-     * 
+     *
      * pad_1: The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
      *
      * pad_2: The character 0x5c repeated 48 times for MD5 or 40 times for SHA.
-     * 
+     *
      * @throws NoSuchAlgorithmException
      */
     @Test

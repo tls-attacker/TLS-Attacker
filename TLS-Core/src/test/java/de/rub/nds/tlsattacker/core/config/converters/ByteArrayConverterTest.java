@@ -13,10 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 
-/**
- * @author Christoph Penkert <christoph.penkert@rub.de>
- */
-
 public class ByteArrayConverterTest {
     private ByteArrayConverter converter;
 

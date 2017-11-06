@@ -36,10 +36,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateDelegateTest {
 
     private CertificateDelegate delegate;
@@ -126,6 +122,13 @@ public class CertificateDelegateTest {
 
     /**
      * Test of applyDelegate method, of class CertificateDelegate.
+     * 
+     * @throws org.bouncycastle.operator.OperatorCreationException
+     * @throws java.security.SignatureException
+     * @throws java.io.IOException
+     * @throws java.security.NoSuchProviderException
+     * @throws java.security.InvalidKeyException
+     * @throws java.security.KeyStoreException
      */
     @Test
     public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,

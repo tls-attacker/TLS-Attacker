@@ -29,9 +29,6 @@ import javax.net.ssl.TrustManagerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@ru.de>
- */
 public class BasicTlsServer extends Thread {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsServer.class);

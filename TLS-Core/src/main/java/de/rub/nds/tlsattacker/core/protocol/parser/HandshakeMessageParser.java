@@ -22,7 +22,6 @@ import java.util.List;
 /**
  * An abstract Parser class for HandshakeMessages
  *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */
@@ -47,6 +46,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param expectedType
      *            The expected type of the parsed HandshakeMessage
      * @param version
+     *            The Version with which this message should be parsed
      */
     public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
         super(pointer, array, version);

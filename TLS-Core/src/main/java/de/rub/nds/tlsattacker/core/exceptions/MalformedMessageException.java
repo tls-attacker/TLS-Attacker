@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
- */
 public class MalformedMessageException extends RuntimeException {
 
     public MalformedMessageException() {

@@ -57,13 +57,6 @@ import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class TlsContext {
 
     /**
@@ -401,6 +394,7 @@ public class TlsContext {
      * single context scenarios.
      *
      * @param config
+     *            The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
         if (config.getConnectionEnds().size() > 1) {
@@ -1316,6 +1310,7 @@ public class TlsContext {
      * Check if the given TLS extension type was proposed by the client.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
@@ -1326,6 +1321,7 @@ public class TlsContext {
      * Mark the given TLS extension type as client proposed extension.
      * 
      * @param ext
+     *            The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1335,6 +1331,7 @@ public class TlsContext {
      * Check if the given TLS extension type was sent by the server.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
@@ -1343,6 +1340,9 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as server negotiated extension.
+     * 
+     * @param ext
+     *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);

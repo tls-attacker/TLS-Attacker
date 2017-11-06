@@ -25,10 +25,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class RecordStreamCipher extends RecordCipher {
 
     /**
@@ -40,11 +36,6 @@ public class RecordStreamCipher extends RecordCipher {
      */
     private Mac writeMac;
 
-    /**
-     *
-     * @param context
-     * @param keySet
-     */
     public RecordStreamCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
         initCipherAndMac();

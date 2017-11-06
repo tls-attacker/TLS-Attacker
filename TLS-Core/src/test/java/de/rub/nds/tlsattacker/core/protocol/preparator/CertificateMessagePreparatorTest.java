@@ -25,10 +25,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateMessagePreparatorTest.class.getName());

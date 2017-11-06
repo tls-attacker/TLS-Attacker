@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientAuthzExte
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ClientAuthzExtensionHandler extends ExtensionHandler<ClientAuthzExtensionMessage> {
 
     public ClientAuthzExtensionHandler(TlsContext context) {

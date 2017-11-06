@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicati
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerNameIndicationExtensionMessage> {
 
     private List<ServerNamePair> pairList;

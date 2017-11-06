@@ -23,10 +23,6 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class BleichenbacherCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "bleichenbacher";

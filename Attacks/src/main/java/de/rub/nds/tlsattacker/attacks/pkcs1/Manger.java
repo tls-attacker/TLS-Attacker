@@ -15,11 +15,9 @@ import java.math.BigInteger;
 
 /**
  * Manger algorithm according to
- * https://www.iacr.org/archive/crypto2001/21390229.pdf
+ * https://www.iacr.org/archive/crypto2001/21390229.pdf Original Python code
+ * written by Tibor Jager
  * 
- * Original Python code written by Tibor Jager
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
  * @version 0.1
  */
 public class Manger extends Pkcs1Attack {

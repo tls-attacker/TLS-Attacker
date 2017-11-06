@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.AlpnExtensionPr
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.AlpnExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class AlpnExtensionHandler extends ExtensionHandler<AlpnExtensionMessage> {
 
     public AlpnExtensionHandler(TlsContext context) {
