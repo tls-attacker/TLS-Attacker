@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class SSL2ServerHelloSerializer extends ProtocolMessageSerializer {
 
     private final SSL2ServerHelloMessage message;

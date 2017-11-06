@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import java.math.BigInteger;
 
-
 public class DHClientComputations extends KeyExchangeComputations {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)

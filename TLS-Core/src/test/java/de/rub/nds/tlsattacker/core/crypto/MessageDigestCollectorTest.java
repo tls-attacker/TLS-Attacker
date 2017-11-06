@@ -21,7 +21,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-
 public class MessageDigestCollectorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(MessageDigestCollectorTest.class);

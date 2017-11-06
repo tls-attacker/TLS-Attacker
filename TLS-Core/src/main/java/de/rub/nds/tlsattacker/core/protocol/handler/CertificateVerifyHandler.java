@@ -16,13 +16,17 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * Handling of the CertificateVerify protocol message:
- * http://tools.ietf.org/html/rfc5246#section-7.4.8 The TLS spec as well as
- * wireshark bring some nice confusions: - The TLS spec says the message
- * consists of only signature bytes - Wireshark says the message consists of the
- * signature length and signature bytes In fact, the certificate message
- * consists of the following fields: - signature algorithm (2 bytes) - signature
- * length (2 bytes) - signature This structure is of course prepended with the
- * handshake message length, as obvious for every handshake message.
+ * http://tools.ietf.org/html/rfc5246#section-7.4.8
+ *
+ * The TLS spec as well as wireshark bring some nice confusions: - The TLS spec
+ * says the message consists of only signature bytes - Wireshark says the
+ * message consists of the signature length and signature bytes
+ *
+ * In fact, the certificate message consists of the following fields: -
+ * signature algorithm (2 bytes) - signature length (2 bytes) - signature
+ *
+ * This structure is of course prepended with the handshake message length, as
+ * obvious for every handshake message.
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 

@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import javax.xml.bind.annotation.XmlTransient;
 
-
 public class ContentLengthHeader extends HttpsHeader {
 
     private ModifiableInteger length;

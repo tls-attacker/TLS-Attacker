@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class UserMappingExtensionHandlerTest {
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
     private UserMappingExtensionHandler handler;

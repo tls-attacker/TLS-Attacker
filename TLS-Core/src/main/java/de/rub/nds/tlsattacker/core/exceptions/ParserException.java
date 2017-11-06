@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-
 public class ParserException extends RuntimeException {
 
     public ParserException() {

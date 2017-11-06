@@ -38,17 +38,6 @@ public class Curve25519 {
             (byte) 20, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
             (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 16 };
 
-    /*********
-     * KEY AGREEMENT
-     * 
-     * @param k
-     *            k
-     *********/
-
-    /*
-     * Private key clamping k [out] your private key for key agreement k [in] 32
-     * random bytes
-     */
     public static final void clamp(byte[] k) {
         k[31] &= 0x7F;
         k[31] |= 0x40;

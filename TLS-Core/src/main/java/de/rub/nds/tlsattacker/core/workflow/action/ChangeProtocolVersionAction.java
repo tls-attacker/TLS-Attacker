@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
 import java.util.Objects;
 
-
 public class ChangeProtocolVersionAction extends TLSAction {
 
     private ProtocolVersion newValue;

@@ -58,7 +58,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
-
 public abstract class HandshakeMessage extends ProtocolMessage {
 
     @XmlTransient

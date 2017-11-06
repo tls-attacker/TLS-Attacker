@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 
-
 public class HelloRequestParser extends HandshakeMessageParser<HelloRequestMessage> {
 
     /**

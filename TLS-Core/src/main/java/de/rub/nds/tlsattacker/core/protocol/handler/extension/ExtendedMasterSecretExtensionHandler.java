@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterS
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<ExtendedMasterSecretExtensionMessage> {
 
     public ExtendedMasterSecretExtensionHandler(TlsContext context) {

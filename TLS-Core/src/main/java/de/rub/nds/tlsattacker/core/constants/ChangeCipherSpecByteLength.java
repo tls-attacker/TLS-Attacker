@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-
 public class ChangeCipherSpecByteLength {
     public static final int TYPE_LENGTH = 1;
 

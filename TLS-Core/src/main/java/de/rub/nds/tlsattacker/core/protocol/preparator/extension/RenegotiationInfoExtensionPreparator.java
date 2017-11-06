@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationIn
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-
 public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<RenegotiationInfoExtensionMessage> {
 
     private final RenegotiationInfoExtensionMessage message;

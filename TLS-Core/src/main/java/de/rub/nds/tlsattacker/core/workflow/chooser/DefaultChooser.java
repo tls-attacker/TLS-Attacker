@@ -33,7 +33,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.util.List;
 
-
 public class DefaultChooser extends Chooser {
 
     DefaultChooser(TlsContext context, Config config) {

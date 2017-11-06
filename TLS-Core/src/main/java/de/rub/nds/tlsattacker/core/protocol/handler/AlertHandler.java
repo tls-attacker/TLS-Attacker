@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     public AlertHandler(TlsContext tlsContext) {

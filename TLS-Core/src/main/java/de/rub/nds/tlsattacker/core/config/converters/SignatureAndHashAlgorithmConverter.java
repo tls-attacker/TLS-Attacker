@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 
-
 public class SignatureAndHashAlgorithmConverter implements IStringConverter<SignatureAndHashAlgorithm> {
 
     @Override

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public enum ProtocolMessageType {
     UNKNOWN((byte) 99),
     CHANGE_CIPHER_SPEC((byte) 20),

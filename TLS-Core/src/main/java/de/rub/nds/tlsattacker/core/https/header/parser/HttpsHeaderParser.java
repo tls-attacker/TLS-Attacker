@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-
 public class HttpsHeaderParser extends Parser<HttpsHeader> {
 
     public HttpsHeaderParser(int startposition, byte[] array) {

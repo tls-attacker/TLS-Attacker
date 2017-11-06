@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 @XmlRootElement
 public class ApplicationMessage extends ProtocolMessage {
 

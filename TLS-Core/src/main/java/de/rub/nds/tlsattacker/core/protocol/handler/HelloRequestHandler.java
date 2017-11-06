@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMessage> {
 
     public HelloRequestHandler(TlsContext tlsContext) {

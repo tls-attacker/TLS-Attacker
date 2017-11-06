@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessa
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMessage> {
 
     private final AlpnExtensionMessage msg;

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 
-
 public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResponseMessage> {
 
     private HttpsResponseMessage message;

@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class EncryptThenMacExtensionPreparatorTest {
     private final ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;
     private final int extensionLength = 0;

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 
-
 public class SrtpExtensionSerializer extends ExtensionSerializer<SrtpExtensionMessage> {
 
     private final SrtpExtensionMessage msg;

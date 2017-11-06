@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-
 public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInfoExtensionMessage> {
 
     private final CachedInfoExtensionMessage msg;

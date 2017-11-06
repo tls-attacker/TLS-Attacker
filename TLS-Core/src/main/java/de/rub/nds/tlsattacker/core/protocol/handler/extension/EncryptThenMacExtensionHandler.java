@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacE
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-
 public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThenMacExtensionMessage> {
 
     public EncryptThenMacExtensionHandler(TlsContext context) {

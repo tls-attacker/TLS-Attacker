@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-
 public enum HeartbeatMode {
 
     PEER_ALLOWED_TO_SEND((byte) 1),

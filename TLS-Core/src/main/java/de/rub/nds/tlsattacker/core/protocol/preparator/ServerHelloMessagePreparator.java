@@ -16,11 +16,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * 
- * 
- */
 public class ServerHelloMessagePreparator extends HelloMessagePreparator<ServerHelloMessage> {
 
     private final ServerHelloMessage msg;

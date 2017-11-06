@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.https.header.GenericHttpsHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class GenericHttpsHeaderPreparator extends Preparator<GenericHttpsHeader> {
 
     private final GenericHttpsHeader header;

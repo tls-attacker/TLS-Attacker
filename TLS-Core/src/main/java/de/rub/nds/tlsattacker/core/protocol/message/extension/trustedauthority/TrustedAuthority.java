@@ -16,7 +16,6 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
-
 public class TrustedAuthority extends ModifiableVariableHolder implements Serializable {
 
     @ModifiableVariableProperty

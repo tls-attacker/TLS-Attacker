@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
 
     public EcPointFormatExtensionHandler(TlsContext context) {

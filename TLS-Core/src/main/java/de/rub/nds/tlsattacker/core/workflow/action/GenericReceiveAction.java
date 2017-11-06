@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class GenericReceiveAction extends MessageAction implements ReceivingAction {
 
     public GenericReceiveAction() {

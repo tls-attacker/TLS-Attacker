@@ -38,7 +38,6 @@ import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
-
 public class TestCertificates {
 
     public static final String keyStoreAlias = "keyStoreFromRsaPem";

@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 
-
 public class FinishedMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);

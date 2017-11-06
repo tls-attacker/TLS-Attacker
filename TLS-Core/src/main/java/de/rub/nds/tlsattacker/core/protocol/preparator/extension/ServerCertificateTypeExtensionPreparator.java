@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateT
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class ServerCertificateTypeExtensionPreparator extends
         ExtensionPreparator<ServerCertificateTypeExtensionMessage> {
 

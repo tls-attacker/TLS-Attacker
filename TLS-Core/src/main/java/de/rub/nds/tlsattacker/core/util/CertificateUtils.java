@@ -31,7 +31,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
-
 public class CertificateUtils {
 
     protected static final Logger LOGGER = LogManager.getLogger(CertificateUtils.class.getName());

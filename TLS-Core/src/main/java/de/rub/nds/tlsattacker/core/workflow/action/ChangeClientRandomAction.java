@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 public class ChangeClientRandomAction extends TLSAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)

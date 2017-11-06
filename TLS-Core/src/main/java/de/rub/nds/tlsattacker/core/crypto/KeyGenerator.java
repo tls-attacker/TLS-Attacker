@@ -19,7 +19,6 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import javax.crypto.interfaces.DHPrivateKey;
 
-
 public class KeyGenerator {
 
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {

@@ -170,9 +170,10 @@ public class AlgorithmResolver {
     /**
      * Depending on the provided cipher suite, the server needs to be
      * initialized with proper public key(s). Depending on the cipher suite,
-     * there are possibly more than one cipher suites needed. This function
-     * returns a list of public key algorithms needed when running a server with
-     * a cipher suite.
+     * there are possibly more than one cipher suites needed.
+     * 
+     * This function returns a list of public key algorithms needed when running
+     * a server with a cipher suite.
      *
      * @param cipherSuite
      *            The selected CipherSuite

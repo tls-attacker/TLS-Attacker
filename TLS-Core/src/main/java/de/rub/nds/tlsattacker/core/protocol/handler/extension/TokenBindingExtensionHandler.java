@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExt
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.ArrayList;
 
-
 public class TokenBindingExtensionHandler extends ExtensionHandler<TokenBindingExtensionMessage> {
 
     public TokenBindingExtensionHandler(TlsContext context) {

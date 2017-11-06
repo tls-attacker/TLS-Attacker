@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RequestItemV2Serializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class CertificateStatusRequestV2ExtensionPreparator extends
         ExtensionPreparator<CertificateStatusRequestV2ExtensionMessage> {
 

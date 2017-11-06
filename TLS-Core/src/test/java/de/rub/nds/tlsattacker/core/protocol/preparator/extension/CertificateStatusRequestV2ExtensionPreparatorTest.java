@@ -19,7 +19,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-
 public class CertificateStatusRequestV2ExtensionPreparatorTest {
 
     private final int listLength = 12;

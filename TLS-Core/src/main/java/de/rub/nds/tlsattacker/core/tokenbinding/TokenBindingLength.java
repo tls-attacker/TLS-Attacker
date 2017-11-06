@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-
 public class TokenBindingLength {
 
     private TokenBindingLength() {

@@ -53,7 +53,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 
-
 public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @HoldsModifiableVariable

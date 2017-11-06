@@ -19,7 +19,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-
 public class RequestItemV2ParserTest {
 
     private final int startParsing = 0;

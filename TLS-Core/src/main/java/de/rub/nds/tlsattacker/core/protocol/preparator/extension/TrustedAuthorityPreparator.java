@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class TrustedAuthorityPreparator extends Preparator<TrustedAuthority> {
 
     private final TrustedAuthority object;

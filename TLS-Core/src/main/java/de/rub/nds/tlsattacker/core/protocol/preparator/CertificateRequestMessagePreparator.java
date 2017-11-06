@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-
 public class CertificateRequestMessagePreparator extends HandshakeMessagePreparator<CertificateRequestMessage> {
 
     private byte[] certTypes;

@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class TokenBindingHeader extends HttpsHeader {
 
     @HoldsModifiableVariable

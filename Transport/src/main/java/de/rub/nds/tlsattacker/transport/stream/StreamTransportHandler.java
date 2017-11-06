@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-
 public class StreamTransportHandler extends TransportHandler {
 
     private final InputStream inputStream;

@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class WorkflowTraceUtil {
 
     public static ProtocolMessage getFirstReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {

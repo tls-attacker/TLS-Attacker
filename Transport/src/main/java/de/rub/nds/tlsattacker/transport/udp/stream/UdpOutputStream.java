@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-
 public class UdpOutputStream extends OutputStream {
 
     private final static int BUFFER_SIZE = 8192;

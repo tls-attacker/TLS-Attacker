@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-
 public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPointFormatExtensionMessage> {
 
     private final ECPointFormatExtensionMessage msg;

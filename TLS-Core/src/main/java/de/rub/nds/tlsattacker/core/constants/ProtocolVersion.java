@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-
 public enum ProtocolVersion {
 
     SSL2(new byte[] { (byte) 0x00, (byte) 0x02 }),

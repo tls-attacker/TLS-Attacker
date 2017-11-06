@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 
-
 public class FinishedMessageParser extends HandshakeMessageParser<FinishedMessage> {
 
     /**

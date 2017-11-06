@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
-
 public class ServerNamePairSerializier extends Serializer<ServerNamePair> {
 
     private final ServerNamePair pair;

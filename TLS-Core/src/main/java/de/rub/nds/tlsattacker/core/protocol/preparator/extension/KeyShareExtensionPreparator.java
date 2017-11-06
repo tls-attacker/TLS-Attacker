@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-
 public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExtensionMessage> {
 
     private final KeyShareExtensionMessage msg;

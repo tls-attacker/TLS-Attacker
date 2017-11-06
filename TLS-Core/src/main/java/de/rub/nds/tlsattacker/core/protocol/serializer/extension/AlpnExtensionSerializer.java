@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
 
-
 public class AlpnExtensionSerializer extends ExtensionSerializer<AlpnExtensionMessage> {
 
     private final AlpnExtensionMessage message;

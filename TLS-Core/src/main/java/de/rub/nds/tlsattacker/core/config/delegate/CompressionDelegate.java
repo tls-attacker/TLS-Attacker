@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import java.util.Collections;
 import java.util.List;
 
-
 public class CompressionDelegate extends Delegate {
 
     @Parameter(names = "-compression", description = "TLS compression methods to use, divided by a comma. "

@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public final class RecordBlockCipher extends RecordCipher {
 
     /**

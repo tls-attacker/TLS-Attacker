@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class HelloRequestPreparatorTest {
 
     private TlsContext context;

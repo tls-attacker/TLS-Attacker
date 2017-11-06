@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HRRKeyShareExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class HRRKeyShareExtensionPreparator extends ExtensionPreparator<HRRKeyShareExtensionMessage> {
 
     private final HRRKeyShareExtensionMessage msg;

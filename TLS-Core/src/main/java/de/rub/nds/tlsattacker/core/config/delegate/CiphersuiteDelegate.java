@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.Collections;
 import java.util.List;
 
-
 public class CiphersuiteDelegate extends Delegate {
 
     @Parameter(names = "-cipher", description = "TLS Ciphersuites to use, divided by a comma, e.g. "

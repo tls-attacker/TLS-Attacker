@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.util;
 
 import org.apache.logging.log4j.Level;
 
-
 public class LogLevel {
 
     /**

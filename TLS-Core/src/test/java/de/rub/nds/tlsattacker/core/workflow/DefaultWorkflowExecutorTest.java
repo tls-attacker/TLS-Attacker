@@ -23,7 +23,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-
 public class DefaultWorkflowExecutorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(DefaultWorkflowExecutorTest.class);

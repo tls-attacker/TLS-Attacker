@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import java.math.BigInteger;
 
-
 public class ECDHClientComputations extends KeyExchangeComputations {
 
     private ModifiableBigInteger serverPublicKeyX;

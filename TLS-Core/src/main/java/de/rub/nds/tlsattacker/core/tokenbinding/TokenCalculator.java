@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class TokenCalculator {
 
     private TokenCalculator() {

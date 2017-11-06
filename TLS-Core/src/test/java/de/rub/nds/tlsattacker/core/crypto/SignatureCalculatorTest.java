@@ -19,7 +19,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class SignatureCalculatorTest {
 
     @Before

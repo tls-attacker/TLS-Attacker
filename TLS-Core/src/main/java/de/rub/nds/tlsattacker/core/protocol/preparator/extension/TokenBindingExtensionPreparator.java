@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TokenBindingExt
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 
-
 public class TokenBindingExtensionPreparator extends ExtensionPreparator<TokenBindingExtensionMessage> {
     private final TokenBindingExtensionMessage message;
 

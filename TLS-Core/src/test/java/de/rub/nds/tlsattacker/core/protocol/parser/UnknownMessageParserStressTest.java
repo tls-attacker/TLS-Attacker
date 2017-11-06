@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 public class UnknownMessageParserStressTest {
 
     private UnknownMessageParser parser;

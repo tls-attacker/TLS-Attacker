@@ -21,7 +21,6 @@ import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 
-
 public class KeyBlockParser extends Parser<KeySet> {
 
     /**

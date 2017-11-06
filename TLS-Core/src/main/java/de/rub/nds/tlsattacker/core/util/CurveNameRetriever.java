@@ -13,7 +13,6 @@ import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.math.ec.ECCurve;
 
-
 public class CurveNameRetriever {
 
     public static NamedCurve getNamedCuveFromECCurve(ECCurve unknownCurve) {

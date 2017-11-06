@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.transport.udp.timing;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.ClientUdpTransportHandler;
 
-
 public class TimingClientUdpTransportHandler extends ClientUdpTransportHandler implements TimeableTransportHandler {
 
     public TimingClientUdpTransportHandler(long timeout, String hostname, int port) {

@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusr
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class RequestItemV2Preparator extends Preparator<RequestItemV2> {
 
     private final RequestItemV2 item;

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class DeactivateEncryptionAction extends TLSAction {
 
     public DeactivateEncryptionAction() {

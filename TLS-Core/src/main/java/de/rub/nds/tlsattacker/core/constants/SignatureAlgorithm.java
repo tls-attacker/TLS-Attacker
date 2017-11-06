@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-
 public enum SignatureAlgorithm {
 
     ANONYMOUS((byte) 0),

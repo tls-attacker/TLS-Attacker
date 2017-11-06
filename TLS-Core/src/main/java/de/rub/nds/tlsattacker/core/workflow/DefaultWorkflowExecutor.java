@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import java.io.IOException;
 import java.util.List;
 
-
 public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     public DefaultWorkflowExecutor(State state) {

@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class PaddingExtensionHandlerTest {
 
     private final byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };

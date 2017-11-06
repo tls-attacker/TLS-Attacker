@@ -37,15 +37,19 @@ public final class SSLUtils {
     public static final byte[] SHA_PAD2 = ArrayConverter.hexStringToByteArray(StringUtils.repeat("5c", 40));
 
     /**
-     * From RFC-6101: 5.6.9. Finished A finished message is always sent
-     * immediately after a change cipher spec message to verify that the key
-     * exchange and authentication processes were successful. The finished
-     * message is the first protected with the just-negotiated algorithms, keys,
-     * and secrets. No acknowledgment of the finished message is required;
-     * parties may begin sending encrypted data immediately after sending the
-     * finished message. Recipients of finished messages must verify that the
-     * contents are correct. enum { client(0x434C4E54), server(0x53525652) }
-     * Sender;
+     * From RFC-6101:
+     * 
+     * 5.6.9.
+     * 
+     * Finished A finished message is always sent immediately after a change
+     * cipher spec message to verify that the key exchange and authentication
+     * processes were successful. The finished message is the first protected
+     * with the just-negotiated algorithms, keys, and secrets. No acknowledgment
+     * of the finished message is required; parties may begin sending encrypted
+     * data immediately after sending the finished message. Recipients of
+     * finished messages must verify that the contents are correct.
+     * 
+     * enum { client(0x434C4E54), server(0x53525652) } Sender;
      */
     private static enum Sender {
         CLIENT("434C4E54"),
@@ -197,8 +201,9 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101: pad_1: The character 0x36 repeated 48 times for MD5 or 40
-     * times for SHA.
+     * From RFC-6101:
+     * 
+     * pad_1: The character 0x36 repeated 48 times for MD5 or 40 times for SHA.
      * 
      * @param macAlgorithm
      *            The macAlgorithm to use
@@ -243,9 +248,12 @@ public final class SSLUtils {
     }
 
     /**
-     * From RFC-6101 The MAC is generated as: hash(MAC_write_secret + pad_2 +
-     * hash(MAC_write_secret + pad_1 + seq_num + SSLCompressed.type +
-     * SSLCompressed.length + SSLCompressed.fragment));
+     * From RFC-6101
+     * 
+     * The MAC is generated as:
+     * 
+     * hash(MAC_write_secret + pad_2 + hash(MAC_write_secret + pad_1 + seq_num +
+     * SSLCompressed.type + SSLCompressed.length + SSLCompressed.fragment));
      * 
      * @param input
      *            is the input for the chosen hashAlgorithm, which is (seq_num +

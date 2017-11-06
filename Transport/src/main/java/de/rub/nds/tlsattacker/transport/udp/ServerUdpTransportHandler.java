@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-
 public class ServerUdpTransportHandler extends TransportHandler {
 
     private final int port;

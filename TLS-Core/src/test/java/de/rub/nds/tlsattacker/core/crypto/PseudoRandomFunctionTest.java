@@ -21,7 +21,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-
 @RunWith(JMockit.class)
 public class PseudoRandomFunctionTest {
 

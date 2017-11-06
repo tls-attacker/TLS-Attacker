@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-
 @RunWith(Parameterized.class)
 public class HeartbeatMessageParserTest {
     private static byte[] heartbeatRequest = ArrayConverter

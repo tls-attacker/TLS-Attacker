@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class RetransmitMessagePreparator extends ProtocolMessagePreparator<RetransmitMessage> {
 
     private final RetransmitMessage msg;

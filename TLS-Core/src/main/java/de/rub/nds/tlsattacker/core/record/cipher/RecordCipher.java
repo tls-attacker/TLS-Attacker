@@ -20,7 +20,6 @@ import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public abstract class RecordCipher {
 
     protected static final Logger LOGGER = LogManager.getLogger(RecordCipher.class.getName());

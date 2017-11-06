@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.util.List;
 
-
 public class MathHelper {
 
     public static BigInteger intfloordiv(BigInteger c, BigInteger d) {

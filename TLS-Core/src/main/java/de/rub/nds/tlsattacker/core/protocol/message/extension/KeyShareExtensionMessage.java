@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class KeyShareExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

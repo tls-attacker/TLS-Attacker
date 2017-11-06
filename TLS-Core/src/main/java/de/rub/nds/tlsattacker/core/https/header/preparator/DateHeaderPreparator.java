@@ -16,7 +16,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-
 public class DateHeaderPreparator extends Preparator<DateHeader> {
 
     private DateHeader header;

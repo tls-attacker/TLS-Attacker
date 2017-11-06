@@ -64,7 +64,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config implements Serializable {

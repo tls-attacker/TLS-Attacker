@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public enum TokenBindingType {
     PROVIDED_TOKEN_BINDING((byte) 0),
     REFERRED_TOKEN_BINDING((byte) 1);

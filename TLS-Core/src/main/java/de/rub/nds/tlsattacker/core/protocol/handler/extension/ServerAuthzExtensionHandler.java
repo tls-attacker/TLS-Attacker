@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerAuthzExte
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerAuthzExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class ServerAuthzExtensionHandler extends ExtensionHandler<ServerAuthzExtensionMessage> {
 
     public ServerAuthzExtensionHandler(TlsContext context) {

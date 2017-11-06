@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 
-
 public class FakeTransportHandler extends TransportHandler {
     /**
      * Data that will be returned on a fetchData() call

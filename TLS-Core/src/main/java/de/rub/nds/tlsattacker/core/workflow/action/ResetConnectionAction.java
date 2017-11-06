@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 
-
 public class ResetConnectionAction extends TLSAction {
 
     public ResetConnectionAction() {

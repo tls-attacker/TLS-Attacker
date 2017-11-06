@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 
-
 public enum ServerCertificateKey {
 
     EC,

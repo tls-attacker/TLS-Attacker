@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 
-
 public class ApplicationMessageSerializer extends ProtocolMessageSerializer<ApplicationMessage> {
 
     private final ApplicationMessage msg;

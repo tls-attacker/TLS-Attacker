@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.state;
 
-
 public class Session {
 
     private byte[] sessionId;

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMe
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class PaddingExtensionPreparator extends ExtensionPreparator<PaddingExtensionMessage> {
 
     private final PaddingExtensionMessage message;

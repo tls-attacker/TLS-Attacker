@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 @XmlRootElement
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 

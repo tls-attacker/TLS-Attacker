@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 
-
 public class WorkflowExecutorFactory {
 
     public static WorkflowExecutor createWorkflowExecutor(WorkflowExecutorType type, State state) {

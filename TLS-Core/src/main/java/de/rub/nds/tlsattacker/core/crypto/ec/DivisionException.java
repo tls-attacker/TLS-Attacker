@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-
 public class DivisionException extends Exception {
 
     private int round;

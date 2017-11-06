@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ClientCertifica
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ClientCertificateTypeExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class ClientCertificateTypeExtensionHandler extends ExtensionHandler<ClientCertificateTypeExtensionMessage> {
 
     public ClientCertificateTypeExtensionHandler(TlsContext context) {

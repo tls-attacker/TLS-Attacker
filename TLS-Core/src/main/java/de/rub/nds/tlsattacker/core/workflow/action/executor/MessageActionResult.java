@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import java.util.List;
 
-
 public class MessageActionResult {
 
     private final List<AbstractRecord> recordList;

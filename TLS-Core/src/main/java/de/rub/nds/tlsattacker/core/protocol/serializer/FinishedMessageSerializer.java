@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 
-
 public class FinishedMessageSerializer extends HandshakeMessageSerializer<FinishedMessage> {
 
     private final FinishedMessage msg;

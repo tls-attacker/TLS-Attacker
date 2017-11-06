@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-
 public class ServerNamePairParser extends Parser<ServerNamePair> {
 
     private ServerNamePair pair;

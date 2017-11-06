@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedCaIndicationExtensionMessage> {
 
     public TrustedCaIndicationExtensionParser(int startposition, byte[] array) {

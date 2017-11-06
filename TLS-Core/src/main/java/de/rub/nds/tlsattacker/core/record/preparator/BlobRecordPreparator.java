@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class BlobRecordPreparator extends AbstractRecordPreparator {
 
     private final BlobRecord record;

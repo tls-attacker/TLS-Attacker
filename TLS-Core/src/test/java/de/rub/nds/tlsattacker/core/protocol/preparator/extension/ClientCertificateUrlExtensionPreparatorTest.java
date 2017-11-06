@@ -17,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class ClientCertificateUrlExtensionPreparatorTest {
     private final ExtensionType extensionType = ExtensionType.CLIENT_CERTIFICATE_URL;
     private final int extensionLength = 0;

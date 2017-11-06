@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 
-
 public class CertificateStatusRequestV2ExtensionSerializer extends
         ExtensionSerializer<CertificateStatusRequestV2ExtensionMessage> {
 

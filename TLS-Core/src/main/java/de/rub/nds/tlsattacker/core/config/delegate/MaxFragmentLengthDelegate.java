@@ -12,7 +12,6 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 
-
 public class MaxFragmentLengthDelegate extends Delegate {
 
     // TODO Add validator, and extend unit test

@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public abstract class Decryptor extends RecordCryptoUnit {
 
     protected static final Logger LOGGER = LogManager.getLogger(Decryptor.class.getName());

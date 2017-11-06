@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-
 public class UnknownProtocolVersionException extends RuntimeException {
 
     public UnknownProtocolVersionException() {

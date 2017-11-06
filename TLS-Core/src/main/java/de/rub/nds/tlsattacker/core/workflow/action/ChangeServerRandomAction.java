@@ -17,7 +17,6 @@ import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-
 public class ChangeServerRandomAction extends TLSAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)

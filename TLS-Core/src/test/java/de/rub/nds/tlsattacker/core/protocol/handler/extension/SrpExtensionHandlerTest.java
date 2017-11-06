@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class SrpExtensionHandlerTest {
 
     private static final byte[] SRP_IDENTIFIER = new byte[] { 0x00, 0x01, 0x02, 0x03 };

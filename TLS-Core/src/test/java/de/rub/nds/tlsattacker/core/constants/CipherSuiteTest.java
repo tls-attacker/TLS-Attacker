@@ -18,7 +18,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class CipherSuiteTest {
 
     protected static final Logger LOGGER = LogManager.getLogger(CipherSuiteTest.class.getName());

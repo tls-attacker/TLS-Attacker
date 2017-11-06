@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-
 public class KeySharePairParser extends Parser<KeySharePair> {
 
     private KeySharePair pair;

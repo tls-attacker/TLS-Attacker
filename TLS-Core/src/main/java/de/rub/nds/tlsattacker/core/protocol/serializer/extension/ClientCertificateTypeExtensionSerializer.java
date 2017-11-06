@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 
-
 public class ClientCertificateTypeExtensionSerializer extends
         ExtensionSerializer<ClientCertificateTypeExtensionMessage> {
 

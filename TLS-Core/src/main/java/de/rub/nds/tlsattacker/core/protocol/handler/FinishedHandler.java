@@ -24,7 +24,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 
-
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     public FinishedHandler(TlsContext context) {

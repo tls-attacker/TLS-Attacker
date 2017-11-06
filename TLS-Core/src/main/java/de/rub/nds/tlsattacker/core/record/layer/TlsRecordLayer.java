@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class TlsRecordLayer extends RecordLayer {
 
     protected final TlsContext tlsContext;

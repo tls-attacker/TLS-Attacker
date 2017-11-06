@@ -23,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-
 public class WorkflowInputDelegateTest {
 
     private WorkflowInputDelegate delegate;

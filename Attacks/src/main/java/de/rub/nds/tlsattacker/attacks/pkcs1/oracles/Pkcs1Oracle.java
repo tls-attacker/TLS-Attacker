@@ -16,12 +16,14 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Oracle template for Bleichenbacher/Manger attack.
- * 
+ *
  * @version 0.1 Jun 12, 2012
  */
 public abstract class Pkcs1Oracle {
 
-    /** logger */
+    /**
+     * logger
+     */
     static Logger LOGGER = LogManager.getLogger(Pkcs1Oracle.class);
 
     /*
@@ -49,7 +51,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Gets the blocksize of the encryption algorithm.
-     * 
+     *
      * @return Blocksize
      */
     public int getBlockSize() {
@@ -58,7 +60,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Gets the total number of queries performed by this oracle.
-     * 
+     *
      * @return Number of queries
      */
     public long getNumberOfQueries() {
@@ -67,7 +69,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Gets the public key of this oracle.
-     * 
+     *
      * @return Public key
      */
     public PublicKey getPublicKey() {
@@ -76,9 +78,8 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Checks for PKCS conformity - 00 02 padding 00 pms
-     * 
-     * @param msg
-     *            Encrypted message to check for conformity
+     *
+     * @param msg Encrypted message to check for conformity
      * @return True if PKCS conforming, else false
      */
     public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;
@@ -86,7 +87,7 @@ public abstract class Pkcs1Oracle {
     /**
      * Returns true if the oracle is a plaintext oracle (does not decrypt the
      * data received)
-     * 
+     *
      * @return isPlaintextOracle
      */
     public boolean isPlaintextOracle() {
@@ -95,7 +96,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Returns the oracle type
-     * 
+     *
      * @return
      */
     public OracleType getOracleType() {
@@ -108,12 +109,19 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Oracle types defined in the Crypto'12 paper + specific oracles found
-     * during our research TTT checks only 0x00 0x02 ... FFF checks 0x00 0x02 on
-     * the beginning, the first 8 bytes cannot include 0x00 and the 0x00 byte
-     * has to be set on a correct position XMLENC checks if the key has a
-     * correct length (16, 24, or 32 bytes) BigIP checks only the second byte
-     * 0x02 (the first 0x00 byte is not checked at all) MANGER_0x00 checks only
-     * the first byte is equal to 0x00
+     * during our research
+     *
+     * TTT checks only 0x00 0x02 ...
+     *
+     * FFF checks 0x00 0x02 on the beginning, the first 8 bytes cannot include
+     * 0x00 and the 0x00 byte has to be set on a correct position
+     *
+     * XMLENC checks if the key has a correct length (16, 24, or 32 bytes)
+     *
+     * BigIP checks only the second byte 0x02 (the first 0x00 byte is not
+     * checked at all)
+     *
+     * MANGER_0x00 checks only the first byte is equal to 0x00
      */
     public enum OracleType {
 

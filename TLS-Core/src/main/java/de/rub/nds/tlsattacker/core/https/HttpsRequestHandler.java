@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.https;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class HttpsRequestHandler extends ProtocolMessageHandler<HttpsRequestMessage> {
 
     public HttpsRequestHandler(TlsContext tlsContext) {

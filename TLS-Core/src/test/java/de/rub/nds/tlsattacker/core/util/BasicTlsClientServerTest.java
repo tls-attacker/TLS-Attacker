@@ -34,7 +34,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 public class BasicTlsClientServerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsClientServerTest.class);

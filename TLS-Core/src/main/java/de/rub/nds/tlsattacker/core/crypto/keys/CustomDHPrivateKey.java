@@ -12,7 +12,6 @@ import java.math.BigInteger;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
 
-
 public class CustomDHPrivateKey implements DHPrivateKey {
 
     private final BigInteger privateKey;

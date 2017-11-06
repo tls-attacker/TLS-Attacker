@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 @XmlRootElement
 public class FinishedMessage extends HandshakeMessage {
 

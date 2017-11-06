@@ -52,7 +52,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
-
 public abstract class MessageAction extends TLSAction {
 
     @XmlElementWrapper

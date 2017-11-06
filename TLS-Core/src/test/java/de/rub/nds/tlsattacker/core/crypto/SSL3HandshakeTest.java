@@ -70,7 +70,6 @@ import java.security.SignatureException;
 import java.util.logging.Level;
 import org.bouncycastle.operator.OperatorCreationException;
 
-
 public class SSL3HandshakeTest {
 
     private static final Logger LOGGER = LogManager.getLogger(SSL3HandshakeTest.class.getName());

@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.TrustedCaIndicationIdentifierType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-
 public class TrustedAuthorityParser extends Parser<TrustedAuthority> {
 
     public TrustedAuthorityParser(int startposition, byte[] array) {

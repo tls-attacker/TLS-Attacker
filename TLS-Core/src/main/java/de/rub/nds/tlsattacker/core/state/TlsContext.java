@@ -57,7 +57,6 @@ import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 
-
 public class TlsContext {
 
     /**

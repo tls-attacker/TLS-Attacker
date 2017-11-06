@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
 
-
 public class RecordParser extends AbstractRecordParser<Record> {
 
     public RecordParser(int startposition, byte[] array, ProtocolVersion version) {

@@ -30,7 +30,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-
 public class RecordAEADCipher extends RecordCipher {
 
     /**

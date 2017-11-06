@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
 
-
 public class UnknownExtensionSerializer extends ExtensionSerializer<UnknownExtensionMessage> {
 
     private final UnknownExtensionMessage msg;

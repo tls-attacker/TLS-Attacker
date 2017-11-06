@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 
-
 public class SrtpExtensionPreparator extends ExtensionPreparator<SrtpExtensionMessage> {
 
     private final SrtpExtensionMessage msg;

@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class TokenBindingMessageSerializerTest {
 
     private TokenBindingMessageSerializer serializer;

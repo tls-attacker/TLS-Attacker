@@ -56,7 +56,6 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {

@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 
-
 public class ChangeCipherSuiteAction extends TLSAction {
 
     private CipherSuite newValue = null;

@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class TlsAttackerSocket {
 
     private final State state;

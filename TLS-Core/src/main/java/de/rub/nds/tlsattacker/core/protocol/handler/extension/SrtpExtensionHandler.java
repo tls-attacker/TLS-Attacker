@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SrtpExtensionPr
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SrtpExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class SrtpExtensionHandler extends ExtensionHandler<SrtpExtensionMessage> {
 
     public SrtpExtensionHandler(TlsContext context) {

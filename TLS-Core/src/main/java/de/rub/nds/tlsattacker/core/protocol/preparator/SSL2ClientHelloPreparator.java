@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-
 public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
 
     private final SSL2ClientHelloMessage message;

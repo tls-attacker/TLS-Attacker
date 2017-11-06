@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.WorkflowTraceTypeConverter;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
-
 public class MitmWorkflowTypeDelegate extends Delegate {
 
     @Parameter(names = "-mitm_workflow_trace_type", description = "Type of the workflow trace"

@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import java.util.List;
 
-
 public class WorkFlowTraceFakeExecuter {
     public static void execute(WorkflowTrace trace) {
         List<TLSAction> actionList = trace.getTlsActions();

@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class CertificateTypeExtensionHandlerTest {
     private final List<CertificateType> certList = Arrays.asList(CertificateType.OPEN_PGP, CertificateType.X509);
     private CertificateTypeExtensionHandler handler;

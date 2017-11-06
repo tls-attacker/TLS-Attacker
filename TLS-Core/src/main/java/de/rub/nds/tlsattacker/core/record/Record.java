@@ -25,7 +25,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
-
 public class Record extends AbstractRecord {
 
     /**

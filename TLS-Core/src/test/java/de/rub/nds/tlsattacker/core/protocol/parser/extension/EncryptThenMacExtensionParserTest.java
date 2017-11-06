@@ -15,7 +15,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class EncryptThenMacExtensionParserTest {
     private final ExtensionType extensionType = ExtensionType.ENCRYPT_THEN_MAC;
     private final byte[] expectedBytes = new byte[] { 0x00, 0x16, 0x00, 0x00 };

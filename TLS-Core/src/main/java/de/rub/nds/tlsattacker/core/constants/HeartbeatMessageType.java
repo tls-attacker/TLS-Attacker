@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public enum HeartbeatMessageType {
 
     HEARTBEAT_REQUEST((byte) 1),

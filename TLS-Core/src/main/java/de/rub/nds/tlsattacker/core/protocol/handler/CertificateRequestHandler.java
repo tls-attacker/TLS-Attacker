@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
 
     public CertificateRequestHandler(TlsContext tlsContext) {

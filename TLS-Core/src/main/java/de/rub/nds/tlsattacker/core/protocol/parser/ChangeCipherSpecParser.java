@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ChangeCipherSpecByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 
-
 public class ChangeCipherSpecParser extends ProtocolMessageParser<ChangeCipherSpecMessage> {
 
     /**

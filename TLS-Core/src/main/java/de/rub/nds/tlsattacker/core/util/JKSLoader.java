@@ -18,7 +18,6 @@ import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
-
 public class JKSLoader {
 
     public static org.bouncycastle.asn1.x509.Certificate loadCertificate(KeyStore keyStore, String alias) {

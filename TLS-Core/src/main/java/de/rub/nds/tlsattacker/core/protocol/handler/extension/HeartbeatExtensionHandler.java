@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.HeartbeatExtens
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class HeartbeatExtensionHandler extends ExtensionHandler<HeartbeatExtensionMessage> {
 
     public HeartbeatExtensionHandler(TlsContext context) {

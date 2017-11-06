@@ -23,8 +23,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * 
-
+ *
+ *
  *
  */
 public class ClientKeyExchangeHandlerTest {
@@ -40,7 +40,7 @@ public class ClientKeyExchangeHandlerTest {
         handler = new DHClientKeyExchangeHandler(context);
     }
 
-    /**
+    /*
      * From RFC 6101: 6.1. Asymmetric Cryptographic Computations The asymmetric
      * algorithms are used in the handshake protocol to authenticate parties and
      * to generate shared keys and secrets. For Diffie-Hellman, RSA, and
@@ -53,7 +53,6 @@ public class ClientKeyExchangeHandlerTest {
      * MD5(pre_master_secret + SHA('CCC' + pre_master_secret +
      * ClientHello.random + ServerHello.random)); ..... It is hard to read how
      * the Constants have to be implemented. We will use the ASCII values.
-     * 
      * @throws NoSuchAlgorithmException
      */
     @Test

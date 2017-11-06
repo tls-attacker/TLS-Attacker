@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePrep
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-
 public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHClientKeyExchangeMessage> {
 
     public ECDHClientKeyExchangeHandler(TlsContext tlsContext) {
