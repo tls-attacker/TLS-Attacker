@@ -13,9 +13,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 
 /**
  *
@@ -30,9 +28,6 @@ public class CopyBufferedMessagesAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setMessageBuffer(src.getMessageBuffer());
-        LOGGER.debug("Src:" + ArrayConverter.bytesToHexString(src.getServerRandom(), true, true));
-        LOGGER.debug("Dst:" + ArrayConverter.bytesToHexString(dst.getServerRandom(), true, true));
-
     }
 
     @Override

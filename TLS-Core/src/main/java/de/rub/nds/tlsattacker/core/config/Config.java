@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
@@ -300,9 +299,10 @@ public class Config implements Serializable {
     private byte[] certificateStatusRequestExtensionRequestExtension = new byte[0];
 
     /**
-     * Default ALPN announced protocols It's HTTP/2 0x68 0x32 as of RFC7540
+     * Default ALPN announced protocols. HTTP/2 0x68 0x32 ("h2") as of RFC7540
      */
-    private String applicationLayerProtocolNegotiationAnnouncedProtocols = "h2";
+    private byte[] applicationLayerProtocolNegotiationAnnouncedProtocols = ArrayConverter
+            .hexStringToByteArray("026832");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -830,8 +830,8 @@ public class Config implements Serializable {
     private boolean httpsParsingEnabled = false;
 
     private Config() {
-        defaultClientConnection = new OutboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 443, "localhost");
-        defaultServerConnection = new InboundConnection(AliasedConnection.DEFAULT_CONNECTION_ALIAS, 443, "localhost");
+        defaultClientConnection = new OutboundConnection("client", 443, "localhost");
+        defaultServerConnection = new InboundConnection("server", 443);
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
@@ -2030,12 +2030,12 @@ public class Config implements Serializable {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public String getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
+    public byte[] getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
         return applicationLayerProtocolNegotiationAnnouncedProtocols;
     }
 
     public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
-            String applicationLayerProtocolNegotiationAnnouncedProtocols) {
+            byte[] applicationLayerProtocolNegotiationAnnouncedProtocols) {
         this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
     }
 

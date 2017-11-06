@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.connection;
 
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class OutboundConnection extends AliasedConnection {
@@ -36,6 +35,14 @@ public class OutboundConnection extends AliasedConnection {
 
     public OutboundConnection(String alias, Integer port, String hostname) {
         super(alias, port, hostname);
+    }
+
+    public OutboundConnection(OutboundConnection other) {
+        this.alias = other.alias;
+        this.hostname = other.hostname;
+        this.port = other.port;
+        this.timeout = other.timeout;
+        this.transportHandlerType = other.transportHandlerType;
     }
 
     @Override
@@ -68,5 +75,10 @@ public class OutboundConnection extends AliasedConnection {
             defaultCon = new OutboundConnection();
         }
         super.filter(defaultCon);
+    }
+
+    @Override
+    public OutboundConnection getCopy() {
+        return new OutboundConnection(this);
     }
 }

@@ -2,14 +2,13 @@
 <config>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
     <defaultClientConnection>
-        <alias>defaultConnection</alias>
+        <alias>client</alias>
         <port>443</port>
         <hostname>localhost</hostname>
     </defaultClientConnection>
     <defaultServerConnection>
-        <alias>defaultConnection</alias>
+        <alias>server</alias>
         <port>443</port>
-        <hostname>localhost</hostname>
     </defaultServerConnection>    
     <clientAuthentication>false</clientAuthentication>
     <supportedSignatureAndHashAlgorithms>

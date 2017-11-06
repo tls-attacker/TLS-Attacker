@@ -147,6 +147,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     ReceiveMessageHelper receiveMessageHelper;
 
     public ForwardAction() {
+        this.connectionAlias = null;
         receiveMessageHelper = new ReceiveMessageHelper();
     }
 
@@ -158,6 +159,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
      * Allow to pass a fake ReceiveMessageHelper helper for testing.
      */
     protected ForwardAction(String receiveFromAlias, String forwardToAlias, ReceiveMessageHelper receiveMessageHelper) {
+        this.connectionAlias = null;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
         this.receiveMessageHelper = receiveMessageHelper;
@@ -165,6 +167,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
 
     public ForwardAction(String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
         super(messages);
+        this.connectionAlias = null;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
         receiveMessageHelper = new ReceiveMessageHelper();

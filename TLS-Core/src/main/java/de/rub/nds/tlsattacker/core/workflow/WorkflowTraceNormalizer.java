@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.action.GeneralAction;
@@ -36,8 +38,8 @@ public class WorkflowTraceNormalizer {
      */
     public void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
         List<AliasedConnection> traceConnections = trace.getConnections();
-        AliasedConnection defaultInCon = config.getDefaultServerConnection();
-        AliasedConnection defaultOutCon = config.getDefaultClientConnection();
+        InboundConnection defaultInCon = config.getDefaultServerConnection().getCopy();
+        OutboundConnection defaultOutCon = config.getDefaultClientConnection().getCopy();
 
         if (traceConnections == null) {
             traceConnections = new ArrayList<>();
@@ -92,10 +94,10 @@ public class WorkflowTraceNormalizer {
         for (TlsAction action : trace.getTlsActions()) {
             if (isSingleConnectionWorkflow) {
                 action.normalize(customDefaults);
-                action.setSingleConnectionWorkflow(isSingleConnectionWorkflow);
             } else {
                 action.normalize();
             }
+            action.setSingleConnectionWorkflow(isSingleConnectionWorkflow);
         }
 
         assertNormalizedWorkflowTrace(trace);

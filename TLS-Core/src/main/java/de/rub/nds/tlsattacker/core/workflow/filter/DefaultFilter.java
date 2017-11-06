@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.workflow.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
@@ -48,45 +50,36 @@ public class DefaultFilter extends Filter {
 
         List<AliasedConnection> traceConnections = trace.getConnections();
         List<AliasedConnection> strippedTraceConnections = new ArrayList<>();
-        AliasedConnection defaultInCon = config.getDefaultServerConnection();
-        AliasedConnection defaultOutCon = config.getDefaultClientConnection();
+        InboundConnection defaultInCon = config.getDefaultServerConnection().getCopy();
+        OutboundConnection defaultOutCon = config.getDefaultClientConnection().getCopy();
 
         // Strip defaults of the connections
-        AliasedConnection lastDefaultCon = null;
+        AliasedConnection lastProcessedCon = null;
         for (AliasedConnection traceCon : traceConnections) {
             ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
             if (null == localConEndType) {
                 throw new ConfigurationException("WorkflowTrace defines a connection with an"
                         + "empty localConnectionEndType. Don't know how to handle this!");
             } else {
+                lastProcessedCon = traceCon.getCopy();
                 switch (traceCon.getLocalConnectionEndType()) {
                     case CLIENT:
-                        lastDefaultCon = defaultOutCon;
+                        traceCon.filter(defaultOutCon);
                         break;
                     case SERVER:
-                        lastDefaultCon = defaultInCon;
+                        traceCon.filter(defaultInCon);
                         break;
                     default:
                         throw new ConfigurationException("WorkflowTrace defines a connection with an"
                                 + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
                                 + "how to handle this!");
                 }
-                traceCon.filter(lastDefaultCon);
+
             }
         }
 
-        // If we have one or two connections that match the default config
-        // connections exactly, do not add them to output.
-        if (traceConnections.size() <= 2) {
-            for (AliasedConnection traceCon : traceConnections) {
-                if (!traceCon.equals(defaultInCon) && !traceCon.equals(defaultOutCon)) {
-                    strippedTraceConnections.add(traceCon);
-                }
-                lastDefaultCon = traceCon;
-            }
-        }
-
-        TlsAction defaultAction = new GeneralAction(lastDefaultCon.getAlias());
+        // Remove unnecessary action connection aliases
+        TlsAction defaultAction = new GeneralAction(lastProcessedCon.getAlias());
         if (trace.getTlsActions() != null) {
             for (TlsAction action : trace.getTlsActions()) {
                 action.filter(defaultAction);

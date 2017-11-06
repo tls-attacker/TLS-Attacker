@@ -10,7 +10,7 @@ workflow trace are not overwritten by noramlizing and filtering.
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
-        <alias>defaultConnection</alias>
+        <alias>client</alias>
         <timeout>1000</timeout>
     </OutboundConnection>
 </workflowTrace>
@@ -19,7 +19,7 @@ workflow trace are not overwritten by noramlizing and filtering.
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
-        <alias>defaultConnection</alias>
+        <alias>client</alias>
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
@@ -31,7 +31,7 @@ workflow trace are not overwritten by noramlizing and filtering.
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
-        <alias>defaultConnection</alias>
+        <alias>client</alias>
         <timeout>1000</timeout>
     </OutboundConnection>
 </workflowTrace>

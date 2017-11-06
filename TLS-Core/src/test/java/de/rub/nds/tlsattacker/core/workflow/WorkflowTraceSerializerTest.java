@@ -211,9 +211,7 @@ public class WorkflowTraceSerializerTest {
             trace.addConnection(con1);
             trace.addConnection(con2);
             trace.addConnection(con3);
-            action = new SendAction(new ClientHelloMessage(config));
-            action.setConnectionAlias(con3.getAlias());
-            action.normalize();
+            action = new SendAction(con3.getAlias(), new ClientHelloMessage(config));
             trace.addTlsAction(action);
 
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");

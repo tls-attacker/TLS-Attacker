@@ -42,6 +42,14 @@ public class InboundConnection extends AliasedConnection {
         return LOCAL_CONNECTION_END_TYPE;
     }
 
+    public InboundConnection(InboundConnection other) {
+        this.alias = other.alias;
+        this.hostname = other.hostname;
+        this.port = other.port;
+        this.timeout = other.timeout;
+        this.transportHandlerType = other.transportHandlerType;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("InboundConnection{");
@@ -67,5 +75,10 @@ public class InboundConnection extends AliasedConnection {
             defaultCon = new InboundConnection();
         }
         super.filter(defaultCon);
+    }
+
+    @Override
+    public InboundConnection getCopy() {
+        return new InboundConnection(this);
     }
 }

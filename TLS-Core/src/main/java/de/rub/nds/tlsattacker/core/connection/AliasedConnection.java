@@ -12,15 +12,15 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = { "alias", "port", "hostname", "timeout", "transportHandlerType" })
-public abstract class AliasedConnection extends Connection implements Aliasable {
+public abstract class AliasedConnection extends Connection implements Aliasable, Serializable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
@@ -29,8 +29,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     public static final Integer DEFAULT_PORT = 443;
 
     protected String alias = null;
-    @XmlTransient
-    protected Boolean hasDefaults = false;
 
     public AliasedConnection() {
     }
@@ -68,14 +66,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
 
     public void setAlias(String alias) {
         this.alias = alias;
-    }
-
-    public Boolean getHasDefaults() {
-        return hasDefaults;
-    }
-
-    public void setHasDefaults(Boolean hasDefaults) {
-        this.hasDefaults = hasDefaults;
     }
 
     @Override
@@ -124,15 +114,10 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
 
     public abstract ConnectionEndType getLocalConnectionEndType();
 
-    public boolean isHasDefaults() {
-        return hasDefaults;
-    }
-
     @Override
     public int hashCode() {
         int hash = super.hashCode();
         hash = 41 * hash + Objects.hashCode(this.alias);
-        hash = 41 * hash + Objects.hashCode(this.hasDefaults);
         return hash;
     }
 
@@ -143,9 +128,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         }
         final AliasedConnection other = (AliasedConnection) obj;
         if (!Objects.equals(this.alias, other.alias)) {
-            return false;
-        }
-        if (!Objects.equals(this.hasDefaults, other.hasDefaults)) {
             return false;
         }
         return true;
@@ -208,4 +190,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
             port = null;
         }
     }
+
+    public abstract AliasedConnection getCopy();
 }

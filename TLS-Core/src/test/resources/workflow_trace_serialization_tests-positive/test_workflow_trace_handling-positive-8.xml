@@ -10,7 +10,7 @@ if there is only one connection defined in the workflow trace.
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
-        <alias>defaultConnection</alias>
+        <alias>client</alias>
     </OutboundConnection>
     <SendAction>
         <messages>
@@ -23,14 +23,14 @@ if there is only one connection defined in the workflow trace.
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
-        <alias>defaultConnection</alias>
+        <alias>client</alias>
         <port>443</port>
         <hostname>localhost</hostname>
         <timeout>1000</timeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
     <SendAction>
-        <connectionAlias>defaultConnection</connectionAlias>
+        <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
@@ -42,7 +42,7 @@ if there is only one connection defined in the workflow trace.
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
-        <alias>defaultConnection</alias>
+        <alias>client</alias>
     </OutboundConnection>
     <SendAction>
         <messages>

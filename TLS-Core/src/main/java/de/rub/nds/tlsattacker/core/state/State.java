@@ -252,6 +252,17 @@ public class State {
      *            The workflow trace that should be filtered
      */
     private void filterTrace(WorkflowTrace trace) {
+        List<FilterType> filters = config.getOutputFilters();
+        if ((filters == null) || (filters.isEmpty())) {
+            LOGGER.debug("No filters to apply, ouput filter list is empty");
+            return;
+        }
+        // Filters contains null if set loaded from -config with entry
+        // <outputFilters/>.
+        if (filters.contains(null)) {
+            LOGGER.debug("No filters to apply");
+            return;
+        }
         for (FilterType filterType : config.getOutputFilters()) {
             Filter filter = FilterFactory.createWorkflowTraceFilter(filterType, config);
             filter.applyFilter(trace);

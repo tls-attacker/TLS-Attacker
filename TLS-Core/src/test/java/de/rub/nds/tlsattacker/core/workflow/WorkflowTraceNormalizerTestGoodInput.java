@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
 import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import static de.rub.nds.tlsattacker.util.FileHelper.inputStreamToString;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +30,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -41,7 +39,7 @@ import org.junit.runners.Parameterized.Parameters;
  * Find the files for this test at
  * src/test/resources/workflow_trace_serialization_tests-positive
  */
-@Category(SlowTests.class)
+// @Category(SlowTests.class)
 @RunWith(Parameterized.class)
 public class WorkflowTraceNormalizerTestGoodInput {
 
@@ -53,14 +51,13 @@ public class WorkflowTraceNormalizerTestGoodInput {
 
     private WorkflowTrace trace;
     private WorkflowTrace origTrace;
-    private WorkflowTrace filteredTrace;
     private Config config;
     private Filter filter;
     private WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
     private String configXml;
     private String traceInputXml;
-    private String expectedNormalizedXml;
     private String expectedFilteredXml;
+    private String expectedNormalizedXml;
     private File testVector;
 
     public WorkflowTraceNormalizerTestGoodInput(File testVector) {
@@ -103,6 +100,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
         assertNotNull(trace);
         normalizer.normalize(trace, config);
         String actual = WorkflowTraceSerializer.write(trace).trim();
+        assertEquals("Normalized output should be fine", actual, expectedNormalizedXml);
 
         filter = new DefaultFilter(config);
         filter.applyFilter(trace);
