@@ -173,7 +173,6 @@ public class State {
      * @see this.getTlsContext(String)
      */
     public TlsContext getTlsContext() {
-        assertWorkflowTraceNotNull("getTlsContext");
         return contextContainer.getTlsContext();
     }
 
@@ -191,22 +190,18 @@ public class State {
      * @see convenience method for single context states: getTlsContext()
      */
     public TlsContext getTlsContext(String alias) {
-        assertWorkflowTraceNotNull("getTlsContext");
         return contextContainer.getTlsContext(alias);
     }
 
     public List<TlsContext> getAllTlsContexts() {
-        assertWorkflowTraceNotNull("getAllTlsContexts");
         return contextContainer.getAllContexts();
     }
 
     public List<TlsContext> getInboundTlsContexts() {
-        assertWorkflowTraceNotNull("getInboundTlsContexts");
         return contextContainer.getInboundTlsContexts();
     }
 
     public List<TlsContext> getOutboundTlsContexts() {
-        assertWorkflowTraceNotNull("getOutboundTlsContexts");
         return contextContainer.getOutboundTlsContexts();
     }
 
@@ -225,7 +220,7 @@ public class State {
     /**
      * Get a filtered copy of the state's workflow trace.
      * 
-     * @return A filtered copy of the input workflow trace
+     * @return a filtered copy of the input workflow trace
      */
     public WorkflowTrace getFilteredTraceCopy() {
         return getFilteredTraceCopy(workflowTrace);

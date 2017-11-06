@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -135,7 +134,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         String expected = getReadableString(expectedMessages);
         LOGGER.debug("Receive Expected:" + expected);
         String received = getReadableString(messages);
-        if (getConnectionAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
+        if (hasDefaultAlias()) {
             LOGGER.info("Received Messages: " + received);
         } else {
             LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);

@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class WaitingAction extends ConnectionBoundAction {
+public class WaitingAction extends TlsAction {
 
     /** Default waiting time in milliseconds */
     public final static long DEFAULT_WAITING_TIME = 10;
@@ -104,7 +104,6 @@ public class WaitingAction extends ConnectionBoundAction {
      */
     @Override
     public void filter() {
-        super.filter();
         if (time == DEFAULT_WAITING_TIME) {
             time = null;
         }
@@ -115,7 +114,6 @@ public class WaitingAction extends ConnectionBoundAction {
      */
     @Override
     public void filter(TlsAction defaultAction) {
-        super.filter(defaultAction);
         long defaultTime = DEFAULT_WAITING_TIME;
         if (defaultAction instanceof WaitingAction) {
             WaitingAction a = ((WaitingAction) defaultAction);
@@ -130,8 +128,8 @@ public class WaitingAction extends ConnectionBoundAction {
 
     @Override
     public int hashCode() {
-        int hash = super.hashCode();
-        hash = 59 * hash + Objects.hashCode(this.time);
+        int hash = 3;
+        hash = 23 * hash + Objects.hashCode(this.time);
         return hash;
     }
 
@@ -150,7 +148,7 @@ public class WaitingAction extends ConnectionBoundAction {
         if (!Objects.equals(this.time, other.time)) {
             return false;
         }
-        return super.equals(obj);
+        return true;
     }
 
 }

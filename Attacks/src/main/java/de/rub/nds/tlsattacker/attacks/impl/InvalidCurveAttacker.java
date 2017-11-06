@@ -96,8 +96,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = config.createConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
                 tlsConfig), new FinishedMessage(tlsConfig)));
         trace.addTlsAction(new ReceiveAction(new AlertMessage(tlsConfig)));

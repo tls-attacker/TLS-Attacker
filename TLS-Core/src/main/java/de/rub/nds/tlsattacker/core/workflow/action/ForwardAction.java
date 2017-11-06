@@ -143,9 +143,6 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
     protected List<AbstractRecord> sendRecords;
 
-    @XmlTransient
-    ReceiveMessageHelper receiveMessageHelper;
-
     public ForwardAction() {
         this.connectionAlias = null;
         receiveMessageHelper = new ReceiveMessageHelper();

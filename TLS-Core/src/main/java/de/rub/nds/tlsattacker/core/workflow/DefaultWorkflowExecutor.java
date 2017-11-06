@@ -8,14 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.config.ConfigIO;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -80,6 +82,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             state.getWorkflowTrace().reset();
         }
         state.storeTrace();
+
+        if (config.getConfigOutput() != null) {
+            ConfigIO.write(config, new File(config.getConfigOutput()));
+        }
     }
 
     /**

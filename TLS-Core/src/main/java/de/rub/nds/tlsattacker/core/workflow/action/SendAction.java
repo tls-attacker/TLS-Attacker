@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -65,7 +64,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         String sending = getReadableString(messages);
-        if (connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
+        if (hasDefaultAlias()) {
             LOGGER.info("Sending messages: " + sending);
         } else {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);

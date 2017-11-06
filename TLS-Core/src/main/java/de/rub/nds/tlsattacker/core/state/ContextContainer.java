@@ -78,10 +78,11 @@ public class ContextContainer {
      *      contexts
      */
     public TlsContext getTlsContext(String alias) {
-        if (tlsContexts.get(alias) == null) {
+        TlsContext ctx = tlsContexts.get(alias);
+        if (ctx == null) {
             throw new ConfigurationException("No context defined with alias '" + alias + "'.");
         }
-        return tlsContexts.get(alias);
+        return ctx;
     }
 
     public void addTlsContext(TlsContext context) {
@@ -148,6 +149,8 @@ public class ContextContainer {
             outboundTlsContexts.remove(removeMe);
             tlsContexts.remove(alias);
             knownAliases.remove(alias);
+        } else {
+            LOGGER.debug("No context with alias " + alias + " found, nothing to remove");
         }
     }
 

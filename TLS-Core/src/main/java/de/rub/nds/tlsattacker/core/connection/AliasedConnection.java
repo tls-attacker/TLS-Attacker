@@ -166,7 +166,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
                 port = DEFAULT_PORT;
             }
             if (port < 0 || port > 65535) {
-                throw new org.apache.logging.log4j.core.config.ConfigurationException("Attempt to set default port "
+                throw new ConfigurationException("Attempt to set default port "
                         + "failed. Port must be in interval [0,65535], but is " + port);
             }
         }

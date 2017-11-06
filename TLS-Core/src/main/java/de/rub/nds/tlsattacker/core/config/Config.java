@@ -120,9 +120,9 @@ public class Config implements Serializable {
     /**
      * Whether filters return a copy of the input workflow trace or overwrite it
      * in place. While copying would be preferred in general, overwriting might
-     * be needed for
+     * be desired in some scenarios for better performance.
      */
-    private Boolean applyFiltersInPlace;
+    private Boolean applyFiltersInPlace = true;
 
     /**
      * Whether to keep explicit user settings in the workflow trace when
@@ -131,7 +131,7 @@ public class Config implements Serializable {
      * explicitly overwritten default connections. If this flag is true, the
      * user defined connections would be restored afterwards.
      */
-    private Boolean filtersKeepUserSettings;
+    private Boolean filtersKeepUserSettings = true;
 
     /**
      * Default value for ProtocolVerionFields

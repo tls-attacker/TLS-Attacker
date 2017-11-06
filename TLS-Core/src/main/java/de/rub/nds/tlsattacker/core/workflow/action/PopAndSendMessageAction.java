@@ -58,7 +58,7 @@ public class PopAndSendMessageAction extends MessageAction implements SendingAct
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Pop'n'Send Action:\n");
+        StringBuilder sb = new StringBuilder("PopAndSendAction:\n");
         sb.append("Messages:\n");
         for (ProtocolMessage message : messages) {
             sb.append(message.toCompactString());

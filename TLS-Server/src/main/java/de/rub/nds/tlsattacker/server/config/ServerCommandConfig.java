@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -67,6 +68,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     private FilterDelegate filterDelegate;
     @ParametersDelegate
     private ListDelegate listDelegate;
+    @ParametersDelegate
+    private ConfigOutputDelegate configOutputDelegate;
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -85,6 +88,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.certificateDelegate = new CertificateDelegate();
         this.filterDelegate = new FilterDelegate();
         this.listDelegate = new ListDelegate();
+        this.configOutputDelegate = new ConfigOutputDelegate();
 
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -100,6 +104,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(certificateDelegate);
         addDelegate(filterDelegate);
         addDelegate(listDelegate);
+        addDelegate(configOutputDelegate);
     }
 
     @Override

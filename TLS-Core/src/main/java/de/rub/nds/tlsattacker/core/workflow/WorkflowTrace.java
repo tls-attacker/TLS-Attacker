@@ -246,11 +246,26 @@ public class WorkflowTrace implements Serializable {
         return sendActions;
     }
 
+    /**
+     * Get the last TlsAction of the workflow trace.
+     * 
+     * @return the last TlsAction of the workflow trace. Null if no actions are
+     *         defined
+     */
     public TlsAction getLastAction() {
         int size = tlsActions.size();
-        return tlsActions.get(size - 1);
+        if (size != 0) {
+            return tlsActions.get(size - 1);
+        }
+        return null;
     }
 
+    /**
+     * Get the last MessageAction of the workflow trace.
+     * 
+     * @return the last MessageAction of the workflow trace. Null if no message
+     *         actions are defined
+     */
     public MessageAction getLastMessageAction() {
         for (int i = tlsActions.size() - 1; i > 0; i--) {
             if (tlsActions.get(i) instanceof MessageAction) {
@@ -260,6 +275,12 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
+    /**
+     * Get the last SendingAction of the workflow trace.
+     * 
+     * @return the last SendingAction of the workflow trace. Null if no sending
+     *         actions are defined
+     */
     public SendingAction getLastSendingAction() {
         for (int i = tlsActions.size() - 1; i > 0; i--) {
             if (tlsActions.get(i) instanceof SendingAction) {

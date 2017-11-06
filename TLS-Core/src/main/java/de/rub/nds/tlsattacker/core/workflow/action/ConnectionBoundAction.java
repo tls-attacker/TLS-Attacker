@@ -46,6 +46,10 @@ public abstract class ConnectionBoundAction extends TlsAction {
         this.connectionAlias = connectionAlias;
     }
 
+    public boolean hasDefaultAlias() {
+        return getConnectionAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
+    }
+
     @Override
     public String getFirstAlias() {
         return connectionAlias;

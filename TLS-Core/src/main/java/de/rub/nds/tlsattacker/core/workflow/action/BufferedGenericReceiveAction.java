@@ -31,7 +31,8 @@ public class BufferedGenericReceiveAction extends GenericReceiveAction {
         TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
         tlsContext.getMessageBuffer().addAll(messages);
         tlsContext.getRecordBuffer().addAll(records);
-        System.out.println("record bufferedGener...: " + records.size());
+        LOGGER.debug("New message buffer size: " + messages.size());
+        LOGGER.debug("New record buffer size: " + records.size());
     }
 
 }

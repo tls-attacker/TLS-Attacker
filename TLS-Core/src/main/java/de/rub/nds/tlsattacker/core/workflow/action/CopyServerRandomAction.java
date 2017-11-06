@@ -26,8 +26,8 @@ public class CopyServerRandomAction extends CopyContextFieldAction {
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setServerRandom(src.getServerRandom());
-        LOGGER.debug("Src:" + ArrayConverter.bytesToHexString(src.getServerRandom(), true, true));
-        LOGGER.debug("Dst:" + ArrayConverter.bytesToHexString(dst.getServerRandom(), true, true));
+        LOGGER.debug("Copying server random from " + src + " to " + dst);
+        LOGGER.debug("Copied server random is: " + ArrayConverter.bytesToHexString(dst.getClientRandom(), true, true));
 
     }
 

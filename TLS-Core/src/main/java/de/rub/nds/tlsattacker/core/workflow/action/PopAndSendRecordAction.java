@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.serializer.RecordSerializer;
+import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
@@ -36,7 +36,6 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        LOGGER.info("Pop'n'SendRecord, in record buffer before pop: " + tlsContext.getRecordBuffer().size());
         AbstractRecord record = tlsContext.getRecordBuffer().pop();
 
         String sending = getReadableString(messages);
@@ -45,13 +44,13 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         } else {
             LOGGER.info("Sending records(" + connectionAlias + "): " + sending);
         }
-        RecordSerializer s = (RecordSerializer) record.getRecordSerializer();
+        AbstractRecordSerializer s = record.getRecordSerializer();
         tlsContext.getTransportHandler().sendData(s.serialize());
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Pop'n'Send Action:\n");
+        StringBuilder sb = new StringBuilder("PopAndSendRecordAction:\n");
         sb.append("Messages:\n");
         for (ProtocolMessage message : messages) {
             sb.append(message.toCompactString());

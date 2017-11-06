@@ -414,7 +414,7 @@ public class TlsContext {
     public TlsContext(Config config) {
         RunningModeType mode = config.getDefaulRunningMode();
         if (null == mode) {
-            throw new ConfigurationException("Cannot create connection for, running mode not set");
+            throw new ConfigurationException("Cannot create connection, running mode not set");
         } else
             switch (mode) {
                 case CLIENT:

@@ -96,6 +96,7 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.filterDelegate = new FilterDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
         this.listDelegate = new ListDelegate();
+
         addDelegate(listDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);

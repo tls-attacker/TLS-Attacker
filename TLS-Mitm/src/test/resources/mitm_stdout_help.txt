@@ -10,6 +10,9 @@ Usage: <main class> [options]
       TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA 
     -config
       This parameter allows you to specify a default TlsConfig
+    -config_output
+      Write XML representation of the actual config used during execution to 
+      this file
   * -connect
       Add a server to which the MiTM will connect to. Allowed syntax: 
       <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>
