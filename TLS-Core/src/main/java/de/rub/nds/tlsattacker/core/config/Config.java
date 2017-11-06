@@ -290,10 +290,9 @@ public class Config implements Serializable {
     private byte[] certificateStatusRequestExtensionRequestExtension = new byte[0];
 
     /**
-     * Default ALPN announced protocols. HTTP/2 0x68 0x32 ("h2") as of RFC7540
+     * Default ALPN announced protocols
      */
-    private byte[] applicationLayerProtocolNegotiationAnnouncedProtocols = ArrayConverter
-            .hexStringToByteArray("026832");
+    private String[] alpnAnnouncedProtocols = new String[] { "h2" };
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -2056,13 +2055,12 @@ public class Config implements Serializable {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public byte[] getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
-        return applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public String[] getAlpnAnnouncedProtocols() {
+        return alpnAnnouncedProtocols;
     }
 
-    public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
-            byte[] applicationLayerProtocolNegotiationAnnouncedProtocols) {
-        this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public void setAlpnAnnouncedProtocols(String[] alpnAnnouncedProtocols) {
+        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
     }
 
     public byte[] getSessionId() {
