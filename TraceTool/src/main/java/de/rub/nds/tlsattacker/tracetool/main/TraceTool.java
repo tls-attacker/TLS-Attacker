@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.tracetool.main;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -18,6 +19,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.tracetool.config.TraceToolCommandConfig;
+import java.io.File;
 import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
@@ -76,6 +78,9 @@ public class TraceTool {
                 System.out.println(xml);
             } else {
                 state.storeTrace();
+            }
+            if (config.getConfigOutput() != null) {
+                ConfigIO.write(config, new File(config.getConfigOutput()));
             }
         } catch (ConfigurationException ce) {
             LOGGER.error("Encountered a ConfigurationException aborting. " + ce.getLocalizedMessage()
