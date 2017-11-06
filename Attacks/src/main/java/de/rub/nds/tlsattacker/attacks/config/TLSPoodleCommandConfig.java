@@ -20,7 +20,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class TLSPoodleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "tls_poodle";

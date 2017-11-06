@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "dtls_potest";

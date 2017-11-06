@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
-
 public class SimpleMitmProxy extends Attacker<SimpleMitmProxyCommandConfig> {
 
     public SimpleMitmProxy(SimpleMitmProxyCommandConfig config) {

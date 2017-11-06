@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import java.math.BigInteger;
 
-
 public class WinshockCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "winshock";

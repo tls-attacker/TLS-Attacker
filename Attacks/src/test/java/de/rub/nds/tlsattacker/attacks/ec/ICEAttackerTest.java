@@ -19,7 +19,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 public class ICEAttackerTest {
 
     static Logger LOGGER = LogManager.getLogger(ICEAttackerTest.class);

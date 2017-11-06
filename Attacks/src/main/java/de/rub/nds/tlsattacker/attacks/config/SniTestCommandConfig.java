@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class SniTestCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "sni_test";

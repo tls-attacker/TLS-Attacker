@@ -27,7 +27,6 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
-
 public class InvalidCurveAttackConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "invalid_curve";

@@ -27,8 +27,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-
 public class MitmCommandConfig extends TLSDelegateConfig {
 
     protected static final Logger LOGGER = LogManager.getLogger(MitmCommandConfig.class);

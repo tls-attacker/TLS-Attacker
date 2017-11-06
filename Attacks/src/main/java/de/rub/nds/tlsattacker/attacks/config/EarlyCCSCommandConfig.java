@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 
-
 public class EarlyCCSCommandConfig extends AttackConfig {
     public static final String ATTACK_COMMAND = "early_ccs";
 

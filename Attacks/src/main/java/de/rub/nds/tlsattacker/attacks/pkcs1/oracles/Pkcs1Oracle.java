@@ -79,7 +79,8 @@ public abstract class Pkcs1Oracle {
     /**
      * Checks for PKCS conformity - 00 02 padding 00 pms
      *
-     * @param msg Encrypted message to check for conformity
+     * @param msg
+     *            Encrypted message to check for conformity
      * @return True if PKCS conforming, else false
      */
     public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;

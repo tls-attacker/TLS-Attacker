@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import java.io.InputStream;
 import org.junit.Test;
 
-
 public class SimpleMitmProxyCommandConfigTest {
 
     private SimpleMitmProxyCommandConfig cmdConfig;

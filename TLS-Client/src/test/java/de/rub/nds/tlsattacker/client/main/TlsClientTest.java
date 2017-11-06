@@ -68,7 +68,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
-
 public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);

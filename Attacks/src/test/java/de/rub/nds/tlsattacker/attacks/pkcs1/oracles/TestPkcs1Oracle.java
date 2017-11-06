@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-
 public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
 
     /**
@@ -143,10 +142,9 @@ public abstract class TestPkcs1Oracle extends Pkcs1Oracle {
     }
 
     /**
-     * JSSE bug Plaintext oracle, for testing purposes: 
+     * JSSE bug Plaintext oracle, for testing purposes:
      * 
-     * Example for 256/512 byte long RSA key: 
-     * The oracle returns true if:
+     * Example for 256/512 byte long RSA key: The oracle returns true if:
      * <ul>
      * <li>first two bytes are equal to 0x00 0x02</li>
      * <li>the following 8 bytes do not contain 0x00</li>
