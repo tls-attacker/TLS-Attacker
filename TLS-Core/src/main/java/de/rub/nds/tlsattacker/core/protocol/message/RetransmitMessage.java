@@ -16,9 +16,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
-
+ * 
  *
- *         Raw bytes of a previos send message retransmitted
+ * Raw bytes of a previos send message retransmitted
  */
 @XmlRootElement
 public class RetransmitMessage extends ProtocolMessage {

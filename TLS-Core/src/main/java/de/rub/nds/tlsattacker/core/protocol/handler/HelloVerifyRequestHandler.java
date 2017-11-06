@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
 
- * @param <Message>
  */
 public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVerifyRequestMessage> {
 

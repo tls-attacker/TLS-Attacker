@@ -503,7 +503,7 @@ public enum CipherSuite {
      * Returns true in case the cipher suite enforces ephemeral keys. This is
      * the case for ECDHE and DHE cipher suites.
      *
-     * @return
+     * @return True if the Ciphersuite is Ephermaral
      */
     public boolean isEphemeral() {
         return this.name().contains("DHE_");
@@ -516,7 +516,7 @@ public enum CipherSuite {
     /**
      * Returns true in case the cipher suite is a CBC cipher suite.
      *
-     * @return
+     * @return True if the Ciphersuite is cbc
      */
     public boolean isCBC() {
         return (this.name().contains("_CBC"));
@@ -558,7 +558,8 @@ public enum CipherSuite {
      * TODO: this is still very imprecise and must be improved with new ciphers.
      *
      * @param version
-     * @return
+     *            The ProtocolVersion to check
+     * @return True if the Ciphersuite is supported in the ProtocolVersion
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
         if (version == ProtocolVersion.SSL3) {
@@ -673,7 +674,7 @@ public enum CipherSuite {
     /**
      * Returns true if the cipher suite a TLS 1.3 cipher suite
      *
-     * @return
+     * @return True if the Ciphersuite is supported in TLS 1.3
      */
     public boolean isTLS13() {
         return this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00;

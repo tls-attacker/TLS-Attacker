@@ -25,7 +25,6 @@ import org.junit.experimental.categories.Category;
  * be able to deal with everything
  *
  *
-
  */
 public class ParserStressTest {
 

@@ -22,13 +22,6 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
 
     private final RenegotiationInfoExtensionMessage message;
 
-    /**
-     * Constructor
-     *
-     * @param chooser
-     * @param message
-     * @param serializer
-     */
     public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message,
             RenegotiationInfoExtensionSerializer serializer) {
         super(chooser, message, serializer);

@@ -85,6 +85,8 @@ public class TokenbindingMessagePreparatorTest {
     /**
      * Test of prepareProtocolMessageContents method, of class
      * TokenbindingMessagePreparator.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testPrepareProtocolMessageContents() throws Exception {

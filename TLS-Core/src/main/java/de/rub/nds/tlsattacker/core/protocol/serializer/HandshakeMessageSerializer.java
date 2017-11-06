@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 /**
  * Abstract Serializer for HandshakeMessages
  *
-
+ * 
  * @param <T>
  *            Type of the HandshakeMessages to serialize
  */

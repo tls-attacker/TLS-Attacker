@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * RFC 4681
  * 
-
  */
 public enum UserMappingExtensionHintType {
     UPN_DOMAIN_HINT((byte) 0x40);

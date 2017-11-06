@@ -14,8 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The Object that should be Handled
  */
 public abstract class Handler<T> {
     public abstract Parser getParser(byte[] message, int pointer);

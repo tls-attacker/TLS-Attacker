@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 /**
  * This extension is defined in RFC4507
  * 
-
  */
 public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
 
@@ -33,7 +32,7 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
     /**
      * Returns the saved SessionTicket
      *
-     * @return
+     * @return the Raw ticket
      */
     public ModifiableByteArray getTicket() {
         return ticket;
@@ -43,6 +42,7 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
      * Sets the SessionTicket
      *
      * @param ticket
+     *            the Raw ticket bytes
      */
     public void setTicket(ModifiableByteArray ticket) {
         this.ticket = ticket;
@@ -52,6 +52,7 @@ public class SessionTicketTLSExtensionMessage extends ExtensionMessage {
      * Sets the SessionTicket
      *
      * @param array
+     *            the Raw ticket bytes
      */
     public void setTicket(byte[] array) {
         this.ticket = ModifiableVariableFactory.safelySetValue(ticket, array);

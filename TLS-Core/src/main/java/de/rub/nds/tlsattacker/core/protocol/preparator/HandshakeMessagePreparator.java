@@ -22,8 +22,9 @@ import java.io.IOException;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The HandshakeMessage that should be prepared
  */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
 

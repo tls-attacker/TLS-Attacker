@@ -13,8 +13,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The ProtocolMessage that should be prepared
  */
 public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
 

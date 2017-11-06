@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 
 /**
  *
-
+ *
  */
 public class NullCompression extends CompressionAlgorithm {
 
@@ -22,9 +22,10 @@ public class NullCompression extends CompressionAlgorithm {
 
     /**
      * Null Compression just passes the data through
-     * 
+     *
      * @param data
-     * @return
+     *            The Data that should be compressed
+     * @return Compressed Bytes
      */
     @Override
     public byte[] compress(byte[] data) {

@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 /**
  * Maximum Fragment Length Extension described in rfc3546
  *
-
  */
 public class MaxFragmentLengthExtensionMessage extends ExtensionMessage {
 

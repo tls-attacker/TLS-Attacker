@@ -35,7 +35,6 @@ import javax.crypto.Mac;
  * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
  *
-
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 

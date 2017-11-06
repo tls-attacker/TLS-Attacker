@@ -38,7 +38,12 @@ public class Curve25519 {
             (byte) 20, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
             (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 16 };
 
-    /********* KEY AGREEMENT *********/
+    /*********
+     * KEY AGREEMENT
+     * 
+     * @param k
+     *            k
+     *********/
 
     /*
      * Private key clamping k [out] your private key for key agreement k [in] 32

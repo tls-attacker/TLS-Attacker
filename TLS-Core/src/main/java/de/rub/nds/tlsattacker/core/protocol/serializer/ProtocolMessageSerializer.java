@@ -13,8 +13,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The ProtocolMessage that should be serialized
  */
 public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
 

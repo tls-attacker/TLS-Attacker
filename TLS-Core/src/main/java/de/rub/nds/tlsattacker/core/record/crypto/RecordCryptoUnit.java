@@ -50,10 +50,11 @@ public abstract class RecordCryptoUnit {
      * record length.
      *
      * @param record
+     *            The Record for which the data should be collected
      * @param protocolVersion
      *            According to which ProtocolVersion the
      *            AdditionalAuthenticationData is collected
-     * @return
+     * @return The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());

@@ -50,7 +50,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * A wrapper class over a list of protocol expectedMessages.
  *
-
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

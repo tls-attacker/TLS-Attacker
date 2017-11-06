@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
@@ -19,8 +18,9 @@ import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The HelloMessage that should be prepared
  */
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {

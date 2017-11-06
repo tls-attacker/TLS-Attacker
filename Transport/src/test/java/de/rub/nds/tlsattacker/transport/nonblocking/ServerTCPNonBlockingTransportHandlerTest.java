@@ -47,6 +47,8 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     /**
      * Test of closeConnection method, of class
      * ServerTCPNonBlockingTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testCloseConnectionNotInitialised() throws IOException {
@@ -93,6 +95,8 @@ public class ServerTCPNonBlockingTransportHandlerTest {
 
     /**
      * Test of initialize method, of class ServerTCPNonBlockingTransportHandler.
+     * 
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testInitialize() throws InterruptedException {
@@ -119,6 +123,8 @@ public class ServerTCPNonBlockingTransportHandlerTest {
 
     /**
      * Test of recheck method, of class ServerTCPNonBlockingTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testRecheck() throws IOException {

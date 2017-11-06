@@ -15,8 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The ExtensionMessage that should be serialized
  */
 public abstract class ExtensionSerializer<T extends ExtensionMessage> extends Serializer {
 

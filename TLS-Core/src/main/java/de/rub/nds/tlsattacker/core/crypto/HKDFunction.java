@@ -23,7 +23,6 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * HKDF functions computation for TLS 1.3
  * 
-
  */
 public class HKDFunction {
 
@@ -63,9 +62,12 @@ public class HKDFunction {
      * Computes HKDF-Extract output as defined in RFC 5869
      * 
      * @param hkdfAlgortihm
+     *            The HKDFAlgorithm
      * @param salt
+     *            The Salt
      * @param ikm
-     * @return
+     *            The IKM
+     * @return The HKDF-Extracted ouput
      */
     public static byte[] extract(HKDFAlgorithm hkdfAlgortihm, byte[] salt, byte[] ikm) {
         try {
@@ -87,10 +89,14 @@ public class HKDFunction {
      * Computes HKDF-Expand output as defined in RFC 5869
      * 
      * @param hkdfAlgortihm
+     *            The HKDF Algoirhtm
      * @param prk
+     *            THE prk
      * @param info
+     *            The info
      * @param outLen
-     * @return
+     *            The output Length
+     * @return The expanded bytes
      */
     public static byte[] expand(HKDFAlgorithm hkdfAlgortihm, byte[] prk, byte[] info, int outLen) {
         try {
@@ -135,11 +141,16 @@ public class HKDFunction {
      * Computes Derive-Secret output as defined in TLS 1.3
      * 
      * @param hkdfAlgortihm
+     *            The HKDF Algorithm
      * @param hashAlgorithm
+     *            The Hash Algorithm
      * @param prk
+     *            The prk
      * @param labelIn
+     *            The labelinput
      * @param toHash
-     * @return
+     *            The data to hash
+     * @return The derivedSecret
      */
     public static byte[] deriveSecret(HKDFAlgorithm hkdfAlgortihm, String hashAlgorithm, byte[] prk, String labelIn,
             byte[] toHash) {
@@ -158,11 +169,16 @@ public class HKDFunction {
      * Computes HKDF-Expand-Label output as defined in TLS 1.3
      * 
      * @param hkdfAlgortihm
+     *            The HKDF Algorithm
      * @param prk
+     *            The Prk
      * @param labelIn
+     *            The InputLabel
      * @param hashValue
+     *            The Hashvalue
      * @param outLen
-     * @return
+     *            The output length
+     * @return The expaneded Label bytes
      */
     public static byte[] expandLabel(HKDFAlgorithm hkdfAlgortihm, byte[] prk, String labelIn, byte[] hashValue,
             int outLen) {

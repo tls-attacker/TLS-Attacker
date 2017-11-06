@@ -19,8 +19,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
-
+ * 
  * @param <Message>
+ *            The ExtensionMessage that should be handled
  */
 public abstract class ExtensionHandler<Message extends ExtensionMessage> {
 
@@ -43,6 +44,7 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
      * ProtocolMessage
      *
      * @param message
+     *            The message for which the Context should be adjusted
      */
     public final void adjustTLSContext(Message message) {
         markExtensionInContext(message);

@@ -16,7 +16,6 @@ import java.math.BigInteger;
  * Converts a string to a BigInteger. If the string starts with '0x', the value
  * is considered to be hexadecimal (for command line purposes).
  * 
-
  */
 public class BigIntegerConverter implements IStringConverter<BigInteger> {
 

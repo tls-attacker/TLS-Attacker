@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * A TLS-Client implementation that supports custom Workflows
  * 
-
  */
 public class TlsClient {
 

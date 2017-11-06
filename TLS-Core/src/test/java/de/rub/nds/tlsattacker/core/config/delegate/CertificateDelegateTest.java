@@ -126,6 +126,13 @@ public class CertificateDelegateTest {
 
     /**
      * Test of applyDelegate method, of class CertificateDelegate.
+     * 
+     * @throws org.bouncycastle.operator.OperatorCreationException
+     * @throws java.security.SignatureException
+     * @throws java.io.IOException
+     * @throws java.security.NoSuchProviderException
+     * @throws java.security.InvalidKeyException
+     * @throws java.security.KeyStoreException
      */
     @Test
     public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,

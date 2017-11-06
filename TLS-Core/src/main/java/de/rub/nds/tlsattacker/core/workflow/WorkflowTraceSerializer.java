@@ -49,13 +49,6 @@ public class WorkflowTraceSerializer {
      */
     private static JAXBContext context;
 
-    /**
-     * Returns an initialized JaxbContext
-     *
-     * @return
-     * @throws JAXBException
-     * @throws IOException
-     */
     private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
@@ -109,9 +102,13 @@ public class WorkflowTraceSerializer {
     /**
      *
      * @param outputStream
+     *            The OutputStream to which the Trace should be written to
      * @param workflowTrace
+     *            The WorkflowTrace that should be written
      * @throws JAXBException
+     *             JAXBException if the JAXB reports a problem
      * @throws IOException
+     *             If something goes wrong while writing to the stream
      */
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException {
         context = getJAXBContext();
@@ -125,10 +122,14 @@ public class WorkflowTraceSerializer {
     /**
      *
      * @param inputStream
-     * @return
+     *            The InputStream from which the Parameter should be read
+     * @return The deserialized WorkflowTrace
      * @throws JAXBException
+     *             JAXBException if the JAXB reports a problem
      * @throws IOException
+     *             If something goes wrong while writing to the stream
      * @throws XMLStreamException
+     *             If there is a Problem with the XML Stream
      */
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         context = getJAXBContext();

@@ -16,8 +16,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The AbstractRecord that should be prepared
  */
 public abstract class AbstractRecordPreparator<T extends AbstractRecord> extends Preparator<T> {
 

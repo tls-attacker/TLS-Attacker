@@ -21,13 +21,6 @@ public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<Ses
 
     private final SessionTicketTLSExtensionMessage message;
 
-    /**
-     * 
-     * @param chooser
-     * @param message
-     *            A SessionTicketTLSExtensionMessage
-     * @param serializer
-     */
     public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message,
             SessionTicketTLSExtensionSerializer serializer) {
         super(chooser, message, serializer);

@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSeriali
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
-
  */
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
 

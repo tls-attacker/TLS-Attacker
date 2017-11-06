@@ -20,7 +20,6 @@ import java.util.List;
 /**
  * RFC 6961
  *
-
  */
 public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage {
 

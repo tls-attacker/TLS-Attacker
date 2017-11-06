@@ -13,7 +13,7 @@ import java.math.BigInteger;
 /**
  * M interval as mentioned in the Bleichenbacher paper.
  * 
-
+ * 
  * @version 0.1
  * 
  *          May 24, 2012

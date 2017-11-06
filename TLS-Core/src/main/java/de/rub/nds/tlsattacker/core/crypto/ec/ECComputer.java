@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * 
-
  */
 public class ECComputer {
 
@@ -43,7 +42,8 @@ public class ECComputer {
      * Doubles point, does not check for infinity
      * 
      * @param p
-     * @return
+     *            The point to double
+     * @return The doubed point
      * @throws DivisionException
      *             exception occurs if y coordinate is zero
      */
@@ -70,9 +70,12 @@ public class ECComputer {
      * Doubles point, checks for infinity if checkInfinity set
      * 
      * @param p
+     *            The point to double
      * @param checkInfinity
-     * @return
+     *            If we should check for infinity
+     * @return the Doubled point
      * @throws DivisionException
+     *             If we needed to divide by infinity or 0
      */
     public Point dbl(Point p, boolean checkInfinity) throws DivisionException {
         if (checkInfinity) {
@@ -90,8 +93,10 @@ public class ECComputer {
      * Provides point addition, without infinity check
      * 
      * @param p
+     *            The point p to add
      * @param q
-     * @return
+     *            The point q to add
+     * @return The result of the addition
      * @throws DivisionException
      *             exception thrown if xq=xp, since then we divide with zero
      */
@@ -116,10 +121,14 @@ public class ECComputer {
      * Provides point addition, checks for infinity in case checkInfinity is set
      * 
      * @param p
+     *            The point p to add
      * @param q
+     *            The point q to add
      * @param checkInfinity
-     * @return
+     *            If we should check for infinity
+     * @return The result of the addition
      * @throws DivisionException
+     *             exception thrown if xq=xp, since then we divide with zero
      */
     public Point add(Point p, Point q, boolean checkInfinity) throws DivisionException {
         if (checkInfinity) {
@@ -145,9 +154,12 @@ public class ECComputer {
      * Simple point multiplication
      * 
      * @param p
+     *            The Point p to muliply
      * @param checkInfinity
-     * @return
+     *            If we should check for infinity
+     * @return The result of the multiplication
      * @throws DivisionException
+     *             If we needed to divide by 0
      */
     public Point mul(Point p, boolean checkInfinity) throws DivisionException {
 
@@ -168,8 +180,10 @@ public class ECComputer {
     /**
      * 
      * @param p
-     * @return
+     *            The point to muliply
+     * @return The result of the multiplication
      * @throws DivisionException
+     *             If we needed to divide by 0
      */
     public Point mul(Point p) throws DivisionException {
         return mul(p, true);

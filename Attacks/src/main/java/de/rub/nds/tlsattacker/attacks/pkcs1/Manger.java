@@ -19,7 +19,7 @@ import java.math.BigInteger;
  * 
  * Original Python code written by Tibor Jager
  * 
-
+ * 
  * @version 0.1
  */
 public class Manger extends Pkcs1Attack {

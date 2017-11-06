@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 /**
  * RFC7366
  *
-
  */
 public class EncryptThenMacExtensionMessage extends ExtensionMessage {
 

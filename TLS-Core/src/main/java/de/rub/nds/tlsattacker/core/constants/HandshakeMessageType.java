@@ -14,8 +14,6 @@ import java.util.Map;
 /**
  * Also called Handshake Type
  *
-
-
  */
 public enum HandshakeMessageType {
 

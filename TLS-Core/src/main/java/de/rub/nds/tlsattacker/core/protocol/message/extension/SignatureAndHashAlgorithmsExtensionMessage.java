@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 /**
  * This extension is defined in RFC5246
  * 
-
  */
 public class SignatureAndHashAlgorithmsExtensionMessage extends ExtensionMessage {
 

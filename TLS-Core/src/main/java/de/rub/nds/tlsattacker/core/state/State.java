@@ -26,28 +26,21 @@ import org.apache.logging.log4j.LogManager;
  * initializes and holds the workflow trace, the default configuration and the
  * corresponding TLS contexts.
  *
- * <p>
  * The concept behind this class is as follows: the state is initialized with
  * the user configured values, that is, via default configuration and a given
  * workflow trace (type). On initialization, the state will create the necessary
  * TLS contexts for workflow execution. These contexts should be considered as
  * dynamic objects, representing TLS connections, calculations and other data
  * exchanged during the TLS actual workflow execution.
- * <p>
  * 
- * <p>
  * Therefore, there is no interface for setting TLS contexts manually. They are
  * always automatically created based on the connection ends defined in the
  * workflow trace.
- * <p>
  * 
- * <p>
  * Please also have a look at the tests supplied with this class for some
  * initialization examples with expected behavior.
- * </p>
  * 
  * 
-
  */
 public class State {
 
@@ -139,7 +132,7 @@ public class State {
      * This would typically be the default context as defined in the config.
      * 
      * @return the only context known to the state
-     * @see getTlsContext(String)
+     * @see #getTlsContext(java.lang.String)
      */
     public TlsContext getTlsContext() {
         if (tlsContexts.isEmpty()) {
@@ -159,8 +152,10 @@ public class State {
      * Get TLS context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
      * 
+     * @param alias
+     *            The Alias for which the TLSContext should be returned
      * @return the context with the given connection end alias
-     * @see convenience method for single context states: getTlsContext()
+     * @see #getTlsContext()
      */
     public TlsContext getTlsContext(String alias) {
         if (tlsContexts.get(alias) == null) {

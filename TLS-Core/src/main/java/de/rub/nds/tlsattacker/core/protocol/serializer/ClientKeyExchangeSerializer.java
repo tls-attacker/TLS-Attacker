@@ -13,8 +13,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The KeyExchangeMessage that should be serialized
  */
 public abstract class ClientKeyExchangeSerializer<T extends ClientKeyExchangeMessage> extends
         HandshakeMessageSerializer<T> {

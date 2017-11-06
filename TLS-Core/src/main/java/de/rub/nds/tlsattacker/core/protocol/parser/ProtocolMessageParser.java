@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 /**
  * An abstract Parser class for ProtocolMessages
  *
-
+ * 
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */

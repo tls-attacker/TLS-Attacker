@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
  *
  * Abstract Parser class which can be used to read a byte array.
  *
-
+ * 
  * @param <T>
  *            Type of the Object that should be parsed
  */
@@ -170,7 +170,7 @@ public abstract class Parser<T> {
     /**
      * Returns the position at which the Parser started parsing
      *
-     * @return
+     * @return The Start position of the Parser
      */
     public int getStartPoint() {
         return startPoint;

@@ -18,7 +18,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * This extension is defined in RFC-ietf-tls-rfc-4492bis-17
  * 
-
  */
 @XmlRootElement
 public class ECPointFormatExtensionMessage extends ExtensionMessage {

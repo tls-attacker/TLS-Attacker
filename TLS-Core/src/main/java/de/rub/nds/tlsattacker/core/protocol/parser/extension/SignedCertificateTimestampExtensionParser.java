@@ -18,12 +18,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateT
 public class SignedCertificateTimestampExtensionParser extends
         ExtensionParser<SignedCertificateTimestampExtensionMessage> {
 
-    /**
-     * Constructor
-     * 
-     * @param startposition
-     * @param array
-     */
     public SignedCertificateTimestampExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }
@@ -32,6 +26,7 @@ public class SignedCertificateTimestampExtensionParser extends
      * Parses the content of the SingedCertificateTimestampExtension
      * 
      * @param msg
+     *            The Message that should be parsed into
      */
     @Override
     public void parseExtensionMessageContent(SignedCertificateTimestampExtensionMessage msg) {
@@ -47,7 +42,7 @@ public class SignedCertificateTimestampExtensionParser extends
     /**
      * Creates a new SignedCertificateTimestampExtensionMessage
      * 
-     * @return
+     * @return A new SignedCertificateTimestampExtensionMessage
      */
     @Override
     protected SignedCertificateTimestampExtensionMessage createExtensionMessage() {

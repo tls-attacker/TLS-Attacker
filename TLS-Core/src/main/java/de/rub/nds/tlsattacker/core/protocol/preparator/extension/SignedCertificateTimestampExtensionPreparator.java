@@ -21,13 +21,6 @@ public class SignedCertificateTimestampExtensionPreparator extends
 
     private final SignedCertificateTimestampExtensionMessage message;
 
-    /**
-     * Constructor
-     * 
-     * @param chooser
-     * @param message
-     * @param serializer
-     */
     public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
             SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
         super(chooser, message, serializer);

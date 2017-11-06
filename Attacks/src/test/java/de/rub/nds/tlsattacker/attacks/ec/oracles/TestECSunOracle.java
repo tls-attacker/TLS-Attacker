@@ -34,7 +34,6 @@ import javax.crypto.KeyAgreement;
  * the oracle should not work anymore because the SUN implementation has been
  * patched.
  * 
-
  */
 public class TestECSunOracle extends ECOracle {
 

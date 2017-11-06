@@ -14,8 +14,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The ClientKeyExchangeMessage that should be parsed
  */
 public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage> extends HandshakeMessageParser<T> {
 

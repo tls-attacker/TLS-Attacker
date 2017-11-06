@@ -27,7 +27,8 @@ public class RecordNullCipher extends RecordCipher {
      * Null Cipher just passes the data through
      *
      * @param request
-     * @return
+     *            The EncryptionRequest
+     * @return The EncryptionResult
      */
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
@@ -38,7 +39,8 @@ public class RecordNullCipher extends RecordCipher {
      * Null Cipher just passes the data through
      *
      * @param data
-     * @return
+     *            The raw data that should be decrypted
+     * @return The raw decrypted Data
      */
     @Override
     public byte[] decrypt(byte[] data) {

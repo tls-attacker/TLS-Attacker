@@ -100,6 +100,8 @@ public class ForwardActionTest {
 
     /**
      * Test normal execution.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecute() throws Exception {
@@ -115,6 +117,8 @@ public class ForwardActionTest {
 
     /**
      * Test execution attempts with missing aliases.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecuteMissingAliases() throws Exception {

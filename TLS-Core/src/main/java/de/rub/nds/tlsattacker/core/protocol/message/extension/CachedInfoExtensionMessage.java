@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * RFC7924
  *
-
  */
 public class CachedInfoExtensionMessage extends ExtensionMessage {
 

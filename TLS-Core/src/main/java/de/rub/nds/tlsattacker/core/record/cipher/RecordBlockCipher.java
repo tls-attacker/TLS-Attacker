@@ -105,8 +105,10 @@ public final class RecordBlockCipher extends RecordCipher {
      * Takes correctly padded data and encrypts it
      *
      * @param request
-     * @return
+     *            The RequestedEncryption operation
+     * @return The EncryptionResult
      * @throws CryptoException
+     *             If something goes wrong during Encryption
      */
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
@@ -138,7 +140,7 @@ public final class RecordBlockCipher extends RecordCipher {
      *
      * @param data
      *            correctly padded data
-     * @return
+     * @return The raw decrypted Bytes
      * @throws CryptoException
      */
     @Override

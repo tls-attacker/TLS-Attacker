@@ -35,6 +35,8 @@ public class ClientTcpTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class ClientTcpTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
@@ -43,6 +45,8 @@ public class ClientTcpTransportHandlerTest {
 
     /**
      * Test of initialize method, of class ClientTcpTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test
     public void testInitialize() throws IOException {

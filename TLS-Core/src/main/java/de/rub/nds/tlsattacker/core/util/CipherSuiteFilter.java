@@ -24,6 +24,7 @@ public class CipherSuiteFilter {
      * ephemeral property. This method is useful for establishing new workflows.
      * 
      * @param cipherSuites
+     *            The CipherSuites that should be filtered
      */
     public static void filterCipherSuites(List<CipherSuite> cipherSuites) {
         KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cipherSuites.get(0));

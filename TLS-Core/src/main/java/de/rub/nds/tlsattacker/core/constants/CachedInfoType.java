@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * RFC7924
  * 
-
  */
 public enum CachedInfoType {
     CERT((byte) 1),

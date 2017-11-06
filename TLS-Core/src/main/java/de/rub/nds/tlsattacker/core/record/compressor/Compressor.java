@@ -10,8 +10,9 @@ package de.rub.nds.tlsattacker.core.record.compressor;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The Object that should be compressed
  */
 public abstract class Compressor<T> {
 

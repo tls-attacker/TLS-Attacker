@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 /**
  * Symmetric cipher algorithm and its mapping to Java names
  * 
-
  */
 public enum CipherAlgorithm {
 

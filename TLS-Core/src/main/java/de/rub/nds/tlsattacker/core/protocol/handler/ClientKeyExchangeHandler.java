@@ -29,9 +29,10 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  *
-
-
+ * 
+ * 
  * @param <Message>
+ *            The ClientKeyExchangeMessage that should be Handled
  */
 public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {

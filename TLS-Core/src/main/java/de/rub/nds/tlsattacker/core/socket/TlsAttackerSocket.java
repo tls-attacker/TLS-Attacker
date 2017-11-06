@@ -41,7 +41,9 @@ public class TlsAttackerSocket {
      * Sends without encryption etc
      *
      * @param bytes
+     *            The raw bytes which should be send
      * @throws java.io.IOException
+     *             If something goes wrong during Transmission
      */
     public void sendRawBytes(byte[] bytes) throws IOException {
         state.getTlsContext().getTransportHandler().sendData(bytes);
@@ -50,8 +52,9 @@ public class TlsAttackerSocket {
     /**
      * Listens without Encryption etc
      *
-     * @return
+     * @return The Raw received Bytes
      * @throws java.io.IOException
+     *             If something goes wrong during the receive
      */
     public byte[] receiveRawBytes() throws IOException {
         return state.getTlsContext().getTransportHandler().fetchData();
@@ -61,6 +64,7 @@ public class TlsAttackerSocket {
      * Sends a String as ApplicationMessages
      *
      * @param string
+     *            The String which should be send in ApplicationMessages
      */
     public void send(String string) {
         send(string.getBytes(Charset.defaultCharset()));
@@ -93,8 +97,9 @@ public class TlsAttackerSocket {
     /**
      * Receives bytes and decrypts ApplicationMessage contents
      * 
-     * @return Received bytes
+     * @return Received bytes The bytes which are received
      * @throws java.io.IOException
+     *             If something goes wrong during the receive
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
@@ -118,8 +123,9 @@ public class TlsAttackerSocket {
      * Receives bytes and decrypts ApplicationMessage contents in converts them
      * to Strings
      *
-     * @return
+     * @return The received String
      * @throws java.io.IOException
+     *             If something goes wrong during the receive
      */
     public String receiveString() throws IOException {
         return new String(receiveBytes(), Charset.defaultCharset());

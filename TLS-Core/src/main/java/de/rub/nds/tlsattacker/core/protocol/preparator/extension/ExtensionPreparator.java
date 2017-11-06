@@ -16,8 +16,9 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The ExtensionMessage that should be prepared
  */
 public abstract class ExtensionPreparator<T extends ExtensionMessage> extends Preparator<T> {
 

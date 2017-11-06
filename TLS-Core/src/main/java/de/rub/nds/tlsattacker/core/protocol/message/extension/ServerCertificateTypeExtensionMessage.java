@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 /**
  * This extension is defined in RFC7250
  * 
-
  */
 public class ServerCertificateTypeExtensionMessage extends ExtensionMessage {
 

@@ -109,6 +109,8 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of calculateMac method, of class RecordBlockCipher.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
     public void testCalculateMac() throws NoSuchAlgorithmException {
@@ -132,6 +134,8 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of encrypt method, of class RecordBlockCipher, for TLS10.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
     public void testEncryptTls10() throws NoSuchAlgorithmException {

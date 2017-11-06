@@ -21,7 +21,6 @@ import org.junit.Test;
 /**
  * TODO
  *
-
  */
 public class TlsConfigTest {
 

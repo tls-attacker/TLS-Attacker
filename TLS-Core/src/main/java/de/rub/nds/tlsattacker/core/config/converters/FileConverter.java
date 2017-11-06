@@ -19,7 +19,6 @@ import java.nio.file.Path;
  * Interprets a string as a file path and reads the whole file as a single
  * string.
  * 
-
  */
 public class FileConverter implements IStringConverter<String> {
 

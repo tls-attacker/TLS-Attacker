@@ -28,8 +28,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  * This structure is of course prepended with the handshake message length, as
  * obvious for every handshake message.
  *
-
-
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 

@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.exceptions;
 /**
  * Thrown when problems by modification application appear.
  * 
-
  */
 public class ModificationException extends RuntimeException {
 

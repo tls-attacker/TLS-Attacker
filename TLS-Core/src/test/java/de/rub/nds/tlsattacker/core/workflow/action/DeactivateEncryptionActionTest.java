@@ -58,6 +58,8 @@ public class DeactivateEncryptionActionTest {
 
     /**
      * Test of execute method, of class DeactivateEncryptionAction.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecute() throws Exception {

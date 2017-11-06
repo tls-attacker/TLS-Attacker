@@ -14,9 +14,10 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
-
-
+ * 
+ * 
  * @param <Message>
+ *            The ServerkeyExchangeMessage that should be handled
  */
 public abstract class ServerKeyExchangeHandler<Message extends ServerKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {

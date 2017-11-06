@@ -15,8 +15,9 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The ExtensionMessage that should be parsed
  */
 public abstract class ExtensionParser<T extends ExtensionMessage> extends Parser<T> {
 

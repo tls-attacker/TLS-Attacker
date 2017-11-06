@@ -26,7 +26,6 @@ import org.apache.commons.lang3.StringUtils;
  * SSLUtils is a class with static methods that are supposed to calculate
  * SSL-specific data.
  * 
-
  */
 public final class SSLUtils {
 
@@ -82,7 +81,7 @@ public final class SSLUtils {
      * This method is borrowed from package-protected method
      * {@link org.bouncycastle.crypto.tls.TlsUtils#genSSL3Const()} Version 1.58
      * 
-     * @return
+     * @return the generated SSL3 consts
      */
     private static byte[][] genSSL3Const() {
         int n = 10;
@@ -101,7 +100,9 @@ public final class SSLUtils {
      * Version 1.58
      * 
      * @param pre_master_secret
+     *            the premastersecret
      * @param random
+     *            The random bytes to use
      * @return master_secret
      */
     public static byte[] calculateMasterSecretSSL3(byte[] pre_master_secret, byte[] random) {
@@ -136,8 +137,12 @@ public final class SSLUtils {
      * {@link org.bouncycastle.crypto.tls.TlsUtils#calculateKeyBlock_SSL(byte[], byte[], int)}
      * Version 1.58
      * 
-     * @param pre_master_secret
+     * @param master_secret
+     *            The mastersecret
      * @param random
+     *            The Randombytes
+     * @param size
+     *            The size
      * @return master_secret
      */
     public static byte[] calculateKeyBlockSSL3(byte[] master_secret, byte[] random, int size) {
@@ -170,6 +175,7 @@ public final class SSLUtils {
     /**
      * 
      * @param chooser
+     *            The Chooser to use
      * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
      *         RFC-6101: 5.6.9. Finished: enum { client(0x434C4E54),
      *         server(0x53525652) } Sender;
@@ -181,6 +187,7 @@ public final class SSLUtils {
     /**
      * 
      * @param connectionEndType
+     *            The ConnectionEndType
      * @return 0x53525652 if ConnectionEndType.SERVER, 0x434C4E54 else. See
      *         RFC-6101: 5.6.9. Finished: enum { client(0x434C4E54),
      *         server(0x53525652) } Sender;
@@ -199,6 +206,10 @@ public final class SSLUtils {
     /**
      * From RFC-6101: pad_1: The character 0x36 repeated 48 times for MD5 or 40
      * times for SHA.
+     * 
+     * @param macAlgorithm
+     *            The macAlgorithm to use
+     * @return the pad_1
      */
     public static byte[] getPad1(MacAlgorithm macAlgorithm) {
         if (macAlgorithm == MacAlgorithm.SSLMAC_MD5) {
@@ -213,6 +224,10 @@ public final class SSLUtils {
     /**
      * From RFC-6101: pad_2: The character 0x5c repeated 48 times for MD5 or 40
      * times for SHA.
+     * 
+     * @param macAlgorithm
+     *            The macalgorithm to use
+     * @return pad_2
      */
     public static byte[] getPad2(MacAlgorithm macAlgorithm) {
         if (macAlgorithm == MacAlgorithm.SSLMAC_MD5) {
@@ -325,8 +340,10 @@ public final class SSLUtils {
      * like specified in RFC-6101 for CertificateVerify- and Finished-Messages.
      * 
      * @param input
+     *            The input
      * @param masterSecret
-     * @return
+     *            the mastersecret
+     * @return the calculated sslmd5shasignature
      */
     private static byte[] calculateSSLMd5SHASignature(byte[] input, byte[] masterSecret) {
         try {

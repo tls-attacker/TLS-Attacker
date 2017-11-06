@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  * as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
  * 
-
  */
 public class HrrKeyShareExtensionHandler extends ExtensionHandler<HRRKeyShareExtensionMessage> {
 

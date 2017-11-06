@@ -12,8 +12,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
  *
-
+ * 
  * @param <AbstractRecord>
+ *            The AbstractRecord that should be serialized
  */
 public abstract class AbstractRecordSerializer<AbstractRecord> extends Serializer<AbstractRecord> {
 

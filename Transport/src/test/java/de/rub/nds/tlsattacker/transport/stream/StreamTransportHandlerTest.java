@@ -37,6 +37,8 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class StreamTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
@@ -45,6 +47,8 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of initialize method, of class StreamTransportHandler.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testInitialize() throws Exception {

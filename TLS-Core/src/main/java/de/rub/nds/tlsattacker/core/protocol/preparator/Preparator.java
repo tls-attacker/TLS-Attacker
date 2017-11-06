@@ -15,8 +15,9 @@ import org.apache.logging.log4j.Logger;
 
 /**
  *
-
+ * 
  * @param <T>
+ *            The Object that should be prepared
  */
 public abstract class Preparator<T> {
 

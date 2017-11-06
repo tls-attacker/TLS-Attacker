@@ -47,7 +47,11 @@ public class BasicTlsClientServerTest {
     public BasicTlsClientServerTest() {
     }
 
-    /** Run a TLS handshake between BasicTlsClient and BasicTlsServer. */
+    /**
+     * Run a TLS handshake between BasicTlsClient and BasicTlsServer.
+     * 
+     * @throws org.bouncycastle.operator.OperatorCreationException
+     */
     @Test
     @Category(IntegrationTests.class)
     public void testSimpleProxy() throws OperatorCreationException {

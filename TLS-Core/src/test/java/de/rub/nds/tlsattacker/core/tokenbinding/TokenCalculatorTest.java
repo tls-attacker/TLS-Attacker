@@ -20,7 +20,6 @@ import org.junit.Test;
 /**
  * s_client -keymatexport “label” -keymatexportlen 20
  * 
-
  */
 public class TokenCalculatorTest {
 

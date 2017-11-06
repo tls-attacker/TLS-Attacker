@@ -26,6 +26,7 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
      * SHOULDN'T be any data.
      *
      * @param msg
+     *            The Message that should be parsed
      */
     @Override
     public void parseExtensionMessageContent(ExtendedMasterSecretExtensionMessage msg) {

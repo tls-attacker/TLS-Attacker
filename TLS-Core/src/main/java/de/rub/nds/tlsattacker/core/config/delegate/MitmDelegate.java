@@ -23,7 +23,6 @@ import org.apache.logging.log4j.LogManager;
  * from command line. It requires at least one "accepting" and one "connecting"
  * connection end.
  *
-
  */
 public class MitmDelegate extends Delegate {
 
@@ -61,6 +60,7 @@ public class MitmDelegate extends Delegate {
      * config.
      * 
      * @param config
+     *            The Config which should be manipulated
      */
     @Override
     public void applyDelegate(Config config) {

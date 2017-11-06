@@ -48,6 +48,8 @@ public class RecordDecryptorTest {
 
     /**
      * Test of the decrypt method for TLS 1.3, of class RecordDecryptor.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
     public void testDecrypt() throws NoSuchAlgorithmException {

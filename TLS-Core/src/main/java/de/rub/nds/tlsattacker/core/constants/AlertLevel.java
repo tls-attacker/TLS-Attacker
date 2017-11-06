@@ -14,7 +14,6 @@ import java.util.Map;
 /**
  * Alert level
  * 
-
  */
 public enum AlertLevel {
 

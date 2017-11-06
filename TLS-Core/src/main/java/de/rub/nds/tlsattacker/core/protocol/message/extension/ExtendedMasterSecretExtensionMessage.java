@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
  * 
  * This extension is defined in RFC7627
  *
-
  */
 public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
 

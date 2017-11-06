@@ -40,11 +40,6 @@ public class RecordStreamCipher extends RecordCipher {
      */
     private Mac writeMac;
 
-    /**
-     *
-     * @param context
-     * @param keySet
-     */
     public RecordStreamCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
         initCipherAndMac();

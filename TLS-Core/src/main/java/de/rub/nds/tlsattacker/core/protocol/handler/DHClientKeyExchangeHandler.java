@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  * Handler for DH and DHE ClientKeyExchange messages
  *
-
-
  */
 public class DHClientKeyExchangeHandler extends ClientKeyExchangeHandler<DHClientKeyExchangeMessage> {
 
