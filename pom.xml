@@ -317,6 +317,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <skip>${skip.signature}</skip>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -377,5 +380,8 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <licenseOwner>Ruhr University Bochum, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
+        <!-- We redefine the signature generation process, whic is enabled by default, 
+        but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
+        <skip.signature>true</skip.signature>
     </properties>
 </project>
