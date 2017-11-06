@@ -42,7 +42,7 @@ public class TlsMitm implements Runnable {
             commander.parse(args);
         } catch (ParameterException pe) {
             LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
-            commander.usage();
+            LOGGER.info("Try -help");
             throw pe;
         }
 
@@ -70,6 +70,10 @@ public class TlsMitm implements Runnable {
                     + " - See debug messages for more details.");
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
+        } catch (ParameterException pe) {
+            LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
+            LOGGER.info("Try -help");
+            throw pe;
         }
     }
 
