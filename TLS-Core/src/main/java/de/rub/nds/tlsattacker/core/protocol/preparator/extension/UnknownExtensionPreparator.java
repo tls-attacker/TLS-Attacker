@@ -9,27 +9,41 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
- * @param <T>
  */
-public class UnknownExtensionPreparator<T extends UnknownExtensionMessage> extends ExtensionPreparator<T> {
+public class UnknownExtensionPreparator extends ExtensionPreparator<UnknownExtensionMessage> {
 
     private final UnknownExtensionMessage msg;
 
-    public UnknownExtensionPreparator(TlsContext context, T object) {
-        super(context, object);
-        msg = object;
+    public UnknownExtensionPreparator(Chooser chooser, UnknownExtensionMessage msg,
+            UnknownExtensionSerializer serializer) {
+        super(chooser, msg, serializer);
+        this.msg = msg;
     }
 
     @Override
     public void prepareExtensionContent() {
-        msg.setExtensionData(msg.getDataConfig());
-        msg.setExtensionType(msg.getTypeConfig());
-        msg.setExtensionLength(msg.getLengthConfig());
+
+        if (msg.getDataConfig() != null) {
+            msg.setExtensionData(msg.getDataConfig());
+        } else {
+            msg.setExtensionData(new byte[] {});
+        }
+        if (msg.getTypeConfig() != null) {
+            msg.setExtensionType(msg.getTypeConfig());
+        } else {
+            msg.setExtensionType(new byte[] {});
+        }
+        if (msg.getLengthConfig() != null) {
+            msg.setExtensionLength(msg.getLengthConfig());
+        } else {
+            msg.setExtensionLength(msg.getExtensionData().getValue().length);
+        }
     }
 
 }

@@ -10,16 +10,17 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.util.Objects;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangeProtocolVersionAction extends TLSAction {
+
     private ProtocolVersion newValue;
     private ProtocolVersion oldValue = null;
 
@@ -44,13 +45,16 @@ public class ChangeProtocolVersionAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getSelectedProtocolVersion();
         tlsContext.setSelectedProtocolVersion(newValue);
-        LOGGER.info("Changed ProtocolVersion from " + oldValue.name() + " to " + newValue.name());
+        LOGGER.info("Changed ProtocolVersion from " + oldValue == null ? oldValue.name() : null + " to "
+                + newValue.name());
         setExecuted(true);
     }
 
@@ -84,6 +88,11 @@ public class ChangeProtocolVersionAction extends TLSAction {
             return false;
         }
         return this.oldValue == other.oldValue;
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 
 }

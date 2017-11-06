@@ -11,12 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.TokenBindingExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ * This extension is defined in draft-ietf-tokbind-negotiation
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class TokenBindingExtensionMessage extends ExtensionMessage {
@@ -25,15 +25,10 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray tokenbindingVersion;
     @ModifiableVariableProperty
     private ModifiableByteArray tokenbindingKeyParameters;
-    private int parameterListLength;
+    private ModifiableInteger parameterListLength;
 
     public TokenBindingExtensionMessage() {
         super(ExtensionType.TOKEN_BINDING);
-    }
-
-    @Override
-    public TokenBindingExtensionHandler getHandler(TlsContext context) {
-        return new TokenBindingExtensionHandler(context);
     }
 
     public ModifiableByteArray getTokenbindingVersion() {
@@ -62,12 +57,17 @@ public class TokenBindingExtensionMessage extends ExtensionMessage {
                 tokenbindingParameters);
     }
 
-    public int getParameterListLength() {
+    public ModifiableInteger getParameterListLength() {
         return parameterListLength;
     }
 
-    public void setParameterListLength(int parameterListLength) {
+    public void setParameterListLength(ModifiableInteger parameterListLength) {
         this.parameterListLength = parameterListLength;
+    }
+
+    public void setParameterListLength(int parameterListLength) {
+        this.parameterListLength = ModifiableVariableFactory.safelySetValue(this.parameterListLength,
+                parameterListLength);
     }
 
 }

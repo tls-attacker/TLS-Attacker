@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import java.util.List;
 
@@ -19,14 +18,9 @@ import java.util.List;
  */
 public class WorkFlowTraceFakeExecuter {
     public static void execute(WorkflowTrace trace) {
-        List<TLSAction> actionList = trace.getTLSActions();
+        List<TLSAction> actionList = trace.getTlsActions();
         for (TLSAction action : actionList) {
-
-            if (action instanceof MessageAction) {
-                MessageAction messageAction = (MessageAction) action;
-                messageAction.getActualMessages().clear();
-                messageAction.getActualMessages().addAll(messageAction.getConfiguredMessages());
-            }
+            action.setExecuted(Boolean.TRUE);
         }
     }
 

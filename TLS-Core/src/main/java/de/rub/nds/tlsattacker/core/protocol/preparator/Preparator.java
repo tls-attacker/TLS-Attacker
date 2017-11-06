@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,13 +20,13 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Preparator<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Preparator");
+    protected static final Logger LOGGER = LogManager.getLogger(Preparator.class.getName());
 
-    protected final TlsContext context;
+    protected final Chooser chooser;
     private final T object;
 
-    public Preparator(TlsContext context, T object) {
-        this.context = context;
+    public Preparator(Chooser chooser, T object) {
+        this.chooser = chooser;
         this.object = object;
         if (object == null) {
             throw new PreparationException("Cannot prepare NULL");
@@ -34,4 +34,9 @@ public abstract class Preparator<T> {
     }
 
     public abstract void prepare();
+
+    public T getObject() {
+        return object;
+    }
+
 }

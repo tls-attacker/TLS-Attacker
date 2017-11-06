@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -17,11 +17,8 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
  */
 public class HelloRequestPreparator extends HandshakeMessagePreparator<HelloRequestMessage> {
 
-    private final HelloRequestMessage message;
-
-    public HelloRequestPreparator(TlsContext context, HelloRequestMessage message) {
-        super(context, message);
-        this.message = message;
+    public HelloRequestPreparator(Chooser chooser, HelloRequestMessage message) {
+        super(chooser, message);
     }
 
     @Override

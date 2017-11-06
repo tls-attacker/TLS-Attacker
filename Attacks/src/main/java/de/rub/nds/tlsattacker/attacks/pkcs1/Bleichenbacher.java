@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
  * 
  * @author Christopher Meyer - christopher.meyer@rub.de
  * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- * @version 0.1
  */
 public class Bleichenbacher extends Pkcs1Attack {
 
@@ -46,7 +45,9 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         LOGGER.debug("Step 1: Blinding");
         if (this.msgIsPKCS) {
-            LOGGER.debug("Step skipped --> " + "Message is considered as PKCS compliant.");
+            LOGGER.info("Step skipped --> " + "Message is considered as PKCS compliant.");
+            LOGGER.info("Testing the validity of the original message");
+            oracle.checkPKCSConformity(encryptedMsg);
             s0 = BigInteger.ONE;
             c0 = new BigInteger(1, encryptedMsg);
             m = new Interval[] { new Interval(BigInteger.valueOf(2).multiply(bigB),
@@ -58,17 +59,17 @@ public class Bleichenbacher extends Pkcs1Attack {
         i++;
 
         while (!solutionFound) {
-            LOGGER.debug("Step 2: Searching for PKCS conforming messages.");
+            LOGGER.info("Step 2: Searching for PKCS conforming messages.");
             stepTwo(i);
 
-            LOGGER.debug("Step 3: Narrowing the set of solutions.");
+            LOGGER.info("Step 3: Narrowing the set of solutions.");
             stepThree(i);
 
-            LOGGER.debug("Step 4: Computing the solution.");
+            LOGGER.info("Step 4: Computing the solution.");
             solutionFound = stepFour(i);
             i++;
 
-            LOGGER.debug("// Total # of queries so far: {}", oracle.getNumberOfQueries());
+            LOGGER.info("// Total # of queries so far: {}", oracle.getNumberOfQueries());
         }
     }
 
@@ -249,7 +250,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             solution = s0.modInverse(publicKey.getModulus());
             solution = solution.multiply(m[0].upper).mod(publicKey.getModulus());
 
-            LOGGER.debug("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
+            LOGGER.info("====> Solution found!\n {}", ArrayConverter.bytesToHexString(solution.toByteArray()));
 
             result = true;
         }

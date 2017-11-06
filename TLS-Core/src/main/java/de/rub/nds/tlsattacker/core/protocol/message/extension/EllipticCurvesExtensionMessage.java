@@ -13,10 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.EllipticCurvesExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
+ * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as
+ * "supported_groups" extension
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class EllipticCurvesExtensionMessage extends ExtensionMessage {
@@ -53,10 +54,5 @@ public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
     public void setSupportedCurves(ModifiableByteArray supportedCurves) {
         this.supportedCurves = supportedCurves;
-    }
-
-    @Override
-    public EllipticCurvesExtensionHandler getHandler(TlsContext context) {
-        return new EllipticCurvesExtensionHandler(context);
     }
 }

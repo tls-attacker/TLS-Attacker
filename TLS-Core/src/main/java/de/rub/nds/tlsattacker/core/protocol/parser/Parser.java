@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Parser<T> {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Parser");
+    protected static final Logger LOGGER = LogManager.getLogger(Parser.class.getName());
 
     /**
      * Current position in the byte array
@@ -136,6 +137,17 @@ public abstract class Parser<T> {
         return (byte) ArrayConverter.bytesToInt(parseByteArrayField(length));
     }
 
+    protected String parseStringTill(byte endSequence) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        while (true) {
+            byte b = parseByteField(1);
+            stream.write(b);
+            if (b == endSequence) {
+                return new String(stream.toByteArray());
+            }
+        }
+    }
+
     /**
      * Returns the current position of the pointer in the array
      *
@@ -143,6 +155,16 @@ public abstract class Parser<T> {
      */
     public int getPointer() {
         return pointer;
+    }
+
+    /**
+     * Set the current position of the pointer in the array
+     *
+     * @param pointer
+     *            The new position of the pointer in the array
+     */
+    public void setPointer(int pointer) {
+        this.pointer = pointer;
     }
 
     /**
@@ -175,7 +197,7 @@ public abstract class Parser<T> {
     }
 
     protected byte[] parseArrayOrTillEnd(int n) {
-        if (n < getBytesLeft()) {
+        if (n >= 0 && n < getBytesLeft()) {
             return parseByteArrayField(n);
         } else {
             return parseByteArrayField(getBytesLeft());

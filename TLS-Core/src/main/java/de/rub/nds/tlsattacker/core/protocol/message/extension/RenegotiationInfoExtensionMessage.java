@@ -11,12 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.RenegotiationInfoExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ * This extension is defined in RFC5746
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
@@ -24,13 +24,11 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray renegotiationInfo;
 
+    @ModifiableVariableProperty
+    private ModifiableInteger renegotiationInfoLength;
+
     public RenegotiationInfoExtensionMessage() {
         super(ExtensionType.RENEGOTIATION_INFO);
-    }
-
-    @Override
-    public RenegotiationInfoExtensionHandler getHandler(TlsContext context) {
-        return new RenegotiationInfoExtensionHandler(context);
     }
 
     public ModifiableByteArray getRenegotiationInfo() {
@@ -45,4 +43,16 @@ public class RenegotiationInfoExtensionMessage extends ExtensionMessage {
         this.renegotiationInfo = ModifiableVariableFactory.safelySetValue(this.renegotiationInfo, renegotiationInfo);
     }
 
+    public ModifiableInteger getRenegotiationInfoLength() {
+        return renegotiationInfoLength;
+    }
+
+    public void setRenegotiationInfoLength(ModifiableInteger renegotiationInfoLength) {
+        this.renegotiationInfoLength = renegotiationInfoLength;
+    }
+
+    public void setRenegotiationInfoLength(int renegotiationInfoLength) {
+        this.renegotiationInfoLength = ModifiableVariableFactory.safelySetValue(this.renegotiationInfoLength,
+                renegotiationInfoLength);
+    }
 }

@@ -8,12 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -32,19 +35,20 @@ import org.junit.Test;
  */
 public class ChangeProtocolVersionActionTest {
 
+    private State state;
     private TlsContext tlsContext;
-
-    private ActionExecutorMock executor;
     private ChangeProtocolVersionAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        executor = new ActionExecutorMock();
-        tlsContext = new TlsContext();
+        Config config = Config.createConfig();
+        state = new State(config, new WorkflowTrace(config));
+        tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(
+                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
         action = new ChangeProtocolVersionAction(ProtocolVersion.SSL2);
     }
 
@@ -76,7 +80,7 @@ public class ChangeProtocolVersionActionTest {
     @Test
     public void testGetOldValue() {
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
     }
 
@@ -86,7 +90,7 @@ public class ChangeProtocolVersionActionTest {
     @Test
     public void testExecute() {
         tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS12);
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertEquals(action.getOldValue(), ProtocolVersion.TLS12);
         assertEquals(action.getNewValue(), ProtocolVersion.SSL2);
         assertEquals(tlsContext.getSelectedProtocolVersion(), ProtocolVersion.SSL2);
@@ -99,11 +103,11 @@ public class ChangeProtocolVersionActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertTrue(action.isExecuted());
     }
 

@@ -15,7 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.RSAClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.RSAClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -73,6 +74,7 @@ public class RSAClientKeyExchangeHandlerTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         message.prepareComputations();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
+        context.setRecordLayer(new TlsRecordLayer(context));
         message.getComputations()
                 .setPremasterSecret(
                         ArrayConverter

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -18,10 +18,10 @@ import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 public class ChangeCipherSpecPreparator extends ProtocolMessagePreparator<ChangeCipherSpecMessage> {
 
     private final ChangeCipherSpecMessage msg;
-    private final byte CCS_PROTOCOL_TYPE = 1;
+    private final static byte CCS_PROTOCOL_TYPE = 1;
 
-    public ChangeCipherSpecPreparator(TlsContext context, ChangeCipherSpecMessage message) {
-        super(context, message);
+    public ChangeCipherSpecPreparator(Chooser chooser, ChangeCipherSpecMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 

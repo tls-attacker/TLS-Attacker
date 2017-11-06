@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class TlsRecordLayerIT {
 
     @Before
     public void setUp() {
-        layer = new TlsRecordLayer(new TlsContext(TlsConfig.createConfig()));
+        layer = new TlsRecordLayer(new TlsContext(Config.createConfig()));
     }
 
     /**
@@ -39,12 +39,11 @@ public class TlsRecordLayerIT {
     @Test
     @Category(IntegrationTests.class)
     public void testParseRecords() {
-        Random r = RandomHelper.getRandom();
+        Random random = new Random(0);
         for (int i = 0; i < 1000; i++) {
-            byte[] data = new byte[r.nextInt(1000)];
-            r.nextBytes(data);
-            layer.parseRecords(data);
+            byte[] data = new byte[random.nextInt(1000)];
+            random.nextBytes(data);
+            layer.parseRecordsSoftly(data);
         }
     }
-
 }

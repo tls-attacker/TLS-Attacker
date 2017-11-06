@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -36,7 +34,7 @@ public class ServerNameIndicationExtensionSerializer extends ExtensionSerializer
     }
 
     private void writeServerNameListLength(ServerNameIndicationExtensionMessage msg) {
-        appendInt(msg.getServerNameListLength().getValue(), ExtensionByteLength.SERVER_NAME_LIST_LENGTH);
+        appendInt(msg.getServerNameListLength().getValue(), ExtensionByteLength.SERVER_NAME_LIST);
         LOGGER.debug("ServerNameListLength: " + msg.getServerNameListLength().getValue());
     }
 

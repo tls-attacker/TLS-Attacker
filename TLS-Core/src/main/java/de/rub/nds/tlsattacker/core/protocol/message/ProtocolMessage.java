@@ -16,10 +16,11 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Random;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
@@ -31,7 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Philip Riese <philip.riese@rub.de>
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage extends ModifiableVariableHolder implements Serializable {
+public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     /**
      * content type
@@ -70,7 +71,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isRequired() {
-        if (required == null) {
+        if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;
         }
         return required.getValue();
@@ -81,7 +82,7 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     public boolean isGoingToBeSent() {
-        if (goingToBeSent == null) {
+        if (goingToBeSent == null || goingToBeSent.getValue() == null) {
             return GOING_TO_BE_SENT_DEFAULT;
         }
         return goingToBeSent.getValue();
@@ -98,9 +99,9 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
     }
 
     @Override
-    public Field getRandomModifiableVariableField() {
+    public Field getRandomModifiableVariableField(Random random) {
         List<Field> fields = getAllModifiableVariableFields();
-        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        int randomField = random.nextInt(fields.size());
         return fields.get(randomField);
     }
 
@@ -119,11 +120,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder implement
 
     public boolean isHandshakeMessage() {
         return this instanceof HandshakeMessage;
-    }
-
-    @Override
-    public String toString() {
-        return toCompactString();
     }
 
     public abstract String toCompactString();

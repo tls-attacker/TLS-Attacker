@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.core.state.State;
 import java.io.IOException;
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,11 +25,18 @@ import org.apache.logging.log4j.Logger;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TLSAction implements Serializable {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Action");
-
+    protected static final Logger LOGGER = LogManager.getLogger(TLSAction.class.getName());
     private static final boolean EXECUTED_DEFAULT = false;
 
     private Boolean executed = null;
+
+    /**
+     * Reference the TlsContext this action belongs to. Only needed if the state
+     * holds multiple contexts to choose from (i.e. in MitM scenarios). A
+     * contextAlias = null is treated as default context. Set to null here to
+     * keep serialization output clean.
+     */
+    protected String contextAlias = null;
 
     public boolean isExecuted() {
         if (executed == null) {
@@ -42,12 +49,30 @@ public abstract class TLSAction implements Serializable {
         this.executed = executed;
     }
 
-    public abstract void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException,
-            IOException;
+    public String getContextAlias() {
+        if (contextAlias == null) {
+            return Config.DEFAULT_CONNECTION_END_ALIAS;
+        } else {
+            return contextAlias;
+        }
+    }
+
+    public void setContextAlias(String contextAlias) {
+        this.contextAlias = contextAlias;
+    }
+
+    public abstract void execute(State state) throws WorkflowExecutionException, IOException;
 
     public boolean isMessageAction() {
         return this instanceof MessageAction;
     }
+
+    /**
+     * Checks that the Action got executed as planned
+     * 
+     * @return True if the Action got executed as planned
+     */
+    public abstract boolean executedAsPlanned();
 
     public abstract void reset();
 }

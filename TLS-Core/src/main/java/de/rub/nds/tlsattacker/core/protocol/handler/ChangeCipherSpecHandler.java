@@ -12,10 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -29,33 +26,25 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public ChangeCipherSpecParser getParser(byte[] message, int pointer) {
-        return new ChangeCipherSpecParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ChangeCipherSpecParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ChangeCipherSpecPreparator getPreparator(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecPreparator(tlsContext, message);
+        return new ChangeCipherSpecPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ChangeCipherSpecSerializer getSerializer(ChangeCipherSpecMessage message) {
-        return new ChangeCipherSpecSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ChangeCipherSpecSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    protected void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            setRecordCipher();
-        }
-
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getConfig().getConnectionEndType()) {
+    public void adjustTLSContext(ChangeCipherSpecMessage message) {
+        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
+                .getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.setReadSequenceNumber(0);
         }
-    }
-
-    private void setRecordCipher() {
-        LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
     }
 }

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -19,8 +19,8 @@ public class ServerHelloDonePreparator extends HandshakeMessagePreparator<Server
 
     private final ServerHelloDoneMessage message;
 
-    public ServerHelloDonePreparator(TlsContext context, ServerHelloDoneMessage message) {
-        super(context, message);
+    public ServerHelloDonePreparator(Chooser chooser, ServerHelloDoneMessage message) {
+        super(chooser, message);
         this.message = message;
     }
 

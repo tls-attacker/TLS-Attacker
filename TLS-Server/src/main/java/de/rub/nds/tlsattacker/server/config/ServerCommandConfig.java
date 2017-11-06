@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.server.config;
 
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
@@ -23,9 +24,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 
 /**
  *
@@ -37,31 +36,31 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     public static final String COMMAND = "server";
 
     @ParametersDelegate
-    private final GeneralDelegate generalDelegate;
+    private GeneralDelegate generalDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private final EllipticCurveDelegate ellipticCurveDelegate;
+    private EllipticCurveDelegate ellipticCurveDelegate;
     @ParametersDelegate
-    private final ServerDelegate serverDelegate;
+    private ServerDelegate serverDelegate;
     @ParametersDelegate
-    private final SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
+    private SignatureAndHashAlgorithmDelegate signatureAndHashAlgorithmDelegate;
     @ParametersDelegate
-    private final WorkflowInputDelegate workflowInputDelegate;
+    private WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate
-    private final WorkflowOutputDelegate workflowOutputDelegate;
+    private WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate
-    private final WorkflowTypeDelegate workflowTypeDelegate;
+    private WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate
-    private final TransportHandlerDelegate transportHandlerDelegate;
+    private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
-    private final HeartbeatDelegate heartbeatDelegate;
+    private HeartbeatDelegate heartbeatDelegate;
     @ParametersDelegate
-    private final MaxFragmentLengthDelegate maxFragmentLengthDelegate;
+    private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
-    private final CertificateDelegate certificateDelegate;
+    private CertificateDelegate certificateDelegate;
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -93,9 +92,11 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
-        if (config.getWorkflowTraceType() == null) {
+    public Config createConfig() {
+        Config config = super.createConfig();
+
+        // Run FULL trace if no workflow trace (type) is set explicitly
+        if ((config.getWorkflowTrace() == null) && (config.getWorkflowTraceType() == null)) {
             config.setWorkflowTraceType(WorkflowTraceType.FULL);
         }
         return config;

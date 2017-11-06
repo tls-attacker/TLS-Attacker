@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -11,8 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -38,7 +36,7 @@ public class SignatureAndHashAlgorithmsExtensionSerializer extends
 
     private void writeSignatureAndHashAlgorithmsLength(SignatureAndHashAlgorithmsExtensionMessage msg) {
         appendInt(msg.getSignatureAndHashAlgorithmsLength().getValue(),
-                ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS_LENGTH);
+                ExtensionByteLength.SIGNATURE_AND_HASH_ALGORITHMS);
         LOGGER.debug("SignatureAndHashAlgorithmsLength: " + msg.getSignatureAndHashAlgorithmsLength().getValue());
     }
 

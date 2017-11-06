@@ -13,9 +13,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -44,10 +47,10 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableInteger certificateLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger ciphersuitesLength;
+    private ModifiableInteger cipherSuitesLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger sessionIDLength;
+    private ModifiableInteger sessionIdLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CERTIFICATE)
     private ModifiableByteArray certificate;
@@ -56,13 +59,15 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableByteArray cipherSuites;
 
     @ModifiableVariableProperty
-    private ModifiableByteArray sessionID;
+    private ModifiableByteArray sessionId;
 
     public SSL2ServerHelloMessage() {
+        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
-    public SSL2ServerHelloMessage(TlsConfig config) {
+    public SSL2ServerHelloMessage(Config config) {
         super();
+        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
     @Override
@@ -147,28 +152,28 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         this.certificateLength = certificateLength;
     }
 
-    public ModifiableInteger getCiphersuitesLength() {
-        return ciphersuitesLength;
+    public ModifiableInteger getCipherSuitesLength() {
+        return cipherSuitesLength;
     }
 
-    public void setCiphersuitesLength(ModifiableInteger ciphersuitesLength) {
-        this.ciphersuitesLength = ciphersuitesLength;
+    public void setCipherSuitesLength(ModifiableInteger cipherSuitesLength) {
+        this.cipherSuitesLength = cipherSuitesLength;
     }
 
-    public void setCiphersuitesLength(int ciphersuitesLength) {
-        this.ciphersuitesLength = ModifiableVariableFactory.safelySetValue(this.ciphersuitesLength, ciphersuitesLength);
+    public void setCipherSuitesLength(int cipherSuitesLength) {
+        this.cipherSuitesLength = ModifiableVariableFactory.safelySetValue(this.cipherSuitesLength, cipherSuitesLength);
     }
 
-    public ModifiableInteger getSessionIDLength() {
-        return sessionIDLength;
+    public ModifiableInteger getSessionIdLength() {
+        return sessionIdLength;
     }
 
-    public void setSessionIDLength(ModifiableInteger sessionIDLength) {
-        this.sessionIDLength = sessionIDLength;
+    public void setSessionIdLength(ModifiableInteger sessionIdLength) {
+        this.sessionIdLength = sessionIdLength;
     }
 
     public void setSessionIDLength(int connectionIDLength) {
-        this.sessionIDLength = ModifiableVariableFactory.safelySetValue(this.sessionIDLength, connectionIDLength);
+        this.sessionIdLength = ModifiableVariableFactory.safelySetValue(this.sessionIdLength, connectionIDLength);
     }
 
     public ModifiableByteArray getCertificate() {
@@ -195,22 +200,41 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
         this.cipherSuites = ModifiableVariableFactory.safelySetValue(this.cipherSuites, cipherSuites);
     }
 
-    public ModifiableByteArray getSessionID() {
-        return sessionID;
+    public ModifiableByteArray getSessionId() {
+        return sessionId;
     }
 
-    public void setSessionID(ModifiableByteArray sessionID) {
-        this.sessionID = sessionID;
+    public void setSessionId(ModifiableByteArray sessionId) {
+        this.sessionId = sessionId;
     }
 
     public void setSessionID(byte[] sessionID) {
-        this.sessionID = ModifiableVariableFactory.safelySetValue(this.sessionID, sessionID);
+        this.sessionId = ModifiableVariableFactory.safelySetValue(this.sessionId, sessionID);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        // TODO
+        if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
+            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        }
+        if (getType() != null && getType().getValue() != null) {
+            sb.append("\n Type: ").append(getType().getValue());
+        }
+        if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
+            sb.append("\n Supported CipherSuites: ").append(
+                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        }
+        if (getSessionIdHit() != null && getSessionIdHit().getValue() != null) {
+            sb.append("\n SessionIdHit: ").append(getSessionIdHit().getValue());
+        }
+        if (getCertificate() != null && getCertificate().getValue() != null) {
+            sb.append("\n Certificate: ").append(ArrayConverter.bytesToHexString(getCertificate().getValue()));
+        }
+        if (getSessionId() != null && getSessionId().getValue() != null) {
+            sb.append("\n SessionID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        }
         return sb.toString();
     }
 }

@@ -9,8 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
@@ -19,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,9 +25,9 @@ import org.apache.logging.log4j.Logger;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
  */
-public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
+public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> extends Handler<Message> {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Handler");
+    protected static final Logger LOGGER = LogManager.getLogger(ProtocolMessageHandler.class.getName());
 
     /**
      * tls context
@@ -42,9 +40,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        if (tlsContext == null) {
-            throw new ConfigurationException("TLS Context is not configured yet");
-        }
     }
 
     /**
@@ -77,7 +72,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
     /**
      * Parses a byteArray from a Position into a MessageObject and returns the
      * parsed MessageObjet and parser position in a parser result. The current
-     * TlsContext is adjusted as
+     * Chooser is adjusted as
      *
      * @param message
      * @param pointer
@@ -94,7 +89,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         try {
             prepareAfterParse(parsedMessage);
             adjustTLSContext(parsedMessage);
-        } catch (AdjustmentException E) {
+        } catch (AdjustmentException | UnsupportedOperationException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
@@ -102,10 +97,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 
+    @Override
     public abstract ProtocolMessageParser getParser(byte[] message, int pointer);
 
+    @Override
     public abstract ProtocolMessagePreparator getPreparator(Message message);
 
+    @Override
     public abstract ProtocolMessageSerializer getSerializer(Message message);
 
     /**
@@ -114,10 +112,15 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> {
      *
      * @param message
      */
-    protected abstract void adjustTLSContext(Message message);
+    public abstract void adjustTLSContext(Message message);
 
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);
         prep.prepareAfterParse();
+    }
+
+    @Override
+    protected final void adjustContext(Message message) {
+        adjustTLSContext(message);
     }
 }

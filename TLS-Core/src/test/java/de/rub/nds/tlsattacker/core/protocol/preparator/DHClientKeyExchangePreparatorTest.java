@@ -13,12 +13,9 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import java.util.Random;
-import org.bouncycastle.crypto.params.DHParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.tls.ServerDHParams;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
@@ -37,9 +34,7 @@ public class DHClientKeyExchangePreparatorTest {
     private final static BigInteger SERVER_PUBLIC_KEY = new BigInteger(
             "49437715717798893754105488735114516682455843745607681454511055039168584592490468625265408270895845434581657576902999182876198939742286450124559319006108449708689975897919447736149482114339733412256412716053305356946744588719383899737036630001856916051516306568909530334115858523077759833807187583559767008031");
     private final static byte[] PREMASTERSECRET = ArrayConverter
-            .hexStringToByteArray("28ecc3fc89b1975d2e6568a04b059645bf5c618d18084993c43309cf8059ec6c9c306ef7440fb796671c695932fda39c8af073bd6540ba1f38fdc8d492b92babb9f0997e46115215a80fc74581aa2f9d74f1cb545989310af303a01ca62cd2207cd3ebdeb282c6dfedbed5390cbacfb4cf3ce330f044b260180740e973dfb347");
-    private final static byte[] MASTERSECRET = ArrayConverter
-            .hexStringToByteArray("7d21f8106301d895e43892f12bccb709d93939886b1d8f29b71bb8879aa55d19db0fc63fedb2fda91f6c544b09d88713");
+            .hexStringToByteArray("3CDCE99BB99CCE256355C696A39E4B5BE3726FCC5F104EE36DD05CB68EA1102DAAEA515EB51F519E656EA8E2B4E2604CC9D4E017EE44B3854D133F5418688AC251D88196651611E5D91F5297B1C68989A208641F8C54AECBF4F360F2222FF692936F74803696E7627D7B2710A08CC21220042649277049ABA23FEA6422C3BE1C");
     private TlsContext context;
     private DHClientKeyExchangeMessage message;
     private DHClientKeyExchangePreparator preparator;
@@ -48,8 +43,7 @@ public class DHClientKeyExchangePreparatorTest {
     public void setUp() {
         context = new TlsContext();
         message = new DHClientKeyExchangeMessage();
-        preparator = new DHClientKeyExchangePreparator(context, message);
-        RandomHelper.setRandom(new Random(0));
+        preparator = new DHClientKeyExchangePreparator(context.getChooser(), message);
     }
 
     /**
@@ -64,22 +58,26 @@ public class DHClientKeyExchangePreparatorTest {
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server DH-parameters
-        context.setServerDHParameters(new ServerDHParams(new DHPublicKeyParameters(SERVER_PUBLIC_KEY, new DHParameters(
-                new BigInteger(DH_M, 16), new BigInteger(DH_G, 16)))));
+        context.setDhModulus(new BigInteger(DH_M, 16));
+        context.setDhGenerator(new BigInteger(DH_G, 16));
+        context.setServerDhPublicKey(SERVER_PUBLIC_KEY);
 
         preparator.prepareHandshakeMessageContents();
 
         // Tests
-        assertArrayEquals(ArrayConverter.hexStringToByteArray(DH_G), message.getG().getByteArray());
-        assertArrayEquals(ArrayConverter.hexStringToByteArray(DH_M), message.getP().getByteArray());
         assertArrayEquals(PREMASTERSECRET, message.getComputations().getPremasterSecret().getValue());
-        assertNotNull(message.getSerializedPublicKeyLength().getValue());
-        assertNotNull(message.getSerializedPublicKey());
+        assertNotNull(message.getPublicKeyLength().getValue());
+        assertNotNull(message.getPublicKey());
         assertNotNull(message.getComputations().getClientRandom());
         assertArrayEquals(
                 ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray(RANDOM),
                         ArrayConverter.hexStringToByteArray(RANDOM)), message.getComputations().getClientRandom()
                         .getValue());
 
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 }

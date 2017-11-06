@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 
 /**
  *
@@ -18,37 +18,25 @@ import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
  */
 public class SessionResumptionDelegate extends Delegate {
 
-    @Parameter(names = "-session_resumption", description = "YES or NO")
-    private Boolean sessionResumption = null;
-    @Parameter(names = "-session_id", description = "The sessionID to resume in hex", converter = ByteArrayConverter.class)
-    private byte[] sessionID = null;
+    @Parameter(names = "-session_id", description = "The session ID to resume in hex", converter = ByteArrayConverter.class)
+    private byte[] sessionId = null;
 
     public SessionResumptionDelegate() {
     }
 
-    public Boolean isSessionResumption() {
-        return sessionResumption;
+    public byte[] getSessionId() {
+        return sessionId;
     }
 
-    public void setSessionResumption(boolean sessionResumption) {
-        this.sessionResumption = sessionResumption;
-    }
-
-    public byte[] getSessionID() {
-        return sessionID;
-    }
-
-    public void setSessionID(byte[] sessionID) {
-        this.sessionID = sessionID;
+    public void setSessionId(byte[] sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
-        if (sessionResumption != null) {
-            config.setSessionResumption(sessionResumption);
-        }
-        if (sessionID != null) {
-            config.setSessionId(sessionID);
+    public void applyDelegate(Config config) {
+        if (sessionId != null) {
+            config.setDefaultClientSessionId(sessionId);
+            config.setDefaultServerSessionId(sessionId);
         }
     }
 }

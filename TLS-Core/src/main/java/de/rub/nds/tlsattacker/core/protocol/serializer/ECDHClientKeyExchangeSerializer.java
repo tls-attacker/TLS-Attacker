@@ -47,8 +47,8 @@ public class ECDHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer
      * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
-        appendInt(msg.getSerializedPublicKeyLength().getValue(), HandshakeByteLength.ECDH_PARAM_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDH_PARAM_LENGTH);
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -56,8 +56,8 @@ public class ECDHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer
      * the final byte[]
      */
     private void writeSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
-        appendBytes(msg.getSerializedPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        appendBytes(msg.getPublicKey().getValue());
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
 }

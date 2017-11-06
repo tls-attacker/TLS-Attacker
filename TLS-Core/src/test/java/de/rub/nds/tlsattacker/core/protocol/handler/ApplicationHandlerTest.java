@@ -12,10 +12,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
+import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,6 +28,14 @@ public class ApplicationHandlerTest {
 
     private ApplicationHandler handler;
     private TlsContext context;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
 
     @Before
     public void setUp() {

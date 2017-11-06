@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <ClientConnectionEnd>
+        <alias>conEnd1</alias>
+        <hostname>host1111</hostname>
+        <port>1111</port>
+    </ClientConnectionEnd>
+    <ServerConnectionEnd>
+        <alias>conEnd2</alias>
+        <port>4444</port>
+    </ServerConnectionEnd>
+    <ClientConnectionEnd>
+        <alias>conEnd3</alias>
+        <hostname>host2222</hostname>
+        <port>2222</port>
+    </ClientConnectionEnd>
+</config>

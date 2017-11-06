@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of isDynamicWorkflow method, of class DynamicWorkflowDelegate.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testIsDynamicWorkflow() {
         args = new String[1];
         args[0] = "-dynamic_workflow";
@@ -46,7 +46,7 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of setDynamicWorkflow method, of class DynamicWorkflowDelegate.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testSetDynamicWorkflow() {
         assertTrue(delegate.isDynamicWorkflow() == null);
         delegate.setDynamicWorkflow(true);
@@ -56,9 +56,9 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of applyDelegate method, of class DynamicWorkflowDelegate.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testApplyDelegate() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setDynamicWorkflow(false);
         args = new String[1];
         args[0] = "-dynamic_workflow";
@@ -67,10 +67,10 @@ public class DynamicWorkflowDelegateTest {
         assertTrue(config.isDynamicWorkflow());
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

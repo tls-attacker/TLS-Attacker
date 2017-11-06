@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
@@ -43,6 +43,38 @@ public class PKCS1VectorGenerator {
      */
     public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
 
+        // compute the number of all vectors that are being generated
+        int rsaKeyLength = publicKey.getModulus().bitLength() / 8;
+        int vectorSize = STATIC_VECTOR_SIZE;
+        if (type == BleichenbacherCommandConfig.Type.FULL) {
+            vectorSize += rsaKeyLength - 2;
+        }
+        byte[][] plainPaddedKeys = generatePlainPkcs1Vectors(publicKey, type);
+
+        try {
+            Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
+            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[][] encryptedKeys = new byte[vectorSize][];
+            // encrypt all the padded keys
+            for (int i = 0; i < encryptedKeys.length; i++) {
+                encryptedKeys[i] = rsa.doFinal(plainPaddedKeys[i]);
+            }
+
+            return encryptedKeys;
+        } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException
+                | NoSuchPaddingException ex) {
+            throw new ConfigurationException("The different PKCS#1 attack vectors could not be generated.", ex);
+        }
+    }
+
+    /**
+     * Generates different plain PKCS1 vectors
+     * 
+     * @param publicKey
+     * @param type
+     * @return
+     */
+    public static byte[][] generatePlainPkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
         // we do not need secure random here
         Random random = new Random();
         byte[] keyBytes = new byte[HandshakeByteLength.PREMASTER_SECRET];
@@ -74,21 +106,7 @@ public class PKCS1VectorGenerator {
             byte[][] additionalPaddedKeys = getEK_DifferentPositionsOf0x00(rsaKeyLength, keyBytes);
             System.arraycopy(additionalPaddedKeys, 0, plainPaddedKeys, STATIC_VECTOR_SIZE, additionalPaddedKeys.length);
         }
-
-        try {
-            Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
-            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[][] encryptedKeys = new byte[vectorSize][];
-            // encrypt all the padded keys
-            for (int i = 0; i < encryptedKeys.length; i++) {
-                encryptedKeys[i] = rsa.doFinal(plainPaddedKeys[i]);
-            }
-
-            return encryptedKeys;
-        } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException
-                | NoSuchPaddingException ex) {
-            throw new ConfigurationException("The different PKCS#1 attack vectors could not be generated.", ex);
-        }
+        return plainPaddedKeys;
     }
 
     /**

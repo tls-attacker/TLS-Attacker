@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 
 /**
  *
@@ -34,19 +34,38 @@ public class ClientDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
-        if (host != null) {
-            String[] parsedHost = host.split(":");
-            if (parsedHost.length == 1) {
-                config.setHost(host);
-            } else if (parsedHost.length == 2) {
-                config.setHost(parsedHost[0]);
-                config.setPort(Integer.parseInt(parsedHost[1]));
-            } else {
-                throw new ConfigurationException("Could not parse provided host: " + host);
-            }
+    public void applyDelegate(Config config) {
+        if (host == null) {
+            // Though host is a required parameter we can get here if
+            // we call applyDelegate manually, e.g. in tests.
+            throw new ParameterException("Could not parse provided host: " + host);
         }
-        config.setConnectionEndType(ConnectionEndType.CLIENT);
+
+        ClientConnectionEnd conEnd = new ClientConnectionEnd(Config.DEFAULT_CONNECTION_END_ALIAS);
+        String[] parsedHost = host.split(":");
+        switch (parsedHost.length) {
+            case 1:
+                conEnd.setHostname(host);
+                conEnd.setPort(config.getConnectionEnd().getPort());
+                break;
+            case 2:
+                conEnd.setHostname(parsedHost[0]);
+                conEnd.setPort(parsePort(parsedHost[1]));
+                break;
+            default:
+                throw new ParameterException("Could not parse provided host: " + host);
+        }
+        config.clearConnectionEnds();
+        config.addConnectionEnd(conEnd);
+
+    }
+
+    private int parsePort(String portStr) {
+        int port = Integer.parseInt(portStr);
+        if (port < 0 || port > 65535) {
+            throw new ParameterException("port must be in interval [0,65535], but is " + port);
+        }
+        return port;
     }
 
 }

@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHEServerKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -74,9 +74,9 @@ public class ECDHEServerKeyExchangeHandlerTest {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
         message.setNamedCurve(NamedCurve.SECP256R1.getValue());
-        message.setSerializedPublicKey(ArrayConverter
+        message.setPublicKey(ArrayConverter
                 .hexStringToByteArray("04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
-        message.setSerializedPublicKeyLength(65);
+        message.setPublicKeyLength(65);
         message.prepareComputations();
         message.getComputations().setPremasterSecret(new byte[] { 0, 1, 2, 3 });
         message.getComputations().setPrivateKey(new BigInteger("12345"));
@@ -91,9 +91,9 @@ public class ECDHEServerKeyExchangeHandlerTest {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
         message.setNamedCurve(NamedCurve.SECP256R1.getValue());
-        message.setSerializedPublicKey(ArrayConverter
+        message.setPublicKey(ArrayConverter
                 .hexStringToByteArray("04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
-        message.setSerializedPublicKeyLength(65);
+        message.setPublicKeyLength(65);
         handler.adjustTLSContext(message);
         assertNull(context.getPreMasterSecret());
         assertNull(context.getMasterSecret());

@@ -13,25 +13,21 @@ import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
@@ -45,7 +41,7 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class RealDirectMessageECOracle extends ECOracle {
 
-    private final TlsConfig config;
+    private final Config config;
 
     private Point checkPoint;
 
@@ -53,7 +49,7 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     private final ECComputer computer;
 
-    public RealDirectMessageECOracle(TlsConfig config, Curve curve) {
+    public RealDirectMessageECOracle(Config config, Curve curve) {
         this.config = config;
         this.curve = curve;
         this.computer = new ECComputer();
@@ -70,13 +66,15 @@ public class RealDirectMessageECOracle extends ECOracle {
 
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
-        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
+        State state = new State(config);
+
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
+
+        WorkflowTrace trace = state.getWorkflowTrace();
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
@@ -109,7 +107,7 @@ public class RealDirectMessageECOracle extends ECOracle {
             numberOfQueries++;
         }
 
-        if (!tlsContext.getWorkflowTrace().configuredLooksLikeActual()) {
+        if (!state.getWorkflowTrace().executedAsPlanned()) {
             valid = false;
         }
 
@@ -142,28 +140,22 @@ public class RealDirectMessageECOracle extends ECOracle {
      * further validation purposes.
      */
     private void executeValidWorkflowAndExtractCheckValues() {
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+        State state = new State(config);
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
+
+        WorkflowTrace trace = state.getWorkflowTrace();
 
         workflowExecutor.executeWorkflow();
 
-        List<HandshakeMessage> clientKeyExchangeList = trace
-                .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE);
-        if (clientKeyExchangeList.isEmpty()) {
-            // TODO
-            throw new WorkflowExecutionException("Could not retrieve ECDH PublicKey");
-        } else {
-            ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) trace
-                    .getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType.CLIENT_KEY_EXCHANGE).get(0);
-
-            // get public point base X and Y coordinates
-            BigInteger x = message.getPublicKeyBaseX().getValue();
-            BigInteger y = message.getPublicKeyBaseY().getValue();
-            checkPoint = new Point(x, y);
-            checkPMS = message.getComputations().getPremasterSecret().getValue();
-        }
+        ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+        // TODO Those values can be retrieved from the context
+        // get public point base X and Y coordinates
+        BigInteger x = message.getPublicKeyBaseX().getValue();
+        BigInteger y = message.getPublicKeyBaseY().getValue();
+        checkPoint = new Point(x, y);
+        checkPMS = message.getComputations().getPremasterSecret().getValue();
     }
 }

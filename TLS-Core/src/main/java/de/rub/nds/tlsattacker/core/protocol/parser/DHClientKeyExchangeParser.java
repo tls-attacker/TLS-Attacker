@@ -55,8 +55,12 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(DHClientKeyExchangeMessage message) {
-        message.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + message.getSerializedPublicKeyLength().getValue());
+        if (getVersion().isSSL()) {
+            message.setPublicKeyLength(getBytesLeft());
+        } else {
+            message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+        }
+        LOGGER.debug("SerializedPublicKeyLength: " + message.getPublicKeyLength().getValue());
     }
 
     /**
@@ -67,8 +71,7 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
      *            Message to write in
      */
     private void parseSerializedPublicKey(DHClientKeyExchangeMessage message) {
-        message.setSerializedPublicKey(parseByteArrayField(message.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: "
-                + ArrayConverter.bytesToHexString(message.getSerializedPublicKey().getValue()));
+        message.setPublicKey(parseByteArrayField(message.getPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(message.getPublicKey().getValue()));
     }
 }

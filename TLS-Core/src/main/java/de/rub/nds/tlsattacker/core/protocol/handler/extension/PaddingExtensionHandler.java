@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMe
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PaddingExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -33,7 +33,7 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
 
     @Override
     public PaddingExtensionPreparator getPreparator(PaddingExtensionMessage message) {
-        return new PaddingExtensionPreparator(context, message);
+        return new PaddingExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
@@ -47,14 +47,13 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
      * @param message
      */
     @Override
-    public void adjustTLSContext(PaddingExtensionMessage message) {
+    public void adjustTLSExtensionContext(PaddingExtensionMessage message) {
         if (message.getPaddingBytes().getValue().length > 65535) {
             LOGGER.warn("The Padding Extension length value exceeds the two bytes defined in RFC 7685.");
         }
         context.setPaddingExtensionBytes(message.getPaddingBytes().getValue());
         LOGGER.debug("The context PaddingExtension bytes were set to "
                 + ArrayConverter.bytesToHexString(context.getPaddingExtensionBytes()));
-
     }
 
 }

@@ -12,11 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.PaddingExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ * This extension is defined in RFC7685
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class PaddingExtensionMessage extends ExtensionMessage {
@@ -43,10 +42,4 @@ public class PaddingExtensionMessage extends ExtensionMessage {
     public void setPaddingBytes(byte[] array) {
         this.paddingBytes = ModifiableVariableFactory.safelySetValue(paddingBytes, array);
     }
-
-    @Override
-    public PaddingExtensionHandler getHandler(TlsContext context) {
-        return new PaddingExtensionHandler(context);
-    }
-
 }

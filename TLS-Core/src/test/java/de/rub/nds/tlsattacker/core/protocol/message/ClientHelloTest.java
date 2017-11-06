@@ -13,11 +13,9 @@ import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.integer.IntegerAddModification;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
@@ -32,6 +30,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -62,8 +62,7 @@ public class ClientHelloTest {
         writer = new StringWriter();
         context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
                 ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
-                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class,
-                ChangeClientCertificateAction.class, ChangeServerCertificateAction.class);
+                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class);
         m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setAdapter(new ByteArrayAdapter());
@@ -81,7 +80,7 @@ public class ClientHelloTest {
 
     @Test
     public void simpleSerialization() throws JAXBException {
-        ClientHelloMessage cl = new ClientHelloMessage(TlsConfig.createConfig());
+        ClientHelloMessage cl = new ClientHelloMessage(Config.createConfig());
         cl.setCipherSuiteLength(3);
         // cl.setCipherSuiteLength(new ModifiableInteger());
         cl.getCipherSuiteLength().setModification(new IntegerAddModification(2));
@@ -89,6 +88,7 @@ public class ClientHelloTest {
             m.marshal(cl, writer);
         } catch (JAXBException E) {
             E.printStackTrace();
+            fail();
         }
         String xmlString = writer.toString();
         LOGGER.info(xmlString);
@@ -97,15 +97,16 @@ public class ClientHelloTest {
         writer.append("abcd");
         m.marshal(clu, writer);
         xmlString = writer.toString();
+        assertNotNull(xmlString);
     }
 
     @Test
     public void simpleSerialization2() throws Exception {
-        TlsConfig config = TlsConfig.createConfig();
-        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(config);
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(Config.createConfig());
         WorkflowTrace trace = cf.createFullWorkflow();
         m.marshal(trace, writer);
         String xmlString = writer.toString();
+        assertNotNull(xmlString);
     }
 
 }

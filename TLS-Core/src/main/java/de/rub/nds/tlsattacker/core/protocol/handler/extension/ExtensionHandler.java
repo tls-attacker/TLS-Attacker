@@ -6,14 +6,15 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class ExtensionHandler<Message extends ExtensionMessage> {
 
-    protected static final Logger LOGGER = LogManager.getLogger("HANDLER");
+    protected static final Logger LOGGER = LogManager.getLogger(ExtensionHandler.class.getName());
 
     protected final TlsContext context;
 
@@ -43,5 +44,30 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
      *
      * @param message
      */
-    public abstract void adjustTLSContext(Message message);
+    public final void adjustTLSContext(Message message) {
+        markExtensionInContext(message);
+        adjustTLSExtensionContext(message);
+    }
+
+    public abstract void adjustTLSExtensionContext(Message message);
+
+    /**
+     * Tell the context that the extension was proposed/negotiated. Makes the
+     * extension type available in
+     * TlsContext.isExtension{Proposed,Negotiated}(extType).
+     *
+     *
+     * @param message
+     */
+    private void markExtensionInContext(Message message) {
+        ExtensionType extType = message.getExtensionTypeConstant();
+        ConnectionEndType talkingConEndType = context.getTalkingConnectionEndType();
+        if (talkingConEndType == ConnectionEndType.CLIENT) {
+            context.addProposedExtension(extType);
+            LOGGER.debug("Marked extension '" + extType.name() + "' as proposed");
+        } else if (talkingConEndType == ConnectionEndType.SERVER) {
+            context.addNegotiatedExtension(extType);
+            LOGGER.debug("Marked extension '" + extType.name() + "' as negotiated");
+        }
+    }
 }

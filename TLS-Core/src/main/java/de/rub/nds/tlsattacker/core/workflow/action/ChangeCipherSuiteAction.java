@@ -10,10 +10,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 
 /**
@@ -47,17 +45,18 @@ public class ChangeCipherSuiteAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
         oldValue = tlsContext.getSelectedCipherSuite();
         tlsContext.setSelectedCipherSuite(newValue);
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
-        LOGGER.info("Changed CipherSuite from " + oldValue.name() + " to " + newValue.name());
+        LOGGER.info("Changed CipherSuite from " + (oldValue == null ? null : oldValue.name()) + " to "
+                + newValue.name());
         setExecuted(true);
     }
 
@@ -91,6 +90,11 @@ public class ChangeCipherSuiteAction extends TLSAction {
             return false;
         }
         return this.oldValue == other.oldValue;
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 
 }

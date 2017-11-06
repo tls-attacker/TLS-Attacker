@@ -8,19 +8,21 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,30 +42,25 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
     @Override
     public void executeAttack() {
-        TlsConfig tlsConfig = config.createConfig();
+        Config tlsConfig = config.createConfig();
         tlsConfig.setClientAuthentication(true);
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
-
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
-
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        State state = new State(tlsConfig, trace);
         ModifiableByteArray signature = new ModifiableByteArray();
         signature.setModification(ByteArrayModificationFactory.explicitValue(ArrayConverter
                 .bigIntegerToByteArray(config.getSignature())));
-
         ModifiableInteger signatureLength = new ModifiableInteger();
         if (config.getSignatureLength() == null) {
             signatureLength.setModification(IntegerModificationFactory.explicitValue(signature.getValue().length));
         } else {
             signatureLength.setModification(IntegerModificationFactory.explicitValue(config.getSignatureLength()));
         }
-
-        CertificateVerifyMessage cvm = (CertificateVerifyMessage) trace
-                .getFirstConfiguredSendMessageOfType(HandshakeMessageType.CERTIFICATE_VERIFY);
+        CertificateVerifyMessage cvm = (CertificateVerifyMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CERTIFICATE_VERIFY, trace);
         cvm.setSignature(signature);
         cvm.setSignatureLength(signatureLength);
-
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
     }
 

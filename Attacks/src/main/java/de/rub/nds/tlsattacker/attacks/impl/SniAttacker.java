@@ -9,24 +9,6 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
-import de.rub.nds.tlsattacker.core.constants.NameType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

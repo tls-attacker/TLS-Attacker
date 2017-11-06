@@ -9,11 +9,11 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.NamedCurveConverter;
 import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +23,9 @@ import java.util.List;
  */
 public class EllipticCurveDelegate extends Delegate {
 
-    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma eg. UNCOMPRESSED,ANSIX962_COMPRESSED_PRIME", converter = PointFormatConverter.class)
+    @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma", converter = PointFormatConverter.class)
     private List<ECPointFormat> pointFormats = null;
-    @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma eg. SECT163K1,SECT193R2 ", converter = NamedCurveConverter.class)
+    @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma", converter = NamedCurveConverter.class)
     private List<NamedCurve> namedCurves = null;
 
     public EllipticCurveDelegate() {
@@ -54,12 +54,13 @@ public class EllipticCurveDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         if (namedCurves != null) {
             config.setNamedCurves(namedCurves);
         }
         if (pointFormats != null) {
-            config.setPointFormats(pointFormats);
+            config.setDefaultServerSupportedPointFormats(pointFormats);
+            config.setDefaultClientSupportedPointFormats(pointFormats);
         }
     }
 }

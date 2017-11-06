@@ -13,18 +13,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.ECDHEServerComputations;
-import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -46,7 +43,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super();
     }
 
-    public ECDHEServerKeyExchangeMessage(TlsConfig tlsConfig) {
+    public ECDHEServerKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
@@ -86,16 +83,12 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        sb.append(ArrayConverter.bytesToHexString(getSerializedPublicKey().getValue()));
-        sb.append("\n  Signature Algorithm: ");
+        sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+        sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getHashAlgorithm() != null) {
-            sb.append(HashAlgorithm.getHashAlgorithm(this.getHashAlgorithm().getValue()));
-            sb.append(" ");
-        }
-        if (this.getSignatureAlgorithm() != null) {
-            sb.append(SignatureAlgorithm.getSignatureAlgorithm(this.getSignatureAlgorithm().getValue()));
+        if (this.getSignatureAndHashAlgorithm() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
         }
         sb.append("\n  Signature: ");
         if (getSignature() != null) {

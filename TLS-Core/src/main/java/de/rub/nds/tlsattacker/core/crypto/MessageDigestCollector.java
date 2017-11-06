@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class MessageDigestCollector {
 
-    private static final Logger LOGGER = LogManager.getLogger("MessageDigest");
+    private static final Logger LOGGER = LogManager.getLogger(MessageDigestCollector.class.getName());
 
     private ByteArrayOutputStream stream;
 
@@ -51,14 +51,14 @@ public class MessageDigestCollector {
 
     public byte[] digest(ProtocolVersion version, CipherSuite suite) {
         try {
-            MessageDigest hash1 = null;
+            MessageDigest hash1;
             MessageDigest hash2 = null;
             DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(version, suite);
-            if (algorithm == DigestAlgorithm.LEGACY) {
-
+            if (algorithm == DigestAlgorithm.SSL_DIGEST) {
+                throw new RuntimeException("Unsupported DigestAlgorithm SSL_DIGEST");
+            } else if (algorithm == DigestAlgorithm.LEGACY) {
                 hash1 = MessageDigest.getInstance("MD5");
                 hash2 = MessageDigest.getInstance("SHA-1");
-
             } else {
                 hash1 = MessageDigest.getInstance(algorithm.getJavaName());
             }

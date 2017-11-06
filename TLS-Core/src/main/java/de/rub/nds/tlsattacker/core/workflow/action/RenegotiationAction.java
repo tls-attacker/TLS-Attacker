@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
-import java.io.IOException;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -20,7 +19,9 @@ import java.io.IOException;
 public class RenegotiationAction extends TLSAction {
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
@@ -32,6 +33,11 @@ public class RenegotiationAction extends TLSAction {
     @Override
     public void reset() {
         setExecuted(null);
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 
 }

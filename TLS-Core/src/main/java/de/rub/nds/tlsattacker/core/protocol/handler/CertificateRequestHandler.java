@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,21 +31,21 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
 
     @Override
     public CertificateRequestMessageParser getParser(byte[] message, int pointer) {
-        return new CertificateRequestMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new CertificateRequestMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public CertificateRequestMessagePreparator getPreparator(CertificateRequestMessage message) {
-        return new CertificateRequestMessagePreparator(tlsContext, message);
+        return new CertificateRequestMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public CertificateRequestMessageSerializer getSerializer(CertificateRequestMessage message) {
-        return new CertificateRequestMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new CertificateRequestMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    protected void adjustTLSContext(CertificateRequestMessage message) {
+    public void adjustTLSContext(CertificateRequestMessage message) {
         adjustClientCertificateTypes(message);
         adjustDistinguishedNames(message);
         adjustServerSupportedSignatureAndHashAlgorithms(message);
@@ -59,10 +59,14 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustDistinguishedNames(CertificateRequestMessage message) {
-        byte[] distinguishedNames = message.getDistinguishedNames().getValue();
-        tlsContext.setDistinguishedNames(distinguishedNames);
-        LOGGER.debug("Set DistinguishedNames in Context to "
-                + ArrayConverter.bytesToHexString(distinguishedNames, false));
+        if (message.getDistinguishedNames() != null && message.getDistinguishedNames().getValue() != null) {
+            byte[] distinguishedNames = message.getDistinguishedNames().getValue();
+            tlsContext.setDistinguishedNames(distinguishedNames);
+            LOGGER.debug("Set DistinguishedNames in Context to "
+                    + ArrayConverter.bytesToHexString(distinguishedNames, false));
+        } else {
+            LOGGER.debug("Not adjusting DistinguishedNames");
+        }
     }
 
     private void adjustClientCertificateTypes(CertificateRequestMessage message) {
@@ -98,12 +102,7 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
             copied[0] = bytesToConvert[i];
             copied[1] = bytesToConvert[i + 1];
             SignatureAndHashAlgorithm algo = SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(copied);
-            if (algo == null) {
-                LOGGER.warn("Cannot convert:" + ArrayConverter.bytesToHexString(copied)
-                        + " to a SignatureAndHashAlgorithm");
-            } else {
-                list.add(algo);
-            }
+            list.add(algo);
         }
         return list;
     }

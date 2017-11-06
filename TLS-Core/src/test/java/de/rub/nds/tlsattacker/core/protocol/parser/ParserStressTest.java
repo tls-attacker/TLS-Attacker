@@ -12,6 +12,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -24,6 +28,16 @@ import org.junit.experimental.categories.Category;
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ParserStressTest {
+
+    @Before
+    public void before() {
+        Configurator.setRootLevel(Level.OFF);
+    }
+
+    @After
+    public void after() {
+        Configurator.setRootLevel(Level.INFO);
+    }
 
     @Test
     @Category(IntegrationTests.class)

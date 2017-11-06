@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
-import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -27,13 +26,13 @@ public class WinshockCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "winshock";
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     @Parameter(names = "-signature_length", description = "Length of the signature in the CertificateVerify protocol message")
     private Integer signatureLength;
@@ -67,6 +66,11 @@ public class WinshockCommandConfig extends AttackConfig {
 
     public void setSignature(BigInteger signature) {
         this.signature = signature;
+    }
+
+    @Override
+    public boolean isExecuteAttack() {
+        return true;
     }
 
 }

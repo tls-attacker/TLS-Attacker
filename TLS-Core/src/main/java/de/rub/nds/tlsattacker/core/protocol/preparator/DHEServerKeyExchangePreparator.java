@@ -9,31 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.interfaces.RSAPrivateCrtKey;
-import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.KeyGenerationParameters;
-import org.bouncycastle.crypto.generators.DHKeyPairGenerator;
-import org.bouncycastle.crypto.params.DHKeyGenerationParameters;
-import org.bouncycastle.crypto.params.DHParameters;
-import org.bouncycastle.crypto.params.DHPrivateKeyParameters;
-import org.bouncycastle.crypto.params.DHPublicKeyParameters;
-import org.bouncycastle.crypto.tls.ServerDHParams;
-import org.bouncycastle.util.BigIntegers;
 
 /**
  *
@@ -41,47 +22,35 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<DHEServerKeyExchangeMessage> {
 
-    private DHPublicKeyParameters dhPublic;
-    private DHPrivateKeyParameters dhPrivate;
+    private BigInteger publicKey;
     private SignatureAndHashAlgorithm selectedSignatureHashAlgo;
     private byte[] signature;
     private final DHEServerKeyExchangeMessage msg;
 
-    public DHEServerKeyExchangePreparator(TlsContext context, DHEServerKeyExchangeMessage message) {
-        super(context, message);
+    public DHEServerKeyExchangePreparator(Chooser chooser, DHEServerKeyExchangeMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        setComputedG(msg);
-        setComputedP(msg);
-        BigInteger p = msg.getComputations().getP().getValue();
-        BigInteger g = msg.getComputations().getG().getValue();
-        DHParameters params = new DHParameters(p, g);
-        KeyGenerationParameters kgp = new DHKeyGenerationParameters(RandomHelper.getBadSecureRandom(), params);
-        DHKeyPairGenerator keyGen = new DHKeyPairGenerator();
-        AsymmetricCipherKeyPair serverKeyPair = null;
-        try {
-            keyGen.init(kgp);
-            serverKeyPair = keyGen.generateKeyPair();
-        } catch (IllegalArgumentException E) {
-            throw new PreparationException("Could not generate KeyPair", E);
-        }
-        dhPublic = (DHPublicKeyParameters) serverKeyPair.getPublic();
-        dhPrivate = (DHPrivateKeyParameters) serverKeyPair.getPrivate();
-        prepareP(msg);
-        preparePLength(msg);
-        prepareG(msg);
-        prepareGLength(msg);
-        prepareSerializedPublicKey(msg);
-        prepareSerializedPublicKeyLength(msg);
-        preparePrivateKey(msg);
-        // TODO this should not be here
-        selectedSignatureHashAlgo = context.getConfig().getSupportedSignatureAndHashAlgorithms().get(0);
-        prepareSignatureAlgorithm(msg);
-        prepareHashAlgorithm(msg);
+        setComputedGenerator(msg);
+        setComputedModulus(msg);
+        setComputedPrivateKey(msg);
+        BigInteger modulus = msg.getComputations().getModulus().getValue();
+        BigInteger generator = msg.getComputations().getGenerator().getValue();
+        BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
+
+        // Compute PublicKeys
+        prepareModulus(msg);
+        prepareModulusLength(msg);
+        prepareGenerator(msg);
+        prepareGeneratorLength(msg);
+        preparePublicKey(msg);
+        preparePublicKeyLength(msg);
+        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        prepareSignatureAndHashAlgorithm(msg);
         prepareClientRandom(msg);
         prepareServerRandom(msg);
         signature = generateSignature(selectedSignatureHashAlgo);
@@ -90,94 +59,80 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     private byte[] generateToBeSigned() {
-        byte[] dhParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(msg.getpLength().getValue(),
-                HandshakeByteLength.DH_P_LENGTH), msg.getP().getValue(), ArrayConverter.intToBytes(msg.getgLength()
-                .getValue(), HandshakeByteLength.DH_G_LENGTH), msg.getG().getValue(), ArrayConverter.intToBytes(msg
-                .getSerializedPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH), msg
-                .getSerializedPublicKey().getValue());
+        byte[] dhParams = ArrayConverter
+                .concatenate(ArrayConverter.intToBytes(msg.getModulusLength().getValue(),
+                        HandshakeByteLength.DH_MODULUS_LENGTH), msg.getModulus().getValue(), ArrayConverter.intToBytes(
+                        msg.getGeneratorLength().getValue(), HandshakeByteLength.DH_GENERATOR_LENGTH), msg
+                        .getGenerator().getValue(), ArrayConverter.intToBytes(msg.getPublicKeyLength().getValue(),
+                        HandshakeByteLength.DH_PUBLICKEY_LENGTH), msg.getPublicKey().getValue());
         return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
                 .getServerRandom().getValue(), dhParams);
 
     }
 
     private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
-        try {
-            RSAPrivateCrtKey rsakey = (RSAPrivateCrtKey) context.getConfig().getPrivateKey();
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(rsakey);
-            instance.update(generateToBeSigned());
-            return instance.sign();
-        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException ex) {
-            throw new PreparationException("Could not generate Signature for DHEServerKeyExchange Message.", ex);
-        }
-
+        return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
     }
 
-    private void prepareG(DHEServerKeyExchangeMessage msg) {
-        msg.setG(BigIntegers.asUnsignedByteArray(dhPublic.getParameters().getG()));
-        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getG().getValue()));
+    private void prepareGenerator(DHEServerKeyExchangeMessage msg) {
+        msg.setGenerator(msg.getComputations().getGenerator().getByteArray());
+        LOGGER.debug("Generator: " + ArrayConverter.bytesToHexString(msg.getGenerator().getValue()));
     }
 
-    private void prepareP(DHEServerKeyExchangeMessage msg) {
-        msg.setP(BigIntegers.asUnsignedByteArray(dhPublic.getParameters().getP()));
-        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getP().getValue()));
+    private void prepareModulus(DHEServerKeyExchangeMessage msg) {
+        msg.setModulus(msg.getComputations().getModulus().getByteArray());
+        LOGGER.debug("Modulus: " + ArrayConverter.bytesToHexString(msg.getModulus().getValue()));
     }
 
-    private void prepareGLength(DHEServerKeyExchangeMessage msg) {
-        msg.setgLength(msg.getG().getValue().length);
-        LOGGER.debug("G Length: " + msg.getgLength().getValue());
+    private void prepareGeneratorLength(DHEServerKeyExchangeMessage msg) {
+        msg.setGeneratorLength(msg.getGenerator().getValue().length);
+        LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
     }
 
-    private void preparePLength(DHEServerKeyExchangeMessage msg) {
-        msg.setpLength(msg.getP().getValue().length);
-        LOGGER.debug("P Length: " + msg.getpLength().getValue());
+    private void prepareModulusLength(DHEServerKeyExchangeMessage msg) {
+        msg.setModulusLength(msg.getModulus().getValue().length);
+        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
     }
 
-    private void prepareSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKey(dhPublic.getY().toByteArray());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+    private void preparePublicKey(DHEServerKeyExchangeMessage msg) {
+        msg.setPublicKey(chooser.getDhServerPublicKey().toByteArray());
+        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
-    private void prepareSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(msg.getSerializedPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+    private void preparePublicKeyLength(DHEServerKeyExchangeMessage msg) {
+        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
+        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void preparePrivateKey(DHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setPrivateKey(dhPrivate.getX());
+    private void setComputedPrivateKey(DHEServerKeyExchangeMessage msg) {
+        msg.getComputations().setPrivateKey(chooser.getDhServerPrivateKey());
         LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
     }
 
-    private void setComputedP(DHEServerKeyExchangeMessage msg) {
-        byte[] pArray = context.getConfig().getFixedDHModulus();
-        msg.getComputations().setP(new BigInteger(1, pArray));
-        LOGGER.debug("P used for Computations: " + msg.getComputations().getP().getValue().toString(16));
+    private void setComputedModulus(DHEServerKeyExchangeMessage msg) {
+        msg.getComputations().setModulus(chooser.getDhModulus());
+        LOGGER.debug("Modulus used for Computations: " + msg.getComputations().getModulus().getValue().toString(16));
     }
 
-    private void setComputedG(DHEServerKeyExchangeMessage msg) {
-        byte[] gArray = context.getConfig().getFixedDHg();
-        msg.getComputations().setG(new BigInteger(1, gArray));
-        LOGGER.debug("G used for Computations: " + msg.getComputations().getG().getValue().toString(16));
+    private void setComputedGenerator(DHEServerKeyExchangeMessage msg) {
+        msg.getComputations().setGenerator(chooser.getDhGenerator());
+        LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
     }
 
-    private void prepareSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setSignatureAlgorithm(selectedSignatureHashAlgo.getSignatureAlgorithm().getValue());
-        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
-    }
-
-    private void prepareHashAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setHashAlgorithm(selectedSignatureHashAlgo.getHashAlgorithm().getValue());
-        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
+    private void prepareSignatureAndHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+        msg.setSignatureAndHashAlgorithm(selectedSignatureHashAlgo.getByteValue());
+        LOGGER.debug("SignatureAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     private void prepareClientRandom(DHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setClientRandom(context.getClientRandom());
+        msg.getComputations().setClientRandom(chooser.getClientRandom());
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
     private void prepareServerRandom(DHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setServerRandom(context.getServerRandom());
+        msg.getComputations().setServerRandom(chooser.getServerRandom());
         LOGGER.debug("ServerRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
     }

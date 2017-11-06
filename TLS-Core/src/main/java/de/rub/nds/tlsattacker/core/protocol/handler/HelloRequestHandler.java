@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRequestSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Philip Riese <philip.riese@rub.de>
@@ -25,21 +25,21 @@ public class HelloRequestHandler extends HandshakeMessageHandler<HelloRequestMes
 
     @Override
     public HelloRequestParser getParser(byte[] message, int pointer) {
-        return new HelloRequestParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new HelloRequestParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public HelloRequestPreparator getPreparator(HelloRequestMessage message) {
-        return new HelloRequestPreparator(tlsContext, message);
+        return new HelloRequestPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public HelloRequestSerializer getSerializer(HelloRequestMessage message) {
-        return new HelloRequestSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new HelloRequestSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    protected void adjustTLSContext(HelloRequestMessage message) {
+    public void adjustTLSContext(HelloRequestMessage message) {
         // we adjust nothing
     }
 }

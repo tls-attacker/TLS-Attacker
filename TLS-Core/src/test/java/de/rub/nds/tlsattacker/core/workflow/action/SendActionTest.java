@@ -8,16 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -37,25 +41,28 @@ import org.junit.Test;
  */
 public class SendActionTest {
 
+    private State state;
     private TlsContext tlsContext;
 
-    private ActionExecutorMock executor;
     private SendAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        AlertMessage alert = new AlertMessage(TlsConfig.createConfig());
+        AlertMessage alert = new AlertMessage(Config.createConfig());
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
-        executor = new ActionExecutorMock();
-        tlsContext = new TlsContext();
+        Config config = Config.createConfig();
+        state = new State(config, new WorkflowTrace(config));
+        tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(
+                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
+        tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         action = new SendAction(alert);
-        action.setConfiguredRecords(new LinkedList<AbstractRecord>());
+        action.setRecords(new LinkedList<AbstractRecord>());
     }
 
     @After
@@ -67,19 +74,19 @@ public class SendActionTest {
      */
     @Test
     public void testExecute() {
-        action.execute(tlsContext, executor);
-        assertEquals(action.getConfiguredMessages(), action.getActualMessages());
+        action.execute(state);
+        action.executedAsPlanned(); // TODO check faketransporthandler
         assertTrue(action.isExecuted());
     }
 
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertTrue(action.isExecuted());
     }
 

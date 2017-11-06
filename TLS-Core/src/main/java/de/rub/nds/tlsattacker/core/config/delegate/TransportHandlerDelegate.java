@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.TransportHandlerTypeConverter;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 /**
@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
  */
 public class TransportHandlerDelegate extends Delegate {
 
-    @Parameter(names = "-transport_handler_type", description = "Transport Handler type (TCP, EAP_TLS, UDP)", converter = TransportHandlerTypeConverter.class)
+    @Parameter(names = "-transport_handler_type", description = "Transport Handler type", converter = TransportHandlerTypeConverter.class)
     private TransportHandlerType transportHandlerType = null;
 
     public TransportHandlerDelegate() {
@@ -43,9 +43,9 @@ public class TransportHandlerDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         if (transportHandlerType != null) {
-            config.setTransportHandlerType(transportHandlerType);
+            config.setDefaultTransportHandlerType(transportHandlerType);
         }
     }
 }

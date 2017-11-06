@@ -12,7 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,12 +30,12 @@ public class MaxFragmentLengthExtensionParserTest {
                                                 // maxfragmentlength extension
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private byte[] maxFragmentLength;
+    private final byte[] extension;
+    private final int start;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final byte[] maxFragmentLength;
 
     public MaxFragmentLengthExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
             ExtensionType type, int extensionLength, byte[] maxFragmentLength) {

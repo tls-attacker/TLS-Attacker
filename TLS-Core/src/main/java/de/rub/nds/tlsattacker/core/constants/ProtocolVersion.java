@@ -8,10 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownProtocolVersionException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -23,6 +29,9 @@ public enum ProtocolVersion {
     TLS10(new byte[] { (byte) 0x03, (byte) 0x01 }),
     TLS11(new byte[] { (byte) 0x03, (byte) 0x02 }),
     TLS12(new byte[] { (byte) 0x03, (byte) 0x03 }),
+    TLS13(new byte[] { (byte) 0x03, (byte) 0x04 }),
+    TLS13_DRAFT20(new byte[] { (byte) 0x7F, (byte) 0x14 }),
+    TLS13_DRAFT21(new byte[] { (byte) 0x7F, (byte) 0x15 }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 
@@ -61,11 +70,30 @@ public enum ProtocolVersion {
         return MAP.get(i);
     }
 
-    public static ProtocolVersion getRandom() {
+    public static List<ProtocolVersion> getProtocolVersions(byte[] values) {
+        List<ProtocolVersion> versions = new LinkedList<>();
+        if (values.length % 2 != 0) {
+            throw new UnknownProtocolVersionException("Last ProtocolVersion are unknown!");
+        }
+        int pointer = 0;
+        while (pointer < values.length) {
+            byte[] version = new byte[2];
+            version[0] = values[pointer];
+            version[1] = values[pointer + 1];
+            ProtocolVersion tempVersion = getProtocolVersion(version);
+            if (tempVersion != null) {
+                versions.add(tempVersion);
+            }
+            pointer += 2;
+        }
+        return versions;
+    }
+
+    public static ProtocolVersion getRandom(Random random) {
         ProtocolVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (ProtocolVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (ProtocolVersion) o[random.nextInt(o.length)];
         }
         return c;
     }
@@ -102,4 +130,46 @@ public enum ProtocolVersion {
                 + "Available values are: " + Arrays.toString(ProtocolVersion.values()));
     }
 
+    /**
+     * Return the highest protocol version.
+     *
+     * @param list
+     * @return
+     */
+    public static ProtocolVersion getHighestProtocolVersion(List<ProtocolVersion> list) {
+        ProtocolVersion highestProtocolVersion = null;
+        for (ProtocolVersion pv : list) {
+            if (highestProtocolVersion == null) {
+                highestProtocolVersion = pv;
+            }
+            if (pv != null
+                    && ArrayConverter.bytesToInt(pv.getValue()) > ArrayConverter.bytesToInt(highestProtocolVersion
+                            .getValue())) {
+                highestProtocolVersion = pv;
+            }
+        }
+        return highestProtocolVersion;
+    }
+
+    /**
+     * Return true, if protocol version TLS 1.3
+     *
+     * @return
+     */
+    public boolean isTLS13() {
+        return this == TLS13 || this == TLS13_DRAFT20 || this == TLS13_DRAFT21;
+    }
+
+    /**
+     * 
+     * @return true, if protocol version SSL 2 or 3
+     */
+    public boolean isSSL() {
+        return this == SSL2 || this == SSL3;
+    }
+
+    public boolean usesExplicitIv() {
+        return this == ProtocolVersion.TLS11 || this == ProtocolVersion.TLS12 || this == ProtocolVersion.DTLS10
+                || this == ProtocolVersion.DTLS12;
+    }
 }

@@ -8,9 +8,11 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.attacks.config.DtlsPaddingOracleAttackCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -24,16 +26,14 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HeartbeatMessagePreparato
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
-import de.rub.nds.tlsattacker.transport.UDPTransportHandler;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.LockSupport;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,7 +58,8 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     private RecordLayer recordLayer;
     private List<TLSAction> actionList;
-    private UDPTransportHandler transportHandler;
+
+    private TimingClientUdpTransportHandler transportHandler;
 
     private final ModifiableByteArray modifiedPaddingArray = new ModifiableByteArray(),
             modifiedMacArray = new ModifiableByteArray();
@@ -67,12 +67,11 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private WorkflowExecutor workflowExecutor;
 
     private WorkflowTrace trace;
-    private final TlsConfig tlsConfig;
+    private final Config tlsConfig;
 
     public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config) {
         super(config, false);
         tlsConfig = config.createConfig();
-        tlsConfig.setExecutorType(ExecutorType.DTLS);
     }
 
     @Override
@@ -139,14 +138,18 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
         closeDtlsConnectionGracefully();
 
-        transportHandler.closeConnection();
+        try {
+            transportHandler.closeConnection();
+        } catch (IOException ex) {
+            LOGGER.warn("Could not close connection!");
+        }
     }
 
     private long[] executeAttackRound() throws IOException {
         byte[] roundMessageData = new byte[config.getTrainMessageSize()];
-        RandomHelper.getRandom().nextBytes(roundMessageData);
+        tlsContext.getRandom().nextBytes(roundMessageData);
         HeartbeatMessage sentHbMessage = new HeartbeatMessage(tlsConfig);
-        HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(tlsContext, sentHbMessage);
+        HeartbeatMessagePreparator preparator = new HeartbeatMessagePreparator(tlsContext.getChooser(), sentHbMessage);
         preparator.prepare();
         byte[][] invalidPaddingTrain = createInvalidPaddingMessageTrain(config.getMessagesPerTrain(), roundMessageData,
                 sentHbMessage);
@@ -194,7 +197,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
             } else {
                 LOGGER.info("No data from the server was received. Train: {}", trainInfo);
             }
-            return transportHandler.getResponseTimeNanos();
+            return transportHandler.getLastMeasurement();
         } catch (SocketTimeoutException e) {
             LOGGER.info("Received timeout when waiting for heartbeat answer. Train: {}", trainInfo);
         } catch (Exception e) {
@@ -236,7 +239,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         }
 
         records.add(new Record());
-        action.getConfiguredMessages().add(heartbeatMessage);
+        action.getMessages().add(heartbeatMessage);
         train[n] = recordLayer.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records);
 
@@ -265,7 +268,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
         records.remove(0);
         records.add(new Record());
-        action.getConfiguredMessages().add(heartbeatMessage);
+        action.getMessages().add(heartbeatMessage);
         train[n] = (recordLayer.prepareRecords(heartbeatMessage.getCompleteResultingMessage().getValue(),
                 ProtocolMessageType.HEARTBEAT, records));
 
@@ -278,7 +281,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
         List<AbstractRecord> records = new ArrayList<>();
         records.add(new Record());
 
-        AlertPreparator preparator = new AlertPreparator(new TlsContext(tlsConfig), closeNotify);
+        AlertPreparator preparator = new AlertPreparator(tlsContext.getChooser(), closeNotify);
         preparator.prepare();
         try {
             transportHandler.sendData(recordLayer.prepareRecords(closeNotify.getCompleteResultingMessage().getValue(),
@@ -289,25 +292,32 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     }
 
     private void initExecuteAttack() {
-        tlsContext = new TlsContext(tlsConfig);
-        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(), tlsContext);
+
+        State state = new State(tlsConfig);
+        tlsContext = state.getTlsContext();
+        workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getWorkflowExecutorType(), state);
+        tlsContext.getConfig().setWorkflowExecutorShouldOpen(false);
+        transportHandler = new TimingClientUdpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
+                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
+        tlsContext.setTransportHandler(transportHandler);
+
         recordLayer = tlsContext.getRecordLayer();
-        trace = tlsContext.getWorkflowTrace();
-        actionList = trace.getTLSActions();
+        trace = state.getWorkflowTrace();
+        actionList = trace.getTlsActions();
         modifiedPaddingArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 1 }, 0));
         modifiedMacArray.setModification(ByteArrayModificationFactory.xor(new byte[] { 0x50, (byte) 0xFF, 0x1A, 0x7C },
                 0));
     }
 
     private void flushTransportHandler() throws IOException {
-        transportHandler.setTlsTimeout(50);
+        transportHandler.setTimeout(50);
         try {
             while (true) {
                 transportHandler.fetchData();
             }
         } catch (SocketTimeoutException e) {
         } finally {
-            transportHandler.setTlsTimeout(tlsConfig.getTlsTimeout());
+            transportHandler.setTimeout(tlsConfig.getConnectionEnd().getTimeout());
         }
     }
 

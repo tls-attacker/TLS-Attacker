@@ -11,10 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ECPointFormatExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.List;
 
 /**
  *
@@ -24,8 +25,9 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
 
     private final ECPointFormatExtensionMessage msg;
 
-    public ECPointFormatExtensionPreparator(TlsContext context, ECPointFormatExtensionMessage message) {
-        super(context, message);
+    public ECPointFormatExtensionPreparator(Chooser chooser, ECPointFormatExtensionMessage message,
+            ECPointFormatExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.msg = message;
     }
 
@@ -43,7 +45,13 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
 
     private byte[] createPointFormatsByteArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (ECPointFormat format : context.getConfig().getPointFormats()) {
+        List<ECPointFormat> pointFormatList;
+        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            pointFormatList = chooser.getClientSupportedPointFormats();
+        } else {
+            pointFormatList = chooser.getServerSupportedPointFormats();
+        }
+        for (ECPointFormat format : pointFormatList) {
             stream.write(format.getValue());
         }
         return stream.toByteArray();

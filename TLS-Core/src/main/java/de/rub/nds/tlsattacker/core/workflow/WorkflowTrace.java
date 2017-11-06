@@ -9,32 +9,32 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.modifiablevariable.ModifiableVariable;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerCertificateAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
+import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.Serializable;
-import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -43,12 +43,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A wrapper class over a list of protocol configuredMessages maintained in the
- * TLS context.
+ * A wrapper class over a list of protocol expectedMessages.
  *
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
@@ -57,6 +57,15 @@ import org.apache.logging.log4j.Logger;
 public class WorkflowTrace implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowTrace.class);
+
+    @XmlTransient
+    Config config;
+
+    @XmlElements(value = { @XmlElement(type = ConnectionEnd.class, name = "ConnectionEnd"),
+            @XmlElement(type = ServerConnectionEnd.class, name = "ServerConnectionEnd"),
+            @XmlElement(type = ClientConnectionEnd.class, name = "ClientConnectionEnd") })
+    private List<ConnectionEnd> connectionEnds;
+
     /**
      * Workflow
      */
@@ -66,7 +75,6 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
-            @XmlElement(type = ChangeClientCertificateAction.class, name = "ChangeClientCertAction"),
             @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
             @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
             @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
@@ -74,77 +82,25 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
             @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
             @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
-            @XmlElement(type = ChangeServerCertificateAction.class, name = "ChangeServerCertAction"),
             @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
+            @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
             @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
     private List<TLSAction> tlsActions;
 
     private String name = null;
     private String description = null;
 
-    /**
-     * Initializes the workflow trace with an empty list of protocol
-     * configuredMessages
-     */
     public WorkflowTrace() {
         this.tlsActions = new LinkedList<>();
     }
 
-    /**
-     * Swaps Server Messages with ArbitaryMessages
-     */
-    public void makeGeneric() {
-        for (ReceiveAction action : getReceiveActions()) {
-            action.getConfiguredMessages().clear();
-            action.getConfiguredMessages().add(new ArbitraryMessage());
-        }
-    }
-
-    /**
-     * Removes runtime values for more compact storage. This keeps only the
-     * relevant information to reexecute a WorkflowTrace
-     */
-    public void strip() {
-        this.reset();
-        List<MessageAction> messageActions = getMessageActions();
-        List<ModifiableVariableHolder> holders = new LinkedList<>();
-        for (MessageAction action : messageActions) {
-            for (ProtocolMessage message : action.getActualMessages()) {
-                holders.addAll(message.getAllModifiableVariableHolders());
-            }
-            for (ProtocolMessage message : action.getConfiguredMessages()) {
-                holders.addAll(message.getAllModifiableVariableHolders());
-            }
-        }
-
-        for (ModifiableVariableHolder holder : holders) {
-            List<Field> fields = holder.getAllModifiableVariableFields();
-            for (Field f : fields) {
-                f.setAccessible(true);
-
-                ModifiableVariable mv = null;
-                try {
-                    mv = (ModifiableVariable) f.get(holder);
-                } catch (IllegalArgumentException | IllegalAccessException ex) {
-                    LOGGER.warn("Could not retrieve ModifiableVariables");
-                }
-                if (mv != null) {
-                    if (mv.getModification() != null) {
-                        mv.setOriginalValue(null);
-                    } else {
-                        try {
-                            f.set(holder, null);
-                        } catch (IllegalArgumentException | IllegalAccessException ex) {
-                            LOGGER.warn("Could not strip ModifiableVariable without Modification");
-                        }
-                    }
-                }
-            }
-        }
+    public WorkflowTrace(Config config) {
+        this.tlsActions = new LinkedList<>();
+        this.config = config;
     }
 
     public void reset() {
-        for (TLSAction action : getTLSActions()) {
+        for (TLSAction action : getTlsActions()) {
             action.reset();
         }
     }
@@ -157,24 +113,79 @@ public class WorkflowTrace implements Serializable {
         this.description = description;
     }
 
-    public boolean add(TLSAction action) {
-        return tlsActions.add(action);
+    public void addTlsAction(TLSAction action) {
+        assertValidAlias(action.getContextAlias());
+        tlsActions.add(action);
     }
 
-    public void add(int position, TLSAction action) {
+    public void addTlsActions(List<TLSAction> actions) {
+        for (TLSAction action : actions) {
+            addTlsAction(action);
+        }
+    }
+
+    public void addTlsActions(TLSAction... actions) {
+        addTlsActions(Arrays.asList(actions));
+    }
+
+    public void addTlsAction(int position, TLSAction action) {
+        assertValidAlias(action.getContextAlias());
         tlsActions.add(position, action);
     }
 
-    public TLSAction remove(int index) {
+    public TLSAction removeTlsAction(int index) {
         return tlsActions.remove(index);
     }
 
-    public List<TLSAction> getTLSActions() {
+    public List<TLSAction> getTlsActions() {
         return tlsActions;
     }
 
-    public void setTLSActions(List<TLSAction> tlsActions) {
+    public void setTlsActions(List<TLSAction> tlsActions) {
         this.tlsActions = tlsActions;
+    }
+
+    public void setTlsActions(TLSAction... tlsActions) {
+        this.tlsActions = Arrays.asList(tlsActions);
+    }
+
+    public boolean addConnectionEnd(ConnectionEnd con) {
+        if (connectionEnds == null) {
+            connectionEnds = new ArrayList<>();
+        }
+        return connectionEnds.add(con);
+    }
+
+    public void addConnectionEnd(int position, ConnectionEnd con) {
+        connectionEnds.add(position, con);
+    }
+
+    public ConnectionEnd removeConnectionEnd(int index) {
+        return connectionEnds.remove(index);
+    }
+
+    public List<ConnectionEnd> getConnectionEnds() {
+        if (connectionEnds == null) {
+            if ((config != null) && (config.getConnectionEnds() != null)) {
+                return config.getConnectionEnds();
+            }
+            throw new ConfigurationException("This workflow trace does not know about any " + "connection end(s).");
+        }
+        return connectionEnds;
+    }
+
+    public void setConnectionEnds(List<ConnectionEnd> conEnds) {
+        this.connectionEnds = conEnds;
+    }
+
+    public void setConnectionEnds(ConnectionEnd... conEnds) {
+        this.connectionEnds = Arrays.asList(conEnds);
+    }
+
+    public void clearConnectionEnds() {
+        if (connectionEnds != null) {
+            connectionEnds.clear();
+        }
     }
 
     public List<MessageAction> getMessageActions() {
@@ -187,189 +198,24 @@ public class WorkflowTrace implements Serializable {
         return messageActions;
     }
 
-    public List<ReceiveAction> getReceiveActions() {
-        List<ReceiveAction> receiveActions = new LinkedList<>();
+    public List<ReceivingAction> getReceivingActions() {
+        List<ReceivingAction> receiveActions = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                receiveActions.add((ReceiveAction) action);
+            if (action instanceof ReceivingAction) {
+                receiveActions.add((ReceivingAction) action);
             }
         }
         return receiveActions;
     }
 
-    public List<SendAction> getSendActions() {
-        List<SendAction> sendActions = new LinkedList<>();
+    public List<SendingAction> getSendingActions() {
+        List<SendingAction> sendActions = new LinkedList<>();
         for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                sendActions.add((SendAction) action);
+            if (action instanceof SendingAction) {
+                sendActions.add((SendingAction) action);
             }
         }
         return sendActions;
-    }
-
-    private List<ProtocolMessage> filterMessageList(List<ProtocolMessage> messages, ProtocolMessageType type) {
-        List<ProtocolMessage> returnedMessages = new LinkedList<>();
-        for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage.getProtocolMessageType() == type) {
-                returnedMessages.add(protocolMessage);
-            }
-        }
-        return returnedMessages;
-    }
-
-    private List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {
-        List<HandshakeMessage> returnedMessages = new LinkedList<>();
-        for (ProtocolMessage protocolMessage : messages) {
-            if (protocolMessage.isHandshakeMessage()) {
-                returnedMessages.add((HandshakeMessage) protocolMessage);
-            }
-        }
-        return returnedMessages;
-    }
-
-    private List<HandshakeMessage> filterMessageList(List<HandshakeMessage> messages, HandshakeMessageType type) {
-        List<HandshakeMessage> returnedMessages = new LinkedList<>();
-        for (HandshakeMessage handshakeMessage : messages) {
-            if (handshakeMessage.getHandshakeMessageType() == type) {
-                returnedMessages.add(handshakeMessage);
-            }
-        }
-        return returnedMessages;
-    }
-
-    public ProtocolMessage getFirstConfiguredSendMessageOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllConfiguredSendMessages(), type).get(0);
-    }
-
-    public HandshakeMessage getFirstConfiguredSendMessageOfType(HandshakeMessageType type) {
-        List<HandshakeMessage> list = filterMessageList(
-                filterHandshakeMessagesFromList(getAllConfiguredSendMessages()), type);
-        if (list.size() > 0) {
-            return list.get(0);
-        }
-        return null;
-    }
-
-    public ProtocolMessage getFirstActuallySendMessageOfType(ProtocolMessageType type) {
-        List<ProtocolMessage> list = filterMessageList(getAllActuallySentMessages(), type);
-        if (list.size() > 0) {
-            return list.get(0);
-        }
-        return null;
-    }
-
-    public HandshakeMessage getFirstActuallySendMessageOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllActuallySentMessages()), type).get(0);
-    }
-
-    public List<ProtocolMessage> getActualReceivedProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllActuallyReceivedMessages(), type);
-    }
-
-    public List<HandshakeMessage> getActuallyRecievedHandshakeMessagesOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllActuallyReceivedMessages()), type);
-    }
-
-    public List<ProtocolMessage> getActuallyRecievedProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllActuallyReceivedMessages(), type);
-    }
-
-    public List<HandshakeMessage> getActuallySentHandshakeMessagesOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllActuallySentMessages()), type);
-    }
-
-    public List<ProtocolMessage> getActuallySentProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllActuallySentMessages(), type);
-    }
-
-    public List<HandshakeMessage> getConfiguredRecievedHandshakeMessagesOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllConfiguredReceivingMessages()), type);
-    }
-
-    public List<ProtocolMessage> getConfiguredRecievedProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllConfiguredReceivingMessages(), type);
-    }
-
-    public List<HandshakeMessage> getConfiguredSentHandshakeMessagesOfType(HandshakeMessageType type) {
-        return filterMessageList(filterHandshakeMessagesFromList(getAllConfiguredSendMessages()), type);
-    }
-
-    public List<ProtocolMessage> getConfiguredSendProtocolMessagesOfType(ProtocolMessageType type) {
-        return filterMessageList(getAllConfiguredSendMessages(), type);
-    }
-
-    public List<ProtocolMessage> getAllConfiguredMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action.isMessageAction()) {
-                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-                    messages.add(pm);
-                }
-            }
-        }
-        return messages;
-    }
-
-    public List<ProtocolMessage> getAllActualMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action instanceof MessageAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
-                    messages.add(pm);
-                }
-            }
-        }
-        return messages;
-    }
-
-    public List<ProtocolMessage> getAllConfiguredReceivingMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-                    messages.add(pm);
-                }
-            }
-        }
-        return messages;
-    }
-
-    public List<ProtocolMessage> getAllActuallyReceivedMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
-
-                    messages.add(pm);
-
-                }
-            }
-        }
-        return messages;
-    }
-
-    public List<ProtocolMessage> getAllConfiguredSendMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getConfiguredMessages()) {
-                    messages.add(pm);
-                }
-            }
-        }
-        return messages;
-    }
-
-    public List<ProtocolMessage> getAllActuallySentMessages() {
-        List<ProtocolMessage> messages = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                for (ProtocolMessage pm : ((MessageAction) action).getActualMessages()) {
-                    messages.add(pm);
-                }
-            }
-        }
-        return messages;
     }
 
     public TLSAction getLastAction() {
@@ -386,99 +232,10 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
-    public ProtocolMessage getLastConfiguredReceiveMesssage() {
-        List<ProtocolMessage> messages = getAllConfiguredReceivingMessages();
-        if (messages.size() > 0) {
-            return messages.get(0);
-        }
-        return null;
-    }
-
-    public ProtocolMessage getLastConfiguredSendMesssage() {
-        List<ProtocolMessage> clientMessages = getAllConfiguredSendMessages();
-        int size = clientMessages.size();
-        return clientMessages.get(size - 1);
-    }
-
-    public boolean containsConfiguredReceivedProtocolMessage(ProtocolMessageType type) {
-        return !getConfiguredRecievedProtocolMessagesOfType(type).isEmpty();
-    }
-
-    public boolean containsConfiguredSendProtocolMessage(ProtocolMessageType type) {
-        return !getConfiguredSendProtocolMessagesOfType(type).isEmpty();
-    }
-
-    public boolean actuallyReceivedTypeBeforeType(ProtocolMessageType before, ProtocolMessageType after) {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                ReceiveAction receiveAction = (ReceiveAction) action;
-                for (ProtocolMessage message : receiveAction.getActualMessages()) {
-                    if (message.getProtocolMessageType() == before) {
-                        return true;
-                    }
-                    if (message.getProtocolMessageType() == after) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean actuallyReceivedTypeBeforeType(ProtocolMessageType before, HandshakeMessageType after) {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof ReceiveAction) {
-                ReceiveAction receiveAction = (ReceiveAction) action;
-                for (ProtocolMessage message : receiveAction.getActualMessages()) {
-                    if (message.getProtocolMessageType() == before) {
-                        return true;
-                    }
-                    if (message.isHandshakeMessage()) {
-                        HandshakeMessage handshakeMessage = (HandshakeMessage) message;
-                        if (handshakeMessage.getHandshakeMessageType() == after) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean configuredLooksLikeActual() {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof MessageAction) {
-                MessageAction messageAction = (MessageAction) action;
-                if (!messageAction.configuredLooksLikeActual()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public SendAction getFirstConfiguredSendActionWithType(ProtocolMessageType type) {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                SendAction sendAction = (SendAction) action;
-                for (ProtocolMessage message : sendAction.getConfiguredMessages()) {
-                    if (message.getProtocolMessageType() == type) {
-                        return sendAction;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public SendAction getFirstConfiguredSendActionWithType(HandshakeMessageType type) {
-        for (TLSAction action : tlsActions) {
-            if (action instanceof SendAction) {
-                SendAction sendAction = (SendAction) action;
-                List<HandshakeMessage> messages = filterHandshakeMessagesFromList(sendAction.getConfiguredMessages());
-                if (!filterMessageList(messages, type).isEmpty()) {
-                    return sendAction;
-                }
+    public SendingAction getLastSendingAction() {
+        for (int i = tlsActions.size() - 1; i > 0; i--) {
+            if (tlsActions.get(i) instanceof SendingAction) {
+                return (SendAction) (tlsActions.get(i));
             }
         }
         return null;
@@ -531,4 +288,36 @@ public class WorkflowTrace implements Serializable {
         }
         return Objects.equals(this.tlsActions, other.tlsActions);
     }
+
+    public boolean executedAsPlanned() {
+        for (TLSAction action : tlsActions) {
+            if (!action.executedAsPlanned()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check if the given alias matches one of our connection ends.
+     */
+    private void assertValidAlias(String alias) {
+        StringBuilder errMsg = new StringBuilder("known aliases: ");
+        List<ConnectionEnd> conEnds = getConnectionEnds();
+        if ((conEnds != null) && (!conEnds.isEmpty())) {
+            for (ConnectionEnd conEnd : conEnds) {
+                if (conEnd.getAlias().equals(alias)) {
+                    return;
+                }
+                errMsg.append(conEnd.getAlias()).append(' ');
+            }
+        }
+        errMsg.insert(0, "Action alias '" + alias + "' refers to an unknown connection end - ");
+        throw new ConfigurationException(errMsg.toString());
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
 }

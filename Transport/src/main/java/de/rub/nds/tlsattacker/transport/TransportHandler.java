@@ -8,7 +8,10 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,55 +20,66 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class TransportHandler {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Transport");
+    protected static final Logger LOGGER = LogManager.getLogger(TransportHandler.class.getName());
 
-    protected int socketTimeout;
+    protected long timeout;
 
-    protected long lastSystemNano;
+    protected OutputStream outStream;
 
-    protected long lastMeasurement;
+    protected InputStream inStream;
 
-    protected boolean measuringTiming;
+    private boolean initialized = false;
 
-    protected ConnectionEndType end;
+    private final ConnectionEndType type;
 
-    protected String hostname;
-
-    protected int port;
-
-    public TransportHandler(String hostname, int port, ConnectionEndType end, int socketTimeout) {
-        this.end = end;
-        this.socketTimeout = socketTimeout;
-        this.hostname = hostname;
-        this.port = port;
+    public TransportHandler(long timeout, ConnectionEndType type) {
+        this.timeout = timeout;
+        this.type = type;
     }
 
-    public abstract void closeConnection();
+    public abstract void closeConnection() throws IOException;
 
-    public abstract byte[] fetchData() throws IOException;
+    public abstract void closeClientConnection() throws IOException;
+
+    public byte[] fetchData() throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        long minTimeMillies = System.currentTimeMillis() + timeout;
+        while ((System.currentTimeMillis() < minTimeMillies) && (stream.toByteArray().length == 0)) {
+            while (inStream.available() != 0) {
+                int read = inStream.read();
+                stream.write(read);
+            }
+        }
+        return stream.toByteArray();
+    }
+
+    public void sendData(byte[] data) throws IOException {
+        if (!initialized) {
+            throw new IOException("Transporthandler is not initalized!");
+        }
+        outStream.write(data);
+        outStream.flush();
+    }
+
+    protected final void setStreams(InputStream inStream, OutputStream outStream) {
+        this.outStream = outStream;
+        this.inStream = inStream;
+        initialized = true;
+    }
 
     public abstract void initialize() throws IOException;
 
-    public abstract void sendData(byte[] data) throws IOException;
-
-    public String getHostname() {
-        return hostname;
+    public boolean isInitialized() {
+        return initialized;
     }
 
-    public int getPort() {
-        return port;
+    public abstract boolean isClosed() throws IOException;
+
+    public long getTimeout() {
+        return timeout;
     }
 
-    public void measureTiming(boolean b) {
-        measuringTiming = b;
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
-
-    public long getLastMeasurement() {
-        return lastMeasurement;
-    }
-
-    public boolean isMeasuringTiming() {
-        return measuringTiming;
-    }
-
 }

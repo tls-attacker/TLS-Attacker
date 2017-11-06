@@ -25,4 +25,8 @@
         <netbeans.hint.jdkPlatform>JDK_1.8_Oracle</netbeans.hint.jdkPlatform>
         <netbeans.compile.on.save>all</netbeans.compile.on.save>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>config</word>
+        <word>workflow</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>

@@ -15,7 +15,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.DHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.DHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -82,6 +83,7 @@ public class DHClientKeyExchangeHandlerTest {
                                 .hexStringToByteArray("c8c9c788adbd9dc72b5dd0635f9e2576e09c87b67e045c026ffa3281069601fd594c07e445947b545a746fcbc094e12427e0286be2199300925a81be02bf5467"));
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
+        context.setRecordLayer(new TlsRecordLayer(context));
         handler.adjustTLSContext(message);
         assertArrayEquals(
                 ArrayConverter

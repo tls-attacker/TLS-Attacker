@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,33 +23,65 @@ import java.util.List;
  */
 public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
-    public DefaultWorkflowExecutor(TlsContext context) {
-        super(ExecutorType.TLS, context);
+    public DefaultWorkflowExecutor(State state) {
+        super(WorkflowExecutorType.DEFAULT, state);
     }
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-        if (context.getConfig().isWorkflowExecutorShouldOpen()) {
-            context.setTransportHandler(createTransportHandler());
+
+        if (config.isWorkflowExecutorShouldOpen()) {
+            for (TlsContext ctx : state.getTlsContexts().values()) {
+                ctx.initTransportHandler();
+            }
         }
-        context.setRecordLayer(RecordLayerFactory.getRecordLayer(context.getConfig().getRecordLayerType(), context));
-        context.getWorkflowTrace().reset();
-        ActionExecutor actionExecutor = ActionExecutorFactory.getActionExecutor(context.getConfig().getExecutorType(),
-                context);
-        List<TLSAction> tlsActions = context.getWorkflowTrace().getTLSActions();
+
+        for (TlsContext ctx : state.getTlsContexts().values()) {
+            ctx.initRecordLayer();
+        }
+
+        state.getWorkflowTrace().reset();
+
+        List<TLSAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TLSAction action : tlsActions) {
             try {
-                action.execute(context, actionExecutor);
-            } catch (IOException ex) {
+                if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
+                    action.execute(state);
+                } else {
+                    LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                    break;
+                }
+            } catch (IOException | PreparationException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
         }
-        if (context.getConfig().isWorkflowExecutorShouldClose()) {
-            context.getTransportHandler().closeConnection();
+
+        if (state.getConfig().isWorkflowExecutorShouldClose()) {
+            for (TlsContext ctx : state.getTlsContexts().values()) {
+                try {
+                    ctx.getTransportHandler().closeConnection();
+                } catch (IOException ex) {
+                    LOGGER.warn("Could not close connection for context " + ctx);
+                    LOGGER.debug(ex);
+                }
+            }
         }
-        if (context.getConfig().isStripWorkflowtracesBeforeSaving()) {
-            context.getWorkflowTrace().strip();
+
+        if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
+            state.getWorkflowTrace().reset();
         }
         storeTrace();
+    }
+
+    /**
+     * Check if a at least one TLS context received a fatal alert.
+     */
+    private boolean isReceivedFatalAlert() {
+        for (TlsContext ctx : state.getTlsContexts().values()) {
+            if (ctx.isReceivedFatalAlert()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

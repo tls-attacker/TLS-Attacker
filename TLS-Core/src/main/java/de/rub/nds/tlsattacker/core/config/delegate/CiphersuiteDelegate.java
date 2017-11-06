@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.CipherSuiteConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,9 +40,13 @@ public class CiphersuiteDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         if (cipherSuites != null) {
-            config.setSupportedCiphersuites(cipherSuites);
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+            config.setDefaultServerSupportedCiphersuites(cipherSuites);
+            if (cipherSuites.size() > 0) {
+                config.setDefaultSelectedCipherSuite(cipherSuites.get(0));
+            }
         }
     }
 

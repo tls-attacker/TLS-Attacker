@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,12 +34,12 @@ public class HeartbeatExtensionParserTest {
                                                                    // TLS11
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private byte[] heartbeatMode;
+    private final byte[] extension;
+    private final int start;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final byte[] heartbeatMode;
 
     public HeartbeatExtensionParserTest(byte[] extension, ExtensionType type, int extensionLength, byte[] heartbeatMode) {
         this.extension = extension;

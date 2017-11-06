@@ -8,13 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -200,6 +205,11 @@ public enum CipherSuite {
     TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256(0xC4),
     TLS_DH_anon_WITH_CAMELLIA_256_CBC_SHA256(0xC5),
     TLS_EMPTY_RENEGOTIATION_INFO_SCSV(0xFF),
+    TLS_AES_128_GCM_SHA256(0x1301),
+    TLS_AES_256_GCM_SHA384(0x1302),
+    TLS_CHACHA20_POLY1305_SHA256(0x1303),
+    TLS_AES_128_CCM_SHA256(0x1304),
+    TLS_AES_128_CCM_8_SHA256(0x1305),
     TLS_FALLBACK_SCSV(0x5600),
     TLS_ECDH_ECDSA_WITH_NULL_SHA(0xC001),
     TLS_ECDH_ECDSA_WITH_RC4_128_SHA(0xC002),
@@ -433,11 +443,11 @@ public enum CipherSuite {
         this.value = value;
     }
 
-    public static CipherSuite getRandom() {
+    public static CipherSuite getRandom(Random random) {
         CipherSuite c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (CipherSuite) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (CipherSuite) o[random.nextInt(o.length)];
         }
         return c;
     }
@@ -504,15 +514,6 @@ public enum CipherSuite {
     }
 
     /**
-     * Returns true in case the cipher suite is an AEAD cipher suite.
-     *
-     * @return
-     */
-    public boolean isAEAD() {
-        return (this.name().contains("_GCM") || this.name().contains("_CCM") || this.name().contains("_OCB"));
-    }
-
-    /**
      * Returns true in case the cipher suite is a CBC cipher suite.
      *
      * @return
@@ -521,8 +522,33 @@ public enum CipherSuite {
         return (this.name().contains("_CBC"));
     }
 
+    public boolean isUsingPadding() {
+        // todo this should be extended
+        return (this.name().contains("_CBC"));
+    }
+
+    public boolean isUsingMac() {
+        return (this.name().contains("_CBC") || this.name().contains("RC4"));
+    }
+
     public boolean isSCSV() {
         return (this.name().contains("SCSV"));
+    }
+
+    public boolean isGCM() {
+        return (this.name().contains("_GCM"));
+    }
+
+    public boolean isCCM() {
+        return (this.name().contains("_CCM"));
+    }
+
+    public boolean isOCB() {
+        return (this.name().contains("_OCB"));
+    }
+
+    public boolean usesSHA384() {
+        return this.name().endsWith("SHA384");
     }
 
     /**
@@ -535,11 +561,28 @@ public enum CipherSuite {
      * @return
      */
     public boolean isSupportedInProtocol(ProtocolVersion version) {
+        if (version == ProtocolVersion.SSL3) {
+            return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
+        }
         if (this.name().endsWith("256") || this.name().endsWith("384")) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;
     }
+
+    public static final Set<CipherSuite> SSL3_SUPPORTED_CIPHERSUITES = Collections.unmodifiableSet(new HashSet<>(Arrays
+            .asList(TLS_NULL_WITH_NULL_NULL, TLS_RSA_WITH_NULL_MD5, TLS_RSA_WITH_NULL_SHA,
+                    TLS_RSA_EXPORT_WITH_RC4_40_MD5, TLS_RSA_WITH_RC4_128_MD5, TLS_RSA_WITH_RC4_128_SHA,
+                    TLS_RSA_EXPORT_WITH_RC2_CBC_40_MD5, TLS_RSA_WITH_IDEA_CBC_SHA, TLS_RSA_EXPORT_WITH_DES40_CBC_SHA,
+                    TLS_RSA_WITH_DES_CBC_SHA, TLS_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_DSS_EXPORT_WITH_DES40_CBC_SHA,
+                    TLS_DH_DSS_WITH_DES_CBC_SHA, TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA,
+                    TLS_DH_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_RSA_WITH_DES_CBC_SHA,
+                    TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA,
+                    TLS_DHE_DSS_WITH_DES_CBC_SHA, TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA,
+                    TLS_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA, TLS_DHE_RSA_WITH_DES_CBC_SHA,
+                    TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA, TLS_DH_anon_EXPORT_WITH_RC4_40_MD5,
+                    TLS_DH_anon_WITH_RC4_128_MD5, TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA, TLS_DH_anon_WITH_DES_CBC_SHA,
+                    TLS_DH_anon_WITH_3DES_EDE_CBC_SHA)));
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();
@@ -590,6 +633,30 @@ public enum CipherSuite {
         list.add(TLS_RSA_WITH_RC4_128_SHA);
         list.add(TLS_ECDHE_RSA_WITH_RC4_128_SHA);
         list.add(TLS_DHE_DSS_WITH_RC4_128_SHA);
+        list.add(TLS_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DHE_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DH_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DH_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_DSS_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DHE_DSS_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DH_DSS_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_RSA_WITH_AES_128_CCM);
+        list.add(TLS_RSA_WITH_AES_256_CCM);
+        list.add(TLS_DHE_RSA_WITH_AES_128_CCM);
+        list.add(TLS_DHE_RSA_WITH_AES_256_CCM);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_128_CCM);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_256_CCM);
+
         return list;
     }
 
@@ -601,5 +668,14 @@ public enum CipherSuite {
             }
         }
         return notImplemented;
+    }
+
+    /**
+     * Returns true if the cipher suite a TLS 1.3 cipher suite
+     *
+     * @return
+     */
+    public boolean isTLS13() {
+        return this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00;
     }
 }

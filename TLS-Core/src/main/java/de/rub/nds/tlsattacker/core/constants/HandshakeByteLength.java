@@ -19,6 +19,11 @@ public class HandshakeByteLength {
     public static final int CERTIFICATE_LENGTH = 3;
 
     /**
+     * certificate request context length field
+     */
+    public static final int CERTIFICATE_REQUEST_CONTEXT_LENGTH = 1;
+
+    /**
      * version field length
      */
     public static final int VERSION = 2;
@@ -63,7 +68,7 @@ public class HandshakeByteLength {
     /**
      * random length
      */
-    public static final int RANDOM = 28;
+    public static final int RANDOM = 32;
 
     /**
      * length of the session id length field indicating the session id length
@@ -101,15 +106,15 @@ public class HandshakeByteLength {
     public static final int SIGNATURE_LENGTH = 2;
 
     /**
-     * DH p length
+     * DH modulus length
      */
 
-    public static final int DH_P_LENGTH = 2;
+    public static final int DH_MODULUS_LENGTH = 2;
     /**
-     * DH g length
+     * DH generator length
      */
 
-    public static final int DH_G_LENGTH = 2;
+    public static final int DH_GENERATOR_LENGTH = 2;
     /**
      * DH public key length
      */
@@ -179,6 +184,15 @@ public class HandshakeByteLength {
      * Fragment length
      */
     public static final int DTLS_FRAGMENT_LENGTH = 3;
+
+    /**
+     * Lenght of PSK_Identity
+     */
+    public static final int PSK_IDENTITY_LENGTH = 2;
+
+    public static final int PSK_LENGTH = 2;
+
+    public static final int PSK_ZERO = 0;
 
     private HandshakeByteLength() {
     }

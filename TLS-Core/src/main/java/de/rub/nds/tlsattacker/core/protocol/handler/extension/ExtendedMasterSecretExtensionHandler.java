@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -32,7 +32,7 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
 
     @Override
     public ExtendedMasterSecretExtensionPreparator getPreparator(ExtendedMasterSecretExtensionMessage message) {
-        return new ExtendedMasterSecretExtensionPreparator(context, message);
+        return new ExtendedMasterSecretExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
@@ -40,16 +40,11 @@ public class ExtendedMasterSecretExtensionHandler extends ExtensionHandler<Exten
         return new ExtendedMasterSecretExtensionSerializer(message);
     }
 
-    /**
-     * Adjusts the TlsContext.
-     *
-     * @param message
-     */
     @Override
-    public void adjustTLSContext(ExtendedMasterSecretExtensionMessage message) {
-        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER
-                || context.getConfig().isEnforceSettings()) {
-            context.setIsExtendedMasterSecretExtension(true);
+    public void adjustTLSExtensionContext(ExtendedMasterSecretExtensionMessage message) {
+        if (context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET)
+                && context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET)) {
+            context.setUseExtendedMasterSecret(true);
         }
     }
 

@@ -8,12 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
@@ -28,31 +28,35 @@ import org.bouncycastle.jce.provider.X509CertificateObject;
  */
 public class CertificateFetcher {
 
-    private static final Logger LOGGER = LogManager.getLogger("CertificateFetcher");
+    private static final Logger LOGGER = LogManager.getLogger(CertificateFetcher.class.getName());
 
-    public static PublicKey fetchServerPublicKey(TlsConfig config) {
+    public static PublicKey fetchServerPublicKey(Config config) {
         X509CertificateObject cert;
         try {
-            cert = new X509CertificateObject(fetchServerCertificate(config).getCertificateAt(0));
+            Certificate fetchedServerCertificate = fetchServerCertificate(config);
+            if (fetchedServerCertificate != null && fetchedServerCertificate.getLength() > 0) {
+                cert = new X509CertificateObject(fetchedServerCertificate.getCertificateAt(0));
+                return cert.getPublicKey();
+            }
         } catch (CertificateParsingException ex) {
             throw new WorkflowExecutionException("Could not get public key from server certificate", ex);
         }
-        return cert.getPublicKey();
+        return null;
     }
 
-    public static Certificate fetchServerCertificate(TlsConfig config) {
-        TlsContext context = new TlsContext(config);
+    public static Certificate fetchServerCertificate(Config config) {
+        State state = new State(config);
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
-        ExecutorType type = context.getConfig().getHighestProtocolVersion().isDTLS() ? ExecutorType.DTLS
-                : ExecutorType.TLS;
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(type, context);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                WorkflowExecutorType.DEFAULT, state);
+
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
             LOGGER.warn("Could not fetch ServerCertificate");
             LOGGER.debug(E);
         }
-        return context.getServerCertificate();
+        return state.getTlsContext().getServerCertificate();
     }
 
     private CertificateFetcher() {

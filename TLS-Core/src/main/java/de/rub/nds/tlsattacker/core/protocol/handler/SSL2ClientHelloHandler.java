@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -26,21 +26,21 @@ public class SSL2ClientHelloHandler extends ProtocolMessageHandler<SSL2ClientHel
 
     @Override
     public SSL2ClientHelloParser getParser(byte[] message, int pointer) {
-        return new SSL2ClientHelloParser(message, pointer, tlsContext.getSelectedProtocolVersion());
+        return new SSL2ClientHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
     public SSL2ClientHelloPreparator getPreparator(SSL2ClientHelloMessage message) {
-        return new SSL2ClientHelloPreparator(tlsContext, message);
+        return new SSL2ClientHelloPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public SSL2ClientHelloSerializer getSerializer(SSL2ClientHelloMessage message) {
-        return new SSL2ClientHelloSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new SSL2ClientHelloSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    protected void adjustTLSContext(SSL2ClientHelloMessage message) {
+    public void adjustTLSContext(SSL2ClientHelloMessage message) {
         // we do not adjust anything since we dont support the complete ssl2
         // handshake anyways
     }

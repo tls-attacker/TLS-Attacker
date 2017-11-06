@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -58,8 +58,8 @@ public class AlgorithmResolverTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetDigestUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+    public void testGetPRFUnsupportedProtocolVersionSSL3() {
+        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -68,8 +68,8 @@ public class AlgorithmResolverTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetPRFUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+    public void testGetDigestUnsupportedProtocolVersionSSL3() {
+        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
     /**
@@ -139,6 +139,7 @@ public class AlgorithmResolverTest {
                 .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
         assertTrue(AlgorithmResolver
                 .getKeyExchangeAlgorithm(CipherSuite.UNOFFICIAL_TLS_ECDH_anon_EXPORT_WITH_RC4_40_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
+        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_AES_128_GCM_SHA256) == null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -307,7 +308,8 @@ public class AlgorithmResolverTest {
     public void getAllMacAlgorithms() {
         for (CipherSuite suite : CipherSuite.values()) {
             try {
-                AlgorithmResolver.getMacAlgorithm(suite);
+                AlgorithmResolver.getMacAlgorithm(ProtocolVersion.SSL3, suite);
+                AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, suite);
             } catch (IllegalArgumentException E) {
 
             }
@@ -316,16 +318,24 @@ public class AlgorithmResolverTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACUnknown() {
-        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACReno() {
-        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testUnresolvableMACFallback() {
-        AlgorithmResolver.getMacAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_FALLBACK_SCSV);
+    }
+
+    @Test
+    public void testGetHKDFAlgorithm() {
+        CipherSuite cipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
+        HKDFAlgorithm result = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
+        HKDFAlgorithm result_correct = HKDFAlgorithm.TLS_HKDF_SHA256;
+        assertTrue(result == result_correct);
     }
 }

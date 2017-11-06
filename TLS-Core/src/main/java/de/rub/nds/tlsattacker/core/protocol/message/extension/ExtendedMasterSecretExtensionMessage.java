@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtendedMasterSecretExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
  * This is the extended_master_secret message. There is no need for any data,
  * the presence of this extension is enough.
+ * 
+ * This extension is defined in RFC7627
  *
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
@@ -23,10 +23,4 @@ public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
     public ExtendedMasterSecretExtensionMessage() {
         super(ExtensionType.EXTENDED_MASTER_SECRET);
     }
-
-    @Override
-    public ExtendedMasterSecretExtensionHandler getHandler(TlsContext context) {
-        return new ExtendedMasterSecretExtensionHandler(context);
-    }
-
 }

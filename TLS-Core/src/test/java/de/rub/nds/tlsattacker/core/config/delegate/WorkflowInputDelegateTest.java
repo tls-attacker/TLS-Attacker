@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import java.io.File;
@@ -74,7 +74,7 @@ public class WorkflowInputDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setWorkflowInput(null);
         args = new String[2];
         args[0] = "-workflow_input";
@@ -85,12 +85,12 @@ public class WorkflowInputDelegateTest {
         assertTrue(config.getWorkflowInput() != null);
     }
 
-    // TODO add configurationException test
+    // TODO addTlsAction configurationException test
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

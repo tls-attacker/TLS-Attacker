@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -25,23 +26,28 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public ApplicationMessageParser getParser(byte[] message, int pointer) {
-        return new ApplicationMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ApplicationMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ApplicationMessagePreparator getPreparator(ApplicationMessage message) {
-        return new ApplicationMessagePreparator(tlsContext, message);
+        return new ApplicationMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ApplicationMessageSerializer getSerializer(ApplicationMessage message) {
-        return new ApplicationMessageSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ApplicationMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    protected void adjustTLSContext(ApplicationMessage message) {
-        // TLSContext does not change when sending or receiving
-        // ApplicationMessages
+    public void adjustTLSContext(ApplicationMessage message) {
+        tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
+        String readableAppData = ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
+            LOGGER.debug("Received Data:" + readableAppData);
+        } else {
+            LOGGER.debug("Send Data:" + readableAppData);
+        }
     }
 
 }

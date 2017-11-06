@@ -8,14 +8,54 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerCertificateTypeExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.UnknownExtensionMessage;
+import java.util.LinkedList;
+import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -49,16 +89,109 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean includeInDigest = null;
 
+    /**
+     * List of extensions
+     */
+    @XmlElementWrapper
+    @XmlElements(value = {
+            @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
+            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
+            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
+            @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
+            @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
+            @XmlElement(type = MaxFragmentLengthExtensionMessage.class, name = "MaxFragmentLengthExtension"),
+            @XmlElement(type = PaddingExtensionMessage.class, name = "PaddingExtension"),
+            @XmlElement(type = RenegotiationInfoExtensionMessage.class, name = "RenegotiationInfoExtension"),
+            @XmlElement(type = ServerNameIndicationExtensionMessage.class, name = "ServerNameIndicationExtension"),
+            @XmlElement(type = SessionTicketTLSExtensionMessage.class, name = "SessionTicketTLSExtension"),
+            @XmlElement(type = SignatureAndHashAlgorithmsExtensionMessage.class, name = "SignatureAndHashAlgorithmsExtension"),
+            @XmlElement(type = SignedCertificateTimestampExtensionMessage.class, name = "SignedCertificateTimestampExtension"),
+            @XmlElement(type = TokenBindingExtensionMessage.class, name = "TokenBindingExtension"),
+            @XmlElement(type = HRRKeyShareExtensionMessage.class, name = "HRRKeyShareExtension"),
+            @XmlElement(type = KeyShareExtensionMessage.class, name = "KeyShareExtension"),
+            @XmlElement(type = SupportedVersionsExtensionMessage.class, name = "SupportedVersions"),
+            @XmlElement(type = AlpnExtensionMessage.class, name = "ALPNExtension"),
+            @XmlElement(type = CertificateStatusRequestExtensionMessage.class, name = "CertificateStatusRequestExtension"),
+            @XmlElement(type = CertificateStatusRequestV2ExtensionMessage.class, name = "CertificateStatusRequestV2Extension"),
+            @XmlElement(type = CertificateTypeExtensionMessage.class, name = "CertificateTypeExtension"),
+            @XmlElement(type = ClientCertificateUrlExtensionMessage.class, name = "ClientCertificateUrlExtension"),
+            @XmlElement(type = ClientCertificateTypeExtensionMessage.class, name = "ClientCertificateTypeExtension"),
+            @XmlElement(type = ClientAuthzExtensionMessage.class, name = "ClientAuthorizationExtension"),
+            @XmlElement(type = EncryptThenMacExtensionMessage.class, name = "EncryptThenMacExtension"),
+            @XmlElement(type = ServerAuthzExtensionMessage.class, name = "ServerAuthorizationExtension"),
+            @XmlElement(type = ServerCertificateTypeExtensionMessage.class, name = "ServerCertificateTypeExtension"),
+            @XmlElement(type = SRPExtensionMessage.class, name = "SRPExtension"),
+            @XmlElement(type = SrtpExtensionMessage.class, name = "SRTPExtension"),
+            @XmlElement(type = TrustedCaIndicationExtensionMessage.class, name = "TrustedCaIndicationExtension"),
+            @XmlElement(type = TruncatedHmacExtensionMessage.class, name = "TruncatedHmacExtension"),
+            @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension") })
+    @HoldsModifiableVariable
+    private List<ExtensionMessage> extensions;
+
+    @ModifiableVariableProperty
+    private ModifiableByteArray extensionBytes;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableInteger extensionsLength;
+
     public HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
     }
 
-    public HandshakeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+    public HandshakeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super();
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
         this.handshakeMessageType = handshakeMessageType;
+    }
+
+    public final List<ExtensionMessage> getExtensions() {
+        return extensions;
+    }
+
+    public final void setExtensions(List<ExtensionMessage> extensions) {
+        this.extensions = extensions;
+    }
+
+    public final void addExtension(ExtensionMessage extension) {
+        if (this.extensions == null) {
+            extensions = new LinkedList<>();
+        }
+        this.extensions.add(extension);
+    }
+
+    public boolean containsExtension(ExtensionType extensionType) {
+        for (ExtensionMessage e : extensions) {
+            if (e.getExtensionTypeConstant() == extensionType) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setExtensionBytes(byte[] extensionBytes) {
+        this.extensionBytes = ModifiableVariableFactory.safelySetValue(this.extensionBytes, extensionBytes);
+    }
+
+    public ModifiableByteArray getExtensionBytes() {
+        return extensionBytes;
+    }
+
+    public void setExtensionBytes(ModifiableByteArray extensionBytes) {
+        this.extensionBytes = extensionBytes;
+    }
+
+    public ModifiableInteger getExtensionsLength() {
+        return extensionsLength;
+    }
+
+    public void setExtensionsLength(ModifiableInteger extensionsLength) {
+        this.extensionsLength = extensionsLength;
+    }
+
+    public void setExtensionsLength(int extensionsLength) {
+        this.extensionsLength = ModifiableVariableFactory.safelySetValue(this.extensionsLength, extensionsLength);
     }
 
     public ModifiableByte getType() {
@@ -139,8 +272,12 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\n  Type: ").append(type.getValue());
-        sb.append("\n  Length: ").append(length.getValue());
+        if (type != null && type.getValue() != null) {
+            sb.append("\n  Type: ").append(type.getValue());
+        }
+        if (length != null && length.getValue() != null) {
+            sb.append("\n  Length: ").append(length.getValue());
+        }
         if (messageSeq != null && messageSeq.getValue() != null) {
             sb.append("\n  message_seq: ").append(messageSeq.getValue());
         }
@@ -156,5 +293,16 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         return handshakeMessageType.getName();
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (getExtensions() != null) {
+            for (ExtensionMessage em : getExtensions()) {
+                holders.add(em);
+            }
+        }
+        return holders;
     }
 }

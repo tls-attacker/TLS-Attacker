@@ -10,14 +10,13 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
-import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
@@ -32,13 +31,13 @@ public class HeartbleedCommandConfig extends AttackConfig {
     private Integer payloadLength = 20000;
 
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     public HeartbleedCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -61,8 +60,13 @@ public class HeartbleedCommandConfig extends AttackConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
+    public boolean isExecuteAttack() {
+        return false;
+    }
+
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
         config.setAddHeartbeatExtension(true);
         config.setWorkflowTraceType(WorkflowTraceType.FULL);
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);

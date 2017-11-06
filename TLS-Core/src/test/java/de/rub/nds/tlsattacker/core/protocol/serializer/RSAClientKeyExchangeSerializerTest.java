@@ -8,15 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
+import static org.junit.Assert.assertArrayEquals;
+
+import java.util.Collection;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParserTest;
-import java.util.Collection;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 /**
  *
@@ -63,8 +66,8 @@ public class RSAClientKeyExchangeSerializerTest {
         msg.setCompleteResultingMessage(expectedPart);
         msg.setType(type.getValue());
         msg.setLength(length);
-        msg.setSerializedPublicKey(serializedKey);
-        msg.setSerializedPublicKeyLength(serializedKeyLength);
+        msg.setPublicKey(serializedKey);
+        msg.setPublicKeyLength(serializedKeyLength);
         RSAClientKeyExchangeSerializer serializer = new RSAClientKeyExchangeSerializer(msg, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }

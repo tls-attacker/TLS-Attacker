@@ -11,9 +11,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -23,27 +23,21 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private final HeartbeatMessage msg;
 
-    public HeartbeatMessagePreparator(TlsContext context, HeartbeatMessage message) {
-        super(context, message);
+    public HeartbeatMessagePreparator(Chooser chooser, HeartbeatMessage message) {
+        super(chooser, message);
         this.msg = message;
     }
 
     private byte[] generatePayload() {
-        byte[] payload = new byte[context.getConfig().getHeartbeatPayloadLength()];
-        RandomHelper.getRandom().nextBytes(payload);
+        byte[] payload = new byte[chooser.getConfig().getHeartbeatPayloadLength()];
+        chooser.getContext().getRandom().nextBytes(payload);
         return payload;
     }
 
     private byte[] generatePadding() {
-        int min = context.getConfig().getHeartbeatMinPaddingLength();
-        int max = context.getConfig().getHeartbeatMaxPaddingLength();
-        if (max < min) { // TODO perhaps check somewhere different
-            throw new ConfigurationException(
-                    "Heartbeat minimum padding Length is greater than Heartbeat maxmimum padding length");
-        }
-        int paddingLength = RandomHelper.getRandom().nextInt(max - min) + min;
+        int paddingLength = chooser.getConfig().getHeartbeatPaddingLength();
         byte[] padding = new byte[paddingLength];
-        RandomHelper.getRandom().nextBytes(padding);
+        chooser.getContext().getRandom().nextBytes(padding);
         return padding;
     }
 

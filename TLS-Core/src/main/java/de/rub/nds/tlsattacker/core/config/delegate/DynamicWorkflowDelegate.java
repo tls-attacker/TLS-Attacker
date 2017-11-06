@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 /**
  *
@@ -24,18 +24,16 @@ public class DynamicWorkflowDelegate extends Delegate {
     }
 
     public Boolean isDynamicWorkflow() {
-        return dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     public void setDynamicWorkflow(boolean dynamicWorkflow) {
-        this.dynamicWorkflow = dynamicWorkflow;
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
-        if (dynamicWorkflow != null) {
-            config.setDynamicWorkflow(dynamicWorkflow);
-        }
+    public void applyDelegate(Config config) {
+        throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
 }

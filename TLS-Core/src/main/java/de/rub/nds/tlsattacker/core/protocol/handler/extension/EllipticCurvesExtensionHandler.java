@@ -15,14 +15,18 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExte
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * This handler processes the EllipticCurves extensions, as defined in
+ * https://tools.ietf.org/search/rfc4492#section-5.1.1
+ * 
+ * But in TLS 1.3 this extensions renamed to SupportedGroups. See:
+ * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6
+ * 
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
@@ -32,7 +36,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     }
 
     @Override
-    public void adjustTLSContext(EllipticCurvesExtensionMessage message) {
+    public void adjustTLSExtensionContext(EllipticCurvesExtensionMessage message) {
         byte[] curveBytes = message.getSupportedCurves().getValue();
         if (curveBytes.length % NamedCurve.LENGTH != 0) {
             throw new AdjustmentException("Could not create resonable NamedCurves from CurveBytes");
@@ -58,12 +62,11 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     @Override
     public EllipticCurvesExtensionPreparator getPreparator(EllipticCurvesExtensionMessage message) {
-        return new EllipticCurvesExtensionPreparator(context, message);
+        return new EllipticCurvesExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
     public EllipticCurvesExtensionSerializer getSerializer(EllipticCurvesExtensionMessage message) {
         return new EllipticCurvesExtensionSerializer(message);
     }
-
 }

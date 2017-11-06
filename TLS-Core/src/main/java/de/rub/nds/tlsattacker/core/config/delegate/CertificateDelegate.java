@@ -9,18 +9,25 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.util.CertificateUtils;
+import de.rub.nds.tlsattacker.core.util.CurveNameRetriever;
 import de.rub.nds.tlsattacker.core.util.JKSLoader;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.bouncycastle.crypto.params.DHPublicKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
+import org.bouncycastle.crypto.tls.Certificate;
 
 /**
  *
@@ -65,26 +72,67 @@ public class CertificateDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
-        if (password != null) {
-            config.setPassword(password);
-        }
-        if (alias != null) {
-            config.setAlias(alias);
-        }
+    public void applyDelegate(Config config) {
         try {
-            if (keystore != null) {
-                config.setKeyStore(KeystoreHandler.loadKeyStore(keystore, config.getPassword()));
-                config.setOurCertificate(JKSLoader.loadTLSCertificate(config.getKeyStore(), alias));
+            if (keystore != null && password != null && alias != null) {
+                KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
+                Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
+                PrivateKey key = null;
                 try {
-                    config.setPrivateKey((PrivateKey) config.getKeyStore().getKey(config.getAlias(),
-                            config.getAlias().toCharArray()));
+                    key = (PrivateKey) store.getKey(alias, password.toCharArray());
                 } catch (UnrecoverableKeyException ex) {
-                    LOGGER.warn("Could not load private Key from Keystore", ex);
+                    throw new ConfigurationException("Could not load private Key from Keystore", ex);
+                }
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                cert.encode(stream);
+                try {
+                    if (CertificateUtils.hasDHParameters(cert)) {
+                        DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
+                        applyDHParameters(config, dhParameters);
+                        config.setDefaultDsaCertificate(stream.toByteArray()); // TODO
+                        LOGGER.warn("DH/DSA certificates not fully supported yet");
+                    } else if (CertificateUtils.hasECParameters(cert)) {
+                        applyECParameters(config, CertificateUtils.extractECPublicKeyParameters(cert), CertificateUtils
+                                .ecPrivateKeyFromPrivateKey(key).getS());
+                        config.setDefaultEcCertificate(stream.toByteArray());
+                    } else if (CertificateUtils.hasRSAParameters(cert)) {
+                        applyRSAParameters(config, CertificateUtils.extractRSAModulus(cert),
+                                CertificateUtils.extractRSAPublicKey(cert), CertificateUtils
+                                        .rsaPrivateKeyFromPrivateKey(key).getPrivateExponent());
+                        config.setDefaultRsaCertificate(stream.toByteArray());
+                    }
+                } catch (IOException E) {
+                    throw new ConfigurationException("Could not load private Key from Keystore", E);
                 }
             }
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
-            throw new ConfigurationException("Could not load Keystore at: " + keystore, ex);
+            throw new ConfigurationException("Could not load private Key from Keystore", ex);
         }
+    }
+
+    private void applyDHParameters(Config config, DHPublicKeyParameters dhParameters) {
+        config.setDefaultDhModulus(dhParameters.getParameters().getP());
+        config.setDefaultDhGenerator(dhParameters.getParameters().getG());
+        config.setDefaultClientDhPublicKey(dhParameters.getY());
+        config.setDefaultServerDhPublicKey(dhParameters.getY());
+    }
+
+    private void applyECParameters(Config config, ECPublicKeyParameters ecParameters, BigInteger privateKey) {
+        config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
+                .getCurve()));
+        CustomECPoint publicKey = new CustomECPoint(ecParameters.getQ().getRawXCoord().toBigInteger(), ecParameters
+                .getQ().getRawYCoord().toBigInteger());
+        config.setDefaultClientEcPublicKey(publicKey);
+        config.setDefaultServerEcPublicKey(publicKey);
+        config.setDefaultClientEcPrivateKey(privateKey);
+        config.setDefaultServerEcPrivateKey(privateKey);
+    }
+
+    private void applyRSAParameters(Config config, BigInteger modulus, BigInteger publicKey, BigInteger privateKey) {
+        config.setDefaultRSAModulus(modulus);
+        config.setDefaultClientRSAPublicKey(publicKey);
+        config.setDefaultServerRSAPublicKey(publicKey);
+        config.setDefaultClientRSAPrivateKey(privateKey);
+        config.setDefaultServerRSAPrivateKey(privateKey);
     }
 }

@@ -11,17 +11,18 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class ChangePreMasterSecretAction extends TLSAction {
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
@@ -48,7 +49,9 @@ public class ChangePreMasterSecretAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
@@ -91,4 +94,8 @@ public class ChangePreMasterSecretAction extends TLSAction {
         return Arrays.equals(this.oldValue, other.oldValue);
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
 }

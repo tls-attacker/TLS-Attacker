@@ -8,15 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 
 /**
  *
@@ -25,15 +23,10 @@ import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     /**
-     * hash algorithm
+     * signature and hash algorithm
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte hashAlgorithm;
-    /**
-     * signature algorithm
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte signatureAlgorithm;
+    private ModifiableByteArray signatureAndHashAlgorithm;
     /**
      * signature length
      */
@@ -49,18 +42,18 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
      * Length of the serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger serializedPublicKeyLength;
+    private ModifiableInteger publicKeyLength;
     /**
      * serialized public key
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray serializedPublicKey;
+    private ModifiableByteArray publicKey;
 
     public ServerKeyExchangeMessage() {
         super(HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
-    public ServerKeyExchangeMessage(TlsConfig tlsConfig, HandshakeMessageType handshakeMessageType) {
+    public ServerKeyExchangeMessage(Config tlsConfig, HandshakeMessageType handshakeMessageType) {
         super(tlsConfig, handshakeMessageType);
     }
 
@@ -68,28 +61,17 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
 
     public abstract void prepareComputations();
 
-    public ModifiableVariable<Byte> getHashAlgorithm() {
-        return hashAlgorithm;
+    public ModifiableByteArray getSignatureAndHashAlgorithm() {
+        return signatureAndHashAlgorithm;
     }
 
-    public void setHashAlgorithm(ModifiableByte hashAlgorithm) {
-        this.hashAlgorithm = hashAlgorithm;
+    public void setSignatureAndHashAlgorithm(ModifiableByteArray signatureAndHashAlgorithm) {
+        this.signatureAndHashAlgorithm = signatureAndHashAlgorithm;
     }
 
-    public void setHashAlgorithm(byte algorithm) {
-        this.hashAlgorithm = ModifiableVariableFactory.safelySetValue(this.hashAlgorithm, algorithm);
-    }
-
-    public ModifiableVariable<Byte> getSignatureAlgorithm() {
-        return signatureAlgorithm;
-    }
-
-    public void setSignatureAlgorithm(ModifiableByte signatureAlgorithm) {
-        this.signatureAlgorithm = signatureAlgorithm;
-    }
-
-    public void setSignatureAlgorithm(byte algorithm) {
-        this.signatureAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureAlgorithm, algorithm);
+    public void setSignatureAndHashAlgorithm(byte[] signatureAndHashAlgorithm) {
+        this.signatureAndHashAlgorithm = ModifiableVariableFactory.safelySetValue(this.signatureAndHashAlgorithm,
+                signatureAndHashAlgorithm);
     }
 
     public ModifiableInteger getSignatureLength() {
@@ -116,29 +98,27 @@ public abstract class ServerKeyExchangeMessage extends HandshakeMessage {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 
-    public ModifiableInteger getSerializedPublicKeyLength() {
-        return serializedPublicKeyLength;
+    public ModifiableInteger getPublicKeyLength() {
+        return publicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(ModifiableInteger serializedPublicKeyLength) {
-        this.serializedPublicKeyLength = serializedPublicKeyLength;
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
+        this.publicKeyLength = publicKeyLength;
     }
 
-    public void setSerializedPublicKeyLength(Integer publicKeyLength) {
-        this.serializedPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.serializedPublicKeyLength,
-                publicKeyLength);
+    public void setPublicKeyLength(Integer publicKeyLength) {
+        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
-    public ModifiableByteArray getSerializedPublicKey() {
-        return serializedPublicKey;
+    public ModifiableByteArray getPublicKey() {
+        return publicKey;
     }
 
-    public void setSerializedPublicKey(ModifiableByteArray serializedPublicKey) {
-        this.serializedPublicKey = serializedPublicKey;
+    public void setPublicKey(ModifiableByteArray publicKey) {
+        this.publicKey = publicKey;
     }
 
-    public void setSerializedPublicKey(byte[] serializedPublicKey) {
-        this.serializedPublicKey = ModifiableVariableFactory.safelySetValue(this.serializedPublicKey,
-                serializedPublicKey);
+    public void setPublicKey(byte[] publicKey) {
+        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 }

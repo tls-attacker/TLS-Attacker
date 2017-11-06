@@ -10,15 +10,14 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
-import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
@@ -47,13 +46,13 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
     private long messageWaitNanos = 0;
 
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
 
     public DtlsPaddingOracleAttackCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -108,9 +107,14 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
-        config.setTransportHandlerType(TransportHandlerType.UDP);
+    public boolean isExecuteAttack() {
+        return true;
+    }
+
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
+        config.getConnectionEnd().setTransportHandlerType(TransportHandlerType.UDP);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
 
@@ -119,7 +123,7 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
         List<CipherSuite> cs = new ArrayList<>();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             cs.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-            config.setSupportedCiphersuites(cs);
+            config.setDefaultClientSupportedCiphersuites(cs);
         }
         return config;
     }

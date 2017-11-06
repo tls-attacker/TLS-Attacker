@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class ServerHelloDonePreparatorTest {
     public void setUp() {
         this.context = new TlsContext();
         this.message = new ServerHelloDoneMessage();
-        this.preparator = new ServerHelloDonePreparator(context, message);
+        this.preparator = new ServerHelloDonePreparator(context.getChooser(), message);
     }
 
     /**
@@ -40,4 +40,8 @@ public class ServerHelloDonePreparatorTest {
         // just check that prepare does not throw an exception
     }
 
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
+    }
 }

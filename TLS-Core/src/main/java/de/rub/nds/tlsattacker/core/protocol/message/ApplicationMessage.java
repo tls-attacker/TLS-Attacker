@@ -11,11 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.Arrays;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -40,7 +41,7 @@ public class ApplicationMessage extends ProtocolMessage {
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
 
-    public ApplicationMessage(TlsConfig tlsConfig) {
+    public ApplicationMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
     }
@@ -72,7 +73,9 @@ public class ApplicationMessage extends ProtocolMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(toCompactString());
-        sb.append("\n  Data:").append(ArrayConverter.bytesToHexString(data.getValue()));
+        if (data != null && data.getValue() != null) {
+            sb.append("\n  Data:").append(ArrayConverter.bytesToHexString(data.getValue()));
+        }
         return sb.toString();
     }
 
@@ -85,4 +88,27 @@ public class ApplicationMessage extends ProtocolMessage {
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ApplicationHandler(context);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 43 * hash + Arrays.hashCode(this.dataConfig);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ApplicationMessage other = (ApplicationMessage) obj;
+        return Arrays.equals(this.dataConfig, other.dataConfig);
+    }
+
 }

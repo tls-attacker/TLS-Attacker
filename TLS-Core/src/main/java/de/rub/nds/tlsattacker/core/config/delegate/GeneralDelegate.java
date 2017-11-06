@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.LogLevelConverter;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.Provider;
 import java.security.Security;
@@ -75,21 +75,19 @@ public class GeneralDelegate extends Delegate {
     }
 
     @Override
-    public void applyDelegate(TlsConfig config) {
+    public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration ctxConfig = ctx.getConfiguration();
         LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         if (isDebug()) {
             loggerConfig.setLevel(Level.DEBUG);
-            ctx.updateLoggers();
         } else if (isQuiet()) {
             loggerConfig.setLevel(Level.OFF);
-            ctx.updateLoggers();
         } else if (getLogLevel() != null) {
             loggerConfig.setLevel(getLogLevel());
-            ctx.updateLoggers();
         }
+        ctx.updateLoggers();
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());

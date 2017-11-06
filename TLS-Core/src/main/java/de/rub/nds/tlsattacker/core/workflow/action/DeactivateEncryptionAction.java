@@ -10,11 +10,11 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- * 
+ *
  * @author Robert Merget - robert.merget@rub.de
  */
 public class DeactivateEncryptionAction extends TLSAction {
@@ -23,11 +23,13 @@ public class DeactivateEncryptionAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException {
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Deactivated Encryption/Decryption");
@@ -51,4 +53,8 @@ public class DeactivateEncryptionAction extends TLSAction {
         return hash;
     }
 
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
+    }
 }

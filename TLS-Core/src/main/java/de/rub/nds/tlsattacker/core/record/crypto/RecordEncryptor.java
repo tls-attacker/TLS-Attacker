@@ -8,20 +8,24 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 /**
- *
  * @author Robert Merget <robert.merget@rub.de>
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
-public class RecordEncryptor extends Encryptor<Record> {
+public class RecordEncryptor extends Encryptor {
 
     private final TlsContext context;
 
@@ -31,39 +35,79 @@ public class RecordEncryptor extends Encryptor<Record> {
     }
 
     @Override
+    public void encrypt(BlobRecord record) {
+        LOGGER.debug("Encrypting BlobRecord");
+        byte[] encrypted = recordCipher.encrypt(getEncryptionRequest(record.getCleanProtocolMessageBytes().getValue()))
+                .getCompleteEncryptedCipherText();
+        record.setProtocolMessageBytes(encrypted);
+        LOGGER.debug("ProtocolMessageBytes: "
+                + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
+    }
+
+    @Override
     public void encrypt(Record record) {
+
         LOGGER.debug("Encrypting Record:");
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        // initialising mac
+        record.setMac(new byte[0]);
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
-        if (recordCipher.isUseMac()) {
-            byte[] toBeMaced = new byte[0];
-            try {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                stream.write(ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue()));
-                stream.write(record.getContentType().getValue());
-                stream.write(record.getProtocolVersion().getValue());
-                stream.write(ArrayConverter.intToBytes(record.getCleanProtocolMessageBytes().getValue().length,
-                        RecordByteLength.RECORD_LENGTH)); // TODO
-                stream.write(record.getCleanProtocolMessageBytes().getValue());
-                toBeMaced = stream.toByteArray();
-            } catch (IOException E) {
-                throw new CryptoException("Could not create ToBeMaced Data", E);
+
+        if (!isEncryptThenMac(cipherSuite)) {
+            LOGGER.trace("EncryptThenMac is not active");
+            record.setNonMetaDataMaced(cleanBytes);
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
+                    .getSelectedProtocolVersion());
+            record.setAuthenticatedMetaData(additionalAuthenticatedData);
+            recordCipher.setAdditionalAuthenticatedData(record.getAuthenticatedMetaData().getValue());
+            if (cipherSuite.isUsingMac()) {
+                byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getAuthenticatedMetaData()
+                        .getValue(), record.getNonMetaDataMaced().getValue()));
+                setMac(record, mac);
             }
-            byte[] mac = recordCipher.calculateMac(toBeMaced);
-            setMac(record, mac);
-            context.setSequenceNumber(context.getSequenceNumber() + 1);
-        } else {
-            record.setMac(new byte[0]);
         }
         setUnpaddedRecordBytes(record, cleanBytes);
-        byte[] padding = recordCipher.calculatePadding(recordCipher.getPaddingLength(record.getUnpaddedRecordBytes()
-                .getValue().length));
+
+        byte[] padding;
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
+        } else {
+            int paddingLength = recordCipher.calculatePaddingLength(record.getUnpaddedRecordBytes().getValue().length);
+            record.setPaddingLength(paddingLength);
+            padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
+        }
         setPadding(record, padding);
         setPaddingLength(record);
-        byte[] plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record.getPadding()
-                .getValue(), record.getPaddingLength().getValue());
+        byte[] plain;
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13() && context.isEncryptActive()) {
+            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
+                    .getContentMessageType().getArrayValue(), record.getPadding().getValue());
+        } else {
+            plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record.getPadding()
+                    .getValue());
+        }
         setPlainRecordBytes(record, plain);
-        byte[] encrypted = recordCipher.encrypt(record.getPlainRecordBytes().getValue());
+        byte[] encrypted = recordCipher.encrypt(getEncryptionRequest(record.getPlainRecordBytes().getValue()))
+                .getCompleteEncryptedCipherText();
+        if (isEncryptThenMac(cipherSuite)) {
+            LOGGER.debug("EncryptThenMac Extension active");
+            record.setNonMetaDataMaced(encrypted);
+            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
+                    .getSelectedProtocolVersion());
+            record.setAuthenticatedMetaData(additionalAuthenticatedData);
+            recordCipher.setAdditionalAuthenticatedData(record.getAuthenticatedMetaData().getValue());
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getAuthenticatedMetaData()
+                    .getValue(), encrypted));
+            setMac(record, mac);
+            encrypted = ArrayConverter.concatenate(encrypted, record.getMac().getValue());
+        }
         setProtocolMessageBytes(record, encrypted);
+        context.increaseWriteSequenceNumber();
+    }
+
+    private boolean isEncryptThenMac(CipherSuite cipherSuite) {
+        return context.isExtensionNegotiated(ExtensionType.ENCRYPT_THEN_MAC) && cipherSuite.isCBC()
+                && recordCipher.isUsingMac();
     }
 
     private void setMac(Record record, byte[] mac) {
@@ -96,5 +140,9 @@ public class RecordEncryptor extends Encryptor<Record> {
         record.setProtocolMessageBytes(encrypted);
         LOGGER.debug("ProtocolMessageBytes: "
                 + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
+    }
+
+    private EncryptionRequest getEncryptionRequest(byte[] data) {
+        return new EncryptionRequest(data, recordCipher.getEncryptionIV());
     }
 }

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  *
@@ -19,8 +19,8 @@ public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator {
 
     private final SSL2ServerHelloMessage message;
 
-    public SSL2ServerHelloPreparator(SSL2ServerHelloMessage message, TlsContext tlsContext) {
-        super(tlsContext, message);
+    public SSL2ServerHelloPreparator(SSL2ServerHelloMessage message, Chooser chooser) {
+        super(chooser, message);
         this.message = message;
     }
 

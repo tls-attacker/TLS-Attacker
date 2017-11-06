@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import java.util.List;
@@ -21,9 +22,27 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class RecordLayer {
 
-    protected static final Logger LOGGER = LogManager.getLogger("RecordLayer");
+    protected static final Logger LOGGER = LogManager.getLogger(RecordLayer.class.getName());
 
-    public abstract List<AbstractRecord> parseRecords(byte[] rawBytes);
+    /**
+     * Tries to parse rawBytes into AbstractRecords. If this is not possible a
+     * Parser Exception is thrown
+     * 
+     * @param rawBytes
+     *            Bytes to parse
+     * @return List of parsed records
+     */
+    public abstract List<AbstractRecord> parseRecords(byte[] rawBytes) throws ParserException;
+
+    /**
+     * Tries to parse rawBytes into AbstractRecords. Exceptions which might
+     * occur are handled.
+     * 
+     * @param rawBytes
+     *            Bytes to parse
+     * @return List of parsed records
+     */
+    public abstract List<AbstractRecord> parseRecordsSoftly(byte[] rawBytes);
 
     public abstract void decryptRecord(AbstractRecord records);
 

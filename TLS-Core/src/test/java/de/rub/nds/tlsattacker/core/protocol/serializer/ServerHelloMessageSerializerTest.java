@@ -42,7 +42,7 @@ public class ServerHelloMessageSerializerTest {
                                 ProtocolVersion.TLS12.getValue(),
                                 new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
                                 ArrayConverter
-                                        .hexStringToByteArray("cafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
+                                        .hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
                                 32,
                                 ArrayConverter
                                         .hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
@@ -56,7 +56,7 @@ public class ServerHelloMessageSerializerTest {
                                 ProtocolVersion.TLS12.getValue(),
                                 new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
                                 ArrayConverter
-                                        .hexStringToByteArray("cafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
+                                        .hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
                                 32,
                                 ArrayConverter
                                         .hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),

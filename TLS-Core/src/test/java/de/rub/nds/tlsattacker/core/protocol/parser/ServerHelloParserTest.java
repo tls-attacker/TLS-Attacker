@@ -46,7 +46,7 @@ public class ServerHelloParserTest {
                                 ProtocolVersion.TLS12.getValue(),
                                 new byte[] { (byte) 0x37, (byte) 0x8f, (byte) 0x93, (byte) 0xcb },
                                 ArrayConverter
-                                        .hexStringToByteArray("cafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
+                                        .hexStringToByteArray("378f93cbcafda4c9ba43dafb49ab847ba1ae86a29d2679e7b9aac8e25c207e01"),
                                 32,
                                 ArrayConverter
                                         .hexStringToByteArray("0919fe8a189912807ee0621a45f4e6440a297f13574d2229fdbc96427b0e2d10"),
@@ -61,7 +61,7 @@ public class ServerHelloParserTest {
                                 ProtocolVersion.TLS10.getValue(),
                                 new byte[] { (byte) 0x3a, (byte) 0x40, (byte) 0xa6, (byte) 0x18 },
                                 ArrayConverter
-                                        .hexStringToByteArray("7edfd84f419fb68b7ab2aaa83ffb0e88a61c7d741be0467faeaa56f1"),
+                                        .hexStringToByteArray("3a40a6187edfd84f419fb68b7ab2aaa83ffb0e88a61c7d741be0467faeaa56f1"),
                                 0, new byte[0], CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA.getByteValue(),
                                 CompressionMethod.NULL.getValue(), 14 },
                         {
@@ -73,7 +73,7 @@ public class ServerHelloParserTest {
                                 ProtocolVersion.TLS11.getValue(),
                                 new byte[] { (byte) 0x69, (byte) 0x7b, (byte) 0x9f, (byte) 0xc9 },
                                 ArrayConverter
-                                        .hexStringToByteArray("eeba3fc98a15c6c08f3b8818fb1413b95f57679673fe55721872117b"),
+                                        .hexStringToByteArray("697b9fc9eeba3fc98a15c6c08f3b8818fb1413b95f57679673fe55721872117b"),
                                 0, new byte[0], CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA.getByteValue(),
                                 CompressionMethod.NULL.getValue(), 14 } });
     }

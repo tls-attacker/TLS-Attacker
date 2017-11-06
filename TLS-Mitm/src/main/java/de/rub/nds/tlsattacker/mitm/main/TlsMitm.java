@@ -6,39 +6,33 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package de.rub.nds.tlsattacker.mitm.main;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-
 /**
  *
- * @author Lucas Hartmann <firstname.lastname@rub.de>
+ * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class TlsMitm {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsMitm.class);
 
-    public void run(TlsConfig config) {
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
-
+    public void run(Config config) {
+        State state = new State(config);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.warn("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
     }

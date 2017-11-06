@@ -10,8 +10,9 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
-import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
 import de.rub.nds.tlsattacker.core.config.converters.NamedCurveConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
@@ -21,7 +22,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
@@ -67,16 +67,19 @@ public class InvalidCurveAttackConfig extends AttackConfig {
             "4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
 
     @ParametersDelegate
-    private final ClientDelegate clientDelegate;
+    private ClientDelegate clientDelegate;
 
     @ParametersDelegate
-    private final HostnameExtensionDelegate hostnameExtensionDelegate;
+    private HostnameExtensionDelegate hostnameExtensionDelegate;
 
     @ParametersDelegate
-    private final CiphersuiteDelegate ciphersuiteDelegate;
+    private CiphersuiteDelegate ciphersuiteDelegate;
 
     @ParametersDelegate
-    private final ProtocolVersionDelegate protocolVersionDelegate;
+    private ProtocolVersionDelegate protocolVersionDelegate;
+
+    @ParametersDelegate
+    private AttackDelegate attackDelegate;
 
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -84,10 +87,12 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
+        attackDelegate = new AttackDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
+        addDelegate(attackDelegate);
     }
 
     public BigInteger getPremasterSecret() {
@@ -155,12 +160,26 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     }
 
     @Override
-    public TlsConfig createConfig() {
-        TlsConfig config = super.createConfig();
+    public boolean isExecuteAttack() {
+        return attackDelegate.isExecuteAttack();
+    }
+
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
         List<CipherSuite> cipherSuites = new LinkedList<>();
         cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256);
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384);
         cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
-        config.setSupportedCiphersuites(cipherSuites);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_256_CBC_SHA);
+        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384);
+        config.setAddECPointFormatExtension(true);
+        config.setAddEllipticCurveExtension(true);
+        config.setDefaultClientSupportedCiphersuites(cipherSuites);
+        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
         List<NamedCurve> namedCurves = new LinkedList<>();
         namedCurves.add(namedCurve);
         config.setNamedCurves(namedCurves);

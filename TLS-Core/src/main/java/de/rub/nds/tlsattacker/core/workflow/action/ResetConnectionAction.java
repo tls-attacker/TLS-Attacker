@@ -9,8 +9,9 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 
 /**
@@ -23,9 +24,17 @@ public class ResetConnectionAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException, IOException {
+        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+
         LOGGER.info("Terminating Connection");
-        tlsContext.getTransportHandler().closeConnection();
+        tlsContext.getTransportHandler().closeClientConnection();
+        LOGGER.info("Resseting Cipher");
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Resetting MessageDigest");
+        tlsContext.getDigest().reset();
         LOGGER.info("Reopening Connection");
         tlsContext.getTransportHandler().initialize();
         setExecuted(true);
@@ -34,6 +43,11 @@ public class ResetConnectionAction extends TLSAction {
     @Override
     public void reset() {
         setExecuted(false);
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 
 }

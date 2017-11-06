@@ -8,12 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -27,22 +26,29 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
 
     @Override
     public ECDHClientKeyExchangeParser getParser(byte[] message, int pointer) {
-        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new ECDHClientKeyExchangeParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public ECDHClientKeyExchangePreparator getPreparator(ECDHClientKeyExchangeMessage message) {
-        return new ECDHClientKeyExchangePreparator(tlsContext, message);
+        return new ECDHClientKeyExchangePreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public ECDHClientKeyExchangeSerializer getSerializer(ECDHClientKeyExchangeMessage message) {
-        return new ECDHClientKeyExchangeSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new ECDHClientKeyExchangeSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    protected void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
+    public void adjustTLSContext(ECDHClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        adjustClientPublicKey(message);
+        setRecordCipher();
+        spawnNewSession();
+    }
+
+    private void adjustClientPublicKey(ECDHClientKeyExchangeMessage message) {
+        tlsContext.setClientEcPublicKey(message.getComputations().getClientPublicKey());
     }
 }

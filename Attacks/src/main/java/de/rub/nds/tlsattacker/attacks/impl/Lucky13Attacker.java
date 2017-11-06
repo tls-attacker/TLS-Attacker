@@ -8,6 +8,26 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -17,24 +37,6 @@ import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 /**
  * Executes the Lucky13 attack test
@@ -49,6 +51,8 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     private long lastResult;
 
+    private TimingClientTcpTransportHandler transportHandler;
+
     public Lucky13Attacker(Lucky13CommandConfig config) {
         super(config, false);
         results = new HashMap<>();
@@ -56,53 +60,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     @Override
     public void executeAttack() {
-        String[] paddingStrings = config.getPaddings().split(",");
-        int[] paddings = new int[paddingStrings.length];
-        for (int i = 0; i < paddingStrings.length; i++) {
-            paddings[i] = Integer.parseInt(paddingStrings[i]);
-        }
-        for (int i = 0; i < config.getMeasurements(); i++) {
-            LOGGER.info("Starting round {}", i);
-            for (int p : paddings) {
-                Record record = createRecordWithPadding(p);
-                executeAttackRound(record);
-                if (results.get(p) == null) {
-                    results.put(p, new LinkedList<Long>());
-                }
-                // remove the first 20% of measurements
-                if (i > config.getMeasurements() / 5) {
-                    results.get(p).add(lastResult);
-                }
-            }
-        }
-
-        StringBuilder medians = new StringBuilder();
-        for (int padding : paddings) {
-            List<Long> rp = results.get(padding);
-            Collections.sort(rp);
-            LOGGER.info("Padding: {}", padding);
-            long median = rp.get(rp.size() / 2);
-            LOGGER.info("Median: {}", median);
-            medians.append(median).append(",");
-        }
-        LOGGER.info("Medians: {}", medians);
-
-        if (config.getMonaFile() != null) {
-            StringBuilder commands = new StringBuilder();
-            for (int i = 0; i < paddings.length - 1; i++) {
-                for (int j = i + 1; j < paddings.length; j++) {
-                    String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
-                    String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
-                    createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
-                    String command = "java -jar ReportingTool.jar --inputFile=" + fileName + " --name=lucky13-"
-                            + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
-                    LOGGER.info("Run mona timing lib with: " + command);
-                    commands.append(command);
-                    commands.append(System.getProperty("line.separator"));
-                }
-            }
-            LOGGER.info("All commands at once: \n{}", commands);
-        }
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private void createMonaFile(String fileName, String[] delimiters, List<Long> result1, List<Long> result2) {
@@ -118,28 +76,36 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         }
     }
 
-    public void executeAttackRound(Record record) {
-        TlsConfig tlsConfig = config.createConfig();
-        TlsContext tlsContext = new TlsContext(tlsConfig);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(tlsConfig.getExecutorType(),
-                tlsContext);
+    public void executeAttackRound(Record record) throws IOException {
+        Config tlsConfig = config.createConfig();
+        State state = new State(tlsConfig);
+        TlsContext tlsContext = state.getTlsContext();
 
-        WorkflowTrace trace = tlsContext.getWorkflowTrace();
+        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
+                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
+        transportHandler.initialize();
+        tlsContext.setTransportHandler(transportHandler);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), state);
+
+        WorkflowTrace trace = state.getWorkflowTrace();
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);
-        trace.add(action);
-        action.getConfiguredRecords().add(record);
+        trace.addTlsAction(action);
+        List<AbstractRecord> configuredRecords = new LinkedList<>();
+        configuredRecords.add(record);
+        action.setRecords(configuredRecords);
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.add(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new ReceiveAction(alertMessage));
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow.");
             LOGGER.debug(ex);
         }
-        lastResult = tlsContext.getTransportHandler().getLastMeasurement();
+        lastResult = transportHandler.getLastMeasurement();
 
     }
 
@@ -174,7 +140,61 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
+        String[] paddingStrings = config.getPaddings().split(",");
+        int[] paddings = new int[paddingStrings.length];
+        for (int i = 0; i < paddingStrings.length; i++) {
+            paddings[i] = Integer.parseInt(paddingStrings[i]);
+        }
+        for (int i = 0; i < config.getMeasurements(); i++) {
+            LOGGER.info("Starting round {}", i);
+            for (int p : paddings) {
+                try {
+                    Record record = createRecordWithPadding(p);
+                    executeAttackRound(record);
+                    if (results.get(p) == null) {
+                        results.put(p, new LinkedList<Long>());
+                    }
+                    // removeTlsAction the first 20% of measurements
+                    if (i > config.getMeasurements() / 5) {
+                        results.get(p).add(lastResult);
+                    }
+                } catch (IOException ex) {
+                    LOGGER.warn("Problem while running Padding: " + p);
+                    LOGGER.error(ex);
+                }
+            }
+        }
+
+        StringBuilder medians = new StringBuilder();
+        for (int padding : paddings) {
+            List<Long> rp = results.get(padding);
+            Collections.sort(rp);
+            LOGGER.info("Padding: {}", padding);
+            long median = rp.get(rp.size() / 2);
+            LOGGER.info("Median: {}", median);
+            medians.append(median).append(",");
+        }
+        LOGGER.info("Medians: {}", medians);
+
+        if (config.getMonaFile() != null) {
+            StringBuilder commands = new StringBuilder();
+            for (int i = 0; i < paddings.length - 1; i++) {
+                for (int j = i + 1; j < paddings.length; j++) {
+                    String fileName = config.getMonaFile() + "-" + paddings[i] + "-" + paddings[j];
+                    String[] delimiters = { (";" + paddings[i] + ";"), (";" + paddings[j] + ";") };
+                    createMonaFile(fileName, delimiters, results.get(paddings[i]), results.get(paddings[j]));
+                    String command = "java -jar ReportingTool.jar --inputFile=" + fileName + " --name=lucky13-"
+                            + paddings[i] + "-" + paddings[j] + " --lowerBound=0.3 --upperBound=0.5";
+                    LOGGER.info("Run mona timing lib with: " + command);
+                    commands.append(command);
+                    commands.append(System.getProperty("line.separator"));
+                }
+            }
+            LOGGER.info("All commands at once: \n{}", commands);
+        }
+        // A Security analyst has to manually check if an implementation is
+        // vulnerable
+        return null;
     }
 
 }

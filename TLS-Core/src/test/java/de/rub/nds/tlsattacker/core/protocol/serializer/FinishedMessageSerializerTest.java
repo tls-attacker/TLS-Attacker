@@ -30,8 +30,6 @@ public class FinishedMessageSerializerTest {
         return FinishedMessageParserTest.generateData();
     }
 
-    private final byte[] message;
-    private final int start;
     private final byte[] expectedPart;
 
     private final HandshakeMessageType type;
@@ -39,14 +37,15 @@ public class FinishedMessageSerializerTest {
 
     private final byte[] verifyData;
 
+    private final ProtocolVersion version;
+
     public FinishedMessageSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length, byte[] verifyData) {
-        this.message = message;
-        this.start = start;
+            int length, byte[] verifyData, ProtocolVersion version) {
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.verifyData = verifyData;
+        this.version = version;
     }
 
     /**
@@ -60,7 +59,7 @@ public class FinishedMessageSerializerTest {
         msg.setType(type.getValue());
         msg.setVerifyData(verifyData);
         msg.setCompleteResultingMessage(expectedPart);
-        FinishedMessageSerializer serializer = new FinishedMessageSerializer(msg, ProtocolVersion.TLS12);
+        FinishedMessageSerializer serializer = new FinishedMessageSerializer(msg, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

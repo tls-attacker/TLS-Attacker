@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.SignedCertificateTimestampExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertificateTimestampExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  *
@@ -27,7 +27,7 @@ public class SignedCertificateTimestampExtensionHandler extends
      * Constructor
      *
      * @param context
-     *            A TlsContext
+     *            A Chooser
      */
     public SignedCertificateTimestampExtensionHandler(TlsContext context) {
         super(context);
@@ -57,7 +57,7 @@ public class SignedCertificateTimestampExtensionHandler extends
     @Override
     public SignedCertificateTimestampExtensionPreparator getPreparator(
             SignedCertificateTimestampExtensionMessage message) {
-        return new SignedCertificateTimestampExtensionPreparator(context, message);
+        return new SignedCertificateTimestampExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     /**
@@ -75,13 +75,13 @@ public class SignedCertificateTimestampExtensionHandler extends
 
     /**
      * Parses the content of a SignedCertificateTimestampExtensionMessage to the
-     * actual TlsContext
+     * actual Chooser
      *
      * @param message
      *            A SingedCertificateImestampExtensionMessage
      */
     @Override
-    public void adjustTLSContext(SignedCertificateTimestampExtensionMessage message) {
+    public void adjustTLSExtensionContext(SignedCertificateTimestampExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The SingedCertificateTimestamp length shouldn't exceed 2 bytes as defined in RFC 6962. "
                     + "Length was " + message.getExtensionLength().getValue());

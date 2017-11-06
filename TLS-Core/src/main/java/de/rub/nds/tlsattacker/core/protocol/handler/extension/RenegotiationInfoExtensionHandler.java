@@ -14,7 +14,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoE
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.RenegotiationInfoExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.RenegotiationInfoExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -33,7 +34,7 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
 
     @Override
     public RenegotiationInfoExtensionPreparator getPreparator(RenegotiationInfoExtensionMessage message) {
-        return new RenegotiationInfoExtensionPreparator(context, message);
+        return new RenegotiationInfoExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
     @Override
@@ -42,12 +43,20 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
     }
 
     @Override
-    public void adjustTLSContext(RenegotiationInfoExtensionMessage message) {
+    public void adjustTLSExtensionContext(RenegotiationInfoExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. "
                     + "Length was " + message.getExtensionLength().getValue());
         }
-        context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
+        if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEnd().getConnectionEndType()) {
+            context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
+        }
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+            if (message.getRenegotiationInfo().getValue().length == 1
+                    && message.getRenegotiationInfo().getValue()[0] == 0) {
+                context.setSecureRenegotiation(true);
+            }
+        }
         LOGGER.debug("The context RenegotiationInfo was set to "
                 + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
     }

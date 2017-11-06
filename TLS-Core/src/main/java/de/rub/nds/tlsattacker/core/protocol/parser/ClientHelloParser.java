@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
 
@@ -39,7 +40,6 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
     protected void parseHandshakeMessageContent(ClientHelloMessage msg) {
         LOGGER.debug("Parsing ClientHelloMessage");
         parseProtocolVersion(msg);
-        parseUnixtime(msg);
         parseRandom(msg);
         parseSessionIDLength(msg);
         parseSessionID(msg);
@@ -69,7 +69,7 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
      */
     private void parseCipherSuiteLength(ClientHelloMessage msg) {
         msg.setCipherSuiteLength(parseIntField(HandshakeByteLength.CIPHER_SUITES_LENGTH));
-        LOGGER.debug("CiepherSuiteLength: " + msg.getCipherSuiteLength().getValue());
+        LOGGER.debug("CipherSuiteLength: " + msg.getCipherSuiteLength().getValue());
     }
 
     /**

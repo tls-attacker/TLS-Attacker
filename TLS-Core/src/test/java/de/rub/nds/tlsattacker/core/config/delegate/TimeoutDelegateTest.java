@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -55,49 +55,24 @@ public class TimeoutDelegateTest {
     }
 
     /**
-     * Test of getTlsTimeout method, of class TimeoutDelegate.
-     */
-    @Test
-    public void testGetTlsTimeout() {
-        args = new String[2];
-        args[0] = "-tls_timeout";
-        args[1] = "123";
-        assertTrue(delegate.getTlsTimeout() == null);
-        jcommander.parse(args);
-        assertTrue(delegate.getTlsTimeout() == 123);
-    }
-
-    /**
-     * Test of setTlsTimeout method, of class TimeoutDelegate.
-     */
-    @Test
-    public void testSetTlsTimeout() {
-        assertTrue(delegate.getTlsTimeout() == null);
-        delegate.setTlsTimeout(123);
-        assertTrue(delegate.getTlsTimeout() == 123);
-    }
-
-    /**
      * Test of applyDelegate method, of class TimeoutDelegate.
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = TlsConfig.createConfig();
-        args = new String[4];
-        args[0] = "-tls_timeout";
+        Config config = Config.createConfig();
+        args = new String[2];
+        args[0] = "-timeout";
         args[1] = "123";
-        args[2] = "-timeout";
-        args[3] = "456";
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue(config.getTimeout() == 456);
-        assertTrue(config.getTlsTimeout() == 123);
+        System.out.println("conend is: " + config.getConnectionEnd());
+        assertTrue(config.getConnectionEnd().getTimeout() == 123);
     }
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

@@ -8,11 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
-import de.rub.nds.tlsattacker.core.unittest.helper.ActionExecutorMock;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
@@ -31,19 +34,20 @@ import org.junit.Test;
  */
 public class ChangeClientRandomActionTest {
 
+    private State state;
     private TlsContext tlsContext;
-
-    private ActionExecutorMock executor;
     private ChangeClientRandomAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        executor = new ActionExecutorMock();
-        tlsContext = new TlsContext();
+        Config config = Config.createConfig();
+        state = new State(config, new WorkflowTrace(config));
+        tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(
+                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
         action = new ChangeClientRandomAction(new byte[] { 0, 1 });
     }
 
@@ -75,7 +79,7 @@ public class ChangeClientRandomActionTest {
     @Test
     public void testGetOldValue() {
         tlsContext.setClientRandom(new byte[] { 3 });
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertArrayEquals(action.getOldValue(), new byte[] { 3 });
     }
 
@@ -85,7 +89,7 @@ public class ChangeClientRandomActionTest {
     @Test
     public void testExecute() {
         tlsContext.setClientRandom(new byte[] { 3 });
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertArrayEquals(action.getOldValue(), new byte[] { 3 });
         assertArrayEquals(action.getNewValue(), new byte[] { 0, 1 });
         assertArrayEquals(tlsContext.getClientRandom(), new byte[] { 0, 1 });
@@ -99,11 +103,11 @@ public class ChangeClientRandomActionTest {
     @Test
     public void testReset() {
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertTrue(action.isExecuted());
         action.reset();
         assertFalse(action.isExecuted());
-        action.execute(tlsContext, executor);
+        action.execute(state);
         assertTrue(action.isExecuted());
     }
 

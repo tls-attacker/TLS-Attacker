@@ -9,8 +9,8 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ActionExecutor;
+import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,14 +31,17 @@ public class WaitingAction extends TLSAction {
     }
 
     @Override
-    public void execute(TlsContext tlsContext, ActionExecutor executor) throws WorkflowExecutionException, IOException {
+    public void execute(State state) throws WorkflowExecutionException, IOException {
+        Boolean success;
         LOGGER.info("Wating " + time + "ms...");
         try {
             Thread.sleep(time);
+            success = true;
         } catch (InterruptedException ex) {
             Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
+            success = false;
         }
-        this.setExecuted(Boolean.TRUE);
+        this.setExecuted(success);
     }
 
     @Override
@@ -52,5 +55,10 @@ public class WaitingAction extends TLSAction {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted();
     }
 }

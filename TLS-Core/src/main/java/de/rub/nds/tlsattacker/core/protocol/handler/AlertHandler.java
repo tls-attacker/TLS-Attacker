@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.AlertPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.AlertSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -26,22 +26,22 @@ public class AlertHandler extends ProtocolMessageHandler<AlertMessage> {
 
     @Override
     public AlertParser getParser(byte[] message, int pointer) {
-        return new AlertParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new AlertParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
     public AlertPreparator getPreparator(AlertMessage message) {
-        return new AlertPreparator(tlsContext, message);
+        return new AlertPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
     public AlertSerializer getSerializer(AlertMessage message) {
-        return new AlertSerializer(message, tlsContext.getSelectedProtocolVersion());
+        return new AlertSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    protected void adjustTLSContext(AlertMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getConfig().getConnectionEndType()
+    public void adjustTLSContext(AlertMessage message) {
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()
                 && AlertLevel.FATAL.getValue() == message.getLevel().getValue()) {
             LOGGER.debug("Setting received Fatal Alert in Context");
             tlsContext.setReceivedFatalAlert(true);

@@ -88,8 +88,8 @@ public class ECDHClientKeyExchangeParserTest {
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
         assertTrue(msg.getType().getValue() == type.getValue());
-        assertTrue(serializedKeyLength == msg.getSerializedPublicKeyLength().getValue());
-        assertArrayEquals(serializedKey, msg.getSerializedPublicKey().getValue());
+        assertTrue(serializedKeyLength == msg.getPublicKeyLength().getValue());
+        assertArrayEquals(serializedKey, msg.getPublicKey().getValue());
     }
 
 }

@@ -11,11 +11,11 @@ package de.rub.nds.tlsattacker.client.main;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import org.apache.logging.log4j.LogManager;
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TlsClient {
 
-    private static final Logger LOGGER = LogManager.getLogger("Client");
+    private static final Logger LOGGER = LogManager.getLogger(TlsClient.class.getName());
 
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
@@ -40,33 +40,32 @@ public class TlsClient {
                 commander.usage();
                 return;
             }
-            // Cmd was parsable
-            TlsConfig tlsConfig = null;
+            Config tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
                 TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
             } catch (ConfigurationException E) {
-                LOGGER.info("Encountered a ConfigurationException aborting.");
+                LOGGER.warn("Encountered a ConfigurationException aborting.");
                 LOGGER.debug(E);
             }
         } catch (ParameterException E) {
-            LOGGER.info("Could not parse provided parameters");
+            LOGGER.warn("Could not parse provided parameters");
             LOGGER.debug(E);
             commander.usage();
             ex = E;
         }
     }
 
-    public void startTlsClient(TlsConfig config) {
-        TlsContext tlsContext = new TlsContext(config);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(config.getExecutorType(),
-                tlsContext);
+    public void startTlsClient(Config config) {
+        State state = new State(config);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
 
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.info("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.warn("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
     }

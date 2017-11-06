@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFactory;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * An abstract Parser class for Hello Messages
@@ -45,31 +41,6 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
         super(pointer, array, type, version);
     }
 
-    /**
-     * Checks if the message has an ExtensionLength field, by checking if the
-     * value specified in the length field is big enough to allow it.
-     *
-     * @param message
-     *            Message to check
-     * @return True if the message has an Extension field
-     */
-    protected boolean hasExtensionLengthField(HelloMessage message) {
-        return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
-                + HandshakeByteLength.MESSAGE_LENGTH_FIELD > getPointer() - getStartPoint();
-    }
-
-    /**
-     * Checks if the ExtensionsLengthField has a value greater than Zero, eg. if
-     * there are Extensions present.
-     *
-     * @param message
-     *            Message to check
-     * @return True if the message has Extensions
-     */
-    protected boolean hasExtensions(HelloMessage message) {
-        return message.getExtensionsLength().getValue() > 0;
-    }
-
     protected boolean hasSessionID(HelloMessage message) {
         return message.getSessionIdLength().getValue() > 0;
     }
@@ -86,17 +57,6 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     }
 
     /**
-     * Reads the next bytes as a Unixtime and writes them in the message
-     *
-     * @param message
-     *            Message to write in
-     */
-    protected void parseUnixtime(HelloMessage message) {
-        message.setUnixTime(parseByteArrayField(HandshakeByteLength.UNIX_TIME));
-        LOGGER.debug("UnixTime:" + ArrayConverter.bytesToHexString(message.getUnixTime().getValue()));
-    }
-
-    /**
      * Reads the next bytes as a the Random and writes them in the message
      *
      * @param message
@@ -105,6 +65,8 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
     protected void parseRandom(HelloMessage message) {
         message.setRandom(parseByteArrayField(HandshakeByteLength.RANDOM));
         LOGGER.debug("Random:" + ArrayConverter.bytesToHexString(message.getRandom().getValue()));
+        message.setUnixTime(Arrays.copyOf(message.getRandom().getValue(), HandshakeByteLength.UNIX_TIME));
+        LOGGER.debug("UnixTime:" + ArrayConverter.bytesToHexString(message.getUnixTime().getValue()));
     }
 
     /**
@@ -130,36 +92,4 @@ public abstract class HelloParser<T extends HelloMessage> extends HandshakeMessa
         LOGGER.debug("SessionID:" + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
     }
 
-    /**
-     * Reads the next bytes as the ExtensionLength and writes them in the
-     * message
-     *
-     * @param message
-     *            Message to write in
-     */
-    protected void parseExtensionLength(HelloMessage message) {
-        message.setExtensionsLength(parseIntField(HandshakeByteLength.EXTENSION_LENGTH));
-        LOGGER.debug("ExtensionLength:" + message.getExtensionsLength().getValue());
-    }
-
-    /**
-     * Reads the next bytes as the ExtensionBytes and writes them in the message
-     * and adds parsed Extensions to the message
-     *
-     * @param message
-     *            Message to write in
-     */
-    protected void parseExtensionBytes(HelloMessage message) {
-        byte[] extensionBytes = parseByteArrayField(message.getExtensionsLength().getValue());
-        message.setExtensionBytes(extensionBytes);
-        LOGGER.debug("ExtensionBytes:" + ArrayConverter.bytesToHexString(extensionBytes, false));
-        List<ExtensionMessage> extensionMessages = new LinkedList<>();
-        int pointer = 0;
-        while (pointer < extensionBytes.length) {
-            ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer);
-            extensionMessages.add(parser.parse());
-            pointer = parser.getPointer();
-        }
-        message.setExtensions(extensionMessages);
-    }
 }

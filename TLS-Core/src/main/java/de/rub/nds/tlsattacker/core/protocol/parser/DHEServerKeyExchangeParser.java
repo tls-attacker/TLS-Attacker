@@ -49,8 +49,7 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
-            parseHashAlgorithm(msg);
-            parseSignatureAlgorithm(msg);
+            parseSignatureAndHashAlgorithm(msg);
         }
         parseSignatureLength(msg);
         parseSignature(msg);
@@ -68,8 +67,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parsepLength(DHEServerKeyExchangeMessage msg) {
-        msg.setpLength(parseIntField(HandshakeByteLength.DH_P_LENGTH));
-        LOGGER.debug("pLength: " + msg.getpLength().getValue());
+        msg.setModulusLength(parseIntField(HandshakeByteLength.DH_MODULUS_LENGTH));
+        LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
     }
 
     /**
@@ -79,8 +78,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseP(DHEServerKeyExchangeMessage msg) {
-        msg.setP(parseByteArrayField(msg.getpLength().getValue()));
-        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getP().getValue()));
+        msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
+        LOGGER.debug("P: " + msg.getModulus().getValue());
     }
 
     /**
@@ -90,8 +89,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parsegLength(DHEServerKeyExchangeMessage msg) {
-        msg.setgLength(parseIntField(HandshakeByteLength.DH_G_LENGTH));
-        LOGGER.debug("gLength: " + msg.getgLength().getValue());
+        msg.setGeneratorLength(parseIntField(HandshakeByteLength.DH_GENERATOR_LENGTH));
+        LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
     }
 
     /**
@@ -101,8 +100,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseG(DHEServerKeyExchangeMessage msg) {
-        msg.setG(parseByteArrayField(msg.getgLength().getValue()));
-        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getG().getValue()));
+        msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
+        LOGGER.debug("G: " + msg.getGenerator().getValue());
     }
 
     /**
@@ -113,8 +112,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(DHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getSerializedPublicKeyLength().getValue());
+        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     /**
@@ -125,8 +124,8 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
      *            Message to write in
      */
     private void parseSerializedPublicKey(DHEServerKeyExchangeMessage msg) {
-        msg.setSerializedPublicKey(parseByteArrayField(msg.getSerializedPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getSerializedPublicKey().getValue()));
+        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
+        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     /**
@@ -152,26 +151,16 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
     }
 
     /**
-     * Reads the next bytes as the HashAlgorithm and writes them in the message
+     * Reads the next bytes as the SignatureAndHashAlgorithm and writes them in
+     * the message
      *
      * @param msg
      *            Message to write in
      */
-    private void parseHashAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setHashAlgorithm(parseByteField(HandshakeByteLength.HASH));
-        LOGGER.debug("HashAlgorithm: " + msg.getHashAlgorithm().getValue());
-    }
-
-    /**
-     * Reads the next bytes as the SignatureAlgorithm and writes them in the
-     * message
-     *
-     * @param msg
-     *            Message to write in
-     */
-    private void parseSignatureAlgorithm(DHEServerKeyExchangeMessage msg) {
-        msg.setSignatureAlgorithm(parseByteField(HandshakeByteLength.SIGNATURE));
-        LOGGER.debug("SignatureAlgorithm: " + msg.getSignatureAlgorithm().getValue());
+    private void parseSignatureAndHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+        msg.setSignatureAndHashAlgorithm(parseByteArrayField(HandshakeByteLength.SIGNATURE_HASH_ALGORITHM));
+        LOGGER.debug("SignatureAndHashAlgorithm: "
+                + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
     /**

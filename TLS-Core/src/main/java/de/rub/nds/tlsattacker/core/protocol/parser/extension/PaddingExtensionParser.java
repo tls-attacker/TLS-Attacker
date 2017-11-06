@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 

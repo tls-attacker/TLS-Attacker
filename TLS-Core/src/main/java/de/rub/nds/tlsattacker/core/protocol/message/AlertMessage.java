@@ -11,13 +11,13 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.AlertHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -48,7 +48,7 @@ public class AlertMessage extends ProtocolMessage {
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }
 
-    public AlertMessage(TlsConfig tlsConfig) {
+    public AlertMessage(Config tlsConfig) {
         super();
         this.protocolMessageType = ProtocolMessageType.ALERT;
     }
@@ -93,16 +93,25 @@ public class AlertMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("AlertMessage:");
         sb.append("\nALERT message:\n  Level: ");
         if (level != null) {
-            sb.append(AlertLevel.getAlertLevel(level.getValue()));
+            if (AlertLevel.getAlertLevel(level.getValue()) == AlertLevel.UNDEFINED) {
+                sb.append(level.getValue());
+            } else {
+                sb.append(AlertLevel.getAlertLevel(level.getValue()));
+            }
         } else {
             sb.append("null");
         }
         sb.append("\n  Description: ");
         if (description != null) {
-            sb.append(AlertDescription.getAlertDescription(description.getValue()));
+            if (AlertDescription.getAlertDescription(description.getValue()) == null) {
+                sb.append(description.getValue());
+            } else {
+                sb.append(AlertDescription.getAlertDescription(description.getValue()));
+            }
         } else {
             sb.append("null");
         }
@@ -112,7 +121,7 @@ public class AlertMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
-
+        sb.append("AlertMessage:");
         sb.append("ALERT (");
         if (level != null && level.getValue() != null) {
             sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());
@@ -144,7 +153,7 @@ public class AlertMessage extends ProtocolMessage {
         }
         AlertMessage alert = (AlertMessage) obj;
         return (Objects.equals(alert.getLevel().getValue(), this.getLevel().getValue()))
-                && (Objects.equals(alert.getDescription().getValue(), alert.getDescription().getValue()));
+                && (Objects.equals(alert.getDescription().getValue(), this.getDescription().getValue()));
 
     }
 

@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtendedMasterSecretExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtendedMasterSecretExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -38,13 +39,16 @@ public class ExtendedMasterSecretExtensionHandlerTest {
     public void testAdjustTLSContext() {
         ExtendedMasterSecretExtensionMessage msg = new ExtendedMasterSecretExtensionMessage();
         context.setTalkingConnectionEndType(ConnectionEndType.CLIENT);
-
         handler.adjustTLSContext(msg);
 
-        assertFalse(context.isExtendedMasterSecretExtension());
+        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertFalse(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertFalse(context.isUseExtendedMasterSecret());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         handler.adjustTLSContext(msg);
-        assertTrue(context.isExtendedMasterSecretExtension());
+        assertTrue(context.isExtensionProposed(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(context.isExtensionNegotiated(ExtensionType.EXTENDED_MASTER_SECRET));
+        assertTrue(context.isUseExtendedMasterSecret());
     }
 
     @Test

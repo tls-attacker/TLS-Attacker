@@ -15,14 +15,14 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
-import de.rub.nds.tlsattacker.core.record.crypto.BlobDecryptor;
-import de.rub.nds.tlsattacker.core.record.crypto.BlobEncryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.record.parser.BlobRecordParser;
 import de.rub.nds.tlsattacker.core.record.preparator.AbstractRecordPreparator;
 import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -42,17 +42,22 @@ public class BlobRecordLayer extends RecordLayer {
 
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
-        cipher = new RecordNullCipher();
-        encryptor = new BlobEncryptor(cipher);
-        decryptor = new BlobDecryptor(cipher);
+        cipher = new RecordNullCipher(context);
+        encryptor = new RecordEncryptor(cipher, context);
+        decryptor = new RecordDecryptor(cipher, context);
     }
 
     @Override
     public List<AbstractRecord> parseRecords(byte[] rawBytes) {
         List<AbstractRecord> list = new LinkedList<>();
-        BlobRecordParser parser = new BlobRecordParser(0, rawBytes, context.getSelectedProtocolVersion());
+        BlobRecordParser parser = new BlobRecordParser(0, rawBytes, context.getChooser().getSelectedProtocolVersion());
         list.add(parser.parse());
         return list;
+    }
+
+    @Override
+    public List<AbstractRecord> parseRecordsSoftly(byte[] rawBytes) {
+        return parseRecords(rawBytes);
     }
 
     @Override
@@ -69,7 +74,8 @@ public class BlobRecordLayer extends RecordLayer {
         records = seperator.parse();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (AbstractRecord record : records) {
-            AbstractRecordPreparator preparator = record.getRecordPreparator(context, encryptor, contentType);
+            AbstractRecordPreparator preparator = record.getRecordPreparator(context.getChooser(), encryptor,
+                    contentType);
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {

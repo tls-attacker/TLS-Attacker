@@ -8,6 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.AES;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.CAMELLIA;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES40;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DESede;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.FORTEZZA;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.IDEA;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.NULL;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC2;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC4;
+import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.SEED;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +32,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class AlgorithmResolver {
 
-    private static final Logger LOGGER = LogManager.getLogger("AlgorithmResolver");
+    private static final Logger LOGGER = LogManager.getLogger(AlgorithmResolver.class.getName());
 
     /**
      * Returns a PRF algorithm based on the protocol version and the cipher
@@ -42,7 +53,7 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
-        } else if (cipherSuite.name().endsWith("SHA384")) {
+        } else if (cipherSuite.usesSHA384()) {
             result = PRFAlgorithm.TLS_PRF_SHA384;
         } else {
             result = PRFAlgorithm.TLS_PRF_SHA256;
@@ -72,7 +83,7 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
-        } else if (cipherSuite.name().endsWith("SHA384")) {
+        } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
         } else {
             result = DigestAlgorithm.SHA256;
@@ -82,6 +93,9 @@ public class AlgorithmResolver {
     }
 
     public static KeyExchangeAlgorithm getKeyExchangeAlgorithm(CipherSuite cipherSuite) {
+        if (cipherSuite.isTLS13()) {
+            return null;
+        }
         String cipher = cipherSuite.toString().toUpperCase();
         if (cipher.contains("TLS_RSA_WITH") || cipher.contains("TLS_RSA_EXPORT")) {
             return KeyExchangeAlgorithm.RSA;
@@ -239,19 +253,53 @@ public class AlgorithmResolver {
     }
 
     /**
+     * @param cipherSuite
+     * @return
+     */
+    public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
+        String cipher = cipherSuite.toString().toUpperCase();
+        if (cipher.contains("3DES_EDE")) {
+            return DESede;
+        } else if (cipher.contains("AES")) {
+            return AES;
+        } else if (cipher.contains("RC4")) {
+            return RC4;
+        } else if (cipher.contains("RC2")) {
+            return RC2; // Tode add export rc2
+        } else if (cipher.contains("WITH_NULL")) {
+            return NULL;
+        } else if (cipher.contains("IDEA")) {
+            return IDEA;
+        } else if (cipher.contains("DES40")) {
+            return DES40;
+        } else if (cipher.contains("DES")) {
+            return DES;
+        } else if (cipher.contains("WITH_FORTEZZA")) {
+            return FORTEZZA;
+        } else if (cipher.contains("CAMELLIA")) {
+            return CAMELLIA;
+        } else if (cipher.contains("SEED")) {
+            return SEED;
+        } else if (cipher.contains("ARIA")) {
+            return SEED;
+        }
+        throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
+    }
+
+    /**
      *
      * @param cipherSuite
      * @return
      */
     public static CipherType getCipherType(CipherSuite cipherSuite) {
-        String cipher = cipherSuite.toString().toUpperCase();
-        if (cipherSuite.isAEAD()) {
+        String cs = cipherSuite.toString().toUpperCase();
+        if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB()) {
             return CipherType.AEAD;
-        } else if (cipher.contains("AES") || cipher.contains("DES") || cipher.contains("IDEA")
-                || cipher.contains("WITH_FORTEZZA") || cipher.contains("CAMELLIA") || cipher.contains("GOST")
-                || cipher.contains("WITH_SEED") || cipher.contains("WITH_ARIA") || cipher.contains("RC2")) {
+        } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
+                || cs.contains("CAMELLIA") || cs.contains("GOST") || cs.contains("WITH_SEED")
+                || cs.contains("WITH_ARIA") || cs.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cipher.contains("RC4") || cipher.contains("WITH_NULL") || cipher.contains("CHACHA")) {
+        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
@@ -263,16 +311,24 @@ public class AlgorithmResolver {
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
     }
 
-    public static MacAlgorithm getMacAlgorithm(CipherSuite cipherSuite) {
+    public static MacAlgorithm getMacAlgorithm(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
         MacAlgorithm result = null;
-        if (cipherSuite.isAEAD()) {
+        if (getCipherType(cipherSuite) == CipherType.AEAD) {
             result = MacAlgorithm.AEAD;
         } else {
             String cipher = cipherSuite.toString();
             if (cipher.contains("MD5")) {
-                result = MacAlgorithm.HMAC_MD5;
+                if (protocolVersion.isSSL()) {
+                    result = MacAlgorithm.SSLMAC_MD5;
+                } else {
+                    result = MacAlgorithm.HMAC_MD5;
+                }
             } else if (cipher.endsWith("SHA")) {
-                result = MacAlgorithm.HMAC_SHA1;
+                if (protocolVersion.isSSL()) {
+                    result = MacAlgorithm.SSLMAC_SHA1;
+                } else {
+                    result = MacAlgorithm.HMAC_SHA1;
+                }
             } else if (cipher.contains("SHA256")) {
                 result = MacAlgorithm.HMAC_SHA256;
             } else if (cipher.contains("SHA384")) {
@@ -298,6 +354,23 @@ public class AlgorithmResolver {
             return result;
         } else {
             throw new UnsupportedOperationException("The Mac algorithm for cipher " + cipherSuite
+                    + " is not supported yet");
+        }
+    }
+
+    public static HKDFAlgorithm getHKDFAlgorithm(CipherSuite cipherSuite) {
+        HKDFAlgorithm result = null;
+        String cipher = cipherSuite.toString();
+        if (cipher.endsWith("SHA256")) {
+            result = HKDFAlgorithm.TLS_HKDF_SHA256;
+        } else if (cipher.endsWith("SHA384")) {
+            result = HKDFAlgorithm.TLS_HKDF_SHA384;
+        }
+        if (result != null) {
+            LOGGER.debug("Using the following HKDF Algorithm: {}", result);
+            return result;
+        } else {
+            throw new UnsupportedOperationException("The HKDF algorithm for cipher suite " + cipherSuite
                     + " is not supported yet");
         }
     }

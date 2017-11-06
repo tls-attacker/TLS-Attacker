@@ -11,8 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
-import static org.junit.Assert.*;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +33,7 @@ public class AlertPreparatorTest {
     public void setUp() {
         message = new AlertMessage();
         context = new TlsContext();
-        preparator = new AlertPreparator(context, message);
+        preparator = new AlertPreparator(context.getChooser(), message);
     }
 
     /**
@@ -45,6 +45,20 @@ public class AlertPreparatorTest {
         preparator.prepare();
         assertTrue(message.getLevel().getValue() == AlertLevel.FATAL.getValue());
         assertTrue(message.getDescription().getValue() == AlertDescription.DECRYPT_ERROR.getValue());
+    }
+
+    @Test
+    public void testPrepareFromDefaultConfig() {
+        context.getConfig().setDefaultAlertDescription((byte) 2);
+        context.getConfig().setDefaultAlertLevel((byte) 2);
+        preparator.prepare();
+        assertTrue(message.getLevel().getValue() == 2);
+        assertTrue(message.getDescription().getValue() == 2);
+    }
+
+    @Test
+    public void testNoContextPrepare() {
+        preparator.prepare();
     }
 
 }

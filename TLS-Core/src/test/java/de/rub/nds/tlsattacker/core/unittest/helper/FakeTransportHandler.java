@@ -23,8 +23,9 @@ public class FakeTransportHandler extends TransportHandler {
     private byte[] fetchableByte;
     private byte[] sendByte;
 
-    public FakeTransportHandler() {
-        super(null, 0, ConnectionEndType.CLIENT, 0);
+    public FakeTransportHandler(ConnectionEndType type) {
+        super(0, type);
+        fetchableByte = new byte[0];
     }
 
     public byte[] getSendByte() {
@@ -57,6 +58,16 @@ public class FakeTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return false;
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

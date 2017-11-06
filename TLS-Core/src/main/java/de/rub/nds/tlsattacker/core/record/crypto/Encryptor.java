@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,15 +18,26 @@ import org.apache.logging.log4j.Logger;
 /**
  *
  * @author Robert Merget <robert.merget@rub.de>
- * @param <T>
  */
-public abstract class Encryptor<T extends AbstractRecord> extends RecordCryptoUnit {
+public abstract class Encryptor extends RecordCryptoUnit {
 
-    protected static final Logger LOGGER = LogManager.getLogger("Encryptor");
+    protected static final Logger LOGGER = LogManager.getLogger(Encryptor.class.getName());
 
     public Encryptor(RecordCipher cipher) {
         super(cipher);
     }
 
-    public abstract void encrypt(T object);
+    void encrypt(AbstractRecord object) {
+        if (object instanceof BlobRecord) {
+            encrypt((BlobRecord) object);
+        } else if (object instanceof Record) {
+            encrypt((Record) object);
+        } else {
+            throw new UnsupportedOperationException("Record type unknown.");
+        }
+    }
+
+    public abstract void encrypt(Record object);
+
+    public abstract void encrypt(BlobRecord object);
 }

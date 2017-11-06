@@ -10,8 +10,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.workflow.TlsConfig;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.assertFalse;
@@ -73,22 +73,26 @@ public class ProtocolVersionDelegateTest {
      */
     @Test
     public void testApplyDelegate() {
-        TlsConfig config = TlsConfig.createConfig();
+        Config config = Config.createConfig();
         config.setHighestProtocolVersion(ProtocolVersion.SSL2);
-        config.setTransportHandlerType(TransportHandlerType.EAP_TLS);
+        config.setDefaultTransportHandlerType(TransportHandlerType.EAP_TLS);
         args = new String[2];
         args[0] = "-version";
         args[1] = "TLS12";
         jcommander.parse(args);
+        assertTrue(config.getHighestProtocolVersion() == ProtocolVersion.SSL2);
+        assertTrue(config.getDefaultTransportHandlerType() == TransportHandlerType.EAP_TLS);
+        assertTrue(config.getConnectionEnd().getTransportHandlerType() == TransportHandlerType.EAP_TLS);
         delegate.applyDelegate(config);
         assertTrue(config.getHighestProtocolVersion() == ProtocolVersion.TLS12);
-        assertTrue(config.getTransportHandlerType() == TransportHandlerType.TCP);
+        assertTrue(config.getDefaultTransportHandlerType() == TransportHandlerType.TCP);
+        assertTrue(config.getConnectionEnd().getTransportHandlerType() == TransportHandlerType.TCP);
     }
 
     @Test
     public void testNothingSetNothingChanges() {
-        TlsConfig config = TlsConfig.createConfig();
-        TlsConfig config2 = TlsConfig.createConfig();
+        Config config = Config.createConfig();
+        Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
         assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
         // ugly

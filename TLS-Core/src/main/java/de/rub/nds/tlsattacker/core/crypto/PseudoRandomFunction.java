@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -29,7 +30,7 @@ import org.bouncycastle.crypto.tls.TlsUtils;
  */
 public class PseudoRandomFunction {
 
-    static final Logger LOGGER = LogManager.getLogger("PRF");
+    static final Logger LOGGER = LogManager.getLogger(PseudoRandomFunction.class.getName());
 
     /**
      * master secret label
@@ -94,7 +95,7 @@ public class PseudoRandomFunction {
      */
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm) {
         try {
-            byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(), seed);
+            byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             SecretKeySpec keySpec = null;
 
             if (secret == null || secret.length == 0) {

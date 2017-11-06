@@ -12,11 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.SignedCertificateTimestampExtensionHandler;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
 
 /**
- *
+ * This extension is defined in RFC6962
+ * 
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage {
@@ -29,17 +28,6 @@ public class SignedCertificateTimestampExtensionMessage extends ExtensionMessage
      */
     public SignedCertificateTimestampExtensionMessage() {
         super(ExtensionType.SIGNED_CERTIFICATE_TIMESTAMP);
-    }
-
-    /**
-     * Returns a SignedCertificateTimestampExtensionHandler
-     * 
-     * @param context
-     * @return
-     */
-    @Override
-    public SignedCertificateTimestampExtensionHandler getHandler(TlsContext context) {
-        return new SignedCertificateTimestampExtensionHandler(context);
     }
 
     /**

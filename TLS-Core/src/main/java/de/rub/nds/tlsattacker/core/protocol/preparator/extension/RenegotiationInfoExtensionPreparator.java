@@ -10,7 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
-import de.rub.nds.tlsattacker.core.workflow.TlsContext;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationInfoExtensionSerializer;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  *
@@ -23,19 +25,38 @@ public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<Re
     /**
      * Constructor
      *
-     * @param context
+     * @param chooser
      * @param message
+     * @param serializer
      */
-    public RenegotiationInfoExtensionPreparator(TlsContext context, RenegotiationInfoExtensionMessage message) {
-        super(context, message);
+    public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message,
+            RenegotiationInfoExtensionSerializer serializer) {
+        super(chooser, message, serializer);
         this.message = message;
     }
 
     @Override
     public void prepareExtensionContent() {
-        message.setRenegotiationInfo(context.getConfig().getRenegotiationInfo());
+        if (chooser.getContext().getLastClientVerifyData() != null
+                && chooser.getContext().getLastServerVerifyData() != null) {
+            // We are renegotiating
+            if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+                message.setRenegotiationInfo(chooser.getContext().getLastClientVerifyData());
+            } else {
+                message.setRenegotiationInfo(ArrayConverter.concatenate(chooser.getContext().getLastClientVerifyData(),
+                        chooser.getContext().getLastServerVerifyData()));
+            }
+        } else {
+            // First time we send this message
+            if (chooser.getContext().getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+                message.setRenegotiationInfo(chooser.getConfig().getDefaultClientRenegotiationInfo());
+            } else {
+                message.setRenegotiationInfo(chooser.getConfig().getDefaultServerRenegotiationInfo());
+            }
+        }
+        message.setRenegotiationInfoLength(message.getRenegotiationInfo().getValue().length);
         LOGGER.debug("Prepared the RenegotiationInfo extension with info "
-                + ArrayConverter.bytesToHexString(context.getConfig().getRenegotiationInfo()));
+                + ArrayConverter.bytesToHexString(message.getRenegotiationInfo().getValue()));
     }
 
 }

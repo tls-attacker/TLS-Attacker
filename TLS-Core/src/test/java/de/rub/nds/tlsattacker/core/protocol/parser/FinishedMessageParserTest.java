@@ -9,14 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -47,16 +46,30 @@ public class FinishedMessageParserTest {
             .hexStringToByteArray("1400000c5ddfb413e7b592b4ec0186c5");
     private static final byte[] MSG_DECRYPTED_WIRESHARK_CAP_1_VERIFY_DATA = ArrayConverter
             .hexStringToByteArray("5ddfb413e7b592b4ec0186c5");
+    private static final byte[] MSG_CLIENT_FINISHED_VERIFY_DATA_SSL3 = ArrayConverter
+            .hexStringToByteArray("ca89059c0d65ae7d5e0c11d99e7de49f830776fa43be27550285015fe254946754b8306f");
+    private static final byte[] MSG_SERVER_FINISHED_VERIFY_DATA_SSL3 = ArrayConverter
+            .hexStringToByteArray("d9f3911c7cd84b44bd3aa9fa730fc9883fdadfa90ac7e7d1c68fa7ef19749f263c3a1811");
+    private static final byte[] SSL3_FINISHED_HEADER = ArrayConverter.hexStringToByteArray("14000024");
+    private static final byte[] MSG_CLIENT_FINISHED_SSL3 = ArrayConverter.concatenate(SSL3_FINISHED_HEADER,
+            MSG_CLIENT_FINISHED_VERIFY_DATA_SSL3);
+    private static final byte[] MSG_SERVER_FINISHED_SSL3 = ArrayConverter.concatenate(SSL3_FINISHED_HEADER,
+            MSG_SERVER_FINISHED_VERIFY_DATA_SSL3);
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] {
-                { MSG_0, 0, MSG_0, HandshakeMessageType.FINISHED, 12, MSG_0_VERIFY_DATA },
-                { MSG_1, 6, MSG_0, HandshakeMessageType.FINISHED, 12, MSG_0_VERIFY_DATA },
+                { MSG_0, 0, MSG_0, HandshakeMessageType.FINISHED, 12, MSG_0_VERIFY_DATA, ProtocolVersion.TLS12 },
+                { MSG_1, 6, MSG_0, HandshakeMessageType.FINISHED, 12, MSG_0_VERIFY_DATA, ProtocolVersion.TLS12 },
                 { MSG_DECRYPTED_WIRESHARK_CAP_0, 0, MSG_DECRYPTED_WIRESHARK_CAP_0, HandshakeMessageType.FINISHED, 12,
-                        MSG_DECRYPTED_WIRESHARK_CAP_0_VERIFY_DATA },
+                        MSG_DECRYPTED_WIRESHARK_CAP_0_VERIFY_DATA, ProtocolVersion.TLS12 },
                 { MSG_DECRYPTED_WIRESHARK_CAP_1, 0, MSG_DECRYPTED_WIRESHARK_CAP_1, HandshakeMessageType.FINISHED, 12,
-                        MSG_DECRYPTED_WIRESHARK_CAP_1_VERIFY_DATA } });
+                        MSG_DECRYPTED_WIRESHARK_CAP_1_VERIFY_DATA, ProtocolVersion.TLS12 },
+
+                { MSG_CLIENT_FINISHED_SSL3, 0, MSG_CLIENT_FINISHED_SSL3, HandshakeMessageType.FINISHED, 36,
+                        MSG_CLIENT_FINISHED_VERIFY_DATA_SSL3, ProtocolVersion.SSL3 },
+                { MSG_SERVER_FINISHED_SSL3, 0, MSG_SERVER_FINISHED_SSL3, HandshakeMessageType.FINISHED, 36,
+                        MSG_SERVER_FINISHED_VERIFY_DATA_SSL3, ProtocolVersion.SSL3 } });
     }
 
     private final byte[] message;
@@ -68,14 +81,17 @@ public class FinishedMessageParserTest {
 
     private final byte[] verifyData;
 
+    private final ProtocolVersion version;
+
     public FinishedMessageParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length, byte[] verifyData) {
+            int length, byte[] verifyData, ProtocolVersion version) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.verifyData = verifyData;
+        this.version = version;
     }
 
     /**
@@ -83,7 +99,7 @@ public class FinishedMessageParserTest {
      */
     @Test
     public void testParse() {
-        FinishedMessageParser parser = new FinishedMessageParser(start, message, ProtocolVersion.TLS12);
+        FinishedMessageParser parser = new FinishedMessageParser(start, message, version);
         FinishedMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);
