@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandle
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PSKDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PSKClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PSKServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PSKDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PSKECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PSKECDHClientKeyExchangeHandler;
@@ -307,6 +308,8 @@ public class HandlerFactory {
             case DH_DSS:
             case DH_RSA:
                 return new DHEServerKeyExchangeHandler(context);
+            case PSK:
+                return new PSKServerKeyExchangeHandler(context);
             case DHE_PSK:
                 return new PSKDHEServerKeyExchangeHandler(context);
             case ECDHE_PSK:

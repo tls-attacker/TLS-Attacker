@@ -301,7 +301,6 @@ public class Config implements Serializable {
      * Default SRP Identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-
     private byte[] secureRemotePasswordExtensionIdentifier = ArrayConverter.hexStringToByteArray("557365724E616D65");
 
     /**
@@ -493,7 +492,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with SRP extension
      */
-    private Boolean addSRPExtension = false;
+    private Boolean addSRPExtension = true;
 
     /**
      * If we generate ClientHello with SRTP extension
@@ -1849,11 +1848,11 @@ public class Config implements Serializable {
      */
     public void setDefaultTimeout(Integer timeout) {
         defaultTimeout = timeout;
-        
-        if(connectionEnds != null) {
-        	for (ConnectionEnd conEnd : connectionEnds) {
-        		conEnd.setDefaultTimeout(defaultTimeout);
-        	}
+
+        if (connectionEnds != null) {
+            for (ConnectionEnd conEnd : connectionEnds) {
+                conEnd.setDefaultTimeout(defaultTimeout);
+            }
         }
     }
 

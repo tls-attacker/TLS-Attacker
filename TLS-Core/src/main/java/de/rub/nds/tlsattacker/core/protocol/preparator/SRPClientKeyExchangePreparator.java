@@ -90,6 +90,24 @@ public class SRPClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         return output;
     }
 
+    private byte[] calculatePremasterSecretServer(BigInteger modulus, BigInteger generator,
+            BigInteger serverPrivateKey, BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt,
+            byte[] identity, byte[] password) {
+        BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
+        BigInteger x = calculateX(salt, identity, password);
+        BigInteger v = calculateV(x, generator, modulus);
+        BigInteger helpValue1 = v.modPow(u, modulus);
+        BigInteger helpValue2 = clientPublicKey.multiply(helpValue1);
+        helpValue1 = helpValue2.modPow(serverPrivateKey, helpValue2);
+        byte[] output = ArrayConverter.bigIntegerToByteArray(helpValue1);
+        return output;
+    }
+
+    private BigInteger calculateV(BigInteger x, BigInteger generator, BigInteger modulus) {
+        BigInteger v = generator.modPow(x, modulus);
+        return v;
+    }
+
     private BigInteger calculateU(BigInteger clientPublic, BigInteger serverPublic, BigInteger modulus) {
         byte[] paddedClientPublic = calculatePadding(modulus, clientPublic);
         LOGGER.debug("ClientPublic Key:"
@@ -195,9 +213,9 @@ public class SRPClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         BigInteger privateKey = chooser.getSRPServerPrivateKey();
         BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
         msg.prepareComputations();
-        premasterSecret = calculatePremasterSecret(chooser.getSRPModulus(), chooser.getSRPGenerator(), privateKey,
-                chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPSalt(), chooser.getSRPIdentity(),
-                chooser.getSRPPassword());
+        premasterSecret = calculatePremasterSecretServer(chooser.getSRPModulus(), chooser.getSRPGenerator(),
+                privateKey, chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPSalt(),
+                chooser.getSRPIdentity(), chooser.getSRPPassword());
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }

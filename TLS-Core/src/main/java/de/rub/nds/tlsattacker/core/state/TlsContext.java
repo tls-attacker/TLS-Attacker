@@ -276,6 +276,8 @@ public class TlsContext {
 
     private byte[] srpIdentity;
 
+    private byte[] pskKey;
+
     private NamedCurve selectedCurve;
 
     private CustomECPoint clientEcPublicKey;
@@ -637,6 +639,14 @@ public class TlsContext {
 
     public void setSRPSalt(byte[] srpSalt) {
         this.srpSalt = srpSalt;
+    }
+
+    public byte[] getPSKKey() {
+        return pskKey;
+    }
+
+    public void setPSKKeyt(byte[] pskKey) {
+        this.pskKey = pskKey;
     }
 
     public byte[] getSRPPassword() {

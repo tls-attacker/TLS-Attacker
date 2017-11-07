@@ -102,8 +102,12 @@ public class PSKDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
     }
 
     private void writePSKIdentityHintLength(PSKDHEServerKeyExchangeMessage msg) {
-        appendInt(msg.getIdentityHint().getValue().length, HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentityHint().getValue()));
+        if (msg.getIdentityHint() != null) {
+            appendInt(msg.getIdentityHint().getValue().length, HandshakeByteLength.PSK_IDENTITY_LENGTH);
+            LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentityHint().getValue()));
+        } else {
+            appendInt(HandshakeByteLength.PSK_ZERO, HandshakeByteLength.PSK_IDENTITY_LENGTH);
+        }
     }
 
     /**
@@ -111,7 +115,9 @@ public class PSKDHEServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
      * the final byte[]
      */
     private void writePSKIdentityHint(PSKDHEServerKeyExchangeMessage msg) {
-        appendBytes(msg.getIdentityHint().getValue());
-        LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
+        if (msg.getIdentityHint() != null) {
+            appendBytes(msg.getIdentityHint().getValue());
+            LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
+        }
     }
 }

@@ -39,6 +39,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKRSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKDHEServerKeyExchangeMessage;
@@ -47,8 +48,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.PSKECDHEServerKeyExchangeMes
 import de.rub.nds.tlsattacker.core.protocol.message.SRPClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SRPServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
@@ -61,9 +64,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
+ * Create a WorkflowTace based on a Config instance.
  */
 public class WorkflowConfigurationFactory {
 
@@ -97,6 +98,8 @@ public class WorkflowConfigurationFactory {
                 return createResumptionWorkflow();
             case FULL_RESUMPTION:
                 return createFullResumptionWorkflow();
+            case SIMPLE_MITM_PROXY:
+                return createSimpleMitmProxyWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -112,12 +115,14 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the default connection end defined in config.
+     * 
+     * @return A HelloWorkflow
      */
     public WorkflowTrace createHelloWorkflow() {
         return createHelloWorkflow(getSafeSingleContextConnectionEnd());
     }
-    
-/**
+
+    /**
      * Create a hello workflow for the given connection end.
      */
     private WorkflowTrace createHelloWorkflow(ConnectionEnd ourConnectionEnd) {
@@ -187,11 +192,13 @@ public class WorkflowConfigurationFactory {
                 messages));
 
         return workflowTrace;
-}
+    }
 
-       /**
+    /**
      * Create a handshake workflow for the default connection end defined in
      * config.
+     * 
+     * @return A HandshakeWorkflow
      */
     public WorkflowTrace createHandshakeWorkflow() {
         return createHandshakeWorkflow(getSafeSingleContextConnectionEnd());
@@ -232,95 +239,13 @@ public class WorkflowConfigurationFactory {
         }
 
         return workflowTrace;
-        }
-    
-    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
-        if (algorithm != null) {
-
-            switch (algorithm) {
-                case RSA:
-                    messages.add(new RSAClientKeyExchangeMessage(config));
-                    break;
-                case ECDHE_ECDSA:
-                case ECDH_ECDSA:
-                case ECDH_RSA:
-                case ECDHE_RSA:
-                    messages.add(new ECDHClientKeyExchangeMessage(config));
-                    break;
-                case DHE_DSS:
-                case DHE_RSA:
-                case DH_ANON:
-                case DH_DSS:
-                case DH_RSA:
-                    messages.add(new DHClientKeyExchangeMessage(config));
-                    break;
-                case PSK:
-                    messages.add(new PSKClientKeyExchangeMessage(config));
-                    break;
-                case DHE_PSK:
-                    messages.add(new PSKDHClientKeyExchangeMessage(config));
-                    break;
-                case ECDHE_PSK:
-                    messages.add(new PSKECDHClientKeyExchangeMessage(config));
-                    break;
-                case RSA_PSK:
-                    messages.add(new PSKRSAClientKeyExchangeMessage(config));
-                    break;
-                case SRP_SHA_DSS:
-                case SRP_SHA_RSA:
-                case SRP_SHA:
-                    messages.add(new SRPClientKeyExchangeMessage(config));
-                    break;
-                default:
-                    LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
-                            + ", not adding ClientKeyExchange Message");
-                    break;
-            }
-        } else {
-            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not adding ClientKeyExchange Message");
-        }
     }
 
-    private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        if (cs.isEphemeral()) {
-            switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
-                case ECDHE_ECDSA:
-                case ECDHE_RSA:
-                    messages.add(new ECDHEServerKeyExchangeMessage(config));
-                    break;
-                case DHE_DSS:
-                case DHE_RSA:
-                    messages.add(new DHEServerKeyExchangeMessage(config));
-                    break;
-                case DHE_PSK:
-                    messages.add(new PSKDHEServerKeyExchangeMessage(config));
-                    break;
-                case ECDHE_PSK:
-                    messages.add(new PSKECDHEServerKeyExchangeMessage(config));
-                    break;
-                case SRP_SHA_DSS:
-                case SRP_SHA_RSA:
-                case SRP_SHA:
-                    messages.add(new SRPServerKeyExchangeMessage(config));
-                    break;
-                default:
-                    LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
-                            + ", not adding ServerKeyExchange Message");
-                    break;
-            }
-        } else {
-            LOGGER.debug("Not adding ServerKeyExchange message - " + cs.name() + " is not an Ephermaral Ciphersuite");
-        }
-    }
-
-     /**
+    /**
      * Creates an extended TLS workflow including an application data and
      * heartbeat messages
      *
-     * @return
+     * @return A FullWorkflow with ApplicationMessages
      */
     public WorkflowTrace createFullWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
@@ -437,5 +362,167 @@ public class WorkflowConfigurationFactory {
                 new HttpsResponseMessage(config));
         trace.addTlsAction(action);
         return trace;
+    }
+
+    private WorkflowTrace createSimpleMitmProxyWorkflow() {
+        List<ConnectionEnd> conEnds = config.getConnectionEnds();
+        if ((conEnds == null) || (conEnds.isEmpty())) {
+            throw new ConfigurationException("No connection ends defined in config");
+        }
+
+        ConnectionEnd acceptingConnectionEnd = null;
+        ConnectionEnd connectingConnectionEnd = null;
+        for (ConnectionEnd c : conEnds) {
+            if (c.getConnectionEndType() == ConnectionEndType.SERVER) {
+                if (acceptingConnectionEnd == null) {
+                    acceptingConnectionEnd = c;
+                } else {
+                    throw new ConfigurationException("This workflow type requires exactly one "
+                            + "accepting connection end (i.e. of type SERVER). But multiple"
+                            + "accepting connection ends are defined.");
+                }
+            }
+            if (c.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                if (connectingConnectionEnd == null) {
+                    connectingConnectionEnd = c;
+                } else {
+                    throw new ConfigurationException("This workflow type requires exactly one "
+                            + "connecting connection end (i.e. of type CLIENT). But multiple"
+                            + "connecting connection ends are defined.");
+                }
+            }
+        }
+        if (connectingConnectionEnd == null || acceptingConnectionEnd == null) {// client
+                                                                                // ->
+                                                                                // mitm
+            throw new ConfigurationException("Could not find both necesary connection ends");
+        }
+        String clientToMitmAlias = acceptingConnectionEnd.getAlias();
+        // mitm -> server
+        String mitmToServerAlias = connectingConnectionEnd.getAlias();
+
+        LOGGER.info("Building mitm trace for: " + acceptingConnectionEnd + ", " + connectingConnectionEnd);
+
+        WorkflowTrace clientToMitmHandshake = createHandshakeWorkflow(acceptingConnectionEnd);
+        WorkflowTrace mitmToServerHandshake = createHandshakeWorkflow(connectingConnectionEnd);
+
+        WorkflowTrace trace = new WorkflowTrace(config);
+        trace.addTlsActions(clientToMitmHandshake.getTlsActions());
+        trace.addTlsActions(mitmToServerHandshake.getTlsActions());
+
+        // Forward request client -> server
+        List<ProtocolMessage> messages = new LinkedList<>();
+        ForwardAction f = new ForwardAction(new ApplicationMessage(config));
+        // TODO FIX should not depend on contextAlias if receive/forward
+        // alias is set. Add a flag to fix it.
+        f.setContextAlias(clientToMitmAlias);
+        f.setReceiveFromAlias(clientToMitmAlias);
+        f.setForwardToAlias(mitmToServerAlias);
+        trace.addTlsAction(f);
+
+        // Print the application data contents to console
+        PrintLastHandledApplicationDataAction p = new PrintLastHandledApplicationDataAction();
+        p.setContextAlias(mitmToServerAlias);
+        p.setStringEncoding(StandardCharsets.US_ASCII);
+        trace.addTlsAction(p);
+
+        // Forward response server -> client
+        messages = new LinkedList<>();
+        f = new ForwardAction(new ApplicationMessage(config));
+        f.setContextAlias(clientToMitmAlias);
+        f.setReceiveFromAlias(mitmToServerAlias);
+        f.setForwardToAlias(clientToMitmAlias);
+        trace.addTlsAction(f);
+
+        // Print the server's answer
+        p = new PrintLastHandledApplicationDataAction();
+        p.setContextAlias(clientToMitmAlias);
+        p.setStringEncoding(StandardCharsets.US_ASCII);
+        trace.addTlsAction(p);
+
+        return trace;
+    }
+
+    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+        if (algorithm != null) {
+
+            switch (algorithm) {
+                case RSA:
+                    messages.add(new RSAClientKeyExchangeMessage(config));
+                    break;
+                case ECDHE_ECDSA:
+                case ECDH_ECDSA:
+                case ECDH_RSA:
+                case ECDHE_RSA:
+                    messages.add(new ECDHClientKeyExchangeMessage(config));
+                    break;
+                case DHE_DSS:
+                case DHE_RSA:
+                case DH_ANON:
+                case DH_DSS:
+                case DH_RSA:
+                    messages.add(new DHClientKeyExchangeMessage(config));
+                    break;
+                case PSK:
+                    messages.add(new PSKClientKeyExchangeMessage(config));
+                    break;
+                case DHE_PSK:
+                    messages.add(new PSKDHClientKeyExchangeMessage(config));
+                    break;
+                case ECDHE_PSK:
+                    messages.add(new PSKECDHClientKeyExchangeMessage(config));
+                    break;
+                case RSA_PSK:
+                    messages.add(new PSKRSAClientKeyExchangeMessage(config));
+                    break;
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    messages.add(new SRPClientKeyExchangeMessage(config));
+                    break;
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
+                            + ", not adding ClientKeyExchange Message");
+                    break;
+            }
+        } else {
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not adding ClientKeyExchange Message");
+        }
+    }
+
+    private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        if (cs.isEphemeral()) {
+            switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
+                case ECDHE_ECDSA:
+                case ECDHE_RSA:
+                    messages.add(new ECDHEServerKeyExchangeMessage(config));
+                    break;
+                case DHE_DSS:
+                case DHE_RSA:
+                    messages.add(new DHEServerKeyExchangeMessage(config));
+                    break;
+                case PSK:
+                    messages.add(new PSKServerKeyExchangeMessage(config));
+                    break;
+                case DHE_PSK:
+                    messages.add(new PSKDHEServerKeyExchangeMessage(config));
+                    break;
+                case ECDHE_PSK:
+                    messages.add(new PSKECDHEServerKeyExchangeMessage(config));
+                    break;
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    messages.add(new SRPServerKeyExchangeMessage(config));
+                    break;
+                default:
+                    LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
+                            + ", not adding ServerKeyExchange Message");
+                    break;
+            }
+        }
     }
 }

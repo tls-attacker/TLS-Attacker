@@ -31,9 +31,16 @@ public class PSKDHEServerKeyExchangePreparator extends ServerKeyExchangePreparat
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        msg.setIdentityHint(chooser.getConfig().getDefaultPSKIdentityHint());
-        msg.setIdentityHintLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentityHint().length,
-                HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        if (chooser.getConfig().getDefaultPSKIdentityHint() != null) {
+            msg.setIdentityHint(chooser.getConfig().getDefaultPSKIdentityHint());
+        }
+        if (chooser.getConfig().getDefaultPSKIdentityHint() != null) {
+            msg.setIdentityHintLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentityHint().length,
+                    HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        } else {
+            msg.setIdentityHintLength(ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO,
+                    HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        }
         msg.prepareComputations();
         setComputedModulus(msg);
         setComputedGenerator(msg);
