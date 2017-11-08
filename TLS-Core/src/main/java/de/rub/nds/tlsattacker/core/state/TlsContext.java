@@ -260,6 +260,14 @@ public class TlsContext {
 
     private BigInteger srpModulus;
 
+    private BigInteger pskModulus;
+
+    private BigInteger serverPSKPrivateKey;
+
+    private BigInteger serverPSKPublicKey;
+
+    private BigInteger pskGenerator;
+
     private BigInteger srpGenerator;
 
     private BigInteger serverSRPPublicKey;
@@ -271,6 +279,8 @@ public class TlsContext {
     private BigInteger clientSRPPrivateKey;
 
     private byte[] srpSalt;
+
+    private byte[] srpServerSalt;
 
     private byte[] srpPassword;
 
@@ -601,6 +611,38 @@ public class TlsContext {
         this.srpModulus = srpModulus;
     }
 
+    public BigInteger getPSKModulus() {
+        return pskModulus;
+    }
+
+    public void setPSKModulus(BigInteger pskModulus) {
+        this.pskModulus = pskModulus;
+    }
+
+    public BigInteger getServerPSKPrivateKey() {
+        return serverPSKPrivateKey;
+    }
+
+    public void setServerPSKPrivateKey(BigInteger serverPSKPrivateKey) {
+        this.serverPSKPrivateKey = serverPSKPrivateKey;
+    }
+
+    public BigInteger getServerPSKPublicKey() {
+        return serverPSKPublicKey;
+    }
+
+    public void setServerPSKPublicKey(BigInteger serverPSKPublicKey) {
+        this.serverPSKPublicKey = serverPSKPublicKey;
+    }
+
+    public BigInteger getPSKGenerator() {
+        return pskGenerator;
+    }
+
+    public void setPSKGenerator(BigInteger pskGenerator) {
+        this.pskGenerator = pskGenerator;
+    }
+
     public BigInteger getServerSRPPublicKey() {
         return serverSRPPublicKey;
     }
@@ -639,6 +681,14 @@ public class TlsContext {
 
     public void setSRPSalt(byte[] srpSalt) {
         this.srpSalt = srpSalt;
+    }
+
+    public byte[] getSRPServerSalt() {
+        return srpServerSalt;
+    }
+
+    public void setSRPServerSalt(byte[] srpServerSalt) {
+        this.srpServerSalt = srpServerSalt;
     }
 
     public byte[] getPSKKey() {

@@ -77,7 +77,7 @@ public class SRPServerKeyExchangeHandler extends ServerKeyExchangeHandler<SRPSer
     }
 
     private void adjustSalt(SRPServerKeyExchangeMessage message) {
-        tlsContext.setSRPSalt(message.getSalt().getValue());
-        LOGGER.debug("SRP Salt: " + ArrayConverter.bytesToHexString(tlsContext.getSRPSalt()));
+        tlsContext.setSRPServerSalt(message.getSalt().getValue());
+        LOGGER.debug("SRP Salt: " + ArrayConverter.bytesToHexString(tlsContext.getSRPServerSalt()));
     }
 }

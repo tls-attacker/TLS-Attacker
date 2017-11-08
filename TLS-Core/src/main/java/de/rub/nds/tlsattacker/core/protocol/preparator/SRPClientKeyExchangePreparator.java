@@ -214,7 +214,7 @@ public class SRPClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
         msg.prepareComputations();
         premasterSecret = calculatePremasterSecretServer(chooser.getSRPModulus(), chooser.getSRPGenerator(),
-                privateKey, chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPSalt(),
+                privateKey, chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPServerSalt(),
                 chooser.getSRPIdentity(), chooser.getSRPPassword());
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
@@ -251,7 +251,7 @@ public class SRPClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     private void setComputationSalt(SRPClientKeyExchangeMessage msg) {
-        msg.getComputations().setSalt(chooser.getSRPSalt());
+        msg.getComputations().setSalt(chooser.getSRPServerSalt());
         LOGGER.debug("Salt used for Computations: " + msg.getComputations().getSalt());
     }
 

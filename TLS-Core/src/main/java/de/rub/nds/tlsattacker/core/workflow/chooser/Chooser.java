@@ -140,6 +140,14 @@ public abstract class Chooser {
 
     public abstract BigInteger getSRPModulus();
 
+    public abstract BigInteger getPSKModulus();
+
+    public abstract BigInteger getPSKServerPrivateKey();
+
+    public abstract BigInteger getPSKServerPublicKey();
+
+    public abstract BigInteger getPSKGenerator();
+
     public abstract BigInteger getSRPGenerator();
 
     public abstract BigInteger getSRPServerPrivateKey();
@@ -151,6 +159,8 @@ public abstract class Chooser {
     public abstract BigInteger getSRPClientPublicKey();
 
     public abstract byte[] getSRPSalt();
+
+    public abstract byte[] getSRPServerSalt();
 
     public abstract byte[] getSRPPassword();
 

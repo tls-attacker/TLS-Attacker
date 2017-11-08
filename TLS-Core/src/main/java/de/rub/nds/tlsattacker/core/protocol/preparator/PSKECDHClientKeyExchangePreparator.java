@@ -31,7 +31,6 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
 import org.bouncycastle.math.ec.ECPoint;
-import org.bouncycastle.util.BigIntegers;
 
 /**
  *

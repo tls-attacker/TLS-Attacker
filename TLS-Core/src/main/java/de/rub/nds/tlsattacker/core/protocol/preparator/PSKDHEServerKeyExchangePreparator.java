@@ -80,7 +80,7 @@ public class PSKDHEServerKeyExchangePreparator extends ServerKeyExchangePreparat
     }
 
     private void preparePublicKey(PSKDHEServerKeyExchangeMessage msg) {
-        msg.setPublicKey(chooser.getDhServerPublicKey().toByteArray());
+        msg.setPublicKey(chooser.getPSKServerPublicKey().toByteArray());
         LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
@@ -90,17 +90,17 @@ public class PSKDHEServerKeyExchangePreparator extends ServerKeyExchangePreparat
     }
 
     private void setComputedPrivateKey(PSKDHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setPrivateKey(chooser.getDhServerPrivateKey());
+        msg.getComputations().setPrivateKey(chooser.getPSKServerPrivateKey());
         LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
     }
 
     private void setComputedModulus(PSKDHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setModulus(chooser.getDhModulus());
+        msg.getComputations().setModulus(chooser.getPSKModulus());
         LOGGER.debug("Modulus used for Computations: " + msg.getComputations().getModulus().getValue().toString(16));
     }
 
     private void setComputedGenerator(PSKDHEServerKeyExchangeMessage msg) {
-        msg.getComputations().setGenerator(chooser.getDhGenerator());
+        msg.getComputations().setGenerator(chooser.getPSKGenerator());
         LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
     }
 

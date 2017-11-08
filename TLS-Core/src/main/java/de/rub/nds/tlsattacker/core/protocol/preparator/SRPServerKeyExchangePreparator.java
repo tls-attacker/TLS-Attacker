@@ -53,6 +53,7 @@ public class SRPServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
         // Compute PublicKey
         publicKey = generatePublicKey(modulus, generator, privateKey, identity, password, salt);
+        publicKey.mod(modulus);
         prepareModulus(msg);
         prepareModulusLength(msg);
         prepareGenerator(msg);
@@ -78,8 +79,11 @@ public class SRPServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         BigInteger v = generator.modPow(x, modulus);
         BigInteger helpValue1 = generator.modPow(privateKey, modulus);
         BigInteger helpValue2 = k.multiply(v);
-        publickey = helpValue2.add(helpValue1);
-        publickey.mod(modulus);
+        helpValue2.mod(modulus);
+        helpValue1 = helpValue2.add(helpValue1);
+        publickey = helpValue1.mod(modulus);
+        LOGGER.debug(ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
+        LOGGER.debug(ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(publickey)));
         return publickey;
     }
 
@@ -209,7 +213,7 @@ public class SRPServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     private void setComputedSalt(SRPServerKeyExchangeMessage msg) {
-        msg.getComputations().setSalt(chooser.getSRPSalt());
+        msg.getComputations().setSalt(chooser.getSRPServerSalt());
         LOGGER.debug("Salt used for Computations: " + msg.getComputations().getSalt());
     }
 

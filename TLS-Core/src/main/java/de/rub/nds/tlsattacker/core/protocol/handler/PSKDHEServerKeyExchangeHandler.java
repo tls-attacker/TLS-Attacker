@@ -43,7 +43,7 @@ public class PSKDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<PSK
     @Override
     public void adjustTLSContext(PSKDHEServerKeyExchangeMessage message) {
         adjustDhGenerator(message);
-        adjustDhModulus(message);
+        adjustPSKModulus(message);
         adjustServerPublicKey(message);
         if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
             adjustServerPrivateKey(message);
@@ -55,22 +55,22 @@ public class PSKDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<PSK
      * @param context
      */
     private void adjustDhGenerator(PSKDHEServerKeyExchangeMessage message) {
-        tlsContext.setDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("Dh Generator: " + tlsContext.getDhGenerator());
+        tlsContext.setPSKGenerator(new BigInteger(1, message.getGenerator().getValue()));
+        LOGGER.debug("PSK Generator: " + tlsContext.getPSKGenerator());
     }
 
-    private void adjustDhModulus(PSKDHEServerKeyExchangeMessage message) {
-        tlsContext.setDhModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("Dh Modulus: " + tlsContext.getDhModulus());
+    private void adjustPSKModulus(PSKDHEServerKeyExchangeMessage message) {
+        tlsContext.setPSKModulus(new BigInteger(1, message.getModulus().getValue()));
+        LOGGER.debug("PSK Modulus: " + tlsContext.getPSKModulus());
     }
 
     private void adjustServerPublicKey(PSKDHEServerKeyExchangeMessage message) {
-        tlsContext.setServerDhPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
-        LOGGER.debug("Server PublicKey: " + tlsContext.getServerDhPublicKey());
+        tlsContext.setServerPSKPublicKey(new BigInteger(1, message.getPublicKey().getValue()));
+        LOGGER.debug("Server PublicKey: " + tlsContext.getServerPSKPublicKey());
     }
 
     private void adjustServerPrivateKey(PSKDHEServerKeyExchangeMessage message) {
-        tlsContext.setServerDhPrivateKey(message.getComputations().getPrivateKey().getValue());
-        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerDhPrivateKey());
+        tlsContext.setServerPSKPrivateKey(message.getComputations().getPrivateKey().getValue());
+        LOGGER.debug("Server PrivateKey: " + tlsContext.getServerPSKPrivateKey());
     }
 }

@@ -111,10 +111,10 @@ public class PSKDHClientKeyExchangePreparator extends ClientKeyExchangePreparato
 
     @Override
     public void prepareAfterParse() {
-        BigInteger privateKey = chooser.getDhServerPrivateKey();
+        BigInteger privateKey = chooser.getPSKServerPrivateKey();
         BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
         msg.prepareComputations();
-        dhValue = calculatePremasterSecret(chooser.getDhModulus(), privateKey, clientPublic);
+        dhValue = calculatePremasterSecret(chooser.getPSKModulus(), privateKey, clientPublic);
         premasterSecret = generatePremasterSecret(dhValue);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
@@ -126,17 +126,17 @@ public class PSKDHClientKeyExchangePreparator extends ClientKeyExchangePreparato
     }
 
     private void setComputationServerPublicKey(PSKDHClientKeyExchangeMessage msg) {
-        msg.getComputations().setServerPublicKey(chooser.getDhServerPublicKey());
+        msg.getComputations().setServerPublicKey(chooser.getPSKServerPublicKey());
         LOGGER.debug("Computation PublicKey: " + msg.getComputations().getServerPublicKey().getValue().toString());
     }
 
     private void setComputationModulus(PSKDHClientKeyExchangeMessage msg) {
-        msg.getComputations().setModulus(chooser.getDhModulus());
+        msg.getComputations().setModulus(chooser.getPSKModulus());
         LOGGER.debug("Modulus: " + msg.getComputations().getModulus().getValue());
     }
 
     private void setComputationGenerator(PSKDHClientKeyExchangeMessage msg) {
-        msg.getComputations().setGenerator(chooser.getDhGenerator());
+        msg.getComputations().setGenerator(chooser.getPSKGenerator());
         LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue());
     }
 }

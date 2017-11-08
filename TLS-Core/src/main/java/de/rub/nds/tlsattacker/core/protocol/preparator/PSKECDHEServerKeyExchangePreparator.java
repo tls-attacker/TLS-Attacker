@@ -49,16 +49,10 @@ public class PSKECDHEServerKeyExchangePreparator extends ServerKeyExchangePrepar
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        if (chooser.getConfig().getDefaultPSKIdentityHint() != null) {
-            msg.setIdentityHint(chooser.getConfig().getDefaultPSKIdentityHint());
-        }
-        if (chooser.getConfig().getDefaultPSKIdentityHint() != null) {
-            msg.setIdentityHintLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentityHint().length,
-                    HandshakeByteLength.PSK_IDENTITY_LENGTH));
-        } else {
-            msg.setIdentityHintLength(ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO,
-                    HandshakeByteLength.PSK_IDENTITY_LENGTH));
-        }
+        msg.setIdentityHint(chooser.getConfig().getDefaultPSKIdentityHint());
+        msg.setIdentityHintLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentityHint().length,
+                HandshakeByteLength.PSK_IDENTITY_LENGTH));
+
         generateNamedCurveList(msg);
         generatePointFormatList(msg);
         prepareCurveType(msg);

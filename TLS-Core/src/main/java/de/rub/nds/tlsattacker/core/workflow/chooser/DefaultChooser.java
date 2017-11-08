@@ -365,6 +365,42 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public BigInteger getPSKModulus() {
+        if (context.getPSKModulus() != null) {
+            return context.getPSKModulus();
+        } else {
+            return config.getDefaultPSKModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKServerPrivateKey() {
+        if (context.getServerPSKPrivateKey() != null) {
+            return context.getServerPSKPrivateKey();
+        } else {
+            return config.getDefaultPSKServerPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKServerPublicKey() {
+        if (context.getServerPSKPublicKey() != null) {
+            return context.getServerPSKPublicKey();
+        } else {
+            return config.getDefaultPSKServerPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKGenerator() {
+        if (context.getPSKGenerator() != null) {
+            return context.getPSKGenerator();
+        } else {
+            return config.getDefaultPSKGenerator();
+        }
+    }
+
+    @Override
     public BigInteger getSRPGenerator() {
         if (context.getSRPGenerator() != null) {
             return context.getSRPGenerator();
@@ -433,6 +469,15 @@ public class DefaultChooser extends Chooser {
             return context.getSRPSalt();
         } else {
             return config.getDefaultSRPSalt();
+        }
+    }
+
+    @Override
+    public byte[] getSRPServerSalt() {
+        if (context.getSRPServerSalt() != null) {
+            return context.getSRPServerSalt();
+        } else {
+            return config.getDefaultSRPServerSalt();
         }
     }
 
