@@ -797,7 +797,7 @@ public class Config implements Serializable {
     private byte[] defaultPSKIdentity = ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPSKIdentityHint = null;
+    private byte[] defaultPSKIdentityHint = new byte[0];
 
     private BigInteger defaultSRPModulus = new BigInteger(
             1,
