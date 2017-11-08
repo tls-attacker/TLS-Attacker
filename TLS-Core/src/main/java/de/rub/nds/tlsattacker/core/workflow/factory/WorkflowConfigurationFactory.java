@@ -174,13 +174,19 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                messages.add(new CertificateMessage());
-            } else {
-                messages.add(new CertificateMessage(config));
+            if (config.getDefaultSelectedCipherSuite().isPSK_DHPSK() == false
+                    && config.getDefaultSelectedCipherSuite().isSRP() == false) {
+                if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    messages.add(new CertificateMessage());
+                } else {
+                    messages.add(new CertificateMessage(config));
+                }
             }
             if (config.getDefaultSelectedCipherSuite().isEphemeral()) {
                 addServerKeyExchangeMessage(messages);
+            }
+            if (config.getDefaultSelectedCipherSuite().isSRP()) {
+                messages.add(new SRPServerKeyExchangeMessage(config));
             }
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);

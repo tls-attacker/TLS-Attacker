@@ -84,46 +84,38 @@ public class SRPServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     }
 
     public BigInteger calculateX(byte[] salt, byte[] identity, byte[] password) {
-        byte[] hashInput = ArrayConverter.concatenate(salt, identity, ArrayConverter.hexStringToByteArray("3A"),
-                password);
-        LOGGER.debug("HashInput for x: " + hashInput);
-        BigInteger hashoutput = new BigInteger(1, SHAsum(hashInput));
-        LOGGER.debug("Hashvalue for x: " + SHAsum(hashInput));
-        return hashoutput;
+        byte[] hashInput1 = ArrayConverter.concatenate(identity, ArrayConverter.hexStringToByteArray("3A"), password);
+        LOGGER.debug("HashInput for hashInput1: " + ArrayConverter.bytesToHexString(hashInput1));
+        byte[] hashOutput1 = SHAsum(hashInput1);
+        LOGGER.debug("Hashvalue for hashInput1: " + ArrayConverter.bytesToHexString(hashOutput1));
+        byte[] hashInput2 = ArrayConverter.concatenate(salt, hashOutput1);
+        LOGGER.debug("HashInput for hashInput2: " + ArrayConverter.bytesToHexString(hashInput2));
+        byte[] hashOutput2 = SHAsum(hashInput2);
+        LOGGER.debug("Hashvalue for hashInput2: " + ArrayConverter.bytesToHexString(hashOutput2));
+        BigInteger output = new BigInteger(1, hashOutput2);
+        return output;
     }
 
     private BigInteger calculateSRP6Multiplier(BigInteger modulus, BigInteger generator) {
         BigInteger srp6Multiplier;
         byte[] paddedGenerator = calculatePadding(modulus, generator);
         byte[] hashInput = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(modulus), paddedGenerator);
+        LOGGER.debug("HashInput SRP6Multi: " + ArrayConverter.bytesToHexString(hashInput));
         byte[] hashOutput = SHAsum(hashInput);
         srp6Multiplier = new BigInteger(1, hashOutput);
         return srp6Multiplier;
     }
 
-    public static byte[] SHAsum(byte[] toHash) {
-        MessageDigest md;
+    public byte[] SHAsum(byte[] toHash) {
+        MessageDigest dig = null;
         try {
-            md = MessageDigest.getInstance("SHA-1");
-            md.reset();
-        } catch (NoSuchAlgorithmException e) {
-            return null;
+            dig = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
         }
-        return md.digest(toHash);
-    }
-
-    public static String SHAsum(String toHash) {
-        MessageDigest md;
-        String sha1 = "";
-        try {
-            md = MessageDigest.getInstance("SHA-1");
-            md.reset();
-            md.update(toHash.getBytes());
-            sha1 = ArrayConverter.bytesToHexString(md.digest());
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        }
-        return sha1;
+        dig.update(toHash);
+        byte[] hashword = dig.digest();
+        return hashword;
     }
 
     private byte[] calculatePadding(BigInteger modulus, BigInteger topad) {

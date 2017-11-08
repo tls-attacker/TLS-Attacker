@@ -41,7 +41,6 @@ public class PSKDHEServerKeyExchangePreparator extends ServerKeyExchangePreparat
             msg.setIdentityHintLength(ArrayConverter.intToBytes(HandshakeByteLength.PSK_ZERO,
                     HandshakeByteLength.PSK_IDENTITY_LENGTH));
         }
-        msg.prepareComputations();
         setComputedModulus(msg);
         setComputedGenerator(msg);
         setComputedPrivateKey(msg);
