@@ -14,10 +14,6 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public abstract class ECOracle {
 
     /**

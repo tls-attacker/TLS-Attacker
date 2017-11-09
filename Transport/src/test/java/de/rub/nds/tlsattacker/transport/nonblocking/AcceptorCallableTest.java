@@ -19,10 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AcceptorCallableTest {
 
     private Thread t;
@@ -48,6 +44,9 @@ public class AcceptorCallableTest {
 
     /**
      * Test of run method, of class AcceptorCallableTest.
+     * 
+     * @throws java.util.concurrent.ExecutionException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testRun() throws IOException, InterruptedException, ExecutionException {
