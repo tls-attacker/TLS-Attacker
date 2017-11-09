@@ -19,11 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
     private final ClientHelloMessage msg;

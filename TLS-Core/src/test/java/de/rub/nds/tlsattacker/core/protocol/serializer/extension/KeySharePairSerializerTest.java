@@ -14,9 +14,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeySharePairSerializerTest {
 
     private KeySharePairSerializer serializer;

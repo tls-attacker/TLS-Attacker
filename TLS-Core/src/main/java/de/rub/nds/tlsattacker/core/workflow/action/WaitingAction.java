@@ -15,10 +15,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class WaitingAction extends TLSAction {
 
     private long time;

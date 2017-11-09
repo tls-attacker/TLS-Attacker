@@ -8,17 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+ * todo implement SupplementalDataMessagePreparator
  */
-
-// todo implement SupplementalDataMessagePreparator
-public class SupplementalDataMessagePreparator<T extends SupplementalDataMessage> extends
-        HandshakeMessagePreparator<HandshakeMessage> {
+public class SupplementalDataMessagePreparator extends HandshakeMessagePreparator<SupplementalDataMessage> {
 
     private final SupplementalDataMessage msg;
 

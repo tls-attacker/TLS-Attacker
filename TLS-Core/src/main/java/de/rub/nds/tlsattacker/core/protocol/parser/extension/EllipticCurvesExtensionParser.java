@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurvesExtensionMessage> {
 
     public EllipticCurvesExtensionParser(int startposition, byte[] array) {

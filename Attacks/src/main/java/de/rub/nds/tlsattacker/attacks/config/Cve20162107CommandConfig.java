@@ -22,10 +22,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class Cve20162107CommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "cve20162107";

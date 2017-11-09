@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<RSAClientKeyExchangeMessage> {
 
     private final RSAClientKeyExchangeMessage msg;
@@ -37,7 +33,9 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing RSAClientKeyExchangeMessage");
-        writeSerializedPublicKeyLength(msg);
+        if (!version.isSSL()) {
+            writeSerializedPublicKeyLength(msg);
+        }
         writeSerializedPublickey(msg);
         return getAlreadySerialized();
     }

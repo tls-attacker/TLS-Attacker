@@ -15,10 +15,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author Robert Merget - robert.merget@rub.de
- *
- *         Raw bytes of a previos send message retransmitted
+ * Raw bytes of a previos send message retransmitted
  */
 @XmlRootElement
 public class RetransmitMessage extends ProtocolMessage {

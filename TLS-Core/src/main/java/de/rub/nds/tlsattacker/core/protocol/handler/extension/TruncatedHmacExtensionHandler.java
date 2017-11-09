@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TruncatedHmacEx
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TruncatedHmacExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class TruncatedHmacExtensionHandler extends ExtensionHandler<TruncatedHmacExtensionMessage> {
 
     public TruncatedHmacExtensionHandler(TlsContext context) {

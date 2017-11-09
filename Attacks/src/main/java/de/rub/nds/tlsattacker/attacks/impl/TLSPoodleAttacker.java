@@ -35,8 +35,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Executes a poodle attack. It logs an error in case the tested server is
  * vulnerable to poodle.
- *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 

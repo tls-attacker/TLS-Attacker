@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.HelloVerifyRequestPrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloVerifyRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
- * @param <Message>
- */
 public class HelloVerifyRequestHandler extends HandshakeMessageHandler<HelloVerifyRequestMessage> {
 
     public HelloVerifyRequestHandler(TlsContext tlsContext) {

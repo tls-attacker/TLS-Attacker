@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.UnknownHandshakeMessagePr
 import de.rub.nds.tlsattacker.core.protocol.serializer.UnknownHandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class UnknownHandshakeMessageHandler extends HandshakeMessageHandler<UnknownHandshakeMessage> {
 
     public UnknownHandshakeMessageHandler(TlsContext tlsContext) {

@@ -11,9 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.Cert;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.util.List;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateEntry {
 
     private byte[] certificate;

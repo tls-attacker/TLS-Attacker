@@ -45,9 +45,6 @@ import org.apache.logging.log4j.LogManager;
  * Please also have a look at the tests supplied with this class for some
  * initialization examples with expected behavior.
  * </p>
- * 
- * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
  */
 public class State {
 
@@ -139,7 +136,7 @@ public class State {
      * This would typically be the default context as defined in the config.
      * 
      * @return the only context known to the state
-     * @see getTlsContext(String)
+     * @see #getTlsContext(java.lang.String)
      */
     public TlsContext getTlsContext() {
         if (tlsContexts.isEmpty()) {
@@ -159,8 +156,10 @@ public class State {
      * Get TLS context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
      * 
+     * @param alias
+     *            The Alias for which the TLSContext should be returned
      * @return the context with the given connection end alias
-     * @see convenience method for single context states: getTlsContext()
+     * @see #getTlsContext()
      */
     public TlsContext getTlsContext(String alias) {
         if (tlsContexts.get(alias) == null) {

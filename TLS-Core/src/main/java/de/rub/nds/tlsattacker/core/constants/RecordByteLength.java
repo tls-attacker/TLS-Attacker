@@ -8,14 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author juraj
- */
 public class RecordByteLength {
 
     /**
      * Content Type length
-     *
      */
     public static final int CONTENT_TYPE = 1;
     /**

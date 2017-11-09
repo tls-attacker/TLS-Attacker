@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class TimeoutDelegate extends Delegate {
 
     @Parameter(names = "-timeout", description = "Timeout for socket connection")

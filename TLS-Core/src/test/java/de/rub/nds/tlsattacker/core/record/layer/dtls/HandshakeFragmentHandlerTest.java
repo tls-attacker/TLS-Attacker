@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer.dtls;
 
-/**
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
- */
 public class HandshakeFragmentHandlerTest {
     //
     // static byte[] serverHelloMessageHeader =

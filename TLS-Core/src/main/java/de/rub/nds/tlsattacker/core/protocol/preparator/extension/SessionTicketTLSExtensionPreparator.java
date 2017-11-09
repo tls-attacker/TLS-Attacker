@@ -13,21 +13,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SessionTicketTLSExtensionPreparator extends ExtensionPreparator<SessionTicketTLSExtensionMessage> {
 
     private final SessionTicketTLSExtensionMessage message;
 
-    /**
-     * 
-     * @param chooser
-     * @param message
-     *            A SessionTicketTLSExtensionMessage
-     * @param serializer
-     */
     public SessionTicketTLSExtensionPreparator(Chooser chooser, SessionTicketTLSExtensionMessage message,
             SessionTicketTLSExtensionSerializer serializer) {
         super(chooser, message, serializer);

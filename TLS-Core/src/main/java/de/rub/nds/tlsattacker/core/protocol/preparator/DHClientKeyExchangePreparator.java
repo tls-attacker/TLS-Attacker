@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.bouncycastle.util.BigIntegers;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<DHClientKeyExchangeMessage> {
 
     private BigInteger clientPublicKey;

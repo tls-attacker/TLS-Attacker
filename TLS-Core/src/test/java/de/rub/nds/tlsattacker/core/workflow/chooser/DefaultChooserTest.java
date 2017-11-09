@@ -44,10 +44,6 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.Random;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class DefaultChooserTest {
 
     private Chooser chooser;

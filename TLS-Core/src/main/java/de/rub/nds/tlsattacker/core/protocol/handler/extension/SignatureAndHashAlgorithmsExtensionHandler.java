@@ -21,10 +21,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SignatureAndHashAlgorithmsExtensionHandler extends
         ExtensionHandler<SignatureAndHashAlgorithmsExtensionMessage> {
 

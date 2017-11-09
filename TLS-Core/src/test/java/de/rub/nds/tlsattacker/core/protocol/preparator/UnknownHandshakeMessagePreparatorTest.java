@@ -14,10 +14,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class UnknownHandshakeMessagePreparatorTest {
 
     private TlsContext context;

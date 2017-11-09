@@ -68,10 +68,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
-/**
- *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
@@ -149,6 +145,8 @@ public class TlsClientTest {
         config.setDefaultTimeout(TIMEOUT);
         config.setEnforceSettings(false);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
+        config.setHighestProtocolVersion(ProtocolVersion.SSL3);
+        testProtocolCompatibility(serverList, config, algorithm);
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
         testProtocolCompatibility(serverList, config, algorithm);
         config.setHighestProtocolVersion(ProtocolVersion.TLS11);
@@ -168,8 +166,10 @@ public class TlsClientTest {
         for (CipherSuite cs : CipherSuite.getImplemented()) {
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
             requiredAlgorithms.remove(algorithm);
-            if (serverList.contains(cs.toString()) && cs.isSupportedInProtocol(config.getHighestProtocolVersion())
-                    && requiredAlgorithms.isEmpty()) {
+            final boolean serverSupportsCipherSuite = serverList.contains(cs.toString());
+            final boolean cipherSuiteIsSupportedByProtocolVersion = cs.isSupportedInProtocol(config
+                    .getHighestProtocolVersion());
+            if (serverSupportsCipherSuite && cipherSuiteIsSupportedByProtocolVersion && requiredAlgorithms.isEmpty()) {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
                 config.setDefaultClientSupportedCiphersuites(cslist);

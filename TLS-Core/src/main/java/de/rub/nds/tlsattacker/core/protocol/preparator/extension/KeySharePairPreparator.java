@@ -13,9 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeySharePairPreparator extends Preparator<KeySharePair> {
 
     private final KeySharePair pair;
@@ -27,7 +24,7 @@ public class KeySharePairPreparator extends Preparator<KeySharePair> {
 
     @Override
     public void prepare() {
-        LOGGER.debug("Preparing ServerNamePairMessage");
+        LOGGER.debug("Preparing KeySharePairExtension");
         prepareKeyShare(pair);
         prepareKeyShareType(pair);
         prepareKeyShareLength(pair);

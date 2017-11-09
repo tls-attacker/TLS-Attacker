@@ -13,12 +13,10 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.EncryptThenMacExten
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EncryptThenMacExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EncryptThenMacExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThenMacExtensionMessage> {
+
     public EncryptThenMacExtensionHandler(TlsContext context) {
         super(context);
     }
@@ -40,5 +38,6 @@ public class EncryptThenMacExtensionHandler extends ExtensionHandler<EncryptThen
 
     @Override
     public void adjustTLSExtensionContext(EncryptThenMacExtensionMessage message) {
+
     }
 }

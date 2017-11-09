@@ -13,10 +13,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
  * @param <Message>
+ *            The ServerkeyExchangeMessage that should be handled
  */
 public abstract class ServerKeyExchangeHandler<Message extends ServerKeyExchangeMessage> extends
         HandshakeMessageHandler<Message> {

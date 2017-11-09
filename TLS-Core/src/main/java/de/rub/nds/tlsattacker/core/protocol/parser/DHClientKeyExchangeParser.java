@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientKeyExchangeMessage> {
 
     /**
@@ -55,7 +51,11 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(DHClientKeyExchangeMessage message) {
-        message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+        if (getVersion().isSSL()) {
+            message.setPublicKeyLength(getBytesLeft());
+        } else {
+            message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+        }
         LOGGER.debug("SerializedPublicKeyLength: " + message.getPublicKeyLength().getValue());
     }
 

@@ -19,8 +19,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
+ *            The ExtensionMessage that should be handled
  */
 public abstract class ExtensionHandler<Message extends ExtensionMessage> {
 
@@ -43,6 +43,7 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
      * ProtocolMessage
      *
      * @param message
+     *            The message for which the Context should be adjusted
      */
     public final void adjustTLSContext(Message message) {
         markExtensionInContext(message);
@@ -55,7 +56,6 @@ public abstract class ExtensionHandler<Message extends ExtensionMessage> {
      * Tell the context that the extension was proposed/negotiated. Makes the
      * extension type available in
      * TlsContext.isExtension{Proposed,Negotiated}(extType).
-     *
      *
      * @param message
      */

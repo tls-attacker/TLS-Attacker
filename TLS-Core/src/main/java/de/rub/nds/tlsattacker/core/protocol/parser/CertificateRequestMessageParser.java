@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import java.util.Arrays;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateRequestMessageParser extends HandshakeMessageParser<CertificateRequestMessage> {
 
     /**

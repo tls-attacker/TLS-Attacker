@@ -19,10 +19,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class SignatureCalculatorTest {
 
     @Before

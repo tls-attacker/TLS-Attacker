@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PaddingExtensio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PaddingExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMessage> {
 
     public PaddingExtensionHandler(TlsContext context) {
@@ -45,6 +41,7 @@ public class PaddingExtensionHandler extends ExtensionHandler<PaddingExtensionMe
      * Adjusts the TLS context based on the lenght of the padding extension.
      *
      * @param message
+     *            The message for which the context should be adjusted
      */
     @Override
     public void adjustTLSExtensionContext(PaddingExtensionMessage message) {

@@ -21,11 +21,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParserFact
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateMessageParser extends HandshakeMessageParser<CertificateMessage> {
 
     /**

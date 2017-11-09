@@ -15,10 +15,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DynamicWorkflowDelegateTest {
 
     private DynamicWorkflowDelegate delegate;

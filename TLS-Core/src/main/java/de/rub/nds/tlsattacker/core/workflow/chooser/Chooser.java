@@ -35,10 +35,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public abstract class Chooser {
 
     protected static final Logger LOGGER = LogManager.getLogger(Chooser.class.getName());
@@ -187,6 +183,10 @@ public abstract class Chooser {
     public abstract byte[] getServerHandshakeTrafficSecret();
 
     public abstract byte[] getClientHandshakeTrafficSecret();
+
+    public abstract byte[] getClientApplicationTrafficSecret();
+
+    public abstract byte[] getServerApplicationTrafficSecret();
 
     public abstract KSEntry getServerKSEntry();
 

@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class MessageBytesCollector {
 
     private ByteArrayOutputStream recordBytesStream;
