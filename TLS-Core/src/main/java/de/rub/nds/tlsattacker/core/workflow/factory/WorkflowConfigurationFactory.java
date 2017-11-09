@@ -38,15 +38,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKRSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKECDHClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKECDHEServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SRPClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SRPServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -186,7 +186,7 @@ public class WorkflowConfigurationFactory {
                 addServerKeyExchangeMessage(messages);
             }
             if (config.getDefaultSelectedCipherSuite().isSRP()) {
-                messages.add(new SRPServerKeyExchangeMessage(config));
+                messages.add(new SrpServerKeyExchangeMessage(config));
             }
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
@@ -472,21 +472,21 @@ public class WorkflowConfigurationFactory {
                     messages.add(new DHClientKeyExchangeMessage(config));
                     break;
                 case PSK:
-                    messages.add(new PSKClientKeyExchangeMessage(config));
+                    messages.add(new PskClientKeyExchangeMessage(config));
                     break;
                 case DHE_PSK:
-                    messages.add(new PSKDHClientKeyExchangeMessage(config));
+                    messages.add(new PskDhClientKeyExchangeMessage(config));
                     break;
                 case ECDHE_PSK:
-                    messages.add(new PSKECDHClientKeyExchangeMessage(config));
+                    messages.add(new PskEcDhClientKeyExchangeMessage(config));
                     break;
                 case RSA_PSK:
-                    messages.add(new PSKRSAClientKeyExchangeMessage(config));
+                    messages.add(new PskRsaClientKeyExchangeMessage(config));
                     break;
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
-                    messages.add(new SRPClientKeyExchangeMessage(config));
+                    messages.add(new SrpClientKeyExchangeMessage(config));
                     break;
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
@@ -511,18 +511,18 @@ public class WorkflowConfigurationFactory {
                     messages.add(new DHEServerKeyExchangeMessage(config));
                     break;
                 case PSK:
-                    messages.add(new PSKServerKeyExchangeMessage(config));
+                    messages.add(new PskServerKeyExchangeMessage(config));
                     break;
                 case DHE_PSK:
-                    messages.add(new PSKDHEServerKeyExchangeMessage(config));
+                    messages.add(new PskDheServerKeyExchangeMessage(config));
                     break;
                 case ECDHE_PSK:
-                    messages.add(new PSKECDHEServerKeyExchangeMessage(config));
+                    messages.add(new PskEcDheServerKeyExchangeMessage(config));
                     break;
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
-                    messages.add(new SRPServerKeyExchangeMessage(config));
+                    messages.add(new SrpServerKeyExchangeMessage(config));
                     break;
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)

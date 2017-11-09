@@ -27,15 +27,15 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKECDHEServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKECDHClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SRPServerKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SRPClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKRSAClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
@@ -271,17 +271,17 @@ public class HandlerFactory {
             case DH_RSA:
                 return new DHClientKeyExchangeHandler(context);
             case DHE_PSK:
-                return new PSKDHClientKeyExchangeHandler(context);
+                return new PskDhClientKeyExchangeHandler(context);
             case ECDHE_PSK:
-                return new PSKECDHClientKeyExchangeHandler(context);
+                return new PskEcDhClientKeyExchangeHandler(context);
             case RSA_PSK:
-                return new PSKRSAClientKeyExchangeHandler(context);
+                return new PskRsaClientKeyExchangeHandler(context);
             case PSK:
-                return new PSKClientKeyExchangeHandler(context);
+                return new PskClientKeyExchangeHandler(context);
             case SRP_SHA_DSS:
             case SRP_SHA_RSA:
             case SRP_SHA:
-                return new SRPClientKeyExchangeHandler(context);
+                return new SrpClientKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
@@ -309,15 +309,15 @@ public class HandlerFactory {
             case DH_RSA:
                 return new DHEServerKeyExchangeHandler(context);
             case PSK:
-                return new PSKServerKeyExchangeHandler(context);
+                return new PskServerKeyExchangeHandler(context);
             case DHE_PSK:
-                return new PSKDHEServerKeyExchangeHandler(context);
+                return new PskDheServerKeyExchangeHandler(context);
             case ECDHE_PSK:
-                return new PSKECDHEServerKeyExchangeHandler(context);
+                return new PskEcDheServerKeyExchangeHandler(context);
             case SRP_SHA_DSS:
             case SRP_SHA_RSA:
             case SRP_SHA:
-                return new SRPServerKeyExchangeHandler(context);
+                return new SrpServerKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
