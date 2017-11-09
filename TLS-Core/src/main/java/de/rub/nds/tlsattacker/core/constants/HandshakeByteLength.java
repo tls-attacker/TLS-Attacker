@@ -194,8 +194,6 @@ public class HandshakeByteLength {
 
     public static final int PSK_ZERO = 0;
 
-    public static final int LENGTH_FIELD = 2;
-
     public static final int SRP_MODULUS_LENGTH = 2;
 
     public static final int SRP_SALT_LENGTH = 1;
