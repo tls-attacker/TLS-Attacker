@@ -40,8 +40,8 @@ public class PskRsaClientKeyExchangePreparator extends ClientKeyExchangePreparat
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
-        msg.setIdentityLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentity().length, 2));
+        msg.setIdentity(msg.getIdentity());
+        msg.setIdentityLength(msg.getIdentityLength());
         msg.prepareComputations();
 
         prepareClientRandom(msg);
@@ -107,7 +107,7 @@ public class PskRsaClientKeyExchangePreparator extends ClientKeyExchangePreparat
 
     private void prepareEncryptedPremasterSecretLength(PskRsaClientKeyExchangeMessage msg) {
         msg.getComputations().setEncryptedPremasterSecretLength(
-                ArrayConverter.intToBytes(encryptedPremasterSecret.length, HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+                encryptedPremasterSecret.length);
     }
 
     private void preparePremasterSecret(PskRsaClientKeyExchangeMessage msg) {

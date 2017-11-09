@@ -43,10 +43,10 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
     @Override
     protected void parseHandshakeMessageContent(SrpServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing SRPServerKeyExchangeMessage");
-        parseNLength(msg);
-        parseN(msg);
-        parsegLength(msg);
-        parseG(msg);
+        parseModulusLength(msg);
+        parseModulus(msg);
+        parseGeneratorLength(msg);
+        parseGenerator(msg);
         parseSaltLength(msg);
         parseSalt(msg);
         parseSerializedPublicKeyLength(msg);
@@ -69,7 +69,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * @param msg
      *            Message to write in
      */
-    private void parseNLength(SrpServerKeyExchangeMessage msg) {
+    private void parseModulusLength(SrpServerKeyExchangeMessage msg) {
         msg.setModulusLength(parseIntField(HandshakeByteLength.SRP_MODULUS_LENGTH));
         LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
     }
@@ -80,7 +80,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * @param msg
      *            Message to write in
      */
-    private void parseN(SrpServerKeyExchangeMessage msg) {
+    private void parseModulus(SrpServerKeyExchangeMessage msg) {
         msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
         LOGGER.debug("Modulus: " + msg.getModulus().getValue());
     }
@@ -113,7 +113,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * @param msg
      *            Message to write in
      */
-    private void parsegLength(SrpServerKeyExchangeMessage msg) {
+    private void parseGeneratorLength(SrpServerKeyExchangeMessage msg) {
         msg.setGeneratorLength(parseIntField(HandshakeByteLength.SRP_GENERATOR_LENGTH));
         LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
     }
@@ -124,7 +124,7 @@ public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServe
      * @param msg
      *            Message to write in
      */
-    private void parseG(SrpServerKeyExchangeMessage msg) {
+    private void parseGenerator(SrpServerKeyExchangeMessage msg) {
         msg.setGenerator(parseByteArrayField(msg.getGeneratorLength().getValue()));
         LOGGER.debug("G: " + msg.getGenerator().getValue());
     }

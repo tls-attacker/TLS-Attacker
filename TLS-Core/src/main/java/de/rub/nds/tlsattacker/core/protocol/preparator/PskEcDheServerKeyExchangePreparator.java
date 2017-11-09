@@ -49,9 +49,8 @@ public class PskEcDheServerKeyExchangePreparator extends ServerKeyExchangePrepar
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        msg.setIdentityHint(chooser.getConfig().getDefaultPSKIdentityHint());
-        msg.setIdentityHintLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentityHint().length,
-                HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        msg.setIdentityHint(msg.getIdentityHint());
+        msg.setIdentityHintLength(msg.getIdentityHintLength());
 
         generateNamedCurveList(msg);
         generatePointFormatList(msg);

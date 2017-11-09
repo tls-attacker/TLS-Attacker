@@ -57,7 +57,7 @@ public class PskRsaClientKeyExchangeParser extends ClientKeyExchangeParser<PskRs
      *            Message to write in
      */
     private void parsePskIdentityLength(PskRsaClientKeyExchangeMessage msg) {
-        msg.setIdentityLength(parseByteArrayField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
         LOGGER.debug("PSK-IdentityLength: " + msg.getIdentityLength().getValue());
     }
 
@@ -68,7 +68,7 @@ public class PskRsaClientKeyExchangeParser extends ClientKeyExchangeParser<PskRs
      *            Message to write in
      */
     private void parsePskIdentity(PskRsaClientKeyExchangeMessage msg) {
-        msg.setIdentity(parseByteArrayField(ArrayConverter.bytesToInt(msg.getIdentityLength().getValue())));
+        msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));
         LOGGER.debug("PSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 

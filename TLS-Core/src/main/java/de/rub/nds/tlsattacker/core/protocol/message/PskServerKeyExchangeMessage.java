@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -32,11 +33,11 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @HoldsModifiableVariable
     protected PSKPremasterComputations computations;
 
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identityHint;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByteArray identityHintLength;
+    private ModifiableInteger identityHintLength;
 
     public PskServerKeyExchangeMessage() {
         super();
@@ -58,17 +59,17 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         this.identityHint = ModifiableVariableFactory.safelySetValue(this.identityHint, identity);
     }
 
-    public ModifiableByteArray getIdentityHintLength() {
+    public ModifiableInteger getIdentityHintLength() {
         return identityHintLength;
     }
 
-    public void setIdentityHintLength(ModifiableByteArray identity_hint_length) {
-        this.identityHintLength = identity_hint_length;
+    public void setIdentityHintLength(ModifiableInteger identityHintLength) {
+        this.identityHintLength = identityHintLength;
     }
 
-    public void setIdentityHintLength(byte[] identity_hint_length) {
+    public void setIdentityHintLength(int identityHintLength) {
         this.identityHintLength = ModifiableVariableFactory.safelySetValue(this.identityHintLength,
-                identity_hint_length);
+                identityHintLength);
     }
 
     @Override
@@ -81,7 +82,7 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  IdentityHintLength: ");
         if (identityHintLength != null) {
-            sb.append(ArrayConverter.bytesToHexString(identityHintLength.getValue()));
+            sb.append(identityHintLength.getValue());
         } else {
             sb.append("null");
         }

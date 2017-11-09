@@ -49,7 +49,7 @@ public class PskRsaClientKeyExchangeSerializer extends HandshakeMessageSerialize
  PskRsaClientKeyExchangeMessage into the final byte[]
      */
     private void writePSKIdentityLength(PskRsaClientKeyExchangeMessage msg) {
-        appendInt(msg.getIdentity().getValue().length, HandshakeByteLength.PSK_IDENTITY_LENGTH);
+        appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
         LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
     }
 
@@ -63,12 +63,12 @@ public class PskRsaClientKeyExchangeSerializer extends HandshakeMessageSerialize
     }
 
     private void writeEncryptedPreMasterSecret(PskRsaClientKeyExchangeMessage msg) {
-        appendBytes(msg.getComputations().getEncryptedPremasterSecret().getValue());
+        appendBytes(msg.getPublicKey().getValue());
         LOGGER.debug("SerializedEncryptedPreMasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getEncryptedPremasterSecret().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private void writeEncryptedPreMasterSecretLength(PskRsaClientKeyExchangeMessage msg) {
-        appendBytes(msg.getComputations().getEncryptedPremasterSecretLength().getValue());
+        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
     }
 }

@@ -58,7 +58,7 @@ public class PskDheServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     private ModifiableByteArray identityHint;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByteArray identityHintLength;
+    private ModifiableInteger identityHintLength;
 
     public PskDheServerKeyExchangeMessage() {
         super();
@@ -80,17 +80,17 @@ public class PskDheServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         this.identityHint = ModifiableVariableFactory.safelySetValue(this.identityHint, identity);
     }
 
-    public ModifiableByteArray getIdentityHintLength() {
+    public ModifiableInteger getIdentityHintLength() {
         return identityHintLength;
     }
 
-    public void setIdentityHintLength(ModifiableByteArray identity_hint_length) {
-        this.identityHintLength = identity_hint_length;
+    public void setIdentityHintLength(ModifiableInteger identityHintLength) {
+        this.identityHintLength = identityHintLength;
     }
 
-    public void setIdentityHintLength(byte[] identity_hint_length) {
+    public void setIdentityHintLength(int identityHintLength) {
         this.identityHintLength = ModifiableVariableFactory.safelySetValue(this.identityHintLength,
-                identity_hint_length);
+                identityHintLength);
     }
 
     public ModifiableByteArray getModulus() {

@@ -52,8 +52,8 @@ public class PskEcDhClientKeyExchangePreparator extends ClientKeyExchangePrepara
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
-        msg.setIdentityLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentity().length, 2));
+        msg.setIdentity(msg.getIdentity());
+        msg.setIdentityLength(msg.getIdentityLength());
         msg.prepareComputations();
         NamedCurve usedCurve = chooser.getSelectedCurve();
         CustomECPoint serverPublicKey = chooser.getServerEcPublicKey();

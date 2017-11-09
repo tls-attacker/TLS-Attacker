@@ -39,7 +39,7 @@ public class PskDhClientKeyExchangePreparator extends ClientKeyExchangePreparato
     @Override
     public void prepareHandshakeMessageContents() {
         msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
-        msg.setIdentityLength(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKIdentity().length, 2));
+        msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().length);
         msg.prepareComputations();
         setComputationGenerator(msg);
         setComputationModulus(msg);
@@ -73,7 +73,7 @@ public class PskDhClientKeyExchangePreparator extends ClientKeyExchangePreparato
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug("TEST PremasterSecret: " + tempPremasterSecret);
+        LOGGER.debug("PremasterSecret: " + tempPremasterSecret);
         return tempPremasterSecret;
     }
 

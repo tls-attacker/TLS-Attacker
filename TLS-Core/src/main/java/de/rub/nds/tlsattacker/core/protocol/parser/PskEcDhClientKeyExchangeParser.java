@@ -57,7 +57,7 @@ public class PskEcDhClientKeyExchangeParser extends ClientKeyExchangeParser<PskE
      *            Message to write in
      */
     private void parsePskIdentityLength(PskEcDhClientKeyExchangeMessage msg) {
-        msg.setIdentityLength(parseByteArrayField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
+        msg.setIdentityLength(parseIntField(HandshakeByteLength.PSK_IDENTITY_LENGTH));
         LOGGER.debug("PSK-IdentityLength: " + msg.getIdentityLength().getValue());
     }
 
@@ -68,7 +68,7 @@ public class PskEcDhClientKeyExchangeParser extends ClientKeyExchangeParser<PskE
      *            Message to write in
      */
     private void parsePskIdentity(PskEcDhClientKeyExchangeMessage msg) {
-        msg.setIdentity(parseByteArrayField(ArrayConverter.bytesToInt(msg.getIdentityLength().getValue())));
+        msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));
         LOGGER.debug("SerializedPSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }
 

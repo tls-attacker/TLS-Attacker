@@ -43,5 +43,7 @@ public class PskRsaClientKeyExchangeHandler extends ClientKeyExchangeHandler<Psk
     public void adjustTLSContext(PskRsaClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        setRecordCipher();
+        spawnNewSession();
     }
 }
