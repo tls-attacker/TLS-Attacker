@@ -101,8 +101,7 @@ public class PskEcDheServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public void setIdentityHintLength(int identityHintLength) {
-        this.identityHintLength = ModifiableVariableFactory.safelySetValue(this.identityHintLength,
-                identityHintLength);
+        this.identityHintLength = ModifiableVariableFactory.safelySetValue(this.identityHintLength, identityHintLength);
     }
 
     @Override

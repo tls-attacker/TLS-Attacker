@@ -106,8 +106,7 @@ public class PskRsaClientKeyExchangePreparator extends ClientKeyExchangePreparat
     }
 
     private void prepareEncryptedPremasterSecretLength(PskRsaClientKeyExchangeMessage msg) {
-        msg.getComputations().setEncryptedPremasterSecretLength(
-                encryptedPremasterSecret.length);
+        msg.getComputations().setEncryptedPremasterSecretLength(encryptedPremasterSecret.length);
     }
 
     private void preparePremasterSecret(PskRsaClientKeyExchangeMessage msg) {

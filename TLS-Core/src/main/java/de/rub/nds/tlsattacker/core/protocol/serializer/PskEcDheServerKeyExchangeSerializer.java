@@ -54,7 +54,7 @@ public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerial
 
     /**
      * Writes the SerializedPublicKey of the PskEcDheServerKeyExchangeMessage
- into the final byte[]
+     * into the final byte[]
      */
     private void writePSKIdentityHint(PskEcDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getIdentityHint().getValue());
@@ -63,7 +63,7 @@ public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerial
 
     /**
      * Writes the CurveType of the PskEcDheServerKeyExchangeMessage into the
- final byte[]
+     * final byte[]
      */
     private void writeCurveType(PskEcDheServerKeyExchangeMessage msg) {
         appendByte(msg.getCurveType().getValue());
@@ -72,7 +72,7 @@ public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerial
 
     /**
      * Writes the NamedCurve of the PskEcDheServerKeyExchangeMessage into the
- final byte[]
+     * final byte[]
      */
     private void writeNamedCurve(PskEcDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getNamedCurve().getValue());
@@ -81,7 +81,7 @@ public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerial
 
     /**
      * Writes the SerializedPublicKeyLength of the
- PskEcDheServerKeyExchangeMessage into the final byte[]
+     * PskEcDheServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(PskEcDheServerKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
@@ -90,7 +90,7 @@ public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerial
 
     /**
      * Writes the SerializedPublicKey of the PskEcDheServerKeyExchangeMessage
- into the final byte[]
+     * into the final byte[]
      */
     private void writeSerializedPublicKey(PskEcDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());

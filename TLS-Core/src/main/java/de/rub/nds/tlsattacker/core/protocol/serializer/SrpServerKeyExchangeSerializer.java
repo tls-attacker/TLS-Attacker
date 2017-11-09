@@ -56,7 +56,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the nLength of the SrpServerKeyExchangeMessage into the final
- byte[]
+     * byte[]
      */
     private void writeNLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.SRP_MODULUS_LENGTH);
@@ -73,7 +73,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the saltLength of the SrpServerKeyExchangeMessage into the final
- byte[]
+     * byte[]
      */
     private void writeSaltLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getSaltLength().getValue(), HandshakeByteLength.SRP_SALT_LENGTH);
@@ -90,7 +90,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the gLength of the SrpServerKeyExchangeMessage into the final
- byte[]
+     * byte[]
      */
     private void writeGLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.SRP_GENERATOR_LENGTH);
@@ -107,7 +107,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the SerializedPublicKeyLength of the SrpServerKeyExchangeMessage
- into the final byte[]
+     * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH);
@@ -116,7 +116,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the SerializedPublicKey of the SrpServerKeyExchangeMessage into
- the final byte[]
+     * the final byte[]
      */
     private void writeSerializedPublicKey(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());
@@ -125,7 +125,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the SignatureAndHashalgorithm of the SrpServerKeyExchangeMessage
- into the final byte[]
+     * into the final byte[]
      */
     private void writeSignatureAndHashAlgorithm(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignatureAndHashAlgorithm().getValue());
@@ -143,7 +143,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the SignatureLength of the SrpServerKeyExchangeMessage into the
- final byte[]
+     * final byte[]
      */
     private void writeSignatureLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), HandshakeByteLength.SIGNATURE_LENGTH);
@@ -152,7 +152,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
 
     /**
      * Writes the Signature of the SrpServerKeyExchangeMessage into the final
- byte[]
+     * byte[]
      */
     private void writeSignature(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getSignature().getValue());

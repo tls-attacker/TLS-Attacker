@@ -45,7 +45,7 @@ public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
 
     /**
      * Writes the SerializedPublicKeyLength of the SrpClientKeyExchangeMessage
- into the final byte[]
+     * into the final byte[]
      */
     private void writeSerializedPublicKeyLength(SrpClientKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH);
@@ -54,7 +54,7 @@ public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<
 
     /**
      * Writes the SerializedPublicKey of the SrpClientKeyExchangeMessage into
- the final byte[]
+     * the final byte[]
      */
     private void writeSerializedPublicKey(SrpClientKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());

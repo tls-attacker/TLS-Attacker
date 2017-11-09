@@ -515,10 +515,9 @@ public enum CipherSuite {
     }
 
     public boolean isSRP() {
-        if(!this.name().contains("SRP_SHA_RSA")|| !this.name().contains("SRP_SHA_DSS")){
-        return this.name().contains("SRP_");
-        }
-        else{
+        if (!this.name().contains("SRP_SHA_RSA") || !this.name().contains("SRP_SHA_DSS")) {
+            return this.name().contains("SRP_");
+        } else {
             return false;
         }
     }

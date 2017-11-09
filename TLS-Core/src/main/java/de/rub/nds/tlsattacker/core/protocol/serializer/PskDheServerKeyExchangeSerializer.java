@@ -51,7 +51,7 @@ public class PskDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
 
     /**
      * Writes the pLength of the PskDheServerKeyExchangeMessage into the final
- byte[]
+     * byte[]
      */
     private void writePLength(PskDheServerKeyExchangeMessage msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.DH_MODULUS_LENGTH);
@@ -68,7 +68,7 @@ public class PskDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
 
     /**
      * Writes the gLength of the PskDheServerKeyExchangeMessage into the final
- byte[]
+     * byte[]
      */
     private void writeGLength(PskDheServerKeyExchangeMessage msg) {
         appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.DH_GENERATOR_LENGTH);
@@ -85,7 +85,7 @@ public class PskDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
 
     /**
      * Writes the SerializedPublicKeyLength of the
- PskDheServerKeyExchangeMessage into the final byte[]
+     * PskDheServerKeyExchangeMessage into the final byte[]
      */
     private void writeSerializedPublicKeyLength(PskDheServerKeyExchangeMessage msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
@@ -94,7 +94,7 @@ public class PskDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
 
     /**
      * Writes the SerializedPublicKey of the PskDheServerKeyExchangeMessage into
- the final byte[]
+     * the final byte[]
      */
     private void writeSerializedPublicKey(PskDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getPublicKey().getValue());
@@ -108,7 +108,7 @@ public class PskDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
 
     /**
      * Writes the SerializedPublicKey of the PskDheServerKeyExchangeMessage into
- the final byte[]
+     * the final byte[]
      */
     private void writePSKIdentityHint(PskDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getIdentityHint().getValue());

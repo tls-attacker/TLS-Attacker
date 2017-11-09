@@ -73,7 +73,8 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     private byte[] calculatePremasterSecret(BigInteger modulus, BigInteger generator, BigInteger privateKey,
             BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt, byte[] identity, byte[] password) {
-        //PremasterSecret: (ServerPublicKey -(k * g^x))^(ClientPrivatKey +(u * x)) % modulus
+        // PremasterSecret: (ServerPublicKey -(k * g^x))^(ClientPrivatKey +(u *
+        // x)) % modulus
         BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
         BigInteger k = calculateSRP6Multiplier(modulus, generator);
         BigInteger x = calculateX(salt, identity, password);
@@ -94,7 +95,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     private byte[] calculatePremasterSecretServer(BigInteger modulus, BigInteger generator,
             BigInteger serverPrivateKey, BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt,
             byte[] identity, byte[] password) {
-        //PremasterSecret: (ClientPublicKey * v^u) ^ServerPrivatKey % modulus
+        // PremasterSecret: (ClientPublicKey * v^u) ^ServerPrivatKey % modulus
         BigInteger u = calculateU(clientPublicKey, serverPublicKey, modulus);
         BigInteger x = calculateX(salt, identity, password);
         BigInteger v = calculateV(x, generator, modulus);
