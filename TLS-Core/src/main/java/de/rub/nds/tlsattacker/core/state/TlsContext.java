@@ -278,8 +278,6 @@ public class TlsContext {
 
     private BigInteger clientSRPPrivateKey;
 
-    private byte[] srpSalt;
-
     private byte[] srpServerSalt;
 
     private byte[] srpPassword;
@@ -673,14 +671,6 @@ public class TlsContext {
 
     public void setClientSRPPrivateKey(BigInteger clientSRPPrivateKey) {
         this.clientSRPPrivateKey = clientSRPPrivateKey;
-    }
-
-    public byte[] getSRPSalt() {
-        return srpSalt;
-    }
-
-    public void setSRPSalt(byte[] srpSalt) {
-        this.srpSalt = srpSalt;
     }
 
     public byte[] getSRPServerSalt() {

@@ -158,8 +158,6 @@ public abstract class Chooser {
 
     public abstract BigInteger getSRPClientPublicKey();
 
-    public abstract byte[] getSRPSalt();
-
     public abstract byte[] getSRPServerSalt();
 
     public abstract byte[] getSRPPassword();

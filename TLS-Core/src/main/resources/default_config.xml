@@ -210,7 +210,7 @@
     <addTokenBindingExtension>false</addTokenBindingExtension>
     <addCertificateStatusRequestExtension>false</addCertificateStatusRequestExtension>
     <addAlpnExtension>false</addAlpnExtension>
-    <addSRPExtension>true</addSRPExtension>
+    <addSRPExtension>false</addSRPExtension>
     <addSRTPExtension>false</addSRTPExtension>
     <addTruncatedHmacExtension>false</addTruncatedHmacExtension>
     <addUserMappingExtension>false</addUserMappingExtension>

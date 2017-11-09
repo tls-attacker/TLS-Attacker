@@ -464,15 +464,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public byte[] getSRPSalt() {
-        if (context.getSRPSalt() != null) {
-            return context.getSRPSalt();
-        } else {
-            return config.getDefaultSRPSalt();
-        }
-    }
-
-    @Override
     public byte[] getSRPServerSalt() {
         if (context.getSRPServerSalt() != null) {
             return context.getSRPServerSalt();

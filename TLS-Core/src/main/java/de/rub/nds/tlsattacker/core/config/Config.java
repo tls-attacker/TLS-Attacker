@@ -492,7 +492,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with SRP extension
      */
-    private Boolean addSRPExtension = true;
+    private Boolean addSRPExtension = false;
 
     /**
      * If we generate ClientHello with SRTP extension
@@ -828,8 +828,6 @@ public class Config implements Serializable {
     private BigInteger defaultSRPServerPublicKey = null;
 
     private BigInteger defaultSRPClientPublicKey = null;
-
-    private byte[] defaultSRPSalt = new byte[0];
 
     private byte[] defaultSRPServerSalt = ArrayConverter.hexStringToByteArray("AABBCCDD");
 
@@ -1231,14 +1229,6 @@ public class Config implements Serializable {
 
     public void setDefaultSRPGenerator(BigInteger defaultSRPGenerator) {
         this.defaultSRPGenerator = defaultSRPGenerator;
-    }
-
-    public byte[] getDefaultSRPSalt() {
-        return defaultSRPSalt;
-    }
-
-    public void setDefaultSRPSalt(byte[] defaultSRPSalt) {
-        this.defaultSRPSalt = defaultSRPSalt;
     }
 
     public byte[] getDefaultSRPServerSalt() {
