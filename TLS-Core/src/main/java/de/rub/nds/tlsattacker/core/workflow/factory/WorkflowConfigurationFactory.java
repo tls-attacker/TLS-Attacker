@@ -174,8 +174,8 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (config.getDefaultSelectedCipherSuite().isPSK_DHPSK() == false
-                    && config.getDefaultSelectedCipherSuite().isSRP() == false) {
+            if (!config.getDefaultSelectedCipherSuite().isPskOrDhPsk()
+                    && !config.getDefaultSelectedCipherSuite().isSRP()) {
                 if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     messages.add(new CertificateMessage());
                 } else {

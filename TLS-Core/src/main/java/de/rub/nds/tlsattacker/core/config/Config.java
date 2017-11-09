@@ -811,10 +811,10 @@ public class Config implements Serializable {
 
     private BigInteger defaultPSKGenerator = new BigInteger("2");
 
-    private BigInteger defaultPSKServerPrivateKey = new BigInteger(1,
+    private BigInteger defaultPskDhServerPrivateKey = new BigInteger(1,
             ArrayConverter.hexStringToByteArray("440051d6f0b55ea967ab31c68a8b5e37d910dae0e2d459a486459caadf367516"));
 
-    private BigInteger defaultPSKServerPublicKey = new BigInteger(
+    private BigInteger defaultPskDhServerPublicKey = new BigInteger(
             1,
             ArrayConverter
                     .hexStringToByteArray("5a0d3d4e049faa939ffa6a375b9c3c16a4c39753d19ff7da36bc391ea72fc0f68c929bdb400552ed84e0900c7a44c3222fd54d7148256862886bfb4016bd2d03c4c4cf476567c291770e47bd59d0aa5323cfddfc5596e0d6558c480ee8b0c62599834d4581a796a01981468789164504afbd29ce9936e86a290c5f00f8ba986b48010f3e5c079c7f351ddca2ee1fd50846b37bf7463c2b0f3d001b1317ac3069cd89e2e4927ed3d40875a6049af649d2dc349db5995a7525d70a3a1c9b673f5482f83343bd90d45e9c3962dc4a4bf2b4adb37e9166b2ddb31ccf11c5b9e6c98e0a9a3377abba56b0f4283b2eaa69f5368bc107e1c22599f88dd1924d0899c5f153462c911a8293078aefee9fb2389a7854833fcea61cfecbb49f828c361a981a5fedecf13796ae36e36c15a16670af96996c3c45a30e900e18c858f6232b5f7072bdd9e47d7fc61246ef5d19765739f38509284379bc319d9409e8fe236bd29b0335a5bc5bb0424ee44de8a19f864a159fda907d6f5a30ebc0a17e3628e490e5"));
@@ -1168,19 +1168,19 @@ public class Config implements Serializable {
     }
 
     public BigInteger getDefaultPSKServerPrivateKey() {
-        return defaultPSKServerPrivateKey;
+        return defaultPskDhServerPrivateKey;
     }
 
-    public void setDefaultPSKServerPrivateKey(BigInteger defaultPSKServerPrivateKey) {
-        this.defaultPSKServerPrivateKey = defaultPSKServerPrivateKey;
+    public void setDefaultPSKServerPrivateKey(BigInteger defaultPskDhServerPrivateKey) {
+        this.defaultPskDhServerPrivateKey = defaultPskDhServerPrivateKey;
     }
 
     public BigInteger getDefaultPSKServerPublicKey() {
-        return defaultPSKServerPublicKey;
+        return defaultPskDhServerPublicKey;
     }
 
-    public void setDefaultPSKServerPublicKey(BigInteger defaultPSKServerPublicKey) {
-        this.defaultPSKServerPublicKey = defaultPSKServerPublicKey;
+    public void setDefaultPSKServerPublicKey(BigInteger defaultPskDhServerPublicKey) {
+        this.defaultPskDhServerPublicKey = defaultPskDhServerPublicKey;
     }
 
     public BigInteger getDefaultPSKGenerator() {

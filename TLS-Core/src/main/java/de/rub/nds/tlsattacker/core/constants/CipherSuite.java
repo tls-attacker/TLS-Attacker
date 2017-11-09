@@ -506,8 +506,8 @@ public enum CipherSuite {
         return this.name().contains("DHE_");
     }
 
-    public boolean isPSK_DHPSK() {
-        if (this.name().contains("RSA") == false) {
+    public boolean isPskOrDhPsk() {
+        if (!this.name().contains("RSA")) {
             return this.name().contains("PSK");
         } else {
             return false;
@@ -515,7 +515,7 @@ public enum CipherSuite {
     }
 
     public boolean isSRP() {
-        if(this.name().contains("SRP_SHA_RSA")==false || this.name().contains("SRP_SHA_DSS")==false){
+        if(!this.name().contains("SRP_SHA_RSA")|| !this.name().contains("SRP_SHA_DSS")){
         return this.name().contains("SRP_");
         }
         else{
