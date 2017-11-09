@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class UnknownProtocolVersionException extends RuntimeException {
 
     public UnknownProtocolVersionException() {
