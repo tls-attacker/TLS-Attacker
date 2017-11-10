@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.attacks.config.TokenBindingMitmCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcer;
 import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
@@ -49,6 +51,8 @@ public class Main {
         JCommander jc = new JCommander(generalDelegate);
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
+        PskBruteForcerCommandConfig pskBruteForcerTest = new PskBruteForcerCommandConfig(generalDelegate);
+        jc.addCommand(PskBruteForcerCommandConfig.ATTACK_COMMAND, pskBruteForcerTest);
         // DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest =
         // new DtlsPaddingOracleAttackCommandConfig(
         // generalDelegate);
@@ -126,6 +130,9 @@ public class Main {
                 break;
             case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
                 attacker = new SimpleMitmProxy(simpleMitmProxy);
+                break;
+            case PskBruteForcerCommandConfig.ATTACK_COMMAND:
+                attacker = new PskBruteForcer(pskBruteForcerTest);
                 break;
             // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
             // attacker = new TokenBindingMitm(tokenBindingMitm);

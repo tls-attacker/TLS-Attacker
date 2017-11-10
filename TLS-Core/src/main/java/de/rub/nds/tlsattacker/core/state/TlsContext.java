@@ -281,6 +281,8 @@ public class TlsContext {
 
     private byte[] pskKey;
 
+    private byte[] pskIdentity;
+
     private NamedCurve selectedCurve;
 
     private CustomECPoint clientEcPublicKey;
@@ -608,6 +610,14 @@ public class TlsContext {
 
     public void setSRPModulus(BigInteger srpModulus) {
         this.srpModulus = srpModulus;
+    }
+
+    public byte[] getPSKIdentity() {
+        return pskIdentity;
+    }
+
+    public void setPSKIdentity(byte[] pskIdentity) {
+        this.pskIdentity = pskIdentity;
     }
 
     public BigInteger getPSKModulus() {
