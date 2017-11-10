@@ -40,8 +40,8 @@ public class PskRsaClientKeyExchangePreparator extends ClientKeyExchangePreparat
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.setIdentity(msg.getIdentity());
-        msg.setIdentityLength(msg.getIdentityLength());
+        msg.setIdentity(chooser.getPSKIdentity());
+        msg.setIdentityLength(msg.getIdentity().getValue().length);
         msg.prepareComputations();
 
         prepareClientRandom(msg);

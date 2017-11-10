@@ -370,6 +370,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public byte[] getPSKIdentityHint() {
+        if (context.getPSKIdentityHint() != null) {
+            return context.getPSKIdentityHint();
+        } else {
+            return config.getDefaultPSKIdentityHint();
+        }
+    }
+
+    @Override
     public BigInteger getPSKModulus() {
         if (context.getPSKModulus() != null) {
             return context.getPSKModulus();

@@ -38,8 +38,8 @@ public class PskDhClientKeyExchangePreparator extends ClientKeyExchangePreparato
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
-        msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().length);
+        msg.setIdentity(chooser.getPSKIdentity());
+        msg.setIdentityLength(msg.getIdentity().getValue().length);
         msg.prepareComputations();
         setComputationGenerator(msg);
         setComputationModulus(msg);

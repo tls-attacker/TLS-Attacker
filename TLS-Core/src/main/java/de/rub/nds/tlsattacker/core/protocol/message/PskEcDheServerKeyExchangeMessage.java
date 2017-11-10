@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Florian Linsner - florian.linsner@rub.de
  */
 @XmlRootElement
-public class PskEcDheServerKeyExchangeMessage extends ServerKeyExchangeMessage {
+public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte curveType;
@@ -53,7 +53,7 @@ public class PskEcDheServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     }
 
     public PskEcDheServerKeyExchangeMessage(Config tlsConfig) {
-        super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
+        super(tlsConfig);
     }
 
     public ModifiableByte getCurveType() {

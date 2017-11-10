@@ -31,8 +31,8 @@ public class PskServerKeyExchangePreparator extends ServerKeyExchangePreparator<
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        msg.setIdentityHint(msg.getIdentityHint());
-        msg.setIdentityHintLength(msg.getIdentityHintLength());
+        msg.setIdentityHint(chooser.getPSKIdentityHint());
+        msg.setIdentityHintLength(msg.getIdentityHint().getValue().length);
         msg.prepareComputations();
         prepareClientRandom(msg);
     }

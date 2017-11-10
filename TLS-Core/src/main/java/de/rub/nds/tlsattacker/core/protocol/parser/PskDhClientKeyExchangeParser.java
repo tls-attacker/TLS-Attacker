@@ -18,7 +18,7 @@ import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskDhClientKeyExchangeParser extends ClientKeyExchangeParser<PskDhClientKeyExchangeMessage> {
+public class PskDhClientKeyExchangeParser extends DHClientKeyExchangeParser<PskDhClientKeyExchangeMessage> {
     /**
      * Constructor for the Parser class
      *
@@ -40,8 +40,7 @@ public class PskDhClientKeyExchangeParser extends ClientKeyExchangeParser<PskDhC
         LOGGER.debug("Parsing PSKDHClientKeyExchangeMessage");
         parsePskIdentityLength(msg);
         parsePskIdentity(msg);
-        parseSerializedPublicKeyLength(msg);
-        parseSerializedPublicKey(msg);
+        super.parseDhParams(msg);
     }
 
     @Override
@@ -70,29 +69,5 @@ public class PskDhClientKeyExchangeParser extends ClientKeyExchangeParser<PskDhC
     private void parsePskIdentity(PskDhClientKeyExchangeMessage msg) {
         msg.setIdentity(parseByteArrayField(msg.getIdentityLength().getValue()));
         LOGGER.debug("SerializedPSK-Identity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
-    }
-
-    /**
-     * Reads the next bytes as the SerializedPublicKeyLength and writes them in
-     * the message
-     *
-     * @param msg
-     *            Message to write in
-     */
-    private void parseSerializedPublicKeyLength(PskDhClientKeyExchangeMessage message) {
-        message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
-        LOGGER.debug("SerializedPublicKeyLength: " + message.getPublicKeyLength().getValue());
-    }
-
-    /**
-     * Reads the next bytes as the SerializedPublicKey and writes them in the
-     * message
-     *
-     * @param msg
-     *            Message to write in
-     */
-    private void parseSerializedPublicKey(PskDhClientKeyExchangeMessage message) {
-        message.setPublicKey(parseByteArrayField(message.getPublicKeyLength().getValue()));
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(message.getPublicKey().getValue()));
     }
 }

@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 
-public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> {
+public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
 
     private final ProtocolVersion version;
 
@@ -50,9 +50,16 @@ public class ECDHEServerKeyExchangeParser extends ServerKeyExchangeParser<ECDHES
         parseSignature(msg);
     }
 
+    protected void parseEcDheParams(T msg) {
+        parseCurveType(msg);
+        parseNamedCurve(msg);
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
+    }
+
     @Override
-    protected ECDHEServerKeyExchangeMessage createHandshakeMessage() {
-        return new ECDHEServerKeyExchangeMessage();
+    protected T createHandshakeMessage() {
+        return (T) new ECDHEServerKeyExchangeMessage();
     }
 
     /**

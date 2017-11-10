@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 
-public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientKeyExchangeMessage> {
+public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeParser<T> {
 
     /**
      * Constructor for the Parser class
@@ -38,9 +38,14 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
         parseSerializedPublicKey(msg);
     }
 
+    protected void parseDhParams(T msg) {
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
+    }
+
     @Override
-    protected DHClientKeyExchangeMessage createHandshakeMessage() {
-        return new DHClientKeyExchangeMessage();
+    protected T createHandshakeMessage() {
+        return (T) new DHClientKeyExchangeMessage();
     }
 
     /**

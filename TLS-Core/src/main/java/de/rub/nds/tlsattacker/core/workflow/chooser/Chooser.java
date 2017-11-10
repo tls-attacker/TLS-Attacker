@@ -140,6 +140,8 @@ public abstract class Chooser {
 
     public abstract byte[] getPSKIdentity();
 
+    public abstract byte[] getPSKIdentityHint();
+
     public abstract BigInteger getPSKServerPrivateKey();
 
     public abstract BigInteger getPSKServerPublicKey();

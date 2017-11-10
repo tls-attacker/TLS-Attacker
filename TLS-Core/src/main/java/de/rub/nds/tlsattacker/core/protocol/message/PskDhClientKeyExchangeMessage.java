@@ -8,32 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.message.computations.DHClientComputations;
 
 /**
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
 @XmlRootElement
-public class PskDhClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
 
-    @HoldsModifiableVariable
-    protected DHClientComputations computations;
-
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -59,11 +52,6 @@ public class PskDhClientKeyExchangeMessage extends ClientKeyExchangeMessage {
             sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
         }
         return sb.toString();
-    }
-
-    @Override
-    public DHClientComputations getComputations() {
-        return computations;
     }
 
     public ModifiableByteArray getIdentity() {
@@ -99,21 +87,4 @@ public class PskDhClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     public String toCompactString() {
         return "PSK_DH_CLIENT_KEY_EXCHANGE";
     }
-
-    @Override
-    public void prepareComputations() {
-        if (computations == null) {
-            computations = new DHClientComputations();
-        }
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (computations != null) {
-            holders.add(computations);
-        }
-        return holders;
-    }
-
 }

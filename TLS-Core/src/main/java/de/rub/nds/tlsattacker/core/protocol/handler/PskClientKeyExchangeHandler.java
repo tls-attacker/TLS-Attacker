@@ -43,5 +43,7 @@ public class PskClientKeyExchangeHandler extends ClientKeyExchangeHandler<PskCli
     public void adjustTLSContext(PskClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
+        setRecordCipher();
+        spawnNewSession();
     }
 }
