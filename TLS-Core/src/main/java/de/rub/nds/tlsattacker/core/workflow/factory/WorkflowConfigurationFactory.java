@@ -174,8 +174,8 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (!config.getDefaultSelectedCipherSuite().isPskOrDhPsk()
-                    && !config.getDefaultSelectedCipherSuite().isSRP()) {
+            if (!config.getDefaultSelectedCipherSuite().isPskRsaOrDhPsk()
+                    && config.getDefaultSelectedCipherSuite().isSrpRsaOrSrpDss()) {
                 if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     messages.add(new CertificateMessage());
                 } else {
@@ -185,9 +185,10 @@ public class WorkflowConfigurationFactory {
             if (config.getDefaultSelectedCipherSuite().isEphemeral()) {
                 addServerKeyExchangeMessage(messages);
             }
-            if (config.getDefaultSelectedCipherSuite().isSRP()) {
-                messages.add(new SrpServerKeyExchangeMessage(config));
+            if (config.getDefaultSelectedCipherSuite().isSrp()) {
+                addServerKeyExchangeMessage(messages);
             }
+
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
                 messages.add(certRequest);
@@ -529,6 +530,9 @@ public class WorkflowConfigurationFactory {
                             + ", not adding ServerKeyExchange Message");
                     break;
             }
+        }
+        if (cs.isSrp()) {
+            messages.add(new SrpServerKeyExchangeMessage(config));
         }
     }
 }

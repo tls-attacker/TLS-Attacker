@@ -38,10 +38,10 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing SRPServerKeyExchangeMessage");
-        writeNLength(msg);
-        writeN(msg);
-        writeGLength(msg);
-        writeG(msg);
+        writeModulusLength(msg);
+        writeModulus(msg);
+        writeGeneratorLength(msg);
+        writeGenerator(msg);
         writeSaltLength(msg);
         writeSalt(msg);
         writeSerializedPublicKeyLength(msg);
@@ -58,7 +58,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
      * Writes the nLength of the SrpServerKeyExchangeMessage into the final
      * byte[]
      */
-    private void writeNLength(SrpServerKeyExchangeMessage msg) {
+    private void writeModulusLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.SRP_MODULUS_LENGTH);
         LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
     }
@@ -66,7 +66,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     /**
      * Writes the N of the SrpServerKeyExchangeMessage into the final byte[]
      */
-    private void writeN(SrpServerKeyExchangeMessage msg) {
+    private void writeModulus(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getModulus().getValue());
         LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getModulus().getValue()));
     }
@@ -92,7 +92,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
      * Writes the gLength of the SrpServerKeyExchangeMessage into the final
      * byte[]
      */
-    private void writeGLength(SrpServerKeyExchangeMessage msg) {
+    private void writeGeneratorLength(SrpServerKeyExchangeMessage msg) {
         appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.SRP_GENERATOR_LENGTH);
         LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
     }
@@ -100,7 +100,7 @@ public class SrpServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<
     /**
      * Writes the G of the SrpServerKeyExchangeMessage into the final byte[]
      */
-    private void writeG(SrpServerKeyExchangeMessage msg) {
+    private void writeGenerator(SrpServerKeyExchangeMessage msg) {
         appendBytes(msg.getGenerator().getValue());
         LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getGenerator().getValue()));
     }

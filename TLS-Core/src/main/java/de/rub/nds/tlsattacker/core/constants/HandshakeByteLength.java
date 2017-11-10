@@ -199,8 +199,6 @@ public class HandshakeByteLength {
 
     public static final int SRP_PUBLICKEY_LENGTH = 2;
 
-    public static final int SRP_ZERO_PADDING = 0;
-
     private HandshakeByteLength() {
     }
 }
