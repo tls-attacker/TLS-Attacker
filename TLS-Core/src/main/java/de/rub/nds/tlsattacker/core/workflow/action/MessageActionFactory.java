@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class MessageActionFactory {
     public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEndType,
             ProtocolMessage... protocolMessages) {

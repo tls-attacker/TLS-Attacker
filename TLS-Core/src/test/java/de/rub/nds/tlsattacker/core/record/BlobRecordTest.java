@@ -23,10 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class BlobRecordTest {
 
     private BlobRecord record;
@@ -39,7 +35,7 @@ public class BlobRecordTest {
         record = new BlobRecord(config);
         TlsContext ctx = new TlsContext(config);
         chooser = ctx.getChooser();
-        encryptor = new RecordEncryptor(new RecordNullCipher(), ctx);
+        encryptor = new RecordEncryptor(new RecordNullCipher(ctx), ctx);
     }
 
     /**

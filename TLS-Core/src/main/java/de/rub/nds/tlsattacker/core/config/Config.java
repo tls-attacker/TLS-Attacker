@@ -64,12 +64,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config implements Serializable {
@@ -290,9 +284,9 @@ public class Config implements Serializable {
     private byte[] certificateStatusRequestExtensionRequestExtension = new byte[0];
 
     /**
-     * Default ALPN announced protocols It's HTTP/2 0x68 0x32 as of RFC7540
+     * Default ALPN announced protocols
      */
-    private String applicationLayerProtocolNegotiationAnnouncedProtocols = "h2";
+    private String[] alpnAnnouncedProtocols = new String[] { "h2" };
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -799,6 +793,10 @@ public class Config implements Serializable {
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
     private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
+
+    private byte[] defaultClientApplicationTrafficSecret = new byte[0];
+
+    private byte[] defaultServerApplicationTrafficSecret = new byte[0];
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
@@ -1743,8 +1741,11 @@ public class Config implements Serializable {
      */
     public void setDefaultTimeout(Integer timeout) {
         defaultTimeout = timeout;
-        for (ConnectionEnd conEnd : connectionEnds) {
-            conEnd.setDefaultTimeout(defaultTimeout);
+
+        if (connectionEnds != null) {
+            for (ConnectionEnd conEnd : connectionEnds) {
+                conEnd.setDefaultTimeout(defaultTimeout);
+            }
         }
     }
 
@@ -2049,13 +2050,12 @@ public class Config implements Serializable {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public String getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
-        return applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public String[] getAlpnAnnouncedProtocols() {
+        return alpnAnnouncedProtocols;
     }
 
-    public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
-            String applicationLayerProtocolNegotiationAnnouncedProtocols) {
-        this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public void setAlpnAnnouncedProtocols(String[] alpnAnnouncedProtocols) {
+        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
     }
 
     public byte[] getSessionId() {
@@ -2381,4 +2381,19 @@ public class Config implements Serializable {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 
+    public byte[] getDefaultClientApplicationTrafficSecret() {
+        return defaultClientApplicationTrafficSecret;
+    }
+
+    public void setDefaultClientApplicationTrafficSecret(byte[] defaultClientApplicationTrafficSecret) {
+        this.defaultClientApplicationTrafficSecret = defaultClientApplicationTrafficSecret;
+    }
+
+    public byte[] getDefaultServerApplicationTrafficSecret() {
+        return defaultServerApplicationTrafficSecret;
+    }
+
+    public void setDefaultServerApplicationTrafficSecret(byte[] defaultServerApplicationTrafficSecret) {
+        this.defaultServerApplicationTrafficSecret = defaultServerApplicationTrafficSecret;
+    }
 }

@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SignatureAndHashAlgorithmsExtensionPreparatorTest {
 
     @Before

@@ -32,10 +32,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ReceiveActionTest {
 
     private State state;
@@ -57,7 +53,7 @@ public class ReceiveActionTest {
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         action = new ReceiveAction(alert);
     }
 

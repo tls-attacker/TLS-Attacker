@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExt
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CertificateTypeExtensionPreparator extends ExtensionPreparator<CertificateTypeExtensionMessage> {
 
     private final CertificateTypeExtensionMessage msg;

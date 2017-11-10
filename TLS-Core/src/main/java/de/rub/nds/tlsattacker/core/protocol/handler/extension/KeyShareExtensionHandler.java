@@ -34,8 +34,6 @@ import javax.crypto.Mac;
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
  * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
- *
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 

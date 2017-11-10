@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateVerifiyConstants {
 
     public static final String CLIENT_CERTIFICATE_VERIFY = "TLS 1.3, client CertificateVerify";

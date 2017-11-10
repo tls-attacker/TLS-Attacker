@@ -46,10 +46,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenbindingMessagePreparatorTest {
 
     private TlsContext context;
@@ -85,6 +81,8 @@ public class TokenbindingMessagePreparatorTest {
     /**
      * Test of prepareProtocolMessageContents method, of class
      * TokenbindingMessagePreparator.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testPrepareProtocolMessageContents() throws Exception {

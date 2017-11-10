@@ -34,10 +34,6 @@ import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class DefaultChooser extends Chooser {
 
     DefaultChooser(TlsContext context, Config config) {
@@ -494,6 +490,25 @@ public class DefaultChooser extends Chooser {
             return context.getServerKSEntry();
         } else {
             return config.getDefaultServerKSEntry();
+        }
+    }
+
+    @Override
+    public byte[] getClientApplicationTrafficSecret() {
+        if (context.getClientApplicationTrafficSecret() != null) {
+            return context.getClientApplicationTrafficSecret();
+        } else {
+            return config.getDefaultClientApplicationTrafficSecret();
+        }
+
+    }
+
+    @Override
+    public byte[] getServerApplicationTrafficSecret() {
+        if (context.getServerApplicationTrafficSecret() != null) {
+            return context.getServerApplicationTrafficSecret();
+        } else {
+            return config.getDefaultServerApplicationTrafficSecret();
         }
     }
 

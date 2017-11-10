@@ -58,13 +58,6 @@ import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class TlsContext {
 
     /**
@@ -89,11 +82,14 @@ public class TlsContext {
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
-
-    private byte[] clientApplicationTrafficSecret0;
-
-    private byte[] serverApplicationTrafficSecret0;
-
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientApplicationTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverApplicationTrafficSecret;
     /**
      * Master secret established during the handshake.
      */
@@ -303,9 +299,14 @@ public class TlsContext {
     private List<KSEntry> clientKeyShareEntryList;
 
     private KSEntry serverKSEntry;
-
-    private int sequenceNumber = 0;
-
+    /**
+     * sequence number used for the encryption
+     */
+    private long writeSequenceNumber = 0;
+    /**
+     * sequence number used for the decryption
+     */
+    private long readSequenceNumber = 0;
     /**
      * supported protocol versions
      */
@@ -394,6 +395,7 @@ public class TlsContext {
      * single context scenarios.
      *
      * @param config
+     *            The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
         if (config.getConnectionEnds().size() > 1) {
@@ -780,12 +782,28 @@ public class TlsContext {
         this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
-    public int getSequenceNumber() {
-        return sequenceNumber;
+    public long getWriteSequenceNumber() {
+        return writeSequenceNumber;
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public void setWriteSequenceNumber(long writeSequenceNumber) {
+        this.writeSequenceNumber = writeSequenceNumber;
+    }
+
+    public void increaseWriteSequenceNumber() {
+        this.writeSequenceNumber++;
+    }
+
+    public long getReadSequenceNumber() {
+        return readSequenceNumber;
+    }
+
+    public void setReadSequenceNumber(long readSequenceNumber) {
+        this.readSequenceNumber = readSequenceNumber;
+    }
+
+    public void increaseReadSequenceNumber() {
+        this.readSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -975,20 +993,20 @@ public class TlsContext {
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
-    public byte[] getClientApplicationTrafficSecret0() {
-        return clientApplicationTrafficSecret0;
+    public byte[] getClientApplicationTrafficSecret() {
+        return clientApplicationTrafficSecret;
     }
 
-    public void setClientApplicationTrafficSecret0(byte[] clientApplicationTrafficSecret0) {
-        this.clientApplicationTrafficSecret0 = clientApplicationTrafficSecret0;
+    public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
-    public byte[] getServerApplicationTrafficSecret0() {
-        return serverApplicationTrafficSecret0;
+    public byte[] getServerApplicationTrafficSecret() {
+        return serverApplicationTrafficSecret;
     }
 
-    public void setServerApplicationTrafficSecret0(byte[] serverApplicationTrafficSecret0) {
-        this.serverApplicationTrafficSecret0 = serverApplicationTrafficSecret0;
+    public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
     public byte[] getHandshakeSecret() {
@@ -1295,6 +1313,7 @@ public class TlsContext {
      * Check if the given TLS extension type was proposed by the client.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
@@ -1305,6 +1324,7 @@ public class TlsContext {
      * Mark the given TLS extension type as client proposed extension.
      * 
      * @param ext
+     *            The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1314,6 +1334,7 @@ public class TlsContext {
      * Check if the given TLS extension type was sent by the server.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
@@ -1322,6 +1343,9 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as server negotiated extension.
+     * 
+     * @param ext
+     *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);

@@ -20,8 +20,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 
 /**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Config>
  */
 public abstract class Attacker<Config extends AttackConfig> {

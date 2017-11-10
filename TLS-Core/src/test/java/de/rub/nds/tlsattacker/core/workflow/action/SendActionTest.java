@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -34,10 +35,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SendActionTest {
 
     private State state;
@@ -57,7 +54,8 @@ public class SendActionTest {
         tlsContext = state.getTlsContext();
         tlsContext.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        tlsContext.getRecordLayer().setRecordCipher(new RecordBlockCipher(tlsContext));
+        tlsContext.getRecordLayer().setRecordCipher(
+                new RecordBlockCipher(tlsContext, KeySetGenerator.generateKeySet(tlsContext)));
         tlsContext.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
         action = new SendAction(alert);
         action.setRecords(new LinkedList<AbstractRecord>());

@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenBindingLength {
 
     private TokenBindingLength() {

@@ -16,8 +16,6 @@ import java.util.Arrays;
 /**
  * Converts a string with a compression method to a compression method (for
  * command line purposes).
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class CompressionMethodConverter implements IStringConverter<CompressionMethod> {
 

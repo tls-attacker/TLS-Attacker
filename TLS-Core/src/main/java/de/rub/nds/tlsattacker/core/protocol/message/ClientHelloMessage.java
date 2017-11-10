@@ -56,12 +56,6 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
@@ -155,7 +149,7 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new CertificateStatusRequestExtensionMessage());
         }
         if (tlsConfig.isAddAlpnExtension()) {
-            addExtension(new AlpnExtensionMessage());
+            addExtension(new AlpnExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddSRPExtension()) {
             addExtension(new SRPExtensionMessage());

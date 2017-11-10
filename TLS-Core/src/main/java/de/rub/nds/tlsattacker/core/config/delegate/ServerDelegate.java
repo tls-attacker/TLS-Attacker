@@ -13,10 +13,6 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerDelegate extends Delegate {
 
     @Parameter(names = "-port", required = true, description = "ServerPort")

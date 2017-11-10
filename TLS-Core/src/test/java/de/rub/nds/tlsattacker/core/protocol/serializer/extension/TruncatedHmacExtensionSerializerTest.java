@@ -14,10 +14,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class TruncatedHmacExtensionSerializerTest {
 
     private final ExtensionType extensionType = ExtensionType.TRUNCATED_HMAC;

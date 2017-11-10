@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<PSKClientKeyExchangeMessage> {
     private final PSKClientKeyExchangeMessage msg;
 

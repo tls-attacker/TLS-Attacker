@@ -19,10 +19,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RenegotiationInfoExtensionHandlerTest {
 
     private static final int EXTENSION_LENGTH = 1;

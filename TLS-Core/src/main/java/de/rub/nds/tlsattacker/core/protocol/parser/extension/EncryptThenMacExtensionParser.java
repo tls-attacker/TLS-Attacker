@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class EncryptThenMacExtensionParser extends ExtensionParser<EncryptThenMacExtensionMessage> {
 
     public EncryptThenMacExtensionParser(int startposition, byte[] array) {

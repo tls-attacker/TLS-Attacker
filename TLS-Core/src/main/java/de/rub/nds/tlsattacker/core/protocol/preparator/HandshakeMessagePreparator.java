@@ -21,9 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
+ *            The HandshakeMessage that should be prepared
  */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
 
@@ -73,7 +72,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     }
 
     private void prepareMessageSeq(HandshakeMessage msg) {
-        msg.setMessageSeq(chooser.getContext().getSequenceNumber());
+        msg.setMessageSeq((int) chooser.getContext().getWriteSequenceNumber());
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }
 

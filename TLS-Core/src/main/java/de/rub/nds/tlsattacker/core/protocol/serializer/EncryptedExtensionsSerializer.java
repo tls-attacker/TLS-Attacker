@@ -11,9 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class EncryptedExtensionsSerializer extends HandshakeMessageSerializer<EncryptedExtensionsMessage> {
 
     private final EncryptedExtensionsMessage msg;

@@ -18,10 +18,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerNameIndicationExtensionPreparator extends ExtensionPreparator<ServerNameIndicationExtensionMessage> {
 
     private final ServerNameIndicationExtensionMessage msg;

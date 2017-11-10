@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.T
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedCaIndicationExtensionMessage> {
 
     public TrustedCaIndicationExtensionParser(int startposition, byte[] array) {

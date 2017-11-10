@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class FakeTransportHandler extends TransportHandler {
     /**
      * Data that will be returned on a fetchData() call

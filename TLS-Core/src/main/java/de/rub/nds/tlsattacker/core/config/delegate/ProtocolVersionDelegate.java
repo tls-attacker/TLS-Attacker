@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.config.converters.ProtocolVersionConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ProtocolVersionDelegate extends Delegate {
 
     @Parameter(names = "-version", description = "Highest supported Protocolversion ", converter = ProtocolVersionConverter.class)

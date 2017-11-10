@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClientKeyExchangeMessage> {
 
     /**
@@ -55,7 +51,11 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
-        msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        if (getVersion().isSSL()) {
+            msg.setPublicKeyLength(getBytesLeft());
+        } else {
+            msg.setPublicKeyLength(parseIntField(HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
+        }
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 

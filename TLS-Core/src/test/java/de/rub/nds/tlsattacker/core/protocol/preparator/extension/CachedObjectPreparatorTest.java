@@ -14,10 +14,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedObjectPreparatorTest {
     private final byte cachedInfoType = 1;
     private final int hashLength = 3;

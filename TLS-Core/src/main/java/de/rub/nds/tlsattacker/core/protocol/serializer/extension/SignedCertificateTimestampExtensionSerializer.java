@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SignedCertificateTimestampExtensionSerializer extends
         ExtensionSerializer<SignedCertificateTimestampExtensionMessage> {
 

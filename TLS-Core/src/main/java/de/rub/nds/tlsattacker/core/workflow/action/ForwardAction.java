@@ -58,10 +58,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class ForwardAction extends MessageAction implements ReceivingAction, SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger(ForwardAction.class);

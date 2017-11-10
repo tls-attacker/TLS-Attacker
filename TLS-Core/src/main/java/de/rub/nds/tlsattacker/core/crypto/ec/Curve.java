@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.crypto.ec;
 import java.math.BigInteger;
 import java.util.Objects;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class Curve {
 
     private String name;

@@ -22,8 +22,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
+ *            The ProtocolMessage that should be handled
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> extends Handler<Message> {
 
@@ -35,8 +35,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     protected final TlsContext tlsContext;
 
     /**
-     *
      * @param tlsContext
+     *            The Context which should be Adjusted with this Handler
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
@@ -47,6 +47,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * hooks.
      *
      * @param message
+     *            The Message that should be prepared
      * @return message in bytes
      */
     public byte[] prepareMessage(Message message) {
@@ -75,8 +76,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * Chooser is adjusted as
      *
      * @param message
+     *            The byte[] messages which should be parsed
      * @param pointer
-     * @return
+     *            The pointer (startposition) into the message bytes
+     * @return The Parser result
      */
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
@@ -111,6 +114,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * ProtocolMessage
      *
      * @param message
+     *            The Message for which this context should be adjusted
      */
     public abstract void adjustTLSContext(Message message);
 
