@@ -9,14 +9,11 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
-import de.rub.nds.tlsattacker.attacks.ec.ICEPoint;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
@@ -27,7 +24,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
 import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
@@ -127,25 +123,12 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
-        // // modify public point base X coordinate
-        // ModifiableBigInteger x =
-        // ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        // x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));
-        // message.setPublicKeyBaseX(x);
-        // System.out.println(config.getPublicPointBaseX().toString(16));
-        // // modify public point base Y coordinate
-        // ModifiableBigInteger y =
-        // ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        // y.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseY()));
-        // message.setPublicKeyBaseY(y);
         ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] points = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()),
                 ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()));
         byte[] serialized = ArrayConverter.concatenate(new byte[] { 4 }, points);
         serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
         message.setPublicKey(serializedPublicKey);
-        // set explicit premaster secret value (X value of the resulting point
-        // coordinate)
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitPMS = BigIntegers.asUnsignedByteArray(config.getCurveFieldSize(), premasterSecret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
