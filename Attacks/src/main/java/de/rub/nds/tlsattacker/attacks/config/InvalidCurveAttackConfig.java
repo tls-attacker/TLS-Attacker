@@ -53,7 +53,6 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     // These are for scanning only
     @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true, converter = BigIntegerConverter.class)
-    
     private BigInteger premasterSecret;
 
     @Parameter(names = "-public_point_base_x", hidden = true, description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
