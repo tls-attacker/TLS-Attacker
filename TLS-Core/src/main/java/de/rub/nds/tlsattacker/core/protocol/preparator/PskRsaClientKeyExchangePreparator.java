@@ -23,13 +23,9 @@ import java.util.Arrays;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskRsaClientKeyExchangePreparator extends ClientKeyExchangePreparator<PskRsaClientKeyExchangeMessage> {
+public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePreparator<PskRsaClientKeyExchangeMessage> {
 
-    private byte[] premasterSecret;
-    private byte[] clientRandom;
-    private byte[] padding;
     private byte[] randomValue;
-    private byte[] encryptedPremasterSecret;
     private final PskRsaClientKeyExchangeMessage msg;
     private ByteArrayOutputStream outputStream;
 
@@ -55,9 +51,9 @@ public class PskRsaClientKeyExchangePreparator extends ClientKeyExchangePreparat
         randomValue = generateRandomValue();
         premasterSecret = generatePremasterSecret(randomValue);
         preparePremasterSecret(msg);
-        encryptedPremasterSecret = generateEncryptedPremasterSecret(randomValue);
+        encrypted = generateEncryptedPremasterSecret(randomValue);
         prepareEncryptedPremasterSecret(msg);
-        prepareEncryptedPremasterSecretLength(msg);
+        // prepareEncryptedPremasterSecretLength(msg);
         prepareSerializedPublicKey(msg);
         prepareSerializedPublicKeyLength(msg);
     }
@@ -102,46 +98,7 @@ public class PskRsaClientKeyExchangePreparator extends ClientKeyExchangePreparat
     }
 
     private void prepareEncryptedPremasterSecret(PskRsaClientKeyExchangeMessage msg) {
-        msg.getComputations().setEncryptedPremasterSecret(encryptedPremasterSecret);
-    }
-
-    private void prepareEncryptedPremasterSecretLength(PskRsaClientKeyExchangeMessage msg) {
-        msg.getComputations().setEncryptedPremasterSecretLength(encryptedPremasterSecret.length);
-    }
-
-    private void preparePremasterSecret(PskRsaClientKeyExchangeMessage msg) {
-        msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
-    }
-
-    private void prepareClientRandom(PskRsaClientKeyExchangeMessage msg) {
-        // TODO spooky
-        clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(clientRandom);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    private void preparePadding(PskRsaClientKeyExchangeMessage msg) {
-        msg.getComputations().setPadding(padding);
-        LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getComputations().getPadding().getValue()));
-    }
-
-    private void prepareSerializedPublicKey(PskRsaClientKeyExchangeMessage msg) {
-        msg.setPublicKey(encryptedPremasterSecret);
-        LOGGER.debug("SerializedPublicKey: " + Arrays.toString(msg.getPublicKey().getValue()));
-    }
-
-    private void prepareSerializedPublicKeyLength(PskRsaClientKeyExchangeMessage msg) {
-        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-    }
-
-    private byte[] decryptPremasterSecret() {
-        BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(1, msg.getPublicKey().getValue());
-        BigInteger serverPrivateKey = chooser.getConfig().getDefaultServerRSAPrivateKey();
-        BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey, chooser.getRsaModulus());
-        return decrypted.toByteArray();
+        msg.getComputations().setPlainPaddedPremasterSecret(encrypted);
     }
 
     @Override

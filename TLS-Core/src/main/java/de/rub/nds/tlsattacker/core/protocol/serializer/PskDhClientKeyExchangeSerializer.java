@@ -39,7 +39,7 @@ public class PskDhClientKeyExchangeSerializer extends DHClientKeyExchangeSeriali
         LOGGER.debug("Serializing PSKDHClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);
-        super.serializeHandshakeMessageContent();
+        super.serializeDhParams();
         return getAlreadySerialized();
     }
 

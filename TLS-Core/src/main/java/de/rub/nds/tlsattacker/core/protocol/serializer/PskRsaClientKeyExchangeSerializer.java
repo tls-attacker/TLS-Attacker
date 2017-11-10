@@ -18,7 +18,7 @@ import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskRsaClientKeyExchangeSerializer extends HandshakeMessageSerializer<PskRsaClientKeyExchangeMessage> {
+public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSerializer<PskRsaClientKeyExchangeMessage> {
     private final PskRsaClientKeyExchangeMessage msg;
 
     /**
@@ -39,8 +39,7 @@ public class PskRsaClientKeyExchangeSerializer extends HandshakeMessageSerialize
         LOGGER.debug("Serializing PSKRSAClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);
-        writeEncryptedPreMasterSecretLength(msg);
-        writeEncryptedPreMasterSecret(msg);
+        super.serializeRsaParams();
         return getAlreadySerialized();
     }
 
@@ -60,15 +59,5 @@ public class PskRsaClientKeyExchangeSerializer extends HandshakeMessageSerialize
     private void writePSKIdentity(PskRsaClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
         LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
-    }
-
-    private void writeEncryptedPreMasterSecret(PskRsaClientKeyExchangeMessage msg) {
-        appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug("SerializedEncryptedPreMasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    private void writeEncryptedPreMasterSecretLength(PskRsaClientKeyExchangeMessage msg) {
-        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
     }
 }

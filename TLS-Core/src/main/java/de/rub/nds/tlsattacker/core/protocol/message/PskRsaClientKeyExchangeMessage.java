@@ -29,11 +29,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
  * @author Florian Linsner - florian.linsner@rub.de
  */
 @XmlRootElement
-public class PskRsaClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {
 
-    @HoldsModifiableVariable
-    @XmlElement
-    public PSKRSAPremasterComputations computations;
+    // @HoldsModifiableVariable
+    // @XmlElement
+    // public PSKRSAPremasterComputations computations;
 
     @HoldsModifiableVariable
     @XmlElement
@@ -64,11 +64,6 @@ public class PskRsaClientKeyExchangeMessage extends ClientKeyExchangeMessage {
             sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
         }
         return sb.toString();
-    }
-
-    @Override
-    public PSKRSAPremasterComputations getComputations() {
-        return computations;
     }
 
     public ModifiableByteArray getIdentity() {
@@ -103,21 +98,5 @@ public class PskRsaClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toCompactString() {
         return "PSK_RSA_CLIENT_KEY_EXCHANGE";
-    }
-
-    @Override
-    public void prepareComputations() {
-        if (computations == null) {
-            computations = new PSKRSAPremasterComputations();
-        }
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (computations != null) {
-            holders.add(computations);
-        }
-        return holders;
     }
 }

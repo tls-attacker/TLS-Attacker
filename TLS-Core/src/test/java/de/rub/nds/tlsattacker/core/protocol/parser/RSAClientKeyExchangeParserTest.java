@@ -88,7 +88,8 @@ public class RSAClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        RSAClientKeyExchangeParser parser = new RSAClientKeyExchangeParser(0, message, version);
+        RSAClientKeyExchangeParser<RSAClientKeyExchangeMessage> parser = new RSAClientKeyExchangeParser(0, message,
+                version);
         RSAClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertEquals(length, msg.getLength().getValue().intValue());

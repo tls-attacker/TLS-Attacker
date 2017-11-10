@@ -40,7 +40,7 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
         return getAlreadySerialized();
     }
 
-    protected byte[] serialieDhParams() {
+    protected byte[] serializeDhParams() {
         if (!version.isSSL()) {
             writeSerializedPublicKeyLength(msg);
         }

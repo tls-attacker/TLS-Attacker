@@ -32,7 +32,7 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
     }
 
     @Override
-    protected void parseHandshakeMessageContent(DHClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(T msg) {
         LOGGER.debug("Parsing DHClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
@@ -55,7 +55,7 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPublicKeyLength(DHClientKeyExchangeMessage message) {
+    private void parseSerializedPublicKeyLength(T message) {
         if (getVersion().isSSL()) {
             message.setPublicKeyLength(getBytesLeft());
         } else {
@@ -71,7 +71,7 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPublicKey(DHClientKeyExchangeMessage message) {
+    private void parseSerializedPublicKey(T message) {
         message.setPublicKey(parseByteArrayField(message.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(message.getPublicKey().getValue()));
     }
