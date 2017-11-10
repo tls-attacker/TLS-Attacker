@@ -215,9 +215,6 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         namedCurves.add(namedCurve);
         config.setNamedCurves(namedCurves);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-
-        Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.INFO);
-
         return config;
     }
 

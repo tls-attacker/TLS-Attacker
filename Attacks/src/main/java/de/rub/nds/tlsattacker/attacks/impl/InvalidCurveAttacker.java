@@ -86,7 +86,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     if (premasterSecret == null) {
                         premasterSecret = BigInteger.ZERO;
                     }
-                    System.out.println(premasterSecret.toString());
+                    LOGGER.debug(premasterSecret.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -134,7 +134,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
-        System.out.println("working with the follwoing premaster secret: "
+        LOGGER.info("working with the follwoing premaster secret: "
                 + ArrayConverter.bytesToHexString(explicitPMS));
         workflowExecutor.executeWorkflow();
         return trace;
