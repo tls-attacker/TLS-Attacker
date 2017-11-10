@@ -13,9 +13,9 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 
-public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<DHClientKeyExchangeMessage> {
+public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeSerializer<T> {
 
-    private final DHClientKeyExchangeMessage msg;
+    protected final T msg;
 
     /**
      * Constructor for the DHClientKeyExchangeSerializer
@@ -25,7 +25,7 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
      * @param version
      *            Version of the Protocol
      */
-    public DHClientKeyExchangeSerializer(DHClientKeyExchangeMessage message, ProtocolVersion version) {
+    public DHClientKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
     }
@@ -40,11 +40,19 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
         return getAlreadySerialized();
     }
 
+    protected byte[] serialieDhParams() {
+        if (!version.isSSL()) {
+            writeSerializedPublicKeyLength(msg);
+        }
+        writeSerializedPublicKey(msg);
+        return getAlreadySerialized();
+    }
+
     /**
      * Writes the SerializedPublicKeyLength of the DHClientKeyExchangeMessage
      * into the final byte[]
      */
-    private void writeSerializedPublicKeyLength(DHClientKeyExchangeMessage msg) {
+    private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
         LOGGER.debug("SerializedPublicKexLength: " + msg.getPublicKeyLength().getValue());
     }
@@ -53,7 +61,7 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
      * Writes the SerializedPublicKey of the DHClientKeyExchangeMessage into the
      * final byte[]
      */
-    private void writeSerializedPublicKey(DHClientKeyExchangeMessage msg) {
+    private void writeSerializedPublicKey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }

@@ -18,7 +18,7 @@ import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskDhClientKeyExchangeSerializer extends HandshakeMessageSerializer<PskDhClientKeyExchangeMessage> {
+public class PskDhClientKeyExchangeSerializer extends DHClientKeyExchangeSerializer<PskDhClientKeyExchangeMessage> {
     private final PskDhClientKeyExchangeMessage msg;
 
     /**
@@ -39,8 +39,7 @@ public class PskDhClientKeyExchangeSerializer extends HandshakeMessageSerializer
         LOGGER.debug("Serializing PSKDHClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);
-        writeSerializedPublicKeyLength(msg);
-        writeSerializedPublicKey(msg);
+        super.serializeHandshakeMessageContent();
         return getAlreadySerialized();
     }
 
@@ -60,23 +59,5 @@ public class PskDhClientKeyExchangeSerializer extends HandshakeMessageSerializer
     private void writePSKIdentity(PskDhClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
         LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
-    }
-
-    /**
-     * Writes the SerializedPublicKeyLength of the PSKClientKeyExchangeMessage
-     * into the final byte[]
-     */
-    private void writeSerializedPublicKeyLength(PskDhClientKeyExchangeMessage msg) {
-        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
-        LOGGER.debug("SerializedPublicKexLength: " + msg.getPublicKeyLength().getValue());
-    }
-
-    /**
-     * Writes the SerializedPublicKey of the PSKClientKeyExchangeMessage into
-     * the final byte[]
-     */
-    private void writeSerializedPublicKey(PskDhClientKeyExchangeMessage msg) {
-        appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 }

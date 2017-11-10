@@ -19,7 +19,7 @@ import java.math.BigInteger;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskDheServerKeyExchangePreparator extends ServerKeyExchangePreparator<PskDheServerKeyExchangeMessage> {
+public class PskDheServerKeyExchangePreparator extends DHEServerKeyExchangePreparator<PskDheServerKeyExchangeMessage> {
 
     private final PskDheServerKeyExchangeMessage msg;
 
@@ -49,62 +49,5 @@ public class PskDheServerKeyExchangePreparator extends ServerKeyExchangePreparat
         preparePublicKeyLength(msg);
         prepareClientRandom(msg);
         prepareServerRandom(msg);
-    }
-
-    private void prepareGenerator(PskDheServerKeyExchangeMessage msg) {
-        msg.setGenerator(msg.getComputations().getGenerator().getByteArray());
-        LOGGER.debug("Generator: " + ArrayConverter.bytesToHexString(msg.getGenerator().getValue()));
-    }
-
-    private void prepareModulus(PskDheServerKeyExchangeMessage msg) {
-        msg.setModulus(msg.getComputations().getModulus().getByteArray());
-        LOGGER.debug("Modulus: " + ArrayConverter.bytesToHexString(msg.getModulus().getValue()));
-    }
-
-    private void prepareGeneratorLength(PskDheServerKeyExchangeMessage msg) {
-        msg.setGeneratorLength(msg.getGenerator().getValue().length);
-        LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
-    }
-
-    private void prepareModulusLength(PskDheServerKeyExchangeMessage msg) {
-        msg.setModulusLength(msg.getModulus().getValue().length);
-        LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
-    }
-
-    private void preparePublicKey(PskDheServerKeyExchangeMessage msg) {
-        msg.setPublicKey(chooser.getPSKServerPublicKey().toByteArray());
-        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    private void preparePublicKeyLength(PskDheServerKeyExchangeMessage msg) {
-        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
-    }
-
-    private void setComputedPrivateKey(PskDheServerKeyExchangeMessage msg) {
-        msg.getComputations().setPrivateKey(chooser.getPSKServerPrivateKey());
-        LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
-    }
-
-    private void setComputedModulus(PskDheServerKeyExchangeMessage msg) {
-        msg.getComputations().setModulus(chooser.getPSKModulus());
-        LOGGER.debug("Modulus used for Computations: " + msg.getComputations().getModulus().getValue().toString(16));
-    }
-
-    private void setComputedGenerator(PskDheServerKeyExchangeMessage msg) {
-        msg.getComputations().setGenerator(chooser.getPSKGenerator());
-        LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
-    }
-
-    private void prepareClientRandom(PskDheServerKeyExchangeMessage msg) {
-        msg.getComputations().setClientRandom(chooser.getClientRandom());
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    private void prepareServerRandom(PskDheServerKeyExchangeMessage msg) {
-        msg.getComputations().setServerRandom(chooser.getServerRandom());
-        LOGGER.debug("ServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
     }
 }

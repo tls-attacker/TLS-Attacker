@@ -18,7 +18,8 @@ import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<PskEcDheServerKeyExchangeMessage> {
+public class PskEcDheServerKeyExchangeSerializer extends
+        ECDHEServerKeyExchangeSerializer<PskEcDheServerKeyExchangeMessage> {
 
     private final PskEcDheServerKeyExchangeMessage msg;
 
@@ -40,10 +41,7 @@ public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerial
         LOGGER.debug("Serializing PSKECDHEServerKeyExchangeMessage");
         writePSKIdentityHintLength(msg);
         writePSKIdentityHint(msg);
-        writeCurveType(msg);
-        writeNamedCurve(msg);
-        writeSerializedPublicKeyLength(msg);
-        writeSerializedPublicKey(msg);
+        super.serializeEcDheParams();
         return getAlreadySerialized();
     }
 
@@ -59,41 +57,5 @@ public class PskEcDheServerKeyExchangeSerializer extends ServerKeyExchangeSerial
     private void writePSKIdentityHint(PskEcDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getIdentityHint().getValue());
         LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
-    }
-
-    /**
-     * Writes the CurveType of the PskEcDheServerKeyExchangeMessage into the
-     * final byte[]
-     */
-    private void writeCurveType(PskEcDheServerKeyExchangeMessage msg) {
-        appendByte(msg.getCurveType().getValue());
-        LOGGER.debug("CurveType: " + msg.getCurveType().getValue());
-    }
-
-    /**
-     * Writes the NamedCurve of the PskEcDheServerKeyExchangeMessage into the
-     * final byte[]
-     */
-    private void writeNamedCurve(PskEcDheServerKeyExchangeMessage msg) {
-        appendBytes(msg.getNamedCurve().getValue());
-        LOGGER.debug("NamedCurve: " + ArrayConverter.bytesToHexString(msg.getNamedCurve().getValue()));
-    }
-
-    /**
-     * Writes the SerializedPublicKeyLength of the
-     * PskEcDheServerKeyExchangeMessage into the final byte[]
-     */
-    private void writeSerializedPublicKeyLength(PskEcDheServerKeyExchangeMessage msg) {
-        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDHE_PARAM_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
-    }
-
-    /**
-     * Writes the SerializedPublicKey of the PskEcDheServerKeyExchangeMessage
-     * into the final byte[]
-     */
-    private void writeSerializedPublicKey(PskEcDheServerKeyExchangeMessage msg) {
-        appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 }

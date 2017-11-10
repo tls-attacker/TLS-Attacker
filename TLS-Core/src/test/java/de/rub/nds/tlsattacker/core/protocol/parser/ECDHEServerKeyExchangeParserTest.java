@@ -108,7 +108,8 @@ public class ECDHEServerKeyExchangeParserTest {
     @Test
     public void testParse() {// TODO make protocolversion a parameter and test
                              // for other versions too
-        ECDHEServerKeyExchangeParser parser = new ECDHEServerKeyExchangeParser(0, message, version);
+        ECDHEServerKeyExchangeParser<ECDHEServerKeyExchangeMessage> parser = new ECDHEServerKeyExchangeParser(0,
+                message, version);
         ECDHEServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(length == msg.getLength().getValue());

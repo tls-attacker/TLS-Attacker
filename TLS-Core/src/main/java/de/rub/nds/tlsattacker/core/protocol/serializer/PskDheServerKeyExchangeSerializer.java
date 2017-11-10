@@ -18,7 +18,7 @@ import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializer<PskDheServerKeyExchangeMessage> {
+public class PskDheServerKeyExchangeSerializer extends DHEServerKeyExchangeSerializer<PskDheServerKeyExchangeMessage> {
 
     private final PskDheServerKeyExchangeMessage msg;
 
@@ -40,65 +40,8 @@ public class PskDheServerKeyExchangeSerializer extends ServerKeyExchangeSerializ
         LOGGER.debug("Serializing PSKDHEServerKeyExchangeMessage");
         writePSKIdentityHintLength(msg);
         writePSKIdentityHint(msg);
-        writePLength(msg);
-        writeP(msg);
-        writeGLength(msg);
-        writeG(msg);
-        writeSerializedPublicKeyLength(msg);
-        writeSerializedPublicKey(msg);
+        super.serializeDheParams();
         return getAlreadySerialized();
-    }
-
-    /**
-     * Writes the pLength of the PskDheServerKeyExchangeMessage into the final
-     * byte[]
-     */
-    private void writePLength(PskDheServerKeyExchangeMessage msg) {
-        appendInt(msg.getModulusLength().getValue(), HandshakeByteLength.DH_MODULUS_LENGTH);
-        LOGGER.debug("pLength: " + msg.getModulusLength().getValue());
-    }
-
-    /**
-     * Writes the P of the PskDheServerKeyExchangeMessage into the final byte[]
-     */
-    private void writeP(PskDheServerKeyExchangeMessage msg) {
-        appendBytes(msg.getModulus().getValue());
-        LOGGER.debug("P: " + ArrayConverter.bytesToHexString(msg.getModulus().getValue()));
-    }
-
-    /**
-     * Writes the gLength of the PskDheServerKeyExchangeMessage into the final
-     * byte[]
-     */
-    private void writeGLength(PskDheServerKeyExchangeMessage msg) {
-        appendInt(msg.getGeneratorLength().getValue(), HandshakeByteLength.DH_GENERATOR_LENGTH);
-        LOGGER.debug("gLength: " + msg.getGeneratorLength().getValue());
-    }
-
-    /**
-     * Writes the G of the PskDheServerKeyExchangeMessage into the final byte[]
-     */
-    private void writeG(PskDheServerKeyExchangeMessage msg) {
-        appendBytes(msg.getGenerator().getValue());
-        LOGGER.debug("G: " + ArrayConverter.bytesToHexString(msg.getGenerator().getValue()));
-    }
-
-    /**
-     * Writes the SerializedPublicKeyLength of the
-     * PskDheServerKeyExchangeMessage into the final byte[]
-     */
-    private void writeSerializedPublicKeyLength(PskDheServerKeyExchangeMessage msg) {
-        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.DH_PUBLICKEY_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
-    }
-
-    /**
-     * Writes the SerializedPublicKey of the PskDheServerKeyExchangeMessage into
-     * the final byte[]
-     */
-    private void writeSerializedPublicKey(PskDheServerKeyExchangeMessage msg) {
-        appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
     private void writePSKIdentityHintLength(PskDheServerKeyExchangeMessage msg) {

@@ -22,13 +22,10 @@ import org.bouncycastle.util.BigIntegers;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskDhClientKeyExchangePreparator extends ClientKeyExchangePreparator<PskDhClientKeyExchangeMessage> {
+public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePreparator<PskDhClientKeyExchangeMessage> {
 
-    private byte[] premasterSecret;
-    private byte[] clientRandom;
     private final PskDhClientKeyExchangeMessage msg;
     private ByteArrayOutputStream outputStream;
-    private BigInteger clientPublicKey;
     private byte[] dhValue;
 
     public PskDhClientKeyExchangePreparator(Chooser chooser, PskDhClientKeyExchangeMessage message) {
@@ -77,38 +74,6 @@ public class PskDhClientKeyExchangePreparator extends ClientKeyExchangePreparato
         return tempPremasterSecret;
     }
 
-    private byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
-        return BigIntegers.asUnsignedByteArray(publicKey.modPow(privateKey, modulus));
-    }
-
-    private void preparePremasterSecret(PskDhClientKeyExchangeMessage msg) {
-        msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
-    }
-
-    private void prepareClientRandom(PskDhClientKeyExchangeMessage msg) {
-        // TODO spooky
-        clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(clientRandom);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    private BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
-        return generator.modPow(privateKey, modulus);
-    }
-
-    private void preparePublicKey(PskDhClientKeyExchangeMessage msg) {
-        msg.setPublicKey(clientPublicKey.toByteArray());
-        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    private void preparePublicKeyLength(PskDhClientKeyExchangeMessage msg) {
-        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
-    }
-
     @Override
     public void prepareAfterParse() {
         BigInteger privateKey = chooser.getPSKServerPrivateKey();
@@ -120,22 +85,20 @@ public class PskDhClientKeyExchangePreparator extends ClientKeyExchangePreparato
         prepareClientRandom(msg);
     }
 
-    private void setComputationPrivateKey(PskDhClientKeyExchangeMessage msg) {
-        msg.getComputations().setPrivateKey(chooser.getDhClientPrivateKey());
-        LOGGER.debug("Computation PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
-    }
-
-    private void setComputationServerPublicKey(PskDhClientKeyExchangeMessage msg) {
+    @Override
+    protected void setComputationServerPublicKey(PskDhClientKeyExchangeMessage msg) {
         msg.getComputations().setServerPublicKey(chooser.getPSKServerPublicKey());
         LOGGER.debug("Computation PublicKey: " + msg.getComputations().getServerPublicKey().getValue().toString());
     }
 
-    private void setComputationModulus(PskDhClientKeyExchangeMessage msg) {
+    @Override
+    protected void setComputationModulus(PskDhClientKeyExchangeMessage msg) {
         msg.getComputations().setModulus(chooser.getPSKModulus());
         LOGGER.debug("Modulus: " + msg.getComputations().getModulus().getValue());
     }
 
-    private void setComputationGenerator(PskDhClientKeyExchangeMessage msg) {
+    @Override
+    protected void setComputationGenerator(PskDhClientKeyExchangeMessage msg) {
         msg.getComputations().setGenerator(chooser.getPSKGenerator());
         LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue());
     }

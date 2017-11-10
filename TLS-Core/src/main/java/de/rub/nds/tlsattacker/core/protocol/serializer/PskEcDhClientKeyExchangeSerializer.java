@@ -18,7 +18,8 @@ import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskEcDhClientKeyExchangeSerializer extends HandshakeMessageSerializer<PskEcDhClientKeyExchangeMessage> {
+public class PskEcDhClientKeyExchangeSerializer extends
+        ECDHClientKeyExchangeSerializer<PskEcDhClientKeyExchangeMessage> {
     private final PskEcDhClientKeyExchangeMessage msg;
 
     /**
@@ -39,8 +40,7 @@ public class PskEcDhClientKeyExchangeSerializer extends HandshakeMessageSerializ
         LOGGER.debug("Serializing PSKECDHClientKeyExchangeMessage");
         writePSKIdentityLength(msg);
         writePSKIdentity(msg);
-        writeSerializedPublicKeyLength(msg);
-        writeSerializedPublicKey(msg);
+        super.serializeEcDhParams();
         return getAlreadySerialized();
     }
 
@@ -60,23 +60,5 @@ public class PskEcDhClientKeyExchangeSerializer extends HandshakeMessageSerializ
     private void writePSKIdentity(PskEcDhClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
         LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
-    }
-
-    /**
-     * Writes the SerializedPublicKeyLength of the ECDHCLientKeyExchangeMessage
-     * into the final byte[]
-     */
-    private void writeSerializedPublicKeyLength(PskEcDhClientKeyExchangeMessage msg) {
-        appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ECDH_PARAM_LENGTH);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
-    }
-
-    /**
-     * Writes the SerializedPublicKey of the ECDHCLientKeyExchangeMessage into
-     * the final byte[]
-     */
-    private void writeSerializedPublicKey(PskEcDhClientKeyExchangeMessage msg) {
-        appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 }

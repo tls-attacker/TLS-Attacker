@@ -36,13 +36,11 @@ import org.bouncycastle.math.ec.ECPoint;
  *
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskEcDhClientKeyExchangePreparator extends ClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
+public class PskEcDhClientKeyExchangePreparator extends
+        ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
 
-    private byte[] premasterSecret;
-    private byte[] clientRandom;
     private ByteArrayOutputStream outputStream;
     private byte[] ecdhValue;
-    private byte[] serializedPoint;
     private final PskEcDhClientKeyExchangeMessage msg;
 
     public PskEcDhClientKeyExchangePreparator(Chooser chooser, PskEcDhClientKeyExchangeMessage message) {
@@ -120,61 +118,6 @@ public class PskEcDhClientKeyExchangePreparator extends ClientKeyExchangePrepara
         byte[] tempPremasterSecret = outputStream.toByteArray();
         LOGGER.debug("PremasterSecret: " + tempPremasterSecret);
         return tempPremasterSecret;
-    }
-
-    private ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
-        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
-                namedCurve.getValue()));
-        try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedCurve[] { chooser.getSelectedCurve() },
-                    new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
-        } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
-        }
-    }
-
-    private void preparePublicKeyBaseX(PskEcDhClientKeyExchangeMessage msg, ECPoint clientPublicKey) {
-        msg.setPublicKeyBaseX(clientPublicKey.getRawXCoord().toBigInteger());
-        LOGGER.debug("PublicKeyBaseX: " + msg.getPublicKeyBaseX().getValue());
-    }
-
-    private void preparePublicKeyBaseY(PskEcDhClientKeyExchangeMessage msg, ECPoint clientPublicKey) {
-        msg.setPublicKeyBaseY(clientPublicKey.getRawYCoord().toBigInteger());
-        LOGGER.debug("PublicKeyBaseY: " + msg.getPublicKeyBaseY().getValue());
-    }
-
-    private void prepareEcPointFormat(PskEcDhClientKeyExchangeMessage msg) {
-        msg.setEcPointFormat(serializedPoint[0]);
-        LOGGER.debug("EcPointFormat: " + msg.getEcPointFormat().getValue());
-    }
-
-    private void prepareEcPointEncoded(PskEcDhClientKeyExchangeMessage msg) {
-        msg.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
-        LOGGER.debug("EcPointEncoded: " + ArrayConverter.bytesToHexString(msg.getEcPointEncoded().getValue()));
-    }
-
-    private void prepareSerializedPublicKey(PskEcDhClientKeyExchangeMessage msg) {
-        msg.setPublicKey(serializedPoint);
-        LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
-    }
-
-    private void prepareSerializedPublicKeyLength(PskEcDhClientKeyExchangeMessage msg) {
-        msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
-        LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
-    }
-
-    private void preparePremasterSecret(PskEcDhClientKeyExchangeMessage msg) {
-        msg.getComputations().setPremasterSecret(premasterSecret);
-        LOGGER.debug("PremasterSecret: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
-    }
-
-    private void prepareClientRandom(PskEcDhClientKeyExchangeMessage msg) {
-        // TODO spooky
-        clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(clientRandom);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
     @Override

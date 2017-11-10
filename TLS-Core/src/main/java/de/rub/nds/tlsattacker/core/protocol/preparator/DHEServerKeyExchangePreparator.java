@@ -16,14 +16,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
-public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<DHEServerKeyExchangeMessage> {
+public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessage> extends
+        ServerKeyExchangePreparator<T> {
 
-    private BigInteger publicKey;
-    private SignatureAndHashAlgorithm selectedSignatureHashAlgo;
-    private byte[] signature;
-    private final DHEServerKeyExchangeMessage msg;
+    protected BigInteger publicKey;
+    protected SignatureAndHashAlgorithm selectedSignatureHashAlgo;
+    protected byte[] signature;
+    protected final T msg;
 
-    public DHEServerKeyExchangePreparator(Chooser chooser, DHEServerKeyExchangeMessage message) {
+    public DHEServerKeyExchangePreparator(Chooser chooser, T message) {
         super(chooser, message);
         this.msg = message;
     }
@@ -54,7 +55,7 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         prepareSignatureLength(msg);
     }
 
-    private byte[] generateToBeSigned() {
+    protected byte[] generateToBeSigned() {
         byte[] dhParams = ArrayConverter
                 .concatenate(ArrayConverter.intToBytes(msg.getModulusLength().getValue(),
                         HandshakeByteLength.DH_MODULUS_LENGTH), msg.getModulus().getValue(), ArrayConverter.intToBytes(
@@ -66,79 +67,79 @@ public class DHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     }
 
-    private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
+    protected byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
         return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
     }
 
-    private void prepareGenerator(DHEServerKeyExchangeMessage msg) {
+    protected void prepareGenerator(T msg) {
         msg.setGenerator(msg.getComputations().getGenerator().getByteArray());
         LOGGER.debug("Generator: " + ArrayConverter.bytesToHexString(msg.getGenerator().getValue()));
     }
 
-    private void prepareModulus(DHEServerKeyExchangeMessage msg) {
+    protected void prepareModulus(T msg) {
         msg.setModulus(msg.getComputations().getModulus().getByteArray());
         LOGGER.debug("Modulus: " + ArrayConverter.bytesToHexString(msg.getModulus().getValue()));
     }
 
-    private void prepareGeneratorLength(DHEServerKeyExchangeMessage msg) {
+    protected void prepareGeneratorLength(T msg) {
         msg.setGeneratorLength(msg.getGenerator().getValue().length);
         LOGGER.debug("Generator Length: " + msg.getGeneratorLength().getValue());
     }
 
-    private void prepareModulusLength(DHEServerKeyExchangeMessage msg) {
+    protected void prepareModulusLength(T msg) {
         msg.setModulusLength(msg.getModulus().getValue().length);
         LOGGER.debug("Modulus Length: " + msg.getModulusLength().getValue());
     }
 
-    private void preparePublicKey(DHEServerKeyExchangeMessage msg) {
+    protected void preparePublicKey(T msg) {
         msg.setPublicKey(chooser.getDhServerPublicKey().toByteArray());
         LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
-    private void preparePublicKeyLength(DHEServerKeyExchangeMessage msg) {
+    protected void preparePublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void setComputedPrivateKey(DHEServerKeyExchangeMessage msg) {
+    protected void setComputedPrivateKey(T msg) {
         msg.getComputations().setPrivateKey(chooser.getDhServerPrivateKey());
         LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
     }
 
-    private void setComputedModulus(DHEServerKeyExchangeMessage msg) {
+    protected void setComputedModulus(T msg) {
         msg.getComputations().setModulus(chooser.getDhModulus());
         LOGGER.debug("Modulus used for Computations: " + msg.getComputations().getModulus().getValue().toString(16));
     }
 
-    private void setComputedGenerator(DHEServerKeyExchangeMessage msg) {
+    protected void setComputedGenerator(T msg) {
         msg.getComputations().setGenerator(chooser.getDhGenerator());
         LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
     }
 
-    private void prepareSignatureAndHashAlgorithm(DHEServerKeyExchangeMessage msg) {
+    protected void prepareSignatureAndHashAlgorithm(T msg) {
         msg.setSignatureAndHashAlgorithm(selectedSignatureHashAlgo.getByteValue());
         LOGGER.debug("SignatureAlgorithm: "
                 + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
-    private void prepareClientRandom(DHEServerKeyExchangeMessage msg) {
+    protected void prepareClientRandom(T msg) {
         msg.getComputations().setClientRandom(chooser.getClientRandom());
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareServerRandom(DHEServerKeyExchangeMessage msg) {
+    protected void prepareServerRandom(T msg) {
         msg.getComputations().setServerRandom(chooser.getServerRandom());
         LOGGER.debug("ServerRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
     }
 
-    private void prepareSignature(DHEServerKeyExchangeMessage msg) {
+    protected void prepareSignature(T msg) {
         msg.setSignature(signature);
         LOGGER.debug("Signatur: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
-    private void prepareSignatureLength(DHEServerKeyExchangeMessage msg) {
+    protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
