@@ -95,6 +95,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                 WorkflowTrace trace = executeProtocolFlow();
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
+                    
                     return null;
                 }
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
@@ -134,8 +135,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
-        LOGGER.info("working with the follwoing premaster secret: "
-                + ArrayConverter.bytesToHexString(explicitPMS));
+        LOGGER.info("working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
         workflowExecutor.executeWorkflow();
         return trace;
     }
