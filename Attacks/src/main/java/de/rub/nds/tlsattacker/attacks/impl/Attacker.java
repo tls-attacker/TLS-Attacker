@@ -18,11 +18,15 @@ package de.rub.nds.tlsattacker.attacks.impl;
  */
 
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @param <Config>
  */
 public abstract class Attacker<Config extends AttackConfig> {
+
+    public static Logger LOGGER = LogManager.getLogger(Attacker.class);
 
     protected Config config;
 
