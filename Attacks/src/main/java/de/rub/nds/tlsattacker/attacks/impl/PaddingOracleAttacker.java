@@ -14,6 +14,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -31,8 +34,10 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
@@ -80,28 +85,34 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         lastMessages.add(WorkflowTraceUtil.getLastReceivedMessage(trace));
     }
 
-    private List<Record> createRecordsWithPlainData() {
+    private List<Record> createRecordsWithPlainData(int blocksize, int macSize) {
         List<Record> records = new LinkedList<>();
         for (int i = 0; i < 64; i++) {
             byte[] padding = createPaddingBytes(i);
-            int messageSize = config.getBlockSize() - (padding.length % config.getBlockSize());
+            int messageSize = blocksize - (padding.length % blocksize);
             byte[] message = new byte[messageSize];
             byte[] plain = ArrayConverter.concatenate(message, padding);
+            if (plain.length > macSize) {
+                Record r = createRecordWithPlainData(plain);
+                records.add(r);
+            }
+        }
+        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255 };
+        if (plain.length > macSize) {
             Record r = createRecordWithPlainData(plain);
             records.add(r);
         }
-        Record r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255 });
-        records.add(r);
-
-        r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255 });
-        records.add(r);
-
+                (byte) 255 };
+        if (plain.length > macSize) {
+            Record r = createRecordWithPlainData(plain);
+            records.add(r);
+        }
         return records;
     }
 
@@ -150,8 +161,15 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     @Override
     public Boolean isVulnerable() {
+        Configurator.setRootLevel(Level.INFO);
+        Configurator.setAllLevels("", Level.INFO);
+
+        int macSize = AlgorithmResolver.getMacAlgorithm(tlsConfig.getDefaultSelectedProtocolVersion(),
+                tlsConfig.getDefaultSelectedCipherSuite()).getSize();
+        int blockSize = AlgorithmResolver.getCipher(tlsConfig.getDefaultSelectedCipherSuite())
+                .getNonceBytesFromHandshake();
         List<Record> records = new LinkedList<>();
-        records.addAll(createRecordsWithPlainData());
+        records.addAll(createRecordsWithPlainData(blockSize, macSize));
         records.addAll(createRecordsWithModifiedMac());
         records.addAll(createRecordsWithModifiedPadding());
         for (Record record : records) {
