@@ -99,20 +99,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                 if(Arrays.equals(ourPskIdentities[x], pskIdentity.getIdentity()))
                 {
                     LOGGER.debug("Selected PSK identity: " + ArrayConverter.bytesToHexString(ourPskIdentities[x]));
-                    //context.setPsk(context.getConfig().getPreSharedKeys()[x]); removed for testing
-                    //***** For testing *****
-                    try{
-                    byte[] resumpMasterSec = context.getConfig().getPreSharedKeys()[x];
-                    HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getConfig().getPskCipherSuites().get(x));
-                    int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();                    
-                    byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption", ArrayConverter.hexStringToByteArray("00"), macLength);
-                    context.setPsk(psk);
-                    }
-                    catch(NoSuchAlgorithmException ex)
-                    {
-                        //No need to protocol - this is only for testing
-                    }
-                    //***********************
+                    context.setPsk(context.getConfig().getPreSharedKeys()[x]);
                     context.setEarlyDataCipherSuite(context.getConfig().getPskCipherSuites().get(x));
                     context.setSelectedIdentityIndex(pskIdentityIndex);
                     return;

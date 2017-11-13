@@ -132,17 +132,12 @@ public class PreSharedKeyExtensionSerializer extends ExtensionSerializer<PreShar
             try {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getConfig().getPskCipherSuites().get(x));
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
-                int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
                 DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, context.getConfig().getPskCipherSuites().get(x));
-            
-                byte[] resumpMasterSec = context.getConfig().getPreSharedKeys()[x]; //This is for testing and should replace the part after byte[] psk =
-                  
-                byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption", ArrayConverter.hexStringToByteArray("00"), macLength);
+                      
+                byte[] psk = context.getConfig().getPreSharedKeys()[x];
                 byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
                 byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret, HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
-                byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgortihm, binderKey, HKDFunction.FINISHED, new byte[0], mac.getMacLength());
-            
-                context.getConfig().getPreSharedKeys()[x] = psk; //This is for testing and should be removed
+                byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgortihm, binderKey, HKDFunction.FINISHED, new byte[0], mac.getMacLength());           
                 
                 context.getDigest().setRawBytes(relevantBytes);
                 SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
