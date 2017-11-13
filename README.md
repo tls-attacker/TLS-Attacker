@@ -53,7 +53,7 @@ You can find more information about these modules in the Wiki.
 
 ## Features
 Currently, the following features are supported:
-- TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346) 1.2 (RFC-5246) and 1.3 (draft-ietf-tls-tls13-21)
+- SSL 3, TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346) 1.2 (RFC-5246) and 1.3 (draft-ietf-tls-tls13-21)
 - DTLS 1.2 (RFC-6347)(Currently under Development)
 - SSL 2 (Client/Server Hello)
 - (EC)DH and RSA key exchange algorithms
@@ -279,6 +279,7 @@ The following people have contributed code to the TLS-Attacker Project:
 - Lucas Hartmann: TLS-MitM Workflows
 - Florian Linsner: PSK
 - Pierre Tilhaus: Code quality improvements
+- Felix Kleine-Wilde: SSL 3 Support
 
 Additionally we would like to thank all the other people who have contributed code to the project.
 
