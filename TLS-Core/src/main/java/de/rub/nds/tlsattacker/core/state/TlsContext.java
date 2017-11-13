@@ -64,6 +64,7 @@ import org.bouncycastle.crypto.tls.Certificate;
  * @author Philip Riese <philip.riese@rub.de>
  * @author Matthias Terlinde <matthias.terlinde@rub.de>
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class TlsContext {
 
@@ -93,7 +94,72 @@ public class TlsContext {
     private byte[] clientApplicationTrafficSecret0;
 
     private byte[] serverApplicationTrafficSecret0;
-
+    
+    /**
+     * EarlyTrafficSecret for early data encryption.
+     */
+    private byte[] clientEarlyTrafficSecret;
+    
+    /**
+     * The ciphersuite to use for early data.
+     */
+    private CipherSuite earlyDataCipherSuite;
+    
+    /**
+     * Helps to choose between Handshake-/App-/EarlySecret.
+     */
+    private boolean useEarlyTrafficSecret = false;
+    
+    /**
+     * EarlySecret used to derive EarlyTrafficSecret and more.
+     */
+    private byte[] earlySecret;
+    
+    /**
+     * The selected Pre Shared key.
+     */
+    private byte[] psk;
+    
+    /**
+     * Identity of the PSK used for earlyData.
+     */
+    private byte[] earlyDataPSKIdentity;
+     
+    /**
+     * Identity of the PSK used for earlyData.
+     */
+    private int selectedIdentityIndex;
+    
+    /**
+     * The Client's chosen Kex-Modes.
+     */
+    private byte[] clientPskKeyExchangeModes;
+    
+    /**
+     * Did we receive an EarlyDataExtension?
+     */
+    private boolean recievedEarlyDataExt = false;
+    
+    /**
+     * Did we just encrypt the EOED-Message?
+     */
+    private boolean encryptedEndOfEarlyData = false;
+    
+    /**
+     * SequenceNumber of AEADCipher to be restored after encrypting EOED-Message.
+     */
+    private long storedSequenceNumberDec = 0;
+    
+    /**
+     * SequenceNumber of AEADCipher to be restored after decrypting EOED-Message.
+     */
+    private long storedSequenceNumberEnc = 0;
+    
+    /**
+     * Maximum number of bytes to transmit as early-data.
+     */
+    private long maxEarlyDataSize;
+    
     /**
      * Master secret established during the handshake.
      */
@@ -1378,6 +1444,188 @@ public class TlsContext {
         }
         info.append("}");
         return info.toString();
+    }
+
+    /**
+     * @return the clientEarlyTrafficSecret
+     */
+    public byte[] getClientEarlyTrafficSecret() {
+        return clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @param clientEarlyTrafficSecret the clientEarlyTrafficSecret to set
+     */
+    public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @return the maxEarlyDataSize
+     */
+    public long getMaxEarlyDataSize() {
+        return maxEarlyDataSize;
+    }
+
+    /**
+     * @param maxEarlyDataSize the maxEarlyDataSize to set
+     */
+    public void setMaxEarlyDataSize(long maxEarlyDataSize) {
+        this.maxEarlyDataSize = maxEarlyDataSize;
+    }
+
+    /**
+     * @return the psk
+     */
+    public byte[] getPsk() {
+        return psk;
+    }
+
+    /**
+     * @param psk the psk to set
+     */
+    public void setPsk(byte[] psk) {
+        this.psk = psk;
+    }
+
+    /**
+     * @return the earlySecret
+     */
+    public byte[] getEarlySecret() {
+        return earlySecret;
+    }
+
+    /**
+     * @param earlySecret the earlySecret to set
+     */
+    public void setEarlySecret(byte[] earlySecret) {
+        this.earlySecret = earlySecret;
+    }
+
+    /**
+     * @return the useEarlyTrafficSecret
+     */
+    public boolean isUseEarlyTrafficSecret() {
+        return useEarlyTrafficSecret;
+    }
+
+    /**
+     * @param useEarlyTrafficSecret the useEarlyTrafficSecret to set
+     */
+    public void setUseEarlyTrafficSecret(boolean useEarlyTrafficSecret) {
+        this.useEarlyTrafficSecret = useEarlyTrafficSecret;
+    }
+
+    /**
+     * @return the encryptedEndOfEarlyData
+     */
+    public boolean isEncryptedEndOfEarlyData() {
+        return encryptedEndOfEarlyData;
+    }
+
+    /**
+     * @param encryptedEndOfEarlyData the encryptedEndOfEarlyData to set
+     */
+    public void setEncryptedEndOfEarlyData(boolean encryptedEndOfEarlyData) {
+        this.encryptedEndOfEarlyData = encryptedEndOfEarlyData;
+    }
+
+    /**
+     * @return the storedSequenceNumberDec
+     */
+    public long getStoredSequenceNumberDec() {
+        return storedSequenceNumberDec;
+    }
+
+    /**
+     * @param storedSequenceNumberDec the storedSequenceNumberDec to set
+     */
+    public void setStoredSequenceNumberDec(long storedSequenceNumberDec) {
+        this.storedSequenceNumberDec = storedSequenceNumberDec;
+    }
+
+    /**
+     * @return the earlyDataCipherSuite
+     */
+    public CipherSuite getEarlyDataCipherSuite() {
+        return earlyDataCipherSuite;
+    }
+
+    /**
+     * @param earlyDataCipherSuite the earlyDataCipherSuite to set
+     */
+    public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
+        this.earlyDataCipherSuite = earlyDataCipherSuite;
+    }
+
+    /**
+     * @return the earlyDataPSKIdentity
+     */
+    public byte[] getEarlyDataPSKIdentity() {
+        return earlyDataPSKIdentity;
+    }
+
+    /**
+     * @param earlyDataPSKIdentity the earlyDataPSKIdentity to set
+     */
+    public void setEarlyDataPSKIdentity(byte[] earlyDataPSKIdentity) {
+        this.earlyDataPSKIdentity = earlyDataPSKIdentity;
+    }
+
+    /**
+     * @return the recievedEarlyDataExt
+     */
+    public boolean isRecievedEarlyDataExt() {
+        return recievedEarlyDataExt;
+    }
+
+    /**
+     * @param recievedEarlyDataExt the recievedEarlyDataExt to set
+     */
+    public void setRecievedEarlyDataExt(boolean recievedEarlyDataExt) {
+        this.recievedEarlyDataExt = recievedEarlyDataExt;
+    }
+
+    /**
+     * @return the selectedIdentityIndex
+     */
+    public int getSelectedIdentityIndex() {
+        return selectedIdentityIndex;
+    }
+
+    /**
+     * @param selectedIdentityIndex the selectedIdentityIndex to set
+     */
+    public void setSelectedIdentityIndex(int selectedIdentityIndex) {
+        this.selectedIdentityIndex = selectedIdentityIndex;
+    }
+
+    /**
+     * @return the storedSequenceNumberEnc
+     */
+    public long getStoredSequenceNumberEnc() {
+        return storedSequenceNumberEnc;
+    }
+
+    /**
+     * @param storedSequenceNumberEnc the storedSequenceNumberEnc to set
+     */
+    public void setStoredSequenceNumberEnc(long storedSequenceNumberEnc) {
+        this.storedSequenceNumberEnc = storedSequenceNumberEnc;
+    }
+
+    /**
+     * @return the clientPskKeyExchangeModes
+     */
+    public byte[] getClientPskKeyExchangeModes() {
+        return clientPskKeyExchangeModes;
+    }
+
+    /**
+     * @param clientPskKeyExchangeModes the clientPskKeyExchangeModes to set
+     */
+    public void setClientPskKeyExchangeModes(byte[] clientPskKeyExchangeModes) {
+        this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
     }
 
 }

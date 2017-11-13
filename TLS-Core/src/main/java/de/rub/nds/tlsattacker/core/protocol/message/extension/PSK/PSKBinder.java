@@ -33,6 +33,11 @@ public class PSKBinder {
         this.binderEntry = binderEntry;
     }
     
+    public void setBinderEntry(byte[] binderEntry)
+    {
+        this.binderEntry = ModifiableVariableFactory.safelySetValue(this.binderEntry, binderEntry);
+    }
+    
     public byte[] getBinderEntry()
     {
         return binderEntry.getValue();

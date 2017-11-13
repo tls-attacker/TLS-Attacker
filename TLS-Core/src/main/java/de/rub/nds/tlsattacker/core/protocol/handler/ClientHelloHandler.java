@@ -14,9 +14,11 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
@@ -28,6 +30,7 @@ import java.util.List;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
@@ -60,10 +63,24 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             adjustDTLSCookie(message);
         }
         if (message.getExtensions() != null) {
+            KeyShareExtensionHandler keyShareHandler = null;
+            KeyShareExtensionMessage keyShareExtension = null;
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
                         extension.getExtensionTypeConstant(), HandshakeMessageType.CLIENT_HELLO);
-                handler.adjustTLSContext(extension);
+                if(handler instanceof KeyShareExtensionHandler)
+                {
+                    keyShareHandler = (KeyShareExtensionHandler) handler;
+                    keyShareExtension = (KeyShareExtensionMessage) extension;
+                }
+                else
+                {
+                    handler.adjustTLSContext(extension);
+                }              
+            }
+            if(keyShareHandler != null) //delay KeyShare to process PSK first
+            {
+                keyShareHandler.adjustTLSContext(keyShareExtension);
             }
         }
         adjustRandomContext(message);

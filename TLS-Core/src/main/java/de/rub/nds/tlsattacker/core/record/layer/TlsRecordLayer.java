@@ -131,6 +131,11 @@ public class TlsRecordLayer extends RecordLayer {
     public void setRecordCipher(RecordCipher cipher) {
         this.cipher = cipher;
     }
+    
+    public RecordCipher getRecordCipher()
+    {
+        return cipher;
+    }
 
     @Override
     public void updateEncryptionCipher() {

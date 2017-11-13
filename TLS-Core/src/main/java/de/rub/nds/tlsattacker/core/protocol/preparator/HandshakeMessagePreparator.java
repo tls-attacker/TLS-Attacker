@@ -12,17 +12,22 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.PreSharedKeyExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
  *
  * @author Robert Merget - robert.merget@rub.de
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  * @param <T>
  */
 public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> extends ProtocolMessagePreparator<T> {
@@ -88,6 +93,10 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
                         extensionMessage.getExtensionTypeConstant(), msg.getHandshakeMessageType());
                 handler.getPreparator(extensionMessage).prepare();
+                if(handler instanceof PreSharedKeyExtensionHandler && msg instanceof ClientHelloMessage && chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT)
+                {
+                   ((ClientHelloMessage) msg).setPskKexMsgSerializer((PreSharedKeyExtensionSerializer)handler.getSerializer(extensionMessage));
+                }
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {

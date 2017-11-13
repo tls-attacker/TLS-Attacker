@@ -133,8 +133,15 @@ public class RecordAEADCipher extends RecordCipher {
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             if (protocolVersion.isTLS13()) {
                 if (context.isUpdateKeys() == false) {
-                    clientSecret = context.getClientHandshakeTrafficSecret();
-                    serverSecret = context.getServerHandshakeTrafficSecret();
+                    if(context.isUseEarlyTrafficSecret()) {
+                        context.setUseEarlyTrafficSecret(false);
+                        clientSecret = context.getClientEarlyTrafficSecret();
+                        serverSecret = context.getClientEarlyTrafficSecret(); //Just to avoid errors
+                    }
+                    else {
+                        clientSecret = context.getClientHandshakeTrafficSecret();
+                        serverSecret = context.getServerHandshakeTrafficSecret(); 
+                    }
                 } else {
                     context.setUpdateKeys(false);
                     clientSecret = context.getClientApplicationTrafficSecret0();
@@ -250,4 +257,23 @@ public class RecordAEADCipher extends RecordCipher {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void setSequenceNumberEnc(long sequenceNumberEnc)
+    {
+        this.sequenceNumberEnc = sequenceNumberEnc;
+    }
+    
+    public long getSequenceNumberEnc()
+    {
+        return sequenceNumberEnc;
+    }
+    
+    public long getSequenceNumberDec()
+    {
+        return sequenceNumberDec;
+    }
+    
+    public void setSequenceNumberDec(long sequenceNumberDec)
+    {
+        this.sequenceNumberDec = sequenceNumberDec;
+    }
 }

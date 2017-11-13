@@ -34,7 +34,7 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
 
     @Override
     public void prepareHandshakeMessageContents() {
-        LOGGER.debug("Preparing ServerHelloMessage");
+        LOGGER.debug("Preparing ServerHelloMessage");   
         prepareProtocolVersion();
         prepareRandom(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()));
         if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {

@@ -27,6 +27,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.EndOfEarlyDataHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
@@ -130,6 +131,8 @@ public class HandlerFactory {
                     return getClientKeyExchangeHandler(context);
                 case ENCRYPTED_EXTENSIONS:
                     return new EncryptedExtensionsHandler(context);
+                case END_OF_EARLY_DATA:
+                    return new EndOfEarlyDataHandler(context);
                 case FINISHED:
                     return new FinishedHandler(context);
                 case HELLO_RETRY_REQUEST:

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -15,7 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  * RFC draft-ietf-tls-tls13-21
@@ -45,7 +51,28 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
 
     @Override
     public void adjustTLSContext(EndOfEarlyDataMessage message) {
-        // TODO
+        if(tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT)
+        {
+            adjustRecordLayer0RTT();
+        }
+        //recordLayer is being adjusted in RecordDecryptor, to decrypt ClientFinished
+    }
+    
+    private void adjustRecordLayer0RTT()
+    {
+        LOGGER.debug("Adjusting recordCipher to encrypt EOED properly");
+        
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
+        tlsContext.setStoredSequenceNumberDec(((RecordAEADCipher)((TlsRecordLayer)tlsContext.getRecordLayer()).getRecordCipher()).getSequenceNumberDec());
+        tlsContext.setUseEarlyTrafficSecret(true);
+        
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, tlsContext.getEarlyDataCipherSuite());
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        
+        ((RecordAEADCipher)recordCipher).setSequenceNumberEnc(1); //Sequence number has to be 1, as ClientHello was already encrypted using ETSecret
+        tlsContext.setEncryptedEndOfEarlyData(true);
     }
 
 }

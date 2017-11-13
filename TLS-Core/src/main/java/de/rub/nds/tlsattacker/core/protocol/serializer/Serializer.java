@@ -105,4 +105,9 @@ public abstract class Serializer<T> {
         serializeBytes();
         return getAlreadySerialized();
     }
+    
+    public ByteArrayOutputStream getOutputStream()
+    {
+        return outputStream;
+    }
 }

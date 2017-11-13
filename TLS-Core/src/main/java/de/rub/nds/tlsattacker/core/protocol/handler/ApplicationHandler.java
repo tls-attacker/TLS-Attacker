@@ -9,14 +9,18 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
 
@@ -41,6 +45,10 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public void adjustTLSContext(ApplicationMessage message) {
+        if(tlsContext.isUseEarlyTrafficSecret())
+        {
+            adjustRecordLayer0RTT();
+        }
         tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
         String readableAppData = ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
         if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getMyConnectionPeer()) {
@@ -48,6 +56,18 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
         } else {
             LOGGER.debug("Send Data:" + readableAppData);
         }
+    }
+    
+    private void adjustRecordLayer0RTT()
+    {
+        LOGGER.debug("Setting up RecordLayer, to allow for EarlyData encryption");
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
+            
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, tlsContext.getEarlyDataCipherSuite());
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        tlsContext.setEncryptActive(true);
     }
 
 }

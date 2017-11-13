@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.EncryptedExtensionsParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.EncryptedExtensionsPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EncryptedExtensionsSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  * This handler processes the EncryptedExtension messages, as defined in
@@ -54,6 +55,18 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
                 handler.adjustTLSContext(extension);
             }
         }
+        if(tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER)
+        {
+            adjustRecordLayer();
+        }
+    }
+    
+    private void adjustRecordLayer()
+    {
+        LOGGER.debug("Adjusting RecordLayer, to encrypt handshake messages");
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        tlsContext.setEncryptActive(true);
     }
 
 }

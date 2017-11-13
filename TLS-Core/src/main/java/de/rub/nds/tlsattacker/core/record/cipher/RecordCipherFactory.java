@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
@@ -22,11 +23,11 @@ public class RecordCipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);
 
-    public static RecordCipher getRecordCipher(TlsContext context) {
-        if (context.getSelectedCipherSuite() == null) {
+    public static RecordCipher getRecordCipher(TlsContext context, CipherSuite cipherSuite) {
+        if (cipherSuite == null) {
             return new RecordNullCipher();
         } else {
-            CipherType type = AlgorithmResolver.getCipherType(context.getChooser().getSelectedCipherSuite());
+            CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
             switch (type) {
                 case AEAD:
                     return new RecordAEADCipher(context);
@@ -38,6 +39,11 @@ public class RecordCipherFactory {
             LOGGER.warn("UnknownCipherType:" + type.name());
             return new RecordNullCipher();
         }
+    }
+    
+    public static RecordCipher getRecordCipher(TlsContext context)
+    {
+        return getRecordCipher(context, context.getSelectedCipherSuite());
     }
 
     private RecordCipherFactory() {

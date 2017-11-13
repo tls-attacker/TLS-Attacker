@@ -27,7 +27,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     private final HelloMessage msg;
 
-    public HelloMessagePreparator(Chooser chooser, HelloMessage message) {
+    public HelloMessagePreparator(Chooser chooser, HelloMessage message) { 
         super(chooser, message);
         this.msg = message;
     }

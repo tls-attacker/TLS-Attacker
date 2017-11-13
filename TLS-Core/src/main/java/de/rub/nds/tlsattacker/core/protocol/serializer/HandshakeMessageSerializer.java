@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 
 /**
@@ -66,6 +67,10 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
             writeFragmentLength();
         }
         serializeHandshakeMessageContent();
+        if(msg instanceof ClientHelloMessage && ((ClientHelloMessage) msg).getPskKexMsgSerializer()!= null)
+        {
+            replaceDummyBinders();
+        }
         return getAlreadySerialized();
     }
 
@@ -127,6 +132,13 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     protected void writeExtensionBytes() {
         appendBytes(msg.getExtensionBytes().getValue());
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(msg.getExtensionBytes().getValue()));
+    }
+    
+    private void replaceDummyBinders() {
+        byte[] modifiedBytes = getAlreadySerialized(); 
+        ((ClientHelloMessage) msg).getPskKexMsgSerializer().updateBinders(modifiedBytes);
+        getOutputStream().reset(); //Reset stream and re-append updated bytes
+        appendBytes(modifiedBytes);
     }
 
 }

@@ -12,8 +12,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
+ * RFC draft-ietf-tls-tls13-21
  *
- * @author marcel
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EndOfEarlyDataPreparator extends HandshakeMessagePreparator<EndOfEarlyDataMessage> {
 
@@ -23,7 +24,7 @@ public class EndOfEarlyDataPreparator extends HandshakeMessagePreparator<EndOfEa
 
     @Override
     protected void prepareHandshakeMessageContents() {
-        // Tut nichts, weil leer :^)
+        //EndOfEarlyData is always empty
     }
-
+    
 }

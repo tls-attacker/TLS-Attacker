@@ -10,10 +10,13 @@ package de.rub.nds.tlsattacker.core.record.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 
@@ -74,6 +77,11 @@ public class RecordDecryptor extends Decryptor {
                 LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(record.getPadding().getValue()));
                 record.setPaddingLength(padding.length);
                 LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+                if(Arrays.equals(record.getUnpaddedRecordBytes().getValue(), new byte[] {5, 0, 0, 0}))
+                {
+                    //just parsed EndOfEarlyData - switch secrets
+                    adjustRecordLayer0RTT(context);
+                }
             }
         } else {
             record.setPaddingLength(0);
@@ -149,5 +157,22 @@ public class RecordDecryptor extends Decryptor {
             throw new CryptoException("Could not extract content tpye of message.");
         }
         return unpadded[unpadded.length - 1];
+    }
+    
+    public void adjustRecordLayer0RTT(TlsContext context)
+    {
+        LOGGER.debug("Adjusting recordCipher after decrypting EOED using different key");
+        
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
+        context.setSelectedCipherSuite(context.getSelectedCipherSuite());
+
+        RecordCipher newRecordCipher = RecordCipherFactory.getRecordCipher(context);
+        context.setUseEarlyTrafficSecret(true);
+        context.getRecordLayer().setRecordCipher(newRecordCipher);
+        context.getRecordLayer().updateDecryptionCipher();
+        context.getRecordLayer().updateEncryptionCipher();
+        
+        //Restore the correct SequenceNumber
+        ((RecordAEADCipher)recordCipher).setSequenceNumberEnc(context.getStoredSequenceNumberEnc());
     }
 }

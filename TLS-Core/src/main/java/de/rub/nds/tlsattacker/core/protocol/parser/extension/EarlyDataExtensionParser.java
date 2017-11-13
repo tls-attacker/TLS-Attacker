@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 
 /**
@@ -24,12 +25,21 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
     @Override
     public void parseExtensionMessageContent(EarlyDataExtensionMessage msg) {
         LOGGER.debug("Parsing EarlyDataExtensionMessage");
-        //TODO
+        if(msg.getExtensionLength().getValue() > 0) 
+        {
+            parseMaxEarlyDataSize(msg);
+        }
     }
 
     @Override
     protected EarlyDataExtensionMessage createExtensionMessage() {
         return new EarlyDataExtensionMessage();
+    }
+    
+    private void parseMaxEarlyDataSize(EarlyDataExtensionMessage msg)
+    {
+        msg.setMaxEarlyDataSize(parseIntField(ExtensionByteLength.MAX_EARLY_DATA_SIZE_LENGTH));
+        LOGGER.debug("MaxEarlyDataSize: " + msg.getMaxEarlyDataSize().getValue());
     }
 
 }

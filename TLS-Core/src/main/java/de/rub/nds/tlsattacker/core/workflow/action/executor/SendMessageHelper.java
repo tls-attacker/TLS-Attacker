@@ -9,12 +9,17 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -95,6 +100,18 @@ public class SendMessageHelper {
                 current++;
             }
         }
+        if(context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER && context.getSelectedProtocolVersion().isTLS13())
+        {
+            for(ProtocolMessage message : messages)
+            {
+                if(message instanceof FinishedMessage && context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER)
+                {
+                    //Switch RecordLayer secrets to prepare for EndOfEarlyData
+                    adjustRecordCipherAfterServerFinished(context);
+                    break;
+                }
+            }
+        }
         return new MessageActionResult(records, messages);
     }
 
@@ -152,5 +169,24 @@ public class SendMessageHelper {
         ProtocolMessageHandler handler = message.getHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;
+    }
+    
+        
+    private void adjustRecordCipherAfterServerFinished(TlsContext context)
+    {
+        LOGGER.debug("Adjusting recordCipher after encrypting Hanshake messages");
+        
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
+        context.setSelectedCipherSuite(context.getEarlyDataCipherSuite());
+        
+        context.setUseEarlyTrafficSecret(true);
+        context.setStoredSequenceNumberEnc(((RecordAEADCipher)((TlsRecordLayer)context.getRecordLayer()).getRecordCipher()).getSequenceNumberEnc());
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
+        context.getRecordLayer().setRecordCipher(recordCipher);
+        context.getRecordLayer().updateDecryptionCipher();
+        context.getRecordLayer().updateEncryptionCipher();
+        
+        //Restore the correct SequenceNumber
+        ((RecordAEADCipher)recordCipher).setSequenceNumberDec(1);
     }
 }

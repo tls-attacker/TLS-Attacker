@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
@@ -19,6 +20,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
@@ -28,6 +32,7 @@ import javax.crypto.Mac;
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @author Philip Riese <philip.riese@rub.de>
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
@@ -52,6 +57,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     public void adjustTLSContext(FinishedMessage message) {
+        if(tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT && tlsContext.isEncryptedEndOfEarlyData())
+        {
+           adjustRecordCipher0RTT(); 
+        }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                 adjustApplicationTrafficSecrets();
@@ -89,5 +98,22 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }
+    }
+    
+    private void adjustRecordCipher0RTT()
+    {
+        LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
+        
+        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
+        tlsContext.setSelectedCipherSuite(tlsContext.getSelectedCipherSuite());
+
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
+        tlsContext.setUseEarlyTrafficSecret(true);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        
+        //Restore the correct SequenceNumber
+        ((RecordAEADCipher)recordCipher).setSequenceNumberDec(tlsContext.getStoredSequenceNumberDec());
     }
 }

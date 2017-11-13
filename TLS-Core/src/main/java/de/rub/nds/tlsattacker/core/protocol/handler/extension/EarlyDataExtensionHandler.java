@@ -16,10 +16,12 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPrepar
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EarlyDataExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
+ * RFC draft-ietf-tls-tls13-21
  *
- * @author marcel
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensionMessage> {
 
@@ -44,7 +46,14 @@ public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensi
 
     @Override
     public void adjustTLSExtensionContext(EarlyDataExtensionMessage message) {
-        //TODO
+        if(message.getMaxEarlyDataSize() != null)
+        {
+            context.setMaxEarlyDataSize(message.getMaxEarlyDataSize().getValue());
+        }
+        else if(context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) 
+        {
+            context.setRecievedEarlyDataExt(true); //client indicated early data
+        }
     }
 
 }

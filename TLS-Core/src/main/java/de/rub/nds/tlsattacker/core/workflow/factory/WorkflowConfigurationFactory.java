@@ -40,6 +40,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -442,22 +443,55 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createZeroRttWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
         WorkflowTrace trace = new WorkflowTrace(config);
-        List<ProtocolMessage> messages = new LinkedList<>();
+        
+        if(ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT)
+        {
+            List<ProtocolMessage> serverMessages = new LinkedList<>();;
+            List<ProtocolMessage> clientMessages = new LinkedList<>();
 
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-                new ClientHelloMessage(config)));
+            ApplicationMessage earlyDataMsg = new ApplicationMessage(config);
+            earlyDataMsg.setDataConfig(config.getEarlyData());
+        
+            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+            new ClientHelloMessage(config)));
+            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+            earlyDataMsg));
+            
+            serverMessages.add(new ServerHelloMessage());
+            serverMessages.add(new EncryptedExtensionsMessage());
+            serverMessages.add(new FinishedMessage());
 
-        messages.add(new ServerHelloMessage(config));
-        messages.add(new EncryptedExtensionsMessage(config));
-        messages.add(new FinishedMessage(config));
+            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER, serverMessages));
 
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER, messages));
-
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-                new EndOfEarlyDataMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-                new FinishedMessage(config)));
-
+            clientMessages.add(new EndOfEarlyDataMessage(config));
+            clientMessages.add(new FinishedMessage(config));
+            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                clientMessages));
+        }
+        else
+        {
+            List<ProtocolMessage> clientMessages = new LinkedList<>();
+            List<ProtocolMessage> serverMessages = new LinkedList<>();
+            
+            clientMessages.add(new ClientHelloMessage());
+            clientMessages.add(new ApplicationMessage());
+            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT, clientMessages));
+            
+            EncryptedExtensionsMessage encExtMes = new EncryptedExtensionsMessage(config);
+            encExtMes.addExtension(new EarlyDataExtensionMessage());
+            
+            serverMessages.add(new ServerHelloMessage(config));
+            serverMessages.add(encExtMes);
+            serverMessages.add(new FinishedMessage(config));
+            
+            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER, serverMessages));
+            
+            List<ProtocolMessage> messages = new LinkedList<>();
+            
+            messages.add(new EndOfEarlyDataMessage());
+            messages.add(new FinishedMessage());
+            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT, messages));        
+        }
         return trace;
     }
 

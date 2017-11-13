@@ -27,7 +27,7 @@ import java.util.List;
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
     private final ClientHelloMessage msg;
-
+    
     public ClientHelloPreparator(Chooser chooser, ClientHelloMessage message) {
         super(chooser, message);
         this.msg = message;

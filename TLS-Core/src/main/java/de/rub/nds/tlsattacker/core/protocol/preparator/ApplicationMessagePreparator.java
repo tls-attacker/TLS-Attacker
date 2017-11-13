@@ -39,5 +39,5 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
         }
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
-
+    
 }

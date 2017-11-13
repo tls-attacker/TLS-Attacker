@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
@@ -17,7 +19,28 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
  */
 public class EarlyDataExtensionMessage extends ExtensionMessage {
     
+    private ModifiableInteger maxEarlyDataSize;
+    
     public EarlyDataExtensionMessage() {
         super(ExtensionType.EARLY_DATA);
+    }
+
+    /**
+     * @return the max_early_data_size
+     */
+    public ModifiableInteger getMaxEarlyDataSize() {
+        return maxEarlyDataSize;
+    }
+
+    /**
+     * @param max_early_data_size the max_early_data_size to set
+     */
+    public void setMaxEarlyDataSize(ModifiableInteger maxEarlyDataSize) {
+        this.maxEarlyDataSize = maxEarlyDataSize;
+    }
+    
+    public void setMaxEarlyDataSize(int maxEarlyDataSize)
+    {
+        this.maxEarlyDataSize = ModifiableVariableFactory.safelySetValue(this.maxEarlyDataSize, maxEarlyDataSize);
     }
 }

@@ -18,8 +18,9 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKKeyExchangeM
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
+ * RFC draft-ietf-tls-tls13-21
  *
- * @author marcel
+ * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKeyExchangeModesExtensionMessage> {
 
@@ -44,7 +45,10 @@ public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKey
 
     @Override
     public void adjustTLSExtensionContext(PSKKeyExchangeModesExtensionMessage message) {
-        //TODO
+        if(message.getKeyExchangeModesListBytes() != null)
+        {
+            context.setClientPskKeyExchangeModes(message.getKeyExchangeModesListBytes().getValue());
+        }
     }
 
 }

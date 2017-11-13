@@ -193,7 +193,7 @@ public class HandshakeByteLength {
     public static final int PSK_LENGTH = 2;
 
     public static final int PSK_ZERO = 0;
-
+    
     private HandshakeByteLength() {
     }
 }

@@ -588,26 +588,35 @@ public class Config implements Serializable {
      * PreSharedKeyIdentity to be used as PSK Identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] preSharedKeyIdentity = ArrayConverter
-            .hexStringToByteArray("0101010101010101010101010101010101010101010101010101010101010101");
+    private byte[][] preSharedKeyIdentities;
+
     /**
-     * PreSharedKeyBinder
+     * PreSharedKeys for PSK-Extension
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] preSharedKeyBinder = ArrayConverter
-            .hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
+    private byte[][] preSharedKeys;
+    
     /**
      * TicketAge value to be used to generate the obfuscated ticket age for the given PSKs
      */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] ticketAge = ArrayConverter
-            .hexStringToByteArray("00000000");
+    private List<String> ticketAges;
     /**
      * TicketAgeAdd value to be used to obfuscate the ticket age for the given PSKs
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] ticketAgeAdd = ArrayConverter
-            .hexStringToByteArray("00000000");
+    private byte[][] ticketAgeAdds;
+
+    /**
+     * Early Data
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] earlyData = ArrayConverter
+            .hexStringToByteArray("41646a75746f7269756d206e6f737472756d20696e206e6f6d696e6520446f6d696e6920496e666572690a");
+    
+    /**
+     * CipherSuite that was used in the session in which the PSK was established
+     */
+    private List<CipherSuite> pskCipherSuites;
     
     /**
      * The Certificate we initialize CertificateMessages with
@@ -2463,57 +2472,85 @@ public class Config implements Serializable {
     /**
      * @return the preSharedKeyIdentity
      */
-    public byte[] getPreSharedKeyIdentity() {
-        return preSharedKeyIdentity;
+    public byte[][] getPreSharedKeyIdentities() {
+        return preSharedKeyIdentities;
     }
 
     /**
      * @param preSharedKeyIdentity the preSharedKeyIdentity to set
      */
-    public void setPreSharedKeyIdentity(byte[] preSharedKeyIdentity) {
-        this.preSharedKeyIdentity = preSharedKeyIdentity;
+    public void setPreSharedKeyIdentities(byte[][] preSharedKeyIdentities) {
+        this.preSharedKeyIdentities = preSharedKeyIdentities;
     }
 
     /**
      * @return the preSharedKeyBinder
      */
-    public byte[] getPreSharedKeyBinder() {
-        return preSharedKeyBinder;
+    public byte[][] getPreSharedKeys() {
+        return preSharedKeys;
     }
 
     /**
      * @param preSharedKeyBinder the preSharedKeyBinder to set
      */
-    public void setPreSharedKeyBinder(byte[] preSharedKeyBinder) {
-        this.preSharedKeyBinder = preSharedKeyBinder;
+    public void setPreSharedKeys(byte[][] preSharedKeys) {
+        this.preSharedKeys = preSharedKeys;
     }
 
     /**
      * @return the ticketAge
      */
-    public byte[] getTicketAge() {
-        return ticketAge;
+    public List<String> getTicketAges() {
+        return ticketAges;
     }
 
     /**
-     * @param ticketAge the ticketAge to set
+     * @param ticketAges the ticketAge to set
      */
-    public void setTicketAge(byte[] ticketAge) {
-        this.ticketAge = ticketAge;
+    public void setTicketAges(List<String> ticketAges) {
+        this.ticketAges = ticketAges;
     }
 
     /**
      * @return the ticketAgeAdd
      */
-    public byte[] getTicketAgeAdd() {
-        return ticketAgeAdd;
+    public byte[][] getTicketAgeAdds() {
+        return ticketAgeAdds;
     }
 
     /**
      * @param ticketAgeAdd the ticketAgeAdd to set
      */
-    public void setTicketAgeAdd(byte[] ticketAgeAdd) {
-        this.ticketAgeAdd = ticketAgeAdd;
+    public void setTicketAgeAdds(byte[][] ticketAgeAdd) {
+        this.ticketAgeAdds = ticketAgeAdds;
+    }
+
+    /**
+     * @return the pskCipherSuite
+     */
+    public List<CipherSuite> getPskCipherSuites() {
+        return pskCipherSuites;
+    }
+
+    /**
+     * @param pskCipherSuites the pskCipherSuite to set
+     */
+    public void setPskCipherSuites(List<CipherSuite> pskCipherSuites) {
+        this.pskCipherSuites = pskCipherSuites;
+    }
+
+    /**
+     * @return the earlyData
+     */
+    public byte[] getEarlyData() {
+        return earlyData;
+    }
+
+    /**
+     * @param earlyData the earlyData to set
+     */
+    public void setEarlyData(byte[] earlyData) {
+        this.earlyData = earlyData;
     }
 
 }

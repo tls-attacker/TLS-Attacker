@@ -86,9 +86,17 @@ public class ExtensionByteLength {
      */
     public static final int PSK_BINDER_LIST_LENGTH = 2;
     /**
+     * SelectedIdentity length in the PreSharedKeyExtension
+     */
+    public static final int PSK_SELECTED_IDENTITY_LENGTH = 2;
+    /**
      * TicketAge length in the PreSharedKeyExtension
      */
     public static final int TICKET_AGE_LENGTH = 4;
+    /**
+     * MaxEarlyDataSize length in the EarlyDataExtension
+     */
+    public static final int MAX_EARLY_DATA_SIZE_LENGTH = 4;
     /**
      * Length of the Signature and HashAlgorithm Length field of the
      * SignatureAndHashAlgorithms Extension

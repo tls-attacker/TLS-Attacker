@@ -16,17 +16,21 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
@@ -35,7 +39,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
-    public ServerHelloHandler(TlsContext tlsContext) {
+    public ServerHelloHandler(TlsContext tlsContext) {  
         super(tlsContext);
     }
 
@@ -63,12 +67,26 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
+        if(tlsContext.isRecievedEarlyDataExt()) //Reset RecordLayer after EarlyData decryption
+        {
+            tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
+        } 
         if (message.getExtensions() != null) {
+            KeyShareExtensionHandler keyShareHandler = null;
+            KeyShareExtensionMessage keyShareExtension = null;
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
                         extension.getExtensionTypeConstant(), HandshakeMessageType.SERVER_HELLO);
-                handler.adjustTLSContext(extension);
+                if(handler instanceof KeyShareExtensionHandler && tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    keyShareHandler = (KeyShareExtensionHandler)handler;
+                    keyShareExtension = (KeyShareExtensionMessage) extension;
+                }
+                else {
+                    handler.adjustTLSContext(extension);
+                }       
             }
+            //Delay KeyShareExtension, to make sure that PSK was set first [1.3]
+            if(keyShareHandler != null) { keyShareHandler.adjustTLSContext(keyShareExtension); }
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             setRecordCipher();

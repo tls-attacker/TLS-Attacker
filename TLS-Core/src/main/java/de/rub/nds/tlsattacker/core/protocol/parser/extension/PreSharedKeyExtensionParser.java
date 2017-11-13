@@ -30,10 +30,17 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     @Override
     public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
-        parsePreSharedKeyIdentitiyListLength(msg);
-        parsePreSharedKeyIdentityListBytes(msg);
-        parsePreSharedKeyBinderListLength(msg);
-        parsePreSharedKeyBinderListBytes(msg);
+        if(super.getBytesLeft() > 2) //Client -> Server
+        {
+           parsePreSharedKeyIdentitiyListLength(msg);
+           parsePreSharedKeyIdentityListBytes(msg);
+           parsePreSharedKeyBinderListLength(msg);
+           parsePreSharedKeyBinderListBytes(msg); 
+        }
+        else //Server -> Client
+        {
+            parseSelectedIdentity(msg);
+        }
     }
 
     @Override
@@ -48,10 +55,7 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     }
     
     private void parsePreSharedKeyIdentityListBytes(PreSharedKeyExtensionMessage msg)
-    {
-        byte[] pskIdentityListBytes = parseByteArrayField(msg.getIdentityListLength());
-        LOGGER.debug("PreSharedKeyIdentityListBytes: " + ArrayConverter.bytesToHexString(pskIdentityListBytes));
-        
+    {        
         int parsed = 0;
         List<PSKIdentity> identities = new LinkedList<>();
         while (parsed < msg.getIdentityListLength()) 
@@ -59,6 +63,8 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
             int length = parseIntField(ExtensionByteLength.PSK_IDENTITY_LENGTH);
             byte[] identityBytes = parseByteArrayField(length);
             byte[] obfuscatedTicketAgeBytes = parseByteArrayField(ExtensionByteLength.TICKET_AGE_LENGTH);
+            LOGGER.debug("Parsed PSKIdentity:" + ArrayConverter.bytesToHexString(identityBytes));
+            LOGGER.debug("Associated ObfuscatedTicketAge:" + ArrayConverter.bytesToHexString(obfuscatedTicketAgeBytes));
             
             PSKIdentity pskIdentity = new PSKIdentity(identityBytes, obfuscatedTicketAgeBytes);
             identities.add(pskIdentity);
@@ -75,17 +81,15 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     }
     
     private void parsePreSharedKeyBinderListBytes(PreSharedKeyExtensionMessage msg)
-    {
-        byte[] pskBinderListBytes = parseByteArrayField(msg.getBinderListLength());
-        LOGGER.debug("PreSharedKeyBinderListBytes: " + ArrayConverter.bytesToHexString(pskBinderListBytes));
-        
+    {     
         int parsed = 0;
         List<PSKBinder> binders = new LinkedList<>();
-        while (parsed < msg.getIdentityListLength()) 
+        while (parsed < msg.getBinderListLength()) 
         {
             int length = parseIntField(ExtensionByteLength.PSK_BINDER_LENGTH);
             byte[] binderBytes = parseByteArrayField(length);
             
+            LOGGER.debug("Parsed binder:" + ArrayConverter.bytesToHexString(binderBytes));
             PSKBinder pskBinder = new PSKBinder(binderBytes);
             binders.add(pskBinder);
             parsed += ExtensionByteLength.PSK_BINDER_LENGTH + length;
@@ -93,5 +97,12 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
         
         msg.setBinders(binders);
     }
+    
+    private void parseSelectedIdentity(PreSharedKeyExtensionMessage msg)
+    {
+       msg.setSelectedIdentity(parseIntField(ExtensionByteLength.PSK_SELECTED_IDENTITY_LENGTH));
+       LOGGER.debug("SelectedIdentity:" + msg.getSelectedIdentity().getValue());
+    }
+
 
 }

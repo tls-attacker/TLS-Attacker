@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 
@@ -25,13 +26,25 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
     @Override
     public void parseExtensionMessageContent(PSKKeyExchangeModesExtensionMessage msg) {
         LOGGER.debug("Parsing PSKKeyExchangeModesExtensionMessage");
-        msg.setKeyExchangeModesListLength(parseIntField(ExtensionByteLength.PSK_KEY_EXCHANGE_MODES_LENGTH));
-        msg.setKeyExchangeModesListBytes(parseByteArrayField(msg.getKeyExchangeModesListLength().getValue()));
+        parseExchangeModesListLength(msg);
+        parseExchangeModesBytes(msg);
     }
 
     @Override
     protected PSKKeyExchangeModesExtensionMessage createExtensionMessage() {
         return new PSKKeyExchangeModesExtensionMessage();
+    }
+    
+    private void parseExchangeModesListLength(PSKKeyExchangeModesExtensionMessage msg)
+    {
+       msg.setKeyExchangeModesListLength(parseIntField(ExtensionByteLength.PSK_KEY_EXCHANGE_MODES_LENGTH));
+       LOGGER.debug("PSKKexModesList length:" + msg.getKeyExchangeModesListLength().getValue());
+    }
+    
+    private void parseExchangeModesBytes(PSKKeyExchangeModesExtensionMessage msg)
+    {
+       msg.setKeyExchangeModesListBytes(parseByteArrayField(msg.getKeyExchangeModesListLength().getValue()));
+       LOGGER.debug("PSKKexModesList bytes:" + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
     }
 
 
