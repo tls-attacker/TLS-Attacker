@@ -31,6 +31,19 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     @Override
     public void prepareHandshakeMessageContents() {
+        setDheParams();
+        // Compute PublicKeys
+        preparePublicKey(msg);
+        prepareDheParams();
+        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
+        prepareSignatureAndHashAlgorithm(msg);
+        signature = generateSignature(selectedSignatureHashAlgo);
+        prepareSignature(msg);
+        prepareSignatureLength(msg);
+
+    }
+
+    protected void setDheParams() {
         msg.prepareComputations();
         setComputedGenerator(msg);
         setComputedModulus(msg);
@@ -38,21 +51,16 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         BigInteger modulus = msg.getComputations().getModulus().getValue();
         BigInteger generator = msg.getComputations().getGenerator().getValue();
         BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
+    }
 
-        // Compute PublicKeys
+    protected void prepareDheParams() {
         prepareModulus(msg);
         prepareModulusLength(msg);
         prepareGenerator(msg);
         prepareGeneratorLength(msg);
-        preparePublicKey(msg);
-        preparePublicKeyLength(msg);
-        selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
-        prepareSignatureAndHashAlgorithm(msg);
         prepareClientRandom(msg);
         prepareServerRandom(msg);
-        signature = generateSignature(selectedSignatureHashAlgo);
-        prepareSignature(msg);
-        prepareSignatureLength(msg);
+        preparePublicKeyLength(msg);
     }
 
     protected byte[] generateToBeSigned() {

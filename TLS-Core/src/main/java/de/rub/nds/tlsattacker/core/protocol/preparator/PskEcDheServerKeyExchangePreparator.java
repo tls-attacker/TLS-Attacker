@@ -49,24 +49,9 @@ public class PskEcDheServerKeyExchangePreparator extends
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.prepareComputations();
         msg.setIdentityHint(chooser.getPSKIdentityHint());
         msg.setIdentityHintLength(msg.getIdentityHint().getValue().length);
-
-        generateNamedCurveList(msg);
-        generatePointFormatList(msg);
-        prepareCurveType(msg);
-        prepareNamedCurve(msg);
-
-        ECDomainParameters ecParams = generateEcParameters(msg);
-        AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(RandomHelper.getBadSecureRandom(), ecParams);
-
-        pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
-        privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();
-        preparePrivateKey(msg);
-        prepareSerializedPublicKey(msg, pubEcParams.getQ());
-        prepareSerializedPublicKeyLength(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
+        super.setEcDhParams();
+        super.prepareEcDhParams();
     }
 }

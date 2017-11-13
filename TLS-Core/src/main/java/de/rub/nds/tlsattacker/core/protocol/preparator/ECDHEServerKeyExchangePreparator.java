@@ -47,7 +47,27 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     @Override
     public void prepareHandshakeMessageContents() {
+        setEcDhParams();
+        prepareEcDhParams();
+        SignatureAndHashAlgorithm signHashAlgo;
+        signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
+        prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
 
+        byte[] signature = generateSignature(msg, signHashAlgo);
+        prepareSignature(msg, signature);
+        prepareSignatureLength(msg);
+    }
+
+    protected void prepareEcDhParams() {
+        preparePrivateKey(msg);
+        prepareSerializedPublicKey(msg, pubEcParams.getQ());
+        prepareSerializedPublicKeyLength(msg);
+        prepareClientRandom(msg);
+        prepareServerRandom(msg);
+
+    }
+
+    protected void setEcDhParams() {
         msg.prepareComputations();
         generateNamedCurveList(msg);
         generatePointFormatList(msg);
@@ -60,19 +80,6 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
         pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
         privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();
-        preparePrivateKey(msg);
-        prepareSerializedPublicKey(msg, pubEcParams.getQ());
-        prepareSerializedPublicKeyLength(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
-
-        SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
-        prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
-
-        byte[] signature = generateSignature(msg, signHashAlgo);
-        prepareSignature(msg, signature);
-        prepareSignatureLength(msg);
     }
 
     protected ECDomainParameters generateEcParameters(T msg) {

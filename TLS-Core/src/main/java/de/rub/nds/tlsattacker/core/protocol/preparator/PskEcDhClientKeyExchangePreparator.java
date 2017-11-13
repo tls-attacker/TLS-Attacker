@@ -52,48 +52,9 @@ public class PskEcDhClientKeyExchangePreparator extends
     public void prepareHandshakeMessageContents() {
         msg.setIdentity(chooser.getPSKIdentity());
         msg.setIdentityLength(msg.getIdentity().getValue().length);
-        msg.prepareComputations();
-        NamedCurve usedCurve = chooser.getSelectedCurve();
-        CustomECPoint serverPublicKey = chooser.getServerEcPublicKey();
-        BigInteger privateKey = chooser.getClientEcPrivateKey();
-        // Set everything in computations and reload
-        msg.getComputations().setClientPrivateKey(privateKey);
-        msg.getComputations().setServerPublicKeyX(serverPublicKey.getX());
-        msg.getComputations().setServerPublicKeyY(serverPublicKey.getY());
-        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
-        serverPublicKey = new CustomECPoint(msg.getComputations().getServerPublicKeyX().getValue(), msg
-                .getComputations().getServerPublicKeyY().getValue());
-        privateKey = msg.getComputations().getClientPrivateKey().getValue();
-        ECPoint clientPublicKey = ecParams.getCurve().getMultiplier().multiply(ecParams.getG(), privateKey);
-        CustomECPoint customClientPublicKey = new CustomECPoint(clientPublicKey.getRawXCoord().toBigInteger(),
-                clientPublicKey.getRawYCoord().toBigInteger());
-        msg.getComputations().setClientPublicKey(customClientPublicKey);
-        try {
-            ecdhValue = TlsECCUtils.calculateECDHBasicAgreement(
-                    new ECPublicKeyParameters(ecParams.getCurve().createPoint(
-                            msg.getComputations().getServerPublicKeyX().getValue(),
-                            msg.getComputations().getServerPublicKeyY().getValue()), ecParams),
-                    new ECPrivateKeyParameters(privateKey, ecParams));
-        } catch (IllegalArgumentException E) {
-            ecdhValue = chooser.getPreMasterSecret();
-        }
-        premasterSecret = generatePremasterSecret(ecdhValue);
+        super.prepareHandshakeMessageContents();
+        premasterSecret = generatePremasterSecret(premasterSecret);
         preparePremasterSecret(msg);
-        List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
-        ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
-        try {
-            serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, clientPublicKey);
-        } catch (IOException ex) {
-            throw new PreparationException("Could not serialize clientPublicKey", ex);
-        }
-        prepareEcPointFormat(msg);
-        prepareEcPointEncoded(msg);
-        preparePublicKeyBaseX(msg, clientPublicKey);
-        preparePublicKeyBaseY(msg, clientPublicKey);
-        prepareSerializedPublicKey(msg);
-        prepareSerializedPublicKeyLength(msg);
-        preparePremasterSecret(msg);
-        prepareClientRandom(msg);
     }
 
     private void computeECDHValue(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {

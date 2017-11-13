@@ -34,16 +34,24 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing DHClientExchangeMessage");
         msg.prepareComputations();
+        setDhParams();
+
+        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
+                .getPrivateKey().getValue(), msg.getComputations().getServerPublicKey().getValue());
+        clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations()
+                .getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
+        prepareDhParams();
+    }
+
+    protected void setDhParams() {
         setComputationGenerator(msg);
         setComputationModulus(msg);
         setComputationPrivateKey(msg);
         setComputationServerPublicKey(msg);
+    }
 
-        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-                .getPrivateKey().getValue(), msg.getComputations().getServerPublicKey().getValue());
+    protected void prepareDhParams() {
         preparePremasterSecret(msg);
-        clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations()
-                .getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
         prepareClientRandom(msg);

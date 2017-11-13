@@ -42,7 +42,7 @@ public class PskDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<Psk
 
     @Override
     public void adjustTLSContext(PskDheServerKeyExchangeMessage message) {
-        adjustDhGenerator(message);
+        adjustPSKGenerator(message);
         adjustPSKModulus(message);
         adjustServerPublicKey(message);
         if (message.getComputations() != null && message.getComputations().getPrivateKey() != null) {
@@ -54,7 +54,7 @@ public class PskDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<Psk
      *
      * @param context
      */
-    private void adjustDhGenerator(PskDheServerKeyExchangeMessage message) {
+    private void adjustPSKGenerator(PskDheServerKeyExchangeMessage message) {
         tlsContext.setPSKGenerator(new BigInteger(1, message.getGenerator().getValue()));
         LOGGER.debug("PSK Generator: " + tlsContext.getPSKGenerator());
     }

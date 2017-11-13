@@ -507,7 +507,7 @@ public enum CipherSuite {
     }
 
     public boolean isPskRsaOrDhPsk() {
-        if (!this.name().contains("RSA") || !this.name().contains("DHE")) {
+        if (this.name().contains("RSA") || this.name().contains("DHE")) {
             return this.name().contains("PSK");
         } else {
             return false;

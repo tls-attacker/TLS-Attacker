@@ -37,21 +37,9 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
     public void prepareHandshakeMessageContents() {
         msg.setIdentity(chooser.getPSKIdentity());
         msg.setIdentityLength(msg.getIdentity().getValue().length);
-        msg.prepareComputations();
-        setComputationGenerator(msg);
-        setComputationModulus(msg);
-        setComputationPrivateKey(msg);
-        setComputationServerPublicKey(msg);
-
-        clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations()
-                .getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
-        dhValue = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-                .getPrivateKey().getValue(), msg.getComputations().getServerPublicKey().getValue());
-        premasterSecret = generatePremasterSecret(dhValue);
+        super.prepareHandshakeMessageContents();
+        premasterSecret = generatePremasterSecret(premasterSecret);
         preparePremasterSecret(msg);
-        preparePublicKey(msg);
-        preparePublicKeyLength(msg);
-        prepareClientRandom(msg);
     }
 
     private byte[] generatePremasterSecret(byte[] dhValue) {
@@ -61,7 +49,7 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
             outputStream.write(ArrayConverter.intToBytes(dhValue.length, HandshakeByteLength.PSK_LENGTH));
             LOGGER.debug("PremasterSecret: dhValue Length: " + dhValue.length);
             outputStream.write(dhValue);
-            LOGGER.debug("PremasterSecret: dhValue" + dhValue);
+            LOGGER.debug("PremasterSecret: dhValue" + ArrayConverter.bytesToHexString(dhValue));
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                     HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
@@ -70,17 +58,19 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug("PremasterSecret: " + tempPremasterSecret);
+        LOGGER.debug("PremasterSecret: " + ArrayConverter.bytesToHexString(tempPremasterSecret));
         return tempPremasterSecret;
     }
 
     @Override
     public void prepareAfterParse() {
+        LOGGER.debug("------------------------------------------");
         BigInteger privateKey = chooser.getPSKServerPrivateKey();
         BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
         msg.prepareComputations();
         dhValue = calculatePremasterSecret(chooser.getPSKModulus(), privateKey, clientPublic);
         premasterSecret = generatePremasterSecret(dhValue);
+        LOGGER.debug("------------------------------------------");
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }

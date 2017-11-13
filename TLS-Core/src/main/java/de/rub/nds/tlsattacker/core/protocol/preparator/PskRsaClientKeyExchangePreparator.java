@@ -38,24 +38,9 @@ public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePrepa
     public void prepareHandshakeMessageContents() {
         msg.setIdentity(chooser.getPSKIdentity());
         msg.setIdentityLength(msg.getIdentity().getValue().length);
-        msg.prepareComputations();
-
-        prepareClientRandom(msg);
-        int keyByteLength = chooser.getRsaModulus().bitLength() / 8;
-        // the number of random bytes in the pkcs1 message
-        int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
-        padding = new byte[randomByteLength];
-        RandomHelper.getRandom().nextBytes(padding);
-        ArrayConverter.makeArrayNonZero(padding);
-        preparePadding(msg);
-        randomValue = generateRandomValue();
-        premasterSecret = generatePremasterSecret(randomValue);
+        super.prepareHandshakeMessageContents();
+        premasterSecret = generatePremasterSecret(msg.getComputations().getPremasterSecret().getValue());
         preparePremasterSecret(msg);
-        encrypted = generateEncryptedPremasterSecret(randomValue);
-        prepareEncryptedPremasterSecret(msg);
-        // prepareEncryptedPremasterSecretLength(msg);
-        prepareSerializedPublicKey(msg);
-        prepareSerializedPublicKeyLength(msg);
     }
 
     private byte[] generatePremasterSecret(byte[] randomValue) {

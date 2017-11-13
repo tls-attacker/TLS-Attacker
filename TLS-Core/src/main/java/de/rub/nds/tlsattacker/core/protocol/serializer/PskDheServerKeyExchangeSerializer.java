@@ -46,7 +46,7 @@ public class PskDheServerKeyExchangeSerializer extends DHEServerKeyExchangeSeria
 
     private void writePSKIdentityHintLength(PskDheServerKeyExchangeMessage msg) {
         appendInt(msg.getIdentityHintLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentityHint().getValue()));
+        LOGGER.debug("SerializedPSKIdentityHintLength: " + msg.getIdentityHintLength());
     }
 
     /**
@@ -55,6 +55,6 @@ public class PskDheServerKeyExchangeSerializer extends DHEServerKeyExchangeSeria
      */
     private void writePSKIdentityHint(PskDheServerKeyExchangeMessage msg) {
         appendBytes(msg.getIdentityHint().getValue());
-        LOGGER.debug("SerializedPSKIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
+        LOGGER.debug("SerializedPSKIdentityHint: " + ArrayConverter.bytesToHexString(msg.getIdentityHint().getValue()));
     }
 }

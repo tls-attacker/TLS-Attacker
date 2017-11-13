@@ -30,24 +30,38 @@ public class PskDheServerKeyExchangePreparator extends DHEServerKeyExchangePrepa
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.prepareComputations();
-        msg.setIdentityHint(chooser.getPSKIdentity());
+        msg.setIdentityHint(chooser.getPSKIdentityHint());
         msg.setIdentityHintLength(msg.getIdentityHint().getValue().length);
-        setComputedModulus(msg);
-        setComputedGenerator(msg);
-        setComputedPrivateKey(msg);
-        BigInteger modulus = msg.getComputations().getModulus().getValue();
-        BigInteger generator = msg.getComputations().getGenerator().getValue();
-        BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
-
-        // Compute PublicKeys
-        prepareModulus(msg);
-        prepareModulusLength(msg);
-        prepareGenerator(msg);
-        prepareGeneratorLength(msg);
-        preparePublicKey(msg);
-        preparePublicKeyLength(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
+        setPskDheParams();
+        preparePskPublicKey(msg);
+        super.prepareDheParams();
     }
+
+    private void setPskDheParams() {
+        msg.prepareComputations();
+        setComputedPskDhGenerator(msg);
+        setComputedPskDhModulus(msg);
+        setComputedPskDhPrivateKey(msg);
+    }
+
+    protected void setComputedPskDhPrivateKey(PskDheServerKeyExchangeMessage msg) {
+        msg.getComputations().setPrivateKey(chooser.getPSKServerPrivateKey());
+        LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue());
+    }
+
+    protected void setComputedPskDhModulus(PskDheServerKeyExchangeMessage msg) {
+        msg.getComputations().setModulus(chooser.getPSKModulus());
+        LOGGER.debug("Modulus used for Computations: " + msg.getComputations().getModulus().getValue().toString(16));
+    }
+
+    protected void setComputedPskDhGenerator(PskDheServerKeyExchangeMessage msg) {
+        msg.getComputations().setGenerator(chooser.getPSKGenerator());
+        LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
+    }
+
+    private void preparePskPublicKey(PskDheServerKeyExchangeMessage msg) {
+        msg.setPublicKey(chooser.getPSKServerPublicKey().toByteArray());
+        LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
+    }
+
 }

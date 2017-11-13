@@ -824,10 +824,7 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("AC47983DEB1698D9A9029E8F7B39092F441DDD72C56D3A63F236E1CF6CEE839937AB5FD69F8CEBBA64C210170A59B2526ED34B9DD83EF86DF7899DF68297844B15E6F2D1BD2448640D32A48220E6343875976A268F28D25174C37D8DC19F2BA5A35301CEED689206FA91CE7A172D908B821DF8C760918E6A5D1C0CFA76AF503B"));
 
-    private BigInteger defaultSRPClientPublicKey = new BigInteger(
-            1,
-            ArrayConverter
-                    .hexStringToByteArray("25C843"));
+    private BigInteger defaultSRPClientPublicKey = new BigInteger(1, ArrayConverter.hexStringToByteArray("25C843"));
 
     private byte[] defaultSRPServerSalt = ArrayConverter.hexStringToByteArray("AABBCCDD");
 
