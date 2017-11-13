@@ -611,7 +611,7 @@ public class Config implements Serializable {
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] earlyData = ArrayConverter
-            .hexStringToByteArray("41646a75746f7269756d206e6f737472756d20696e206e6f6d696e6520446f6d696e6920496e666572690a");
+            .hexStringToByteArray("544c532d41747461636b65720a");
     
     /**
      * CipherSuite that was used in the session in which the PSK was established
