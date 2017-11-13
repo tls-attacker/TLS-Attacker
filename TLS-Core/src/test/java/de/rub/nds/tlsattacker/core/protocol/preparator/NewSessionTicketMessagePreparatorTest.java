@@ -61,7 +61,7 @@ public class NewSessionTicketMessagePreparatorTest {
                 .hexStringToByteArray("53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b")); // SessionTicketMS+SessionTicketMS+SessionTicketMS+
         context.setClientAuthentication(false);
         TimeHelper.setProvider(new FixedTimeProvider(152113433000l)); // 0x09111119
-        context.setSessionTicketLifetimeHint(3600); // 3600 = 0xe10
+        context.getConfig().setSessionTicketLifetimeHint(3600); // 3600 = 0xe10
 
         RandomHelper.setRandom(new BadFixedRandom((byte) 0x55));
         preparator.prepare();
@@ -76,7 +76,7 @@ public class NewSessionTicketMessagePreparatorTest {
         // Revert encryption to check the correct encryption
         // Correct value was assembled by hand because I found no testdata
         byte[] decrypted = StaticTicketCrypto.decryptAES_128_CBC(message.getTicket().getEncryptedState().getValue(),
-                context.getChooser().getSessionTicketKeyAES(), message.getTicket().getIV().getValue());
+                context.getChooser().getConfig().getSessionTicketKeyAES(), message.getTicket().getIV().getValue());
         assertArrayEquals(
                 decrypted,
                 ArrayConverter
@@ -97,11 +97,11 @@ public class NewSessionTicketMessagePreparatorTest {
 
         byte[] macinput = ArrayConverter.concatenate(message.getTicket().getKeyName().getValue(), message.getTicket()
                 .getIV().getValue());
-        macinput = ArrayConverter.concatenate(macinput,
-                ArrayConverter.intToBytes(message.getTicket().getEncryptedState().getValue().length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
+        macinput = ArrayConverter.concatenate(macinput, ArrayConverter.intToBytes(message.getTicket()
+                .getEncryptedState().getValue().length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
         macinput = ArrayConverter.concatenate(macinput, message.getTicket().getEncryptedState().getValue());
         assertTrue(StaticTicketCrypto.verifyHMAC_SHA256(message.getTicket().getMAC().getValue(), macinput, context
-                .getChooser().getSessionTicketKeyHMAC()));
+                .getChooser().getConfig().getSessionTicketKeyHMAC()));
     }
 
     @Test

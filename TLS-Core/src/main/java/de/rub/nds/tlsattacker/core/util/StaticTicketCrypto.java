@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -42,10 +43,10 @@ public class StaticTicketCrypto {
             result = cipher.doFinal(plaintext);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
                 | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
-            // TODO: Check kind of used error handling. (Should I pass through
-            // the Exception or return wrong Data?)
             LOGGER.warn("Encountered exception while encrypting the StatePlaintext with AES128 CBC.");
             LOGGER.debug(ex);
+            throw new WorkflowExecutionException(
+                    "Error while StatePlaintext Encryption. See Debug-Log for more Information.");
         }
         return result;
     }
@@ -61,10 +62,10 @@ public class StaticTicketCrypto {
             result = removePadding(result);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
                 | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
-            // TODO: Check kind of used error handling. (Should I pass through
-            // the Exception or return wrong Data?)
             LOGGER.warn("Encountered exception while encrypting the StatePlaintext with AES128 CBC.");
             LOGGER.debug(ex);
+            throw new WorkflowExecutionException(
+                    "Error while StatePlaintext Decryption. See Debug-Log for more Information.");
         }
         return result;
     }
@@ -77,10 +78,9 @@ public class StaticTicketCrypto {
             mac.init(macKey);
             result = mac.doFinal(plaintext);
         } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
-            // TODO: Check kind of used error handling. (Should I pass through
-            // the Exception or return wrong Data?)
             LOGGER.warn("Encountered exception while generating the HMAC SHA256 of an encryptedState.");
             LOGGER.debug(ex);
+            throw new WorkflowExecutionException("Error while HMAC generation. See Debug-Log for more Information.");
         }
         return result;
     }

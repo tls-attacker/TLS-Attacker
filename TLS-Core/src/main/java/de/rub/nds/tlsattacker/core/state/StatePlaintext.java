@@ -19,8 +19,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import static de.rub.nds.tlsattacker.core.state.State.LOGGER;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -54,46 +52,6 @@ public class StatePlaintext {
     private ModifiableLong timestamp; // uint32
 
     public StatePlaintext() {
-    }
-
-    public byte[] serialize() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-
-            // TODO: Should I check that the varables are set?
-            outputStream.write(protocolVersion.getValue());
-            outputStream.write(cipherSuite.getByteArray(HandshakeByteLength.CIPHER_SUITE));
-            outputStream.write(compressionMethod.getValue());
-
-            // https://tools.ietf.org/html/rfc5246#section-8.1
-            // The master secret is always exactly 48 bytes in length.
-            outputStream.write(masterSecret.getValue());
-
-            // Check ClientAuthType for serialization
-            if (clientAuthenticationType.getValue() == ClientAuthenticationType.ANONYMOUS.getValue()) {
-                outputStream.write(clientAuthenticationType.getValue());
-            } else if (clientAuthenticationType.getValue() == ClientAuthenticationType.CERTIFICATE_BASED.getValue()) {
-                outputStream.write(clientAuthenticationType.getValue());
-                outputStream
-                        .write(clientAuthenticationDataLength.getByteArray(HandshakeByteLength.CERTIFICATES_LENGTH));
-                outputStream.write(clientAuthenticationData.getValue());
-            } else if (clientAuthenticationType.getValue() == ClientAuthenticationType.PSK.getValue()) {
-                outputStream.write(clientAuthenticationType.getValue());
-                outputStream
-                        .write(clientAuthenticationDataLength.getByteArray(HandshakeByteLength.PSK_IDENTITY_LENGTH));
-                outputStream.write(clientAuthenticationData.getValue());
-            } else {
-                outputStream.write(clientAuthenticationType.getValue());
-                LOGGER.warn("Can't serialize ClientAuthticationData because the choosen ClientAuthType is unknown: "
-                        + clientAuthenticationType.getValue());
-            }
-
-            outputStream.write(timestamp.getByteArray(4));
-        } catch (IOException ex) {
-            LOGGER.warn("Encountered exception while writing to ByteArrayOutputStream.");
-            LOGGER.debug(ex);
-        }
-        return outputStream.toByteArray();
     }
 
     public ModifiableByteArray getProtocolVersion() {

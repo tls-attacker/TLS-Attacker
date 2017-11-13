@@ -44,15 +44,19 @@ public class NewSessionTicketMessageSerializer extends HandshakeMessageSerialize
     }
 
     private void writeLifetimeHint(NewSessionTicketMessage msg) {
-        appendBytes(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(), HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
+        appendBytes(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
+                HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH));
         LOGGER.debug("LifetimeHint: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(), HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.longToBytes(msg.getTicketLifetimeHint().getValue(),
+                        HandshakeByteLength.NEWSESSIONTICKET_LIFETIMEHINT_LENGTH)));
     }
 
     private void writeTicketLength(NewSessionTicketMessage msg) {
-        appendBytes(ArrayConverter.intToBytes(msg.getTicketLength().getValue(), HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
+        appendBytes(ArrayConverter.intToBytes(msg.getTicketLength().getValue(),
+                HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH));
         LOGGER.debug("TicketLength: "
-                + ArrayConverter.bytesToHexString(ArrayConverter.intToBytes(msg.getTicketLength().getValue(), HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
+                + ArrayConverter.bytesToHexString(ArrayConverter.intToBytes(msg.getTicketLength().getValue(),
+                        HandshakeByteLength.NEWSESSIONTICKET_TICKET_LENGTH)));
     }
 
     private void writeTicket(NewSessionTicketMessage msg) {

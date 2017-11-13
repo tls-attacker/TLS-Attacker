@@ -10,11 +10,14 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
+import de.rub.nds.tlsattacker.core.state.serializer.SessionTicketSerializer;
+import de.rub.nds.tlsattacker.core.state.serializer.StatePlaintextSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -33,40 +36,46 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
     }
 
     private long generateTicketLifetimeHint() {
-        long ticketLifeTimeHint = chooser.getSessionTicketLifetimeHint();
+        long ticketLifeTimeHint = chooser.getConfig().getSessionTicketLifetimeHint();
         return ticketLifeTimeHint;
     }
 
     private void prepareTicketLifetimeHint(NewSessionTicketMessage msg) {
         msg.setTicketLifetimeHint(generateTicketLifetimeHint());
-        LOGGER.debug("TicketLifetimeHint: " + msg.getTicketLifetimeHint());
+        LOGGER.debug("TicketLifetimeHint: " + msg.getTicketLifetimeHint().getValue());
     }
 
     private void prepareTicket(NewSessionTicketMessage msg) {
+        Config cfg = chooser.getConfig();
+
         msg.prepareTicket();
         SessionTicket newticket = msg.getTicket();
-        newticket.setKeyName(chooser.getSessionTicketKeyName());
+        newticket.setKeyName(cfg.getSessionTicketKeyName());
 
-        byte[] keyaes = chooser.getSessionTicketKeyAES();
+        byte[] keyaes = cfg.getSessionTicketKeyAES();
 
         byte[] iv = new byte[16];
         RandomHelper.getRandom().nextBytes(iv);
         newticket.setIV(iv);
 
         StatePlaintext plainstate = generateStatePlaintext();
-        byte[] plainstateSerialized = plainstate.serialize();
-        byte[] encryptedstate = StaticTicketCrypto.encryptAES_128_CBC(plainstateSerialized, keyaes, iv);
+        StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainstate);
+        byte[] plainstateSerialized = plaintextSerializer.serialize();
+        byte[] encryptedstate = StaticTicketCrypto.encryptAES_128_CBC(plainstateSerialized, keyaes, newticket.getIV()
+                .getValue());
         newticket.setEncryptedState(encryptedstate);
 
-        byte[] keyhmac = chooser.getSessionTicketKeyHMAC();
+        byte[] keyhmac = cfg.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
-        byte[] macinput = ArrayConverter.concatenate(chooser.getSessionTicketKeyName(), iv);
-        macinput = ArrayConverter.concatenate(macinput, ArrayConverter.intToBytes(encryptedstate.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
-        macinput = ArrayConverter.concatenate(macinput, encryptedstate);
+        byte[] macinput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
+                ArrayConverter.intToBytes(encryptedstate.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
+                encryptedstate);
         byte[] hmac = StaticTicketCrypto.generateHMAC_SHA256(macinput, keyhmac);
         newticket.setMAC(hmac);
 
-        msg.setTicketLength(chooser.getSessionTicketKeyName().length + iv.length + encryptedstate.length + hmac.length);
+        SessionTicketSerializer sessionTicketSerializer = new SessionTicketSerializer(newticket);
+        byte[] sessionTicketSerialized = sessionTicketSerializer.serialize();
+        msg.setTicketLength(sessionTicketSerialized.length);
         LOGGER.debug("Ticket: " + msg.getTicket().toString());
     }
 
@@ -95,8 +104,8 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         plainstate.setTimestamp(timestamp);
 
         if (chooser.isClientAuthentication()) {
-            // TODO: How to diffentiate between PSK and Certauth and where to
-            // get the data
+            throw new UnsupportedOperationException(
+                    "ClientAuthentication is not supported for the NewSessionTicket extention");
         } else {
             plainstate.setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
             plainstate.setClientAuthenticationData(new byte[0]);
