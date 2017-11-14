@@ -198,7 +198,7 @@ public class HandshakeByteLength {
      * New Session Ticket
      */
     public static final int NEWSESSIONTICKET_TICKET_LENGTH = 2;
-    
+
     public static final int NEWSESSIONTICKET_LIFETIMEHINT_LENGTH = 4;
 
     public static final int ENCRYPTED_STATE_LENGTH = 2;

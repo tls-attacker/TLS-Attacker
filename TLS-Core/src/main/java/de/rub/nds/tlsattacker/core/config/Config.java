@@ -2421,4 +2421,5 @@ public class Config implements Serializable {
     public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
+
 }
