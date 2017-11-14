@@ -16,7 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import java.math.BigInteger;
-import org.bouncycastle.util.BigIntegers;
 
 /**
  *
@@ -64,13 +63,11 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
 
     @Override
     public void prepareAfterParse() {
-        LOGGER.debug("------------------------------------------");
         BigInteger privateKey = chooser.getPSKServerPrivateKey();
         BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
         msg.prepareComputations();
         dhValue = calculatePremasterSecret(chooser.getPSKModulus(), privateKey, clientPublic);
         premasterSecret = generatePremasterSecret(dhValue);
-        LOGGER.debug("------------------------------------------");
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }

@@ -10,12 +10,9 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKRSAPremasterComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;

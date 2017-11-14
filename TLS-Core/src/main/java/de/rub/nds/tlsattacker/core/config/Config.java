@@ -63,6 +63,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.nio.charset.Charset;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -788,7 +789,7 @@ public class Config implements Serializable {
     private byte[] defaultPSKKey = ArrayConverter.hexStringToByteArray("1a2b3c4d");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPSKIdentity = ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479");
+    private byte[] defaultPSKIdentity = "Client_Identity".getBytes(Charset.forName("UTF-8"));
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultPSKIdentityHint = new byte[0];
@@ -829,10 +830,10 @@ public class Config implements Serializable {
     private byte[] defaultSRPServerSalt = ArrayConverter.hexStringToByteArray("AABBCCDD");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultSRPIdentity = ArrayConverter.hexStringToByteArray("557365724E616D65");
+    private byte[] defaultSRPIdentity = "UserName".getBytes(Charset.forName("UTF-8"));
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultSRPPassword = ArrayConverter.hexStringToByteArray("50617373776F7264");
+    private byte[] defaultSRPPassword = "Password".getBytes(Charset.forName("UTF-8"));
 
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
