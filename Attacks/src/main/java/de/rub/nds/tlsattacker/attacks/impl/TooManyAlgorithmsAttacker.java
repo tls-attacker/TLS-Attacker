@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.tlsattacker.attacks.config.TooManyCurvesAttackConfig;
+import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
@@ -27,9 +27,9 @@ import java.util.Random;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class TooManyCurvesAttacker extends Attacker<TooManyCurvesAttackConfig> {
+public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 
-    public TooManyCurvesAttacker(TooManyCurvesAttackConfig config) {
+    public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config) {
         super(config, false);
     }
 

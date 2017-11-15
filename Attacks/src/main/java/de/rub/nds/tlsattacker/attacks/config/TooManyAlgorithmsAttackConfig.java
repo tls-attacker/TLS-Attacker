@@ -19,9 +19,9 @@ import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
  *
  * @author Robert Merget <robert.merget@rub.de>
  */
-public class TooManyCurvesAttackConfig extends AttackConfig {
+public class TooManyAlgorithmsAttackConfig extends AttackConfig {
 
-    public static final String ATTACK_COMMAND = "too_many_curves";
+    public static final String ATTACK_COMMAND = "too_many_algorithms";
     @ParametersDelegate
     private ClientDelegate clientDelegate;
     @ParametersDelegate
@@ -31,7 +31,7 @@ public class TooManyCurvesAttackConfig extends AttackConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
 
-    public TooManyCurvesAttackConfig(GeneralDelegate delegate) {
+    public TooManyAlgorithmsAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();

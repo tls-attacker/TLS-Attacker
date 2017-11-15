@@ -20,7 +20,7 @@ import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TokenBindingMitmCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.TooManyCurvesAttackConfig;
+import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
@@ -34,7 +34,7 @@ import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
 import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.TokenBindingMitm;
-import de.rub.nds.tlsattacker.attacks.impl.TooManyCurvesAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.TooManyAlgorithmsAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -77,8 +77,8 @@ public class Main {
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
-        TooManyCurvesAttackConfig tooManyCurvesConfig = new TooManyCurvesAttackConfig(generalDelegate);
-        jc.addCommand(TooManyCurvesAttackConfig.ATTACK_COMMAND, tooManyCurvesConfig);
+        TooManyAlgorithmsAttackConfig tooManyCurvesConfig = new TooManyAlgorithmsAttackConfig(generalDelegate);
+        jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyCurvesConfig);
         // TokenBindingMitmCommandConfig tokenBindingMitm = new
         // TokenBindingMitmCommandConfig(generalDelegate);
         // jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND,
@@ -118,8 +118,8 @@ public class Main {
             case WinshockCommandConfig.ATTACK_COMMAND:
                 attacker = new WinshockAttacker(winshock);
                 break;
-            case TooManyCurvesAttackConfig.ATTACK_COMMAND:
-                attacker = new TooManyCurvesAttacker(tooManyCurvesConfig);
+            case TooManyAlgorithmsAttackConfig.ATTACK_COMMAND:
+                attacker = new TooManyAlgorithmsAttacker(tooManyCurvesConfig);
                 break;
             // case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
             // attacker = new
