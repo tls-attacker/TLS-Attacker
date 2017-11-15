@@ -24,7 +24,7 @@ import java.io.InputStream;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
-public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDHEServerKeyExchangeMessage> {
+public class ECDHEServerKeyExchangeHandler <T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
 
     public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -53,7 +53,7 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
         }
     }
 
-    private void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
+    protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
         tlsContext.setSelectedCurve(NamedCurve.getNamedCurve(message.getNamedCurve().getValue()));
         // TODO avoid BC tool
         byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getCurveType().getValue() }, message

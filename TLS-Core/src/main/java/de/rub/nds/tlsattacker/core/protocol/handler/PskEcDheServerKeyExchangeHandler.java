@@ -8,26 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskEcDheServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskEcDheServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskEcDheServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
 /**
  * @author Florian Linsner - florian.linsner@rub.de
  */
-public class PskEcDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<PskEcDheServerKeyExchangeMessage> {
+public class PskEcDheServerKeyExchangeHandler extends ECDHEServerKeyExchangeHandler<PskEcDheServerKeyExchangeMessage> {
 
     public PskEcDheServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -50,29 +40,9 @@ public class PskEcDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<P
 
     @Override
     public void adjustTLSContext(PskEcDheServerKeyExchangeMessage message) {
-        adjustECParameter(message);
+        super.adjustECParameter(message);
         if (message.getComputations() != null) {
             tlsContext.setServerEcPrivateKey(message.getComputations().getPrivateKey().getValue());
         }
-    }
-
-    private void adjustECParameter(PskEcDheServerKeyExchangeMessage message) {
-        tlsContext.setSelectedCurve(NamedCurve.getNamedCurve(message.getNamedCurve().getValue()));
-        // TODO avoid BC tool
-        byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getCurveType().getValue() }, message
-                .getNamedCurve().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
-                message.getPublicKey().getValue());
-        InputStream is = new ByteArrayInputStream(ecParams);
-        ECPublicKeyParameters publicKeyParameters = null;
-        try {
-            publicKeyParameters = ECCUtilsBCWrapper.readECParametersWithPublicKey(is);
-        } catch (TlsFatalAlert alert) {
-            throw new AdjustmentException("Problematic EC parameters, we dont support these yet", alert);
-        } catch (IOException ex) {
-            throw new AdjustmentException("EC public key parsing failed", ex);
-        }
-        CustomECPoint publicKey = new CustomECPoint(publicKeyParameters.getQ().getRawXCoord().toBigInteger(),
-                publicKeyParameters.getQ().getRawYCoord().toBigInteger());
-        tlsContext.setServerEcPublicKey(publicKey);
     }
 }
