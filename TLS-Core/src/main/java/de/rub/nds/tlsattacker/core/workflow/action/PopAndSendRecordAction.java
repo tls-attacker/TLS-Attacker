@@ -37,12 +37,11 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         }
 
         AbstractRecord record = tlsContext.getRecordBuffer().pop();
-
-        String sending = getReadableString(messages);
+        String sending = record.getContentMessageType().name();
         if (connectionAlias == null) {
-            LOGGER.info("Sending records: " + sending);
+            LOGGER.info("Sending record: " + sending);
         } else {
-            LOGGER.info("Sending records(" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending record(" + connectionAlias + "): " + sending);
         }
         AbstractRecordSerializer s = record.getRecordSerializer();
         tlsContext.getTransportHandler().sendData(s.serialize());
@@ -51,11 +50,6 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("PopAndSendRecordAction:\n");
-        sb.append("Messages:\n");
-        for (ProtocolMessage message : messages) {
-            sb.append(message.toCompactString());
-            sb.append(", ");
-        }
         return sb.toString();
     }
 

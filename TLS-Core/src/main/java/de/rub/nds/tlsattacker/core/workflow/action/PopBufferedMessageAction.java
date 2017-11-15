@@ -19,6 +19,10 @@ import java.io.IOException;
  */
 public class PopBufferedMessageAction extends ConnectionBoundAction {
 
+    public PopBufferedMessageAction() {
+        super();
+    }
+
     public PopBufferedMessageAction(String connectionAlias) {
         super(connectionAlias);
     }

@@ -14,33 +14,30 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 
 /**
- *
- * @author Robert Merget <robert.merget@rub.de>
+ * Print the extensions proposed by the client in ClientHello.
  */
-public class PopBufferedRecordAction extends ConnectionBoundAction {
+public class PrintProposedExtensionsAction extends ConnectionBoundAction {
 
-    public PopBufferedRecordAction() {
+    public PrintProposedExtensionsAction() {
     }
 
-    public PopBufferedRecordAction(String connectionAlias) {
+    public PrintProposedExtensionsAction(String connectionAlias) {
         super(connectionAlias);
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
-        ctx.getRecordBuffer().pop();
-        setExecuted(Boolean.TRUE);
+        System.out.println(ctx.getProposedExtensions());
     }
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public void reset() {
-        setExecuted(false);
     }
 
 }

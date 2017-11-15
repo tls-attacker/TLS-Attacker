@@ -64,7 +64,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     public void executeAttackRound(Record record) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
-        state = new State(tlsConfig, trace);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.setRecords(new LinkedList<AbstractRecord>());
@@ -72,6 +71,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         trace.addTlsAction(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ReceiveAction(alertMessage));
+
+        state = new State(tlsConfig, trace);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);

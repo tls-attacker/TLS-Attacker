@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.CopyClientRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyContextFieldAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyServerRandomAction;
 import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.FindReceivedProtocolMessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
@@ -38,6 +39,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendRecordAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintProposedExtensionsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
@@ -85,6 +87,8 @@ public class WorkflowTrace implements Serializable {
 
     @HoldsModifiableVariable
     @XmlElements(value = {
+            @XmlElement(type = PrintProposedExtensionsAction.class, name = "PrintProposedExtensionsAction"),
+            @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessageAction"),
             @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
             @XmlElement(type = CopyContextFieldAction.class, name = "CopyContextFieldAction"),
             @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecordsAction"),

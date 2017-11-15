@@ -11,26 +11,33 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.IOException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
-public class PopBufferedRecordAction extends ConnectionBoundAction {
+public class ClearBuffersAction extends MessageAction {
 
-    public PopBufferedRecordAction() {
+    public ClearBuffersAction() {
+        super();
     }
 
-    public PopBufferedRecordAction(String connectionAlias) {
+    public ClearBuffersAction(String connectionAlias) {
         super(connectionAlias);
     }
 
     @Override
-    public void execute(State state) throws WorkflowExecutionException, IOException {
-        TlsContext ctx = state.getTlsContext(connectionAlias);
-        ctx.getRecordBuffer().pop();
-        setExecuted(Boolean.TRUE);
+    public void execute(State state) throws WorkflowExecutionException {
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+        tlsContext.getMessageBuffer().clear();
+        tlsContext.getRecordBuffer().clear();
+
+        setExecuted(true);
+    }
+
+    @Override
+    public String toString() {
+        return "ClearBuffersAction";
     }
 
     @Override
@@ -40,7 +47,7 @@ public class PopBufferedRecordAction extends ConnectionBoundAction {
 
     @Override
     public void reset() {
-        setExecuted(false);
+        setExecuted(null);
     }
 
 }

@@ -185,4 +185,8 @@ public abstract class Chooser {
     public abstract boolean isClientAuthentication();
 
     public abstract byte[] getLastHandledApplicationMessageData();
+
+    public abstract String getHttpsCookieName();
+
+    public abstract String getHttpsCookieValue();
 }

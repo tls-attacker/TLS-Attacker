@@ -483,6 +483,21 @@ public class Config implements Serializable {
     private Boolean addTokenBindingExtension = false;
 
     /**
+     * Whether HTTPS request should contain a cookie header field or not.
+     */
+    private Boolean addHttpsCookie = false;
+
+    /**
+     * Default cookie value to use if addHttpsCookie is true.
+     */
+    private String defaultHttpsCookieName = "tls-attacker";
+
+    /**
+     * Default cookie value to use if addHttpsCookie is true.
+     */
+    private String defaultHttpsCookieValue = "42130912812";
+
+    /**
      * If we generate ClientHello with CertificateStatusRequest extension
      */
     private Boolean addCertificateStatusRequestExtension = false;
@@ -1997,6 +2012,30 @@ public class Config implements Serializable {
 
     public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
         this.addTokenBindingExtension = addTokenBindingExtension;
+    }
+
+    public Boolean isAddHttpsCookie() {
+        return addHttpsCookie;
+    }
+
+    public void setAddHttpsCookie(Boolean addHttpsCookie) {
+        this.addHttpsCookie = addHttpsCookie;
+    }
+
+    public String getDefaultHttpsCookieName() {
+        return defaultHttpsCookieName;
+    }
+
+    public void setDefaultHttpsCookieName(String defaultHttpsCookieName) {
+        this.defaultHttpsCookieName = defaultHttpsCookieName;
+    }
+
+    public String getDefaultHttpsCookieValue() {
+        return defaultHttpsCookieValue;
+    }
+
+    public void setDefaultHttpsCookieValue(String defaultHttpsCookieValue) {
+        this.defaultHttpsCookieValue = defaultHttpsCookieValue;
     }
 
     public KSEntry getDefaultServerKSEntry() {

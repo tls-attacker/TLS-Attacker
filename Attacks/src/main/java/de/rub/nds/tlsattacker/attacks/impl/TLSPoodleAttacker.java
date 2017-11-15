@@ -56,7 +56,6 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         Config tlsConfig = config.createConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
-        State state = new State(tlsConfig, trace);
 
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
@@ -73,6 +72,9 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(sendAction);
         trace.addTlsAction(new ReceiveAction(alertMessage));
+
+        State state = new State(tlsConfig, trace);
+
         try {
             WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                     tlsConfig.getWorkflowExecutorType(), state);

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -20,6 +21,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.PublicKey;
@@ -50,17 +52,19 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     public boolean checkPKCSConformity(final byte[] msg) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        State state = new State(config);
-        state.getConfig().setWorkflowTraceType(WorkflowTraceType.FULL);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
-                .getWorkflowExecutorType(), state);
-        WorkflowTrace trace = state.getWorkflowTrace();
+        Config tlsConfig = Config.createConfig();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.FULL,
+                RunningModeType.CLIENT);
 
         RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(msg));
         cke.setPublicKey(epms);
+
+        State state = new State(config, trace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                .getWorkflowExecutorType(), state);
 
         numberOfQueries++;
         if (numberOfQueries % 1000 == 0) {
@@ -69,6 +73,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
         boolean conform = false;
         try {
+
             workflowExecutor.executeWorkflow();
             ProtocolMessage lastMessage = WorkflowTraceUtil.getLastReceivedMessage(trace);
             if (lastMessage != null) {

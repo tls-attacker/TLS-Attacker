@@ -324,6 +324,7 @@ public class WorkflowConfigurationFactory {
         messages = new LinkedList<>();
         messages.add(new ChangeCipherSpecMessage(config));
         messages.add(new FinishedMessage(config));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
         if (config.isServerSendsApplicationData()) {
             messages.add(new ApplicationMessage(config));
             workflowTrace.addTlsAction(MessageActionFactory

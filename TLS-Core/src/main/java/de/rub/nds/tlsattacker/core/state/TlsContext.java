@@ -399,6 +399,18 @@ public class TlsContext {
      */
     private boolean useExtendedMasterSecret;
 
+    /**
+     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is
+     * set.
+     */
+    private String httpsCookieName = null;
+
+    /**
+     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie
+     * is set.
+     */
+    private String httpsCookieValue = null;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -1360,6 +1372,15 @@ public class TlsContext {
     }
 
     /**
+     * Get all TLS extension types proposed by the client.
+     *
+     * @return set of proposed extensions. Not null.
+     */
+    public EnumSet<ExtensionType> getProposedExtensions() {
+        return proposedExtensionSet;
+    }
+
+    /**
      * Mark the given TLS extension type as client proposed extension.
      * 
      * @param ext
@@ -1391,6 +1412,22 @@ public class TlsContext {
 
     public void setUseExtendedMasterSecret(boolean useExtendedMasterSecret) {
         this.useExtendedMasterSecret = useExtendedMasterSecret;
+    }
+
+    public String getHttpsCookieName() {
+        return httpsCookieName;
+    }
+
+    public void setHttpsCookieName(String httpsCookieName) {
+        this.httpsCookieName = httpsCookieName;
+    }
+
+    public String getHttpsCookieValue() {
+        return httpsCookieValue;
+    }
+
+    public void setHttpsCookieValue(String httpsCookieValue) {
+        this.httpsCookieValue = httpsCookieValue;
     }
 
     /**

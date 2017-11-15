@@ -584,4 +584,24 @@ public class DefaultChooser extends Chooser {
     public ConnectionEndType getConnectionEndType() {
         return getConnection().getLocalConnectionEndType();
     }
+
+    @Override
+    public String getHttpsCookieValue() {
+        String cookieVal = context.getHttpsCookieValue();
+        if (cookieVal != null && !cookieVal.isEmpty()) {
+            return cookieVal;
+        } else {
+            return config.getDefaultHttpsCookieValue();
+        }
+    }
+
+    @Override
+    public String getHttpsCookieName() {
+        String cookieName = context.getHttpsCookieName();
+        if (cookieName != null && !cookieName.isEmpty()) {
+            return cookieName;
+        } else {
+            return config.getDefaultHttpsCookieName();
+        }
+    }
 }

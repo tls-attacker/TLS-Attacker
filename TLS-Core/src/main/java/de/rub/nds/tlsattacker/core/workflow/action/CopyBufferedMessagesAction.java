@@ -16,6 +16,9 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  */
 public class CopyBufferedMessagesAction extends CopyContextFieldAction {
 
+    public CopyBufferedMessagesAction() {
+    }
+
     public CopyBufferedMessagesAction(String srconnectionAlias, String dstConnectionAlias) {
         super(srconnectionAlias, dstConnectionAlias);
     }
