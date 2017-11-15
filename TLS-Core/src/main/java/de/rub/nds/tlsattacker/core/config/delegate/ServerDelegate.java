@@ -13,10 +13,6 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerDelegate extends Delegate {
 
     @Parameter(names = "-port", required = true, description = "ServerPort")
@@ -44,6 +40,7 @@ public class ServerDelegate extends Delegate {
             throw new ParameterException("port must be in interval [0,65535], but is " + port);
         }
         ServerConnectionEnd conEnd = new ServerConnectionEnd();
+        conEnd.setAlias(Config.DEFAULT_CONNECTION_END_ALIAS);
         conEnd.setPort(port);
         config.clearConnectionEnds();
         config.addConnectionEnd(conEnd);

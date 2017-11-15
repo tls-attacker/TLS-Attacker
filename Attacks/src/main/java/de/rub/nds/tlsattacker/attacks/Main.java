@@ -40,10 +40,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class Main {
 
     private static Logger LOGGER = LogManager.getLogger(Main.class.getName());
@@ -62,8 +58,9 @@ public class Main {
         jc.addCommand(InvalidCurveAttackConfig.ATTACK_COMMAND, ellipticTest);
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(generalDelegate);
         jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
-        Lucky13CommandConfig lucky13 = new Lucky13CommandConfig(generalDelegate);
-        jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
+        // Lucky13CommandConfig lucky13 = new
+        // Lucky13CommandConfig(generalDelegate);
+        // jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
         PaddingOracleCommandConfig paddingOracle = new PaddingOracleCommandConfig(generalDelegate);
         jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
         TLSPoodleCommandConfig tlsPoodle = new TLSPoodleCommandConfig(generalDelegate);
@@ -78,8 +75,10 @@ public class Main {
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
-        TokenBindingMitmCommandConfig tokenBindingMitm = new TokenBindingMitmCommandConfig(generalDelegate);
-        jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND, tokenBindingMitm);
+        // TokenBindingMitmCommandConfig tokenBindingMitm = new
+        // TokenBindingMitmCommandConfig(generalDelegate);
+        // jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND,
+        // tokenBindingMitm);
         jc.parse(args);
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
@@ -100,9 +99,9 @@ public class Main {
             case HeartbleedCommandConfig.ATTACK_COMMAND:
                 attacker = new HeartbleedAttacker(heartbleed);
                 break;
-            case Lucky13CommandConfig.ATTACK_COMMAND:
-                attacker = new Lucky13Attacker(lucky13);
-                break;
+            // case Lucky13CommandConfig.ATTACK_COMMAND:
+            // attacker = new Lucky13Attacker(lucky13);
+            // break;
             case TLSPoodleCommandConfig.ATTACK_COMMAND:
                 attacker = new TLSPoodleAttacker(tlsPoodle);
                 break;
@@ -128,9 +127,9 @@ public class Main {
             case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
                 attacker = new SimpleMitmProxy(simpleMitmProxy);
                 break;
-            case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
-                attacker = new TokenBindingMitm(tokenBindingMitm);
-                break;
+            // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
+            // attacker = new TokenBindingMitm(tokenBindingMitm);
+            // break;
             default:
                 throw new ConfigurationException("Command not found");
         }

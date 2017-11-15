@@ -33,8 +33,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * A wrapper class over a list of protocol expectedMessages.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

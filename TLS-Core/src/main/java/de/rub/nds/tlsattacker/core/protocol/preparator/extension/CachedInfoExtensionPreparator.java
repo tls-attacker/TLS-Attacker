@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedInfoExtensionPreparator extends ExtensionPreparator<CachedInfoExtensionMessage> {
 
     private final CachedInfoExtensionMessage msg;

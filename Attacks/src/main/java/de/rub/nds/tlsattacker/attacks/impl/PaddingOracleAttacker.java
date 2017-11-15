@@ -37,8 +37,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
  * server is vulnerable to poodle.
- *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
 
@@ -46,12 +44,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private final List<ProtocolMessage> lastMessages;
     private final Config tlsConfig;
-    private final State state;
+    private State state;
 
-    public PaddingOracleAttacker(PaddingOracleCommandConfig config) {
-        super(config, false);
-        state = new State();
-        tlsConfig = state.getConfig();
+    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig) {
+        super(paddingOracleConfig, false);
+        tlsConfig = paddingOracleConfig.createConfig();
         lastMessages = new LinkedList<>();
     }
 
@@ -62,7 +59,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     public void executeAttackRound(Record record) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
-        state.setWorkflowTrace(trace);
+        state = new State(tlsConfig, trace);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.setRecords(new LinkedList<AbstractRecord>());
@@ -159,7 +156,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         records.addAll(createRecordsWithModifiedPadding());
         for (Record record : records) {
             executeAttackRound(record);
-
         }
         LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
         LOGGER.debug("If there are different messages, this could indicate the server does not process padding correctly");

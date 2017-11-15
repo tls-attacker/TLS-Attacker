@@ -57,10 +57,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Create a WorkflowTace based on a Config instance.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class WorkflowConfigurationFactory {
 
@@ -111,6 +107,8 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the default connection end defined in config.
+     * 
+     * @return A HelloWorkflow
      */
     public WorkflowTrace createHelloWorkflow() {
         return createHelloWorkflow(getSafeSingleContextConnectionEnd());
@@ -191,6 +189,8 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a handshake workflow for the default connection end defined in
      * config.
+     * 
+     * @return A HandshakeWorkflow
      */
     public WorkflowTrace createHandshakeWorkflow() {
         return createHandshakeWorkflow(getSafeSingleContextConnectionEnd());
@@ -237,7 +237,7 @@ public class WorkflowConfigurationFactory {
      * Creates an extended TLS workflow including an application data and
      * heartbeat messages
      *
-     * @return
+     * @return A FullWorkflow with ApplicationMessages
      */
     public WorkflowTrace createFullWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();

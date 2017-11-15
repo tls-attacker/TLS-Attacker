@@ -27,10 +27,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class MangerAttackServerTest {
 
     public static final String HOSTNAME = "localhost";
@@ -60,7 +56,7 @@ public class MangerAttackServerTest {
         byte[] cipherBytes = cipher.doFinal(plainBytes);
 
         config.setDefaultTimeout(50);
-        Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config);
+        Pkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config, null, "DECRYPT_ERROR");
 
         long start = System.currentTimeMillis();
 

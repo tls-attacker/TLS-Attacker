@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class PaddingExtensionSerializer extends ExtensionSerializer<PaddingExtensionMessage> {
 
     private final PaddingExtensionMessage message;

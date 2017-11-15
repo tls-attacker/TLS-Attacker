@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.UnknownExtensio
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.UnknownExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class UnknownExtensionHandler extends ExtensionHandler<UnknownExtensionMessage> {
 
     public UnknownExtensionHandler(TlsContext context) {

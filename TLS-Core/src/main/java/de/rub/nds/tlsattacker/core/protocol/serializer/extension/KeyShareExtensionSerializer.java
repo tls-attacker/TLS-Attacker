@@ -13,9 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExtensionMessage> {
 
     private final KeyShareExtensionMessage msg;
@@ -39,11 +36,11 @@ public class KeyShareExtensionSerializer extends ExtensionSerializer<KeyShareExt
 
     private void writeKeyShareListLength(KeyShareExtensionMessage msg) {
         appendInt(msg.getKeyShareListLength().getValue(), ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
-        LOGGER.debug("KyShareListLength: " + msg.getKeyShareListLength().getValue());
+        LOGGER.debug("KeyShareListLength: " + msg.getKeyShareListLength().getValue());
     }
 
     private void writeKeyShareListBytes(KeyShareExtensionMessage msg) {
         appendBytes(msg.getKeyShareListBytes().getValue());
-        LOGGER.debug("KyShareListBytes: " + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
+        LOGGER.debug("KeyShareListBytes: " + ArrayConverter.bytesToHexString(msg.getKeyShareListBytes().getValue()));
     }
 }

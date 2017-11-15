@@ -19,8 +19,6 @@ import java.util.List;
 
 /**
  * RFC 6961
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class CertificateStatusRequestV2ExtensionMessage extends ExtensionMessage {
 

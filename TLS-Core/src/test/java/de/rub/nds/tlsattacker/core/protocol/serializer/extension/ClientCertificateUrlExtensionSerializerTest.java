@@ -14,10 +14,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ClientCertificateUrlExtensionSerializerTest {
     private final ExtensionType extensionType = ExtensionType.CLIENT_CERTIFICATE_URL;
     private final byte[] expectedBytes = new byte[] { 0x00, 0x02, 0x00, 0x00 };

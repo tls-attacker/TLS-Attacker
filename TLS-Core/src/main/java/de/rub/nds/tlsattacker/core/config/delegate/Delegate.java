@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public abstract class Delegate {
 
     protected static final Logger LOGGER = LogManager.getLogger(Delegate.class.getName());

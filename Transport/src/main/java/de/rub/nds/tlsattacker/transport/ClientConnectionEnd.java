@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.transport;
 
 import java.util.Objects;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class ClientConnectionEnd extends ConnectionEnd {
 
     private static final ConnectionEndType CONNECTION_END_TYPE = ConnectionEndType.CLIENT;

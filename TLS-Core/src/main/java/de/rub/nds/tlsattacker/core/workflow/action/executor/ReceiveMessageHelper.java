@@ -32,10 +32,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ReceiveMessageHelper {
 
     protected static final Logger LOGGER = LogManager.getLogger(ReceiveMessageHelper.class.getName());
@@ -54,6 +50,7 @@ public class ReceiveMessageHelper {
      * @param expectedMessages
      *            Messages which should be received
      * @param context
+     *            The context on which Messages should be received
      * @return Actually received Messages
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
@@ -197,6 +194,14 @@ public class ReceiveMessageHelper {
                     if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
                         result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
                                 typeFromRecord, context);
+                    } else {
+                        try {
+                            result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                        } catch (ParserException | AdjustmentException exUnknownHMsg) {
+                            LOGGER.warn("Could not parse Message as UnknownMessage");
+                            LOGGER.debug(exUnknownHMsg);
+                            break;
+                        }
                     }
                 } catch (ParserException exUnknownHandshakeMsg) {
                     LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");

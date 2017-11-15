@@ -55,23 +55,28 @@ import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser
 import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ParserSerializerStressTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ParserSerializerStressTest.class);
 
     @Before
-    public void setUp() {
+    public void before() {
+        Configurator.setRootLevel(Level.OFF);
+    }
+
+    @After
+    public void after() {
+        Configurator.setRootLevel(Level.INFO);
     }
 
     @Test

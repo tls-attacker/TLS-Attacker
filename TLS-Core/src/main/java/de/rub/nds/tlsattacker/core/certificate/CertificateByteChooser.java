@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class CertificateByteChooser {
 
     protected static final Logger LOGGER = LogManager.getLogger(CertificateByteChooser.class.getName());

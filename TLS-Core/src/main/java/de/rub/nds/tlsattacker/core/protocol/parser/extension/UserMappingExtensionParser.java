@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.UserMappingExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class UserMappingExtensionParser extends ExtensionParser<UserMappingExtensionMessage> {
 
     public UserMappingExtensionParser(int startposition, byte[] array) {

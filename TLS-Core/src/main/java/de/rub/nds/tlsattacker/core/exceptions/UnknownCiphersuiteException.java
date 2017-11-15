@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  * Unknown cipher suite exception
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class UnknownCiphersuiteException extends RuntimeException {
 

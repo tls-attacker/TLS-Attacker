@@ -14,10 +14,6 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import java.math.BigInteger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ECDHEServerComputations extends KeyExchangeComputations {
 
     // List of EC point formats supported by both server and clinet (or a server

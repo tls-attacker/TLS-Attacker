@@ -16,10 +16,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class KeystoreHandler {
 
     public static KeyStore loadKeyStore(final String keyStorePath, final String keyStorePassword)

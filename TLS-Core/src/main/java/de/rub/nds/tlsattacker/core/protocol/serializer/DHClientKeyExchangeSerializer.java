@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<DHClientKeyExchangeMessage> {
 
     private final DHClientKeyExchangeMessage msg;
@@ -37,7 +33,9 @@ public class DHClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<D
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing DHClientKeyExchangeMessage");
-        writeSerializedPublicKeyLength(msg);
+        if (!version.isSSL()) {
+            writeSerializedPublicKeyLength(msg);
+        }
         writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }

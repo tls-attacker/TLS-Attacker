@@ -76,10 +76,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HandlerFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(HandlerFactory.class.getName());

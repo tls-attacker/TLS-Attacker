@@ -24,10 +24,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import java.util.*;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @HoldsModifiableVariable

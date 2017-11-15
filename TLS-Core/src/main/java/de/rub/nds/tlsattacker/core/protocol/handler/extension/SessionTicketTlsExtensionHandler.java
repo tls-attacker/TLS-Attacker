@@ -15,61 +15,33 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SessionTicketTL
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SessionTicketTLSExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SessionTicketTlsExtensionHandler extends ExtensionHandler<SessionTicketTLSExtensionMessage> {
 
     /**
      * Constructor
      *
      * @param context
+     *            The TlsContext which the Handler should adjust
      */
     public SessionTicketTlsExtensionHandler(TlsContext context) {
         super(context);
     }
 
-    /**
-     * Returns a new SessionTicketTLSExtensionParser
-     *
-     * @param message
-     * @param pointer
-     * @return
-     */
     @Override
     public SessionTicketTLSExtensionParser getParser(byte[] message, int pointer) {
         return new SessionTicketTLSExtensionParser(pointer, message);
     }
 
-    /**
-     * Returns a new SessionTicketTLSExtensionPreparator
-     *
-     * @param message
-     * @return
-     */
     @Override
     public SessionTicketTLSExtensionPreparator getPreparator(SessionTicketTLSExtensionMessage message) {
         return new SessionTicketTLSExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }
 
-    /**
-     * Returns a new SessionTicketTLSExtensionSerializer
-     *
-     * @param message
-     * @return
-     */
     @Override
     public SessionTicketTLSExtensionSerializer getSerializer(SessionTicketTLSExtensionMessage message) {
         return new SessionTicketTLSExtensionSerializer(message);
     }
 
-    /**
-     * Parses the content of a SessionTicketTLSExtensionMessage to the actual
-     * TLSContext
-     *
-     * @param message
-     */
     @Override
     public void adjustTLSExtensionContext(SessionTicketTLSExtensionMessage message) {
         if (message.getExtensionLength().getValue() > 65535) {

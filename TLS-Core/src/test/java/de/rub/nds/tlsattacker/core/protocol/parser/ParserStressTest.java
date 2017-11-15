@@ -14,6 +14,8 @@ import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -21,16 +23,22 @@ import org.junit.experimental.categories.Category;
  * This test makes sure that the parsers dont throw other exceptions other than
  * parser exceptions Not every message is always parsable, but the parser should
  * be able to deal with everything
- *
- *
- * @author Robert Merget - robert.merget@rub.de
  */
 public class ParserStressTest {
+
+    @Before
+    public void before() {
+        Configurator.setRootLevel(Level.OFF);
+    }
+
+    @After
+    public void after() {
+        Configurator.setRootLevel(Level.INFO);
+    }
 
     @Test
     @Category(IntegrationTests.class)
     public void testParser() {
-        Configurator.setRootLevel(Level.INFO);
         for (int i = 0; i < 10000; i++) {
             Random r = new Random(i);
             try {

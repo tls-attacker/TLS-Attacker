@@ -13,8 +13,6 @@ import java.util.Map;
 
 /**
  * RFC 4681
- * 
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum UserMappingExtensionHintType {
     UPN_DOMAIN_HINT((byte) 0x40);

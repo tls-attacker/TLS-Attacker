@@ -21,10 +21,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class PoodleAttacker extends Attacker {
 
     public PoodleAttacker(PoodleCommandConfig config) {
@@ -40,13 +36,11 @@ public class PoodleAttacker extends Attacker {
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
         State state = new State(tlsConfig);
-        TlsContext context = state.getTlsContext();
-        context.getConfig().setHighestProtocolVersion(ProtocolVersion.SSL3);
-        context.getConfig().setDefaultClientSupportedCiphersuites(getCbcCiphers());
-        context.getConfig().setWorkflowTraceType(WorkflowTraceType.HELLO);
+        tlsConfig.setHighestProtocolVersion(ProtocolVersion.SSL3);
+        tlsConfig.setDefaultClientSupportedCiphersuites(getCbcCiphers());
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
-
         return WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, state.getWorkflowTrace());
     }
 

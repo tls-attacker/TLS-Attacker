@@ -20,10 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ClientTcpTransportHandlerTest {
 
     private ClientTcpTransportHandler handler;
@@ -35,6 +31,8 @@ public class ClientTcpTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class ClientTcpTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
@@ -43,6 +41,8 @@ public class ClientTcpTransportHandlerTest {
 
     /**
      * Test of initialize method, of class ClientTcpTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test
     public void testInitialize() throws IOException {

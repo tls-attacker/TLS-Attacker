@@ -34,10 +34,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class BasicTlsClientServerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsClientServerTest.class);
@@ -47,7 +43,11 @@ public class BasicTlsClientServerTest {
     public BasicTlsClientServerTest() {
     }
 
-    /** Run a TLS handshake between BasicTlsClient and BasicTlsServer. */
+    /**
+     * Run a TLS handshake between BasicTlsClient and BasicTlsServer.
+     * 
+     * @throws org.bouncycastle.operator.OperatorCreationException
+     */
     @Test
     @Category(IntegrationTests.class)
     public void testSimpleProxy() throws OperatorCreationException {
