@@ -62,7 +62,7 @@ public enum BulkCipherAlgorithm {
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
     }
-    
+
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherAlgorithm cipherAlgorithm) {
         String cipher = cipherAlgorithm.toString().toUpperCase();
         if (cipher.contains("DES_EDE")) {
@@ -90,7 +90,8 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("ARIA")) {
             return ARIA;
         }
-        throw new UnsupportedOperationException("The cipher algorithm from " + cipherAlgorithm.name() + " is not supported yet.");
+        throw new UnsupportedOperationException("The cipher algorithm from " + cipherAlgorithm.name()
+                + " is not supported yet.");
     }
 
     public String getJavaName() {

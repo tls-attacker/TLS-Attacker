@@ -61,12 +61,12 @@ public class StaticTicketCryptoTest {
         LOGGER.info("EncDec AES128 CBC with random 16 byte key/iv and 120 byte message.");
         byte[] plaintext = new byte[120];
         RandomHelper.getRandom().nextBytes(plaintext);
-        
+
         byte[] key128 = new byte[16];
         byte[] iv128 = new byte[16];
         RandomHelper.getRandom().nextBytes(key128);
         RandomHelper.getRandom().nextBytes(iv128);
-        
+
         byte[] resultenc = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plaintext, key128, iv128);
         byte[] resultdec = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, resultenc, key128, iv128);
         assertFalse(resultdec.length == 0);
@@ -115,8 +115,7 @@ public class StaticTicketCryptoTest {
         byte[] plaintext = ArrayConverter.hexStringToByteArray("4869205468657265");
         byte[] key = ArrayConverter.hexStringToByteArray("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b");
         boolean expResult = true;
-        boolean result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, mac, plaintext,
-                key);
+        boolean result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, mac, plaintext, key);
         assertEquals(expResult, result);
     }
 
@@ -130,23 +129,19 @@ public class StaticTicketCryptoTest {
         byte[] key = new byte[20];
         RandomHelper.getRandom().nextBytes(plaintext);
         RandomHelper.getRandom().nextBytes(key);
-        byte[] resultmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext,
-                key);
-        boolean result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac,
-                plaintext, key);
+        byte[] resultmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
+        boolean result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext, key);
         assertTrue(result);
 
         LOGGER.info("Check result for wrong data input.");
         RandomHelper.getRandom().nextBytes(resultmac);
-        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext,
-                key);
+        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext, key);
         assertFalse(result);
 
         LOGGER.info("GenVrfy HMAC SHA256 with used 32byte key and random 120 byte message.");
         key = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579");
         resultmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, plaintext, key);
-        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext,
-                key);
+        result = StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, resultmac, plaintext, key);
         assertTrue(result);
     }
 }

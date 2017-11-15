@@ -64,8 +64,8 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         StatePlaintext plainstate = generateStatePlaintext();
         StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainstate);
         byte[] plainstateSerialized = plaintextSerializer.serialize();
-        byte[] encryptedstate = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC,
-                plainstateSerialized, keyaes, newticket.getIV().getValue());
+        byte[] encryptedstate = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainstateSerialized, keyaes,
+                newticket.getIV().getValue());
         newticket.setEncryptedState(encryptedstate);
 
         byte[] keyhmac = cfg.getSessionTicketKeyHMAC();
@@ -73,8 +73,7 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         byte[] macinput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
                 ArrayConverter.intToBytes(encryptedstate.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
                 encryptedstate);
-        byte[] hmac = StaticTicketCrypto
-                .generateHMAC(MacAlgorithm.HMAC_SHA256, macinput, keyhmac);
+        byte[] hmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, macinput, keyhmac);
         newticket.setMAC(hmac);
 
         SessionTicketSerializer sessionTicketSerializer = new SessionTicketSerializer(newticket);
@@ -106,7 +105,7 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
 
         long timestamp = TimeHelper.getTime() / 1000;
         plainstate.setTimestamp(timestamp);
-        
+
         switch (chooser.getConfig().getClientAuthenticationType()) {
             case ANONYMOUS:
                 plainstate.setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());

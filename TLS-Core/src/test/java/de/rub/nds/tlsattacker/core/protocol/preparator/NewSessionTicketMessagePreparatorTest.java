@@ -77,9 +77,9 @@ public class NewSessionTicketMessagePreparatorTest {
 
         // Revert encryption to check the correct encryption
         // Correct value was assembled by hand because I found no testdata
-        byte[] decrypted = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, message
-                .getTicket().getEncryptedState().getValue(), context.getChooser().getConfig().getSessionTicketKeyAES(),
-                message.getTicket().getIV().getValue());
+        byte[] decrypted = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, message.getTicket()
+                .getEncryptedState().getValue(), context.getChooser().getConfig().getSessionTicketKeyAES(), message
+                .getTicket().getIV().getValue());
         assertArrayEquals(
                 decrypted,
                 ArrayConverter
@@ -103,8 +103,8 @@ public class NewSessionTicketMessagePreparatorTest {
         macinput = ArrayConverter.concatenate(macinput, ArrayConverter.intToBytes(message.getTicket()
                 .getEncryptedState().getValue().length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
         macinput = ArrayConverter.concatenate(macinput, message.getTicket().getEncryptedState().getValue());
-        assertTrue(StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, message.getTicket()
-                .getMAC().getValue(), macinput, context.getChooser().getConfig().getSessionTicketKeyHMAC()));
+        assertTrue(StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, message.getTicket().getMAC().getValue(),
+                macinput, context.getChooser().getConfig().getSessionTicketKeyHMAC()));
     }
 
     @Test
