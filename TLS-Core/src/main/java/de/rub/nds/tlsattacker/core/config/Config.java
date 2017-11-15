@@ -296,7 +296,7 @@ public class Config implements Serializable {
      * Default SRP Identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRemotePasswordExtensionIdentifier = ArrayConverter.hexStringToByteArray("557365724E616D65");
+    private byte[] secureRemotePasswordExtensionIdentifier = "UserName".getBytes(Charset.forName("UTF-8"));
 
     /**
      * Default SRTP extension protection profiles The list contains every
