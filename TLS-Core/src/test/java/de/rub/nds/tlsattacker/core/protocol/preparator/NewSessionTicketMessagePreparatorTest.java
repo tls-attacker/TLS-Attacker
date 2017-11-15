@@ -11,9 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadFixedRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -75,8 +77,9 @@ public class NewSessionTicketMessagePreparatorTest {
 
         // Revert encryption to check the correct encryption
         // Correct value was assembled by hand because I found no testdata
-        byte[] decrypted = StaticTicketCrypto.decryptAES_128_CBC(message.getTicket().getEncryptedState().getValue(),
-                context.getChooser().getConfig().getSessionTicketKeyAES(), message.getTicket().getIV().getValue());
+        byte[] decrypted = StaticTicketCrypto.decrypt(CipherAlgorithm.AES_128_CBC, message
+                .getTicket().getEncryptedState().getValue(), context.getChooser().getConfig().getSessionTicketKeyAES(),
+                message.getTicket().getIV().getValue());
         assertArrayEquals(
                 decrypted,
                 ArrayConverter
@@ -100,8 +103,8 @@ public class NewSessionTicketMessagePreparatorTest {
         macinput = ArrayConverter.concatenate(macinput, ArrayConverter.intToBytes(message.getTicket()
                 .getEncryptedState().getValue().length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH));
         macinput = ArrayConverter.concatenate(macinput, message.getTicket().getEncryptedState().getValue());
-        assertTrue(StaticTicketCrypto.verifyHMAC_SHA256(message.getTicket().getMAC().getValue(), macinput, context
-                .getChooser().getConfig().getSessionTicketKeyHMAC()));
+        assertTrue(StaticTicketCrypto.verifyHMAC(MacAlgorithm.HMAC_SHA256, message.getTicket()
+                .getMAC().getValue(), macinput, context.getChooser().getConfig().getSessionTicketKeyHMAC()));
     }
 
     @Test

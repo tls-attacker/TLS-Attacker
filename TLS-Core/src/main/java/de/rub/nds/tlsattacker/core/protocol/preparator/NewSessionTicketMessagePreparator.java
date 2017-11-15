@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
@@ -61,8 +64,8 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         StatePlaintext plainstate = generateStatePlaintext();
         StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainstate);
         byte[] plainstateSerialized = plaintextSerializer.serialize();
-        byte[] encryptedstate = StaticTicketCrypto.encryptAES_128_CBC(plainstateSerialized, keyaes, newticket.getIV()
-                .getValue());
+        byte[] encryptedstate = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC,
+                plainstateSerialized, keyaes, newticket.getIV().getValue());
         newticket.setEncryptedState(encryptedstate);
 
         byte[] keyhmac = cfg.getSessionTicketKeyHMAC();
@@ -70,7 +73,8 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         byte[] macinput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
                 ArrayConverter.intToBytes(encryptedstate.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
                 encryptedstate);
-        byte[] hmac = StaticTicketCrypto.generateHMAC_SHA256(macinput, keyhmac);
+        byte[] hmac = StaticTicketCrypto
+                .generateHMAC(MacAlgorithm.HMAC_SHA256, macinput, keyhmac);
         newticket.setMAC(hmac);
 
         SessionTicketSerializer sessionTicketSerializer = new SessionTicketSerializer(newticket);
@@ -102,14 +106,19 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
 
         long timestamp = TimeHelper.getTime() / 1000;
         plainstate.setTimestamp(timestamp);
-
-        if (chooser.isClientAuthentication()) {
-            throw new UnsupportedOperationException(
-                    "ClientAuthentication is not supported for the NewSessionTicket extention");
-        } else {
-            plainstate.setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
-            plainstate.setClientAuthenticationData(new byte[0]);
-            plainstate.setClientAuthenticationDataLength(0);
+        
+        switch (chooser.getConfig().getClientAuthenticationType()) {
+            case ANONYMOUS:
+                plainstate.setClientAuthenticationType(ClientAuthenticationType.ANONYMOUS.getValue());
+                plainstate.setClientAuthenticationData(new byte[0]);
+                plainstate.setClientAuthenticationDataLength(0);
+                break;
+            case CERTIFICATE_BASED:
+                throw new UnsupportedOperationException("Certificate based ClientAuthentication is not supported");
+            case PSK:
+                throw new UnsupportedOperationException("PSK ClientAuthentication is not supported");
+            default:
+                throw new UnsupportedOperationException("Unknown ClientAuthenticationType");
         }
 
         return plainstate;

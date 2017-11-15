@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -833,6 +834,12 @@ public class Config implements Serializable {
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
                                                                                                                    // Key
 
+    
+    /**
+     * ClientAuthtication Type, not fully implemented yet
+     */
+    private ClientAuthenticationType clientAuthenticationType = ClientAuthenticationType.ANONYMOUS;
+    
     private Config() {
         connectionEnds = new ArrayList<>();
         ConnectionEnd defaultConEnd = new ClientConnectionEnd(DEFAULT_CONNECTION_END_ALIAS, 443, "127.0.0.1");
@@ -951,6 +958,14 @@ public class Config implements Serializable {
 
     public void setSessionTicketKeyName(byte[] sessionTicketKeyName) {
         this.sessionTicketKeyName = sessionTicketKeyName;
+    }
+    
+    public ClientAuthenticationType getClientAuthenticationType() {
+        return clientAuthenticationType;
+    }
+    
+    public void setClientAuthenticationType(ClientAuthenticationType clientAuthenticationType) {
+        this.clientAuthenticationType = clientAuthenticationType;
     }
 
     public boolean isHttpsParsingEnabled() {

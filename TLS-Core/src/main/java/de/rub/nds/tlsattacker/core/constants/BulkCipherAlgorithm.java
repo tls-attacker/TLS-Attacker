@@ -58,9 +58,39 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("SEED")) {
             return SEED;
         } else if (cipher.contains("ARIA")) {
-            return SEED;
+            return SEED; // I think this is wrong but I dont want to change it.
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
+    }
+    
+    public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherAlgorithm cipherAlgorithm) {
+        String cipher = cipherAlgorithm.toString().toUpperCase();
+        if (cipher.contains("DES_EDE")) {
+            return DESede;
+        } else if (cipher.contains("AES")) {
+            return AES;
+        } else if (cipher.contains("RC4")) {
+            return RC4;
+        } else if (cipher.contains("RC2")) {
+            return RC2;
+        } else if (cipher.contains("NULL")) {
+            return NULL;
+        } else if (cipher.contains("IDEA")) {
+            return IDEA;
+        } else if (cipher.contains("DES40")) {
+            return DES40;
+        } else if (cipher.contains("DES")) {
+            return DES;
+        } else if (cipher.contains("FORTEZZA")) {
+            return FORTEZZA;
+        } else if (cipher.contains("CAMELLIA")) {
+            return CAMELLIA;
+        } else if (cipher.contains("SEED")) {
+            return SEED;
+        } else if (cipher.contains("ARIA")) {
+            return ARIA;
+        }
+        throw new UnsupportedOperationException("The cipher algorithm from " + cipherAlgorithm.name() + " is not supported yet.");
     }
 
     public String getJavaName() {
