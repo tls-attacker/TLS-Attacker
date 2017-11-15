@@ -356,7 +356,8 @@ public class TlsContext {
     private Chooser chooser;
 
     /**
-     * Contains the TLS extensions proposed by the client.
+     * Contains the TLS extensions proposed by the client. private boolean
+     * earlyCleanShutdown;
      */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
@@ -382,6 +383,8 @@ public class TlsContext {
      * latter merely says that the extension was sent by client or server.
      */
     private boolean useExtendedMasterSecret;
+
+    private Boolean earlyCleanShutdown = false;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -1250,8 +1253,16 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
+    public boolean isEarlyCleanShutdown() {
+        return earlyCleanShutdown;
+    }
+
     public Random getRandom() {
         return random;
+    }
+
+    public void setEarlyCleanShutdown(boolean earlyCleanShutdown) {
+        this.earlyCleanShutdown = earlyCleanShutdown;
     }
 
     public void setRandom(Random random) {
