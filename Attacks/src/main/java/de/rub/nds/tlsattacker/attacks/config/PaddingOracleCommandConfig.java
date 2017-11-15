@@ -78,8 +78,8 @@ public class PaddingOracleCommandConfig extends AttackConfig {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
         }
-        config.setQuickReceive(true);
-        config.setEarlyStop(true);
+        // config.setQuickReceive(true);
+        // config.setEarlyStop(true);
         return config;
     }
 }

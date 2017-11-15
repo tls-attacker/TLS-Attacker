@@ -29,7 +29,7 @@ public class WaitingAction extends TLSAction {
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
         Boolean success;
-        LOGGER.info("Wating " + time + "ms...");
+        LOGGER.info("Waiting " + time + "ms...");
         try {
             Thread.sleep(time);
             success = true;
