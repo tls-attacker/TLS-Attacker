@@ -384,7 +384,7 @@ public class TlsContext {
      */
     private boolean useExtendedMasterSecret;
 
-    private Boolean earlyCleanShutdown = null;
+    private Boolean earlyCleanShutdown = false;
 
     public TlsContext() {
         this(Config.createConfig());
