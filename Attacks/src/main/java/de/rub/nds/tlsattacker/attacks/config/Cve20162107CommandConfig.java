@@ -66,6 +66,10 @@ public class Cve20162107CommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
+        config.setQuickReceive(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
         if (cipherSuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
