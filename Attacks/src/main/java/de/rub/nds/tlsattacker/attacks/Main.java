@@ -77,8 +77,8 @@ public class Main {
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
-        TooManyAlgorithmsAttackConfig tooManyCurvesConfig = new TooManyAlgorithmsAttackConfig(generalDelegate);
-        jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyCurvesConfig);
+        TooManyAlgorithmsAttackConfig tooManyAlgorithms = new TooManyAlgorithmsAttackConfig(generalDelegate);
+        jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyAlgorithms);
         // TokenBindingMitmCommandConfig tokenBindingMitm = new
         // TokenBindingMitmCommandConfig(generalDelegate);
         // jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND,
@@ -119,7 +119,7 @@ public class Main {
                 attacker = new WinshockAttacker(winshock);
                 break;
             case TooManyAlgorithmsAttackConfig.ATTACK_COMMAND:
-                attacker = new TooManyAlgorithmsAttacker(tooManyCurvesConfig);
+                attacker = new TooManyAlgorithmsAttacker(tooManyAlgorithms);
                 break;
             // case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
             // attacker = new
