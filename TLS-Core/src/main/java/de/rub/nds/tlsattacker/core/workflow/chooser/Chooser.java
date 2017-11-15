@@ -179,4 +179,6 @@ public abstract class Chooser {
     public abstract boolean isClientAuthentication();
 
     public abstract byte[] getLastHandledApplicationMessageData();
+    
+    public abstract byte[] getPsk();
 }

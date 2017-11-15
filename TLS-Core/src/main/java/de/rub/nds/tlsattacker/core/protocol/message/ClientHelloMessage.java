@@ -54,7 +54,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsE
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.nio.charset.Charset;
 import java.util.Date;
@@ -97,10 +96,6 @@ public class ClientHelloMessage extends HelloMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableByte cookieLength = null;
     
-    /**
-     * PSK Key Exchange Message Serializer for binder calculation (0-RTT)
-     */
-    private PreSharedKeyExtensionSerializer pskKexMsgSerializer = null;
 
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
@@ -291,13 +286,6 @@ public class ClientHelloMessage extends HelloMessage {
         this.cookieLength = cookieLength;
     }
     
-    public PreSharedKeyExtensionSerializer getPskKexMsgSerializer() {
-        return pskKexMsgSerializer;
-    }
-
-    public void setPskKexMsgSerializer(PreSharedKeyExtensionSerializer pskKexMsgSerializer) {
-        this.pskKexMsgSerializer = pskKexMsgSerializer;
-    }
     
     @Override
     public String toString() {

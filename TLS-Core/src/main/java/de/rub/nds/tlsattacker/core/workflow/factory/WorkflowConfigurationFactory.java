@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -446,7 +447,7 @@ public class WorkflowConfigurationFactory {
         
         if(ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT)
         {
-            List<ProtocolMessage> serverMessages = new LinkedList<>();;
+            List<ProtocolMessage> serverMessages = new LinkedList<>();
             List<ProtocolMessage> clientMessages = new LinkedList<>();
 
             ApplicationMessage earlyDataMsg = new ApplicationMessage(config);

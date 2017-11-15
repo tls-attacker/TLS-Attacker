@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.PSKKeyExchangeModesExtensionParser;
@@ -16,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKKeyExchangeM
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKKeyExchangeModesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.util.LinkedList;
 
 /**
  * RFC draft-ietf-tls-tls13-21
@@ -47,7 +49,17 @@ public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKey
     public void adjustTLSExtensionContext(PSKKeyExchangeModesExtensionMessage message) {
         if(message.getKeyExchangeModesListBytes() != null)
         {
-            context.setClientPskKeyExchangeModes(message.getKeyExchangeModesListBytes().getValue());
+            adjustKeyExchangeModes(message);
+        }
+    }
+    
+    private void adjustKeyExchangeModes(PSKKeyExchangeModesExtensionMessage message)
+    {
+        context.setClientPskKeyExchangeModes(new LinkedList<PskKeyExchangeMode>());
+        for(byte exchangeModeByte : message.getKeyExchangeModesListBytes().getValue())
+        {
+            PskKeyExchangeMode mode = PskKeyExchangeMode.getExchangeMode(exchangeModeByte);
+            context.getClientPskKeyExchangeModes().add(mode);
         }
     }
 

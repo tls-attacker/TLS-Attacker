@@ -104,7 +104,6 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     {
         LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
         
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
         tlsContext.setSelectedCipherSuite(tlsContext.getSelectedCipherSuite());
 
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);

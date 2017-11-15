@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
@@ -67,7 +68,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
-        if(tlsContext.isRecievedEarlyDataExt()) //Reset RecordLayer after EarlyData decryption
+        if(tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) //Reset RecordLayer after EarlyData decryption
         {
             tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
         } 

@@ -22,10 +22,8 @@ public class PSKBinder {
     private ModifiableInteger binderEntryLength;
     private ModifiableByteArray binderEntry;
     
-    public PSKBinder(byte[] binderEntry)
+    public PSKBinder()
     {
-        this.binderEntry = ModifiableVariableFactory.safelySetValue(this.binderEntry, binderEntry);
-        binderEntryLength = ModifiableVariableFactory.safelySetValue(binderEntryLength, binderEntry.length);
     }
     
     public void setBinderEntry(ModifiableByteArray binderEntry)
@@ -38,9 +36,9 @@ public class PSKBinder {
         this.binderEntry = ModifiableVariableFactory.safelySetValue(this.binderEntry, binderEntry);
     }
     
-    public byte[] getBinderEntry()
+    public ModifiableByteArray getBinderEntry()
     {
-        return binderEntry.getValue();
+        return binderEntry;
     }
     
     public void setBinderEntryLength(ModifiableInteger binderEntryLength)
@@ -48,9 +46,14 @@ public class PSKBinder {
         this.binderEntryLength = binderEntryLength;
     }
     
-    public int getBinderEntryLength()
+    public void setBinderEntryLength(int binderEntryLength)
     {
-        return binderEntryLength.getValue();
+        this.binderEntryLength = ModifiableVariableFactory.safelySetValue(this.binderEntryLength, binderEntryLength);
+    }
+    
+    public ModifiableInteger getBinderEntryLength()
+    {
+        return binderEntryLength;
     }
     
     

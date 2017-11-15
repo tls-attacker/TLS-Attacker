@@ -9,7 +9,11 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
@@ -47,6 +51,7 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
     public void adjustTLSContext(ApplicationMessage message) {
         if(tlsContext.isUseEarlyTrafficSecret())
         {
+            adjustEarlyTrafficSecret();
             adjustRecordLayer0RTT();
         }
         tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
@@ -68,6 +73,15 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
         tlsContext.setEncryptActive(true);
+    }
+    
+    private void adjustEarlyTrafficSecret()
+    {
+        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getEarlyDataCipherSuite());
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext.getEarlyDataCipherSuite());
+            
+        byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext.getEarlySecret(), HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());            
+        tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);        
     }
 
 }

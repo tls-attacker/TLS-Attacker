@@ -174,14 +174,13 @@ public class SendMessageHelper {
         
     private void adjustRecordCipherAfterServerFinished(TlsContext context)
     {
-        LOGGER.debug("Adjusting recordCipher after encrypting Hanshake messages");
-        
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
-        context.setSelectedCipherSuite(context.getEarlyDataCipherSuite());
-        
+        LOGGER.debug("Adjusting recordCipher after encrypting Hanshake messages");   
         context.setUseEarlyTrafficSecret(true);
-        context.setStoredSequenceNumberEnc(((RecordAEADCipher)((TlsRecordLayer)context.getRecordLayer()).getRecordCipher()).getSequenceNumberEnc());
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
+        if(context.getRecordLayer() instanceof TlsRecordLayer && ((TlsRecordLayer)context.getRecordLayer()).getRecordCipher() instanceof RecordAEADCipher)
+        {
+            context.setStoredSequenceNumberEnc(((RecordAEADCipher)((TlsRecordLayer)context.getRecordLayer()).getRecordCipher()).getSequenceNumberEnc());
+        }
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, context.getEarlyDataCipherSuite());
         context.getRecordLayer().setRecordCipher(recordCipher);
         context.getRecordLayer().updateDecryptionCipher();
         context.getRecordLayer().updateEncryptionCipher();

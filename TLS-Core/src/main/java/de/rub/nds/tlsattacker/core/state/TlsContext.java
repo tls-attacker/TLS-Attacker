@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
@@ -133,12 +134,8 @@ public class TlsContext {
     /**
      * The Client's chosen Kex-Modes.
      */
-    private byte[] clientPskKeyExchangeModes;
+    private List<PskKeyExchangeMode> clientPskKeyExchangeModes;
     
-    /**
-     * Did we receive an EarlyDataExtension?
-     */
-    private boolean recievedEarlyDataExt = false;
     
     /**
      * Did we just encrypt the EOED-Message?
@@ -1572,19 +1569,6 @@ public class TlsContext {
         this.earlyDataPSKIdentity = earlyDataPSKIdentity;
     }
 
-    /**
-     * @return the recievedEarlyDataExt
-     */
-    public boolean isRecievedEarlyDataExt() {
-        return recievedEarlyDataExt;
-    }
-
-    /**
-     * @param recievedEarlyDataExt the recievedEarlyDataExt to set
-     */
-    public void setRecievedEarlyDataExt(boolean recievedEarlyDataExt) {
-        this.recievedEarlyDataExt = recievedEarlyDataExt;
-    }
 
     /**
      * @return the selectedIdentityIndex
@@ -1617,14 +1601,14 @@ public class TlsContext {
     /**
      * @return the clientPskKeyExchangeModes
      */
-    public byte[] getClientPskKeyExchangeModes() {
+    public List<PskKeyExchangeMode> getClientPskKeyExchangeModes() {
         return clientPskKeyExchangeModes;
     }
 
     /**
      * @param clientPskKeyExchangeModes the clientPskKeyExchangeModes to set
      */
-    public void setClientPskKeyExchangeModes(byte[] clientPskKeyExchangeModes) {
+    public void setClientPskKeyExchangeModes(List<PskKeyExchangeMode> clientPskKeyExchangeModes) {
         this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
     }
 

@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
     
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger keyExchangeModesListLength = new ModifiableInteger();
+    private ModifiableInteger keyExchangeModesListLength;
 
     @ModifiableVariableProperty
     private ModifiableByteArray keyExchangeModesListBytes;

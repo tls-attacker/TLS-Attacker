@@ -162,10 +162,7 @@ public class RecordDecryptor extends Decryptor {
     public void adjustRecordLayer0RTT(TlsContext context)
     {
         LOGGER.debug("Adjusting recordCipher after decrypting EOED using different key");
-        
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
-        context.setSelectedCipherSuite(context.getSelectedCipherSuite());
-
+       
         RecordCipher newRecordCipher = RecordCipherFactory.getRecordCipher(context);
         context.setUseEarlyTrafficSecret(true);
         context.getRecordLayer().setRecordCipher(newRecordCipher);

@@ -43,7 +43,7 @@ public class RecordCipherFactory {
     
     public static RecordCipher getRecordCipher(TlsContext context)
     {
-        return getRecordCipher(context, context.getSelectedCipherSuite());
+        return getRecordCipher(context, context.getChooser().getSelectedCipherSuite());
     }
 
     private RecordCipherFactory() {

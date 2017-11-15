@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -31,7 +29,25 @@ public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing PSKKeyExchangeModesExtensionMessage");
-        msg.setKeyExchangeModesListBytes(chooser.getConfig().getPSKKeyExchangeModes());
-        msg.setKeyExchangeModesListLength(chooser.getConfig().getPSKKeyExchangeModes().length);
+        prepareListBytes();
+        prepareListLength();
+    }
+    
+    private void prepareListBytes()
+    {
+        int length = chooser.getConfig().getPSKKeyExchangeModes().size();
+        byte[] listBytes = new byte[length];
+        
+        for(int x = 0; x < length; x++)
+        {
+            listBytes[x] = chooser.getConfig().getPSKKeyExchangeModes().get(x).getValue();
+        }
+        
+        msg.setKeyExchangeModesListBytes(listBytes);
+    }
+    
+    private void prepareListLength()
+    {
+        msg.setKeyExchangeModesListLength(msg.getKeyExchangeModesListBytes().getValue().length);
     }
 }

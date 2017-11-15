@@ -62,7 +62,6 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
     {
         LOGGER.debug("Adjusting recordCipher to encrypt EOED properly");
         
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
         tlsContext.setStoredSequenceNumberDec(((RecordAEADCipher)((TlsRecordLayer)tlsContext.getRecordLayer()).getRecordCipher()).getSequenceNumberDec());
         tlsContext.setUseEarlyTrafficSecret(true);
         

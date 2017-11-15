@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
@@ -35,6 +36,7 @@ import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
@@ -581,31 +583,15 @@ public class Config implements Serializable {
     /**
      * PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption)
      */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] pskKeyExchangeModes = ArrayConverter
-            .hexStringToByteArray("00");
-    /**
-     * PreSharedKeyIdentity to be used as PSK Identifier
-     */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[][] preSharedKeyIdentities;
-
-    /**
-     * PreSharedKeys for PSK-Extension
-     */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[][] preSharedKeys;
+    List<PskKeyExchangeMode> pskKeyExchangeModes;
     
+    private byte[] psk;
+ 
     /**
-     * TicketAge value to be used to generate the obfuscated ticket age for the given PSKs
+     * Contains all values related to TLS 1.3 PSKs
      */
-    private List<String> ticketAges;
-    /**
-     * TicketAgeAdd value to be used to obfuscate the ticket age for the given PSKs
-     */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[][] ticketAgeAdds;
-
+    private List<PskSet> PskSets;
+    
     /**
      * Early Data
      */
@@ -613,10 +599,6 @@ public class Config implements Serializable {
     private byte[] earlyData = ArrayConverter
             .hexStringToByteArray("544c532d41747461636b65720a");
     
-    /**
-     * CipherSuite that was used in the session in which the PSK was established
-     */
-    private List<CipherSuite> pskCipherSuites;
     
     /**
      * The Certificate we initialize CertificateMessages with
@@ -2005,12 +1987,12 @@ public class Config implements Serializable {
         this.addPreSharedKeyExtension = addPreSharedKeyExtension;
     }
     
-    public void setPSKKeyExchangeModes(byte[] pskKeyExchangeModes)
+    public void setPSKKeyExchangeModes(List<PskKeyExchangeMode> pskKeyExchangeModes)
     {
         this.pskKeyExchangeModes = pskKeyExchangeModes;
     }
     
-    public byte[] getPSKKeyExchangeModes()
+    public List<PskKeyExchangeMode> getPSKKeyExchangeModes()
     {
         return pskKeyExchangeModes;
     }
@@ -2469,75 +2451,6 @@ public class Config implements Serializable {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 
-    /**
-     * @return the preSharedKeyIdentity
-     */
-    public byte[][] getPreSharedKeyIdentities() {
-        return preSharedKeyIdentities;
-    }
-
-    /**
-     * @param preSharedKeyIdentity the preSharedKeyIdentity to set
-     */
-    public void setPreSharedKeyIdentities(byte[][] preSharedKeyIdentities) {
-        this.preSharedKeyIdentities = preSharedKeyIdentities;
-    }
-
-    /**
-     * @return the preSharedKeyBinder
-     */
-    public byte[][] getPreSharedKeys() {
-        return preSharedKeys;
-    }
-
-    /**
-     * @param preSharedKeyBinder the preSharedKeyBinder to set
-     */
-    public void setPreSharedKeys(byte[][] preSharedKeys) {
-        this.preSharedKeys = preSharedKeys;
-    }
-
-    /**
-     * @return the ticketAge
-     */
-    public List<String> getTicketAges() {
-        return ticketAges;
-    }
-
-    /**
-     * @param ticketAges the ticketAge to set
-     */
-    public void setTicketAges(List<String> ticketAges) {
-        this.ticketAges = ticketAges;
-    }
-
-    /**
-     * @return the ticketAgeAdd
-     */
-    public byte[][] getTicketAgeAdds() {
-        return ticketAgeAdds;
-    }
-
-    /**
-     * @param ticketAgeAdd the ticketAgeAdd to set
-     */
-    public void setTicketAgeAdds(byte[][] ticketAgeAdd) {
-        this.ticketAgeAdds = ticketAgeAdds;
-    }
-
-    /**
-     * @return the pskCipherSuite
-     */
-    public List<CipherSuite> getPskCipherSuites() {
-        return pskCipherSuites;
-    }
-
-    /**
-     * @param pskCipherSuites the pskCipherSuite to set
-     */
-    public void setPskCipherSuites(List<CipherSuite> pskCipherSuites) {
-        this.pskCipherSuites = pskCipherSuites;
-    }
 
     /**
      * @return the earlyData
@@ -2551,6 +2464,34 @@ public class Config implements Serializable {
      */
     public void setEarlyData(byte[] earlyData) {
         this.earlyData = earlyData;
+    }
+
+    /**
+     * @return the PskSets
+     */
+    public List<PskSet> getPskSets() {
+        return PskSets;
+    }
+
+    /**
+     * @param PskSets the PskSets to set
+     */
+    public void setPskSets(List<PskSet> PskSets) {
+        this.PskSets = PskSets;
+    }
+
+    /**
+     * @return the psk
+     */
+    public byte[] getPsk() {
+        return psk;
+    }
+
+    /**
+     * @param psk the psk to set
+     */
+    public void setPsk(byte[] psk) {
+        this.psk = psk;
     }
 
 }

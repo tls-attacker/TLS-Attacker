@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EarlyDataExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -52,7 +53,7 @@ public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensi
         }
         else if(context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) 
         {
-            context.setRecievedEarlyDataExt(true); //client indicated early data
+            context.addNegotiatedExtension(ExtensionType.EARLY_DATA); //client indicated early data
         }
     }
 

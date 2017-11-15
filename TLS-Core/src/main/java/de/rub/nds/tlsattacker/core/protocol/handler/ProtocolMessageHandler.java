@@ -52,6 +52,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     public byte[] prepareMessage(Message message) {
         Preparator preparator = getPreparator(message);
         preparator.prepare();
+        preparator.afterPrepare();
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);

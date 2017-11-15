@@ -131,7 +131,7 @@ public class RecordAEADCipher extends RecordCipher {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            if (protocolVersion.isTLS13()) {
+            if (protocolVersion.isTLS13() || context.isUseEarlyTrafficSecret()) {
                 if (context.isUpdateKeys() == false) {
                     if(context.isUseEarlyTrafficSecret()) {
                         context.setUseEarlyTrafficSecret(false);

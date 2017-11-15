@@ -55,22 +55,18 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     }
     
     private void parsePreSharedKeyIdentityListBytes(PreSharedKeyExtensionMessage msg)
-    {        
-        int parsed = 0;
-        List<PSKIdentity> identities = new LinkedList<>();
-        while (parsed < msg.getIdentityListLength()) 
-        {
-            int length = parseIntField(ExtensionByteLength.PSK_IDENTITY_LENGTH);
-            byte[] identityBytes = parseByteArrayField(length);
-            byte[] obfuscatedTicketAgeBytes = parseByteArrayField(ExtensionByteLength.TICKET_AGE_LENGTH);
-            LOGGER.debug("Parsed PSKIdentity:" + ArrayConverter.bytesToHexString(identityBytes));
-            LOGGER.debug("Associated ObfuscatedTicketAge:" + ArrayConverter.bytesToHexString(obfuscatedTicketAgeBytes));
-            
-            PSKIdentity pskIdentity = new PSKIdentity(identityBytes, obfuscatedTicketAgeBytes);
-            identities.add(pskIdentity);
-            parsed += ExtensionByteLength.PSK_IDENTITY_LENGTH + length + ExtensionByteLength.TICKET_AGE_LENGTH;
-        }
+    {
+        msg.setIdentityListBytes(parseByteArrayField(msg.getIdentityListLength().getValue()));
+        LOGGER.debug("Identity list bytes: " + ArrayConverter.bytesToHexString(msg.getIdentityListBytes().getValue()));
         
+        List<PSKIdentity> identities = new LinkedList<>();
+        int parsed = 0;
+        while (parsed < msg.getIdentityListLength().getValue()) 
+        {
+            PSKIdentityParser parser = new PSKIdentityParser(parsed, msg.getIdentityListBytes().getValue());
+            identities.add(parser.parse());
+            parsed = parser.getPointer();
+        }
         msg.setIdentities(identities);
     }
     
@@ -81,20 +77,18 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     }
     
     private void parsePreSharedKeyBinderListBytes(PreSharedKeyExtensionMessage msg)
-    {     
-        int parsed = 0;
-        List<PSKBinder> binders = new LinkedList<>();
-        while (parsed < msg.getBinderListLength()) 
-        {
-            int length = parseIntField(ExtensionByteLength.PSK_BINDER_LENGTH);
-            byte[] binderBytes = parseByteArrayField(length);
-            
-            LOGGER.debug("Parsed binder:" + ArrayConverter.bytesToHexString(binderBytes));
-            PSKBinder pskBinder = new PSKBinder(binderBytes);
-            binders.add(pskBinder);
-            parsed += ExtensionByteLength.PSK_BINDER_LENGTH + length;
-        }
+    {
+        msg.setBinderListBytes(parseByteArrayField(msg.getBinderListLength().getValue()));
+        LOGGER.debug("Binder list bytes: " + ArrayConverter.bytesToHexString(msg.getBinderListBytes().getValue()));
         
+        List<PSKBinder> binders = new LinkedList<>();
+        int parsed = 0;
+        while (parsed < msg.getBinderListLength().getValue()) 
+        {
+            PSKBinderParser parser = new PSKBinderParser(parsed, msg.getBinderListBytes().getValue());
+            binders.add(parser.parse());
+            parsed = parser.getPointer();
+        }
         msg.setBinders(binders);
     }
     

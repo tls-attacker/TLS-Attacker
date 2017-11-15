@@ -24,11 +24,9 @@ public class PSKIdentity {
     private ModifiableByteArray identity;
     private ModifiableByteArray obfuscatedTicketAge;
     
-    public PSKIdentity(byte[] identity, byte[] obfuscatedTicketAge)
+    public PSKIdentity()
     {
-        this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
-        this.identityLength = ModifiableVariableFactory.safelySetValue(identityLength, identity.length);
-        this.obfuscatedTicketAge = ModifiableVariableFactory.safelySetValue(this.obfuscatedTicketAge, obfuscatedTicketAge);
+        
     }
     
     public void setIdentity(ModifiableByteArray identity)
@@ -36,9 +34,14 @@ public class PSKIdentity {
         this.identity = identity;   
     }
     
-    public byte[] getIdentity()
+    public void setIdentity(byte[] identity)
     {
-        return identity.getValue();
+        this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
+    }
+    
+    public ModifiableByteArray getIdentity()
+    {
+        return identity;
     }
     
     public void setObfuscatedTicketAge(ModifiableByteArray obfuscatedTicketAge)
@@ -46,18 +49,28 @@ public class PSKIdentity {
         this.obfuscatedTicketAge = obfuscatedTicketAge;
     }
     
-    public byte[] getObfuscatedTicketAge()
+    public void setObfuscatedTicketAge(byte[] obfuscatedTicketAge)
     {
-        return obfuscatedTicketAge.getValue();
+        this.obfuscatedTicketAge = ModifiableVariableFactory.safelySetValue(this.obfuscatedTicketAge, obfuscatedTicketAge);
     }
     
-    public int getIdentityLength()
+    public ModifiableByteArray getObfuscatedTicketAge()
     {
-        return identityLength.getValue();
+        return obfuscatedTicketAge;
+    }
+    
+    public ModifiableInteger getIdentityLength()
+    {
+        return identityLength;
     }
     
     public void setIdentityLength(ModifiableInteger identityLength)
     {
         this.identityLength = identityLength;
+    }
+    
+    public void setIdentityLength(int identityLength)
+    {
+        this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
     }
 }
