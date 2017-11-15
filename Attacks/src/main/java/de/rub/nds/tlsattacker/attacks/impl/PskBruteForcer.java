@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -23,7 +26,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
@@ -54,10 +57,13 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -69,6 +75,10 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
+import java.nio.charset.Charset;
+import org.bouncycastle.util.BigIntegers;
 
 /**
  *
@@ -76,14 +86,25 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  */
 public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(PskBruteForcer.class);
-    private TlsContext context;
+    //private TlsContext context;
+    //private RecordLayer recordLayer;
+    //private List<TLSAction> actionList;
+    //private TimingClientUdpTransportHandler transportHandler;
+    //private WorkflowExecutor workflowExecutor;
+    //private WorkflowTrace trace;
+    //private final Config tlsConfig;
 
     public PskBruteForcer(PskBruteForcerCommandConfig config) {
         super(config, false);
+        //tlsConfig = config.createConfig();
+        
+        
+        
     }
 
     @Override
     public void executeAttack() {
+        WorkflowTrace trace = executeProtocolFlow();
     }
 
     @Override
@@ -118,5 +139,25 @@ public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
         }
 
         // context.setPSKIdentity();
+    }
+    
+    private WorkflowTrace executeProtocolFlow() {
+        Config tlsConfig = config.createConfig();
+        tlsConfig.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("1a2b3c4d"));
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
+        trace.addTlsAction(new SendAction(new PskClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
+                tlsConfig), new FinishedMessage(tlsConfig)));
+        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+        State state = new State(tlsConfig, trace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                tlsConfig.getWorkflowExecutorType(), state);
+        PskClientKeyExchangeMessage message = (PskClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+
+       
+        message.prepareComputations();
+        message.setIdentity("Client_Identity".getBytes(Charset.forName("UTF-8")));
+        workflowExecutor.executeWorkflow();
+        return trace;
     }
 }

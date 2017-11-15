@@ -9,16 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
-import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.bouncycastle.util.BigIntegers;
 
 /**
  *
@@ -59,7 +55,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         prepareSaltLength(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
+        premasterSecret = calculateClientPremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
                 .getGenerator().getValue(), msg.getComputations().getPrivateKey().getValue(), msg.getComputations()
                 .getServerPublicKey().getValue(), clientPublicKey, msg.getComputations().getSalt().getValue(), msg
                 .getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword().getValue());
@@ -71,7 +67,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         return generator.modPow(privateKey, modulus);
     }
 
-    private byte[] calculatePremasterSecret(BigInteger modulus, BigInteger generator, BigInteger privateKey,
+    private byte[] calculateClientPremasterSecret(BigInteger modulus, BigInteger generator, BigInteger privateKey,
             BigInteger serverPublicKey, BigInteger clientPublicKey, byte[] salt, byte[] identity, byte[] password) {
         // PremasterSecret: (ServerPublicKey -(k * g^x))^(ClientPrivatKey +(u *
         // x)) % modulus

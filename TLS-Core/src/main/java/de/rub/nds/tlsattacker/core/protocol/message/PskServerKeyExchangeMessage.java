@@ -33,7 +33,6 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @HoldsModifiableVariable
     protected PSKPremasterComputations computations;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identityHint;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

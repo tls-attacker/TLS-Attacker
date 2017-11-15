@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identityHint;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

@@ -9,18 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
-import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import java.math.BigInteger;
-import java.util.List;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
@@ -33,7 +27,6 @@ public class PskEcDhClientKeyExchangePreparator extends
         ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
 
     private ByteArrayOutputStream outputStream;
-    private byte[] ecdhValue;
     private final PskEcDhClientKeyExchangeMessage msg;
 
     public PskEcDhClientKeyExchangePreparator(Chooser chooser, PskEcDhClientKeyExchangeMessage message) {
@@ -48,10 +41,6 @@ public class PskEcDhClientKeyExchangePreparator extends
         super.prepareHandshakeMessageContents();
         premasterSecret = generatePremasterSecret(premasterSecret);
         preparePremasterSecret(msg);
-    }
-
-    private void computeECDHValue(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
-        ecdhValue = TlsECCUtils.calculateECDHBasicAgreement(publicKey, privateKey);
     }
 
     private byte[] generatePremasterSecret(byte[] ecdhValue) {
@@ -76,25 +65,8 @@ public class PskEcDhClientKeyExchangePreparator extends
 
     @Override
     public void prepareAfterParse() {
-        try {
-            msg.prepareComputations();
-            List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
-            ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
-            short[] pointFormats = ECCUtilsBCWrapper.convertPointFormats(formatArray);
-            ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats,
-                    getDomainParameters(chooser.getEcCurveType(), chooser.getSelectedCurve()), msg.getPublicKey()
-                            .getValue());
-            CustomECPoint customClientKey = new CustomECPoint(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
-                    clientPublicKey.getQ().getRawYCoord().toBigInteger());
-            msg.getComputations().setClientPublicKey(customClientKey);
-
-            BigInteger privatekey = chooser.getServerEcPrivateKey();
-            computeECDHValue(clientPublicKey, new ECPrivateKeyParameters(privatekey, clientPublicKey.getParameters()));
-            premasterSecret = generatePremasterSecret(ecdhValue);
+            super.prepareAfterParse();
+            premasterSecret = generatePremasterSecret(premasterSecret);
             preparePremasterSecret(msg);
-            prepareClientRandom(msg);
-        } catch (IOException ex) {
-            throw new PreparationException("Could prepare PSKECDHClientKeyExchange Message after Parse", ex);
         }
-    }
 }

@@ -49,7 +49,7 @@ public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSeria
      */
     private void writePSKIdentityLength(PskRsaClientKeyExchangeMessage msg) {
         appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("SerializedPSKIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
+        LOGGER.debug("SerializedPSKIdentityLength: " + msg.getIdentityLength().getValue());
     }
 
     /**

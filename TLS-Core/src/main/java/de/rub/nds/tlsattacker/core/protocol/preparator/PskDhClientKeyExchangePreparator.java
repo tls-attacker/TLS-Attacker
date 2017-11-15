@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import java.math.BigInteger;
 
 /**
  *
@@ -25,7 +24,6 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
 
     private final PskDhClientKeyExchangeMessage msg;
     private ByteArrayOutputStream outputStream;
-    private byte[] dhValue;
 
     public PskDhClientKeyExchangePreparator(Chooser chooser, PskDhClientKeyExchangeMessage message) {
         super(chooser, message);
@@ -63,13 +61,9 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
 
     @Override
     public void prepareAfterParse() {
-        BigInteger privateKey = chooser.getPSKServerPrivateKey();
-        BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
-        msg.prepareComputations();
-        dhValue = calculatePremasterSecret(chooser.getPSKModulus(), privateKey, clientPublic);
-        premasterSecret = generatePremasterSecret(dhValue);
+        super.prepareAfterParse();
+        premasterSecret = generatePremasterSecret(premasterSecret);
         preparePremasterSecret(msg);
-        prepareClientRandom(msg);
     }
 
     @Override

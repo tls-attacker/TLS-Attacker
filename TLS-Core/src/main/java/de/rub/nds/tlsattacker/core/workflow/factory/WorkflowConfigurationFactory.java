@@ -183,10 +183,7 @@ public class WorkflowConfigurationFactory {
                 }
             }
 
-            if (config.getDefaultSelectedCipherSuite().isEphemeral()) {
-                addServerKeyExchangeMessage(messages);
-            }
-            if (config.getDefaultSelectedCipherSuite().isSrp()) {
+            if (config.getDefaultSelectedCipherSuite().isEphemeral()||config.getDefaultSelectedCipherSuite().isSrp()) {
                 addServerKeyExchangeMessage(messages);
             }
 

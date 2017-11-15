@@ -28,13 +28,9 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 @XmlRootElement
 public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {
 
-    // @HoldsModifiableVariable
-    // @XmlElement
-    // public PSKRSAPremasterComputations computations;
-
     @HoldsModifiableVariable
     @XmlElement
-    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
