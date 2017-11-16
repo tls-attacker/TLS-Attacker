@@ -12,9 +12,14 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKBinderPreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKIdentityPreparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -37,6 +42,26 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public PreSharedKeyExtensionMessage() {
         super(ExtensionType.PRE_SHARED_KEY);
+    }
+
+    public PreSharedKeyExtensionMessage(Config config) {
+        super(ExtensionType.PRE_SHARED_KEY);
+        identities = new LinkedList<>();
+        binders = new LinkedList<>();
+        List<PskSet> pskSets = config.getPskSets();
+
+        for (int x = 0; x < pskSets.size(); x++) {
+            PSKIdentity pskIdentity = new PSKIdentity();
+            pskIdentity.setIdentityConfig(pskSets.get(x).getPreSharedKeyIdentity());
+            pskIdentity.setTicketAgeAddConfig(pskSets.get(x).getTicketAgeAdd());
+            pskIdentity.setTicketAgeConfig(pskSets.get(x).getTicketAge());
+
+            PSKBinder pskBinder = new PSKBinder();
+            pskBinder.setBinderCipherConfig(pskSets.get(x).getCipherSuite());
+
+            identities.add(pskIdentity);
+            binders.add(pskBinder);
+        }
     }
 
     public List<PSKIdentity> getIdentities() {

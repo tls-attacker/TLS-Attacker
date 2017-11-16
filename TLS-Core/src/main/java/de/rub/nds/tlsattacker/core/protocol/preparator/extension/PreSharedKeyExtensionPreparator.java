@@ -59,33 +59,19 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
         if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
             prepareLists();
             prepareIdentityListBytes();
-            prepareBinderListBytes(); // we're only preparing dummy bytes here
+            prepareBinderListBytes();
         } else {
             prepareSelectedIdentity();
         }
     }
 
     private void prepareLists() {
-        List<PSKIdentity> identities = new LinkedList<>();
-        List<PSKBinder> binders = new LinkedList<>();
-        List<PskSet> pskSets = chooser.getConfig().getPskSets();
-
-        for (int x = 0; x < pskSets.size(); x++) {
-            PSKIdentity pskIdentity = new PSKIdentity();
-            new PSKIdentityPreparator(chooser, pskIdentity, pskSets.get(x)).prepare();
-            PSKBinder pskBinder = new PSKBinder();
-            new PSKBinderPreparator(chooser, pskBinder, pskSets.get(x)).prepare();
-            identities.add(pskIdentity);
-            binders.add(pskBinder);
-
-            if (x == 0) // First identity of the list = PSK for 0-RTT data
-            {
-                chooser.getContext().setEarlyDataPSKIdentity(pskSets.get(x).getPreSharedKeyIdentity());
-                chooser.getContext().setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-            }
+        for (PSKIdentity pskIdentity : msg.getIdentities()) {
+            new PSKIdentityPreparator(chooser, pskIdentity).prepare();
         }
-        msg.setIdentities(identities);
-        msg.setBinders(binders);
+        for (PSKBinder pskBinder : msg.getBinders()) {
+            new PSKBinderPreparator(chooser, pskBinder).prepare();
+        }
     }
 
     private void prepareSelectedIdentity() {
@@ -163,31 +149,13 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
                 DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x)
                         .getCipherSuite());
-                int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
 
-                byte[] resumpMasterSec = pskSets.get(x).getPreSharedKey(); // This
-                                                                           // is
-                                                                           // for
-                                                                           // testing
-                                                                           // and
-                                                                           // should
-                                                                           // replace
-                                                                           // the
-                                                                           // part
-                                                                           // after
-                                                                           // byte[]
-                                                                           // psk
-                                                                           // =
-
-                byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption",
-                        ArrayConverter.hexStringToByteArray("00"), macLength);
+                byte[] psk = pskSets.get(x).getPreSharedKey();
                 byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
                 byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                         HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
                 byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgortihm, binderKey, HKDFunction.FINISHED,
                         new byte[0], mac.getMacLength());
-
-                pskSets.get(x).setPreSharedKey(psk); // Testing
 
                 chooser.getContext().getDigest().setRawBytes(relevantBytes);
                 SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());

@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
@@ -17,10 +16,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
@@ -105,10 +102,9 @@ public class SendMessageHelper {
             }
         }
         if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
-                && context.getSelectedProtocolVersion().isTLS13()) {
+                && context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             for (ProtocolMessage message : messages) {
-                if (message instanceof FinishedMessage
-                        && context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+                if (message instanceof FinishedMessage) {
                     // Switch RecordLayer secrets to prepare for EndOfEarlyData
                     adjustRecordCipherAfterServerFinished(context);
                     break;

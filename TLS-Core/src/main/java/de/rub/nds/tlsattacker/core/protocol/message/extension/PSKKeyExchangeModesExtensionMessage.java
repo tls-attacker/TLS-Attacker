@@ -12,12 +12,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
 public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
+
+    private byte[] keyExchangeModesConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger keyExchangeModesListLength;
@@ -27,6 +30,18 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 
     public PSKKeyExchangeModesExtensionMessage() {
         super(ExtensionType.PSK_KEY_EXCHANGE_MODES);
+    }
+
+    public PSKKeyExchangeModesExtensionMessage(Config tlsConfig) {
+        super(ExtensionType.PSK_KEY_EXCHANGE_MODES);
+        int length = tlsConfig.getPSKKeyExchangeModes().size();
+        byte[] listBytes = new byte[length];
+
+        for (int x = 0; x < length; x++) {
+            listBytes[x] = tlsConfig.getPSKKeyExchangeModes().get(x).getValue();
+        }
+
+        keyExchangeModesConfig = listBytes;
     }
 
     public ModifiableInteger getKeyExchangeModesListLength() {
@@ -47,5 +62,20 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 
     public void setKeyExchangeModesListBytes(byte[] bytes) {
         this.keyExchangeModesListBytes = ModifiableVariableFactory.safelySetValue(keyExchangeModesListBytes, bytes);
+    }
+
+    /**
+     * @return the keyExchangeModesConfig
+     */
+    public byte[] getKeyExchangeModesConfig() {
+        return keyExchangeModesConfig;
+    }
+
+    /**
+     * @param keyExchangeModesConfig
+     *            the keyExchangeModesConfig to set
+     */
+    public void setKeyExchangeModesConfig(byte[] keyExchangeModesConfig) {
+        this.keyExchangeModesConfig = keyExchangeModesConfig;
     }
 }

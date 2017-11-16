@@ -22,12 +22,10 @@ import javax.crypto.Mac;
 public class PSKBinderPreparator extends Preparator<PSKBinder> {
 
     private final PSKBinder pskBinder;
-    private final PskSet pskSet;
 
-    public PSKBinderPreparator(Chooser chooser, PSKBinder pskBinder, PskSet pskSet) {
+    public PSKBinderPreparator(Chooser chooser, PSKBinder pskBinder) {
         super(chooser, pskBinder);
         this.pskBinder = pskBinder;
-        this.pskSet = pskSet;
     }
 
     @Override
@@ -38,7 +36,7 @@ public class PSKBinderPreparator extends Preparator<PSKBinder> {
 
     private void prepareBinderValue() {
         try {
-            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSet.getCipherSuite());
+            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskBinder.getBinderCipherConfig());
             int macLen = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
 
             pskBinder.setBinderEntry(new byte[macLen]);

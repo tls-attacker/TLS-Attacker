@@ -86,12 +86,7 @@ public class ServerHelloMessage extends HelloMessage {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
-            KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
-            KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
-            pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
-            extension.getKeyShareList().add(pair);
-            addExtension(extension);
+            addExtension(new KeyShareExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());

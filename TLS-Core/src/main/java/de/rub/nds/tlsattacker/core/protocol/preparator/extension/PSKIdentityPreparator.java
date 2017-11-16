@@ -22,12 +22,10 @@ import java.time.format.DateTimeFormatter;
 public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
 
     private final PSKIdentity pskIdentity;
-    private final PskSet pskSet;
 
-    public PSKIdentityPreparator(Chooser chooser, PSKIdentity pskIdentity, PskSet pskSet) {
+    public PSKIdentityPreparator(Chooser chooser, PSKIdentity pskIdentity) {
         super(chooser, pskIdentity);
         this.pskIdentity = pskIdentity;
-        this.pskSet = pskSet;
     }
 
     @Override
@@ -38,12 +36,13 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
     }
 
     private void prepareIdentity() {
-        pskIdentity.setIdentity(pskSet.getPreSharedKeyIdentity());
+        pskIdentity.setIdentity(pskIdentity.getIdentityConfig());
         pskIdentity.setIdentityLength(pskIdentity.getIdentity().getValue().length);
     }
 
     private void prepareObfuscatedTicketAge() {
-        pskIdentity.setObfuscatedTicketAge(getObfuscatedTicketAge(pskSet.getTicketAgeAdd(), pskSet.getTicketAge()));
+        pskIdentity.setObfuscatedTicketAge(getObfuscatedTicketAge(pskIdentity.getTicketAgeAddConfig(),
+                pskIdentity.getTicketAgeConfig()));
     }
 
     private byte[] getObfuscatedTicketAge(byte[] ticketAgeAdd, String ticketAge) {

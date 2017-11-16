@@ -123,21 +123,16 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new SupportedVersionsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
-            KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
-            KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
-            pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
-            extension.getKeyShareList().add(pair);
-            addExtension(extension);
+            addExtension(new KeyShareExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddEarlyDataExtension()) {
             addExtension(new EarlyDataExtensionMessage());
         }
         if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
-            addExtension(new PSKKeyExchangeModesExtensionMessage());
+            addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddPreSharedKeyExtension()) {
-            addExtension(new PreSharedKeyExtensionMessage());
+            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());

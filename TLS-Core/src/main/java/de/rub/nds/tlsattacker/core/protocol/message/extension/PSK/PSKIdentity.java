@@ -14,6 +14,10 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
 public class PSKIdentity {
 
+    private byte[] identityConfig;
+    private String ticketAgeConfig;
+    private byte[] ticketAgeAddConfig;
+
     private ModifiableInteger identityLength;
 
     private ModifiableByteArray identity;
@@ -58,5 +62,50 @@ public class PSKIdentity {
 
     public void setIdentityLength(int identityLength) {
         this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
+    }
+
+    /**
+     * @return the identityConfig
+     */
+    public byte[] getIdentityConfig() {
+        return identityConfig;
+    }
+
+    /**
+     * @param identityConfig
+     *            the identityConfig to set
+     */
+    public void setIdentityConfig(byte[] identityConfig) {
+        this.identityConfig = identityConfig;
+    }
+
+    /**
+     * @return the ticketAgeConfig
+     */
+    public String getTicketAgeConfig() {
+        return ticketAgeConfig;
+    }
+
+    /**
+     * @param ticketAgeConfig
+     *            the ticketAgeConfig to set
+     */
+    public void setTicketAgeConfig(String ticketAgeConfig) {
+        this.ticketAgeConfig = ticketAgeConfig;
+    }
+
+    /**
+     * @return the ticketAgeAddConfig
+     */
+    public byte[] getTicketAgeAddConfig() {
+        return ticketAgeAddConfig;
+    }
+
+    /**
+     * @param ticketAgeAddConfig
+     *            the ticketAgeAddConfig to set
+     */
+    public void setTicketAgeAddConfig(byte[] ticketAgeAddConfig) {
+        this.ticketAgeAddConfig = ticketAgeAddConfig;
     }
 }

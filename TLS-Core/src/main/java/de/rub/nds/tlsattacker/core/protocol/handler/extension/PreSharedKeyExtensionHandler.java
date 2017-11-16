@@ -65,9 +65,13 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     @Override
     public void adjustTLSExtensionContext(PreSharedKeyExtensionMessage message) {
         LOGGER.debug("Adjusting TLS Context for PSK Key Extension Message");
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
-                && message.getSelectedIdentity() != null) {
-            adjustPsk(message);
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (message.getSelectedIdentity() != null) {
+                adjustPsk(message);
+            } else {
+                context.setEarlyDataPSKIdentity(context.getConfig().getPskSets().get(0).getPreSharedKeyIdentity());
+                context.setEarlyDataCipherSuite(context.getConfig().getPskSets().get(0).getCipherSuite());
+            }
         }
         if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
                 && message.getIdentities() != null) {
@@ -98,24 +102,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                 if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), pskIdentity.getIdentity().getValue())) {
                     LOGGER.debug("Selected PSK identity: "
                             + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKeyIdentity()));
-                    // context.setPsk(pskSets.get(x).getPreSharedKey()); This is
-                    // correct - removed for testing
-                    // ******TESTING******
-                    try {
-                        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x)
-                                .getCipherSuite());
-                        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
-                                pskSets.get(x).getCipherSuite());
-                        int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-                        byte[] resumpMasterSec = pskSets.get(x).getPreSharedKey();
-
-                        byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption",
-                                ArrayConverter.hexStringToByteArray("00"), macLength);
-                        context.setPsk(psk);
-                    } catch (NoSuchAlgorithmException ex) {
-
-                    }
-                    // *******************
+                    context.setPsk(pskSets.get(x).getPreSharedKey());
                     context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
                     context.setSelectedIdentityIndex(pskIdentityIndex);
                     return;
@@ -127,46 +114,37 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     }
 
     private void adjustEarlyTrafficSecret(PreSharedKeyExtensionMessage message) {
-        try {
-            LOGGER.debug("Calculating early traffic secret using transcript: "
-                    + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
 
-            List<PskSet> pskSets = context.getConfig().getPskSets();
-            byte[] earlyDataPsk = null;
-            for (int x = 0; x < pskSets.size(); x++) {
-                if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0)
-                        .getIdentity().getValue())) {
-                    earlyDataPsk = pskSets.get(x).getPreSharedKey();
-                    context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-                    LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(earlyDataPsk));
-                    break;
-                }
+        LOGGER.debug("Calculating early traffic secret using transcript: "
+                + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
+
+        List<PskSet> pskSets = context.getConfig().getPskSets();
+        byte[] earlyDataPsk = null;
+        for (int x = 0; x < pskSets.size(); x++) {
+            if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0).getIdentity()
+                    .getValue())) {
+                earlyDataPsk = pskSets.get(x).getPreSharedKey();
+                context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
+                LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(earlyDataPsk));
+                break;
             }
-            if (earlyDataPsk == null) {
-                LOGGER.warn("Server is missing the EarlyData PSK - decryption will fail");
-            } else {
-                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getEarlyDataCipherSuite());
-                DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
-                        context.getEarlyDataCipherSuite());
-                int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-
-                byte[] resumpMasterSec = earlyDataPsk; // This is for testing
-                                                       // and should replace the
-                                                       // part after byte[] psk
-                                                       // =
-
-                byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption",
-                        ArrayConverter.hexStringToByteArray("00"), macLength);
-                byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
-                byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
-                        earlySecret, HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-
-                context.setEarlySecret(earlySecret);
-                context.setClientEarlyTrafficSecret(earlyTrafficSecret);
-            }
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(PreSharedKeyExtensionHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (earlyDataPsk == null) {
+            LOGGER.warn("Server is missing the EarlyData PSK - decryption will fail");
+        } else {
+            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getEarlyDataCipherSuite());
+            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
+                    context.getEarlyDataCipherSuite());
+
+            byte[] psk = earlyDataPsk;
+            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
+            byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
+                    HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, context.getDigest().getRawBytes());
+
+            context.setEarlySecret(earlySecret);
+            context.setClientEarlyTrafficSecret(earlyTrafficSecret);
+        }
+
     }
 
     private void adjustRecordLayer0RTT() {

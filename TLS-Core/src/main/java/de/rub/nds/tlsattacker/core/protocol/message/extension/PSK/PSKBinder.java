@@ -11,8 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.PSK;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 
 public class PSKBinder {
+
+    private CipherSuite binderCipherConfig;
 
     private ModifiableInteger binderEntryLength;
     private ModifiableByteArray binderEntry;
@@ -42,6 +45,21 @@ public class PSKBinder {
 
     public ModifiableInteger getBinderEntryLength() {
         return binderEntryLength;
+    }
+
+    /**
+     * @return the binderCipherConfig
+     */
+    public CipherSuite getBinderCipherConfig() {
+        return binderCipherConfig;
+    }
+
+    /**
+     * @param binderCipherConfig
+     *            the binderCipherConfig to set
+     */
+    public void setBinderCipherConfig(CipherSuite binderCipherConfig) {
+        this.binderCipherConfig = binderCipherConfig;
     }
 
 }

@@ -33,14 +33,7 @@ public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<
     }
 
     private void prepareListBytes() {
-        int length = chooser.getConfig().getPSKKeyExchangeModes().size();
-        byte[] listBytes = new byte[length];
-
-        for (int x = 0; x < length; x++) {
-            listBytes[x] = chooser.getConfig().getPSKKeyExchangeModes().get(x).getValue();
-        }
-
-        msg.setKeyExchangeModesListBytes(listBytes);
+        msg.setKeyExchangeModesListBytes(msg.getKeyExchangeModesConfig());
     }
 
     private void prepareListLength() {
