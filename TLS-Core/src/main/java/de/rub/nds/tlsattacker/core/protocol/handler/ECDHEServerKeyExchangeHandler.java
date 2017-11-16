@@ -24,7 +24,7 @@ import java.io.InputStream;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
-public class ECDHEServerKeyExchangeHandler <T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
+public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
 
     public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);

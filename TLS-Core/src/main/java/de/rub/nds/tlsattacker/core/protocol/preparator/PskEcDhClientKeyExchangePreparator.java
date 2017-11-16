@@ -65,8 +65,8 @@ public class PskEcDhClientKeyExchangePreparator extends
 
     @Override
     public void prepareAfterParse() {
-            super.prepareAfterParse();
-            premasterSecret = generatePremasterSecret(premasterSecret);
-            preparePremasterSecret(msg);
-        }
+        super.prepareAfterParse();
+        premasterSecret = generatePremasterSecret(premasterSecret);
+        preparePremasterSecret(msg);
+    }
 }

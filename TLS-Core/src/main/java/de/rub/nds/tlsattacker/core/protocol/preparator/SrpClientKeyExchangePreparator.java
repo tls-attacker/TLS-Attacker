@@ -55,10 +55,11 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         prepareSaltLength(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        premasterSecret = calculateClientPremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-                .getGenerator().getValue(), msg.getComputations().getPrivateKey().getValue(), msg.getComputations()
-                .getServerPublicKey().getValue(), clientPublicKey, msg.getComputations().getSalt().getValue(), msg
-                .getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword().getValue());
+        premasterSecret = calculateClientPremasterSecret(msg.getComputations().getModulus().getValue(), msg
+                .getComputations().getGenerator().getValue(), msg.getComputations().getPrivateKey().getValue(), msg
+                .getComputations().getServerPublicKey().getValue(), clientPublicKey, msg.getComputations().getSalt()
+                .getValue(), msg.getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword()
+                .getValue());
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }
