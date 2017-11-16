@@ -115,4 +115,8 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             clientSocket.close();
         }
     }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
 }
