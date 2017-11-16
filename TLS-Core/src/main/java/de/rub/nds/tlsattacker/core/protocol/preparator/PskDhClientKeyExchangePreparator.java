@@ -65,7 +65,7 @@ public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePrepara
         BigInteger privateKey = chooser.getPSKServerPrivateKey();
         BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
         msg.prepareComputations();
-        premasterSecret = calculatePremasterSecret(chooser.getDhModulus(), privateKey, clientPublic);
+        premasterSecret = calculatePremasterSecret(chooser.getPSKModulus(), privateKey, clientPublic);
         premasterSecret = generatePremasterSecret(premasterSecret);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
