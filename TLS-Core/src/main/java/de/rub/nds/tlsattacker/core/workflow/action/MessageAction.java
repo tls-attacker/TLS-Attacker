@@ -158,7 +158,7 @@ public abstract class MessageAction extends TLSAction {
     }
 
     public void setMessages(ProtocolMessage... messages) {
-        this.messages = Arrays.asList(messages);
+        this.messages = new ArrayList(Arrays.asList(messages));
     }
 
     public List<AbstractRecord> getRecords() {

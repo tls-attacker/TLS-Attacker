@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.util.ArrayList;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -77,7 +76,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public ReceiveAction(ProtocolMessage... expectedMessages) {
         super();
-        this.expectedMessages = Arrays.asList(expectedMessages);
+        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage> messages) {
@@ -87,7 +86,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage... messages) {
-        this(receiveOptions, Arrays.asList(messages));
+        this(receiveOptions, new ArrayList(Arrays.asList(messages)));
     }
 
     public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage> messages) {
@@ -149,7 +148,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public boolean executedAsPlanned() {
         if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (expectedMessages.size() > messages.size())
+            if (messages == null || expectedMessages.size() > messages.size())
                 return false;
         } else {
             if (messages.size() != expectedMessages.size())
@@ -178,7 +177,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     public void setExpectedMessages(ProtocolMessage... expectedMessages) {
-        this.expectedMessages = Arrays.asList(expectedMessages);
+        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
     @Override
