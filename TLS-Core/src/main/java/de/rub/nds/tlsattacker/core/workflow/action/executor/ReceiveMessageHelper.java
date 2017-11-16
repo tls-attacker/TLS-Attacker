@@ -220,6 +220,9 @@ public class ReceiveMessageHelper {
                 }
             }
             if (result != null) {
+                if (dataPointer == result.getParserPosition()) {
+                    throw new ParserException("Ran into an infinite loop while parsing ProtocolMessages");
+                }
                 dataPointer = result.getParserPosition();
                 LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
                 receivedMessages.add(result.getMessage());

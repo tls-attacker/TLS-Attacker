@@ -66,6 +66,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
+                if (dataPointer == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing HttpsHeader");
+                }
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
                 throw new ParserException("Could not parse provided Data as Record", E);
@@ -85,6 +88,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
+                if (dataPointer == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing Records");
+                }
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
                 LOGGER.debug("Could not parse Record, parsing as Blob");
@@ -93,6 +99,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
+                if (dataPointer == blobParser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing BlobRecords");
+                }
                 dataPointer = blobParser.getPointer();
             }
         }

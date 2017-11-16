@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import java.util.LinkedList;
@@ -35,7 +36,10 @@ public class CertificateStatusRequestV2ExtensionParser extends
         while (pointer < msg.getStatusRequestBytes().getValue().length) {
             RequestItemV2Parser parser = new RequestItemV2Parser(pointer, msg.getStatusRequestBytes().getValue());
             itemList.add(parser.parse());
-            pointer += parser.getPointer();
+            if (pointer == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing RequestItemV2");
+            }
+            pointer = parser.getPointer();
         }
         msg.setStatusRequestList(itemList);
     }

@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * HKDF functions computation for TLS 1.3
- * 
+ *
  * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class HKDFunction {
@@ -61,7 +61,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
-     * 
+     *
      * @param hkdfAlgortihm
      * @param salt
      * @param ikm
@@ -85,7 +85,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Expand output as defined in RFC 5869
-     * 
+     *
      * @param hkdfAlgortihm
      * @param prk
      * @param info
@@ -109,6 +109,9 @@ public class HKDFunction {
                     mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
                 }
                 ti = mac.doFinal();
+                if (ti.length == 0) {
+                    throw new CryptoException("Could not expand HKDF. Mac Algorithm of 0 size");
+                }
                 stream.write(ti);
                 i++;
             }
@@ -133,7 +136,7 @@ public class HKDFunction {
 
     /**
      * Computes Derive-Secret output as defined in TLS 1.3
-     * 
+     *
      * @param hkdfAlgortihm
      * @param hashAlgorithm
      * @param prk
@@ -156,7 +159,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Expand-Label output as defined in TLS 1.3
-     * 
+     *
      * @param hkdfAlgortihm
      * @param prk
      * @param labelIn
