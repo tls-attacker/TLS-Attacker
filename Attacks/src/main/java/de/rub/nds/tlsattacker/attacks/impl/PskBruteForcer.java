@@ -86,20 +86,19 @@ import org.bouncycastle.util.BigIntegers;
  */
 public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(PskBruteForcer.class);
-    //private TlsContext context;
-    //private RecordLayer recordLayer;
-    //private List<TLSAction> actionList;
-    //private TimingClientUdpTransportHandler transportHandler;
-    //private WorkflowExecutor workflowExecutor;
-    //private WorkflowTrace trace;
-    //private final Config tlsConfig;
+
+    // private TlsContext context;
+    // private RecordLayer recordLayer;
+    // private List<TLSAction> actionList;
+    // private TimingClientUdpTransportHandler transportHandler;
+    // private WorkflowExecutor workflowExecutor;
+    // private WorkflowTrace trace;
+    // private final Config tlsConfig;
 
     public PskBruteForcer(PskBruteForcerCommandConfig config) {
         super(config, false);
-        //tlsConfig = config.createConfig();
-        
-        
-        
+        // tlsConfig = config.createConfig();
+
     }
 
     @Override
@@ -140,7 +139,7 @@ public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
 
         // context.setPSKIdentity();
     }
-    
+
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("1a2b3c4d"));
@@ -154,7 +153,6 @@ public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
         PskClientKeyExchangeMessage message = (PskClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
-       
         message.prepareComputations();
         message.setIdentity("Client_Identity".getBytes(Charset.forName("UTF-8")));
         workflowExecutor.executeWorkflow();
