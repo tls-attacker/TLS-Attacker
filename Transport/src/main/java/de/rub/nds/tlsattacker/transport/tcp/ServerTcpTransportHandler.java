@@ -14,10 +14,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerTcpTransportHandler extends TransportHandler {
 
     private ServerSocket serverSocket;

@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import static de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EarlyDataExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -21,8 +23,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensionMessage> {
 
@@ -47,13 +47,17 @@ public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensi
 
     @Override
     public void adjustTLSExtensionContext(EarlyDataExtensionMessage message) {
-        if(message.getMaxEarlyDataSize() != null)
-        {
+        if (message.getMaxEarlyDataSize() != null) {
             context.setMaxEarlyDataSize(message.getMaxEarlyDataSize().getValue());
-        }
-        else if(context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) 
-        {
-            context.addNegotiatedExtension(ExtensionType.EARLY_DATA); //client indicated early data
+        } else if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            context.addNegotiatedExtension(ExtensionType.EARLY_DATA); // client
+                                                                      // indicated
+                                                                      // early
+                                                                      // data
+        } else if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            // We are about to encrypt early data
+            context.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            LOGGER.debug("Set activeKeySetType in Context to " + context.getActiveKeySetType());
         }
     }
 

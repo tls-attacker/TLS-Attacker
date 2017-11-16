@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.HeartbeatExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HeartbeatExtensionPreparator extends ExtensionPreparator<HeartbeatExtensionMessage> {
 
     private final HeartbeatExtensionMessage msg;

@@ -26,12 +26,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
     public ClientHelloHandler(TlsContext tlsContext) {
@@ -68,17 +62,14 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
                         extension.getExtensionTypeConstant(), HandshakeMessageType.CLIENT_HELLO);
-                if(handler instanceof KeyShareExtensionHandler)
-                {
+                if (handler instanceof KeyShareExtensionHandler) {
                     keyShareHandler = (KeyShareExtensionHandler) handler;
                     keyShareExtension = (KeyShareExtensionMessage) extension;
-                }
-                else
-                {
+                } else {
                     handler.adjustTLSContext(extension);
-                }              
+                }
             }
-            if(keyShareHandler != null) //delay KeyShare to process PSK first
+            if (keyShareHandler != null) // delay KeyShare to process PSK first
             {
                 keyShareHandler.adjustTLSContext(keyShareExtension);
             }

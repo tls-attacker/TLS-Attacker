@@ -14,13 +14,11 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EarlyDataExtensionMessage extends ExtensionMessage {
-    
+
     private ModifiableInteger maxEarlyDataSize;
-    
+
     public EarlyDataExtensionMessage() {
         super(ExtensionType.EARLY_DATA);
     }
@@ -33,14 +31,14 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
     }
 
     /**
-     * @param max_early_data_size the max_early_data_size to set
+     * @param max_early_data_size
+     *            the max_early_data_size to set
      */
     public void setMaxEarlyDataSize(ModifiableInteger maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;
     }
-    
-    public void setMaxEarlyDataSize(int maxEarlyDataSize)
-    {
+
+    public void setMaxEarlyDataSize(int maxEarlyDataSize) {
         this.maxEarlyDataSize = ModifiableVariableFactory.safelySetValue(this.maxEarlyDataSize, maxEarlyDataSize);
     }
 }

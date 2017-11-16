@@ -55,10 +55,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @XmlRootElement
 public class ServerHelloMessage extends HelloMessage {
 
@@ -73,7 +69,7 @@ public class ServerHelloMessage extends HelloMessage {
         if (tlsConfig.isAddHeartbeatExtension()) {
             addExtension(new HeartbeatExtensionMessage());
         }
-        if (tlsConfig.isAddECPointFormatExtension()) {
+        if (tlsConfig.isAddECPointFormatExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
             addExtension(new ECPointFormatExtensionMessage());
         }
         if (tlsConfig.isAddMaxFragmentLengthExtenstion()) {
@@ -86,7 +82,7 @@ public class ServerHelloMessage extends HelloMessage {
             extension.getServerNameList().add(pair);
             addExtension(extension);
         }
-        if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension()) {
+        if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
             addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
@@ -119,7 +115,7 @@ public class ServerHelloMessage extends HelloMessage {
             addExtension(new CertificateStatusRequestExtensionMessage());
         }
         if (tlsConfig.isAddAlpnExtension()) {
-            addExtension(new AlpnExtensionMessage());
+            addExtension(new AlpnExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddSRPExtension()) {
             addExtension(new SRPExtensionMessage());

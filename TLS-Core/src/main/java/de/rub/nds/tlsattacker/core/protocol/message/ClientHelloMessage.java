@@ -59,12 +59,6 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
@@ -95,7 +89,6 @@ public class ClientHelloMessage extends HelloMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableByte cookieLength = null;
-    
 
     public ClientHelloMessage() {
         super(HandshakeMessageType.CLIENT_HELLO);
@@ -137,7 +130,7 @@ public class ClientHelloMessage extends HelloMessage {
             extension.getKeyShareList().add(pair);
             addExtension(extension);
         }
-        if (tlsConfig.isAddEarlyDataExtension()) {                                                                      
+        if (tlsConfig.isAddEarlyDataExtension()) {
             addExtension(new EarlyDataExtensionMessage());
         }
         if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
@@ -168,7 +161,7 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new CertificateStatusRequestExtensionMessage());
         }
         if (tlsConfig.isAddAlpnExtension()) {
-            addExtension(new AlpnExtensionMessage());
+            addExtension(new AlpnExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddSRPExtension()) {
             addExtension(new SRPExtensionMessage());
@@ -285,8 +278,7 @@ public class ClientHelloMessage extends HelloMessage {
     public void setCookieLength(ModifiableByte cookieLength) {
         this.cookieLength = cookieLength;
     }
-    
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());

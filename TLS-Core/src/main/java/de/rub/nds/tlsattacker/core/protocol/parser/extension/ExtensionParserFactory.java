@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(ExtensionParserFactory.class.getName());

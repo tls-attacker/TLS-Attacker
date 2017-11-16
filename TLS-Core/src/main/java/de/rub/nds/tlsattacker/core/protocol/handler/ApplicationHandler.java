@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
@@ -20,12 +21,14 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
 
     public ApplicationHandler(TlsContext tlsContext) {
@@ -49,10 +52,14 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public void adjustTLSContext(ApplicationMessage message) {
-        if(tlsContext.isUseEarlyTrafficSecret())
-        {
-            adjustEarlyTrafficSecret();
-            adjustRecordLayer0RTT();
+        if (tlsContext.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                adjustEarlyTrafficSecret();
+                adjustRecordLayerForEarlyData();
+            } else {
+                tlsContext.setExpectingEndOfEarlyData(true);
+                LOGGER.debug("Set ExpectingEndOfEarlyData to " + tlsContext.isExpectingEndOfEarlyData());
+            }
         }
         tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
         String readableAppData = ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
@@ -62,26 +69,33 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
             LOGGER.debug("Send Data:" + readableAppData);
         }
     }
-    
-    private void adjustRecordLayer0RTT()
-    {
-        LOGGER.debug("Setting up RecordLayer, to allow for EarlyData encryption");
-        tlsContext.setSelectedProtocolVersion(ProtocolVersion.TLS13); //Needed to avoid "Only supported for TLS 1.3" exception
-            
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, tlsContext.getEarlyDataCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
-        tlsContext.getRecordLayer().updateEncryptionCipher();
-        tlsContext.setEncryptActive(true);
+
+    private void adjustRecordLayerForEarlyData() {
+        try {
+            LOGGER.debug("Setting up RecordLayer, to allow for EarlyData encryption");
+
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13);
+            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
+                    tlsContext.getEarlyDataCipherSuite());
+            tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.setEncryptActive(true);
+            tlsContext.setWriteSequenceNumber(0); // Reset SQN after ClientHello
+
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(ApplicationHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
-    private void adjustEarlyTrafficSecret()
-    {
+
+    private void adjustEarlyTrafficSecret() {
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getEarlyDataCipherSuite());
-        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext.getEarlyDataCipherSuite());
-            
-        byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext.getEarlySecret(), HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());            
-        tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);        
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
+                tlsContext.getEarlyDataCipherSuite());
+
+        byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext
+                .getEarlySecret(), HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+        tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
+        LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
     }
 
 }

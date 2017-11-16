@@ -24,8 +24,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 /**
  * This handler processes the EncryptedExtension messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.3.1
- *
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class EncryptedExtensionsHandler extends HandshakeMessageHandler<EncryptedExtensionsMessage> {
 
@@ -57,17 +55,16 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
                 handler.adjustTLSContext(extension);
             }
         }
-        if(tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER)
-        {
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
             adjustRecordLayer();
         }
     }
-    
-    private void adjustRecordLayer()
-    {
+
+    private void adjustRecordLayer() {
         LOGGER.debug("Adjusting RecordLayer, to encrypt handshake messages");
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
+        tlsContext.setWriteSequenceNumber(0); // Reset after sending ServerHello
         tlsContext.setEncryptActive(true);
     }
 

@@ -16,8 +16,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EndOfEarlyDataMessage extends HandshakeMessage {
 

@@ -14,12 +14,11 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<PSKKeyExchangeModesExtensionMessage> {
 
     private final PSKKeyExchangeModesExtensionMessage msg;
+
     public PSKKeyExchangeModesExtensionPreparator(Chooser chooser, PSKKeyExchangeModesExtensionMessage message,
             ExtensionSerializer<PSKKeyExchangeModesExtensionMessage> serializer) {
         super(chooser, message, serializer);
@@ -32,22 +31,19 @@ public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<
         prepareListBytes();
         prepareListLength();
     }
-    
-    private void prepareListBytes()
-    {
+
+    private void prepareListBytes() {
         int length = chooser.getConfig().getPSKKeyExchangeModes().size();
         byte[] listBytes = new byte[length];
-        
-        for(int x = 0; x < length; x++)
-        {
+
+        for (int x = 0; x < length; x++) {
             listBytes[x] = chooser.getConfig().getPSKKeyExchangeModes().get(x).getValue();
         }
-        
+
         msg.setKeyExchangeModesListBytes(listBytes);
     }
-    
-    private void prepareListLength()
-    {
+
+    private void prepareListLength() {
         msg.setKeyExchangeModesListLength(msg.getKeyExchangeModesListBytes().getValue().length);
     }
 }

@@ -24,8 +24,6 @@ import org.apache.logging.log4j.Logger;
  * Computes message digest for two algorithms at once, typically for MD5 and
  * SHA1 for TLS 1.0. At the end it returns MD5(value) || SHA1(value). For TLS
  * 1.2 SHA256 is used, as described in the RFC.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class MessageDigestCollector {
 
@@ -54,11 +52,11 @@ public class MessageDigestCollector {
             MessageDigest hash1;
             MessageDigest hash2 = null;
             DigestAlgorithm algorithm = AlgorithmResolver.getDigestAlgorithm(version, suite);
-            if (algorithm == DigestAlgorithm.LEGACY) {
-
+            if (algorithm == DigestAlgorithm.SSL_DIGEST) {
+                throw new RuntimeException("Unsupported DigestAlgorithm SSL_DIGEST");
+            } else if (algorithm == DigestAlgorithm.LEGACY) {
                 hash1 = MessageDigest.getInstance("MD5");
                 hash2 = MessageDigest.getInstance("SHA-1");
-
             } else {
                 hash1 = MessageDigest.getInstance(algorithm.getJavaName());
             }

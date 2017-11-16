@@ -12,10 +12,6 @@ import java.math.BigInteger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class MathHelperTest {
 
     public MathHelperTest() {

@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.EndOfEarlyDataParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -16,17 +16,18 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.EndOfEarlyDataPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.EndOfEarlyDataSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDataMessage> {
 
@@ -51,27 +52,30 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
 
     @Override
     public void adjustTLSContext(EndOfEarlyDataMessage message) {
-        if(tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT)
-        {
-            adjustRecordLayer0RTT();
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            adjustRecordLayerForEndOfEarlyData();
         }
-        //recordLayer is being adjusted in RecordDecryptor, to decrypt ClientFinished
+        // recordLayer is being adjusted in RecordDecryptor, to decrypt
+        // ClientFinished
     }
-    
-    private void adjustRecordLayer0RTT()
-    {
-        LOGGER.debug("Adjusting recordCipher to encrypt EOED properly");
-        
-        tlsContext.setStoredSequenceNumberDec(((RecordAEADCipher)((TlsRecordLayer)tlsContext.getRecordLayer()).getRecordCipher()).getSequenceNumberDec());
-        tlsContext.setUseEarlyTrafficSecret(true);
-        
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, tlsContext.getEarlyDataCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
-        tlsContext.getRecordLayer().updateEncryptionCipher();
-        
-        ((RecordAEADCipher)recordCipher).setSequenceNumberEnc(1); //Sequence number has to be 1, as ClientHello was already encrypted using ETSecret
-        tlsContext.setEncryptedEndOfEarlyData(true);
+
+    private void adjustRecordLayerForEndOfEarlyData() {
+        try {
+            LOGGER.debug("Adjusting recordCipher to encrypt EOED properly");
+
+            tlsContext.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext);
+            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
+                    tlsContext.getEarlyDataCipherSuite());
+            tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.setWriteSequenceNumber(1); // 2nd message using
+                                                  // EarlySecret
+            tlsContext.setEncryptedEndOfEarlyData(true);
+
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(EndOfEarlyDataHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

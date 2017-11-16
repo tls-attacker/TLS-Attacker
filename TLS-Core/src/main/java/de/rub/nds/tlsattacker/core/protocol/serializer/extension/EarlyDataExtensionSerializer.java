@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtension
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EarlyDataExtensionSerializer extends ExtensionSerializer<EarlyDataExtensionMessage> {
 

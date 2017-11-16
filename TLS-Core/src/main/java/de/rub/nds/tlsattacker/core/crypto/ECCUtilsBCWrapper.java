@@ -17,22 +17,21 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
 import org.bouncycastle.math.ec.ECPoint;
 
-/**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class ECCUtilsBCWrapper {
 
     /**
      * Reads ECC domain parameters from an inputstream, based on given named
      * curves and point formats. It uses the BC functionality.
      *
-     * 
      * @param namedCurves
+     *            The Array of namedCurves
      * @param pointFormats
+     *            The Array of ECPointFormats
      * @param input
-     * @return
+     *            The Inputstream to read from
+     * @return ECDomainParameters
      * @throws IOException
+     *             If something goes wrong while reading from the Stream
      */
     public static ECDomainParameters readECParameters(NamedCurve[] namedCurves, ECPointFormat[] pointFormats,
             InputStream input) throws IOException {
@@ -46,8 +45,10 @@ public class ECCUtilsBCWrapper {
      * point formats are allowed
      * 
      * @param input
-     * @return
+     *            The Inputstream to read from
+     * @return ECDomainParameters
      * @throws IOException
+     *             If something goes wrong while reading from the Stream
      */
     public static ECDomainParameters readECParameters(InputStream input) throws IOException {
         NamedCurve[] namedCurves = NamedCurve.values();
@@ -61,8 +62,10 @@ public class ECCUtilsBCWrapper {
      * the input stream.
      * 
      * @param input
-     * @return
+     *            The InputStream to read from
+     * @return ECPublicKeyParameters
      * @throws IOException
+     *             If something goes wrong while reading from the Stream
      */
     public static ECPublicKeyParameters readECParametersWithPublicKey(InputStream input) throws IOException {
         ECDomainParameters domainParameters = readECParameters(input);
@@ -81,7 +84,8 @@ public class ECCUtilsBCWrapper {
      * Converts named curves into BC style notation
      * 
      * @param namedCurves
-     * @return
+     *            The NamedCurves to convert
+     * @return int[] of the NamedCurves in BC Style
      */
     public static int[] convertNamedCurves(NamedCurve[] namedCurves) {
         if (namedCurves == null || namedCurves.length == 0) {
@@ -98,7 +102,8 @@ public class ECCUtilsBCWrapper {
      * Converts point formats into BC style notation
      * 
      * @param pointFormats
-     * @return
+     *            The pointFormats to convert
+     * @return The converted PointFormats
      */
     public static short[] convertPointFormats(ECPointFormat[] pointFormats) {
         if (pointFormats == null || pointFormats.length == 0) {
@@ -116,9 +121,12 @@ public class ECCUtilsBCWrapper {
      * byte encoding information and ec coordinates
      * 
      * @param ecPointFormats
+     *            The EcPointFormats
      * @param point
-     * @return
+     *            The Point that should be converted
+     * @return The serialized ECPoint
      * @throws IOException
+     *             If something goes wrong during Serialisation
      */
     public static byte[] serializeECPoint(ECPointFormat[] ecPointFormats, ECPoint point) throws IOException {
         short[] pf = convertPointFormats(ecPointFormats);

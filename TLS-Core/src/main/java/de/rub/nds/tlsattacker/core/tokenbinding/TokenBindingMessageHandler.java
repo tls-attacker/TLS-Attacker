@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBindingMessage> {
 
     public TokenBindingMessageHandler(TlsContext tlsContext) {

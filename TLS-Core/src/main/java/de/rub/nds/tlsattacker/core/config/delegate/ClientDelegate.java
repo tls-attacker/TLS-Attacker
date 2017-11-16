@@ -13,10 +13,6 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ClientDelegate extends Delegate {
 
     @Parameter(names = "-connect", required = true, description = "who to connect to")

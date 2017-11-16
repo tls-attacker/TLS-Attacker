@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 
-/**
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class EndOfEarlyDataParser extends HandshakeMessageParser<EndOfEarlyDataMessage> {
 
     public EndOfEarlyDataParser(int pointer, byte[] array, ProtocolVersion version) {
@@ -25,7 +21,7 @@ public class EndOfEarlyDataParser extends HandshakeMessageParser<EndOfEarlyDataM
     @Override
     protected void parseHandshakeMessageContent(EndOfEarlyDataMessage msg) {
         LOGGER.debug("Parsing EndOfEarlyDataMessage");
-        //EndOfEarlyData is always empty
+        // EndOfEarlyData is always empty
     }
 
     @Override

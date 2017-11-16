@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.config.validators;
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.ParameterException;
 
-/**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class PercentageValidator implements IParameterValidator {
     @Override
     public void validate(String name, String value) throws ParameterException {

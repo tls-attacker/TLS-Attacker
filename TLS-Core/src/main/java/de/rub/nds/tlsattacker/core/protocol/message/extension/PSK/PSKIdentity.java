@@ -12,65 +12,51 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
-/**
- * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class PSKIdentity {
-    
+
     private ModifiableInteger identityLength;
-    
+
     private ModifiableByteArray identity;
     private ModifiableByteArray obfuscatedTicketAge;
-    
-    public PSKIdentity()
-    {
-        
+
+    public PSKIdentity() {
+
     }
-    
-    public void setIdentity(ModifiableByteArray identity)
-    {
-        this.identity = identity;   
+
+    public void setIdentity(ModifiableByteArray identity) {
+        this.identity = identity;
     }
-    
-    public void setIdentity(byte[] identity)
-    {
+
+    public void setIdentity(byte[] identity) {
         this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
     }
-    
-    public ModifiableByteArray getIdentity()
-    {
+
+    public ModifiableByteArray getIdentity() {
         return identity;
     }
-    
-    public void setObfuscatedTicketAge(ModifiableByteArray obfuscatedTicketAge)
-    {
+
+    public void setObfuscatedTicketAge(ModifiableByteArray obfuscatedTicketAge) {
         this.obfuscatedTicketAge = obfuscatedTicketAge;
     }
-    
-    public void setObfuscatedTicketAge(byte[] obfuscatedTicketAge)
-    {
-        this.obfuscatedTicketAge = ModifiableVariableFactory.safelySetValue(this.obfuscatedTicketAge, obfuscatedTicketAge);
+
+    public void setObfuscatedTicketAge(byte[] obfuscatedTicketAge) {
+        this.obfuscatedTicketAge = ModifiableVariableFactory.safelySetValue(this.obfuscatedTicketAge,
+                obfuscatedTicketAge);
     }
-    
-    public ModifiableByteArray getObfuscatedTicketAge()
-    {
+
+    public ModifiableByteArray getObfuscatedTicketAge() {
         return obfuscatedTicketAge;
     }
-    
-    public ModifiableInteger getIdentityLength()
-    {
+
+    public ModifiableInteger getIdentityLength() {
         return identityLength;
     }
-    
-    public void setIdentityLength(ModifiableInteger identityLength)
-    {
+
+    public void setIdentityLength(ModifiableInteger identityLength) {
         this.identityLength = identityLength;
     }
-    
-    public void setIdentityLength(int identityLength)
-    {
+
+    public void setIdentityLength(int identityLength) {
         this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
     }
 }

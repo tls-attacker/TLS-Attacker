@@ -15,9 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 
 /**
  * Parser class for ServerHelloMessages
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
 
@@ -30,7 +27,7 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
      * @param array
      *            The byte[] which the ServerHellorParser is supposed to parse
      * @param version
-     *
+     *            The Version for which this message should be parsed
      */
     public ServerHelloParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SERVER_HELLO, version);

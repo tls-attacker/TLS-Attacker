@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AttackDelegate extends Delegate {
 
     @Parameter(names = "-executeAttack", description = "If this value is set the Attack is not only Tested, but also executed (WARNING)")

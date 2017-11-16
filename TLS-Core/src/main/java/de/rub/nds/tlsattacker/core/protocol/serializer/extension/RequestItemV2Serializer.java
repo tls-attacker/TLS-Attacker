@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusr
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RequestItemV2Serializer extends Serializer<RequestItemV2> {
 
     private final RequestItemV2 reqItem;

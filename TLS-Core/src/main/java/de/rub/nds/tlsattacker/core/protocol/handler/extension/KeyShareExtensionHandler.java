@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -34,8 +35,6 @@ import javax.crypto.Mac;
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
  * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
- *
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 
@@ -87,7 +86,10 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
         try {
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] psk = (context.getChooser().getPsk() != null)? context.getChooser().getPsk() : new byte[macLength]; //use PSK if available
+            byte[] psk = (context.getChooser().getPsk() != null) ? context.getChooser().getPsk() : new byte[macLength]; // use
+                                                                                                                        // PSK
+                                                                                                                        // if
+                                                                                                                        // available
             byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
@@ -124,6 +126,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
                     + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
+            context.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+            LOGGER.debug("Set activeKeySetType in Context to " + context.getActiveKeySetType());
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }

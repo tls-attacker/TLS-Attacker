@@ -13,16 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-/**
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class PSKIdentityParser extends Parser<PSKIdentity> {
-    
+
     public PSKIdentityParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-    
+
     @Override
     public PSKIdentity parse() {
         LOGGER.debug("Parsing PSKIdentity");
@@ -32,23 +28,21 @@ public class PSKIdentityParser extends Parser<PSKIdentity> {
         parseObfuscatedTicketAge(pskIdentity);
         return pskIdentity;
     }
-    
-    private void parseIdentityLength(PSKIdentity pskIdentity)
-    {
+
+    private void parseIdentityLength(PSKIdentity pskIdentity) {
         pskIdentity.setIdentityLength(parseIntField(ExtensionByteLength.PSK_IDENTITY_LENGTH));
         LOGGER.debug("Identity length:" + pskIdentity.getIdentityLength().getValue());
     }
-    
-    private void parseIdentity(PSKIdentity pskIdentity)
-    {
+
+    private void parseIdentity(PSKIdentity pskIdentity) {
         pskIdentity.setIdentity(parseByteArrayField(pskIdentity.getIdentityLength().getValue()));
         LOGGER.debug("Identity:" + ArrayConverter.bytesToHexString(pskIdentity.getIdentity().getValue()));
     }
-    
-    private void parseObfuscatedTicketAge(PSKIdentity pskIdentity)
-    {
+
+    private void parseObfuscatedTicketAge(PSKIdentity pskIdentity) {
         pskIdentity.setObfuscatedTicketAge(parseByteArrayField(ExtensionByteLength.TICKET_AGE_LENGTH));
-        LOGGER.debug("Obfuscated ticket age:" + ArrayConverter.bytesToHexString(pskIdentity.getObfuscatedTicketAge().getValue()));
+        LOGGER.debug("Obfuscated ticket age:"
+                + ArrayConverter.bytesToHexString(pskIdentity.getObfuscatedTicketAge().getValue()));
     }
-    
+
 }

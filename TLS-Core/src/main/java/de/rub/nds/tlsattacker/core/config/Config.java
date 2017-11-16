@@ -66,12 +66,6 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Config implements Serializable {
@@ -292,9 +286,9 @@ public class Config implements Serializable {
     private byte[] certificateStatusRequestExtensionRequestExtension = new byte[0];
 
     /**
-     * Default ALPN announced protocols It's HTTP/2 0x68 0x32 as of RFC7540
+     * Default ALPN announced protocols
      */
-    private String applicationLayerProtocolNegotiationAnnouncedProtocols = "h2";
+    private String[] alpnAnnouncedProtocols = new String[] { "h2" };
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -579,27 +573,25 @@ public class Config implements Serializable {
      * workflowTrace
      */
     private Boolean updateTimestamps = true;
-    
+
     /**
      * PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption)
      */
     List<PskKeyExchangeMode> pskKeyExchangeModes;
-    
+
     private byte[] psk;
- 
+
     /**
      * Contains all values related to TLS 1.3 PSKs
      */
     private List<PskSet> PskSets;
-    
+
     /**
      * Early Data
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] earlyData = ArrayConverter
-            .hexStringToByteArray("544c532d41747461636b65720a");
-    
-    
+    private byte[] earlyData = ArrayConverter.hexStringToByteArray("544c532d41747461636b65720a");
+
     /**
      * The Certificate we initialize CertificateMessages with
      */
@@ -834,6 +826,10 @@ public class Config implements Serializable {
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
     private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
+
+    private byte[] defaultClientApplicationTrafficSecret = new byte[0];
+
+    private byte[] defaultServerApplicationTrafficSecret = new byte[0];
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
@@ -1986,14 +1982,12 @@ public class Config implements Serializable {
     public void setAddPreSharedKeyExtension(boolean addPreSharedKeyExtension) {
         this.addPreSharedKeyExtension = addPreSharedKeyExtension;
     }
-    
-    public void setPSKKeyExchangeModes(List<PskKeyExchangeMode> pskKeyExchangeModes)
-    {
+
+    public void setPSKKeyExchangeModes(List<PskKeyExchangeMode> pskKeyExchangeModes) {
         this.pskKeyExchangeModes = pskKeyExchangeModes;
     }
-    
-    public List<PskKeyExchangeMode> getPSKKeyExchangeModes()
-    {
+
+    public List<PskKeyExchangeMode> getPSKKeyExchangeModes() {
         return pskKeyExchangeModes;
     }
 
@@ -2120,13 +2114,12 @@ public class Config implements Serializable {
         this.certificateStatusRequestExtensionRequestExtension = certificateStatusRequestExtensionRequestExtension;
     }
 
-    public String getApplicationLayerProtocolNegotiationAnnouncedProtocols() {
-        return applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public String[] getAlpnAnnouncedProtocols() {
+        return alpnAnnouncedProtocols;
     }
 
-    public void setApplicationLayerProtocolNegotiationAnnouncedProtocols(
-            String applicationLayerProtocolNegotiationAnnouncedProtocols) {
-        this.applicationLayerProtocolNegotiationAnnouncedProtocols = applicationLayerProtocolNegotiationAnnouncedProtocols;
+    public void setAlpnAnnouncedProtocols(String[] alpnAnnouncedProtocols) {
+        this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
     }
 
     public byte[] getSessionId() {
@@ -2451,6 +2444,21 @@ public class Config implements Serializable {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 
+    public byte[] getDefaultClientApplicationTrafficSecret() {
+        return defaultClientApplicationTrafficSecret;
+    }
+
+    public void setDefaultClientApplicationTrafficSecret(byte[] defaultClientApplicationTrafficSecret) {
+        this.defaultClientApplicationTrafficSecret = defaultClientApplicationTrafficSecret;
+    }
+
+    public byte[] getDefaultServerApplicationTrafficSecret() {
+        return defaultServerApplicationTrafficSecret;
+    }
+
+    public void setDefaultServerApplicationTrafficSecret(byte[] defaultServerApplicationTrafficSecret) {
+        this.defaultServerApplicationTrafficSecret = defaultServerApplicationTrafficSecret;
+    }
 
     /**
      * @return the earlyData
@@ -2460,7 +2468,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param earlyData the earlyData to set
+     * @param earlyData
+     *            the earlyData to set
      */
     public void setEarlyData(byte[] earlyData) {
         this.earlyData = earlyData;
@@ -2474,7 +2483,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param PskSets the PskSets to set
+     * @param PskSets
+     *            the PskSets to set
      */
     public void setPskSets(List<PskSet> PskSets) {
         this.PskSets = PskSets;
@@ -2488,7 +2498,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param psk the psk to set
+     * @param psk
+     *            the psk to set
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;

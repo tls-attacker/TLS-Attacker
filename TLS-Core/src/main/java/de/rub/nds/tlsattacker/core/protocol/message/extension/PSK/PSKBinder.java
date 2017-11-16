@@ -12,49 +12,36 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
-/**
- * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class PSKBinder {
-    
+
     private ModifiableInteger binderEntryLength;
     private ModifiableByteArray binderEntry;
-    
-    public PSKBinder()
-    {
+
+    public PSKBinder() {
     }
-    
-    public void setBinderEntry(ModifiableByteArray binderEntry)
-    {
+
+    public void setBinderEntry(ModifiableByteArray binderEntry) {
         this.binderEntry = binderEntry;
     }
-    
-    public void setBinderEntry(byte[] binderEntry)
-    {
+
+    public void setBinderEntry(byte[] binderEntry) {
         this.binderEntry = ModifiableVariableFactory.safelySetValue(this.binderEntry, binderEntry);
     }
-    
-    public ModifiableByteArray getBinderEntry()
-    {
+
+    public ModifiableByteArray getBinderEntry() {
         return binderEntry;
     }
-    
-    public void setBinderEntryLength(ModifiableInteger binderEntryLength)
-    {
+
+    public void setBinderEntryLength(ModifiableInteger binderEntryLength) {
         this.binderEntryLength = binderEntryLength;
     }
-    
-    public void setBinderEntryLength(int binderEntryLength)
-    {
+
+    public void setBinderEntryLength(int binderEntryLength) {
         this.binderEntryLength = ModifiableVariableFactory.safelySetValue(this.binderEntryLength, binderEntryLength);
     }
-    
-    public ModifiableInteger getBinderEntryLength()
-    {
+
+    public ModifiableInteger getBinderEntryLength() {
         return binderEntryLength;
     }
-    
-    
+
 }

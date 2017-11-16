@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -19,9 +20,6 @@ import java.math.BigInteger;
 /**
  * The cleanrecordbytes should be set when the record preparator received the
  * record
- *
- * @author Robert Merget <robert.merget@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordPreparator extends AbstractRecordPreparator<Record> {
 
@@ -40,7 +38,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         prepareContentType(record);
         prepareProtocolVersion(record);
         prepareSequenceNumber(record);
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getContext().getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             preparePaddingLength(record);
         }
         encryptor.encrypt(record);
@@ -48,7 +47,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareContentType(Record record) {
-        if (chooser.getSelectedProtocolVersion().isTLS13() && chooser.getContext().isEncryptActive()) {
+        if ((chooser.getSelectedProtocolVersion().isTLS13() || chooser.getContext().getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
+                && chooser.getContext().isEncryptActive()) {
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
             record.setContentType(type.getValue());
@@ -58,7 +58,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareProtocolVersion(Record record) {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getContext().getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());
@@ -67,7 +68,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareSequenceNumber(Record record) {
-        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getSequenceNumber()));
+        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
         LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
     }
 

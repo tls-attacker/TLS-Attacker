@@ -19,40 +19,34 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-/**
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
-    
+
     private final PSKIdentity pskIdentity;
     private final PskSet pskSet;
-    
+
     public PSKIdentityPreparator(Chooser chooser, PSKIdentity pskIdentity, PskSet pskSet) {
         super(chooser, pskIdentity);
         this.pskIdentity = pskIdentity;
         this.pskSet = pskSet;
     }
+
     @Override
     public void prepare() {
         LOGGER.debug("Preparing PSK identity");
         prepareIdentity();
         prepareObfuscatedTicketAge();
     }
-    
-    private void prepareIdentity()
-    {
+
+    private void prepareIdentity() {
         pskIdentity.setIdentity(pskSet.getPreSharedKeyIdentity());
         pskIdentity.setIdentityLength(pskIdentity.getIdentity().getValue().length);
     }
-    
-    private void prepareObfuscatedTicketAge()
-    {
+
+    private void prepareObfuscatedTicketAge() {
         pskIdentity.setObfuscatedTicketAge(getObfuscatedTicketAge(pskSet.getTicketAgeAdd(), pskSet.getTicketAge()));
     }
-    
-    private byte[] getObfuscatedTicketAge(byte[] ticketAgeAdd, String ticketAge)
-    {
+
+    private byte[] getObfuscatedTicketAge(byte[] ticketAgeAdd, String ticketAge) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime ticketDate = LocalDateTime.parse(ticketAge, dateTimeFormatter);
         BigInteger difference = BigInteger.valueOf(Duration.between(ticketDate, LocalDateTime.now()).toMillis());
@@ -61,9 +55,9 @@ public class PSKIdentityPreparator extends Preparator<PSKIdentity> {
         difference = difference.add(addValue);
         difference = difference.mod(mod);
         byte[] obfTicketAge = ArrayConverter.longToBytes(difference.longValue(), ExtensionByteLength.TICKET_AGE_LENGTH);
-        
+
         LOGGER.debug("Calculated ObfuscatedTicketAge: " + ArrayConverter.bytesToHexString(obfTicketAge));
         return obfTicketAge;
     }
-    
+
 }

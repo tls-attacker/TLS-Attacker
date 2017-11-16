@@ -21,8 +21,6 @@ import java.util.LinkedList;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKeyExchangeModesExtensionMessage> {
 
@@ -47,17 +45,14 @@ public class PSKKeyExchangeModesExtensionHandler extends ExtensionHandler<PSKKey
 
     @Override
     public void adjustTLSExtensionContext(PSKKeyExchangeModesExtensionMessage message) {
-        if(message.getKeyExchangeModesListBytes() != null)
-        {
+        if (message.getKeyExchangeModesListBytes() != null) {
             adjustKeyExchangeModes(message);
         }
     }
-    
-    private void adjustKeyExchangeModes(PSKKeyExchangeModesExtensionMessage message)
-    {
+
+    private void adjustKeyExchangeModes(PSKKeyExchangeModesExtensionMessage message) {
         context.setClientPskKeyExchangeModes(new LinkedList<PskKeyExchangeMode>());
-        for(byte exchangeModeByte : message.getKeyExchangeModesListBytes().getValue())
-        {
+        for (byte exchangeModeByte : message.getKeyExchangeModesListBytes().getValue()) {
             PskKeyExchangeMode mode = PskKeyExchangeMode.getExchangeMode(exchangeModeByte);
             context.getClientPskKeyExchangeModes().add(mode);
         }

@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class PreparationException extends RuntimeException {
 
     public PreparationException() {

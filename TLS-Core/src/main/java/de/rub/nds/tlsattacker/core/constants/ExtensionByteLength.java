@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class ExtensionByteLength {
 
     /**
@@ -144,6 +141,8 @@ public class ExtensionByteLength {
      * Length of the application layer protocol extension length field
      */
     public static final int ALPN_EXTENSION_LENGTH = 2;
+
+    public static final int ALPN_ENTRY_LENGTH = 1;
 
     /**
      * Length of the SRP extension identifier length field

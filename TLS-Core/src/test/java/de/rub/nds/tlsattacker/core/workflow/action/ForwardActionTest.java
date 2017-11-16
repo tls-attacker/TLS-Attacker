@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -46,10 +47,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class ForwardActionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ForwardActionTest.class);
@@ -88,17 +85,19 @@ public class ForwardActionTest {
         th.setFetchableByte(alertMsg);
         ctx1.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         ctx1.setRecordLayer(new TlsRecordLayer(ctx1));
-        ctx1.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx1));
+        ctx1.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx1, KeySetGenerator.generateKeySet(ctx1)));
         ctx1.setTransportHandler(th);
 
         ctx2.setSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         ctx2.setRecordLayer(new TlsRecordLayer(ctx2));
-        ctx2.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx2));
+        ctx2.getRecordLayer().setRecordCipher(new RecordBlockCipher(ctx2, KeySetGenerator.generateKeySet(ctx2)));
         ctx2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
     /**
      * Test normal execution.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecute() throws Exception {
@@ -114,6 +113,8 @@ public class ForwardActionTest {
 
     /**
      * Test execution attempts with missing aliases.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecuteMissingAliases() throws Exception {

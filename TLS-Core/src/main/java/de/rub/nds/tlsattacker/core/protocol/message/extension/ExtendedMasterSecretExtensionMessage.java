@@ -11,12 +11,11 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
- * This is the extended_master_secret message. There is no need for any data,
- * the presence of this extension is enough.
+ * This is the extended_master_secret message.
+ * 
+ * There is no need for any data, the presence of this extension is enough.
  * 
  * This extension is defined in RFC7627
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class ExtendedMasterSecretExtensionMessage extends ExtensionMessage {
 

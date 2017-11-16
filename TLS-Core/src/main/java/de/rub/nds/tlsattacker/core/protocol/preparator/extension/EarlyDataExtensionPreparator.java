@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EarlyDataExtensionPreparator extends ExtensionPreparator<EarlyDataExtensionMessage> {
 
@@ -27,7 +25,7 @@ public class EarlyDataExtensionPreparator extends ExtensionPreparator<EarlyDataE
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing EarlyDataExtensionMessage");
-        //Empty in 0-RTT-Messages
+        // Empty in 0-RTT-Messages
     }
 
 }

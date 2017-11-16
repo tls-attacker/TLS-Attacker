@@ -31,10 +31,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class TlsRecordLayer extends RecordLayer {
 
     protected final TlsContext tlsContext;
@@ -46,14 +42,14 @@ public class TlsRecordLayer extends RecordLayer {
 
     public TlsRecordLayer(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        cipher = new RecordNullCipher();
+        cipher = new RecordNullCipher(tlsContext);
         encryptor = new RecordEncryptor(cipher, tlsContext);
         decryptor = new RecordDecryptor(cipher, tlsContext);
     }
 
     /**
-     *
      * @param rawRecordData
+     *            The RawRecordData that should be parsed
      * @return list of parsed records or null, if there was not enough data
      */
     @Override
@@ -131,9 +127,8 @@ public class TlsRecordLayer extends RecordLayer {
     public void setRecordCipher(RecordCipher cipher) {
         this.cipher = cipher;
     }
-    
-    public RecordCipher getRecordCipher()
-    {
+
+    public RecordCipher getRecordCipher() {
         return cipher;
     }
 

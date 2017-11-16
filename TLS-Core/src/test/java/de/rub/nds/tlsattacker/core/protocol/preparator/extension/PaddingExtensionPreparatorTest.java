@@ -17,10 +17,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class PaddingExtensionPreparatorTest {
 
     private final int extensionLength = 6;

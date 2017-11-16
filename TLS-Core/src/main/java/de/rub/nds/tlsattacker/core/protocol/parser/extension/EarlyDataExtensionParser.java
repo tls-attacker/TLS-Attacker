@@ -13,8 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtension
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtensionMessage> {
 
@@ -25,8 +23,7 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
     @Override
     public void parseExtensionMessageContent(EarlyDataExtensionMessage msg) {
         LOGGER.debug("Parsing EarlyDataExtensionMessage");
-        if(msg.getExtensionLength().getValue() > 0) 
-        {
+        if (msg.getExtensionLength().getValue() > 0) {
             parseMaxEarlyDataSize(msg);
         }
     }
@@ -35,9 +32,8 @@ public class EarlyDataExtensionParser extends ExtensionParser<EarlyDataExtension
     protected EarlyDataExtensionMessage createExtensionMessage() {
         return new EarlyDataExtensionMessage();
     }
-    
-    private void parseMaxEarlyDataSize(EarlyDataExtensionMessage msg)
-    {
+
+    private void parseMaxEarlyDataSize(EarlyDataExtensionMessage msg) {
         msg.setMaxEarlyDataSize(parseIntField(ExtensionByteLength.MAX_EARLY_DATA_SIZE_LENGTH));
         LOGGER.debug("MaxEarlyDataSize: " + msg.getMaxEarlyDataSize().getValue());
     }

@@ -13,16 +13,12 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-/**
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class PSKBinderParser extends Parser<PSKBinder> {
-    
+
     public PSKBinderParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-    
+
     @Override
     public PSKBinder parse() {
         LOGGER.debug("Parsing PSKBinder");
@@ -31,17 +27,15 @@ public class PSKBinderParser extends Parser<PSKBinder> {
         parseBinderEntry(pskBinder);
         return pskBinder;
     }
-    
-    private void parseBinderLength(PSKBinder pskBinder)
-    {
+
+    private void parseBinderLength(PSKBinder pskBinder) {
         pskBinder.setBinderEntryLength(parseIntField(ExtensionByteLength.PSK_BINDER_LENGTH));
         LOGGER.debug("Binder length:" + pskBinder.getBinderEntryLength().getValue());
     }
-    
-    private void parseBinderEntry(PSKBinder pskBinder)
-    {
+
+    private void parseBinderEntry(PSKBinder pskBinder) {
         pskBinder.setBinderEntry(parseByteArrayField(pskBinder.getBinderEntryLength().getValue()));
         LOGGER.debug("Parsed binder:" + ArrayConverter.bytesToHexString(pskBinder.getBinderEntry().getValue()));
     }
-    
+
 }

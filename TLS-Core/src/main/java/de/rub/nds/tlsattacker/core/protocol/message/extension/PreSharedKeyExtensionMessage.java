@@ -19,78 +19,65 @@ import java.util.List;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PreSharedKeyExtensionMessage extends ExtensionMessage {
-    
+
     private ModifiableInteger identityListLength;
     private ModifiableInteger binderListLength;
-    
+
     private ModifiableByteArray identityListBytes;
     private ModifiableByteArray binderListBytes;
-    
+
     @HoldsModifiableVariable
     private List<PSKIdentity> identities;
     @HoldsModifiableVariable
     private List<PSKBinder> binders;
-    
+
     private ModifiableInteger selectedIdentity;
-    
+
     public PreSharedKeyExtensionMessage() {
         super(ExtensionType.PRE_SHARED_KEY);
     }
-    
-    public List<PSKIdentity> getIdentities()
-    {
+
+    public List<PSKIdentity> getIdentities() {
         return identities;
     }
-    
-    public void setIdentities(List<PSKIdentity> identities)
-    {
+
+    public void setIdentities(List<PSKIdentity> identities) {
         this.identities = identities;
     }
-    
-    public List<PSKBinder> getBinders()
-    {
+
+    public List<PSKBinder> getBinders() {
         return binders;
     }
-    
-    public void setBinders(List<PSKBinder> binders)
-    {
+
+    public void setBinders(List<PSKBinder> binders) {
         this.binders = binders;
     }
-    
-    public ModifiableInteger getIdentityListLength()
-    {
+
+    public ModifiableInteger getIdentityListLength() {
         return identityListLength;
     }
-    
-    public void setIdentityListLength(int identityListLength)
-    {
+
+    public void setIdentityListLength(int identityListLength) {
         this.identityListLength = ModifiableVariableFactory.safelySetValue(this.identityListLength, identityListLength);
     }
-    
-    public void setIdentityListLength(ModifiableInteger identityListLength)
-    {
+
+    public void setIdentityListLength(ModifiableInteger identityListLength) {
         this.identityListLength = identityListLength;
     }
-    
-    public ModifiableInteger getBinderListLength()
-    {
+
+    public ModifiableInteger getBinderListLength() {
         return binderListLength;
     }
-    
-    public void setBinderListLength(int binderListLength)
-    {
+
+    public void setBinderListLength(int binderListLength) {
         this.binderListLength = ModifiableVariableFactory.safelySetValue(this.binderListLength, binderListLength);
     }
-    
-    public void setBinderListLength(ModifiableInteger binderListLength)
-    {
+
+    public void setBinderListLength(ModifiableInteger binderListLength) {
         this.binderListLength = binderListLength;
     }
-
 
     /**
      * @return the selectedIdentity
@@ -100,12 +87,13 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
     }
 
     /**
-     * @param selectedIdentity the selectedIdentity to set
+     * @param selectedIdentity
+     *            the selectedIdentity to set
      */
     public void setSelectedIdentity(ModifiableInteger selectedIdentity) {
         this.selectedIdentity = selectedIdentity;
     }
-    
+
     public void setSelectedIdentity(int selectedIdentity) {
         this.selectedIdentity = ModifiableVariableFactory.safelySetValue(this.selectedIdentity, selectedIdentity);
     }
@@ -118,14 +106,14 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
     }
 
     /**
-     * @param identityListBytes the identityListBytes to set
+     * @param identityListBytes
+     *            the identityListBytes to set
      */
     public void setIdentityListBytes(ModifiableByteArray identityListBytes) {
         this.identityListBytes = identityListBytes;
     }
-    
-    public void setIdentityListBytes(byte[] identityListBytes)
-    {
+
+    public void setIdentityListBytes(byte[] identityListBytes) {
         this.identityListBytes = ModifiableVariableFactory.safelySetValue(this.identityListBytes, identityListBytes);
     }
 
@@ -137,13 +125,14 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
     }
 
     /**
-     * @param binderListBytes the binderListBytes to set
+     * @param binderListBytes
+     *            the binderListBytes to set
      */
     public void setBinderListBytes(ModifiableByteArray binderListBytes) {
         this.binderListBytes = binderListBytes;
     }
-    
+
     public void setBinderListBytes(byte[] binderListBytes) {
         this.binderListBytes = ModifiableVariableFactory.safelySetValue(this.binderListBytes, binderListBytes);
-    }        
+    }
 }

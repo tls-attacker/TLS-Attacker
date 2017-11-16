@@ -10,10 +10,13 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
@@ -21,15 +24,13 @@ import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class SendMessageHelper {
 
     protected static final Logger LOGGER = LogManager.getLogger(SendMessageHelper.class.getName());
@@ -56,7 +57,7 @@ public class SendMessageHelper {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
                 if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
                     context.getRecordLayer().updateEncryptionCipher();
-                    context.setSequenceNumber(0);
+                    context.setWriteSequenceNumber(0);
                 }
             }
             lastType = message.getProtocolMessageType();
@@ -68,18 +69,21 @@ public class SendMessageHelper {
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
             }
-            if (context.getChooser().getSelectedProtocolVersion().isTLS13() && context.isUpdateKeys() == true) {
+            if (context.getChooser().getSelectedProtocolVersion().isTLS13()
+                    && context.getActiveKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+                KeySet keySet = getKeySet(context);
                 LOGGER.debug("Setting new Cipher in RecordLayer");
-                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
+                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet);
                 context.getRecordLayer().setRecordCipher(recordCipher);
                 context.getRecordLayer().updateDecryptionCipher();
                 context.getRecordLayer().updateEncryptionCipher();
-                context.setSequenceNumber(0);
+                context.setWriteSequenceNumber(0);
+                context.setReadSequenceNumber(0);
             }
         }
         if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
             context.getRecordLayer().updateEncryptionCipher();
-            context.setSequenceNumber(0);
+            context.setWriteSequenceNumber(0);
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
         sendData(messageBytesCollector, context);
@@ -100,19 +104,28 @@ public class SendMessageHelper {
                 current++;
             }
         }
-        if(context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER && context.getSelectedProtocolVersion().isTLS13())
-        {
-            for(ProtocolMessage message : messages)
-            {
-                if(message instanceof FinishedMessage && context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER)
-                {
-                    //Switch RecordLayer secrets to prepare for EndOfEarlyData
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
+                && context.getSelectedProtocolVersion().isTLS13()) {
+            for (ProtocolMessage message : messages) {
+                if (message instanceof FinishedMessage
+                        && context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+                    // Switch RecordLayer secrets to prepare for EndOfEarlyData
                     adjustRecordCipherAfterServerFinished(context);
                     break;
                 }
             }
         }
         return new MessageActionResult(records, messages);
+    }
+
+    private KeySet getKeySet(TlsContext context) {
+        try {
+            LOGGER.debug("Generating new KeySet");
+            KeySet keySet = KeySetGenerator.generateKeySet(context);
+            return keySet;
+        } catch (NoSuchAlgorithmException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+        }
     }
 
     private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
@@ -170,22 +183,22 @@ public class SendMessageHelper {
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;
     }
-    
-        
-    private void adjustRecordCipherAfterServerFinished(TlsContext context)
-    {
-        LOGGER.debug("Adjusting recordCipher after encrypting Hanshake messages");   
-        context.setUseEarlyTrafficSecret(true);
-        if(context.getRecordLayer() instanceof TlsRecordLayer && ((TlsRecordLayer)context.getRecordLayer()).getRecordCipher() instanceof RecordAEADCipher)
-        {
-            context.setStoredSequenceNumberEnc(((RecordAEADCipher)((TlsRecordLayer)context.getRecordLayer()).getRecordCipher()).getSequenceNumberEnc());
+
+    private void adjustRecordCipherAfterServerFinished(TlsContext context) {
+        try {
+            LOGGER.debug("Adjusting recordCipher after encrypting Hanshake messages");
+            context.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+
+            KeySet keySet = KeySetGenerator.generateKeySet(context);
+            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet,
+                    context.getEarlyDataCipherSuite());
+            context.getRecordLayer().setRecordCipher(recordCipher);
+            context.getRecordLayer().updateDecryptionCipher();
+
+            // Restore the correct SequenceNumber
+            context.setReadSequenceNumber(1);
+        } catch (NoSuchAlgorithmException ex) {
+            java.util.logging.Logger.getLogger(SendMessageHelper.class.getName()).log(Level.SEVERE, null, ex);
         }
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, context.getEarlyDataCipherSuite());
-        context.getRecordLayer().setRecordCipher(recordCipher);
-        context.getRecordLayer().updateDecryptionCipher();
-        context.getRecordLayer().updateEncryptionCipher();
-        
-        //Restore the correct SequenceNumber
-        ((RecordAEADCipher)recordCipher).setSequenceNumberDec(1);
     }
 }

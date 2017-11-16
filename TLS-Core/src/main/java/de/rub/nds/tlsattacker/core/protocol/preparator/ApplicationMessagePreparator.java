@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ApplicationMessagePreparator extends ProtocolMessagePreparator<ApplicationMessage> {
 
     private final ApplicationMessage msg;
@@ -39,5 +35,5 @@ public class ApplicationMessagePreparator extends ProtocolMessagePreparator<Appl
         }
         LOGGER.debug("Data: " + ArrayConverter.bytesToHexString(msg.getData().getValue()));
     }
-    
+
 }

@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  * Configuration exception
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class FatalAertMessageException extends RuntimeException {
 

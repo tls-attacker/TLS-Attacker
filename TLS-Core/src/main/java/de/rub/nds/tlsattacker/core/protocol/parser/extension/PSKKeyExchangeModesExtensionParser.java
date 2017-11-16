@@ -14,8 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeMode
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyExchangeModesExtensionMessage> {
 
@@ -34,18 +32,16 @@ public class PSKKeyExchangeModesExtensionParser extends ExtensionParser<PSKKeyEx
     protected PSKKeyExchangeModesExtensionMessage createExtensionMessage() {
         return new PSKKeyExchangeModesExtensionMessage();
     }
-    
-    private void parseExchangeModesListLength(PSKKeyExchangeModesExtensionMessage msg)
-    {
-       msg.setKeyExchangeModesListLength(parseIntField(ExtensionByteLength.PSK_KEY_EXCHANGE_MODES_LENGTH));
-       LOGGER.debug("PSKKexModesList length:" + msg.getKeyExchangeModesListLength().getValue());
-    }
-    
-    private void parseExchangeModesBytes(PSKKeyExchangeModesExtensionMessage msg)
-    {
-       msg.setKeyExchangeModesListBytes(parseByteArrayField(msg.getKeyExchangeModesListLength().getValue()));
-       LOGGER.debug("PSKKexModesList bytes:" + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
+
+    private void parseExchangeModesListLength(PSKKeyExchangeModesExtensionMessage msg) {
+        msg.setKeyExchangeModesListLength(parseIntField(ExtensionByteLength.PSK_KEY_EXCHANGE_MODES_LENGTH));
+        LOGGER.debug("PSKKexModesList length:" + msg.getKeyExchangeModesListLength().getValue());
     }
 
+    private void parseExchangeModesBytes(PSKKeyExchangeModesExtensionMessage msg) {
+        msg.setKeyExchangeModesListBytes(parseByteArrayField(msg.getKeyExchangeModesListLength().getValue()));
+        LOGGER.debug("PSKKexModesList bytes:"
+                + ArrayConverter.bytesToHexString(msg.getKeyExchangeModesListBytes().getValue()));
+    }
 
 }

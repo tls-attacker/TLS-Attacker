@@ -60,11 +60,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Create a WorkflowTace based on a Config instance.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class WorkflowConfigurationFactory {
 
@@ -117,6 +112,8 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the default connection end defined in config.
+     * 
+     * @return A HelloWorkflow
      */
     public WorkflowTrace createHelloWorkflow() {
         return createHelloWorkflow(getSafeSingleContextConnectionEnd());
@@ -197,6 +194,8 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a handshake workflow for the default connection end defined in
      * config.
+     * 
+     * @return A HandshakeWorkflow
      */
     public WorkflowTrace createHandshakeWorkflow() {
         return createHandshakeWorkflow(getSafeSingleContextConnectionEnd());
@@ -243,7 +242,7 @@ public class WorkflowConfigurationFactory {
      * Creates an extended TLS workflow including an application data and
      * heartbeat messages
      *
-     * @return
+     * @return A FullWorkflow with ApplicationMessages
      */
     public WorkflowTrace createFullWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
@@ -444,55 +443,52 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createZeroRttWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
         WorkflowTrace trace = new WorkflowTrace(config);
-        
-        if(ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT)
-        {
-            List<ProtocolMessage> serverMessages = new LinkedList<>();
-            List<ProtocolMessage> clientMessages = new LinkedList<>();
 
-            ApplicationMessage earlyDataMsg = new ApplicationMessage(config);
+        List<ProtocolMessage> clientHelloMessages = new LinkedList<>();
+        List<ProtocolMessage> serverMessages = new LinkedList<>();
+        List<ProtocolMessage> clientMessages = new LinkedList<>();
+
+        ClientHelloMessage clientHello;
+        ApplicationMessage earlyDataMsg;
+
+        if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            clientHello = new ClientHelloMessage(config);
+            earlyDataMsg = new ApplicationMessage(config);
             earlyDataMsg.setDataConfig(config.getEarlyData());
-        
-            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-            new ClientHelloMessage(config)));
-            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-            earlyDataMsg));
-            
-            serverMessages.add(new ServerHelloMessage());
-            serverMessages.add(new EncryptedExtensionsMessage());
-            serverMessages.add(new FinishedMessage());
-
-            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER, serverMessages));
-
-            clientMessages.add(new EndOfEarlyDataMessage(config));
-            clientMessages.add(new FinishedMessage(config));
-            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-                clientMessages));
+        } else {
+            clientHello = new ClientHelloMessage();
+            earlyDataMsg = new ApplicationMessage();
         }
-        else
-        {
-            List<ProtocolMessage> clientMessages = new LinkedList<>();
-            List<ProtocolMessage> serverMessages = new LinkedList<>();
-            
-            clientMessages.add(new ClientHelloMessage());
-            clientMessages.add(new ApplicationMessage());
-            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT, clientMessages));
-            
-            EncryptedExtensionsMessage encExtMes = new EncryptedExtensionsMessage(config);
-            encExtMes.addExtension(new EarlyDataExtensionMessage());
-            
-            serverMessages.add(new ServerHelloMessage(config));
-            serverMessages.add(encExtMes);
-            serverMessages.add(new FinishedMessage(config));
-            
-            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER, serverMessages));
-            
-            List<ProtocolMessage> messages = new LinkedList<>();
-            
-            messages.add(new EndOfEarlyDataMessage());
-            messages.add(new FinishedMessage());
-            trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT, messages));        
+        clientHelloMessages.add(clientHello);
+        clientHelloMessages.add(earlyDataMsg);
+
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                clientHelloMessages));
+
+        ServerHelloMessage serverHello;
+        EncryptedExtensionsMessage encExtMsg;
+        FinishedMessage serverFin = new FinishedMessage(config);
+
+        if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            serverHello = new ServerHelloMessage();
+            encExtMsg = new EncryptedExtensionsMessage();
+        } else {
+            serverHello = new ServerHelloMessage(config);
+            encExtMsg = new EncryptedExtensionsMessage(config);
+            encExtMsg.addExtension(new EarlyDataExtensionMessage());
         }
+
+        serverMessages.add(serverHello);
+        serverMessages.add(encExtMsg);
+        serverMessages.add(serverFin);
+
+        trace.addTlsAction(MessageActionFactory
+                .createAction(ourConnectionEnd, ConnectionEndType.SERVER, serverMessages));
+
+        clientMessages.add(new EndOfEarlyDataMessage());
+        clientMessages.add(new FinishedMessage(config));
+        trace.addTlsAction(MessageActionFactory
+                .createAction(ourConnectionEnd, ConnectionEndType.CLIENT, clientMessages));
         return trace;
     }
 

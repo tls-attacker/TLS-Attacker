@@ -18,11 +18,9 @@ import java.util.List;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExtensionMessage> {
-    
+
     public PreSharedKeyExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
     }
@@ -30,14 +28,13 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     @Override
     public void parseExtensionMessageContent(PreSharedKeyExtensionMessage msg) {
         LOGGER.debug("Parsing PreSharedKeyExtensionMessage");
-        if(super.getBytesLeft() > 2) //Client -> Server
+        if (super.getBytesLeft() > 2) // Client -> Server
         {
-           parsePreSharedKeyIdentitiyListLength(msg);
-           parsePreSharedKeyIdentityListBytes(msg);
-           parsePreSharedKeyBinderListLength(msg);
-           parsePreSharedKeyBinderListBytes(msg); 
-        }
-        else //Server -> Client
+            parsePreSharedKeyIdentitiyListLength(msg);
+            parsePreSharedKeyIdentityListBytes(msg);
+            parsePreSharedKeyBinderListLength(msg);
+            parsePreSharedKeyBinderListBytes(msg);
+        } else // Server -> Client
         {
             parseSelectedIdentity(msg);
         }
@@ -47,56 +44,48 @@ public class PreSharedKeyExtensionParser extends ExtensionParser<PreSharedKeyExt
     protected PreSharedKeyExtensionMessage createExtensionMessage() {
         return new PreSharedKeyExtensionMessage();
     }
-    
-    private void parsePreSharedKeyIdentitiyListLength(PreSharedKeyExtensionMessage msg)
-    {
+
+    private void parsePreSharedKeyIdentitiyListLength(PreSharedKeyExtensionMessage msg) {
         msg.setIdentityListLength(parseIntField(ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH));
-        LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength());
+        LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
     }
-    
-    private void parsePreSharedKeyIdentityListBytes(PreSharedKeyExtensionMessage msg)
-    {
+
+    private void parsePreSharedKeyIdentityListBytes(PreSharedKeyExtensionMessage msg) {
         msg.setIdentityListBytes(parseByteArrayField(msg.getIdentityListLength().getValue()));
         LOGGER.debug("Identity list bytes: " + ArrayConverter.bytesToHexString(msg.getIdentityListBytes().getValue()));
-        
+
         List<PSKIdentity> identities = new LinkedList<>();
         int parsed = 0;
-        while (parsed < msg.getIdentityListLength().getValue()) 
-        {
+        while (parsed < msg.getIdentityListLength().getValue()) {
             PSKIdentityParser parser = new PSKIdentityParser(parsed, msg.getIdentityListBytes().getValue());
             identities.add(parser.parse());
             parsed = parser.getPointer();
         }
         msg.setIdentities(identities);
     }
-    
-    private void parsePreSharedKeyBinderListLength(PreSharedKeyExtensionMessage msg)
-    {
+
+    private void parsePreSharedKeyBinderListLength(PreSharedKeyExtensionMessage msg) {
         msg.setBinderListLength(parseIntField(ExtensionByteLength.PSK_BINDER_LIST_LENGTH));
-        LOGGER.debug("PreSharedKeyBinderListLength: " + msg.getBinderListLength());
+        LOGGER.debug("PreSharedKeyBinderListLength: " + msg.getBinderListLength().getValue());
     }
-    
-    private void parsePreSharedKeyBinderListBytes(PreSharedKeyExtensionMessage msg)
-    {
+
+    private void parsePreSharedKeyBinderListBytes(PreSharedKeyExtensionMessage msg) {
         msg.setBinderListBytes(parseByteArrayField(msg.getBinderListLength().getValue()));
         LOGGER.debug("Binder list bytes: " + ArrayConverter.bytesToHexString(msg.getBinderListBytes().getValue()));
-        
+
         List<PSKBinder> binders = new LinkedList<>();
         int parsed = 0;
-        while (parsed < msg.getBinderListLength().getValue()) 
-        {
+        while (parsed < msg.getBinderListLength().getValue()) {
             PSKBinderParser parser = new PSKBinderParser(parsed, msg.getBinderListBytes().getValue());
             binders.add(parser.parse());
             parsed = parser.getPointer();
         }
         msg.setBinders(binders);
     }
-    
-    private void parseSelectedIdentity(PreSharedKeyExtensionMessage msg)
-    {
-       msg.setSelectedIdentity(parseIntField(ExtensionByteLength.PSK_SELECTED_IDENTITY_LENGTH));
-       LOGGER.debug("SelectedIdentity:" + msg.getSelectedIdentity().getValue());
-    }
 
+    private void parseSelectedIdentity(PreSharedKeyExtensionMessage msg) {
+        msg.setSelectedIdentity(parseIntField(ExtensionByteLength.PSK_SELECTED_IDENTITY_LENGTH));
+        LOGGER.debug("SelectedIdentity:" + msg.getSelectedIdentity().getValue());
+    }
 
 }

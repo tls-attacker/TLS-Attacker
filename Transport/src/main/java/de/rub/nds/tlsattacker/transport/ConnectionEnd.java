@@ -14,10 +14,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionEnd implements Serializable {
@@ -97,7 +93,8 @@ public abstract class ConnectionEnd implements Serializable {
      * serialization output and won't be restored on un-marshaling. The user
      * needs to make sure that this value is set again after un-marshaling.
      * 
-     * @param defaultTimeout
+     * @param defaultTransportHandlerType
+     *            The defaultTransportHandlerType which should be set
      */
     public void setDefaultTransportHandlerType(TransportHandlerType defaultTransportHandlerType) {
         this.defaultTransportHandlerType = defaultTransportHandlerType;
@@ -119,6 +116,9 @@ public abstract class ConnectionEnd implements Serializable {
      * not set (i.e. null). This value won't appear in serialization output and
      * won't be restored on un-marshaling. The user needs to make sure that this
      * value is set again after un-marshaling.
+     * 
+     * @param defaultTimeout
+     *            The default Timeout for this ConnectionEnd
      */
     public void setDefaultTimeout(Integer defaultTimeout) {
         this.defaultTimeout = defaultTimeout;
@@ -135,12 +135,17 @@ public abstract class ConnectionEnd implements Serializable {
     /**
      * Get the hostname of the connection end. This can be implemented by
      * children if it makes sense for the particular connection end type.
+     * 
+     * @return The Hostname of the ConnectionEnd
      */
     public abstract String getHostname();
 
     /**
      * Set the hostname of the connection end. This can be implemented by
      * children if it makes sense for the particular connection end type.
+     * 
+     * @param hostname
+     *            The Hostname of this ConnectionEnd
      */
     public abstract void setHostname(String hostname);
 

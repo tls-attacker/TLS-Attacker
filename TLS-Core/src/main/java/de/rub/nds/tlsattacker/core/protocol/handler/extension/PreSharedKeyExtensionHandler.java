@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
@@ -26,6 +27,8 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerial
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
@@ -37,8 +40,6 @@ import javax.crypto.Mac;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyExtensionMessage> {
 
@@ -64,62 +65,57 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     @Override
     public void adjustTLSExtensionContext(PreSharedKeyExtensionMessage message) {
         LOGGER.debug("Adjusting TLS Context for PSK Key Extension Message");
-        if(context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT && message.getSelectedIdentity() != null)
-        {
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
+                && message.getSelectedIdentity() != null) {
             adjustPsk(message);
         }
-        if(context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER && message.getIdentities() != null)
-        {
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
+                && message.getIdentities() != null) {
             selectPsk(message);
-            if(context.isExtensionNegotiated(ExtensionType.EARLY_DATA))
-            {
+            if (context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 adjustEarlyTrafficSecret(message);
                 adjustRecordLayer0RTT();
             }
         }
     }
-    
-    private void adjustPsk(PreSharedKeyExtensionMessage message)
-    {
-        if(message.getSelectedIdentity().getValue() < context.getConfig().getPskSets().size())
-        {
+
+    private void adjustPsk(PreSharedKeyExtensionMessage message) {
+        if (message.getSelectedIdentity().getValue() < context.getConfig().getPskSets().size()) {
             LOGGER.debug("Setting PSK as chosen by server");
-            context.setPsk(context.getConfig().getPskSets().get(message.getSelectedIdentity().getValue()).getPreSharedKey());
+            context.setPsk(context.getConfig().getPskSets().get(message.getSelectedIdentity().getValue())
+                    .getPreSharedKey());
             context.setSelectedIdentityIndex(message.getSelectedIdentity().getValue());
-        }
-        else
-        {
+        } else {
             LOGGER.warn("The server's chosen PSK identity is unknown - no psk set");
-        }  
+        }
     }
-    
-    private void selectPsk(PreSharedKeyExtensionMessage message)
-    {
+
+    private void selectPsk(PreSharedKeyExtensionMessage message) {
         int pskIdentityIndex = 0;
         List<PskSet> pskSets = context.getConfig().getPskSets();
-        for(PSKIdentity pskIdentity : message.getIdentities())
-        {
-            for(int x = 0; x < pskSets.size(); x++)
-            {   
-                if(Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), pskIdentity.getIdentity().getValue()))
-                {
-                    LOGGER.debug("Selected PSK identity: " + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKeyIdentity()));
-                    //context.setPsk(pskSets.get(x).getPreSharedKey()); This is correct - removed for testing
-                    //******TESTING******
-                    try
-                    {
-                        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
-                        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
+        for (PSKIdentity pskIdentity : message.getIdentities()) {
+            for (int x = 0; x < pskSets.size(); x++) {
+                if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), pskIdentity.getIdentity().getValue())) {
+                    LOGGER.debug("Selected PSK identity: "
+                            + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKeyIdentity()));
+                    // context.setPsk(pskSets.get(x).getPreSharedKey()); This is
+                    // correct - removed for testing
+                    // ******TESTING******
+                    try {
+                        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x)
+                                .getCipherSuite());
+                        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
+                                pskSets.get(x).getCipherSuite());
                         int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
                         byte[] resumpMasterSec = pskSets.get(x).getPreSharedKey();
-            
-                        byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption", ArrayConverter.hexStringToByteArray("00"), macLength);
+
+                        byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption",
+                                ArrayConverter.hexStringToByteArray("00"), macLength);
                         context.setPsk(psk);
-                    } catch (NoSuchAlgorithmException ex)
-                    {
-                        
+                    } catch (NoSuchAlgorithmException ex) {
+
                     }
-                    //*******************
+                    // *******************
                     context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
                     context.setSelectedIdentityIndex(pskIdentityIndex);
                     return;
@@ -129,40 +125,42 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         }
         LOGGER.warn("No matching PSK identity provided by client - no PSK was set");
     }
-    
-    private void adjustEarlyTrafficSecret(PreSharedKeyExtensionMessage message)
-    {
+
+    private void adjustEarlyTrafficSecret(PreSharedKeyExtensionMessage message) {
         try {
-            LOGGER.debug("Calculating early traffic secret using transcript: " + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
-            
+            LOGGER.debug("Calculating early traffic secret using transcript: "
+                    + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
+
             List<PskSet> pskSets = context.getConfig().getPskSets();
             byte[] earlyDataPsk = null;
-            for(int x = 0; x < pskSets.size(); x++)   
-            {
-                if(Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0).getIdentity().getValue()))
-                {
+            for (int x = 0; x < pskSets.size(); x++) {
+                if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0)
+                        .getIdentity().getValue())) {
                     earlyDataPsk = pskSets.get(x).getPreSharedKey();
                     context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
                     LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(earlyDataPsk));
                     break;
                 }
-            }   
-            if(earlyDataPsk == null)
-            {
-                LOGGER.warn("Server is missing the EarlyData PSK - decryption will fail");
             }
-            else
-            {
+            if (earlyDataPsk == null) {
+                LOGGER.warn("Server is missing the EarlyData PSK - decryption will fail");
+            } else {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getEarlyDataCipherSuite());
-                DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, context.getEarlyDataCipherSuite());
+                DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
+                        context.getEarlyDataCipherSuite());
                 int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            
-                byte[] resumpMasterSec = earlyDataPsk; //This is for testing and should replace the part after byte[] psk =
-            
-                byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption", ArrayConverter.hexStringToByteArray("00"), macLength);
-                byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);    
-                byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret, HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-            
+
+                byte[] resumpMasterSec = earlyDataPsk; // This is for testing
+                                                       // and should replace the
+                                                       // part after byte[] psk
+                                                       // =
+
+                byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption",
+                        ArrayConverter.hexStringToByteArray("00"), macLength);
+                byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
+                byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
+                        earlySecret, HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, context.getDigest().getRawBytes());
+
                 context.setEarlySecret(earlySecret);
                 context.setClientEarlyTrafficSecret(earlyTrafficSecret);
             }
@@ -170,16 +168,21 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
             Logger.getLogger(PreSharedKeyExtensionHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    private void adjustRecordLayer0RTT()
-    {
-        LOGGER.debug("Setting up RecordLayer, to allow for EarlyData decryption");
-        
-        context.setUseEarlyTrafficSecret(true);
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, context.getEarlyDataCipherSuite());
-        context.getRecordLayer().setRecordCipher(recordCipher);
-        context.getRecordLayer().updateDecryptionCipher();
-        context.getRecordLayer().updateEncryptionCipher();
+
+    private void adjustRecordLayer0RTT() {
+        try {
+            LOGGER.debug("Setting up RecordLayer to allow for EarlyData decryption");
+
+            context.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            KeySet keySet = KeySetGenerator.generateKeySet(context, ProtocolVersion.TLS13);
+            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet,
+                    context.getEarlyDataCipherSuite());
+            context.getRecordLayer().setRecordCipher(recordCipher);
+            context.getRecordLayer().updateDecryptionCipher();
+            context.setReadSequenceNumber(0);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(PreSharedKeyExtensionHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

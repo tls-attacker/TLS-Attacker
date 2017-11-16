@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
@@ -23,17 +24,15 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Mac;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     public FinishedHandler(TlsContext context) {
@@ -57,15 +56,15 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     public void adjustTLSContext(FinishedMessage message) {
-        if(tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT && tlsContext.isEncryptedEndOfEarlyData())
-        {
-           adjustRecordCipher0RTT(); 
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
+                && tlsContext.isEncryptedEndOfEarlyData()) {
+            adjustRecordCipher0RTT();
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                 adjustApplicationTrafficSecrets();
             } else {
-                tlsContext.setUpdateKeys(true);
+                tlsContext.setActiveKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             }
         }
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -87,32 +86,36 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             byte[] masterSecret = HKDFunction.extract(hkdfAlgortihm, saltMasterSecret, new byte[macLength]);
             byte[] clientApplicationTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
                     masterSecret, HKDFunction.CLIENT_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
-            tlsContext.setClientApplicationTrafficSecret0(clientApplicationTrafficSecret);
+            tlsContext.setClientApplicationTrafficSecret(clientApplicationTrafficSecret);
             LOGGER.debug("Set clientApplicationTrafficSecret in Context to "
                     + ArrayConverter.bytesToHexString(clientApplicationTrafficSecret));
             byte[] serverApplicationTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
                     masterSecret, HKDFunction.SERVER_APPLICATION_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
-            tlsContext.setServerApplicationTrafficSecret0(serverApplicationTrafficSecret);
+            tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
             LOGGER.debug("Set serverApplicationTrafficSecret in Context to "
                     + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }
     }
-    
-    private void adjustRecordCipher0RTT()
-    {
-        LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
-        
-        tlsContext.setSelectedCipherSuite(tlsContext.getSelectedCipherSuite());
 
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext);
-        tlsContext.setUseEarlyTrafficSecret(true);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
-        tlsContext.getRecordLayer().updateEncryptionCipher();
-        
-        //Restore the correct SequenceNumber
-        ((RecordAEADCipher)recordCipher).setSequenceNumberDec(tlsContext.getStoredSequenceNumberDec());
+    private void adjustRecordCipher0RTT() {
+        try {
+            LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
+
+            tlsContext.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext);
+            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
+                    tlsContext.getSelectedCipherSuite());
+            tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+            tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.getRecordLayer().updateEncryptionCipher();
+
+            // Set the correct SequenceNumbers
+            tlsContext.setWriteSequenceNumber(0);
+            tlsContext.setReadSequenceNumber(0);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

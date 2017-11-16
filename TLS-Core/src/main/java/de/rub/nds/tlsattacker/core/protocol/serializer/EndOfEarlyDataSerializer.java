@@ -13,8 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class EndOfEarlyDataSerializer extends HandshakeMessageSerializer<EndOfEarlyDataMessage> {
 

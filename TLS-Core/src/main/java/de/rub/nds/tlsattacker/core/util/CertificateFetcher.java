@@ -22,10 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class CertificateFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger(CertificateFetcher.class.getName());

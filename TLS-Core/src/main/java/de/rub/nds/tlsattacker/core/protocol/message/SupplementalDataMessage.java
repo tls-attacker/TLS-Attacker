@@ -22,10 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Christoph Penkert <christoph.penkert@rub.de>
- */
-
 @XmlRootElement
 public class SupplementalDataMessage extends HandshakeMessage {
 

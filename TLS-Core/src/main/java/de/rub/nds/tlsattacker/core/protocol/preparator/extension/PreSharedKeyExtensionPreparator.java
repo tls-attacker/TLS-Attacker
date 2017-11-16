@@ -41,14 +41,12 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * RFC draft-ietf-tls-tls13-21
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
  */
 public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreSharedKeyExtensionMessage> {
 
     private final PreSharedKeyExtensionMessage msg;
     private ClientHelloMessage clientHello;
-    
+
     public PreSharedKeyExtensionPreparator(Chooser chooser, PreSharedKeyExtensionMessage message,
             ExtensionSerializer<PreSharedKeyExtensionMessage> serializer) {
         super(chooser, message, serializer);
@@ -58,163 +56,160 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing PreSharedKeyExtensionMessage");
-        if(chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT)
-        {
+        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
             prepareLists();
             prepareIdentityListBytes();
-            prepareBinderListBytes(); //we're only preparing dummy bytes here
-        }
-        else
-        {
+            prepareBinderListBytes(); // we're only preparing dummy bytes here
+        } else {
             prepareSelectedIdentity();
-        }  
+        }
     }
-    
-    private void prepareLists()
-    {
+
+    private void prepareLists() {
         List<PSKIdentity> identities = new LinkedList<>();
         List<PSKBinder> binders = new LinkedList<>();
         List<PskSet> pskSets = chooser.getConfig().getPskSets();
-        
-        for(int x = 0; x < pskSets.size(); x++)
-        {
+
+        for (int x = 0; x < pskSets.size(); x++) {
             PSKIdentity pskIdentity = new PSKIdentity();
             new PSKIdentityPreparator(chooser, pskIdentity, pskSets.get(x)).prepare();
             PSKBinder pskBinder = new PSKBinder();
             new PSKBinderPreparator(chooser, pskBinder, pskSets.get(x)).prepare();
             identities.add(pskIdentity);
             binders.add(pskBinder);
-            
-            if(x == 0) //First identity of the list = PSK for 0-RTT data
+
+            if (x == 0) // First identity of the list = PSK for 0-RTT data
             {
                 chooser.getContext().setEarlyDataPSKIdentity(pskSets.get(x).getPreSharedKeyIdentity());
                 chooser.getContext().setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-            }       
+            }
         }
         msg.setIdentities(identities);
         msg.setBinders(binders);
     }
 
-    private void prepareSelectedIdentity()
-    {
+    private void prepareSelectedIdentity() {
         LOGGER.debug("Preparing selected identity");
         msg.setSelectedIdentity(chooser.getContext().getSelectedIdentityIndex());
     }
-    
-    
-    private void prepareIdentityListBytes()
-    {
+
+    private void prepareIdentityListBytes() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (PSKIdentity pskIdentity : msg.getIdentities()) 
-        {
+        for (PSKIdentity pskIdentity : msg.getIdentities()) {
             PSKIdentitySerializer serializer = new PSKIdentitySerializer(pskIdentity);
-            try 
-            {
+            try {
                 outputStream.write(serializer.serialize());
             } catch (IOException ex) {
                 throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
             }
         }
-        
+
         msg.setIdentityListBytes(outputStream.toByteArray());
         msg.setIdentityListLength(msg.getIdentityListBytes().getValue().length);
     }
-    
-    private void prepareBinderListBytes()
-    {
+
+    private void prepareBinderListBytes() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        for (PSKBinder pskBinder : msg.getBinders()) 
-        {
+        for (PSKBinder pskBinder : msg.getBinders()) {
             PSKBinderSerializer serializer = new PSKBinderSerializer(pskBinder);
-            try 
-            {
+            try {
                 outputStream.write(serializer.serialize());
             } catch (IOException ex) {
                 throw new PreparationException("Could not write byte[] from PSKIdentity", ex);
             }
         }
-        
+
         msg.setBinderListBytes(outputStream.toByteArray());
         msg.setBinderListLength(msg.getBinderListBytes().getValue().length);
     }
-    
+
     @Override
-    public void afterPrepareExtensionContent()
-    {
-        if(chooser.getContext().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT)
-        {
+    public void afterPrepareExtensionContent() {
+        if (chooser.getContext().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
             prepareActualBinders();
         }
     }
-    
-    private void prepareActualBinders()
-    {
+
+    private void prepareActualBinders() {
         LOGGER.debug("Preparing binder values to replace dummy bytes");
-        ClientHelloSerializer clientHelloSerializer = new ClientHelloSerializer(clientHello, chooser.getSelectedProtocolVersion());
+        ClientHelloSerializer clientHelloSerializer = new ClientHelloSerializer(clientHello,
+                chooser.getSelectedProtocolVersion());
         byte[] clientHelloBytes = clientHelloSerializer.serialize();
         byte[] relevantBytes = getRelevantBytes(clientHelloBytes);
         calculateBinders(relevantBytes, msg);
-        prepareBinderListBytes(); //Re-write list using actual values
-        chooser.getContext().setUseEarlyTrafficSecret(true); //MOVE SOMEWHERE ELSE!
-        LOGGER.debug("Our work is done here! Full Bytes:" + ArrayConverter.bytesToHexString(msg.getBinderListBytes().getValue()));
+        prepareBinderListBytes(); // Re-write list using actual values
     }
-    
-    private byte[] getRelevantBytes(byte[] clientHelloBytes)
-    {
+
+    private byte[] getRelevantBytes(byte[] clientHelloBytes) {
         int remainingBytes = clientHelloBytes.length - ExtensionByteLength.PSK_BINDER_LIST_LENGTH;
-        for(PSKBinder pskBinder : msg.getBinders())
-        {
-            remainingBytes = remainingBytes - ExtensionByteLength.PSK_BINDER_LENGTH - pskBinder.getBinderEntryLength().getValue();
+        for (PSKBinder pskBinder : msg.getBinders()) {
+            remainingBytes = remainingBytes - ExtensionByteLength.PSK_BINDER_LENGTH
+                    - pskBinder.getBinderEntryLength().getValue();
         }
-        
+
         byte[] relevantBytes = new byte[remainingBytes];
-        
+
         System.arraycopy(clientHelloBytes, 0, relevantBytes, 0, remainingBytes);
-        
+
         LOGGER.debug("Relevant Bytes:" + ArrayConverter.bytesToHexString(relevantBytes));
         return relevantBytes;
     }
-    
-    private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg)
-    {   
+
+    private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
         List<PskSet> pskSets = chooser.getContext().getConfig().getPskSets();
-        for(int x = 0; x < msg.getBinders().size(); x++)
-        {
+        for (int x = 0; x < msg.getBinders().size(); x++) {
             try {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
-                DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite());
+                DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, pskSets.get(x)
+                        .getCipherSuite());
                 int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-                      
-                byte[] resumpMasterSec = pskSets.get(x).getPreSharedKey(); //This is for testing and should replace the part after byte[] psk =
-            
-                byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption", ArrayConverter.hexStringToByteArray("00"), macLength);
+
+                byte[] resumpMasterSec = pskSets.get(x).getPreSharedKey(); // This
+                                                                           // is
+                                                                           // for
+                                                                           // testing
+                                                                           // and
+                                                                           // should
+                                                                           // replace
+                                                                           // the
+                                                                           // part
+                                                                           // after
+                                                                           // byte[]
+                                                                           // psk
+                                                                           // =
+
+                byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumpMasterSec, "resumption",
+                        ArrayConverter.hexStringToByteArray("00"), macLength);
                 byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
-                byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret, HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
-                byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgortihm, binderKey, HKDFunction.FINISHED, new byte[0], mac.getMacLength());           
-                
+                byte[] binderKey = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
+                        HKDFunction.BINDER_KEY_RES, ArrayConverter.hexStringToByteArray(""));
+                byte[] binderFinKey = HKDFunction.expandLabel(hkdfAlgortihm, binderKey, HKDFunction.FINISHED,
+                        new byte[0], mac.getMacLength());
+
                 pskSets.get(x).setPreSharedKey(psk); // Testing
-                
+
                 chooser.getContext().getDigest().setRawBytes(relevantBytes);
                 SecretKeySpec keySpec = new SecretKeySpec(binderFinKey, mac.getAlgorithm());
                 mac.init(keySpec);
-                mac.update(chooser.getContext().getDigest().digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
+                mac.update(chooser.getContext().getDigest()
+                        .digest(ProtocolVersion.TLS13, pskSets.get(x).getCipherSuite()));
                 byte[] binderVal = mac.doFinal();
                 chooser.getContext().getDigest().setRawBytes(new byte[0]);
-            
+
                 LOGGER.debug("Using PSK:" + ArrayConverter.bytesToHexString(psk));
                 LOGGER.debug("Calculated Binder:" + ArrayConverter.bytesToHexString(binderVal));
-                
+
                 msg.getBinders().get(x).setBinderEntry(binderVal);
-                if(x == 0) //First entry = PSK for early Data
+                if (x == 0) // First entry = PSK for early Data
                 {
                     chooser.getContext().setEarlySecret(earlySecret);
-                }    
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(PreSharedKeyExtensionSerializer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
-            Logger.getLogger(PreSharedKeyExtensionSerializer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+                }
+            } catch (NoSuchAlgorithmException ex) {
+                Logger.getLogger(PreSharedKeyExtensionSerializer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvalidKeyException ex) {
+                Logger.getLogger(PreSharedKeyExtensionSerializer.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -226,7 +221,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     }
 
     /**
-     * @param clientHello the clientHello to set
+     * @param clientHello
+     *            the clientHello to set
      */
     public void setClientHello(ClientHelloMessage clientHello) {
         this.clientHello = clientHello;

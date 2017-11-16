@@ -12,25 +12,21 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
-/**
- *
- * @author Marcel Maehren <Marcel.Maehren@rub.de>
- */
 public class PSKIdentitySerializer extends Serializer<PSKIdentity> {
-    
+
     private final PSKIdentity pskIdentity;
 
     public PSKIdentitySerializer(PSKIdentity pskIdentity) {
         this.pskIdentity = pskIdentity;
     }
-    
+
     @Override
     protected byte[] serializeBytes() {
         appendInt(pskIdentity.getIdentityLength().getValue(), ExtensionByteLength.PSK_IDENTITY_LENGTH);
         appendBytes(pskIdentity.getIdentity().getValue());
         appendBytes(pskIdentity.getObfuscatedTicketAge().getValue());
-        
+
         return getAlreadySerialized();
     }
-    
+
 }

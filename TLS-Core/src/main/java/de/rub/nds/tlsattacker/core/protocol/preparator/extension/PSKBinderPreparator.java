@@ -19,39 +19,33 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Mac;
 
-/**
- *
- * @author Marcel Maehren <marcel.maehren@rub.de>
- */
 public class PSKBinderPreparator extends Preparator<PSKBinder> {
-    
+
     private final PSKBinder pskBinder;
     private final PskSet pskSet;
-    
+
     public PSKBinderPreparator(Chooser chooser, PSKBinder pskBinder, PskSet pskSet) {
         super(chooser, pskBinder);
         this.pskBinder = pskBinder;
         this.pskSet = pskSet;
     }
-    
+
     @Override
     public void prepare() {
         LOGGER.debug("Preparing PSKBinder");
         prepareBinderValue();
     }
-    
-    private void prepareBinderValue()
-    {
+
+    private void prepareBinderValue() {
         try {
             HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSet.getCipherSuite());
             int macLen = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            
+
             pskBinder.setBinderEntry(new byte[macLen]);
             pskBinder.setBinderEntryLength(pskBinder.getBinderEntry().getValue().length);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(PSKBinderPreparator.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-            
-    
+
 }

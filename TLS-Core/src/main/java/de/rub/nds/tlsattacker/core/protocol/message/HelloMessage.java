@@ -15,10 +15,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 
-/**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public abstract class HelloMessage extends HandshakeMessage {
 
     /**

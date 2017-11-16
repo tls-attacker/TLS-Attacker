@@ -25,9 +25,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class Record extends AbstractRecord {
 
     /**
@@ -79,6 +76,19 @@ public class Record extends AbstractRecord {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
     private ModifiableByteArray unpaddedRecordBytes;
+
+    /**
+     * Bytes which are not meta data which are going to be maced
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    private ModifiableByteArray nonMetaDataMaced;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    private ModifiableByteArray authenticatedMetaData;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.NONE)
+    // TODO check types
+    private ModifiableByteArray initialisationVector;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger epoch;
@@ -212,6 +222,44 @@ public class Record extends AbstractRecord {
     public void setUnpaddedRecordBytes(byte[] unpaddedRecordBytes) {
         this.unpaddedRecordBytes = ModifiableVariableFactory.safelySetValue(this.unpaddedRecordBytes,
                 unpaddedRecordBytes);
+    }
+
+    public ModifiableByteArray getNonMetaDataMaced() {
+        return nonMetaDataMaced;
+    }
+
+    public void setNonMetaDataMaced(ModifiableByteArray nonMetaDataMaced) {
+        this.nonMetaDataMaced = nonMetaDataMaced;
+    }
+
+    public void setNonMetaDataMaced(byte[] nonMetaDataMaced) {
+        this.nonMetaDataMaced = ModifiableVariableFactory.safelySetValue(this.nonMetaDataMaced, nonMetaDataMaced);
+    }
+
+    public ModifiableByteArray getAuthenticatedMetaData() {
+        return authenticatedMetaData;
+    }
+
+    public void setAuthenticatedMetaData(ModifiableByteArray authenticatedMetaData) {
+        this.authenticatedMetaData = authenticatedMetaData;
+    }
+
+    public void setAuthenticatedMetaData(byte[] authenticatedMetaData) {
+        this.authenticatedMetaData = ModifiableVariableFactory.safelySetValue(this.authenticatedMetaData,
+                authenticatedMetaData);
+    }
+
+    public ModifiableByteArray getInitialisationVector() {
+        return initialisationVector;
+    }
+
+    public void setInitialisationVector(ModifiableByteArray initialisationVector) {
+        this.initialisationVector = initialisationVector;
+    }
+
+    public void setInitialisationVector(byte[] initialisationVector) {
+        this.initialisationVector = ModifiableVariableFactory.safelySetValue(this.initialisationVector,
+                initialisationVector);
     }
 
     @Override
