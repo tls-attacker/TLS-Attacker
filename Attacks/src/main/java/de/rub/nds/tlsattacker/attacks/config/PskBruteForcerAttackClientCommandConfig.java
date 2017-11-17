@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ServerDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,11 +28,11 @@ import org.apache.logging.log4j.core.config.Configurator;
  *
  * @author florian
  */
-public class PskBruteForcerCommandConfig extends AttackConfig {
-    public static final String ATTACK_COMMAND = "pskbruteforcer";
+public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
+    public static final String ATTACK_COMMAND = "pskbruteforcerclient";
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private ServerDelegate serverDelegate;
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
@@ -40,6 +41,8 @@ public class PskBruteForcerCommandConfig extends AttackConfig {
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
     private AttackDelegate attackDelegate;
+    @Parameter(names = "-usePskTable", description = "Enables the use of the PskTable")
+    private boolean usePskTable = false;
 
     @Override
     public Config createConfig() {
@@ -54,14 +57,14 @@ public class PskBruteForcerCommandConfig extends AttackConfig {
         return config;
     }
 
-    public PskBruteForcerCommandConfig(GeneralDelegate delegate) {
+    public PskBruteForcerAttackClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        clientDelegate = new ClientDelegate();
+        serverDelegate = new ServerDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
-        addDelegate(clientDelegate);
+        addDelegate(serverDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
@@ -75,5 +78,9 @@ public class PskBruteForcerCommandConfig extends AttackConfig {
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
+    }
+
+    public boolean getUsePskTable() {
+        return usePskTable;
     }
 }
