@@ -170,8 +170,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
             // LOGGER.info(tlsContext.getChooser().getConfig().getDefaultPSKKey());
             PskClientKeyExchangePreparator preparator = new PskClientKeyExchangePreparator(ChooserFactory.getChooser(
                     tlsConfig.getChooserType(), tlsContext, tlsConfig), msg3);
-            byte[] premasterSecret = preparator.generatePremasterSecret();
-            tlsContext.setPreMasterSecret(premasterSecret);
+            //byte[] premasterSecret = preparator.generatePremasterSecret();
+            //tlsContext.setPreMasterSecret(premasterSecret);
 
             // AbstractRecord finished =
             // trace.getReceivingActions().get(1).getReceivedRecords().get(2);
