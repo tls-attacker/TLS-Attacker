@@ -49,6 +49,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -327,7 +328,7 @@ public class TlsContext {
 
     private List<SNIEntry> clientSNIEntryList;
 
-    private List<KSEntry> clientKSEntryList;
+    private List<KSEntry> clientKeyShareEntryList;
 
     private KSEntry serverKSEntry;
     /**
@@ -388,7 +389,8 @@ public class TlsContext {
     private Chooser chooser;
 
     /**
-     * Contains the TLS extensions proposed by the client.
+     * Contains the TLS extensions proposed by the client. private boolean
+     * earlyCleanShutdown;
      */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
@@ -414,6 +416,8 @@ public class TlsContext {
      * latter merely says that the extension was sent by client or server.
      */
     private boolean useExtendedMasterSecret;
+
+    private Boolean earlyCleanShutdown = false;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -531,7 +535,7 @@ public class TlsContext {
     }
 
     public void setClientSupportedProtocolVersions(ProtocolVersion... clientSupportedProtocolVersions) {
-        this.clientSupportedProtocolVersions = Arrays.asList(clientSupportedProtocolVersions);
+        this.clientSupportedProtocolVersions = new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
     }
 
     public BigInteger getRsaModulus() {
@@ -791,7 +795,7 @@ public class TlsContext {
     }
 
     public void setClientNamedCurvesList(NamedCurve... clientNamedCurvesList) {
-        this.clientNamedCurvesList = Arrays.asList(clientNamedCurvesList);
+        this.clientNamedCurvesList = new ArrayList(Arrays.asList(clientNamedCurvesList));
     }
 
     public List<ECPointFormat> getServerPointFormatsList() {
@@ -803,7 +807,7 @@ public class TlsContext {
     }
 
     public void setServerPointFormatsList(ECPointFormat... serverPointFormatsList) {
-        this.serverPointFormatsList = Arrays.asList(serverPointFormatsList);
+        this.serverPointFormatsList = new ArrayList(Arrays.asList(serverPointFormatsList));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
@@ -817,7 +821,8 @@ public class TlsContext {
 
     public void setClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
-        this.clientSupportedSignatureAndHashAlgorithms = Arrays.asList(clientSupportedSignatureAndHashAlgorithms);
+        this.clientSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -829,7 +834,7 @@ public class TlsContext {
     }
 
     public void setClientSNIEntryList(SNIEntry... clientSNIEntryList) {
-        this.clientSNIEntryList = Arrays.asList(clientSNIEntryList);
+        this.clientSNIEntryList = new ArrayList(Arrays.asList(clientSNIEntryList));
     }
 
     public ProtocolVersion getLastRecordVersion() {
@@ -857,7 +862,7 @@ public class TlsContext {
     }
 
     public void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
-        this.clientCertificateTypes = Arrays.asList(clientCertificateTypes);
+        this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
     public boolean isReceivedFatalAlert() {
@@ -893,7 +898,7 @@ public class TlsContext {
     }
 
     public void setClientPointFormatsList(ECPointFormat... clientPointFormatsList) {
-        this.clientPointFormatsList = Arrays.asList(clientPointFormatsList);
+        this.clientPointFormatsList = new ArrayList(Arrays.asList(clientPointFormatsList));
     }
 
     public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
@@ -937,7 +942,7 @@ public class TlsContext {
     }
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
-        this.clientSupportedCompressions = Arrays.asList(clientSupportedCompressions);
+        this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
     public long getWriteSequenceNumber() {
@@ -973,7 +978,7 @@ public class TlsContext {
     }
 
     public void setClientSupportedCiphersuites(CipherSuite... clientSupportedCiphersuites) {
-        this.clientSupportedCiphersuites = Arrays.asList(clientSupportedCiphersuites);
+        this.clientSupportedCiphersuites = new ArrayList(Arrays.asList(clientSupportedCiphersuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -987,7 +992,8 @@ public class TlsContext {
 
     public void setServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
-        this.serverSupportedSignatureAndHashAlgorithms = Arrays.asList(serverSupportedSignatureAndHashAlgorithms);
+        this.serverSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -1174,16 +1180,16 @@ public class TlsContext {
         this.handshakeSecret = handshakeSecret;
     }
 
-    public List<KSEntry> getClientKSEntryList() {
-        return clientKSEntryList;
+    public List<KSEntry> getClientKeyShareEntryList() {
+        return clientKeyShareEntryList;
     }
 
-    public void setClientKSEntryList(List<KSEntry> clientKSEntryList) {
-        this.clientKSEntryList = clientKSEntryList;
+    public void setClientKeyShareEntryList(List<KSEntry> clientKeyShareEntryList) {
+        this.clientKeyShareEntryList = clientKeyShareEntryList;
     }
 
     public void setClientKSEntryList(KSEntry... clientKSEntryList) {
-        this.clientKSEntryList = Arrays.asList(clientKSEntryList);
+        this.clientKeyShareEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
     }
 
     public KSEntry getServerKSEntry() {
@@ -1335,7 +1341,7 @@ public class TlsContext {
     }
 
     public void setTokenBindingKeyParameters(TokenBindingKeyParameters... tokenBindingKeyParameters) {
-        this.tokenBindingKeyParameters = Arrays.asList(tokenBindingKeyParameters);
+        this.tokenBindingKeyParameters = new ArrayList(Arrays.asList(tokenBindingKeyParameters));
     }
 
     public byte[] getCertificateRequestContext() {
@@ -1410,8 +1416,16 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
+    public boolean isEarlyCleanShutdown() {
+        return earlyCleanShutdown;
+    }
+
     public Random getRandom() {
         return random;
+    }
+
+    public void setEarlyCleanShutdown(boolean earlyCleanShutdown) {
+        this.earlyCleanShutdown = earlyCleanShutdown;
     }
 
     public void setRandom(Random random) {

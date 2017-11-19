@@ -31,6 +31,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 
 public class DefaultChooser extends Chooser {
@@ -712,6 +713,16 @@ public class DefaultChooser extends Chooser {
             return context.getLastHandledApplicationMessageData();
         } else {
             return config.getDefaultApplicationMessageData().getBytes();
+        }
+    }
+
+    @Override
+    public List<KSEntry> getClientKeyShareEntryList() {
+        if (context.getClientKeyShareEntryList() != null) {
+            return context.getClientKeyShareEntryList();
+        } else {
+            return new LinkedList<>(); // Todo, maybe add defaultClientKeyShare
+                                       // list to config
         }
     }
 }

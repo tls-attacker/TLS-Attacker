@@ -11,24 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
+
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
@@ -82,6 +66,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
             @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+            @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
             @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
     private List<TLSAction> tlsActions;
 
@@ -123,7 +108,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addTlsActions(TLSAction... actions) {
-        addTlsActions(Arrays.asList(actions));
+        addTlsActions(new ArrayList(Arrays.asList(actions)));
     }
 
     public void addTlsAction(int position, TLSAction action) {
@@ -144,7 +129,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void setTlsActions(TLSAction... tlsActions) {
-        this.tlsActions = Arrays.asList(tlsActions);
+        this.tlsActions = new ArrayList(Arrays.asList(tlsActions));
     }
 
     public boolean addConnectionEnd(ConnectionEnd con) {
@@ -177,7 +162,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void setConnectionEnds(ConnectionEnd... conEnds) {
-        this.connectionEnds = Arrays.asList(conEnds);
+        this.connectionEnds = new ArrayList(Arrays.asList(conEnds));
     }
 
     public void clearConnectionEnds() {

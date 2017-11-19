@@ -47,6 +47,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -150,7 +151,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     }
 
     public ForwardAction(ProtocolMessage... messages) {
-        this(Arrays.asList(messages));
+        this(new ArrayList(Arrays.asList(messages)));
     }
 
     @Override

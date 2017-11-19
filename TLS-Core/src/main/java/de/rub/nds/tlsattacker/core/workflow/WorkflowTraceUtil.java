@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import java.util.LinkedList;
@@ -58,6 +59,15 @@ public class WorkflowTraceUtil {
             return null;
         } else {
             return messageList.get(messageList.size() - 1);
+        }
+    }
+
+    public static AbstractRecord getLastReceivedRecord(WorkflowTrace trace) {
+        List<AbstractRecord> recordList = getAllReceivedRecords(trace);
+        if (recordList.isEmpty()) {
+            return null;
+        } else {
+            return recordList.get(recordList.size() - 1);
         }
     }
 
@@ -161,7 +171,9 @@ public class WorkflowTraceUtil {
     public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
-            receivedMessage.addAll(action.getReceivedMessages());
+            if (action.getReceivedMessages() != null) {
+                receivedMessage.addAll(action.getReceivedMessages());
+            }
         }
         return receivedMessage;
     }
@@ -198,5 +210,13 @@ public class WorkflowTraceUtil {
             }
         }
         return false;
+    }
+
+    private static List<AbstractRecord> getAllReceivedRecords(WorkflowTrace trace) {
+        List<AbstractRecord> receivedRecords = new LinkedList<>();
+        for (ReceivingAction action : trace.getReceivingActions()) {
+            receivedRecords.addAll(action.getReceivedRecords());
+        }
+        return receivedRecords;
     }
 }
