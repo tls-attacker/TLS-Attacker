@@ -1426,6 +1426,10 @@ public class TlsContext {
         return config;
     }
 
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
     public ConnectionEnd getConnectionEnd() {
         return connectionEnd;
     }
