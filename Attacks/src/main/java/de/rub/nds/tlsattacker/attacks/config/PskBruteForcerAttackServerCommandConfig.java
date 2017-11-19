@@ -43,13 +43,23 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
     private AttackDelegate attackDelegate;
     @Parameter(names = "-usePskTable", description = "Enables the use of the PskTable")
     private boolean usePskTable = false;
+    @Parameter(names = "-useDheDowngrade", description = "Use the EdhPsk to Psk Downgrade")
+    private boolean useDheDowngrade = false;
+    @Parameter(names = "-useEcDheDowngrade", description = "Use the EcEdhPsk to Psk Downgrade")
+    private boolean useEcDheDowngrade = false;
 
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
-            cipherSuites.add(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
+            if (this.useDheDowngrade) {
+                cipherSuites.add(CipherSuite.TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
+            } else if (this.useEcDheDowngrade) {
+                cipherSuites.add(CipherSuite.TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA);
+            } else {
+                cipherSuites.add(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
+            }
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
         config.setQuickReceive(true);
@@ -82,5 +92,13 @@ public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
 
     public boolean getUsePskTable() {
         return usePskTable;
+    }
+
+    public boolean getDheDowngrade() {
+        return useDheDowngrade;
+    }
+
+    public boolean getEcDheDowngrade() {
+        return useEcDheDowngrade;
     }
 }

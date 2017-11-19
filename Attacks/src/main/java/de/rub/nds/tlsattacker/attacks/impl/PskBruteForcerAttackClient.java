@@ -67,6 +67,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -74,6 +75,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,9 +93,14 @@ import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.record.parser.RecordParser;
+import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 
 /**
  *
@@ -105,13 +112,15 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     private RecordLayer recordLayer;
     private TlsContext tlsContext;
     private Config tlsConfig;
+    private RecordDecryptor decryptor;
+    private ReceiveMessageHelper helper;
 
     // private DefaultChooser chooser;
 
     public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config) {
         // chooser= tlsContext.getChooser();
         super(config, false);
-        LOGGER.info(tlsContext.getChooser());
+        tlsContext = new TlsContext();
         // tlsConfig = config.createConfig();
 
     }
@@ -133,7 +142,10 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     }
 
     private void executeProtocolFlowToClient() {
+        LOGGER.info("--------------------------------------");
         tlsConfig = config.createConfig();
+        tlsContext.setConfig(tlsConfig);
+
         // chooser = (DefaultChooser)
         // ChooserFactory.getChooser(tlsConfig.getChooserType(), tlsContext,
         // tlsConfig);
@@ -160,28 +172,40 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         workflowExecutor.executeWorkflow();
         if (!trace.executedAsPlanned()) {
             // tlsConfig
-            tlsConfig.setDefaultPSKKey("1a2b3c".getBytes(Charset.forName("UTF-8")));
-            PskClientKeyExchangeMessage msg = new PskClientKeyExchangeMessage(tlsConfig);
+            tlsConfig.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("1a2b3c"));
+
             ProtocolMessage msg2 = trace.getReceivingActions().get(1).getReceivedMessages().get(0);
             PskClientKeyExchangeMessage msg3 = (PskClientKeyExchangeMessage) msg2;
-            LOGGER.info("-.------------------------------");
             LOGGER.info(ArrayConverter.bytesToHexString(msg3.getComputations().getPremasterSecret()));
 
             // LOGGER.info(tlsContext.getChooser().getConfig().getDefaultPSKKey());
-            PskClientKeyExchangePreparator preparator = new PskClientKeyExchangePreparator(ChooserFactory.getChooser(
-                    tlsConfig.getChooserType(), tlsContext, tlsConfig), msg3);
-            //byte[] premasterSecret = preparator.generatePremasterSecret();
-            //tlsContext.setPreMasterSecret(premasterSecret);
+            PskClientKeyExchangePreparator preparator = new PskClientKeyExchangePreparator(tlsContext.getChooser(),
+                    msg3);
+            byte[] premasterSecret = preparator.generatePremasterSecret();
+            tlsContext.setPreMasterSecret(premasterSecret);
+            LOGGER.info(ArrayConverter.bytesToHexString(premasterSecret));
 
-            // AbstractRecord finished =
-            // trace.getReceivingActions().get(1).getReceivedRecords().get(2);
-            // recordLayer.decryptRecord(finished);
+            AbstractRecord finished = trace.getReceivingActions().get(1).getReceivedRecords().get(2);
+            Record finished2 = (Record) finished;
+            LOGGER.info("------------------------------------");
+            // decryptor = new RecordDecrypto, tlsContext);
+            // decryptor.decrypt(finished);
+            // helper = new ReceiveMessageHelper();
+            List<AbstractRecord> list = new LinkedList();
+            list.add(finished2);
+            LOGGER.info(list.toString());
+            helper = new ReceiveMessageHelper();
+            helper.parseMessages(list, tlsContext);
+            // trace.addTlsAction(new
+            // ChangePreMasterSecretAction(premasterSecret));
+            LOGGER.info(trace.executedAsPlanned());
+
             // preparator.prepareHandshakeMessageContents();
             // LOGGER.info(ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret()));
             // LOGGER.info(ArrayConverter.bytesToHexString(preparator.generatePremasterSecret()));
 
         }
-        // LOGGER.info(state.getWorkflowTrace().toString());
+        LOGGER.info(state.getWorkflowTrace().toString());
         // LOGGER.info(trace.getLastMessageAction().toString());
     }
 }

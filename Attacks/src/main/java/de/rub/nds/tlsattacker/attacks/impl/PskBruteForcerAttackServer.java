@@ -63,6 +63,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
@@ -172,23 +176,15 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
         State state = new State(tlsConfig, trace);
         state.setWorkflowTrace(trace);
-        state.getTlsContext().setClientSupportedCiphersuites(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-        tlsConfig.setDefaultSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-        trace.removeTlsAction(1);
-        trace.addTlsAction(new ReceiveAction(new ServerHelloMessage(tlsConfig), new ServerHelloDoneMessage(tlsConfig)));
+        // state.getTlsContext().setClientSupportedCiphersuites(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
+        // tlsConfig.setDefaultSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
 
-        trace.addTlsAction(new SendAction(new PskClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
-                tlsConfig), new FinishedMessage(tlsConfig)));
-
-        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+        setTraceActions(trace, tlsConfig);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
-        PskClientKeyExchangeMessage message = (PskClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
-                HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
-        message.prepareComputations();
-        message.setIdentity("Client_Identity".getBytes(Charset.forName("UTF-8")));
+        setClientKeyExchangeMessage(trace);
         workflowExecutor.executeWorkflow();
         // boolean result = trace.executedAsPlanned();
         // String workflowString = state.getWorkflowTrace().toString();
@@ -206,6 +202,52 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
         } else {
             // LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Wrong PSK");
             return false;
+        }
+    }
+
+    private void setTraceActions(WorkflowTrace trace, Config tlsConfig) {
+        trace.removeTlsAction(1);
+        if (config.getDheDowngrade()) {
+            trace.addTlsAction(new ReceiveAction(new ServerHelloMessage(tlsConfig), new PskDheServerKeyExchangeMessage(
+                    tlsConfig), new ServerHelloDoneMessage(tlsConfig)));
+        } else if (config.getEcDheDowngrade()) {
+            trace.addTlsAction(new ReceiveAction(new ServerHelloMessage(tlsConfig),
+                    new PskEcDheServerKeyExchangeMessage(tlsConfig), new ServerHelloDoneMessage(tlsConfig)));
+        } else {
+            trace.addTlsAction(new ReceiveAction(new ServerHelloMessage(tlsConfig), new ServerHelloDoneMessage(
+                    tlsConfig)));
+        }
+
+        if (config.getDheDowngrade()) {
+            trace.addTlsAction(new SendAction(new PskDhClientKeyExchangeMessage(tlsConfig),
+                    new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+        } else if (config.getEcDheDowngrade()) {
+            trace.addTlsAction(new SendAction(new PskEcDhClientKeyExchangeMessage(tlsConfig),
+                    new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+        } else {
+            trace.addTlsAction(new SendAction(new PskClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
+                    tlsConfig), new FinishedMessage(tlsConfig)));
+        }
+
+        trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(tlsConfig), new FinishedMessage(tlsConfig)));
+    }
+
+    private void setClientKeyExchangeMessage(WorkflowTrace trace) {
+        if (config.getDheDowngrade()) {
+            PskDhClientKeyExchangeMessage message = (PskDhClientKeyExchangeMessage) WorkflowTraceUtil
+                    .getFirstSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            message.prepareComputations();
+            message.setIdentity("Client_Identity".getBytes(Charset.forName("UTF-8")));
+        } else if (config.getEcDheDowngrade()) {
+            PskEcDhClientKeyExchangeMessage message = (PskEcDhClientKeyExchangeMessage) WorkflowTraceUtil
+                    .getFirstSendMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            message.prepareComputations();
+            message.setIdentity("Client_Identity".getBytes(Charset.forName("UTF-8")));
+        } else {
+            PskClientKeyExchangeMessage message = (PskClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
+                    HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
+            message.prepareComputations();
+            message.setIdentity("Client_Identity".getBytes(Charset.forName("UTF-8")));
         }
     }
 }
