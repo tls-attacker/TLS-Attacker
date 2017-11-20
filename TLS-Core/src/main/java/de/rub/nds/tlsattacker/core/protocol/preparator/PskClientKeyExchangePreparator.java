@@ -9,38 +9,40 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 
-public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<PSKClientKeyExchangeMessage> {
+/**
+ *
+ * @author Florian Linsner - florian.linsner@rub.de
+ */
+public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<PskClientKeyExchangeMessage> {
 
     private byte[] premasterSecret;
     private byte[] clientRandom;
-    private final PSKClientKeyExchangeMessage msg;
-    private PSKPremasterComputations comps;
+    private final PskClientKeyExchangeMessage msg;
     private ByteArrayOutputStream outputStream;
 
-    public PSKClientKeyExchangePreparator(Chooser chooser, PSKClientKeyExchangeMessage message) {
+    public PskClientKeyExchangePreparator(Chooser chooser, PskClientKeyExchangeMessage message) {
         super(chooser, message);
         this.msg = message;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
-        msg.setIdentity(chooser.getConfig().getDefaultPSKIdentity());
-        msg.setIdentityLength(chooser.getConfig().getDefaultPSKIdentity().length);
+        msg.setIdentity(chooser.getPSKIdentity());
+        msg.setIdentityLength(msg.getIdentity().getValue().length);
         msg.prepareComputations();
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }
 
-    private byte[] generatePremasterSecret() {
+    public byte[] generatePremasterSecret() {
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
@@ -58,13 +60,13 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         return tempPremasterSecret;
     }
 
-    private void preparePremasterSecret(PSKClientKeyExchangeMessage msg) {
+    private void preparePremasterSecret(PskClientKeyExchangeMessage msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    private void prepareClientRandom(PSKClientKeyExchangeMessage msg) {
+    private void prepareClientRandom(PskClientKeyExchangeMessage msg) {
         // TODO spooky
         clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientRandom(clientRandom);
@@ -75,6 +77,7 @@ public class PSKClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     @Override
     public void prepareAfterParse() {
         msg.prepareComputations();
+        premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }

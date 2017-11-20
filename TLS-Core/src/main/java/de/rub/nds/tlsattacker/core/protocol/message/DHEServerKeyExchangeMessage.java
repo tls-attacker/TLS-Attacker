@@ -31,22 +31,22 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray modulus;
+    protected ModifiableByteArray modulus;
 
     /**
      * DH modulus Length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger modulusLength;
+    protected ModifiableInteger modulusLength;
 
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray generator;
+    protected ModifiableByteArray generator;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger generatorLength;
+    protected ModifiableInteger generatorLength;
 
     @HoldsModifiableVariable
     protected DHEServerComputations computations;

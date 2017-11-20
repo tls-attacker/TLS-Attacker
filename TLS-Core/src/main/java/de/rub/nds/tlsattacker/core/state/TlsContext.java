@@ -254,6 +254,38 @@ public class TlsContext {
 
     private BigInteger clientDhPublicKey;
 
+    private BigInteger srpModulus;
+
+    private BigInteger pskModulus;
+
+    private BigInteger serverPSKPrivateKey;
+
+    private BigInteger serverPSKPublicKey;
+
+    private BigInteger pskGenerator;
+
+    private BigInteger srpGenerator;
+
+    private BigInteger serverSRPPublicKey;
+
+    private BigInteger serverSRPPrivateKey;
+
+    private BigInteger clientSRPPublicKey;
+
+    private BigInteger clientSRPPrivateKey;
+
+    private byte[] srpServerSalt;
+
+    private byte[] srpPassword;
+
+    private byte[] srpIdentity;
+
+    private byte[] pskKey;
+
+    private byte[] pskIdentity;
+
+    private byte[] pskIdentityHint;
+
     private NamedCurve selectedCurve;
 
     private CustomECPoint clientEcPublicKey;
@@ -568,6 +600,134 @@ public class TlsContext {
 
     public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
+    }
+
+    public BigInteger getSRPGenerator() {
+        return srpGenerator;
+    }
+
+    public void setSRPGenerator(BigInteger srpGenerator) {
+        this.srpGenerator = srpGenerator;
+    }
+
+    public BigInteger getSRPModulus() {
+        return srpModulus;
+    }
+
+    public void setSRPModulus(BigInteger srpModulus) {
+        this.srpModulus = srpModulus;
+    }
+
+    public byte[] getPSKIdentity() {
+        return pskIdentity;
+    }
+
+    public void setPSKIdentity(byte[] pskIdentity) {
+        this.pskIdentity = pskIdentity;
+    }
+
+    public byte[] getPSKIdentityHint() {
+        return pskIdentityHint;
+    }
+
+    public void setPSKIdentityHint(byte[] pskIdentityHint) {
+        this.pskIdentityHint = pskIdentityHint;
+    }
+
+    public BigInteger getPSKModulus() {
+        return pskModulus;
+    }
+
+    public void setPSKModulus(BigInteger pskModulus) {
+        this.pskModulus = pskModulus;
+    }
+
+    public BigInteger getServerPSKPrivateKey() {
+        return serverPSKPrivateKey;
+    }
+
+    public void setServerPSKPrivateKey(BigInteger serverPSKPrivateKey) {
+        this.serverPSKPrivateKey = serverPSKPrivateKey;
+    }
+
+    public BigInteger getServerPSKPublicKey() {
+        return serverPSKPublicKey;
+    }
+
+    public void setServerPSKPublicKey(BigInteger serverPSKPublicKey) {
+        this.serverPSKPublicKey = serverPSKPublicKey;
+    }
+
+    public BigInteger getPSKGenerator() {
+        return pskGenerator;
+    }
+
+    public void setPSKGenerator(BigInteger pskGenerator) {
+        this.pskGenerator = pskGenerator;
+    }
+
+    public BigInteger getServerSRPPublicKey() {
+        return serverSRPPublicKey;
+    }
+
+    public void setServerSRPPublicKey(BigInteger serverSRPPublicKey) {
+        this.serverSRPPublicKey = serverSRPPublicKey;
+    }
+
+    public BigInteger getServerSRPPrivateKey() {
+        return serverSRPPrivateKey;
+    }
+
+    public void setServerSRPPrivateKey(BigInteger serverSRPPrivateKey) {
+        this.serverSRPPrivateKey = serverSRPPrivateKey;
+    }
+
+    public BigInteger getClientSRPPublicKey() {
+        return clientSRPPublicKey;
+    }
+
+    public void setClientSRPPublicKey(BigInteger clientSRPPublicKey) {
+        this.clientSRPPublicKey = clientSRPPublicKey;
+    }
+
+    public BigInteger getClientSRPPrivateKey() {
+        return clientSRPPrivateKey;
+    }
+
+    public void setClientSRPPrivateKey(BigInteger clientSRPPrivateKey) {
+        this.clientSRPPrivateKey = clientSRPPrivateKey;
+    }
+
+    public byte[] getSRPServerSalt() {
+        return srpServerSalt;
+    }
+
+    public void setSRPServerSalt(byte[] srpServerSalt) {
+        this.srpServerSalt = srpServerSalt;
+    }
+
+    public byte[] getPSKKey() {
+        return pskKey;
+    }
+
+    public void setPSKKeyt(byte[] pskKey) {
+        this.pskKey = pskKey;
+    }
+
+    public byte[] getSRPPassword() {
+        return srpPassword;
+    }
+
+    public void setSRPPassword(byte[] srpPassword) {
+        this.srpPassword = srpPassword;
+    }
+
+    public byte[] getSRPIdentity() {
+        return srpIdentity;
+    }
+
+    public void setSRPIdentity(byte[] srpIdentity) {
+        this.srpIdentity = srpIdentity;
     }
 
     public BigInteger getDhGenerator() {

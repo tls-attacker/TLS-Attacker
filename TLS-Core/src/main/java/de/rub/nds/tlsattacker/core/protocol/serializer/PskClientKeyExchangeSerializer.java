@@ -11,10 +11,14 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 
-public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<PSKClientKeyExchangeMessage> {
-    private final PSKClientKeyExchangeMessage msg;
+/**
+ *
+ * @author Florian Linsner - florian.linsner@rub.de
+ */
+public class PskClientKeyExchangeSerializer extends HandshakeMessageSerializer<PskClientKeyExchangeMessage> {
+    private final PskClientKeyExchangeMessage msg;
 
     /**
      * Constructor for the PSKClientKeyExchangeSerializer
@@ -24,7 +28,7 @@ public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<P
      * @param version
      *            Version of the Protocol
      */
-    public PSKClientKeyExchangeSerializer(PSKClientKeyExchangeMessage message, ProtocolVersion version) {
+    public PskClientKeyExchangeSerializer(PskClientKeyExchangeMessage message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
     }
@@ -38,19 +42,19 @@ public class PSKClientKeyExchangeSerializer extends HandshakeMessageSerializer<P
     }
 
     /**
-     * Writes the PskIdentityLength of the PSKClientKeyExchangeMessage into the
+     * Writes the PskIdentityLength of the PskClientKeyExchangeMessage into the
      * final byte[]
      */
-    private void writePskIdentityLength(PSKClientKeyExchangeMessage msg) {
-        appendInt(msg.getIdentity().getValue().length, HandshakeByteLength.PSK_IDENTITY_LENGTH);
-        LOGGER.debug("PskIdentityLength: " + ArrayConverter.bytesToInt(msg.getIdentity().getValue()));
+    private void writePskIdentityLength(PskClientKeyExchangeMessage msg) {
+        appendInt(msg.getIdentityLength().getValue(), HandshakeByteLength.PSK_IDENTITY_LENGTH);
+        LOGGER.debug("PskIdentityLength: " + msg.getIdentityLength().getValue());
     }
 
     /**
-     * Writes the pskIdentity of the PSKClientKeyExchangeMessage into the final
+     * Writes the pskIdentity of the PskClientKeyExchangeMessage into the final
      * byte[]
      */
-    private void writePskIdentity(PSKClientKeyExchangeMessage msg) {
+    private void writePskIdentity(PskClientKeyExchangeMessage msg) {
         appendBytes(msg.getIdentity().getValue());
         LOGGER.debug("PskIdentity: " + ArrayConverter.bytesToHexString(msg.getIdentity().getValue()));
     }

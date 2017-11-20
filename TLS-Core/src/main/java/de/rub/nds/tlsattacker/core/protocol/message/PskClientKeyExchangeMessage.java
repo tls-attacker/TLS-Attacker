@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.PSKClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.PSKPremasterComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -25,7 +25,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 @XmlRootElement
-public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
+public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
     @XmlElement
@@ -35,11 +35,11 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger identityLength;
 
-    public PSKClientKeyExchangeMessage(Config tlsConfig) {
+    public PskClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
     }
 
-    public PSKClientKeyExchangeMessage() {
+    public PskClientKeyExchangeMessage() {
         super();
     }
 
@@ -88,7 +88,7 @@ public class PSKClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new PSKClientKeyExchangeHandler(context);
+        return new PskClientKeyExchangeHandler(context);
     }
 
     @Override

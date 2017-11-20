@@ -17,15 +17,15 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.bouncycastle.util.BigIntegers;
 
-public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<DHClientKeyExchangeMessage> {
+public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangePreparator<T> {
 
-    private BigInteger clientPublicKey;
-    private byte[] premasterSecret;
-    private byte[] random;
-    private byte[] masterSecret;
-    private final DHClientKeyExchangeMessage msg;
+    protected BigInteger clientPublicKey;
+    protected byte[] premasterSecret;
+    protected byte[] random;
+    protected byte[] masterSecret;
+    protected final T msg;
 
-    public DHClientKeyExchangePreparator(Chooser chooser, DHClientKeyExchangeMessage msg) {
+    public DHClientKeyExchangePreparator(Chooser chooser, T msg) {
         super(chooser, msg);
         this.msg = msg;
     }
@@ -34,57 +34,65 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing DHClientExchangeMessage");
         msg.prepareComputations();
+        setDhParams();
+
+        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
+                .getPrivateKey().getValue(), msg.getComputations().getServerPublicKey().getValue());
+        clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations()
+                .getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
+        prepareDhParams();
+    }
+
+    protected void setDhParams() {
         setComputationGenerator(msg);
         setComputationModulus(msg);
         setComputationPrivateKey(msg);
         setComputationServerPublicKey(msg);
+    }
 
-        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-                .getPrivateKey().getValue(), msg.getComputations().getServerPublicKey().getValue());
+    protected void prepareDhParams() {
         preparePremasterSecret(msg);
-        clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations()
-                .getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
         prepareClientRandom(msg);
     }
 
-    private BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
+    protected BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
         return generator.modPow(privateKey, modulus);
     }
 
-    private byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
+    protected byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
         return BigIntegers.asUnsignedByteArray(publicKey.modPow(privateKey, modulus));
     }
 
-    private void setComputationGenerator(DHClientKeyExchangeMessage msg) {
+    protected void setComputationGenerator(T msg) {
         msg.getComputations().setGenerator(chooser.getDhGenerator());
         LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue());
     }
 
-    private void setComputationModulus(DHClientKeyExchangeMessage msg) {
+    protected void setComputationModulus(T msg) {
         msg.getComputations().setModulus(chooser.getDhModulus());
         LOGGER.debug("Modulus: " + msg.getComputations().getModulus().getValue());
     }
 
-    private void preparePremasterSecret(DHClientKeyExchangeMessage msg) {
+    protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         premasterSecret = msg.getComputations().getPremasterSecret().getValue();
         LOGGER.debug("PremasterSecret: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    private void preparePublicKey(DHClientKeyExchangeMessage msg) {
+    protected void preparePublicKey(T msg) {
         msg.setPublicKey(clientPublicKey.toByteArray());
         LOGGER.debug("PublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
-    private void preparePublicKeyLength(DHClientKeyExchangeMessage msg) {
+    protected void preparePublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void prepareClientRandom(DHClientKeyExchangeMessage msg) {
+    protected void prepareClientRandom(T msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientRandom(random);
         random = msg.getComputations().getClientRandom().getValue();
@@ -102,12 +110,12 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
         prepareClientRandom(msg);
     }
 
-    private void setComputationPrivateKey(DHClientKeyExchangeMessage msg) {
+    protected void setComputationPrivateKey(T msg) {
         msg.getComputations().setPrivateKey(chooser.getDhClientPrivateKey());
         LOGGER.debug("Computation PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
     }
 
-    private void setComputationServerPublicKey(DHClientKeyExchangeMessage msg) {
+    protected void setComputationServerPublicKey(T msg) {
         msg.getComputations().setServerPublicKey(chooser.getDhServerPublicKey());
         LOGGER.debug("Computation PublicKey: " + msg.getComputations().getServerPublicKey().getValue().toString());
     }

@@ -353,6 +353,141 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public BigInteger getSRPModulus() {
+        if (context.getSRPModulus() != null) {
+            return context.getSRPModulus();
+        } else {
+            return config.getDefaultSRPModulus();
+        }
+    }
+
+    @Override
+    public byte[] getPSKIdentity() {
+        if (context.getPSKIdentity() != null) {
+            return context.getPSKIdentity();
+        } else {
+            return config.getDefaultPSKIdentity();
+        }
+    }
+
+    @Override
+    public byte[] getPSKIdentityHint() {
+        if (context.getPSKIdentityHint() != null) {
+            return context.getPSKIdentityHint();
+        } else {
+            return config.getDefaultPSKIdentityHint();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKModulus() {
+        if (context.getPSKModulus() != null) {
+            return context.getPSKModulus();
+        } else {
+            return config.getDefaultPSKModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKServerPrivateKey() {
+        if (context.getServerPSKPrivateKey() != null) {
+            return context.getServerPSKPrivateKey();
+        } else {
+            return config.getDefaultPSKServerPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKServerPublicKey() {
+        if (context.getServerPSKPublicKey() != null) {
+            return context.getServerPSKPublicKey();
+        } else {
+            return config.getDefaultPSKServerPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKGenerator() {
+        if (context.getPSKGenerator() != null) {
+            return context.getPSKGenerator();
+        } else {
+            return config.getDefaultPSKGenerator();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPGenerator() {
+        if (context.getSRPGenerator() != null) {
+            return context.getSRPGenerator();
+        } else {
+            return config.getDefaultSRPGenerator();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPServerPrivateKey() {
+        if (context.getServerSRPPrivateKey() != null) {
+            return context.getServerSRPPrivateKey();
+        } else {
+            return config.getDefaultSRPServerPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPServerPublicKey() {
+        if (context.getServerSRPPublicKey() != null) {
+            return context.getServerSRPPublicKey();
+        } else {
+            return config.getDefaultSRPServerPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPClientPrivateKey() {
+        if (context.getClientSRPPrivateKey() != null) {
+            return context.getClientSRPPrivateKey();
+        } else {
+            return config.getDefaultSRPClientPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPClientPublicKey() {
+        if (context.getClientSRPPublicKey() != null) {
+            return context.getClientSRPPublicKey();
+        } else {
+            return config.getDefaultSRPClientPublicKey();
+        }
+    }
+
+    @Override
+    public byte[] getSRPPassword() {
+        if (context.getSRPPassword() != null) {
+            return context.getSRPPassword();
+        } else {
+            return config.getDefaultSRPPassword();
+        }
+    }
+
+    @Override
+    public byte[] getSRPIdentity() {
+        if (context.getSRPIdentity() != null) {
+            return context.getSRPIdentity();
+        } else {
+            return config.getDefaultSRPIdentity();
+        }
+    }
+
+    @Override
+    public byte[] getSRPServerSalt() {
+        if (context.getSRPServerSalt() != null) {
+            return context.getSRPServerSalt();
+        } else {
+            return config.getDefaultSRPServerSalt();
+        }
+    }
+
+    @Override
     public BigInteger getDhClientPrivateKey() {
         if (context.getClientDhPrivateKey() != null) {
             return context.getClientDhPrivateKey();

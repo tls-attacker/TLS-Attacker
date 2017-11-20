@@ -27,6 +27,15 @@ import de.rub.nds.tlsattacker.core.protocol.handler.DHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpClientKeyExchangeHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskRsaClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.FinishedHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
@@ -257,6 +266,18 @@ public class HandlerFactory {
             case DH_DSS:
             case DH_RSA:
                 return new DHClientKeyExchangeHandler(context);
+            case DHE_PSK:
+                return new PskDhClientKeyExchangeHandler(context);
+            case ECDHE_PSK:
+                return new PskEcDhClientKeyExchangeHandler(context);
+            case RSA_PSK:
+                return new PskRsaClientKeyExchangeHandler(context);
+            case PSK:
+                return new PskClientKeyExchangeHandler(context);
+            case SRP_SHA_DSS:
+            case SRP_SHA_RSA:
+            case SRP_SHA:
+                return new SrpClientKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }
@@ -283,6 +304,16 @@ public class HandlerFactory {
             case DH_DSS:
             case DH_RSA:
                 return new DHEServerKeyExchangeHandler(context);
+            case PSK:
+                return new PskServerKeyExchangeHandler(context);
+            case DHE_PSK:
+                return new PskDheServerKeyExchangeHandler(context);
+            case ECDHE_PSK:
+                return new PskEcDheServerKeyExchangeHandler(context);
+            case SRP_SHA_DSS:
+            case SRP_SHA_RSA:
+            case SRP_SHA:
+                return new SrpServerKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
         }

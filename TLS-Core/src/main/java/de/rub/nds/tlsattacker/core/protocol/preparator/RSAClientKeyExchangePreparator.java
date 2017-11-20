@@ -9,11 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.security.KeyPairGenerator;
@@ -21,16 +19,17 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
-public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<RSAClientKeyExchangeMessage> {
+public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessage> extends
+        ClientKeyExchangePreparator<T> {
 
-    private byte[] padding;
-    private byte[] premasterSecret;
-    private byte[] clientRandom;
-    private byte[] masterSecret;
-    private byte[] encrypted;
-    private final RSAClientKeyExchangeMessage msg;
+    protected byte[] padding;
+    protected byte[] premasterSecret;
+    protected byte[] clientRandom;
+    protected byte[] masterSecret;
+    protected byte[] encrypted;
+    protected final T msg;
 
-    public RSAClientKeyExchangePreparator(Chooser chooser, RSAClientKeyExchangeMessage message) {
+    public RSAClientKeyExchangePreparator(Chooser chooser, T message) {
         super(chooser, message);
         this.msg = message;
     }
@@ -65,7 +64,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         prepareSerializedPublicKeyLength(msg);
     }
 
-    private byte[] generatePremasterSecret() {
+    protected byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
         chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
         tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
@@ -73,7 +72,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         return tempPremasterSecret;
     }
 
-    private RSAPublicKey generateFreshKey() {
+    protected RSAPublicKey generateFreshKey() {
         KeyPairGenerator keyGen = null;
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");
@@ -84,18 +83,18 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
 
     }
 
-    private void preparePadding(RSAClientKeyExchangeMessage msg) {
+    protected void preparePadding(T msg) {
         msg.getComputations().setPadding(padding);
         LOGGER.debug("Padding: " + ArrayConverter.bytesToHexString(msg.getComputations().getPadding().getValue()));
     }
 
-    private void preparePremasterSecret(RSAClientKeyExchangeMessage msg) {
+    protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    private void preparePlainPaddedPremasterSecret(RSAClientKeyExchangeMessage msg) {
+    protected void preparePlainPaddedPremasterSecret(T msg) {
         msg.getComputations().setPlainPaddedPremasterSecret(
                 ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg
                         .getComputations().getPremasterSecret().getValue()));
@@ -103,7 +102,7 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
 
-    private void prepareClientRandom(RSAClientKeyExchangeMessage msg) {
+    protected void prepareClientRandom(T msg) {
         // TODO spooky
         clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientRandom(clientRandom);
@@ -111,17 +110,17 @@ public class RSAClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
+    protected void prepareSerializedPublicKey(T msg) {
         msg.setPublicKey(encrypted);
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
-    private void prepareSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
+    protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private byte[] decryptPremasterSecret() {
+    protected byte[] decryptPremasterSecret() {
         BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(1, msg.getPublicKey().getValue());
         BigInteger serverPrivateKey = chooser.getConfig().getDefaultServerRSAPrivateKey();
         BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey, chooser.getRsaModulus());
