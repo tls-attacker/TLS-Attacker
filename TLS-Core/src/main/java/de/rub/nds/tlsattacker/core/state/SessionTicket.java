@@ -21,20 +21,16 @@ import java.io.Serializable;
  */
 public class SessionTicket extends ModifiableVariableHolder implements Serializable {
     @ModifiableVariableProperty()
-    private ModifiableByteArray keyName; // 16 Byte
+    private ModifiableByteArray keyName;
 
     @ModifiableVariableProperty()
-    private ModifiableByteArray iv; // 16 Byte
+    private ModifiableByteArray iv;
 
-    // Encrypted 128-bit AES in CBC mode with the given IV.
     @ModifiableVariableProperty()
-    private ModifiableByteArray encryptedState; // x * 16 Byte
+    private ModifiableByteArray encryptedState;
 
-    // HMAC-SHA1 over key_name (16 octets)and IV (16 octets), followed
-    // by the length of the encrypted_state field (2 octets) and its
-    // contents (variable length).
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
-    private ModifiableByteArray mac; // 32 Byte
+    private ModifiableByteArray mac;
 
     public SessionTicket() {
     }

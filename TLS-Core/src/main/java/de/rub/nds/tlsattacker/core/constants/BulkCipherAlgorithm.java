@@ -58,7 +58,7 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("SEED")) {
             return SEED;
         } else if (cipher.contains("ARIA")) {
-            return SEED; // I think this is wrong but I dont want to change it.
+            return ARIA;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
     }

@@ -21,11 +21,6 @@ public enum ClientAuthenticationType {
     CERTIFICATE_BASED((byte) 0x01),
     PSK((byte) 0x02);
 
-    /**
-     * length of the ClientAuthenticationType in the TLS byte arrays
-     */
-    public static final int LENGTH = 1;
-
     private byte value;
 
     private static final Map<Byte, ClientAuthenticationType> MAP;

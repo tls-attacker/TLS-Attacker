@@ -14,11 +14,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import static de.rub.nds.tlsattacker.core.state.State.LOGGER;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  *
@@ -26,30 +21,28 @@ import java.io.IOException;
  */
 public class StatePlaintext {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray protocolVersion; // 2 Bytes
+    private ModifiableByteArray protocolVersion;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableInteger cipherSuite; // 2 Bytes
+    private ModifiableInteger cipherSuite;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte compressionMethod; // 1 Byte
+    private ModifiableByte compressionMethod;
 
     @ModifiableVariableProperty()
-    private ModifiableByteArray masterSecret; // 48 Bytes
+    private ModifiableByteArray masterSecret;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByte clientAuthenticationType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger clientAuthenticationDataLength; // Anon 0 Bytes,
-                                                              // PSK 2 Bytes,
-                                                              // Certs 3 Bytes
+    private ModifiableInteger clientAuthenticationDataLength;
 
     @ModifiableVariableProperty()
     private ModifiableByteArray clientAuthenticationData;
 
     @ModifiableVariableProperty()
-    private ModifiableLong timestamp; // uint32
+    private ModifiableLong timestamp;
 
     public StatePlaintext() {
     }

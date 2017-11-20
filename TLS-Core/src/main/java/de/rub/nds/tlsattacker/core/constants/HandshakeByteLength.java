@@ -203,6 +203,11 @@ public class HandshakeByteLength {
 
     public static final int ENCRYPTED_STATE_LENGTH = 2;
 
+    /**
+     * length of the ClientAuthenticationType in the TLS byte arrays
+     */
+    public static final int CLIENT_AUTHENTICATION_TYPE = 1;
+
     private HandshakeByteLength() {
     }
 }

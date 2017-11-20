@@ -31,7 +31,7 @@ import java.util.List;
 public class NewSessionTicketMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty()
-    private ModifiableLong ticketLifetimeHint; // simulates uint32
+    private ModifiableLong ticketLifetimeHint;
 
     @ModifiableVariableProperty()
     private ModifiableInteger ticketLength;
