@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
@@ -71,6 +72,7 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+            @XmlElement(type = PSKClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
