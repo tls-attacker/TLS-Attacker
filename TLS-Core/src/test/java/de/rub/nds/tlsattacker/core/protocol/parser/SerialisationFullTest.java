@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
@@ -130,6 +131,7 @@ public class SerialisationFullTest {
         messages.add(new DHEServerKeyExchangeMessage());
         messages.add(new ECDHClientKeyExchangeMessage());
         messages.add(new ECDHEServerKeyExchangeMessage());
+        messages.add(new EncryptedExtensionsMessage());
         messages.add(new FinishedMessage());
         messages.add(new HeartbeatMessage());
         messages.add(new HelloRequestMessage());
