@@ -102,7 +102,7 @@ public class SendMessageHelper {
             }
         }
         if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
-                && context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+                && context.getChooser().getSelectedProtocolVersion().isTLS13() && context.isExpectingEndOfEarlyData()) {
             for (ProtocolMessage message : messages) {
                 if (message instanceof FinishedMessage) {
                     // Switch RecordLayer secrets to prepare for EndOfEarlyData
