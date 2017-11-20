@@ -46,7 +46,6 @@ public class ServerTCPNonBlockingTransportHandlerTest {
      * 
      * @throws java.io.IOException
      */
-    @Test(expected = IOException.class)
     public void testCloseConnectionNotInitialised() throws IOException {
         handler.closeConnection();
     }

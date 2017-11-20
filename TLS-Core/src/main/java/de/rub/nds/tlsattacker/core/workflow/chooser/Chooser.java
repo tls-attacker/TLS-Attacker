@@ -56,6 +56,8 @@ public abstract class Chooser {
         return context;
     }
 
+    public abstract List<KSEntry> getClientKeyShareEntryList();
+
     public abstract List<ECPointFormat> getClientSupportedPointFormats();
 
     public abstract SignatureAndHashAlgorithm getSelectedSigHashAlgorithm();
