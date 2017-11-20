@@ -18,10 +18,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class EncryptThenMacExtensionHandlerTest {
     private EncryptThenMacExtensionHandler handler;
     private TlsContext context;

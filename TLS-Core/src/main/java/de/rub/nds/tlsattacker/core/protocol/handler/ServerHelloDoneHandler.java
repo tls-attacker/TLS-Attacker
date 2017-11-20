@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloDonePreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloDoneSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class ServerHelloDoneHandler extends HandshakeMessageHandler<ServerHelloDoneMessage> {
 
     public ServerHelloDoneHandler(TlsContext tlsContext) {

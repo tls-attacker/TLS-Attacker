@@ -12,10 +12,6 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SessionResumptionDelegate extends Delegate {
 
     @Parameter(names = "-session_id", description = "The session ID to resume in hex", converter = ByteArrayConverter.class)

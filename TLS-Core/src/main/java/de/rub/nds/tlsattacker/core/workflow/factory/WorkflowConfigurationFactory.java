@@ -38,7 +38,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -57,10 +65,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Create a WorkflowTace based on a Config instance.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class WorkflowConfigurationFactory {
 
@@ -111,6 +115,8 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the default connection end defined in config.
+     * 
+     * @return A HelloWorkflow
      */
     public WorkflowTrace createHelloWorkflow() {
         return createHelloWorkflow(getSafeSingleContextConnectionEnd());
@@ -168,14 +174,19 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
-                messages.add(new CertificateMessage());
-            } else {
-                messages.add(new CertificateMessage(config));
+            if (!config.getDefaultSelectedCipherSuite().isSrpSha()
+                    && !config.getDefaultSelectedCipherSuite().isPskOrDhPsk()) {
+                if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
+                    messages.add(new CertificateMessage());
+                } else {
+                    messages.add(new CertificateMessage(config));
+                }
             }
-            if (config.getDefaultSelectedCipherSuite().isEphemeral()) {
+
+            if (config.getDefaultSelectedCipherSuite().isEphemeral() || config.getDefaultSelectedCipherSuite().isSrp()) {
                 addServerKeyExchangeMessage(messages);
             }
+
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
                 messages.add(certRequest);
@@ -191,6 +202,8 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a handshake workflow for the default connection end defined in
      * config.
+     * 
+     * @return A HandshakeWorkflow
      */
     public WorkflowTrace createHandshakeWorkflow() {
         return createHandshakeWorkflow(getSafeSingleContextConnectionEnd());
@@ -237,7 +250,7 @@ public class WorkflowConfigurationFactory {
      * Creates an extended TLS workflow including an application data and
      * heartbeat messages
      *
-     * @return
+     * @return A FullWorkflow with ApplicationMessages
      */
     public WorkflowTrace createFullWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
@@ -458,7 +471,22 @@ public class WorkflowConfigurationFactory {
                     messages.add(new DHClientKeyExchangeMessage(config));
                     break;
                 case PSK:
-                    messages.add(new PSKClientKeyExchangeMessage(config));
+                    messages.add(new PskClientKeyExchangeMessage(config));
+                    break;
+                case DHE_PSK:
+                    messages.add(new PskDhClientKeyExchangeMessage(config));
+                    break;
+                case ECDHE_PSK:
+                    messages.add(new PskEcDhClientKeyExchangeMessage(config));
+                    break;
+                case RSA_PSK:
+                    messages.add(new PskRsaClientKeyExchangeMessage(config));
+                    break;
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    messages.add(new SrpClientKeyExchangeMessage(config));
+                    break;
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
                             + ", not adding ClientKeyExchange Message");
@@ -481,14 +509,28 @@ public class WorkflowConfigurationFactory {
                 case DHE_RSA:
                     messages.add(new DHEServerKeyExchangeMessage(config));
                     break;
+                case PSK:
+                    messages.add(new PskServerKeyExchangeMessage(config));
+                    break;
+                case DHE_PSK:
+                    messages.add(new PskDheServerKeyExchangeMessage(config));
+                    break;
+                case ECDHE_PSK:
+                    messages.add(new PskEcDheServerKeyExchangeMessage(config));
+                    break;
+                case SRP_SHA_DSS:
+                case SRP_SHA_RSA:
+                case SRP_SHA:
+                    messages.add(new SrpServerKeyExchangeMessage(config));
+                    break;
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + AlgorithmResolver.getKeyExchangeAlgorithm(cs)
                             + ", not adding ServerKeyExchange Message");
                     break;
             }
-        } else {
-            LOGGER.debug("Not adding ServerKeyExchange message - " + cs.name() + " is not an Ephermaral Ciphersuite");
+        }
+        if (cs.isSrp()) {
+            messages.add(new SrpServerKeyExchangeMessage(config));
         }
     }
-
 }

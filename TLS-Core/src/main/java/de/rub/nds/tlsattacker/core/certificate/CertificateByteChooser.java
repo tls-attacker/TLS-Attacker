@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class CertificateByteChooser {
 
     protected static final Logger LOGGER = LogManager.getLogger(CertificateByteChooser.class.getName());
@@ -57,6 +53,7 @@ public class CertificateByteChooser {
             case ECDHE_RSA:
             case RSA:
             case SRP_SHA_RSA:
+            case RSA_PSK:
                 return rsaCert;
             case DHE_DSS:
             case DH_DSS:

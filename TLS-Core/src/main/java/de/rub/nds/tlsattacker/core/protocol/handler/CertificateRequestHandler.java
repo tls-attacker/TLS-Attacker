@@ -19,10 +19,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class CertificateRequestHandler extends HandshakeMessageHandler<CertificateRequestMessage> {
 
     public CertificateRequestHandler(TlsContext tlsContext) {
@@ -59,10 +55,14 @@ public class CertificateRequestHandler extends HandshakeMessageHandler<Certifica
     }
 
     private void adjustDistinguishedNames(CertificateRequestMessage message) {
-        byte[] distinguishedNames = message.getDistinguishedNames().getValue();
-        tlsContext.setDistinguishedNames(distinguishedNames);
-        LOGGER.debug("Set DistinguishedNames in Context to "
-                + ArrayConverter.bytesToHexString(distinguishedNames, false));
+        if (message.getDistinguishedNames() != null && message.getDistinguishedNames().getValue() != null) {
+            byte[] distinguishedNames = message.getDistinguishedNames().getValue();
+            tlsContext.setDistinguishedNames(distinguishedNames);
+            LOGGER.debug("Set DistinguishedNames in Context to "
+                    + ArrayConverter.bytesToHexString(distinguishedNames, false));
+        } else {
+            LOGGER.debug("Not adjusting DistinguishedNames");
+        }
     }
 
     private void adjustClientCertificateTypes(CertificateRequestMessage message) {

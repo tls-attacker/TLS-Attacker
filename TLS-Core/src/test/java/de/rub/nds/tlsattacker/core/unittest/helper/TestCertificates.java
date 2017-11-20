@@ -38,10 +38,6 @@ import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class TestCertificates {
 
     public static final String keyStoreAlias = "keyStoreFromRsaPem";
@@ -95,9 +91,8 @@ public class TestCertificates {
     /**
      * Initialize a KeyStore from an ordinary OpenSSL RSA (cert,key) pair as
      * generated with
-     * "openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem"
-     * 
-     * For a less hacky version check
+     * "openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem" For a
+     * less hacky version check
      * http://ludup.com/content/loading-pem-keys-and-certificates-from-java/
      * 
      * @param rawPemCert

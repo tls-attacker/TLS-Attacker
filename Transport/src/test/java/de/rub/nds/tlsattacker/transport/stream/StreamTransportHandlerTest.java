@@ -16,10 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class StreamTransportHandlerTest {
 
     private StreamTransportHandler handler;
@@ -37,6 +33,8 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class StreamTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
@@ -45,6 +43,8 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of initialize method, of class StreamTransportHandler.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testInitialize() throws Exception {

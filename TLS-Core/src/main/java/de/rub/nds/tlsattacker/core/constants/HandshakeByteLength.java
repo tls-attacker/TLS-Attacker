@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class HandshakeByteLength {
 
     /**
@@ -194,6 +191,13 @@ public class HandshakeByteLength {
 
     public static final int PSK_ZERO = 0;
 
+    public static final int SRP_MODULUS_LENGTH = 2;
+
+    public static final int SRP_SALT_LENGTH = 1;
+
+    public static final int SRP_GENERATOR_LENGTH = 2;
+
+    public static final int SRP_PUBLICKEY_LENGTH = 2;
     /**
      * New Session Ticket
      */

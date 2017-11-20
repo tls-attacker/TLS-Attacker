@@ -11,17 +11,14 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class MessageActionFactory {
     public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEndType,
             ProtocolMessage... protocolMessages) {
-        return createAction(myConnectionEnd, sendingConnectionEndType, Arrays.asList(protocolMessages));
+        return createAction(myConnectionEnd, sendingConnectionEndType, new ArrayList(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createAction(ConnectionEnd myConnectionEnd, ConnectionEndType sendingConnectionEnd,

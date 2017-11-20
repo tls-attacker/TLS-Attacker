@@ -49,7 +49,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -58,13 +58,6 @@ import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class TlsContext {
 
     /**
@@ -89,11 +82,14 @@ public class TlsContext {
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
-
-    private byte[] clientApplicationTrafficSecret0;
-
-    private byte[] serverApplicationTrafficSecret0;
-
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientApplicationTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverApplicationTrafficSecret;
     /**
      * Master secret established during the handshake.
      */
@@ -258,6 +254,38 @@ public class TlsContext {
 
     private BigInteger clientDhPublicKey;
 
+    private BigInteger srpModulus;
+
+    private BigInteger pskModulus;
+
+    private BigInteger serverPSKPrivateKey;
+
+    private BigInteger serverPSKPublicKey;
+
+    private BigInteger pskGenerator;
+
+    private BigInteger srpGenerator;
+
+    private BigInteger serverSRPPublicKey;
+
+    private BigInteger serverSRPPrivateKey;
+
+    private BigInteger clientSRPPublicKey;
+
+    private BigInteger clientSRPPrivateKey;
+
+    private byte[] srpServerSalt;
+
+    private byte[] srpPassword;
+
+    private byte[] srpIdentity;
+
+    private byte[] pskKey;
+
+    private byte[] pskIdentity;
+
+    private byte[] pskIdentityHint;
+
     private NamedCurve selectedCurve;
 
     private CustomECPoint clientEcPublicKey;
@@ -300,12 +328,17 @@ public class TlsContext {
 
     private List<SNIEntry> clientSNIEntryList;
 
-    private List<KSEntry> clientKSEntryList;
+    private List<KSEntry> clientKeyShareEntryList;
 
     private KSEntry serverKSEntry;
-
-    private int sequenceNumber = 0;
-
+    /**
+     * sequence number used for the encryption
+     */
+    private long writeSequenceNumber = 0;
+    /**
+     * sequence number used for the decryption
+     */
+    private long readSequenceNumber = 0;
     /**
      * supported protocol versions
      */
@@ -356,7 +389,8 @@ public class TlsContext {
     private Chooser chooser;
 
     /**
-     * Contains the TLS extensions proposed by the client.
+     * Contains the TLS extensions proposed by the client. private boolean
+     * earlyCleanShutdown;
      */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
@@ -383,6 +417,8 @@ public class TlsContext {
      */
     private boolean useExtendedMasterSecret;
 
+    private Boolean earlyCleanShutdown = false;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -394,6 +430,7 @@ public class TlsContext {
      * single context scenarios.
      *
      * @param config
+     *            The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
         if (config.getConnectionEnds().size() > 1) {
@@ -498,7 +535,7 @@ public class TlsContext {
     }
 
     public void setClientSupportedProtocolVersions(ProtocolVersion... clientSupportedProtocolVersions) {
-        this.clientSupportedProtocolVersions = Arrays.asList(clientSupportedProtocolVersions);
+        this.clientSupportedProtocolVersions = new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
     }
 
     public BigInteger getRsaModulus() {
@@ -563,6 +600,134 @@ public class TlsContext {
 
     public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
+    }
+
+    public BigInteger getSRPGenerator() {
+        return srpGenerator;
+    }
+
+    public void setSRPGenerator(BigInteger srpGenerator) {
+        this.srpGenerator = srpGenerator;
+    }
+
+    public BigInteger getSRPModulus() {
+        return srpModulus;
+    }
+
+    public void setSRPModulus(BigInteger srpModulus) {
+        this.srpModulus = srpModulus;
+    }
+
+    public byte[] getPSKIdentity() {
+        return pskIdentity;
+    }
+
+    public void setPSKIdentity(byte[] pskIdentity) {
+        this.pskIdentity = pskIdentity;
+    }
+
+    public byte[] getPSKIdentityHint() {
+        return pskIdentityHint;
+    }
+
+    public void setPSKIdentityHint(byte[] pskIdentityHint) {
+        this.pskIdentityHint = pskIdentityHint;
+    }
+
+    public BigInteger getPSKModulus() {
+        return pskModulus;
+    }
+
+    public void setPSKModulus(BigInteger pskModulus) {
+        this.pskModulus = pskModulus;
+    }
+
+    public BigInteger getServerPSKPrivateKey() {
+        return serverPSKPrivateKey;
+    }
+
+    public void setServerPSKPrivateKey(BigInteger serverPSKPrivateKey) {
+        this.serverPSKPrivateKey = serverPSKPrivateKey;
+    }
+
+    public BigInteger getServerPSKPublicKey() {
+        return serverPSKPublicKey;
+    }
+
+    public void setServerPSKPublicKey(BigInteger serverPSKPublicKey) {
+        this.serverPSKPublicKey = serverPSKPublicKey;
+    }
+
+    public BigInteger getPSKGenerator() {
+        return pskGenerator;
+    }
+
+    public void setPSKGenerator(BigInteger pskGenerator) {
+        this.pskGenerator = pskGenerator;
+    }
+
+    public BigInteger getServerSRPPublicKey() {
+        return serverSRPPublicKey;
+    }
+
+    public void setServerSRPPublicKey(BigInteger serverSRPPublicKey) {
+        this.serverSRPPublicKey = serverSRPPublicKey;
+    }
+
+    public BigInteger getServerSRPPrivateKey() {
+        return serverSRPPrivateKey;
+    }
+
+    public void setServerSRPPrivateKey(BigInteger serverSRPPrivateKey) {
+        this.serverSRPPrivateKey = serverSRPPrivateKey;
+    }
+
+    public BigInteger getClientSRPPublicKey() {
+        return clientSRPPublicKey;
+    }
+
+    public void setClientSRPPublicKey(BigInteger clientSRPPublicKey) {
+        this.clientSRPPublicKey = clientSRPPublicKey;
+    }
+
+    public BigInteger getClientSRPPrivateKey() {
+        return clientSRPPrivateKey;
+    }
+
+    public void setClientSRPPrivateKey(BigInteger clientSRPPrivateKey) {
+        this.clientSRPPrivateKey = clientSRPPrivateKey;
+    }
+
+    public byte[] getSRPServerSalt() {
+        return srpServerSalt;
+    }
+
+    public void setSRPServerSalt(byte[] srpServerSalt) {
+        this.srpServerSalt = srpServerSalt;
+    }
+
+    public byte[] getPSKKey() {
+        return pskKey;
+    }
+
+    public void setPSKKeyt(byte[] pskKey) {
+        this.pskKey = pskKey;
+    }
+
+    public byte[] getSRPPassword() {
+        return srpPassword;
+    }
+
+    public void setSRPPassword(byte[] srpPassword) {
+        this.srpPassword = srpPassword;
+    }
+
+    public byte[] getSRPIdentity() {
+        return srpIdentity;
+    }
+
+    public void setSRPIdentity(byte[] srpIdentity) {
+        this.srpIdentity = srpIdentity;
     }
 
     public BigInteger getDhGenerator() {
@@ -630,7 +795,7 @@ public class TlsContext {
     }
 
     public void setClientNamedCurvesList(NamedCurve... clientNamedCurvesList) {
-        this.clientNamedCurvesList = Arrays.asList(clientNamedCurvesList);
+        this.clientNamedCurvesList = new ArrayList(Arrays.asList(clientNamedCurvesList));
     }
 
     public List<ECPointFormat> getServerPointFormatsList() {
@@ -642,7 +807,7 @@ public class TlsContext {
     }
 
     public void setServerPointFormatsList(ECPointFormat... serverPointFormatsList) {
-        this.serverPointFormatsList = Arrays.asList(serverPointFormatsList);
+        this.serverPointFormatsList = new ArrayList(Arrays.asList(serverPointFormatsList));
     }
 
     public List<SignatureAndHashAlgorithm> getClientSupportedSignatureAndHashAlgorithms() {
@@ -656,7 +821,8 @@ public class TlsContext {
 
     public void setClientSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... clientSupportedSignatureAndHashAlgorithms) {
-        this.clientSupportedSignatureAndHashAlgorithms = Arrays.asList(clientSupportedSignatureAndHashAlgorithms);
+        this.clientSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(clientSupportedSignatureAndHashAlgorithms));
     }
 
     public List<SNIEntry> getClientSNIEntryList() {
@@ -668,7 +834,7 @@ public class TlsContext {
     }
 
     public void setClientSNIEntryList(SNIEntry... clientSNIEntryList) {
-        this.clientSNIEntryList = Arrays.asList(clientSNIEntryList);
+        this.clientSNIEntryList = new ArrayList(Arrays.asList(clientSNIEntryList));
     }
 
     public ProtocolVersion getLastRecordVersion() {
@@ -696,7 +862,7 @@ public class TlsContext {
     }
 
     public void setClientCertificateTypes(ClientCertificateType... clientCertificateTypes) {
-        this.clientCertificateTypes = Arrays.asList(clientCertificateTypes);
+        this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
     public boolean isReceivedFatalAlert() {
@@ -732,7 +898,7 @@ public class TlsContext {
     }
 
     public void setClientPointFormatsList(ECPointFormat... clientPointFormatsList) {
-        this.clientPointFormatsList = Arrays.asList(clientPointFormatsList);
+        this.clientPointFormatsList = new ArrayList(Arrays.asList(clientPointFormatsList));
     }
 
     public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
@@ -776,15 +942,31 @@ public class TlsContext {
     }
 
     public void setClientSupportedCompressions(CompressionMethod... clientSupportedCompressions) {
-        this.clientSupportedCompressions = Arrays.asList(clientSupportedCompressions);
+        this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
-    public int getSequenceNumber() {
-        return sequenceNumber;
+    public long getWriteSequenceNumber() {
+        return writeSequenceNumber;
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public void setWriteSequenceNumber(long writeSequenceNumber) {
+        this.writeSequenceNumber = writeSequenceNumber;
+    }
+
+    public void increaseWriteSequenceNumber() {
+        this.writeSequenceNumber++;
+    }
+
+    public long getReadSequenceNumber() {
+        return readSequenceNumber;
+    }
+
+    public void setReadSequenceNumber(long readSequenceNumber) {
+        this.readSequenceNumber = readSequenceNumber;
+    }
+
+    public void increaseReadSequenceNumber() {
+        this.readSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -796,7 +978,7 @@ public class TlsContext {
     }
 
     public void setClientSupportedCiphersuites(CipherSuite... clientSupportedCiphersuites) {
-        this.clientSupportedCiphersuites = Arrays.asList(clientSupportedCiphersuites);
+        this.clientSupportedCiphersuites = new ArrayList(Arrays.asList(clientSupportedCiphersuites));
     }
 
     public List<SignatureAndHashAlgorithm> getServerSupportedSignatureAndHashAlgorithms() {
@@ -810,7 +992,8 @@ public class TlsContext {
 
     public void setServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... serverSupportedSignatureAndHashAlgorithms) {
-        this.serverSupportedSignatureAndHashAlgorithms = Arrays.asList(serverSupportedSignatureAndHashAlgorithms);
+        this.serverSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(serverSupportedSignatureAndHashAlgorithms));
     }
 
     public ProtocolVersion getSelectedProtocolVersion() {
@@ -973,20 +1156,20 @@ public class TlsContext {
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
-    public byte[] getClientApplicationTrafficSecret0() {
-        return clientApplicationTrafficSecret0;
+    public byte[] getClientApplicationTrafficSecret() {
+        return clientApplicationTrafficSecret;
     }
 
-    public void setClientApplicationTrafficSecret0(byte[] clientApplicationTrafficSecret0) {
-        this.clientApplicationTrafficSecret0 = clientApplicationTrafficSecret0;
+    public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
-    public byte[] getServerApplicationTrafficSecret0() {
-        return serverApplicationTrafficSecret0;
+    public byte[] getServerApplicationTrafficSecret() {
+        return serverApplicationTrafficSecret;
     }
 
-    public void setServerApplicationTrafficSecret0(byte[] serverApplicationTrafficSecret0) {
-        this.serverApplicationTrafficSecret0 = serverApplicationTrafficSecret0;
+    public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
     public byte[] getHandshakeSecret() {
@@ -997,16 +1180,16 @@ public class TlsContext {
         this.handshakeSecret = handshakeSecret;
     }
 
-    public List<KSEntry> getClientKSEntryList() {
-        return clientKSEntryList;
+    public List<KSEntry> getClientKeyShareEntryList() {
+        return clientKeyShareEntryList;
     }
 
-    public void setClientKSEntryList(List<KSEntry> clientKSEntryList) {
-        this.clientKSEntryList = clientKSEntryList;
+    public void setClientKeyShareEntryList(List<KSEntry> clientKeyShareEntryList) {
+        this.clientKeyShareEntryList = clientKeyShareEntryList;
     }
 
     public void setClientKSEntryList(KSEntry... clientKSEntryList) {
-        this.clientKSEntryList = Arrays.asList(clientKSEntryList);
+        this.clientKeyShareEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
     }
 
     public KSEntry getServerKSEntry() {
@@ -1158,7 +1341,7 @@ public class TlsContext {
     }
 
     public void setTokenBindingKeyParameters(TokenBindingKeyParameters... tokenBindingKeyParameters) {
-        this.tokenBindingKeyParameters = Arrays.asList(tokenBindingKeyParameters);
+        this.tokenBindingKeyParameters = new ArrayList(Arrays.asList(tokenBindingKeyParameters));
     }
 
     public byte[] getCertificateRequestContext() {
@@ -1233,8 +1416,16 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
+    public boolean isEarlyCleanShutdown() {
+        return earlyCleanShutdown;
+    }
+
     public Random getRandom() {
         return random;
+    }
+
+    public void setEarlyCleanShutdown(boolean earlyCleanShutdown) {
+        this.earlyCleanShutdown = earlyCleanShutdown;
     }
 
     public void setRandom(Random random) {
@@ -1293,6 +1484,7 @@ public class TlsContext {
      * Check if the given TLS extension type was proposed by the client.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
@@ -1303,6 +1495,7 @@ public class TlsContext {
      * Mark the given TLS extension type as client proposed extension.
      * 
      * @param ext
+     *            The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1312,6 +1505,7 @@ public class TlsContext {
      * Check if the given TLS extension type was sent by the server.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
@@ -1320,6 +1514,9 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as server negotiated extension.
+     * 
+     * @param ext
+     *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);

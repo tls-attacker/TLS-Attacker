@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ResetConnectionAction extends TLSAction {
 
     public ResetConnectionAction() {
@@ -30,7 +26,7 @@ public class ResetConnectionAction extends TLSAction {
         LOGGER.info("Terminating Connection");
         tlsContext.getTransportHandler().closeClientConnection();
         LOGGER.info("Resseting Cipher");
-        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Resetting MessageDigest");

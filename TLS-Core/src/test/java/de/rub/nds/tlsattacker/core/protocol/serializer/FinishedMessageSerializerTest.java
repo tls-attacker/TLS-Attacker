@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class FinishedMessageSerializerTest {
 
@@ -37,12 +33,15 @@ public class FinishedMessageSerializerTest {
 
     private final byte[] verifyData;
 
+    private final ProtocolVersion version;
+
     public FinishedMessageSerializerTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type,
-            int length, byte[] verifyData) {
+            int length, byte[] verifyData, ProtocolVersion version) {
         this.expectedPart = expectedPart;
         this.type = type;
         this.length = length;
         this.verifyData = verifyData;
+        this.version = version;
     }
 
     /**
@@ -56,7 +55,7 @@ public class FinishedMessageSerializerTest {
         msg.setType(type.getValue());
         msg.setVerifyData(verifyData);
         msg.setCompleteResultingMessage(expectedPart);
-        FinishedMessageSerializer serializer = new FinishedMessageSerializer(msg, ProtocolVersion.TLS12);
+        FinishedMessageSerializer serializer = new FinishedMessageSerializer(msg, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

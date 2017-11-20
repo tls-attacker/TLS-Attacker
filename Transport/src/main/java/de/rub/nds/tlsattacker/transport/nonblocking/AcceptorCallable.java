@@ -17,10 +17,6 @@ import java.util.concurrent.FutureTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AcceptorCallable implements Callable<Socket> {
 
     private static final Logger LOGGER = LogManager.getLogger(AcceptorCallable.class);

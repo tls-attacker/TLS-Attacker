@@ -18,10 +18,6 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     private final int port;
@@ -43,10 +39,9 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     @Override
     public void closeConnection() throws IOException {
-        if (serverSocket == null) {
-            throw new IOException("TransportHandler is not initialised!");
+        if (serverSocket != null) {
+            serverSocket.close();
         }
-        serverSocket.close();
         if (clientSocket != null) {
             clientSocket.close();
         }

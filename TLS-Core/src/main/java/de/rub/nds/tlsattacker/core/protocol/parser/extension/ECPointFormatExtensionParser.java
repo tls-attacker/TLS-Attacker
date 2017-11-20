@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ECPointFormatExtensionParser extends ExtensionParser<ECPointFormatExtensionMessage> {
 
     public ECPointFormatExtensionParser(int startposition, byte[] array) {

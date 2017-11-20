@@ -6,7 +6,7 @@
 
 TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is able to send arbitrary protocol messages in an arbitrary order to the TLS peer, and define their modifications using a provided interface. This gives the developer an opportunity to easily define a custom TLS protocol flow and test it against his TLS library.
 
-**Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights. It is the second version and can contain some bugs.*
+**Please note:**  *TLS-Attacker is a research tool intended for TLS developers and pentesters. There is no GUI and no green/red lights.*
 
 ## Compiling and Running
 In order to compile and use TLS-Attacker, you need to have Java installed. Run the maven command from the TLS-Attacker directory:
@@ -19,7 +19,7 @@ Alternatively, if you are in hurry, you can skip the tests by using:
 $ ./mvnw clean package -DskipTests=true
 ```
 
-TLS-Attacker ships with Demo Applications which allow you easy access to TLS-Attackers functionality.
+TLS-Attacker ships with demo applications which provide you easy access to TLS-Attacker functionality.
 
 You can run TLS-Attacker as a client with the following command:
 ```bash
@@ -31,37 +31,37 @@ or as a server with:
 $ java -jar TLS-Server.jar -port [port]
 ```
 
-TLS-Attacker also ships with some example Attacks on TLS to show you how easy it is to implement an Attack with TLS-Attacker.
+TLS-Attacker also ships with some example attacks on TLS to show you how easy it is to implement an attack with TLS-Attacker.
 You can run those examples with the following command:
 ```bash
-$ java -jar Attacks [Attack] -connect [host:port]
+$ java -jar Attacks.jar [Attack] -connect [host:port]
 ```
-Although these example Applications are very powerful in itself, TLS-Attacker unleashes its full potential when used as a programming library.
+Although these example applications are very powerful in itself, TLS-Attacker unleashes its full potential when used as a programming library.
 
 ## Code Structure
 TLS-Attacker consists of several (maven) projects:
 - TLS-Core: The protocol stack and heart of TLS-Attacker
 - Transport: Transport utilities for lower layers
 - Utils: A collection of utility classes
-- TLS-Client: The client example Application
-- TLS-Server: The server example Application
-- Attacks: Implementation of some well-known attacks and vulnerability Tests.
-- TLS-Mitm: A prototype MitM Workflows
+- TLS-Client: The client example application
+- TLS-Server: The server example application
+- Attacks: Implementation of some well-known attacks and vulnerability tests.
+- TLS-Mitm: A prototype for MitM workflows
 ![TLS-Attacker design](https://github.com/RUB-NDS/TLS-Attacker/blob/master/resources/figures/design.png)
 
 You can find more information about these modules in the Wiki.
 
 ## Features
 Currently, the following features are supported:
-- TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346) 1.2 (RFC-5246) and 1.3 (draft-ietf-tls-tls13-21)
-- DTLS 1.2 (RFC-6347)(Currently under Development)
+- SSL 3, TLS versions 1.0 (RFC-2246), 1.1 (RFC-4346), 1.2 (RFC-5246), and 1.3 (draft-ietf-tls-tls13-21)
+- DTLS 1.2 (RFC-6347)(Currently under development)
 - SSL 2 (Client/Server Hello)
 - (EC)DH and RSA key exchange algorithms
-- CBC and Streamciphers
+- CBC, AEAD and Streamciphers
 - TLS client and server
 - HTTPS
 - MitM (experimental)
-- Lots of Extensions
+- Lots of extensions
 - Tokenbinding (EC) and Tokenbinding over HTTP
 - Sockets
 - PSK
@@ -81,7 +81,7 @@ Full support for the following Extensions:
 - Renegotiation
 - Tokenbinding
 
-The following Extesions are sendable and receivable but are currently not completely functional:
+The following extesions are sendable and receivable but are currently not completely functional:
 - ALPN
 - Cached Info
 - Client Authz
@@ -100,20 +100,20 @@ The following Extesions are sendable and receivable but are currently not comple
 - UseSRTP
 
 ## Usage
-In the following, we present some very simple examples on using TLS-Attacker.
+Here we present some very simple examples on using TLS-Attacker.
 
-First, you need to start a TLS server (*please do not use public servers*). For example, you can use an OpenSSL test server::
+First, you need to start a TLS server (*please do not use public servers*). For example, you can use an OpenSSL test server:
 ```
 $ cd TLS-Attacker/resources
 $ openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem
 ```
-This command starts a TLS server on a port 4433.
+This command starts a TLS server on a port 4433 (please run the keygen.sh script if not done before).
 
 If you want to connect to a server, you can use this command:
 ```bash
 $ java -jar TLS-Client.jar -connect localhost:4433
 ```
-*Note: If this Handshake fails, it is probably because you did not specify a concrete Ciphersuite. TLS-Attacker will not completely respect Server selected Ciphersuites.*
+*Note: If this Handshake fails, it is probably because you did not specify a concrete cipher suite. TLS-Attacker will not completely respect server selected cipher suites.*
 
 You can use a different cipher suite, TLS version, or connect to a different port with the following parameters:
 ```bash
@@ -132,9 +132,8 @@ WorkflowTrace trace = new WorkflowTrace();
 trace.add(new SendAction(new ClientHelloMessage()));
 trace.add(new ReceiveAction(new ServerHelloMessage())));
 trace.add(new SendAction(new FinishedMessage()));
-config.setWorkflowTrace(trace);
-TlsContext context = new TlsContext(config);
-DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(context);
+State state = new State(config, trace);
+DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 executor.execute();
 
 ```
@@ -147,31 +146,41 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <SendAction>
-        <ClientHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ClientHello>
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>#
+                    <HeartbeatExtension/>
+                    <EllipticCurves/>
+                </extensions>
+            </ClientHello>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ServerHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ServerHello>
-        <Certificate/>
-        <ServerHelloDone/>
+        <expectedMessages>
+            <ServerHello>
+                <extensions>
+                    <ECPointFormat/>
+                </extensions>
+            </ServerHello>
+            <Certificate/>
+            <ServerHelloDone/>
+        </expectedMessages>
     </ReceiveAction>
     <SendAction>
-        <Finished/>
+        <messages>
+            <RSAClientKeyExchange>
+                <computations/>
+            </RSAClientKeyExchange>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ChangeCipherSpec/>
-        <Finished/>
+        <expectedMessages>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </expectedMessages>
     </ReceiveAction>
 </workflowTrace>
 ```
@@ -196,71 +205,81 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <SendAction>
-        <ClientHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ClientHello>
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>#
+                    <HeartbeatExtension/>
+                    <EllipticCurves/>
+                </extensions>
+            </ClientHello>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ServerHello>
-            <extensions>
-                <HeartbeatExtension/>
-                <ECPointFormat/>
-                <EllipticCurves/>
-            </extensions>
-        </ServerHello>
-        <Certificate/>
-        <ServerHelloDone/>
+        <expectedMessages>
+            <ServerHello>
+                <extensions>
+                    <ECPointFormat/>
+                </extensions>
+            </ServerHello>
+            <Certificate/>
+            <ServerHelloDone/>
+        </expectedMessages>
     </ReceiveAction>
     <SendAction>
-		<RSAClientKeyExchange/>
-		<ChangeCipherSpec/>
-        <Finished/>
+        <messages>
+            <RSAClientKeyExchange>
+                <computations/>
+            </RSAClientKeyExchange>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </messages>
     </SendAction>
     <ReceiveAction>
-        <ChangeCipherSpec/>
-        <Finished/>
+        <expectedMessages>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </expectedMessages>
     </ReceiveAction>
     <SendAction>
-        <Application/>
-        <Heartbeat/>
-    </SendAction>
-    <ReceiveAction>
-		<Heartbeat>
-            <payloadLength>
+        <messages>
+            <Heartbeat>
+                <payloadLength>
                 <integerExplicitValueModification>
                     <explicitValue>20000</explicitValue>
-                </integerExplicitValueModification>
-            </payloadLength>
-        </Heartbeat>
+                    </integerExplicitValueModification>
+                </payloadLength>
+            </Heartbeat>
+	</messages>
+    </SendAction>
+    <ReceiveAction>
+		<Heartbeat/>
     </ReceiveAction>
 </workflowTrace>
 ```
-As you can see, we explicitly increased the payload length of the Heartbeat message by 2000.
+As you can see, we explicitly increased the payload length of the Heartbeat message by 20000.
 If you run the attack against the vulnerable server (e.g., OpenSSL 1.0.1f), you should see a valid Heartbeat response.
 
 Further examples on attacks and further explanations on TLS-Attacker can be found in the Wiki.
 
 ## Advanced Features
 Some Actions require context, or configuration to be executed correctly. For exmaple, if TLS-Attacker tries to send a ClientHello message, it needs to know which values to
-put into the message, eg. which Ciphersuites or which protocol version to use. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
+put into the message, e.g., which Ciphersuites or which protocol version to use. TLS-Attacker draws this information from a configuration file (default located in TLS-Core/src/main/resources/default_config.xml).
 Values which are determined at runtime are stored in the TlsContext. When a value which is normally selected from the context is missing (because a message was not yet received), the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you do not explicitly define a default value in the config file, TLS-Attacker fills
 this gap with hardcoded values (which are equal to the provided default config). More details on how to customize TLS-Attacker can be found in the wiki.
 
 ## Acknowledgements
-The following people have contributed code to the TLS-Attacker Project:
+The following people have contributed code to the TLS-Attacker project:
 - Florian Pfützenreuter: DTLS 1.2
 - Felix Lange: EAP-TLS
-- Philip Riese: Server implementation, TLS Man-in-the-Middle Prototype
-- Christian Mainka: Design support and many implementation suggestions.
+- Philip Riese: Server implementation, TLS Man-in-the-Middle prototype
+- Christian Mainka: Design support and many implementation suggestions
 - Matthias Terlinde: More TLS-Extensions
 - Nurullah Erinola: TLS 1.3 Support
 - Lucas Hartmann: TLS-MitM Workflows
 - Florian Linsner: PSK
 - Pierre Tilhaus: Code quality improvements
+- Felix Kleine-Wilde: SSL 3 Support
 
 Additionally we would like to thank all the other people who have contributed code to the project.
 
@@ -274,6 +293,8 @@ TLS-Attacker was furthermore used in the following scientific papers and project
 - Tibor Jager, Jörg Schwenk, Juraj Somorovsky. On the Security of TLS 1.3 and QUIC Against Weaknesses in PKCS#1 v1.5 Encryption. ACM CCS'15. https://www.nds.rub.de/research/publications/ccs15/
 - Tibor Jager, Jörg Schwenk, Juraj Somorovsky. Practical Invalid Curve Attacks on TLS-ECDH. ESORICS'15. https://www.nds.rub.de/research/publications/ESORICS15/
 - Quellcode-basierte Untersuchung von kryptographisch relevanten Aspekten der OpenSSL-Bibliothek. https://www.bsi.bund.de/DE/Publikationen/Studien/OpenSSL-Bibliothek/opensslbibliothek.html
+- Entwicklung einer sicheren Kryptobibliothek. https://www.bsi.bund.de/DE/Themen/Kryptotechnologie/Kryptobibliothek/kryptobibliothek_node.html
+- Yuan Xiao, Mengyuan Li, Sanchuan Chen, Yinqian Zhang. Stacco: Differentially Analyzing Side-Channel Traces for Detecting SSL/TLS Vulnerabilities in Secure Enclaves. CCS'17. http://web.cse.ohio-state.edu/~zhang.834/papers/ccs17a.pdf
 
 If you have any research ideas or need support by using TLS-Attacker (e.g. you want to include it in your test suite), feel free to contact http://www.hackmanit.de/.
 

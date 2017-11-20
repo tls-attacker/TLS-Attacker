@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HostnameExtensionDelegate extends Delegate {
 
     @Parameter(names = "-server_name", description = "Servername for HostName TLS extension.")

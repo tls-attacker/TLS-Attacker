@@ -19,10 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class DHEServerKeyExchangeParserTest {
 
@@ -125,7 +121,8 @@ public class DHEServerKeyExchangeParserTest {
     @Test
     public void testParse() {// TODO Write tests for others versions and make
                              // protocolversion a parameter
-        DHEServerKeyExchangeParser parser = new DHEServerKeyExchangeParser(0, message, version);
+        DHEServerKeyExchangeParser<DHEServerKeyExchangeMessage> parser = new DHEServerKeyExchangeParser(0, message,
+                version);
         DHEServerKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

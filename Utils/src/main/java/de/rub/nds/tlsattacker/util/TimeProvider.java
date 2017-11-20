@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.util;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public abstract class TimeProvider {
     public abstract long getTime();
 }

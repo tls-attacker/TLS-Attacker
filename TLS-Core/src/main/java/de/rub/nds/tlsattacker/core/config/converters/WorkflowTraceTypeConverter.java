@@ -12,10 +12,6 @@ import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class WorkflowTraceTypeConverter implements IStringConverter<WorkflowTraceType> {
 
     @Override

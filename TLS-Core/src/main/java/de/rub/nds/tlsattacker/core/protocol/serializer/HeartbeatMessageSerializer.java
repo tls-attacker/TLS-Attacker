@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HeartbeatByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HeartbeatMessageSerializer extends ProtocolMessageSerializer<HeartbeatMessage> {
 
     private final HeartbeatMessage msg;

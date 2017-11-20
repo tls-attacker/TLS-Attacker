@@ -15,10 +15,6 @@ import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class Pkcs1Attack {
 
     /**
@@ -43,7 +39,6 @@ public class Pkcs1Attack {
     }
 
     /**
-     * 
      * @param m
      *            original message to be changed
      * @param si
@@ -59,7 +54,6 @@ public class Pkcs1Attack {
     }
 
     /**
-     * 
      * @param m
      *            original message to be changed
      * @param si

@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class PaddingExtensionParser extends ExtensionParser<PaddingExtensionMessage> {
 
     public PaddingExtensionParser(int startposition, byte[] array) {

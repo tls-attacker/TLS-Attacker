@@ -34,8 +34,6 @@ import javax.crypto.Mac;
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
  * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
- *
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 
@@ -76,7 +74,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             }
             adjustHandshakeTrafficSecrets();
         } else {
-            context.setClientKSEntryList(ksEntryList);
+            context.setClientKeyShareEntryList(ksEntryList);
         }
     }
 
@@ -99,13 +97,13 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 }
             } else {
                 int pos = 0;
-                for (KSEntry entry : context.getClientKSEntryList()) {
+                for (KSEntry entry : context.getChooser().getClientKeyShareEntryList()) {
                     if (entry.getGroup() == NamedCurve.ECDH_X25519) {
-                        pos = context.getClientKSEntryList().indexOf(entry);
+                        pos = context.getChooser().getClientKeyShareEntryList().indexOf(entry);
                     }
                 }
-                if (context.getClientKSEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
-                    sharedSecret = computeSharedSecretECDH(context.getClientKSEntryList().get(pos));
+                if (context.getChooser().getClientKeyShareEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(context.getChooser().getClientKeyShareEntryList().get(pos));
                 } else {
                     throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
                 }

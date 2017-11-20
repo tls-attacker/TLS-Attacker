@@ -33,10 +33,6 @@ import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateHandler extends HandshakeMessageHandler<CertificateMessage> {
 
     public CertificateHandler(TlsContext tlsContext) {
@@ -98,12 +94,15 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
     private void adjustPublicKeyParameters(Certificate cert) {
         try {
             if (CertificateUtils.hasDHParameters(cert)) {
+                LOGGER.info("Adjusting DH PublicKey");
                 DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
                 adjustDHParameters(dhParameters);
             } else if (CertificateUtils.hasECParameters(cert)) {
+                LOGGER.info("Adjusting EC PublicKey");
                 ECPublicKeyParameters ecParameters = CertificateUtils.extractECPublicKeyParameters(cert);
                 adjustECParameters(ecParameters);
             } else if (CertificateUtils.hasRSAParameters(cert)) {
+                LOGGER.info("Adjusting RSA PublicKey");
                 tlsContext.setRsaModulus(CertificateUtils.extractRSAModulus(cert));
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
                     tlsContext.setClientRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
@@ -112,6 +111,8 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                     tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
                     tlsContext.setServerRSAPrivateKey(tlsContext.getConfig().getDefaultServerRSAPrivateKey());
                 }
+            } else {
+                LOGGER.warn("Could not adjust Certificate publicKey");
             }
         } catch (IOException E) {
             throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", E);

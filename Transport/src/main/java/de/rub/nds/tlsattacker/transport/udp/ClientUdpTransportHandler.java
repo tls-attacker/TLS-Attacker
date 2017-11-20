@@ -16,10 +16,6 @@ import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ClientUdpTransportHandler extends TransportHandler {
 
     private final String hostname;

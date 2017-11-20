@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class PoodleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "poodle";

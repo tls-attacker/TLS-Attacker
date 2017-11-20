@@ -38,12 +38,6 @@ public class Curve25519 {
             (byte) 20, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
             (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 16 };
 
-    /********* KEY AGREEMENT *********/
-
-    /*
-     * Private key clamping k [out] your private key for key agreement k [in] 32
-     * random bytes
-     */
     public static final void clamp(byte[] k) {
         k[31] &= 0x7F;
         k[31] |= 0x40;
@@ -53,9 +47,8 @@ public class Curve25519 {
     /*
      * Key-pair generation P [out] your public key s [out] your private key for
      * signing k [out] your private key for key agreement k [in] 32 random bytes
-     * s may be NULL if you don't care
-     * 
-     * WARNING: if s is not NULL, this function has data-dependent timing
+     * s may be NULL if you don't care WARNING: if s is not NULL, this function
+     * has data-dependent timing
      */
     public static final void keygen(byte[] P, byte[] s, byte[] k) {
         clamp(k);

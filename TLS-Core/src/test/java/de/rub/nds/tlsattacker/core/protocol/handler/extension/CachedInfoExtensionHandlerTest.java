@@ -22,10 +22,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedInfoExtensionHandlerTest {
 
     private final List<CachedObject> cachedObjects = Arrays.asList(new CachedObject((byte) 1, 2, new byte[] { 0x01,

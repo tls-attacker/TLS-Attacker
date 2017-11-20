@@ -11,16 +11,12 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CertificateVerifiyConstants;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparator<CertificateVerifyMessage> {
 
     private SignatureAndHashAlgorithm algorithm;
@@ -64,6 +60,10 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
                                 chooser.getContext().getDigest()
                                         .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite()));
             }
+        } else if (chooser.getSelectedProtocolVersion().isSSL()) {
+            final byte[] handshakeMessageContent = chooser.getContext().getDigest().getRawBytes();
+            final byte[] masterSecret = chooser.getMasterSecret();
+            return SSLUtils.calculateSSLCertificateVerifySignature(handshakeMessageContent, masterSecret);
         }
         algorithm = chooser.getSelectedSigHashAlgorithm();
         return SignatureCalculator.generateSignature(algorithm, chooser, toBeSigned);

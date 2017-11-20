@@ -27,8 +27,6 @@ import java.util.Objects;
 
 /**
  * todo print configured records
- *
- * @author Robert Merget - robert.merget@rub.de
  */
 public class SendAction extends MessageAction implements SendingAction {
 
@@ -42,7 +40,7 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     public SendAction(ProtocolMessage... messages) {
-        this(Arrays.asList(messages));
+        this(new ArrayList(Arrays.asList(messages)));
     }
 
     @Override

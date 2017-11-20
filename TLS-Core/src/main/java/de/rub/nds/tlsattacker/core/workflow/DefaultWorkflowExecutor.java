@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import java.io.IOException;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     public DefaultWorkflowExecutor(State state) {
@@ -44,6 +40,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         List<TLSAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TLSAction action : tlsActions) {
+            if (state.getTlsContext().isEarlyCleanShutdown()) {
+                LOGGER.debug("Clean shutdown of execution flow");
+                break;
+            }
             try {
                 if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                     action.execute(state);

@@ -19,6 +19,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.logging.Level;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -28,9 +29,6 @@ import javax.net.ssl.TrustManagerFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@ru.de>
- */
 public class BasicTlsServer extends Thread {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsServer.class);
@@ -40,6 +38,7 @@ public class BasicTlsServer extends Thread {
     private final SSLContext sslContext;
     private ServerSocket serverSocket;
     private boolean shutdown;
+    boolean closed = true;
 
     /**
      * Very dirty but ok for testing purposes
@@ -78,23 +77,27 @@ public class BasicTlsServer extends Thread {
     public void run() {
         try {
             preSetup();
+            closed = false;
             while (!shutdown) {
                 try {
                     LOGGER.info("Listening on port " + port + "...\n");
                     final Socket socket = serverSocket.accept();
+                    if (socket != null) {
+                        ConnectionHandler ch = new ConnectionHandler(socket);
+                        Thread t = new Thread(ch);
+                        t.start();
+                    }
 
-                    ConnectionHandler ch = new ConnectionHandler(socket);
-                    Thread t = new Thread(ch);
-                    t.start();
                 } catch (IOException ex) {
                     LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
             }
+            closed = true;
         } catch (IOException ex) {
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         } finally {
             try {
-                if (serverSocket != null) {
+                if (serverSocket != null && !serverSocket.isClosed()) {
                     serverSocket.close();
                     serverSocket = null;
                 }
@@ -121,6 +124,13 @@ public class BasicTlsServer extends Thread {
     public void shutdown() {
         this.shutdown = true;
         LOGGER.debug("Shutdown signal received");
+        try {
+            if (!serverSocket.isClosed()) {
+                serverSocket.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public String[] getCipherSuites() {

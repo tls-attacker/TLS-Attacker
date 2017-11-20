@@ -12,10 +12,6 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import java.io.FileInputStream;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class WorkflowInputDelegate extends Delegate {
 
     @Parameter(names = "-workflow_input", description = "This parameter allows you to load the whole workflow trace from the specified XML configuration file")

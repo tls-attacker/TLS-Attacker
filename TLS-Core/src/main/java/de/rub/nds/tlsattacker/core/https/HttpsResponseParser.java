@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.https.header.parser.HttpsHeaderParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import java.nio.charset.Charset;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class HttpsResponseParser extends ProtocolMessageParser<HttpsResponseMessage> {
 
     public HttpsResponseParser(int pointer, byte[] array, ProtocolVersion version) {

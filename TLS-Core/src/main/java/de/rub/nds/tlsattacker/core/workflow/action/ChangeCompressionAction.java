@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ChangeCompressionAction extends TLSAction {
 
     private CompressionMethod newValue = null;

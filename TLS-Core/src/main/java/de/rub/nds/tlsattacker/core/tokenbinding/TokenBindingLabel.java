@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenBindingLabel {
 
     public static final String TOKEN_LABEL = "EXPORTER-Token-Binding";
