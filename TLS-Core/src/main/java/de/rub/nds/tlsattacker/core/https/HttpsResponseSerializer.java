@@ -33,7 +33,6 @@ public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResp
         }
         builder.append("\r\n");
         builder.append(message.getResponseContent().getValue());
-        builder.append("\r\n");
         LOGGER.info(builder.toString());
         appendBytes(builder.toString().getBytes());
         return getAlreadySerialized();
