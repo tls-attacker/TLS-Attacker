@@ -580,7 +580,7 @@ public class DefaultChooser extends Chooser {
             return config.getDefaultApplicationMessageData().getBytes();
         }
     }
-  
+
     @Override
     public byte[] getPsk() {
         if (context.getPsk() != null) {
@@ -589,7 +589,7 @@ public class DefaultChooser extends Chooser {
             return config.getPsk();
         }
     }
-    
+
     @Override
     public List<KSEntry> getClientKeyShareEntryList() {
         if (context.getClientKeyShareEntryList() != null) {

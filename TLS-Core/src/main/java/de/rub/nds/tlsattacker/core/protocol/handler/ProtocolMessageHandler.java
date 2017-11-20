@@ -119,6 +119,9 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      */
     public abstract void adjustTLSContext(Message message);
 
+    public void adjustTlsContextAfterSerialize(Message message) {
+    }
+
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);
         prep.prepareAfterParse();

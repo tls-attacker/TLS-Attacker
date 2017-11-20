@@ -112,7 +112,7 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the default connection end defined in config.
-     * 
+     *
      * @return A HelloWorkflow
      */
     public WorkflowTrace createHelloWorkflow() {
@@ -194,7 +194,7 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a handshake workflow for the default connection end defined in
      * config.
-     * 
+     *
      * @return A HandshakeWorkflow
      */
     public WorkflowTrace createHandshakeWorkflow() {
@@ -390,8 +390,8 @@ public class WorkflowConfigurationFactory {
             }
         }
         if (connectingConnectionEnd == null || acceptingConnectionEnd == null) {// client
-                                                                                // ->
-                                                                                // mitm
+            // ->
+            // mitm
             throw new ConfigurationException("Could not find both necesary connection ends");
         }
         String clientToMitmAlias = acceptingConnectionEnd.getAlias();
@@ -472,6 +472,7 @@ public class WorkflowConfigurationFactory {
         if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
             serverHello = new ServerHelloMessage();
             encExtMsg = new EncryptedExtensionsMessage();
+            encExtMsg.addExtension(new EarlyDataExtensionMessage());
         } else {
             serverHello = new ServerHelloMessage(config);
             encExtMsg = new EncryptedExtensionsMessage(config);

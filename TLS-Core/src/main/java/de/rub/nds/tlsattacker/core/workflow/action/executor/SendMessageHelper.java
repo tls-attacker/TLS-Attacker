@@ -47,16 +47,16 @@ public class SendMessageHelper {
 
         int recordPosition = 0;
         ProtocolMessageType lastType = null;
+        ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
-            if (message.getProtocolMessageType() != lastType && lastType != null
+            if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                    context.getRecordLayer().updateEncryptionCipher();
-                    context.setWriteSequenceNumber(0);
-                }
+                lastMessage.getHandler(context).adjustTlsContextAfterSerialize(message);
+                lastMessage = null;
             }
+            lastMessage = message;
             lastType = message.getProtocolMessageType();
             LOGGER.debug("Preparing " + message.toCompactString());
             byte[] protocolMessageBytes = handleProtocolMessage(message, context);
@@ -65,6 +65,8 @@ public class SendMessageHelper {
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                message.getHandler(context).adjustTlsContextAfterSerialize(message);
+                lastMessage = null;
             }
             if (context.getChooser().getSelectedProtocolVersion().isTLS13()
                     && context.getActiveKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
@@ -78,11 +80,10 @@ public class SendMessageHelper {
                 context.setReadSequenceNumber(0);
             }
         }
-        if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-            context.getRecordLayer().updateEncryptionCipher();
-            context.setWriteSequenceNumber(0);
-        }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        if (lastMessage != null) {
+            lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+        }
         sendData(messageBytesCollector, context);
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
             int current = 0;
