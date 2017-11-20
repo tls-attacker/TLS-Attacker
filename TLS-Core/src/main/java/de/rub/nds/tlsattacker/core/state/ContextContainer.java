@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.tlsattacker.core.connection.Aliasable;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.ContextHandlingException;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,7 +90,7 @@ public class ContextContainer {
         AliasedConnection con = context.getConnection();
         String alias = con.getAlias();
         if (alias == null) {
-            throw new ConfigurationException("Connection end alias not set (null). Can't add the TLS context.");
+            throw new ContextHandlingException("Connection end alias not set (null). Can't add the TLS context.");
         }
         if (containsAlias(alias)) {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
@@ -172,7 +173,7 @@ public class ContextContainer {
         }
         TlsContext replaceMe = tlsContexts.get(alias);
         if (!replaceMe.getConnection().equals(newTlsContext.getConnection())) {
-            throw new ConfigurationException("Cannot replace TlsContext because the new TlsContext"
+            throw new ContextHandlingException("Cannot replace TlsContext because the new TlsContext"
                     + " defines another connection.");
         }
         removeTlsContext(alias);

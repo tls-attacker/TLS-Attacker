@@ -154,6 +154,7 @@ public final class RecordBlockCipher extends RecordCipher {
                         bulkCipherAlg.getJavaName()), decryptIv);
                 plaintext = decryptCipher.doFinal(data);
             }
+            LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
             return plaintext;
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
                 | InvalidKeyException | UnsupportedOperationException ex) {

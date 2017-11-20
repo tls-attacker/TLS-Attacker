@@ -222,7 +222,6 @@ public class ReceiveMessageHelper {
             if (result != null) {
                 dataPointer = result.getParserPosition();
                 LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
-                LOGGER.warn("DBG The following message was parsed: {}", result.getMessage().toString());
                 receivedMessages.add(result.getMessage());
             }
         }

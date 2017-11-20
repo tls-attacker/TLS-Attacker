@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.ContextHandlingException;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -181,7 +182,7 @@ public class StateTest {
         TlsContext newCtx = new TlsContext();
         newCtx.setConnection(new InboundConnection(origCtx.getConnection().getAlias(), 87311));
 
-        exception.expect(ConfigurationException.class);
+        exception.expect(ContextHandlingException.class);
         exception
                 .expectMessage("Cannot replace TlsContext because the new TlsContext defines " + "another connection.");
         state.replaceTlsContext(newCtx);
