@@ -130,7 +130,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
     }
 
     public void executeAttackWithPskTable() {
-        String fileName = "psk_database.txt";
+        String fileName = "psk_common_passwords.txt";
         boolean result = false;
         BufferedReader br = new BufferedReader(new InputStreamReader(PskBruteForcerAttackServer.class.getClassLoader()
                 .getResourceAsStream(fileName)));

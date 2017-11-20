@@ -56,6 +56,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
@@ -99,8 +100,13 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.DefaultChooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -120,7 +126,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config) {
         // chooser= tlsContext.getChooser();
         super(config, false);
-        tlsContext = new TlsContext();
+        tlsConfig = config.createConfig();
+        tlsContext = new TlsContext(tlsConfig);
         // tlsConfig = config.createConfig();
 
     }
@@ -143,8 +150,6 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     private void executeProtocolFlowToClient() {
         LOGGER.info("--------------------------------------");
-        tlsConfig = config.createConfig();
-        tlsContext.setConfig(tlsConfig);
 
         // chooser = (DefaultChooser)
         // ChooserFactory.getChooser(tlsConfig.getChooserType(), tlsContext,
@@ -152,8 +157,6 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
         State state = new State(tlsConfig, trace);
         state.setWorkflowTrace(trace);
-        state.getTlsContext().setClientSupportedCiphersuites(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-        tlsConfig.setDefaultSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
         trace.removeTlsAction(1);
         trace.removeTlsAction(0);
         trace.addTlsAction(new ReceiveAction(new ClientHelloMessage(tlsConfig)));
@@ -165,11 +168,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
-        // PskClientKeyExchangeMessage message = (PskClientKeyExchangeMessage)
-        // WorkflowTraceUtil.getFirstSendMessage(
-        // HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
-
         workflowExecutor.executeWorkflow();
+
         if (!trace.executedAsPlanned()) {
             // tlsConfig
             tlsConfig.setDefaultPSKKey(ArrayConverter.hexStringToByteArray("1a2b3c"));
@@ -183,19 +183,32 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                     msg3);
             byte[] premasterSecret = preparator.generatePremasterSecret();
             tlsContext.setPreMasterSecret(premasterSecret);
-            LOGGER.info(ArrayConverter.bytesToHexString(premasterSecret));
 
             AbstractRecord finished = trace.getReceivingActions().get(1).getReceivedRecords().get(2);
             Record finished2 = (Record) finished;
             LOGGER.info("------------------------------------");
+            try {
+                KeySet keySet = KeySetGenerator.generateKeySet(tlsContext);
+                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+                decryptor = new RecordDecryptor(recordCipher, tlsContext);
+                try {
+                    decryptor.decrypt(trace.getReceivingActions().get(1).getReceivedRecords().get(2));
+                } catch (CryptoException E) {
+                    LOGGER.info("neeeeeeeeeeeeein");
+                }
+
+            } catch (NoSuchAlgorithmException ex) {
+                throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+            }
+
             // decryptor = new RecordDecrypto, tlsContext);
             // decryptor.decrypt(finished);
             // helper = new ReceiveMessageHelper();
             List<AbstractRecord> list = new LinkedList();
             list.add(finished2);
             LOGGER.info(list.toString());
-            helper = new ReceiveMessageHelper();
-            //helper.parseMessages(list, tlsContext);
+            // helper = new ReceiveMessageHelper();
+            // helper.parseMessages(list, tlsContext);
             // trace.addTlsAction(new
             // ChangePreMasterSecretAction(premasterSecret));
             LOGGER.info(trace.executedAsPlanned());
