@@ -195,7 +195,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
             list.add(finished2);
             LOGGER.info(list.toString());
             helper = new ReceiveMessageHelper();
-            helper.parseMessages(list, tlsContext);
+            //helper.parseMessages(list, tlsContext);
             // trace.addTlsAction(new
             // ChangePreMasterSecretAction(premasterSecret));
             LOGGER.info(trace.executedAsPlanned());

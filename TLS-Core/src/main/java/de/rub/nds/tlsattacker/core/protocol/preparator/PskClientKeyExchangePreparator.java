@@ -42,7 +42,7 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         prepareClientRandom(msg);
     }
 
-    private byte[] generatePremasterSecret() {
+    public byte[] generatePremasterSecret() {
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
