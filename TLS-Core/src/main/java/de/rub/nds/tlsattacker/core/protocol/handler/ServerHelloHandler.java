@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
@@ -29,7 +30,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
-import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -66,14 +66,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
-        if (tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) // Reset
-                                                                        // RecordLayer
-                                                                        // after
-                                                                        // EarlyData
-                                                                        // decryption
-        {
-            tlsContext.setRecordLayer(new TlsRecordLayer(tlsContext));
-        }
         if (message.getExtensions() != null) {
             KeyShareExtensionHandler keyShareHandler = null;
             KeyShareExtensionMessage keyShareExtension = null;
@@ -95,14 +87,10 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             }
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            setRecordCipher();
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
                     .getConnectionEndType()) {
-                tlsContext.setReadSequenceNumber(0);
-                tlsContext.setWriteSequenceNumber(0);
-                tlsContext.getRecordLayer().updateDecryptionCipher();
-                tlsContext.getRecordLayer().updateEncryptionCipher();
-                tlsContext.setEncryptActive(true);
+                tlsContext.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+                setRecordCipher();
             }
         }
         adjustPRF(message);
@@ -164,6 +152,11 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         LOGGER.debug("Setting new Cipher in RecordLayer");
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
         tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+
+        tlsContext.setReadSequenceNumber(0);
+        tlsContext.setWriteSequenceNumber(0);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
     }
 
     private KeySet getKeySet(TlsContext context) {
@@ -173,5 +166,19 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
+    }
+
+    @Override
+    public void adjustTlsContextAfterSerialize(ServerHelloMessage message) {
+        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+            adjustRecordLayer();
+        }
+    }
+
+    private void adjustRecordLayer() {
+        LOGGER.debug("Adjusting RecordLayer, to encrypt handshake messages");
+        tlsContext.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        LOGGER.debug("Set activeKeySetType in Context to " + tlsContext.getActiveKeySetType());
+        setRecordCipher();
     }
 }

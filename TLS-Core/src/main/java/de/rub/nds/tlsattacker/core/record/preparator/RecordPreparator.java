@@ -48,7 +48,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
 
     private void prepareContentType(Record record) {
         if ((chooser.getSelectedProtocolVersion().isTLS13() || chooser.getContext().getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
-                && chooser.getContext().isEncryptActive()) {
+                && chooser.getContext().getActiveKeySetType() != Tls13KeySetType.NONE) {
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
             record.setContentType(type.getValue());

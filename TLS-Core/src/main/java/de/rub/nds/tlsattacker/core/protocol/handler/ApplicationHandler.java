@@ -57,8 +57,8 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
                 adjustEarlyTrafficSecret();
                 adjustRecordLayerForEarlyData();
             } else {
-                tlsContext.setExpectingEndOfEarlyData(true);
-                LOGGER.debug("Set ExpectingEndOfEarlyData to " + tlsContext.isExpectingEndOfEarlyData());
+                tlsContext.setActiveKeySetType(Tls13KeySetType.NONE);
+                LOGGER.debug("Set ActiveKeySetType to " + tlsContext.getActiveKeySetType());
             }
         }
         tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
@@ -79,7 +79,6 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
                     tlsContext.getEarlyDataCipherSuite());
             tlsContext.getRecordLayer().setRecordCipher(recordCipher);
             tlsContext.getRecordLayer().updateEncryptionCipher();
-            tlsContext.setEncryptActive(true);
             tlsContext.setWriteSequenceNumber(0); // Reset SQN after ClientHello
 
         } catch (NoSuchAlgorithmException ex) {
@@ -98,4 +97,10 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
         LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
     }
 
+    @Override
+    public void adjustTlsContextAfterSerialize(ApplicationMessage message) {
+        if (tlsContext.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            tlsContext.setActiveKeySetType(Tls13KeySetType.NONE);
+        }
+    }
 }

@@ -11,8 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -23,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -158,6 +161,15 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             }
         }
         return list;
+    }
+
+    @Override
+    public void adjustTlsContextAfterSerialize(ClientHelloMessage message) {
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
+                && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+            tlsContext.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            LOGGER.debug("Set activeKeySetType in Context to " + tlsContext.getActiveKeySetType());
+        }
     }
 
 }

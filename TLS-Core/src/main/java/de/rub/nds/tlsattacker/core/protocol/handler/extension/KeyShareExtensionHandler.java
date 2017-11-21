@@ -126,8 +126,6 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
                     + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
-            context.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-            LOGGER.debug("Set activeKeySetType in Context to " + context.getActiveKeySetType());
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }

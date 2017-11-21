@@ -78,7 +78,7 @@ public class RecordEncryptor extends Encryptor {
         setPaddingLength(record);
         byte[] plain;
         if ((context.getChooser().getSelectedProtocolVersion().isTLS13() || context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
-                && context.isEncryptActive()) {
+                && context.getActiveKeySetType() != Tls13KeySetType.NONE) {
             plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
                     .getContentMessageType().getArrayValue(), record.getPadding().getValue());
         } else {

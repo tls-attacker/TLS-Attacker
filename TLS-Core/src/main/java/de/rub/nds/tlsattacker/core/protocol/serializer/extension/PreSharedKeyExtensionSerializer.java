@@ -31,11 +31,11 @@ public class PreSharedKeyExtensionSerializer extends ExtensionSerializer<PreShar
         LOGGER.debug("Serializing PreSharedKeyExtensionMessage");
         if (connectionType == ConnectionEndType.CLIENT) {
             appendInt(msg.getIdentityListLength().getValue(), ExtensionByteLength.PSK_IDENTITY_LIST_LENGTH);
-            LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength());
+            LOGGER.debug("PreSharedKeyIdentityListLength: " + msg.getIdentityListLength().getValue());
             writeIdentities();
 
             appendInt(msg.getBinderListLength().getValue(), ExtensionByteLength.PSK_BINDER_LIST_LENGTH);
-            LOGGER.debug("PreSharedKeyBinderListLength: " + msg.getBinderListLength());
+            LOGGER.debug("PreSharedKeyBinderListLength: " + msg.getBinderListLength().getValue());
             writeBinders();
         } else {
             writeSelectedIdentity();

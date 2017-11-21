@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
@@ -103,7 +104,8 @@ public class SendMessageHelper {
             }
         }
         if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
-                && context.getChooser().getSelectedProtocolVersion().isTLS13() && context.isExpectingEndOfEarlyData()) {
+                && context.getChooser().getSelectedProtocolVersion().isTLS13()
+                && context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
             for (ProtocolMessage message : messages) {
                 if (message instanceof FinishedMessage) {
                     // Switch RecordLayer secrets to prepare for EndOfEarlyData

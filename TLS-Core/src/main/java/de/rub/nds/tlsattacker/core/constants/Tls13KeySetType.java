@@ -12,6 +12,7 @@ package de.rub.nds.tlsattacker.core.constants;
  * Specifies the type of the keys
  */
 public enum Tls13KeySetType {
+    NONE,
     EARLY_TRAFFIC_SECRETS,
     HANDSHAKE_TRAFFIC_SECRETS,
     APPLICATION_TRAFFIC_SECRETS;

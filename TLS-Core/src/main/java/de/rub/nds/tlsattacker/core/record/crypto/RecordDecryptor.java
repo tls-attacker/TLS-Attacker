@@ -12,17 +12,16 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -88,7 +87,8 @@ public class RecordDecryptor extends Decryptor {
             useNoMac(record);
         }
         context.increaseReadSequenceNumber();
-        if (context.isExpectingEndOfEarlyData() && context.getSelectedProtocolVersion().isTLS13()) {
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
+                && context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             checkForEndOfEarlyData(record.getUnpaddedRecordBytes().getValue());
         }
     }

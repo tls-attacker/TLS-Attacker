@@ -54,10 +54,6 @@ public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensi
                                                                       // indicated
                                                                       // early
                                                                       // data
-        } else if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            // We are about to encrypt early data
-            context.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-            LOGGER.debug("Set activeKeySetType in Context to " + context.getActiveKeySetType());
         }
     }
 

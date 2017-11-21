@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
@@ -59,6 +60,7 @@ public class RecordDecryptorTest {
         context.setConnectionEnd(new ClientConnectionEnd());
         record.setProtocolMessageBytes(ArrayConverter
                 .hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"));
+        context.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);

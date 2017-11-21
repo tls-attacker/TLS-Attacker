@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -57,7 +58,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     @Override
     public void adjustTLSContext(FinishedMessage message) {
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
-                && tlsContext.isEncryptedEndOfEarlyData()) {
+                && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
             adjustRecordCipher0RTT();
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
@@ -113,7 +114,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
             // Set the correct SequenceNumbers
             tlsContext.setWriteSequenceNumber(0);
-            tlsContext.setReadSequenceNumber(0);
+            tlsContext.setReadSequenceNumber(2);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
         }

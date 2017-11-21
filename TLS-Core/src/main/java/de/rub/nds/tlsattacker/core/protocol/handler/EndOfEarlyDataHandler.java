@@ -71,7 +71,6 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setWriteSequenceNumber(1); // 2nd message using
                                                   // EarlySecret
-            tlsContext.setEncryptedEndOfEarlyData(true);
 
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(EndOfEarlyDataHandler.class.getName()).log(Level.SEVERE, null, ex);

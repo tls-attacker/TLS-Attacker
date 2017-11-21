@@ -130,11 +130,6 @@ public class TlsContext {
     private List<PskKeyExchangeMode> clientPskKeyExchangeModes;
 
     /**
-     * Did we just encrypt the EOED-Message?
-     */
-    private boolean encryptedEndOfEarlyData = false;
-
-    /**
      * SequenceNumber of AEADCipher to be restored after encrypting
      * EOED-Message.
      */
@@ -343,8 +338,6 @@ public class TlsContext {
 
     private boolean receivedFatalAlert = false;
 
-    private boolean encryptActive = false;
-
     private List<ClientCertificateType> clientCertificateTypes;
 
     private byte[] distinguishedNames;
@@ -360,12 +353,7 @@ public class TlsContext {
     /**
      * the currently used type of keySet
      */
-    private Tls13KeySetType activeKeySetType = Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS;
-
-    /**
-     * are we expecting an EndOfEarlyData?
-     */
-    private boolean expectingEndOfEarlyData;
+    private Tls13KeySetType activeKeySetType = Tls13KeySetType.NONE;
 
     /**
      * sequence number used for the encryption
@@ -779,14 +767,6 @@ public class TlsContext {
 
     public void setReceivedFatalAlert(boolean receivedFatalAlert) {
         this.receivedFatalAlert = receivedFatalAlert;
-    }
-
-    public boolean isEncryptActive() {
-        return encryptActive;
-    }
-
-    public void setEncryptActive(boolean encryptActive) {
-        this.encryptActive = encryptActive;
     }
 
     public List<ECPointFormat> getClientPointFormatsList() {
@@ -1538,21 +1518,6 @@ public class TlsContext {
     }
 
     /**
-     * @return the encryptedEndOfEarlyData
-     */
-    public boolean isEncryptedEndOfEarlyData() {
-        return encryptedEndOfEarlyData;
-    }
-
-    /**
-     * @param encryptedEndOfEarlyData
-     *            the encryptedEndOfEarlyData to set
-     */
-    public void setEncryptedEndOfEarlyData(boolean encryptedEndOfEarlyData) {
-        this.encryptedEndOfEarlyData = encryptedEndOfEarlyData;
-    }
-
-    /**
      * @return the storedSequenceNumberDec
      */
     public long getStoredSequenceNumberDec() {
@@ -1655,21 +1620,6 @@ public class TlsContext {
      */
     public void setActiveKeySetType(Tls13KeySetType activeKeySetType) {
         this.activeKeySetType = activeKeySetType;
-    }
-
-    /**
-     * @return the expectingEndOfEarlyData
-     */
-    public boolean isExpectingEndOfEarlyData() {
-        return expectingEndOfEarlyData;
-    }
-
-    /**
-     * @param expectingEndOfEarlyData
-     *            the expectingEndOfEarlyData to set
-     */
-    public void setExpectingEndOfEarlyData(boolean expectingEndOfEarlyData) {
-        this.expectingEndOfEarlyData = expectingEndOfEarlyData;
     }
 
 }
