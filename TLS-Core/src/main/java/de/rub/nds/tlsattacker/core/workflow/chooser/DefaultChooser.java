@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -732,6 +733,15 @@ public class DefaultChooser extends Chooser {
         } else {
             return new LinkedList<>(); // Todo, maybe add defaultClientKeyShare
                                        // list to config
+        }
+    }
+
+    @Override
+    public List<PskSet> getPskSets() {
+        if (context.getPskSets() != null) {
+            return context.getPskSets();
+        } else {
+            return config.getPskSets();
         }
     }
 }

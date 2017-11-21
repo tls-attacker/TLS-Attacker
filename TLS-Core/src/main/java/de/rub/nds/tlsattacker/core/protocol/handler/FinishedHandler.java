@@ -95,6 +95,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             tlsContext.setServerApplicationTrafficSecret(serverApplicationTrafficSecret);
             LOGGER.debug("Set serverApplicationTrafficSecret in Context to "
                     + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
+            tlsContext.setMasterSecret(masterSecret);
+            LOGGER.debug("Set masterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
         } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException(ex);
         }

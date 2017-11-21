@@ -12,10 +12,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
@@ -86,7 +86,14 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing NewSessionTicketMessage");
         prepareTicketLifetimeHint(msg);
-        prepareTicket(msg);
+        if (chooser.getContext().getSelectedProtocolVersion() != null
+                && chooser.getContext().getSelectedProtocolVersion().isTLS13()
+                && chooser.getContext().getActiveKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+            prepareTicketTls13(msg);
+        } else {
+            prepareTicket(msg);
+        }
+
     }
 
     /**
@@ -123,4 +130,43 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         return plainstate;
     }
 
+    private void prepareTicketTls13(NewSessionTicketMessage msg) {
+        msg.prepareTicket();
+        prepareTicketAgeAdd(msg);
+        prepareNonce(msg);
+        prepareIdentity(msg);
+    }
+
+    private void prepareTicketAgeAdd(NewSessionTicketMessage msg) {
+        if (chooser.getConfig().getSessionTicketAgeAdd() != null) {
+            msg.getTicket().setTicketAgeAdd(chooser.getConfig().getSessionTicketAgeAdd());
+        } else {
+            byte[] randomAddTicketAgeAdd = new byte[HandshakeByteLength.TICKET_AGE_ADD_LENGTH];
+            RandomHelper.getRandom().nextBytes(randomAddTicketAgeAdd);
+            msg.getTicket().setTicketAgeAdd(randomAddTicketAgeAdd);
+        }
+    }
+
+    private void prepareIdentity(NewSessionTicketMessage msg) {
+        if (chooser.getConfig().getSessionTicketIdentity() != null) {
+            msg.getTicket().setIdentity(chooser.getConfig().getSessionTicketIdentity());
+        } else {
+            byte[] randomIdentity = new byte[160];
+            RandomHelper.getRandom().nextBytes(randomIdentity);
+            msg.getTicket().setTicketAgeAdd(randomIdentity);
+        }
+        msg.getTicket().setIdentityLength(msg.getTicket().getIdentity().getValue().length);
+    }
+
+    private void prepareNonce(NewSessionTicketMessage msg) {
+        if (chooser.getConfig().getSessionTicketNonce() != null) {
+            msg.getTicket().setTicketNonce(chooser.getConfig().getSessionTicketNonce());
+        } else {
+            byte[] randomNonce = new byte[1];
+            RandomHelper.getRandom().nextBytes(randomNonce);
+            ;
+            msg.getTicket().setTicketAgeAdd(randomNonce);
+        }
+        msg.getTicket().setTicketNonceLength(msg.getTicket().getTicketNonce().getValue().length);
+    }
 }

@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
@@ -105,6 +106,8 @@ public class WorkflowConfigurationFactory {
                 return createSimpleMitmProxyWorkflow();
             case ZERO_RTT:
                 return createZeroRttWorkflow();
+            case FULL_ZERO_RTT:
+                return createFullZeroRttWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -503,6 +506,22 @@ public class WorkflowConfigurationFactory {
         clientMessages.add(new FinishedMessage(config));
         trace.addTlsAction(MessageActionFactory
                 .createAction(ourConnectionEnd, ConnectionEndType.CLIENT, clientMessages));
+        return trace;
+    }
+
+    private WorkflowTrace createFullZeroRttWorkflow() {
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = createHandshakeWorkflow();
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                new NewSessionTicketMessage()));
+        trace.addTlsAction(new ResetConnectionAction());
+        // changing the workflowTraceType to differ between 1st and 2nd
+        // clientHello - otherwise 0rtt extension would be added to both
+        config.setWorkflowTraceType(WorkflowTraceType.ZERO_RTT);
+        WorkflowTrace zeroRttTrace = createZeroRttWorkflow();
+        for (TLSAction zeroRttAction : zeroRttTrace.getTlsActions()) {
+            trace.addTlsAction(zeroRttAction);
+        }
         return trace;
     }
 

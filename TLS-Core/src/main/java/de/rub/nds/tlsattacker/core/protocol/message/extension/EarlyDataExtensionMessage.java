@@ -31,8 +31,8 @@ public class EarlyDataExtensionMessage extends ExtensionMessage {
     }
 
     /**
-     * @param max_early_data_size
-     *            the max_early_data_size to set
+     * @param maxEarlyDataSize
+     *            the maxEarlyDataSize to set
      */
     public void setMaxEarlyDataSize(ModifiableInteger maxEarlyDataSize) {
         this.maxEarlyDataSize = maxEarlyDataSize;

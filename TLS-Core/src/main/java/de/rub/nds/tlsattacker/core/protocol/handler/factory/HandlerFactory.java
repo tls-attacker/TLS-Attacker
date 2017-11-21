@@ -43,6 +43,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloRetryRequestHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.HelloVerifyRequestHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.RSAClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ServerHelloDoneHandler;
@@ -147,8 +148,7 @@ public class HandlerFactory {
                 case HELLO_VERIFY_REQUEST:
                     return new HelloVerifyRequestHandler(context);
                 case NEW_SESSION_TICKET:
-                    // TODO or should we give an UnknownHandshakeMessageHandler?
-                    throw new UnsupportedOperationException("Session Tickets are not supported yet!");
+                    return new NewSessionTicketHandler(context);
                 case SERVER_HELLO:
                     return new ServerHelloHandler(context);
                 case SERVER_HELLO_DONE:

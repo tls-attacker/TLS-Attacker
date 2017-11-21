@@ -56,6 +56,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing PreSharedKeyExtensionMessage");
         if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            msg.getEntries(chooser);
             prepareLists();
             prepareIdentityListBytes();
             prepareBinderListBytes();
@@ -141,7 +142,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     }
 
     private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
-        List<PskSet> pskSets = chooser.getContext().getConfig().getPskSets();
+        List<PskSet> pskSets = chooser.getPskSets();
         for (int x = 0; x < msg.getBinders().size(); x++) {
             try {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());

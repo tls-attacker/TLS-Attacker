@@ -69,8 +69,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
             if (message.getSelectedIdentity() != null) {
                 adjustPsk(message);
             } else {
-                context.setEarlyDataPSKIdentity(context.getConfig().getPskSets().get(0).getPreSharedKeyIdentity());
-                context.setEarlyDataCipherSuite(context.getConfig().getPskSets().get(0).getCipherSuite());
+                context.setEarlyDataPSKIdentity(context.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
+                context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
             }
         }
         if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
@@ -84,9 +84,9 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     }
 
     private void adjustPsk(PreSharedKeyExtensionMessage message) {
-        if (message.getSelectedIdentity().getValue() < context.getConfig().getPskSets().size()) {
+        if (message.getSelectedIdentity().getValue() < context.getChooser().getPskSets().size()) {
             LOGGER.debug("Setting PSK as chosen by server");
-            context.setPsk(context.getConfig().getPskSets().get(message.getSelectedIdentity().getValue())
+            context.setPsk(context.getChooser().getPskSets().get(message.getSelectedIdentity().getValue())
                     .getPreSharedKey());
             context.setSelectedIdentityIndex(message.getSelectedIdentity().getValue());
         } else {
@@ -96,7 +96,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
 
     private void selectPsk(PreSharedKeyExtensionMessage message) {
         int pskIdentityIndex = 0;
-        List<PskSet> pskSets = context.getConfig().getPskSets();
+        List<PskSet> pskSets = context.getChooser().getPskSets();
         for (PSKIdentity pskIdentity : message.getIdentities()) {
             for (int x = 0; x < pskSets.size(); x++) {
                 if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), pskIdentity.getIdentity().getValue())) {
@@ -118,7 +118,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         LOGGER.debug("Calculating early traffic secret using transcript: "
                 + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
 
-        List<PskSet> pskSets = context.getConfig().getPskSets();
+        List<PskSet> pskSets = context.getChooser().getPskSets();
         byte[] earlyDataPsk = null;
         for (int x = 0; x < pskSets.size(); x++) {
             if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0).getIdentity()

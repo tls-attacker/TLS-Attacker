@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
@@ -108,6 +109,11 @@ public class TlsContext {
      * EarlySecret used to derive EarlyTrafficSecret and more.
      */
     private byte[] earlySecret;
+
+    /**
+     * The known TLS 1.3 PSK-Sets.
+     */
+    private List<PskSet> pskSets;
 
     /**
      * The selected Pre Shared key.
@@ -1780,6 +1786,21 @@ public class TlsContext {
      */
     public void setActiveKeySetType(Tls13KeySetType activeKeySetType) {
         this.activeKeySetType = activeKeySetType;
+    }
+
+    /**
+     * @return the pskSets
+     */
+    public List<PskSet> getPskSets() {
+        return pskSets;
+    }
+
+    /**
+     * @param pskSets
+     *            the pskSets to set
+     */
+    public void setPskSets(List<PskSet> pskSets) {
+        this.pskSets = pskSets;
     }
 
 }

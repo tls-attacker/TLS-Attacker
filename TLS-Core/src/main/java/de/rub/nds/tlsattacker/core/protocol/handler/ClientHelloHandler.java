@@ -25,6 +25,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -78,6 +79,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
             }
         }
         adjustRandomContext(message);
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
+                && tlsContext.getConfig().getWorkflowTraceType() == WorkflowTraceType.ZERO_RTT) {
+            // Prevents encryption of ClientHello in FULL_ZERO_RTT trace
+            tlsContext.setActiveKeySetType(Tls13KeySetType.NONE);
+            tlsContext.setReadSequenceNumber(0);
+            tlsContext.setWriteSequenceNumber(0);
+        }
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {

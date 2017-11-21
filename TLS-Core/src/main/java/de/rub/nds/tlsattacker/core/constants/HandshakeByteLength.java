@@ -207,6 +207,10 @@ public class HandshakeByteLength {
 
     public static final int ENCRYPTED_STATE_LENGTH = 2;
 
+    public static final int TICKET_AGE_ADD_LENGTH = 4;
+
+    public static final int TICKET_NONCE_LENGTH = 1;
+
     /**
      * length of the ClientAuthenticationType in the TLS byte arrays
      */

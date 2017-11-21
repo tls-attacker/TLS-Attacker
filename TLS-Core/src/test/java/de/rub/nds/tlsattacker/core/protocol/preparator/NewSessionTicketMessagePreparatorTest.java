@@ -52,7 +52,7 @@ public class NewSessionTicketMessagePreparatorTest {
 
     /**
      * Test of prepareProtocolMessageContents method, of class
-     * HeartbeatMessagePreparator.
+     * NewSessionTicketMessagePreparator.
      */
     @Test
     public void testPrepare() {

@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKBinderPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKIdentityPreparator;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -46,21 +47,8 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public PreSharedKeyExtensionMessage(Config config) {
         super(ExtensionType.PRE_SHARED_KEY);
-        identities = new LinkedList<>();
-        binders = new LinkedList<>();
-        List<PskSet> pskSets = config.getPskSets();
-
-        for (int x = 0; x < pskSets.size(); x++) {
-            PSKIdentity pskIdentity = new PSKIdentity();
-            pskIdentity.setIdentityConfig(pskSets.get(x).getPreSharedKeyIdentity());
-            pskIdentity.setTicketAgeAddConfig(pskSets.get(x).getTicketAgeAdd());
-            pskIdentity.setTicketAgeConfig(pskSets.get(x).getTicketAge());
-
-            PSKBinder pskBinder = new PSKBinder();
-            pskBinder.setBinderCipherConfig(pskSets.get(x).getCipherSuite());
-
-            identities.add(pskIdentity);
-            binders.add(pskBinder);
+        if (config.getPskSets() != null) {
+            copyPskSets(config.getPskSets());
         }
     }
 
@@ -159,5 +147,30 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public void setBinderListBytes(byte[] binderListBytes) {
         this.binderListBytes = ModifiableVariableFactory.safelySetValue(this.binderListBytes, binderListBytes);
+    }
+
+    private void copyPskSets(List<PskSet> pskSets) {
+        identities = new LinkedList<>();
+        binders = new LinkedList<>();
+
+        for (int x = 0; x < pskSets.size(); x++) {
+            PSKIdentity pskIdentity = new PSKIdentity();
+            pskIdentity.setIdentityConfig(pskSets.get(x).getPreSharedKeyIdentity());
+            pskIdentity.setTicketAgeAddConfig(pskSets.get(x).getTicketAgeAdd());
+            pskIdentity.setTicketAgeConfig(pskSets.get(x).getTicketAge());
+
+            PSKBinder pskBinder = new PSKBinder();
+            pskBinder.setBinderCipherConfig(pskSets.get(x).getCipherSuite());
+
+            identities.add(pskIdentity);
+            binders.add(pskBinder);
+        }
+    }
+
+    public void getEntries(Chooser chooser) {
+        // use PskSets from context if no psk sets were given in config before
+        if (identities == null && binders == null && chooser.getPskSets() != null) {
+            copyPskSets(chooser.getPskSets());
+        }
     }
 }

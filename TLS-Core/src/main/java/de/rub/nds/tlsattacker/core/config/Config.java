@@ -901,7 +901,8 @@ public class Config implements Serializable {
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
-     * Extension defined in RFC5077.
+     * Extension defined in RFC5077, followed by additional TLS 1.3 draft 21
+     * NewSessionTicket parameters.
      */
     private long sessionTicketLifetimeHint = 0;
     private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
@@ -909,6 +910,10 @@ public class Config implements Serializable {
             .hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
                                                                                                                    // Key
+    private byte[] sessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
+    private byte[] sessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
+    private byte[] sessionTicketIdentity = ArrayConverter
+            .hexStringToByteArray("5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
 
     /**
      * ClientAuthtication Type, not fully implemented yet
@@ -2719,6 +2724,51 @@ public class Config implements Serializable {
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
+    }
+
+    /**
+     * @return the sessionTicketAgeAdd
+     */
+    public byte[] getSessionTicketAgeAdd() {
+        return sessionTicketAgeAdd;
+    }
+
+    /**
+     * @param sessionTicketAgeAdd
+     *            the sessionTicketAgeAdd to set
+     */
+    public void setSessionTicketAgeAdd(byte[] sessionTicketAgeAdd) {
+        this.sessionTicketAgeAdd = sessionTicketAgeAdd;
+    }
+
+    /**
+     * @return the sessionTicketNonce
+     */
+    public byte[] getSessionTicketNonce() {
+        return sessionTicketNonce;
+    }
+
+    /**
+     * @param sessionTicketNonce
+     *            the sessionTicketNonce to set
+     */
+    public void setSessionTicketNonce(byte[] sessionTicketNonce) {
+        this.sessionTicketNonce = sessionTicketNonce;
+    }
+
+    /**
+     * @return the sessionTicketIdentity
+     */
+    public byte[] getSessionTicketIdentity() {
+        return sessionTicketIdentity;
+    }
+
+    /**
+     * @param sessionTicketIdentity
+     *            the sessionTicketIdentity to set
+     */
+    public void setSessionTicketIdentity(byte[] sessionTicketIdentity) {
+        this.sessionTicketIdentity = sessionTicketIdentity;
     }
 
 }

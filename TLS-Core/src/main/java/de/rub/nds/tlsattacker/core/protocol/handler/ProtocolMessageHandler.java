@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -85,7 +86,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
-        if (parsedMessage instanceof HandshakeMessage) {
+        if (parsedMessage instanceof HandshakeMessage && !isTls13NewSessionTicket(parsedMessage)) {
             if (((HandshakeMessage) parsedMessage).getIncludeInDigest()) {
                 tlsContext.getDigest().append(parsedMessage.getCompleteResultingMessage().getValue());
             }
@@ -130,5 +131,12 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     @Override
     protected final void adjustContext(Message message) {
         adjustTLSContext(message);
+    }
+
+    private boolean isTls13NewSessionTicket(Message message) {
+        if (message instanceof NewSessionTicketMessage && tlsContext.getSelectedProtocolVersion().isTLS13()) {
+            return true;
+        }
+        return false;
     }
 }

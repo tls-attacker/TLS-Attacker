@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
@@ -31,6 +32,21 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
     private ModifiableByteArray mac;
+
+    @ModifiableVariableProperty()
+    private ModifiableByteArray identity;
+
+    @ModifiableVariableProperty()
+    private ModifiableByteArray ticketAgeAdd;
+
+    @ModifiableVariableProperty()
+    private ModifiableByteArray ticketNonce;
+
+    @ModifiableVariableProperty()
+    private ModifiableInteger identityLength;
+
+    @ModifiableVariableProperty()
+    private ModifiableInteger ticketNonceLength;
 
     public SessionTicket() {
     }
@@ -111,5 +127,120 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    /**
+     * @return the identity
+     */
+    public ModifiableByteArray getIdentity() {
+        return identity;
+    }
+
+    /**
+     * @param identity
+     *            the identity to set
+     */
+    public void setIdentity(ModifiableByteArray identity) {
+        this.identity = identity;
+    }
+
+    /**
+     * @param identity
+     *            the identity to set
+     */
+    public void setIdentity(byte[] identity) {
+        this.identity = ModifiableVariableFactory.safelySetValue(this.identity, identity);
+    }
+
+    /**
+     * @return the ticketAgeAdd
+     */
+    public ModifiableByteArray getTicketAgeAdd() {
+        return ticketAgeAdd;
+    }
+
+    /**
+     * @param ticketAgeAdd
+     *            the ticketAgeAdd to set
+     */
+    public void setTicketAgeAdd(ModifiableByteArray ticketAgeAdd) {
+        this.ticketAgeAdd = ticketAgeAdd;
+    }
+
+    /**
+     * @param ticketAgeAdd
+     *            the ticketAgeAdd to set
+     */
+    public void setTicketAgeAdd(byte[] ticketAgeAdd) {
+        this.ticketAgeAdd = ModifiableVariableFactory.safelySetValue(this.ticketAgeAdd, ticketAgeAdd);
+    }
+
+    /**
+     * @return the ticketNonce
+     */
+    public ModifiableByteArray getTicketNonce() {
+        return ticketNonce;
+    }
+
+    /**
+     * @param ticketNonce
+     *            the ticketNonce to set
+     */
+    public void setTicketNonce(ModifiableByteArray ticketNonce) {
+        this.ticketNonce = ticketNonce;
+    }
+
+    /**
+     * @param ticketNonce
+     *            the ticketNonce to set
+     */
+    public void setTicketNonce(byte[] ticketNonce) {
+        this.ticketNonce = ModifiableVariableFactory.safelySetValue(this.ticketNonce, ticketNonce);
+    }
+
+    /**
+     * @return the identityLength
+     */
+    public ModifiableInteger getIdentityLength() {
+        return identityLength;
+    }
+
+    /**
+     * @param identityLength
+     *            the identityLength to set
+     */
+    public void setIdentityLength(ModifiableInteger identityLength) {
+        this.identityLength = identityLength;
+    }
+
+    /**
+     * @param identityLength
+     *            the identityLength to set
+     */
+    public void setIdentityLength(int identityLength) {
+        this.identityLength = ModifiableVariableFactory.safelySetValue(this.identityLength, identityLength);
+    }
+
+    /**
+     * @return the ticketNonceLength
+     */
+    public ModifiableInteger getTicketNonceLength() {
+        return ticketNonceLength;
+    }
+
+    /**
+     * @param ticketNonceLength
+     *            the ticketNonceLength to set
+     */
+    public void setTicketNonceLength(ModifiableInteger ticketNonceLength) {
+        this.ticketNonceLength = ticketNonceLength;
+    }
+
+    /**
+     * @param ticketNonceLength
+     *            the ticketNonceLength to set
+     */
+    public void setTicketNonceLength(int ticketNonceLength) {
+        this.ticketNonceLength = ModifiableVariableFactory.safelySetValue(this.ticketNonceLength, ticketNonceLength);
     }
 }
