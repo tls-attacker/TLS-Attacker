@@ -198,6 +198,19 @@ public class HandshakeByteLength {
     public static final int SRP_GENERATOR_LENGTH = 2;
 
     public static final int SRP_PUBLICKEY_LENGTH = 2;
+    /**
+     * New Session Ticket
+     */
+    public static final int NEWSESSIONTICKET_TICKET_LENGTH = 2;
+
+    public static final int NEWSESSIONTICKET_LIFETIMEHINT_LENGTH = 4;
+
+    public static final int ENCRYPTED_STATE_LENGTH = 2;
+
+    /**
+     * length of the ClientAuthenticationType in the TLS byte arrays
+     */
+    public static final int CLIENT_AUTHENTICATION_TYPE = 1;
 
     private HandshakeByteLength() {
     }
