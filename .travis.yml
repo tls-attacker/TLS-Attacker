@@ -5,12 +5,11 @@ sudo: false
 before_install:
   - chmod +x mvnw
 
-script: ./mvnw clean package -Dgpg.skip  -Dmaven.javadoc.skip=true
+script: ./mvnw clean package -Dmaven.javadoc.skip=true
 
 jdk:
   - oraclejdk8
-  - oraclejdk7
-  - openjdk7
+  - openjdk8
 
 branches:
   only:
