@@ -49,7 +49,6 @@ public class EarlyDataExtensionHandler extends ExtensionHandler<EarlyDataExtensi
     public void adjustTLSExtensionContext(EarlyDataExtensionMessage message) {
         if (message.getMaxEarlyDataSize() != null) {
             context.setMaxEarlyDataSize(message.getMaxEarlyDataSize().getValue());
-            LOGGER.debug("Is this early enough?");
         } else if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
             context.addNegotiatedExtension(ExtensionType.EARLY_DATA); // client
                                                                       // indicated

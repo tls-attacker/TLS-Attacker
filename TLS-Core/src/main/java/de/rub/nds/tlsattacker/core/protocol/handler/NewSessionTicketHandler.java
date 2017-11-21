@@ -84,8 +84,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     private byte[] derivePsk(NewSessionTicketMessage message) {
         try {
-            LOGGER.debug("Deriving PSK from current session using transscript: "
-                    + ArrayConverter.bytesToHexString(tlsContext.getDigest().getRawBytes(), false));
+            LOGGER.debug("Deriving PSK from current session");
             HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser()
                     .getSelectedCipherSuite());
             DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser()
