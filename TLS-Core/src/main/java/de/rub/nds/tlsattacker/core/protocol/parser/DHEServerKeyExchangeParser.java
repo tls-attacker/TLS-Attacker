@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 
-public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServerKeyExchangeMessage> {
+public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
 
     private final ProtocolVersion version;
 
@@ -51,9 +51,18 @@ public class DHEServerKeyExchangeParser extends ServerKeyExchangeParser<DHEServe
         parseSignature(msg);
     }
 
+    protected void parseDheParams(T msg) {
+        parsepLength(msg);
+        parseP(msg);
+        parsegLength(msg);
+        parseG(msg);
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
+    }
+
     @Override
-    protected DHEServerKeyExchangeMessage createHandshakeMessage() {
-        return new DHEServerKeyExchangeMessage();
+    protected T createHandshakeMessage() {
+        return (T) new DHEServerKeyExchangeMessage();
     }
 
     /**

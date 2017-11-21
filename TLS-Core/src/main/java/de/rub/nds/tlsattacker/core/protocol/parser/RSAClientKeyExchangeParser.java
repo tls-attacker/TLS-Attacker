@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 
-public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClientKeyExchangeMessage> {
+public class RSAClientKeyExchangeParser<T extends RSAClientKeyExchangeMessage> extends ClientKeyExchangeParser<T> {
 
     /**
      * Constructor for the Parser class
@@ -32,15 +32,20 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
     }
 
     @Override
-    protected void parseHandshakeMessageContent(RSAClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(T msg) {
         LOGGER.debug("Parsing RSAClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
     }
 
+    protected void parseRsaParams(T msg) {
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
+    }
+
     @Override
-    protected RSAClientKeyExchangeMessage createHandshakeMessage() {
-        return new RSAClientKeyExchangeMessage();
+    protected T createHandshakeMessage() {
+        return (T) new RSAClientKeyExchangeMessage();
     }
 
     /**
@@ -50,7 +55,7 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
+    private void parseSerializedPublicKeyLength(T msg) {
         if (getVersion().isSSL()) {
             msg.setPublicKeyLength(getBytesLeft());
         } else {
@@ -66,7 +71,7 @@ public class RSAClientKeyExchangeParser extends ClientKeyExchangeParser<RSAClien
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPublicKey(RSAClientKeyExchangeMessage msg) {
+    private void parseSerializedPublicKey(T msg) {
         msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }

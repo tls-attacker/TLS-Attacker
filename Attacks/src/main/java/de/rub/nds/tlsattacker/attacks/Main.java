@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.attacks;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
@@ -24,6 +26,8 @@ import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
 import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
@@ -51,6 +55,14 @@ public class Main {
         JCommander jc = new JCommander(generalDelegate);
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
+
+        PskBruteForcerAttackServerCommandConfig pskBruteForcerAttackServerTest = new PskBruteForcerAttackServerCommandConfig(
+                generalDelegate);
+        jc.addCommand(PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackServerTest);
+
+        PskBruteForcerAttackClientCommandConfig pskBruteForcerAttackClientTest = new PskBruteForcerAttackClientCommandConfig(
+                generalDelegate);
+        jc.addCommand(PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackClientTest);
         // DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest =
         // new DtlsPaddingOracleAttackCommandConfig(
         // generalDelegate);
@@ -134,6 +146,13 @@ public class Main {
             case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
                 attacker = new SimpleMitmProxy(simpleMitmProxy);
                 break;
+            case PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND:
+                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest);
+                break;
+            case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
+                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest);
+                break;
+
             // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
             // attacker = new TokenBindingMitm(tokenBindingMitm);
             // break;

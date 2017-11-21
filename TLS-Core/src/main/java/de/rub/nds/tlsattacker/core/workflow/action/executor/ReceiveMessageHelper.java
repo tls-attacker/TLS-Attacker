@@ -158,7 +158,7 @@ public class ReceiveMessageHelper {
         }
     }
 
-    private List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
+    public List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
         byte[] cleanProtocolMessageBytes = getCleanBytes(records);
         return handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(records), context);
     }

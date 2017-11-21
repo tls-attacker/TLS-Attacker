@@ -53,6 +53,7 @@ public class CertificateByteChooser {
             case ECDHE_RSA:
             case RSA:
             case SRP_SHA_RSA:
+            case RSA_PSK:
                 return rsaCert;
             case DHE_DSS:
             case DH_DSS:

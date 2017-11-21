@@ -29,14 +29,15 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
 import org.bouncycastle.math.ec.ECPoint;
 
-public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator<ECDHClientKeyExchangeMessage> {
+public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMessage> extends
+        ClientKeyExchangePreparator<T> {
 
-    private byte[] serializedPoint;
-    private byte[] premasterSecret;
-    private byte[] random;
-    private final ECDHClientKeyExchangeMessage msg;
+    protected byte[] serializedPoint;
+    protected byte[] premasterSecret;
+    protected byte[] random;
+    protected final T msg;
 
-    public ECDHClientKeyExchangePreparator(Chooser chooser, ECDHClientKeyExchangeMessage message) {
+    public ECDHClientKeyExchangePreparator(Chooser chooser, T message) {
         super(chooser, message);
         this.msg = message;
     }
@@ -87,7 +88,7 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         prepareClientRandom(msg);
     }
 
-    private ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
+    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
                 namedCurve.getValue()));
         try {
@@ -98,47 +99,47 @@ public class ECDHClientKeyExchangePreparator extends ClientKeyExchangePreparator
         }
     }
 
-    private void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
+    protected void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
         premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(publicKey, privateKey);
     }
 
-    private void preparePublicKeyBaseX(ECDHClientKeyExchangeMessage msg, ECPoint clientPublicKey) {
+    protected void preparePublicKeyBaseX(T msg, ECPoint clientPublicKey) {
         msg.setPublicKeyBaseX(clientPublicKey.getRawXCoord().toBigInteger());
         LOGGER.debug("PublicKeyBaseX: " + msg.getPublicKeyBaseX().getValue());
     }
 
-    private void preparePublicKeyBaseY(ECDHClientKeyExchangeMessage msg, ECPoint clientPublicKey) {
+    protected void preparePublicKeyBaseY(T msg, ECPoint clientPublicKey) {
         msg.setPublicKeyBaseY(clientPublicKey.getRawYCoord().toBigInteger());
         LOGGER.debug("PublicKeyBaseY: " + msg.getPublicKeyBaseY().getValue());
     }
 
-    private void prepareEcPointFormat(ECDHClientKeyExchangeMessage msg) {
+    protected void prepareEcPointFormat(T msg) {
         msg.setEcPointFormat(serializedPoint[0]);
         LOGGER.debug("EcPointFormat: " + msg.getEcPointFormat().getValue());
     }
 
-    private void prepareEcPointEncoded(ECDHClientKeyExchangeMessage msg) {
+    protected void prepareEcPointEncoded(T msg) {
         msg.setEcPointEncoded(Arrays.copyOfRange(serializedPoint, 1, serializedPoint.length));
         LOGGER.debug("EcPointEncoded: " + ArrayConverter.bytesToHexString(msg.getEcPointEncoded().getValue()));
     }
 
-    private void prepareSerializedPublicKey(ECDHClientKeyExchangeMessage msg) {
+    protected void prepareSerializedPublicKey(T msg) {
         msg.setPublicKey(serializedPoint);
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
-    private void prepareSerializedPublicKeyLength(ECDHClientKeyExchangeMessage msg) {
+    protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void preparePremasterSecret(ECDHClientKeyExchangeMessage msg) {
+    protected void preparePremasterSecret(T msg) {
         msg.getComputations().setPremasterSecret(premasterSecret);
         LOGGER.debug("PremasterSecret: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    private void prepareClientRandom(ECDHClientKeyExchangeMessage msg) {
+    protected void prepareClientRandom(T msg) {
         // TODO this is spooky
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientRandom(random);

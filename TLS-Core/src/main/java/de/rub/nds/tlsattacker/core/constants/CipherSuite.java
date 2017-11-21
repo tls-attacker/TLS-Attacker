@@ -506,6 +506,23 @@ public enum CipherSuite {
         return this.name().contains("DHE_");
     }
 
+    public boolean isPskOrDhPsk() {
+        if (!this.name().contains("RSA")) {
+            return this.name().contains("PSK");
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isSrpSha() {
+        return this.name().contains("SRP_SHA");
+
+    }
+
+    public boolean isSrp() {
+        return this.name().contains("SRP_");
+    }
+
     public boolean isExport() {
         return this.name().contains("EXPORT");
     }

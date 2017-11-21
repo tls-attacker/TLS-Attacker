@@ -65,6 +65,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.nio.charset.Charset;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -297,7 +298,7 @@ public class Config implements Serializable {
      * Default SRP Identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRemotePasswordExtensionIdentifier = new byte[0];
+    private byte[] secureRemotePasswordExtensionIdentifier = "UserName".getBytes(Charset.forName("UTF-8"));
 
     /**
      * Default SRTP extension protection profiles The list contains every
@@ -821,7 +822,51 @@ public class Config implements Serializable {
     private byte[] defaultPSKKey = ArrayConverter.hexStringToByteArray("1a2b3c4d");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPSKIdentity = ArrayConverter.hexStringToByteArray("436c69656e745f6964656e74697479");
+    private byte[] defaultPSKIdentity = "Client_Identity".getBytes(Charset.forName("UTF-8"));
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultPSKIdentityHint = new byte[0];
+
+    private BigInteger defaultSRPModulus = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("EEAF0AB9ADB38DD69C33F80AFA8FC5E86072618775FF3C0B9EA2314C9C256576D674DF7496EA81D3383B4813D692C6E0E0D5D8E250B98BE48E495C1D6089DAD15DC7D7B46154D6B6CE8EF4AD69B15D4982559B297BCF1885C529F566660E57EC68EDBC3C05726CC02FD4CBF4976EAA9AFD5138FE8376435B9FC61D2FC0EB06E3"));
+
+    private BigInteger defaultPSKModulus = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("FFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AAAC42DAD33170D04507A33A85521ABDF1CBA64ECFB850458DBEF0A8AEA71575D060C7DB3970F85A6E1E4C7ABF5AE8CDB0933D71E8C94E04A25619DCEE3D2261AD2EE6BF12FFA06D98A0864D87602733EC86A64521F2B18177B200CBBE117577A615D6C770988C0BAD946E208E24FA074E5AB3143DB5BFCE0FD108E4B82D120A93AD2CAFFFFFFFFFFFFFFFF"));
+
+    private BigInteger defaultPSKGenerator = new BigInteger("2");
+
+    private BigInteger defaultPskDhServerPrivateKey = new BigInteger(1,
+            ArrayConverter.hexStringToByteArray("440051d6f0b55ea967ab31c68a8b5e37d910dae0e2d459a486459caadf367516"));
+
+    private BigInteger defaultPskDhServerPublicKey = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("5a0d3d4e049faa939ffa6a375b9c3c16a4c39753d19ff7da36bc391ea72fc0f68c929bdb400552ed84e0900c7a44c3222fd54d7148256862886bfb4016bd2d03c4c4cf476567c291770e47bd59d0aa5323cfddfc5596e0d6558c480ee8b0c62599834d4581a796a01981468789164504afbd29ce9936e86a290c5f00f8ba986b48010f3e5c079c7f351ddca2ee1fd50846b37bf7463c2b0f3d001b1317ac3069cd89e2e4927ed3d40875a6049af649d2dc349db5995a7525d70a3a1c9b673f5482f83343bd90d45e9c3962dc4a4bf2b4adb37e9166b2ddb31ccf11c5b9e6c98e0a9a3377abba56b0f4283b2eaa69f5368bc107e1c22599f88dd1924d0899c5f153462c911a8293078aefee9fb2389a7854833fcea61cfecbb49f828c361a981a5fedecf13796ae36e36c15a16670af96996c3c45a30e900e18c858f6232b5f7072bdd9e47d7fc61246ef5d19765739f38509284379bc319d9409e8fe236bd29b0335a5bc5bb0424ee44de8a19f864a159fda907d6f5a30ebc0a17e3628e490e5"));
+
+    private BigInteger defaultSRPGenerator = new BigInteger("2");
+
+    private BigInteger defaultSRPServerPrivateKey = new BigInteger("3");
+
+    private BigInteger defaultSRPClientPrivateKey = new BigInteger("5");
+
+    private BigInteger defaultSRPServerPublicKey = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("AC47983DEB1698D9A9029E8F7B39092F441DDD72C56D3A63F236E1CF6CEE839937AB5FD69F8CEBBA64C210170A59B2526ED34B9DD83EF86DF7899DF68297844B15E6F2D1BD2448640D32A48220E6343875976A268F28D25174C37D8DC19F2BA5A35301CEED689206FA91CE7A172D908B821DF8C760918E6A5D1C0CFA76AF503B"));
+
+    private BigInteger defaultSRPClientPublicKey = new BigInteger(1, ArrayConverter.hexStringToByteArray("25C843"));
+
+    private byte[] defaultSRPServerSalt = ArrayConverter.hexStringToByteArray("AABBCCDD");
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultSRPIdentity = "UserName".getBytes(Charset.forName("UTF-8"));
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] defaultSRPPassword = "Password".getBytes(Charset.forName("UTF-8"));
 
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
@@ -1131,6 +1176,118 @@ public class Config implements Serializable {
 
     public void setDefaultPSKIdentity(byte[] defaultPSKIdentity) {
         this.defaultPSKIdentity = defaultPSKIdentity;
+    }
+
+    public byte[] getDefaultPSKIdentityHint() {
+        return defaultPSKIdentityHint;
+    }
+
+    public void setDefaultPSKIdentityHint(byte[] defaultPSKIdentityHint) {
+        this.defaultPSKIdentityHint = defaultPSKIdentityHint;
+    }
+
+    public BigInteger getDefaultSRPModulus() {
+        return defaultSRPModulus;
+    }
+
+    public void setDefaultSRPModulus(BigInteger defaultSRPModulus) {
+        this.defaultSRPModulus = defaultSRPModulus;
+    }
+
+    public BigInteger getDefaultPSKModulus() {
+        return defaultPSKModulus;
+    }
+
+    public void setDefaultPSKModulus(BigInteger defaultPSKModulus) {
+        this.defaultPSKModulus = defaultPSKModulus;
+    }
+
+    public BigInteger getDefaultPSKServerPrivateKey() {
+        return defaultPskDhServerPrivateKey;
+    }
+
+    public void setDefaultPSKServerPrivateKey(BigInteger defaultPskDhServerPrivateKey) {
+        this.defaultPskDhServerPrivateKey = defaultPskDhServerPrivateKey;
+    }
+
+    public BigInteger getDefaultPSKServerPublicKey() {
+        return defaultPskDhServerPublicKey;
+    }
+
+    public void setDefaultPSKServerPublicKey(BigInteger defaultPskDhServerPublicKey) {
+        this.defaultPskDhServerPublicKey = defaultPskDhServerPublicKey;
+    }
+
+    public BigInteger getDefaultPSKGenerator() {
+        return defaultPSKGenerator;
+    }
+
+    public void setDefaultPSKGenerator(BigInteger defaultPSKGenerator) {
+        this.defaultPSKGenerator = defaultPSKGenerator;
+    }
+
+    public BigInteger getDefaultSRPServerPrivateKey() {
+        return defaultSRPServerPrivateKey;
+    }
+
+    public void setDefaultSRPServerPrivateKey(BigInteger defaultSRPServerPrivateKey) {
+        this.defaultSRPServerPrivateKey = defaultSRPServerPrivateKey;
+    }
+
+    public BigInteger getDefaultSRPServerPublicKey() {
+        return defaultSRPServerPublicKey;
+    }
+
+    public void setDefaultSRPServerPublicKey(BigInteger defaultSRPServerPublicKey) {
+        this.defaultSRPServerPublicKey = defaultSRPServerPublicKey;
+    }
+
+    public BigInteger getDefaultSRPClientPrivateKey() {
+        return defaultSRPClientPrivateKey;
+    }
+
+    public void setDefaultSRPClientPrivateKey(BigInteger defaultSRPClientPrivateKey) {
+        this.defaultSRPClientPrivateKey = defaultSRPClientPrivateKey;
+    }
+
+    public BigInteger getDefaultSRPClientPublicKey() {
+        return defaultSRPClientPublicKey;
+    }
+
+    public void setDefaultSRPClientPublicKey(BigInteger defaultSRPClientPublicKey) {
+        this.defaultSRPClientPublicKey = defaultSRPClientPublicKey;
+    }
+
+    public BigInteger getDefaultSRPGenerator() {
+        return defaultSRPGenerator;
+    }
+
+    public void setDefaultSRPGenerator(BigInteger defaultSRPGenerator) {
+        this.defaultSRPGenerator = defaultSRPGenerator;
+    }
+
+    public byte[] getDefaultSRPServerSalt() {
+        return defaultSRPServerSalt;
+    }
+
+    public void setDefaultSRPServerSalt(byte[] defaultSRPServerSalt) {
+        this.defaultSRPServerSalt = defaultSRPServerSalt;
+    }
+
+    public byte[] getDefaultSRPIdentity() {
+        return defaultSRPIdentity;
+    }
+
+    public void setDefaultSRPIdentity(byte[] defaultSRPIdentity) {
+        this.defaultSRPIdentity = defaultSRPIdentity;
+    }
+
+    public byte[] getDefaultSRPPassword() {
+        return defaultSRPPassword;
+    }
+
+    public void setDefaultSRPPassword(byte[] defaultSRPPassword) {
+        this.defaultSRPPassword = defaultSRPPassword;
     }
 
     public BigInteger getDefaultClientRSAPrivateKey() {

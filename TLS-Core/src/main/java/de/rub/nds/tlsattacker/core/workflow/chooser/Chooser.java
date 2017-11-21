@@ -136,6 +136,36 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
+    public abstract BigInteger getSRPModulus();
+
+    public abstract BigInteger getPSKModulus();
+
+    public abstract byte[] getPSKIdentity();
+
+    public abstract byte[] getPSKIdentityHint();
+
+    public abstract BigInteger getPSKServerPrivateKey();
+
+    public abstract BigInteger getPSKServerPublicKey();
+
+    public abstract BigInteger getPSKGenerator();
+
+    public abstract BigInteger getSRPGenerator();
+
+    public abstract BigInteger getSRPServerPrivateKey();
+
+    public abstract BigInteger getSRPServerPublicKey();
+
+    public abstract BigInteger getSRPClientPrivateKey();
+
+    public abstract BigInteger getSRPClientPublicKey();
+
+    public abstract byte[] getSRPServerSalt();
+
+    public abstract byte[] getSRPPassword();
+
+    public abstract byte[] getSRPIdentity();
+
     public abstract BigInteger getServerEcPrivateKey();
 
     public abstract BigInteger getClientEcPrivateKey();
