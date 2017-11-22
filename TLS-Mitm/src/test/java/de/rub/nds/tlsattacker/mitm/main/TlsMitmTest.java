@@ -30,7 +30,6 @@ import java.security.SignatureException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.operator.OperatorCreationException;
@@ -97,8 +96,6 @@ public class TlsMitmTest {
             while (!serverThread.isInitialized())
                 ;
 
-            // TimeUnit.SECONDS.sleep(4);
-
             LOGGER.info("Starting mitm");
             // FileHandler fileHandler = new FileHandler("myLogFile");
             // logger.addHandler(fileHandler);
@@ -106,11 +103,9 @@ public class TlsMitmTest {
             Thread mitmThread = new Thread(mitm);
             mitmThread.start();
 
-            TimeUnit.SECONDS.sleep(1);
-
             LOGGER.info("Starting test client");
             BasicTlsClient clientThread = new BasicTlsClient("localhost", MITM_PORT, ProtocolVersion.TLS12, cipherSuite);
-            clientThread.setRetryConnect(false);
+            clientThread.setRetryConnect(true);
             clientThread.start();
             mitmThread.join();
 
