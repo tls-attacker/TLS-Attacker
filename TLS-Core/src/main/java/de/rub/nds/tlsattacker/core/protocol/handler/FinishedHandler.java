@@ -59,13 +59,11 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     public void adjustTLSContext(FinishedMessage message) {
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
                 && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
-            adjustRecordCipher0RTT();
+            adjustRecordCipherForClientFin();
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                 adjustApplicationTrafficSecrets();
-            } else {
-                tlsContext.setActiveKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             }
         }
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -102,7 +100,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
     }
 
-    private void adjustRecordCipher0RTT() {
+    private void adjustRecordCipherForClientFin() {
         try {
             LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
 
@@ -119,6 +117,35 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             tlsContext.setReadSequenceNumber(2);
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void adjustTlsContextAfterSerialize(FinishedMessage message) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            adjustRecordCipherForApplicationData();
+        }
+    }
+
+    private void adjustRecordCipherForApplicationData() {
+        tlsContext.setActiveKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+        KeySet keySet = getKeySet(tlsContext);
+        LOGGER.debug("Setting new Cipher in RecordLayer");
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
+        tlsContext.setWriteSequenceNumber(0);
+        tlsContext.setReadSequenceNumber(0);
+    }
+
+    private KeySet getKeySet(TlsContext context) {
+        try {
+            LOGGER.debug("Generating new KeySet");
+            KeySet keySet = KeySetGenerator.generateKeySet(context);
+            return keySet;
+        } catch (NoSuchAlgorithmException ex) {
+            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
     }
 }

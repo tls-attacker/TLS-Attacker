@@ -69,17 +69,6 @@ public class SendMessageHelper {
                 message.getHandler(context).adjustTlsContextAfterSerialize(message);
                 lastMessage = null;
             }
-            if (context.getChooser().getSelectedProtocolVersion().isTLS13()
-                    && context.getActiveKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
-                KeySet keySet = getKeySet(context);
-                LOGGER.debug("Setting new Cipher in RecordLayer");
-                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet);
-                context.getRecordLayer().setRecordCipher(recordCipher);
-                context.getRecordLayer().updateDecryptionCipher();
-                context.getRecordLayer().updateEncryptionCipher();
-                context.setWriteSequenceNumber(0);
-                context.setReadSequenceNumber(0);
-            }
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
         if (lastMessage != null) {
@@ -115,16 +104,6 @@ public class SendMessageHelper {
             }
         }
         return new MessageActionResult(records, messages);
-    }
-
-    private KeySet getKeySet(TlsContext context) {
-        try {
-            LOGGER.debug("Generating new KeySet");
-            KeySet keySet = KeySetGenerator.generateKeySet(context);
-            return keySet;
-        } catch (NoSuchAlgorithmException ex) {
-            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
-        }
     }
 
     private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
