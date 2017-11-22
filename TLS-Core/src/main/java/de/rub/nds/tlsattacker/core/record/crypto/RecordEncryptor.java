@@ -67,7 +67,7 @@ public class RecordEncryptor extends Encryptor {
 
         byte[] padding;
         if (context.getChooser().getSelectedProtocolVersion().isTLS13()
-                || context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+                || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
         } else {
             int paddingLength = recordCipher.calculatePaddingLength(record.getUnpaddedRecordBytes().getValue().length);
@@ -77,8 +77,8 @@ public class RecordEncryptor extends Encryptor {
         setPadding(record, padding);
         setPaddingLength(record);
         byte[] plain;
-        if ((context.getChooser().getSelectedProtocolVersion().isTLS13() || context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
-                && context.getActiveKeySetType() != Tls13KeySetType.NONE) {
+        if ((context.getChooser().getSelectedProtocolVersion().isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
+                && context.getActiveKeySetTypeWrite() != Tls13KeySetType.NONE) {
             plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
                     .getContentMessageType().getArrayValue(), record.getPadding().getValue());
         } else {

@@ -72,7 +72,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
-        if (version.isTLS13() || context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+        if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             return encryptTLS13(request);
         } else {
             return encryptTLS12(request);
@@ -81,7 +81,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public byte[] decrypt(byte[] data) {
-        if (version.isTLS13() || context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+        if (version.isTLS13() || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             return decryptTLS13(data);
         } else {
             return decryptTLS12(data);
@@ -172,7 +172,8 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public boolean isUsingPadding() {
-        if (version.isTLS13() || context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+        if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS
+                || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             return true;
         } else {
             return false;

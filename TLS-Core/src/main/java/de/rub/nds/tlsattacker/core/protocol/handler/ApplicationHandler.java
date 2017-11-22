@@ -9,12 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
-import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePreparator;
@@ -24,7 +21,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,14 +48,9 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
 
     @Override
     public void adjustTLSContext(ApplicationMessage message) {
-        if (tlsContext.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                adjustEarlyTrafficSecret();
-                adjustRecordLayerForEarlyData();
-            } else {
-                tlsContext.setActiveKeySetType(Tls13KeySetType.NONE);
-                LOGGER.debug("Set ActiveKeySetType to " + tlsContext.getActiveKeySetType());
-            }
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                || tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+            adjustRecordLayer();
         }
         tlsContext.setLastHandledApplicationMessageData(message.getData().getValue());
         String readableAppData = ArrayConverter.bytesToHexString(tlsContext.getLastHandledApplicationMessageData());
@@ -70,37 +61,44 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
         }
     }
 
-    private void adjustRecordLayerForEarlyData() {
+    private void adjustRecordLayer() {
         try {
-            LOGGER.debug("Setting up RecordLayer, to allow for EarlyData encryption");
-
-            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13);
-            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
+            KeySet keySetWrite = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
+                    tlsContext.getActiveKeySetTypeWrite());
+            RecordCipher recordCipherEnc = RecordCipherFactory.getRecordCipher(tlsContext, keySetWrite,
                     tlsContext.getEarlyDataCipherSuite());
-            tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-            tlsContext.getRecordLayer().updateEncryptionCipher();
-            tlsContext.setWriteSequenceNumber(0); // Reset SQN after ClientHello
+            KeySet keySetRead = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
+                    tlsContext.getActiveKeySetTypeRead());
+            RecordCipher recordCipherDec = RecordCipherFactory.getRecordCipher(tlsContext, keySetRead,
+                    tlsContext.getEarlyDataCipherSuite());
+
+            if (tlsContext.getRecordLayer().getEncryptor().getKeySet() == null
+                    || tlsContext.getRecordLayer().getEncryptor().getKeySet().getKeySetType() != tlsContext
+                            .getActiveKeySetTypeWrite()) {
+                tlsContext.getRecordLayer().setRecordCipher(recordCipherEnc);
+                tlsContext.getRecordLayer().updateEncryptionCipher();
+                tlsContext.setWriteSequenceNumber(0); // Reset SQN
+                LOGGER.debug("Updated Encryption Cipher");
+            }
+
+            if (tlsContext.getRecordLayer().getDecryptor().getKeySet() == null
+                    || tlsContext.getRecordLayer().getDecryptor().getKeySet().getKeySetType() != tlsContext
+                            .getActiveKeySetTypeRead()) {
+                tlsContext.getRecordLayer().setRecordCipher(recordCipherDec);
+                tlsContext.getRecordLayer().updateDecryptionCipher();
+                tlsContext.setReadSequenceNumber(0); // Reset SQN
+                LOGGER.debug("Updated Decryption Cipher");
+            }
 
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(ApplicationHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private void adjustEarlyTrafficSecret() {
-        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getEarlyDataCipherSuite());
-        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
-                tlsContext.getEarlyDataCipherSuite());
-
-        byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext
-                .getEarlySecret(), HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
-        tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
-        LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
-    }
-
     @Override
     public void adjustTlsContextAfterSerialize(ApplicationMessage message) {
-        if (tlsContext.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            tlsContext.setActiveKeySetType(Tls13KeySetType.NONE);
+        if (tlsContext.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
         }
     }
 }

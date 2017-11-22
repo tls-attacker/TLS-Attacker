@@ -67,7 +67,7 @@ public class RecordDecryptor extends Decryptor {
         LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
         if (recordCipher.isUsingPadding()) {
             if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
-                    && context.getActiveKeySetType() != Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+                    && context.getActiveKeySetTypeRead() != Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
                 adjustPaddingTLS(record);
             } else {
                 adjustPaddingTLS13(record);
@@ -88,7 +88,7 @@ public class RecordDecryptor extends Decryptor {
         }
         context.increaseReadSequenceNumber();
         if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
-                && context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+                && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             checkForEndOfEarlyData(record.getUnpaddedRecordBytes().getValue());
         }
     }
@@ -239,8 +239,9 @@ public class RecordDecryptor extends Decryptor {
         try {
             LOGGER.debug("Adjusting recordCipher after decrypting EOED using different key");
 
-            context.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-            KeySet keySet = KeySetGenerator.generateKeySet(context);
+            context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+            KeySet keySet = KeySetGenerator.generateKeySet(context, context.getSelectedProtocolVersion(),
+                    context.getActiveClientKeySetType());
             RecordCipher newRecordCipher = RecordCipherFactory.getRecordCipher(context, keySet);
             context.getRecordLayer().setRecordCipher(newRecordCipher);
             context.getRecordLayer().updateDecryptionCipher();

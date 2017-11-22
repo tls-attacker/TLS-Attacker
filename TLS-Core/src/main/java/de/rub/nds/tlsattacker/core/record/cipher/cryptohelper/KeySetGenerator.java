@@ -34,10 +34,10 @@ public class KeySetGenerator {
 
     protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());
 
-    public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion)
+    public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
             throws NoSuchAlgorithmException {
         if (protocolVersion.isTLS13()) {
-            return getTls13KeySet(context);
+            return getTls13KeySet(context, keySetType);
         } else {
             return getTlsKeySet(context);
         }
@@ -45,28 +45,30 @@ public class KeySetGenerator {
     }
 
     public static KeySet generateKeySet(TlsContext context) throws NoSuchAlgorithmException {
-        return generateKeySet(context, context.getChooser().getSelectedProtocolVersion());
+        return generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
+                context.getActiveKeySetTypeWrite());
     }
 
-    private static KeySet getTls13KeySet(TlsContext context) {
+    private static KeySet getTls13KeySet(TlsContext context, Tls13KeySetType keySetType) {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] clientSecret = new byte[0];
         byte[] serverSecret = new byte[0];
-        if (context.getActiveKeySetType() == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS) {
+        if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS) {
             clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
             serverSecret = context.getChooser().getServerHandshakeTrafficSecret();
-        } else if (context.getActiveKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+        } else if (keySetType == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
             clientSecret = context.getChooser().getClientApplicationTrafficSecret();
             serverSecret = context.getChooser().getServerApplicationTrafficSecret();
-        } else if (context.getActiveKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+        } else if (keySetType == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             cipherSuite = context.getEarlyDataCipherSuite();
             clientSecret = context.getClientEarlyTrafficSecret();
             serverSecret = context.getClientEarlyTrafficSecret(); // won't be
                                                                   // used
         }
-        LOGGER.debug("ActiveKeySetType is " + context.getActiveKeySetType());
+        LOGGER.debug("ActiveKeySetType is " + keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         KeySet keySet = new KeySet();
+        keySet.setKeySetType(keySetType);
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         keySet.setClientWriteKey(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
                 cipherAlg.getKeySize()));

@@ -89,7 +89,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
                     .getConnectionEndType()) {
-                tlsContext.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+                tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                 setRecordCipher();
             }
         }
@@ -177,8 +177,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustRecordLayer() {
         LOGGER.debug("Adjusting RecordLayer, to encrypt handshake messages");
-        tlsContext.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-        LOGGER.debug("Set activeKeySetType in Context to " + tlsContext.getActiveKeySetType());
+        tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        LOGGER.debug("Set activeServerKeySetType in Context to " + tlsContext.getActiveServerKeySetType());
         setRecordCipher();
     }
 }

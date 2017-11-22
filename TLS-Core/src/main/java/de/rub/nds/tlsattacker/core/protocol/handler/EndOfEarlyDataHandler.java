@@ -63,8 +63,9 @@ public class EndOfEarlyDataHandler extends HandshakeMessageHandler<EndOfEarlyDat
         try {
             LOGGER.debug("Adjusting recordCipher to encrypt EOED properly");
 
-            tlsContext.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext);
+            tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext, tlsContext.getSelectedProtocolVersion(),
+                    tlsContext.getActiveClientKeySetType());
             RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
                     tlsContext.getEarlyDataCipherSuite());
             tlsContext.getRecordLayer().setRecordCipher(recordCipher);

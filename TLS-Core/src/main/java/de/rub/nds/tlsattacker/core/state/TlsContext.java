@@ -389,9 +389,14 @@ public class TlsContext {
     private KSEntry serverKSEntry;
 
     /**
-     * the currently used type of keySet
+     * the currently used type of keySet by the client
      */
-    private Tls13KeySetType activeKeySetType = Tls13KeySetType.NONE;
+    private Tls13KeySetType activeClientKeySetType = Tls13KeySetType.NONE;
+
+    /**
+     * the currently used type of keySet by the server
+     */
+    private Tls13KeySetType activeServerKeySetType = Tls13KeySetType.NONE;
 
     /**
      * sequence number used for the encryption
@@ -1774,21 +1779,6 @@ public class TlsContext {
     }
 
     /**
-     * @return the activeKeySetType
-     */
-    public Tls13KeySetType getActiveKeySetType() {
-        return activeKeySetType;
-    }
-
-    /**
-     * @param activeKeySetType
-     *            the activeKeySetType to set
-     */
-    public void setActiveKeySetType(Tls13KeySetType activeKeySetType) {
-        this.activeKeySetType = activeKeySetType;
-    }
-
-    /**
      * @return the pskSets
      */
     public List<PskSet> getPskSets() {
@@ -1801,6 +1791,52 @@ public class TlsContext {
      */
     public void setPskSets(List<PskSet> pskSets) {
         this.pskSets = pskSets;
+    }
+
+    /**
+     * @return the activeClientKeySetType
+     */
+    public Tls13KeySetType getActiveClientKeySetType() {
+        return activeClientKeySetType;
+    }
+
+    /**
+     * @param activeClientKeySetType
+     *            the activeClientKeySetType to set
+     */
+    public void setActiveClientKeySetType(Tls13KeySetType activeClientKeySetType) {
+        this.activeClientKeySetType = activeClientKeySetType;
+    }
+
+    /**
+     * @return the activeServerKeySetType
+     */
+    public Tls13KeySetType getActiveServerKeySetType() {
+        return activeServerKeySetType;
+    }
+
+    /**
+     * @param activeServerKeySetType
+     *            the activeServerKeySetType to set
+     */
+    public void setActiveServerKeySetType(Tls13KeySetType activeServerKeySetType) {
+        this.activeServerKeySetType = activeServerKeySetType;
+    }
+
+    public Tls13KeySetType getActiveKeySetTypeRead() {
+        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
+            return activeClientKeySetType;
+        } else {
+            return activeServerKeySetType;
+        }
+    }
+
+    public Tls13KeySetType getActiveKeySetTypeWrite() {
+        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
+            return activeServerKeySetType;
+        } else {
+            return activeClientKeySetType;
+        }
     }
 
 }

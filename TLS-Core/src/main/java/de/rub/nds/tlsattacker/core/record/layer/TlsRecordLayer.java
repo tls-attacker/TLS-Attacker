@@ -163,4 +163,14 @@ public class TlsRecordLayer extends RecordLayer {
         return new Record(tlsContext.getConfig());
     }
 
+    @Override
+    public RecordCipher getEncryptor() {
+        return encryptor.getRecordCipher();
+    }
+
+    @Override
+    public RecordCipher getDecryptor() {
+        return decryptor.getRecordCipher();
+    }
+
 }

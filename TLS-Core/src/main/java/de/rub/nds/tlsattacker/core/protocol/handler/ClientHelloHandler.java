@@ -9,12 +9,17 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -82,7 +87,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
                 && tlsContext.getConfig().getWorkflowTraceType() == WorkflowTraceType.ZERO_RTT) {
             // Prevents encryption of ClientHello in FULL_ZERO_RTT trace
-            tlsContext.setActiveKeySetType(Tls13KeySetType.NONE);
+            tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
             tlsContext.setReadSequenceNumber(0);
             tlsContext.setWriteSequenceNumber(0);
         }
@@ -175,9 +180,21 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     public void adjustTlsContextAfterSerialize(ClientHelloMessage message) {
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
                 && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
-            tlsContext.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-            LOGGER.debug("Set activeKeySetType in Context to " + tlsContext.getActiveKeySetType());
+            tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            LOGGER.debug("Set activeClientKeySetType in Context to " + tlsContext.getActiveClientKeySetType());
+            adjustEarlyTrafficSecret();
         }
+    }
+
+    private void adjustEarlyTrafficSecret() {
+        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getEarlyDataCipherSuite());
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
+                tlsContext.getEarlyDataCipherSuite());
+
+        byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext
+                .getEarlySecret(), HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+        tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
+        LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
     }
 
 }

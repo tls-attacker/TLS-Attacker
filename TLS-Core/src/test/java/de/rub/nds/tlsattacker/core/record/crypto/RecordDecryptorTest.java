@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.security.NoSuchAlgorithmException;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
@@ -53,6 +54,7 @@ public class RecordDecryptorTest {
     public void testDecrypt() throws NoSuchAlgorithmException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
+        context.setConnectionEnd(new ServerConnectionEnd());
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
         context.setServerHandshakeTrafficSecret(ArrayConverter
@@ -60,7 +62,7 @@ public class RecordDecryptorTest {
         context.setConnectionEnd(new ClientConnectionEnd());
         record.setProtocolMessageBytes(ArrayConverter
                 .hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"));
-        context.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         decryptor = new RecordDecryptor(recordCipher, context);
         decryptor.decrypt(record);

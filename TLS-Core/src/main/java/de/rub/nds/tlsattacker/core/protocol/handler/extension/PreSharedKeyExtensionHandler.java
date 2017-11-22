@@ -151,8 +151,9 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         try {
             LOGGER.debug("Setting up RecordLayer to allow for EarlyData decryption");
 
-            context.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-            KeySet keySet = KeySetGenerator.generateKeySet(context, ProtocolVersion.TLS13);
+            context.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            KeySet keySet = KeySetGenerator.generateKeySet(context, ProtocolVersion.TLS13,
+                    context.getActiveClientKeySetType());
             RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet,
                     context.getEarlyDataCipherSuite());
             context.getRecordLayer().setRecordCipher(recordCipher);

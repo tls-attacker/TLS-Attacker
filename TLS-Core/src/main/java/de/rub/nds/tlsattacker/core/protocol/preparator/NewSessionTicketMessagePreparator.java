@@ -88,7 +88,7 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         prepareTicketLifetimeHint(msg);
         if (chooser.getContext().getSelectedProtocolVersion() != null
                 && chooser.getContext().getSelectedProtocolVersion().isTLS13()
-                && chooser.getContext().getActiveKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+                && chooser.getContext().getActiveServerKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
             prepareTicketTls13(msg);
         } else {
             prepareTicket(msg);
