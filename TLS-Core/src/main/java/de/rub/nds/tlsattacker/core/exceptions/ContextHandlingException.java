@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-
 public class ContextHandlingException extends RuntimeException {
 
     public ContextHandlingException() {

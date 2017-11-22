@@ -19,8 +19,8 @@ public class CopyBufferedMessagesAction extends CopyContextFieldAction {
     public CopyBufferedMessagesAction() {
     }
 
-    public CopyBufferedMessagesAction(String srconnectionAlias, String dstConnectionAlias) {
-        super(srconnectionAlias, dstConnectionAlias);
+    public CopyBufferedMessagesAction(String srcConnectionAlias, String dstConnectionAlias) {
+        super(srcConnectionAlias, dstConnectionAlias);
     }
 
     @Override

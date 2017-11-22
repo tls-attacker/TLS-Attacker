@@ -10,19 +10,20 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class CopyBufferedRecordsAction extends CopyContextFieldAction {
+public class CopyBuffersAction extends CopyContextFieldAction {
 
-    public CopyBufferedRecordsAction() {
+    public CopyBuffersAction() {
 
     }
 
-    public CopyBufferedRecordsAction(String srcConnectionAlias, String dstConnectionAlias) {
+    public CopyBuffersAction(String srcConnectionAlias, String dstConnectionAlias) {
         super(srcConnectionAlias, dstConnectionAlias);
     }
 
     @Override
     protected void copyField(TlsContext src, TlsContext dst) {
         dst.setRecordBuffer(src.getRecordBuffer());
+        dst.setMessageBuffer(src.getMessageBuffer());
     }
 
     @Override
