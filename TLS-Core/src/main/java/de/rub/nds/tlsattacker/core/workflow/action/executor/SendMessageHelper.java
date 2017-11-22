@@ -92,17 +92,6 @@ public class SendMessageHelper {
                 current++;
             }
         }
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
-                && context.getChooser().getSelectedProtocolVersion().isTLS13()
-                && context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
-            for (ProtocolMessage message : messages) {
-                if (message instanceof FinishedMessage) {
-                    // Switch RecordLayer secrets to prepare for EndOfEarlyData
-                    adjustRecordCipherAfterServerFinished(context);
-                    break;
-                }
-            }
-        }
         return new MessageActionResult(records, messages);
     }
 
@@ -160,23 +149,5 @@ public class SendMessageHelper {
         ProtocolMessageHandler handler = message.getHandler(context);
         byte[] protocolMessageBytes = handler.prepareMessage(message);
         return protocolMessageBytes;
-    }
-
-    private void adjustRecordCipherAfterServerFinished(TlsContext context) {
-        try {
-            LOGGER.debug("Adjusting recordCipher after encrypting Hanshake messages");
-            context.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-
-            KeySet keySet = KeySetGenerator.generateKeySet(context);
-            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet,
-                    context.getEarlyDataCipherSuite());
-            context.getRecordLayer().setRecordCipher(recordCipher);
-            context.getRecordLayer().updateDecryptionCipher();
-
-            // Restore the correct SequenceNumber
-            context.setReadSequenceNumber(1);
-        } catch (NoSuchAlgorithmException ex) {
-            java.util.logging.Logger.getLogger(SendMessageHelper.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 }

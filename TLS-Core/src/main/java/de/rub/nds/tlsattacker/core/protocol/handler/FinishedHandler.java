@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -22,7 +22,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -30,8 +29,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
 
 public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
@@ -68,6 +65,10 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.setLastClientVerifyData(message.getVerifyData().getValue());
+            if(tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER)
+            {
+               adjustRecordCipherForApplicationData(); 
+            }
         } else {
             tlsContext.setLastServerVerifyData(message.getVerifyData().getValue());
         }
@@ -101,40 +102,29 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     private void adjustRecordCipherForClientFin() {
-        try {
-            LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
-
-            tlsContext.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-            KeySet keySet = KeySetGenerator.generateKeySet(tlsContext);
-            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet,
-                    tlsContext.getSelectedCipherSuite());
-            tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-            tlsContext.getRecordLayer().updateDecryptionCipher();
-            tlsContext.getRecordLayer().updateEncryptionCipher();
-
-            // Set the correct SequenceNumbers
-            tlsContext.setWriteSequenceNumber(0);
-            tlsContext.setReadSequenceNumber(2);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(FinishedHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
+        tlsContext.setActiveKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+        updateRecordCipher(tlsContext.getSelectedCipherSuite());
+        // Set the correct SequenceNumbers
+        tlsContext.setWriteSequenceNumber(0);
+        tlsContext.setReadSequenceNumber(2);
     }
 
     @Override
     public void adjustTlsContextAfterSerialize(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            adjustRecordCipherForApplicationData();
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                adjustRecordCipherForApplicationData();
+            } else if (tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+                adjustRecordCipherForEndOfEarlyData();
+            }
+
         }
     }
 
     private void adjustRecordCipherForApplicationData() {
         tlsContext.setActiveKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
-        KeySet keySet = getKeySet(tlsContext);
-        LOGGER.debug("Setting new Cipher in RecordLayer");
-        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
-        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
-        tlsContext.getRecordLayer().updateEncryptionCipher();
+        updateRecordCipher(tlsContext.getSelectedCipherSuite());
         tlsContext.setWriteSequenceNumber(0);
         tlsContext.setReadSequenceNumber(0);
     }
@@ -147,5 +137,22 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
+    }
+
+    private void adjustRecordCipherForEndOfEarlyData() {
+        LOGGER.debug("Adjusting recordCipher to decrypt EndOfEarlyData");
+        tlsContext.setActiveKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+        updateRecordCipher(tlsContext.getEarlyDataCipherSuite());
+        // Restore the correct SequenceNumber
+        tlsContext.setReadSequenceNumber(1);
+    }
+
+    private void updateRecordCipher(CipherSuite cipher) {
+        KeySet keySet = getKeySet(tlsContext);
+        LOGGER.debug("Setting new Cipher and Key in RecordLayer");
+        RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet, cipher);
+        tlsContext.getRecordLayer().setRecordCipher(recordCipher);
+        tlsContext.getRecordLayer().updateDecryptionCipher();
+        tlsContext.getRecordLayer().updateEncryptionCipher();
     }
 }
