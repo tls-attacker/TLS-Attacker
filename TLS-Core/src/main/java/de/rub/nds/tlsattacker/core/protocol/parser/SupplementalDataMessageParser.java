@@ -13,11 +13,10 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+ * TODO
  */
+public class SupplementalDataMessageParser extends HandshakeMessageParser<SupplementalDataMessage> {
 
-// todo Implement SupplementalDataMessageParser
-public class SupplementalDataMessageParser<T extends SupplementalDataMessage> extends HandshakeMessageParser<T> {
     /**
      * Constructor for the Parser class
      *
@@ -28,6 +27,7 @@ public class SupplementalDataMessageParser<T extends SupplementalDataMessage> ex
      *            The byte[] which the HandshakeMessageParser is supposed to
      *            parse
      * @param version
+     *            The Version for which this message should be parsed
      */
     public SupplementalDataMessageParser(int pointer, byte[] array, ProtocolVersion version) {
         super(pointer, array, HandshakeMessageType.SUPPLEMENTAL_DATA, version);
@@ -40,7 +40,7 @@ public class SupplementalDataMessageParser<T extends SupplementalDataMessage> ex
     }
 
     @Override
-    protected T createHandshakeMessage() {
+    protected SupplementalDataMessage createHandshakeMessage() {
         throw new UnsupportedOperationException("Not Implemented");
     }
 }

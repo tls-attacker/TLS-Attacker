@@ -21,10 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParserTest;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class RSAClientKeyExchangeSerializerTest {
 

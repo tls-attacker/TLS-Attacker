@@ -31,10 +31,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class TlsRecordLayer extends RecordLayer {
 
     protected final TlsContext tlsContext;
@@ -52,8 +48,8 @@ public class TlsRecordLayer extends RecordLayer {
     }
 
     /**
-     *
      * @param rawRecordData
+     *            The RawRecordData that should be parsed
      * @return list of parsed records or null, if there was not enough data
      */
     @Override

@@ -47,6 +47,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;

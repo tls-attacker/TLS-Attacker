@@ -16,10 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerTCPNonBlockingTransportHandlerTest {
 
     private ServerTCPNonBlockingTransportHandler handler;
@@ -47,8 +43,9 @@ public class ServerTCPNonBlockingTransportHandlerTest {
     /**
      * Test of closeConnection method, of class
      * ServerTCPNonBlockingTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
-    @Test(expected = IOException.class)
     public void testCloseConnectionNotInitialised() throws IOException {
         handler.closeConnection();
     }
@@ -93,6 +90,8 @@ public class ServerTCPNonBlockingTransportHandlerTest {
 
     /**
      * Test of initialize method, of class ServerTCPNonBlockingTransportHandler.
+     * 
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testInitialize() throws InterruptedException {
@@ -119,6 +118,8 @@ public class ServerTCPNonBlockingTransportHandlerTest {
 
     /**
      * Test of recheck method, of class ServerTCPNonBlockingTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testRecheck() throws IOException {

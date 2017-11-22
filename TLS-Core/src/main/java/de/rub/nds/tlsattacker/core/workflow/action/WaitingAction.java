@@ -16,16 +16,16 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class WaitingAction extends TlsAction {
 
-    /** Default waiting time in milliseconds */
+    /**
+     * Default waiting time in milliseconds
+     */
     public final static long DEFAULT_WAITING_TIME = 10;
 
-    /** Time to waiting in milliseconds. */
+    /**
+     * Time to waiting in milliseconds.
+     */
     private Long time = new Long(-1);
 
     public WaitingAction(long time) {
@@ -38,11 +38,11 @@ public class WaitingAction extends TlsAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        Boolean success = true;
-
-        LOGGER.info("Wating " + time + "ms...");
+        Boolean success;
+        LOGGER.info("Waiting " + time + "ms...");
         try {
             Thread.sleep(time);
+            success = true;
         } catch (InterruptedException ex) {
             Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
             success = false;

@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ParserResult {
 
     private ProtocolMessage message;

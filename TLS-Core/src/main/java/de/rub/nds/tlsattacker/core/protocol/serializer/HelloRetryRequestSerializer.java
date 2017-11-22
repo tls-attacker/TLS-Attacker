@@ -12,9 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 
-/**
- * @author Nurullah Erinola
- */
 public class HelloRetryRequestSerializer extends HandshakeMessageSerializer<HelloRetryRequestMessage> {
 
     private final HelloRetryRequestMessage msg;

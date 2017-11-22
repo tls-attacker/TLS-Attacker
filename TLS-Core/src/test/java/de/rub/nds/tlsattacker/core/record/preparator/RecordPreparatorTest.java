@@ -26,9 +26,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class RecordPreparatorTest {
 
     private RecordCipher recordCipher;
@@ -48,6 +45,8 @@ public class RecordPreparatorTest {
 
     /**
      * Test of the prepare method for TLS 1.3, of class RecordPreparator.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
     public void testPrepare() throws NoSuchAlgorithmException {

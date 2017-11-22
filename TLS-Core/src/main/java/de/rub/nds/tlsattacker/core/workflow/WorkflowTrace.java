@@ -51,6 +51,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -71,8 +72,6 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * A wrapper class over a list of protocol expectedMessages.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -103,8 +102,6 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = BufferedSendAction.class, name = "BufferedSendAction"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceiveAction"),
             @XmlElement(type = CopyClientRandomAction.class, name = "CopyClientRandomAction"),
-            @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
-            @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
             @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceiveAction"),
             @XmlElement(type = ForwardAction.class, name = "ForwardAction"),
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnectionAction"),
@@ -119,8 +116,19 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
             @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
             @XmlElement(type = PopBufferedRecordAction.class, name = "PopBufferedRecordAction"),
-            @XmlElement(type = PrintLastHandledApplicationDataAction.class, name = "PrintLastHandledApplicationDataAction") })
-    private List<TlsAction> tlsActions = new ArrayList<>();
+            @XmlElement(type = PrintLastHandledApplicationDataAction.class, name = "PrintLastHandledApplicationDataAction"),
+            @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
+            @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
+            @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
+            @XmlElement(type = WaitingAction.class, name = "WaitingAction"),
+            @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
+            @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
+            @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
+            @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
+            @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+            @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
+            @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
+    private List<TlsAction> tlsActions;
 
     private String name = null;
     private String description = null;

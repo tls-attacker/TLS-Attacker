@@ -12,10 +12,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 
 /**
- * @author Christoph Penkert <christoph.penkert@rub.de>
+ * TODO
  */
-
-// todo Implement SupplementalDataMessageSerializer
 public class SupplementalDataMessageSerializer extends HandshakeMessageSerializer<SupplementalDataMessage> {
     /**
      * The message that should be serialized
@@ -28,6 +26,7 @@ public class SupplementalDataMessageSerializer extends HandshakeMessageSerialize
      * @param message
      *            Message that should be serialized
      * @param version
+     *            The Version for which this message should be serialized
      */
     public SupplementalDataMessageSerializer(SupplementalDataMessage message, ProtocolVersion version) {
         super(message, version);

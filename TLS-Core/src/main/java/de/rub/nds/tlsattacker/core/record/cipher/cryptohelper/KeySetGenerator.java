@@ -29,10 +29,6 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class KeySetGenerator {
 
     protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());

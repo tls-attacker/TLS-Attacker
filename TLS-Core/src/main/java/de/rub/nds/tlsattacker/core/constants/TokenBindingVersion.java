@@ -14,10 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public enum TokenBindingVersion {
     DRAFT_1(new byte[] { (byte) 0, (byte) 1 }),
     DRAFT_2(new byte[] { (byte) 0, (byte) 2 }),

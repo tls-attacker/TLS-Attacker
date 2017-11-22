@@ -19,10 +19,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class AlpnExtensionHandlerTest {
 
     private final byte[] announcedProtocols = ArrayConverter.hexStringToByteArray("02683208687474702f312e31");

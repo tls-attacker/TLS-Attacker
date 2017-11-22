@@ -23,9 +23,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
- */
 public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "dtls_potest";

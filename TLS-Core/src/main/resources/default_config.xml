@@ -129,7 +129,6 @@
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_RSA_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_DHE_DSS_WITH_RC4_128_SHA</defaultServerSupportedCiphersuites>
-    <useAllProvidedRecords>false</useAllProvidedRecords>
     <dynamicWorkflow>false</dynamicWorkflow>
     <namedCurves>SECP192R1</namedCurves>
     <namedCurves>SECP256R1</namedCurves>
@@ -166,9 +165,10 @@
     <certificateStatusRequestExtensionRequestType>OCSP</certificateStatusRequestExtensionRequestType>
     <certificateStatusRequestExtensionResponderIDList></certificateStatusRequestExtensionResponderIDList>
     <certificateStatusRequestExtensionRequestExtension></certificateStatusRequestExtensionRequestExtension>
-    <applicationLayerProtocolNegotiationAnnouncedProtocols>h2</applicationLayerProtocolNegotiationAnnouncedProtocols>
+    <alpnAnnouncedProtocols>h2</alpnAnnouncedProtocols>
     <sessionId></sessionId>
-    <secureRemotePasswordExtensionIdentifier></secureRemotePasswordExtensionIdentifier>
+    <secureRemotePasswordExtensionIdentifier>557365724E616D65</secureRemotePasswordExtensionIdentifier>
+    <defaultSRPPassword>50617373776F7264</defaultSRPPassword>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfiles>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_AES128_CM_HMAC_SHA1_32</secureRealTimeTransportProtocolProtectionProfiles>
     <secureRealTimeTransportProtocolProtectionProfiles>SRTP_NULL_HMAC_SHA1_80</secureRealTimeTransportProtocolProtectionProfiles>
@@ -449,10 +449,12 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <defaultClientRSAPublicKey>65537</defaultClientRSAPublicKey>
     <defaultServerRSAPrivateKey>15874858421354831201422373086128612745111153124913833804748747602178280564406425154617488927847142136837462790351481317765255581632968169400556456985418488827925888221598273953686611745401672309465708043217648197631331184971921491765473252248751361737713587292004390571935209364268173007740802648762007661253254661694353602685239350183219876383969245059520622897526828073822681994419744648185400986499062312630392385618231497966730037670361639244062483305891646041343885072158127929403028249239589737831073084456798375448844113695963693837622356344855176327289719518978665114515326513514352049909912072269175924872321</defaultServerRSAPrivateKey>
     <defaultClientRSAPrivateKey>15874858421354831201422373086128612745111153124913833804748747602178280564406425154617488927847142136837462790351481317765255581632968169400556456985418488827925888221598273953686611745401672309465708043217648197631331184971921491765473252248751361737713587292004390571935209364268173007740802648762007661253254661694353602685239350183219876383969245059520622897526828073822681994419744648185400986499062312630392385618231497966730037670361639244062483305891646041343885072158127929403028249239589737831073084456798375448844113695963693837622356344855176327289719518978665114515326513514352049909912072269175924872321</defaultClientRSAPrivateKey>
-    <defaultPSKKey>1a2b3c4d</defaultPSKKey>
-    <defaultPSKIdentity>436c69656e745f6964656e74697479</defaultPSKIdentity>
+    <defaultPSKKey>1A 2B 3C 4D</defaultPSKKey>
+    <defaultPSKIdentity>43 6C 69 65 6E 74 5F 69 64 65 6E 74 69 74 79</defaultPSKIdentity>
     <defaultClientHandshakeTrafficSecret></defaultClientHandshakeTrafficSecret>
     <defaultServerHandshakeTrafficSecret></defaultServerHandshakeTrafficSecret>
+    <defaultClientApplicationTrafficSecret></defaultClientApplicationTrafficSecret>
+    <defaultServerApplicationTrafficSecret></defaultServerApplicationTrafficSecret>
     <defaultTokenBindingType>PROVIDED_TOKEN_BINDING</defaultTokenBindingType>
     <defaultTokenBindingRsaPublicKey>65537</defaultTokenBindingRsaPublicKey>
     <defaultTokenBindingRsaPrivateKey>89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713</defaultTokenBindingRsaPrivateKey>
@@ -460,6 +462,8 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <defaultTokenBindingRsaModulus>145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053</defaultTokenBindingRsaModulus>
     <useRandomUnixTime>true</useRandomUnixTime>
     <chooserType>DEFAULT</chooserType>
+    <useAllProvidedRecords>false</useAllProvidedRecords>
+    <httpsParsingEnabled>false</httpsParsingEnabled>
     <workflowTraceType>HANDSHAKE</workflowTraceType>
     <outputFilter>DEFAULT</outputFilter>
     <applyFiltersInPlace>false</applyFiltersInPlace>

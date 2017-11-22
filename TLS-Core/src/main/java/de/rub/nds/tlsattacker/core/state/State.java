@@ -55,7 +55,9 @@ import org.apache.logging.log4j.Logger;
  * Please also have a look at the tests supplied with this class for some
  * initialization examples with expected behavior.
  * </p>
+ * <<<<<<< HEAD
  * 
+ * ======= >>>>>>> origin/master
  */
 public class State {
 
@@ -169,8 +171,9 @@ public class State {
      * TODO: Ideally, this would return a deep copy to prevent State
      * invalidation.
      * 
-     * @return the only context known to the state
-     * @see this.getTlsContext(String)
+     * @return the only context known to the state <<<<<<< HEAD
+     * @see this.getTlsContext(String) =======
+     * @see #getTlsContext(java.lang.String) >>>>>>> origin/master
      */
     public TlsContext getTlsContext() {
         return contextContainer.getTlsContext();
@@ -180,14 +183,19 @@ public class State {
      * Get TLS context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
      * 
-     * Note: Be careful when changing the context. I.e. if you change it's
-     * connection, the state can get out of sync.
+     * <<<<<<< HEAD Note: Be careful when changing the context. I.e. if you
+     * change it's connection, the state can get out of sync.
      * 
      * TODO: Ideally, this would return a deep copy to prevent State
      * invalidation.
      * 
+     * =======
+     * 
+     * @param alias
+     *            The Alias for which the TLSContext should be returned >>>>>>>
+     *            origin/master
      * @return the context with the given connection end alias
-     * @see convenience method for single context states: getTlsContext()
+     * @see #getTlsContext()
      */
     public TlsContext getTlsContext(String alias) {
         return contextContainer.getTlsContext(alias);

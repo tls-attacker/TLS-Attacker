@@ -19,11 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Steve Ehleringer - steve.ehleringer@rub.de
- */
-
 @RunWith(Parameterized.class)
 public class SSL2ClientHelloParserTest {
 

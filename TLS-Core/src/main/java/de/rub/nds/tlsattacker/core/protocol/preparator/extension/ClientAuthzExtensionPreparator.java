@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ClientAuthzExtensionPreparator extends ExtensionPreparator<ClientAuthzExtensionMessage> {
 
     private final ClientAuthzExtensionMessage msg;

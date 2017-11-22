@@ -15,10 +15,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ClientTcpTransportHandler extends TransportHandler {
 
     protected Socket socket;

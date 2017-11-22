@@ -27,10 +27,6 @@ import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     Config config;

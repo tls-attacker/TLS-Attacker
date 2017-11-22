@@ -20,11 +20,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 
     private final CertificateMessage msg;

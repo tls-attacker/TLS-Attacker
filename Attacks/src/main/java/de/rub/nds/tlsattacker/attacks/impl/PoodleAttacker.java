@@ -20,10 +20,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class PoodleAttacker extends Attacker {
 
     public PoodleAttacker(PoodleCommandConfig config) {

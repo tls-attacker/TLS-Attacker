@@ -27,9 +27,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * This structure is of course prepended with the handshake message length, as
  * obvious for every handshake message.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 

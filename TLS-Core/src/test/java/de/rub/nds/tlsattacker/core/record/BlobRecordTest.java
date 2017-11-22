@@ -23,10 +23,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class BlobRecordTest {
 
     private BlobRecord record;

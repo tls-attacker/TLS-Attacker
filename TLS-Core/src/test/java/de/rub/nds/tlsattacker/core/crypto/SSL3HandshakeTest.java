@@ -65,9 +65,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * @author Felix Kleine-Wilde <felix.kleine-wilde@rub.de>
- */
 public class SSL3HandshakeTest {
 
     private static final Logger LOGGER = LogManager.getLogger(SSL3HandshakeTest.class.getName());

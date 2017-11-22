@@ -30,11 +30,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * @author Robert Merget <robert.merget@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class RecordAEADCipher extends RecordCipher {
 
     /**

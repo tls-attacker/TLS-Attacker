@@ -19,10 +19,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public abstract class TLSDelegateConfig {
 
     protected static final Logger LOGGER = LogManager.getLogger(TLSDelegateConfig.class.getName());

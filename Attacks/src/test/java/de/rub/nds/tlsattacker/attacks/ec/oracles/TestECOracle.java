@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.crypto.ec.Point;
 import java.math.BigInteger;
 import java.util.Random;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class TestECOracle extends ECOracle {
 
     private final ECComputer computer;

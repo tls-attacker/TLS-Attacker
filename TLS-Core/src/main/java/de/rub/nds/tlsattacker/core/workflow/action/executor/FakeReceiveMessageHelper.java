@@ -15,10 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class FakeReceiveMessageHelper extends ReceiveMessageHelper {
 
     /**

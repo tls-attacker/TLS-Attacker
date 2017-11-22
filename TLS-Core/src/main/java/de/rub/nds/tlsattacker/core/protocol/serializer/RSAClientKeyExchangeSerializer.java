@@ -13,13 +13,10 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
-public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<RSAClientKeyExchangeMessage> {
+public class RSAClientKeyExchangeSerializer<T extends RSAClientKeyExchangeMessage> extends
+        ClientKeyExchangeSerializer<T> {
 
-    private final RSAClientKeyExchangeMessage msg;
+    private final T msg;
 
     /**
      * Constructor for the RSAClientKeyExchangeSerializer
@@ -29,7 +26,7 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
      * @param version
      *            Version of the Protocol
      */
-    public RSAClientKeyExchangeSerializer(RSAClientKeyExchangeMessage message, ProtocolVersion version) {
+    public RSAClientKeyExchangeSerializer(T message, ProtocolVersion version) {
         super(message, version);
         this.msg = message;
     }
@@ -44,11 +41,19 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
         return getAlreadySerialized();
     }
 
+    protected byte[] serializeRsaParams() {
+        if (!version.isSSL()) {
+            writeSerializedPublicKeyLength(msg);
+        }
+        writeSerializedPublickey(msg);
+        return getAlreadySerialized();
+    }
+
     /**
      * Writes the SerializedPublicKeyLength of the RSAClientKeyExchangeMessage
      * into the final byte[]
      */
-    private void writeSerializedPublicKeyLength(RSAClientKeyExchangeMessage msg) {
+    private void writeSerializedPublicKeyLength(T msg) {
         appendInt(msg.getPublicKeyLength().getValue(), HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH);
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
@@ -57,7 +62,7 @@ public class RSAClientKeyExchangeSerializer extends HandshakeMessageSerializer<R
      * Writes the SerializedPublicKey of the RSAClientKeyExchangeMessage into
      * the final byte[]
      */
-    private void writeSerializedPublickey(RSAClientKeyExchangeMessage msg) {
+    private void writeSerializedPublickey(T msg) {
         appendBytes(msg.getPublicKey().getValue());
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }

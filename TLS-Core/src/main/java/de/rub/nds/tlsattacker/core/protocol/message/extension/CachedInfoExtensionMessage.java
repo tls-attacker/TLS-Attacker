@@ -20,8 +20,6 @@ import java.util.List;
 
 /**
  * RFC7924
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class CachedInfoExtensionMessage extends ExtensionMessage {
 

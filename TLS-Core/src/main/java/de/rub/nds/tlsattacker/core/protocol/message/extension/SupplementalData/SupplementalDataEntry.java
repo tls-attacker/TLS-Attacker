@@ -13,10 +13,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
-/**
- * @author Christoph Penkert <christoph.penkert@rub.de>
- */
-
 public class SupplementalDataEntry {
 
     @ModifiableVariableProperty

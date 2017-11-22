@@ -14,9 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.RetransmitMessagePreparat
 import de.rub.nds.tlsattacker.core.protocol.serializer.RetransmitMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class RetransmitMessageHandler extends ProtocolMessageHandler<RetransmitMessage> {
 
     public RetransmitMessageHandler(TlsContext tlsContext) {

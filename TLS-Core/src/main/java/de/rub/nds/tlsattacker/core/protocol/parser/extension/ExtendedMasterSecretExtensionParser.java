@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ExtendedMasterSecretExtensionParser extends ExtensionParser<ExtendedMasterSecretExtensionMessage> {
 
     public ExtendedMasterSecretExtensionParser(int startposition, byte[] array) {
@@ -26,6 +22,7 @@ public class ExtendedMasterSecretExtensionParser extends ExtensionParser<Extende
      * SHOULDN'T be any data.
      *
      * @param msg
+     *            The Message that should be parsed
      */
     @Override
     public void parseExtensionMessageContent(ExtendedMasterSecretExtensionMessage msg) {

@@ -25,9 +25,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class RecordLayerTest {
 
     RecordLayer recordHandler;

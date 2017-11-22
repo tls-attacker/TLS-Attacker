@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public abstract class RecordCryptoUnit {
 
     protected RecordCipher recordCipher;
@@ -45,15 +41,12 @@ public abstract class RecordCryptoUnit {
      * version field, and a 2-byte length field. It then calculates a MAC over
      * the bytes SQN || HDR || R.
      *
-     * When we are decrypting a ciphertext, the difference between the
-     * ciphertext length and plaintext length has to be subtracted from the
-     * record length.
-     *
      * @param record
+     *            The Record for which the data should be collected
      * @param protocolVersion
      *            According to which ProtocolVersion the
      *            AdditionalAuthenticationData is collected
-     * @return
+     * @return The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
         byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());

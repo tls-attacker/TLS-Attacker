@@ -17,11 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparator<CertificateVerifyMessage> {
 
     private SignatureAndHashAlgorithm algorithm;

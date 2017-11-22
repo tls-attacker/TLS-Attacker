@@ -19,9 +19,6 @@ import java.math.BigInteger;
 /**
  * The cleanrecordbytes should be set when the record preparator received the
  * record
- *
- * @author Robert Merget <robert.merget@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class RecordPreparator extends AbstractRecordPreparator<Record> {
 

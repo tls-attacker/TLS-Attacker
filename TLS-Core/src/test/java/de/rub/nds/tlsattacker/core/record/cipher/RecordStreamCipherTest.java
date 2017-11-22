@@ -24,10 +24,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Felix Kleine-Wilde - felix.kleine-wilde@rub.de
- */
 public class RecordStreamCipherTest {
 
     private TlsContext context;

@@ -23,11 +23,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class FinishedMessagePreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(FinishedMessagePreparatorTest.class);

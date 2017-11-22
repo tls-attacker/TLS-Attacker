@@ -26,10 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DeactivateEncryptionActionTest {
 
     private State state;
@@ -59,6 +55,8 @@ public class DeactivateEncryptionActionTest {
 
     /**
      * Test of execute method, of class DeactivateEncryptionAction.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testExecute() throws Exception {

@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class TimeoutDelegate extends Delegate {
 
     @Parameter(names = "-timeout", description = "Timeout for socket connection")

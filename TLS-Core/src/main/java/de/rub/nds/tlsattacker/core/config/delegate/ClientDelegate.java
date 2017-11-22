@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ClientDelegate extends Delegate {
 
     @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:4433")

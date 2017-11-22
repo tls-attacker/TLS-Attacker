@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HelloVerifyRequestSerializer extends HandshakeMessageSerializer<HelloVerifyRequestMessage> {
 
     private final HelloVerifyRequestMessage msg;

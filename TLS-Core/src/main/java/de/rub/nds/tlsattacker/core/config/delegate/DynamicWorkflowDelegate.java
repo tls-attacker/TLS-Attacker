@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DynamicWorkflowDelegate extends Delegate {
 
     @Parameter(names = "-dynamic_workflow", description = "If this parameter is set, the workflow is only initialized with a ClientHello message (not yet implemented)")

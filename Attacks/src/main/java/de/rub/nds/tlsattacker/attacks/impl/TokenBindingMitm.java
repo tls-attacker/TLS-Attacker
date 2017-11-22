@@ -35,10 +35,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger(SimpleMitmProxy.class);

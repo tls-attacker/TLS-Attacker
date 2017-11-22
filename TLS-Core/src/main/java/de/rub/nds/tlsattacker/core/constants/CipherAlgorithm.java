@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.constants;
 
 /**
  * Symmetric cipher algorithm and its mapping to Java names
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public enum CipherAlgorithm {
 

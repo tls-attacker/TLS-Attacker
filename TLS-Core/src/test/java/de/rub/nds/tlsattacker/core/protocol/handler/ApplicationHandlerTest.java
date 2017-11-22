@@ -20,10 +20,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ApplicationHandlerTest {
 
     private ApplicationHandler handler;

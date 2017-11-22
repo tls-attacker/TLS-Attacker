@@ -35,10 +35,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public abstract class Chooser {
 
     protected static final Logger LOGGER = LogManager.getLogger(Chooser.class.getName());
@@ -59,6 +55,8 @@ public abstract class Chooser {
     public TlsContext getContext() {
         return context;
     }
+
+    public abstract List<KSEntry> getClientKeyShareEntryList();
 
     public abstract List<ECPointFormat> getClientSupportedPointFormats();
 
@@ -137,6 +135,36 @@ public abstract class Chooser {
     public abstract BigInteger getDhServerPublicKey();
 
     public abstract BigInteger getDhClientPublicKey();
+
+    public abstract BigInteger getSRPModulus();
+
+    public abstract BigInteger getPSKModulus();
+
+    public abstract byte[] getPSKIdentity();
+
+    public abstract byte[] getPSKIdentityHint();
+
+    public abstract BigInteger getPSKServerPrivateKey();
+
+    public abstract BigInteger getPSKServerPublicKey();
+
+    public abstract BigInteger getPSKGenerator();
+
+    public abstract BigInteger getSRPGenerator();
+
+    public abstract BigInteger getSRPServerPrivateKey();
+
+    public abstract BigInteger getSRPServerPublicKey();
+
+    public abstract BigInteger getSRPClientPrivateKey();
+
+    public abstract BigInteger getSRPClientPublicKey();
+
+    public abstract byte[] getSRPServerSalt();
+
+    public abstract byte[] getSRPPassword();
+
+    public abstract byte[] getSRPIdentity();
 
     public abstract BigInteger getServerEcPrivateKey();
 

@@ -45,8 +45,6 @@ import org.apache.logging.log4j.Logger;
  * Sends differently formatted PKCS#1 messages to the TLS server and observes
  * the server responses. In case there are differences in the server responses,
  * it is very likely that it is possible to execute Bleichenbacher attacks.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 

@@ -25,10 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- * @author Robert Merget - robert.merget@rub.de
- */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
 
     private byte[] verifyData;

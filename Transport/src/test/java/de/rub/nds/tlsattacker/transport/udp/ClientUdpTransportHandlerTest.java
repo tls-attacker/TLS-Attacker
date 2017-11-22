@@ -25,9 +25,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-/**
- * @author Florian Pfützenreuter <Florian.Pfuetzenreuter@rub.de>
- */
 public class ClientUdpTransportHandlerTest {
 
     private final InetAddress localhost = InetAddress.getLoopbackAddress();

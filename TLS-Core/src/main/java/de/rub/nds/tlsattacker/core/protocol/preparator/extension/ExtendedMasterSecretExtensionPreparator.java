@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecr
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtendedMasterSecretExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ExtendedMasterSecretExtensionPreparator extends ExtensionPreparator<ExtendedMasterSecretExtensionMessage> {
 
     public ExtendedMasterSecretExtensionPreparator(Chooser chooser, ExtendedMasterSecretExtensionMessage message,

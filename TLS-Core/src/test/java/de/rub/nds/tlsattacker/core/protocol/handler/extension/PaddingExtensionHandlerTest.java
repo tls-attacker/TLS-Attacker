@@ -18,10 +18,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class PaddingExtensionHandlerTest {
 
     private final byte[] extensionPayload = new byte[] { 0, 0, 0, 0, 0, 0 };

@@ -19,10 +19,6 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import javax.crypto.interfaces.DHPrivateKey;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class KeyGenerator {
 
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {

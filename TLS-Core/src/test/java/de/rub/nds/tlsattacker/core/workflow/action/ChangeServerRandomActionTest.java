@@ -26,10 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ChangeServerRandomActionTest {
 
     private State state;

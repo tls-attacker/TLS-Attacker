@@ -26,10 +26,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerDelegateTest {
 
     @Rule

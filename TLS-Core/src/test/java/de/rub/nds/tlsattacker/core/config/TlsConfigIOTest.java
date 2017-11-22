@@ -23,10 +23,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TlsConfigIOTest {
 
     @Rule

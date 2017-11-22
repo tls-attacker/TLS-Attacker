@@ -21,10 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     public DefaultWorkflowExecutor(State state) {
@@ -55,6 +51,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
+            if (state.getTlsContext().isEarlyCleanShutdown()) {
+                LOGGER.debug("Clean shutdown of execution flow");
+                break;
+            }
             try {
                 if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                     action.execute(state);

@@ -33,11 +33,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class RecordBlockCipherTest {
 
     private TlsContext context;
@@ -113,6 +108,8 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of calculateMac method, of class RecordBlockCipher.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
     public void testCalculateMac() throws NoSuchAlgorithmException {
@@ -136,6 +133,8 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of encrypt method, of class RecordBlockCipher, for TLS10.
+     * 
+     * @throws java.security.NoSuchAlgorithmException
      */
     @Test
     public void testEncryptTls10() throws NoSuchAlgorithmException {

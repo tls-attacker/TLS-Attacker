@@ -19,10 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class ECDHClientKeyExchangeParserTest {
 
@@ -83,7 +79,8 @@ public class ECDHClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        ECDHClientKeyExchangeParser parser = new ECDHClientKeyExchangeParser(0, message, version);
+        ECDHClientKeyExchangeParser<ECDHClientKeyExchangeMessage> parser = new ECDHClientKeyExchangeParser(0, message,
+                version);
         ECDHClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

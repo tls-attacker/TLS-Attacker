@@ -17,10 +17,6 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class FileHelper {
 
     private static final Logger LOGGER = LogManager.getLogger(FileHelper.class);

@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerDelegate extends Delegate {
 
     @Parameter(names = "-port", required = true, description = "ServerPort")

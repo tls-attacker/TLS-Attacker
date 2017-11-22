@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class TruncatedHmacExtensionSerializer extends ExtensionSerializer<TruncatedHmacExtensionMessage> {
 
     public TruncatedHmacExtensionSerializer(TruncatedHmacExtensionMessage message) {
