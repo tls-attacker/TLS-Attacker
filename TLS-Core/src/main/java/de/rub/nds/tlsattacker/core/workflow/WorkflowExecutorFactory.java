@@ -17,6 +17,8 @@ public class WorkflowExecutorFactory {
         switch (type) {
             case DEFAULT:
                 return new DefaultWorkflowExecutor(state);
+            case THREADED_SERVER:
+                return new ThreadedServerWorkflowExecutor(state);
             default:
                 throw new UnsupportedOperationException(type.name() + " not yet implemented");
         }
