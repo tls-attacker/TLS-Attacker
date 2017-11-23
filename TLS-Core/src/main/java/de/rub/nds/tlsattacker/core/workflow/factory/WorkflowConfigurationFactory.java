@@ -34,21 +34,21 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -222,7 +222,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a hello workflow for the given connection end.
+     * Create a handshake workflow for the given connection end.
      */
     private WorkflowTrace createHandshakeWorkflow(AliasedConnection connection) {
 
@@ -310,7 +310,7 @@ public class WorkflowConfigurationFactory {
     }
 
     /**
-     * Create a hello workflow for the given connection end.
+     * Create a false start workflow for the given connection end.
      */
     private WorkflowTrace createFalseStartWorkflow(AliasedConnection connection) {
 
@@ -318,29 +318,19 @@ public class WorkflowConfigurationFactory {
             throw new ConfigurationException("The false start workflow is not implemented for TLS 1.3");
         }
 
-        WorkflowTrace workflowTrace = this.createHelloWorkflow(connection);
-        List<ProtocolMessage> messages = new LinkedList<>();
-        if (config.isClientAuthentication()) {
-            messages.add(new CertificateMessage(config));
-            addClientKeyExchangeMessage(messages);
-            messages.add(new CertificateVerifyMessage(config));
-        } else {
-            addClientKeyExchangeMessage(messages);
-        }
-        messages.add(new ChangeCipherSpecMessage(config));
-        messages.add(new FinishedMessage(config));
-        messages.add(new ApplicationMessage(config));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
+        WorkflowTrace workflowTrace = this.createHandshakeWorkflow(connection);
+        MessageAction appData = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
+                new ApplicationMessage(config));
 
-        messages = new LinkedList<>();
-        messages.add(new ChangeCipherSpecMessage(config));
-        messages.add(new FinishedMessage(config));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
-        if (config.isServerSendsApplicationData()) {
-            messages.add(new ApplicationMessage(config));
-            workflowTrace.addTlsAction(MessageActionFactory
-                    .createAction(connection, ConnectionEndType.SERVER, messages));
+        // Client CKE, CCS, Fin
+        TlsAction lastClientAction;
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            lastClientAction = (TlsAction) workflowTrace.getLastSendingAction();
+        } else {
+            lastClientAction = (TlsAction) workflowTrace.getLastReceivingAction();
         }
+        int i = workflowTrace.getTlsActions().indexOf(lastClientAction);
+        workflowTrace.addTlsAction(i + 1, appData);
 
         return workflowTrace;
     }

@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
+import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import java.io.IOException;
 
 /**
@@ -28,7 +30,7 @@ public class PrintProposedExtensionsAction extends ConnectionBoundAction {
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
         TlsContext ctx = state.getTlsContext(connectionAlias);
-        System.out.println(ctx.getProposedExtensions());
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Proposed extensions: " + ctx.getProposedExtensions());
     }
 
     @Override

@@ -49,6 +49,7 @@ import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -59,7 +60,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.nio.charset.Charset;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -136,15 +136,11 @@ public class Config implements Serializable {
 
     /**
      * The default connection parameters to use when running TLS-Client.
-     *
-     * @return
      */
     private OutboundConnection defaultClientConnection;
 
     /**
      * The default connection parameters to use when running TLS-Server.
-     *
-     * @return
      */
     private InboundConnection defaultServerConnection;
 
@@ -985,6 +981,10 @@ public class Config implements Serializable {
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
         statusRequestV2RequestList = new LinkedList<>();
+        outputFilters = new ArrayList<>();
+        outputFilters.add(FilterType.DEFAULT);
+        applyFiltersInPlace = false;
+        filtersKeepUserSettings = true;
     }
 
     public long getSessionTicketLifetimeHint() {
@@ -1025,10 +1025,6 @@ public class Config implements Serializable {
 
     public void setClientAuthenticationType(ClientAuthenticationType clientAuthenticationType) {
         this.clientAuthenticationType = clientAuthenticationType;
-        outputFilters = new ArrayList<>();
-        outputFilters.add(FilterType.DEFAULT);
-        applyFiltersInPlace = false;
-        filtersKeepUserSettings = true;
     }
 
     public boolean isHttpsParsingEnabled() {

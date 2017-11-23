@@ -212,7 +212,7 @@ public class ReceiveMessageHelper {
                 LOGGER.debug(exCorrectMsg);
                 try {
                     if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
-                        LOGGER.warn("try unknown ");
+                        LOGGER.warn("Trying to parse Message as UnknownHandshakeMessage");
                         result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
                                 typeFromRecord, context);
                     } else {

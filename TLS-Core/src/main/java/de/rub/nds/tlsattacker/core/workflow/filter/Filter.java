@@ -18,18 +18,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
  * 
  * Note that filtering is unidirectional, i.e. we cannot guarantee that a
  * filtered workflow trace can be loaded to a normalized workflow again.
- * 
- * <p>
- * TODO: When this class grows, consider giving the user access to it via
- * command line. Something like
- * <code>TLS-Utils -filter filtername -input trace.xml -output filtered.xml</code>
- * Once that utility exists, one could consider allowing only those filters in
- * TLS-{Client,Server,Mitm} that can be reversed, (or no filters at all). So
- * that the following always works as expected: <code>
- * TLS-Client -connect localhost:443 -workflow_output trace.xml
- * TLS-Client -connect localhost:443 -workflow_input trace.xml
- * </code>
- * </p>
  */
 public abstract class Filter {
 

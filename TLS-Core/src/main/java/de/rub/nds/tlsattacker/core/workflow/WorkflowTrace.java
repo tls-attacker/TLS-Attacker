@@ -252,7 +252,22 @@ public class WorkflowTrace implements Serializable {
     public SendingAction getLastSendingAction() {
         for (int i = tlsActions.size() - 1; i > 0; i--) {
             if (tlsActions.get(i) instanceof SendingAction) {
-                return (SendAction) (tlsActions.get(i));
+                return (SendingAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the last ReceivingActionAction of the workflow trace.
+     * 
+     * @return the last ReceivingActionAction of the workflow trace. Null if no
+     *         receiving actions are defined
+     */
+    public ReceivingAction getLastReceivingAction() {
+        for (int i = tlsActions.size() - 1; i > 0; i--) {
+            if (tlsActions.get(i) instanceof ReceivingAction) {
+                return (ReceivingAction) (tlsActions.get(i));
             }
         }
         return null;
