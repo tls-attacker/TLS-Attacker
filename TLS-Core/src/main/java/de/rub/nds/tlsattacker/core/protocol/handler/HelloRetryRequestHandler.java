@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -63,8 +64,13 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
 
     private void adjustProtocolVersion(HelloRetryRequestMessage message) {
         ProtocolVersion version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
-        tlsContext.setSelectedProtocolVersion(version);
-        LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+        if (version != null) {
+            tlsContext.setSelectedProtocolVersion(version);
+            LOGGER.debug("Set SelectedProtocolVersion in Context to " + version.name());
+        } else {
+            LOGGER.warn("Did not Adjust ProtocolVersion since version is undefined "
+                    + ArrayConverter.bytesToHexString(message.getProtocolVersion().getValue()));
+        }
     }
 
     private void adjustSelectedCiphersuite(HelloRetryRequestMessage message) {
