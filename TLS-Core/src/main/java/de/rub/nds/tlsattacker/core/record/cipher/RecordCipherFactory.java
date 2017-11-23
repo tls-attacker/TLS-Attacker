@@ -39,7 +39,7 @@ public class RecordCipherFactory {
     }
 
     public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet) {
-        return getRecordCipher(context, keySet, context.getSelectedCipherSuite());
+        return getRecordCipher(context, keySet, context.getChooser().getSelectedCipherSuite());
     }
 
     private RecordCipherFactory() {

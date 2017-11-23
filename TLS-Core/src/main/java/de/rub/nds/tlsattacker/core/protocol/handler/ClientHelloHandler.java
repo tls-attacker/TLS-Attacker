@@ -21,12 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
@@ -39,8 +34,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
@@ -72,7 +65,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         if (isCookieFieldSet(message)) {
             adjustDTLSCookie(message);
         }
-        adjustHelloExtensions(message, HandshakeMessageType.CLIENT_HELLO);
+        adjustExtensions(message, HandshakeMessageType.CLIENT_HELLO);
         adjustRandomContext(message);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
                 && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {

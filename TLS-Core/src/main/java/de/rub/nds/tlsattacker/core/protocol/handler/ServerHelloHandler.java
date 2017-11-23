@@ -66,7 +66,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         }
         adjustSelectedCiphersuite(message);
         adjustServerRandom(message);
-        adjustHelloExtensions(message, HandshakeMessageType.SERVER_HELLO);
+        adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
                     .getConnectionEndType()) {
@@ -132,11 +132,6 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         LOGGER.debug("Setting new Cipher in RecordLayer");
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(tlsContext, keySet);
         tlsContext.getRecordLayer().setRecordCipher(recordCipher);
-
-        tlsContext.setReadSequenceNumber(0);
-        tlsContext.setWriteSequenceNumber(0);
-        tlsContext.getRecordLayer().updateDecryptionCipher();
-        tlsContext.getRecordLayer().updateEncryptionCipher();
     }
 
     private void setServerRecordCipher() {
@@ -144,7 +139,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
         RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
-                tlsContext.getSelectedCipherSuite());
+                tlsContext.getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -159,7 +154,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private KeySet getKeySet(TlsContext context, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
-            return KeySetGenerator.generateKeySet(context, tlsContext.getSelectedProtocolVersion(), keySetType);
+            return KeySetGenerator.generateKeySet(context, tlsContext.getChooser().getSelectedProtocolVersion(), keySetType);
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
@@ -167,15 +162,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     @Override
     public void adjustTlsContextAfterSerialize(ServerHelloMessage message) {
-        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             setServerRecordCipher();
         }
-    }
-
-    private void adjustRecordLayer() {
-        LOGGER.debug("Adjusting RecordLayer, to encrypt handshake messages");
-        tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-        LOGGER.debug("Set activeServerKeySetType in Context to " + tlsContext.getActiveServerKeySetType());
-        setRecordCipher();
     }
 }

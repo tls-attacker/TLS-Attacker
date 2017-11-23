@@ -28,7 +28,7 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
         super(tlsContext);
     }
 
-    protected void adjustHelloExtensions(ProtocolMessage message, HandshakeMessageType handshakeMessageType) {
+    protected void adjustExtensions(ProtocolMessage message, HandshakeMessageType handshakeMessageType) {
         if (message.getExtensions() != null) {
             KeyShareExtensionHandler keyShareHandler = null;
             KeyShareExtensionMessage keyShareExtension = null;
