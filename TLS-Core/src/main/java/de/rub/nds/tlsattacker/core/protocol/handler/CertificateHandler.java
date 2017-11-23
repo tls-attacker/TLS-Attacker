@@ -150,9 +150,10 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
                     ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
-        } catch (IOException E) {
+        } catch (IOException | IllegalArgumentException E) {
             LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
                     + ArrayConverter.bytesToHexString(bytesToParse, false));
+            LOGGER.debug(E);
             return null;
         }
     }
