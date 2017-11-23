@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
@@ -38,6 +39,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
@@ -186,30 +189,25 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
     }
 
     private void setClientRecordCipherEarly() {
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-        LOGGER.debug("Setting cipher for client to use early secrets");
-        KeySet clientKeySet = getKeySet(tlsContext, ProtocolVersion.TLS13, tlsContext.getActiveClientKeySetType());
-        RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext
-                .getChooser().getEarlyDataCipherSuite());
-        tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
-
-        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
-            tlsContext.setReadSequenceNumber(0);
-            tlsContext.getRecordLayer().updateDecryptionCipher();
-        } else {
-            tlsContext.setWriteSequenceNumber(0);
-            tlsContext.getRecordLayer().updateEncryptionCipher();
-        }
-    }
-
-    private KeySet getKeySet(TlsContext context, ProtocolVersion version, Tls13KeySetType keySetType) {
         try {
-            LOGGER.debug("Generating new KeySet");
-            KeySet keySet = KeySetGenerator.generateKeySet(context, version, keySetType);
-            return keySet;
+            tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            LOGGER.debug("Setting cipher for client to use early secrets");
+            
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13, tlsContext.getActiveClientKeySetType());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext
+                    .getChooser().getEarlyDataCipherSuite());
+            tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
+            
+            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+                tlsContext.setReadSequenceNumber(0);
+                tlsContext.getRecordLayer().updateDecryptionCipher();
+            } else {
+                tlsContext.setWriteSequenceNumber(0);
+                tlsContext.getRecordLayer().updateEncryptionCipher();
+            }
         } catch (NoSuchAlgorithmException ex) {
-            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
+            LOGGER.error("Unable to generate KeySet - unknown algorithm");
+            throw new WorkflowExecutionException(ex.toString());
         }
     }
-
 }
