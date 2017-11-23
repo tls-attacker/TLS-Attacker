@@ -216,4 +216,12 @@ public abstract class Chooser {
     public abstract byte[] getPsk();
 
     public abstract List<PskSet> getPskSets();
+
+    public abstract CipherSuite getEarlyDataCipherSuite();
+
+    public abstract byte[] getClientEarlyTrafficSecret();
+
+    public abstract byte[] getEarlySecret();
+
+    public abstract byte[] getEarlyDataPsk();
 }

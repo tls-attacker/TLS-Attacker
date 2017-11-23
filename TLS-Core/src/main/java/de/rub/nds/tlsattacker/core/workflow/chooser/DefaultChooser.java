@@ -744,4 +744,40 @@ public class DefaultChooser extends Chooser {
             return config.getPskSets();
         }
     }
+
+    @Override
+    public CipherSuite getEarlyDataCipherSuite() {
+        if (context.getEarlyDataCipherSuite() != null) {
+            return context.getEarlyDataCipherSuite();
+        } else {
+            return config.getEarlyDataCipherSuite();
+        }
+    }
+
+    @Override
+    public byte[] getClientEarlyTrafficSecret() {
+        if (context.getClientEarlyTrafficSecret() != null) {
+            return context.getClientEarlyTrafficSecret();
+        } else {
+            return config.getClientEarlyTrafficSecret();
+        }
+    }
+
+    @Override
+    public byte[] getEarlySecret() {
+        if (context.getEarlySecret() != null) {
+            return context.getEarlySecret();
+        } else {
+            return config.getEarlySecret();
+        }
+    }
+
+    @Override
+    public byte[] getEarlyDataPsk() {
+        if (context.getEarlyDataPsk() != null) {
+            return context.getEarlyDataPsk();
+        } else {
+            return config.getEarlyDataPsk();
+        }
+    }
 }

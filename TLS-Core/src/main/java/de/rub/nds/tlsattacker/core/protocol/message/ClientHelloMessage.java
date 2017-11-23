@@ -55,10 +55,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -130,19 +126,13 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new KeyShareExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddEarlyDataExtension()) {
-            if (tlsConfig.getWorkflowTraceType() != WorkflowTraceType.FULL_ZERO_RTT) {
-                addExtension(new EarlyDataExtensionMessage());
-            }
+            addExtension(new EarlyDataExtensionMessage());
         }
         if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
-            if (tlsConfig.getWorkflowTraceType() != WorkflowTraceType.FULL_ZERO_RTT) {
-                addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
-            }
+            addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddPreSharedKeyExtension()) {
-            if (tlsConfig.getWorkflowTraceType() != WorkflowTraceType.FULL_ZERO_RTT) {
-                addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
-            }
+            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
@@ -322,26 +312,4 @@ public class ClientHelloMessage extends HelloMessage {
         return new ClientHelloHandler(context);
     }
 
-    private boolean isZeroRttHello(Config config) {
-        // check if this ClientHello comes after the connection reset
-        if (config.getWorkflowTrace() == null) {
-            LOGGER.debug("WORKFLOW TRACE IS NULL");
-            return false;
-        }
-        boolean foundReset = false;
-        for (TLSAction action : config.getWorkflowTrace().getTlsActions()) {
-            if (action.isMessageAction()) {
-                for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
-                    if (msg instanceof ClientHelloMessage) {
-                        if (foundReset && msg == this) {
-                            return true;
-                        }
-                    }
-                }
-            } else if (action instanceof ResetConnectionAction) {
-                foundReset = true;
-            }
-        }
-        return false;
-    }
 }

@@ -121,6 +121,11 @@ public class TlsContext {
     private byte[] psk;
 
     /**
+     * The selected earlyData PSK.
+     */
+    private byte[] earlyDataPsk;
+
+    /**
      * Identity of the PSK used for earlyData.
      */
     private byte[] earlyDataPSKIdentity;
@@ -134,18 +139,6 @@ public class TlsContext {
      * The Client's chosen Kex-Modes.
      */
     private List<PskKeyExchangeMode> clientPskKeyExchangeModes;
-
-    /**
-     * SequenceNumber of AEADCipher to be restored after encrypting
-     * EOED-Message.
-     */
-    private long storedSequenceNumberDec = 0;
-
-    /**
-     * SequenceNumber of AEADCipher to be restored after decrypting
-     * EOED-Message.
-     */
-    private long storedSequenceNumberEnc = 0;
 
     /**
      * Maximum number of bytes to transmit as early-data.
@@ -1689,21 +1682,6 @@ public class TlsContext {
     }
 
     /**
-     * @return the storedSequenceNumberDec
-     */
-    public long getStoredSequenceNumberDec() {
-        return storedSequenceNumberDec;
-    }
-
-    /**
-     * @param storedSequenceNumberDec
-     *            the storedSequenceNumberDec to set
-     */
-    public void setStoredSequenceNumberDec(long storedSequenceNumberDec) {
-        this.storedSequenceNumberDec = storedSequenceNumberDec;
-    }
-
-    /**
      * @return the earlyDataCipherSuite
      */
     public CipherSuite getEarlyDataCipherSuite() {
@@ -1746,21 +1724,6 @@ public class TlsContext {
      */
     public void setSelectedIdentityIndex(int selectedIdentityIndex) {
         this.selectedIdentityIndex = selectedIdentityIndex;
-    }
-
-    /**
-     * @return the storedSequenceNumberEnc
-     */
-    public long getStoredSequenceNumberEnc() {
-        return storedSequenceNumberEnc;
-    }
-
-    /**
-     * @param storedSequenceNumberEnc
-     *            the storedSequenceNumberEnc to set
-     */
-    public void setStoredSequenceNumberEnc(long storedSequenceNumberEnc) {
-        this.storedSequenceNumberEnc = storedSequenceNumberEnc;
     }
 
     /**
@@ -1837,6 +1800,21 @@ public class TlsContext {
         } else {
             return activeClientKeySetType;
         }
+    }
+
+    /**
+     * @return the earlyDataPsk
+     */
+    public byte[] getEarlyDataPsk() {
+        return earlyDataPsk;
+    }
+
+    /**
+     * @param earlyDataPsk
+     *            the earlyDataPsk to set
+     */
+    public void setEarlyDataPsk(byte[] earlyDataPsk) {
+        this.earlyDataPsk = earlyDataPsk;
     }
 
 }

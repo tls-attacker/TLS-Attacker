@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
@@ -54,22 +52,20 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
 
     @Override
     public void adjustTLSContext(FinishedMessage message) {
-        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
-                && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
-            adjustRecordCipherForClientFin();
-        }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
-                adjustApplicationTrafficSecrets();
-                tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getConnectionEnd().getConnectionEndType()) {
+                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
+                    adjustApplicationTrafficSecrets();
+                    setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+                } else {
+                    setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+                }
+            } else if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             }
         }
         if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.setLastClientVerifyData(message.getVerifyData().getValue());
-            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
-                    && tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-                adjustRecordCipherForApplicationData();
-            }
         } else {
             tlsContext.setLastServerVerifyData(message.getVerifyData().getValue());
         }
@@ -102,33 +98,17 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
     }
 
-    private void adjustRecordCipherForClientFin() {
-        LOGGER.debug("Adjusting recordCipher after encrypting EOED using different key");
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-        updateRecordCipher(tlsContext.getSelectedCipherSuite(), tlsContext.getSelectedCipherSuite());
-        // Set the correct SequenceNumbers
-        tlsContext.setWriteSequenceNumber(0);
-        tlsContext.setReadSequenceNumber(2);
-    }
-
     @Override
     public void adjustTlsContextAfterSerialize(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                adjustRecordCipherForApplicationData();
-            } else if (tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
-                adjustRecordCipherForEndOfEarlyData();
+                setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
+            } else {
+                adjustApplicationTrafficSecrets();
+                setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             }
 
         }
-    }
-
-    private void adjustRecordCipherForApplicationData() {
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
-        tlsContext.setActiveServerKeySetType(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
-        updateRecordCipher(tlsContext.getSelectedCipherSuite(), tlsContext.getSelectedCipherSuite());
-        tlsContext.setWriteSequenceNumber(0);
-        tlsContext.setReadSequenceNumber(0);
     }
 
     private KeySet getKeySet(TlsContext context, Tls13KeySetType keySetType) {
@@ -141,29 +121,37 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         }
     }
 
-    private void adjustRecordCipherForEndOfEarlyData() {
-        LOGGER.debug("Adjusting recordCipher to decrypt EndOfEarlyData");
-        tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-        updateRecordCipher(tlsContext.getSelectedCipherSuite(), tlsContext.getEarlyDataCipherSuite());
-        // Restore the correct SequenceNumber
-        tlsContext.setReadSequenceNumber(1);
-    }
+    private void setServerRecordCipher(Tls13KeySetType keySetType) {
+        tlsContext.setActiveServerKeySetType(keySetType);
+        LOGGER.debug("Setting cipher for server to use " + keySetType);
+        KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
+        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
+                tlsContext.getSelectedCipherSuite());
+        tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
-    private void updateRecordCipher(CipherSuite cipherWrite, CipherSuite cipherRead) {
-        KeySet keySetWrite = getKeySet(tlsContext, tlsContext.getActiveKeySetTypeWrite());
-        KeySet keySetRead = getKeySet(tlsContext, tlsContext.getActiveKeySetTypeRead());
-        LOGGER.debug("Setting new Cipher and Key in RecordLayer");
-        RecordCipher recordCipherWrite = RecordCipherFactory.getRecordCipher(tlsContext, keySetWrite, cipherWrite);
-        RecordCipher recordCipherRead = RecordCipherFactory.getRecordCipher(tlsContext, keySetRead, cipherRead);
-        if (tlsContext.getRecordLayer().getEncryptor().getKeySet().getKeySetType() != tlsContext
-                .getActiveKeySetTypeWrite()) {
-            tlsContext.getRecordLayer().setRecordCipher(recordCipherWrite);
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setReadSequenceNumber(0);
+            tlsContext.getRecordLayer().updateDecryptionCipher();
+        } else {
+            tlsContext.setWriteSequenceNumber(0);
             tlsContext.getRecordLayer().updateEncryptionCipher();
         }
-        if (tlsContext.getRecordLayer().getDecryptor().getKeySet().getKeySetType() != tlsContext
-                .getActiveKeySetTypeRead()) {
-            tlsContext.getRecordLayer().setRecordCipher(recordCipherRead);
+    }
+
+    private void setClientRecordCipher(Tls13KeySetType keySetType) {
+        tlsContext.setActiveClientKeySetType(keySetType);
+        LOGGER.debug("Setting cipher for client to use " + keySetType);
+        KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
+        RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
+                tlsContext.getSelectedCipherSuite());
+        tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
+
+        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecryptionCipher();
+        } else {
+            tlsContext.setWriteSequenceNumber(0);
+            tlsContext.getRecordLayer().updateEncryptionCipher();
         }
     }
 }

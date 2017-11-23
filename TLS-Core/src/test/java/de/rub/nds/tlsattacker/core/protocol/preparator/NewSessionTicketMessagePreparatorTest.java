@@ -40,7 +40,7 @@ public class NewSessionTicketMessagePreparatorTest {
     @Before
     public void setUp() {
         this.context = new TlsContext();
-        this.message = new NewSessionTicketMessage();
+        this.message = new NewSessionTicketMessage(true);
         this.preparator = new NewSessionTicketMessagePreparator(context.getChooser(), message);
     }
 

@@ -17,8 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKBinderPreparator;
-import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PSKIdentityPreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,7 +45,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public PreSharedKeyExtensionMessage(Config config) {
         super(ExtensionType.PRE_SHARED_KEY);
-        if (config.getPskSets() != null) {
+        if (config.getPskSets().size() > 0) {
             copyPskSets(config.getPskSets());
         }
     }
@@ -169,7 +167,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public void getEntries(Chooser chooser) {
         // use PskSets from context if no psk sets were given in config before
-        if (identities == null && binders == null && chooser.getPskSets() != null) {
+        if (identities == null && binders == null && chooser.getPskSets().size() > 0) {
             copyPskSets(chooser.getPskSets());
         }
     }

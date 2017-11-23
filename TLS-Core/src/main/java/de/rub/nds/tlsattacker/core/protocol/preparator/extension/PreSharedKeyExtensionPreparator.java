@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
@@ -171,12 +172,11 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
                 msg.getBinders().get(x).setBinderEntry(binderVal);
                 if (x == 0) // First entry = PSK for early Data
                 {
-                    chooser.getContext().setEarlySecret(earlySecret);
+                    chooser.getContext().setEarlyDataPsk(psk);
                 }
-            } catch (NoSuchAlgorithmException ex) {
-                Logger.getLogger(PreSharedKeyExtensionSerializer.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InvalidKeyException ex) {
-                Logger.getLogger(PreSharedKeyExtensionSerializer.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
+                LOGGER.error("Error in binder calculation");
+                throw new WorkflowExecutionException(ex.toString());
             }
         }
     }

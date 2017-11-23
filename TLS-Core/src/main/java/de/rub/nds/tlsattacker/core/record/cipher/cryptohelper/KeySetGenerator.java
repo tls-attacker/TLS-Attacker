@@ -60,15 +60,15 @@ public class KeySetGenerator {
             clientSecret = context.getChooser().getClientApplicationTrafficSecret();
             serverSecret = context.getChooser().getServerApplicationTrafficSecret();
         } else if (keySetType == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            cipherSuite = context.getEarlyDataCipherSuite();
-            clientSecret = context.getClientEarlyTrafficSecret();
-            serverSecret = context.getClientEarlyTrafficSecret(); // won't be
-                                                                  // used
+            cipherSuite = context.getChooser().getEarlyDataCipherSuite();
+            clientSecret = context.getChooser().getClientEarlyTrafficSecret();
+            serverSecret = context.getChooser().getClientEarlyTrafficSecret(); // won't
+                                                                               // be
+            // used
         }
         LOGGER.debug("ActiveKeySetType is " + keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        KeySet keySet = new KeySet();
-        keySet.setKeySetType(keySetType);
+        KeySet keySet = new KeySet(keySetType);
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         keySet.setClientWriteKey(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
                 cipherAlg.getKeySize()));

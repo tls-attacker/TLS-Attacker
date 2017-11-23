@@ -74,11 +74,10 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
             }
         }
         if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
-                && message.getIdentities() != null) {
+                && message.getIdentities() != null && message.getIdentities().size() > 0) {
             selectPsk(message);
             if (context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
-                adjustEarlyTrafficSecret(message);
-                adjustRecordLayer0RTT();
+                selectEarlyDataPsk(message);
             }
         }
     }
@@ -113,7 +112,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         LOGGER.warn("No matching PSK identity provided by client - no PSK was set");
     }
 
-    private void adjustEarlyTrafficSecret(PreSharedKeyExtensionMessage message) {
+    private void selectEarlyDataPsk(PreSharedKeyExtensionMessage message) {
 
         LOGGER.debug("Calculating early traffic secret using transcript: "
                 + ArrayConverter.bytesToHexString(context.getDigest().getRawBytes()));
@@ -123,7 +122,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         for (int x = 0; x < pskSets.size(); x++) {
             if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), message.getIdentities().get(0).getIdentity()
                     .getValue())) {
-                earlyDataPsk = pskSets.get(x).getPreSharedKey();
+                context.setEarlyDataPsk(pskSets.get(x).getPreSharedKey());
                 context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
                 LOGGER.debug("EarlyData PSK: " + ArrayConverter.bytesToHexString(earlyDataPsk));
                 break;
@@ -131,36 +130,6 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
         }
         if (earlyDataPsk == null) {
             LOGGER.warn("Server is missing the EarlyData PSK - decryption will fail");
-        } else {
-            HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getEarlyDataCipherSuite());
-            DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13,
-                    context.getEarlyDataCipherSuite());
-
-            byte[] psk = earlyDataPsk;
-            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
-            byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
-                    HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-
-            context.setEarlySecret(earlySecret);
-            context.setClientEarlyTrafficSecret(earlyTrafficSecret);
-        }
-
-    }
-
-    private void adjustRecordLayer0RTT() {
-        try {
-            LOGGER.debug("Setting up RecordLayer to allow for EarlyData decryption");
-
-            context.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
-            KeySet keySet = KeySetGenerator.generateKeySet(context, ProtocolVersion.TLS13,
-                    context.getActiveClientKeySetType());
-            RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet,
-                    context.getEarlyDataCipherSuite());
-            context.getRecordLayer().setRecordCipher(recordCipher);
-            context.getRecordLayer().updateDecryptionCipher();
-            context.setReadSequenceNumber(0);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(PreSharedKeyExtensionHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

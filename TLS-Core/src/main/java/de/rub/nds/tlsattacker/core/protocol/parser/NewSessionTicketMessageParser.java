@@ -42,7 +42,7 @@ public class NewSessionTicketMessageParser extends HandshakeMessageParser<NewSes
 
     @Override
     protected NewSessionTicketMessage createHandshakeMessage() {
-        return new NewSessionTicketMessage();
+        return new NewSessionTicketMessage(!getVersion().isTLS13());
     }
 
     private void parseLifetime(NewSessionTicketMessage msg) {

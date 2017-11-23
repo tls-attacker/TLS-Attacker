@@ -86,8 +86,7 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing NewSessionTicketMessage");
         prepareTicketLifetimeHint(msg);
-        if (chooser.getContext().getSelectedProtocolVersion() != null
-                && chooser.getContext().getSelectedProtocolVersion().isTLS13()
+        if (chooser.getSelectedProtocolVersion().isTLS13()
                 && chooser.getContext().getActiveServerKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
             prepareTicketTls13(msg);
         } else {
@@ -138,35 +137,16 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
     }
 
     private void prepareTicketAgeAdd(NewSessionTicketMessage msg) {
-        if (chooser.getConfig().getSessionTicketAgeAdd() != null) {
-            msg.getTicket().setTicketAgeAdd(chooser.getConfig().getSessionTicketAgeAdd());
-        } else {
-            byte[] randomAddTicketAgeAdd = new byte[HandshakeByteLength.TICKET_AGE_ADD_LENGTH];
-            RandomHelper.getRandom().nextBytes(randomAddTicketAgeAdd);
-            msg.getTicket().setTicketAgeAdd(randomAddTicketAgeAdd);
-        }
+        msg.getTicket().setTicketAgeAdd(chooser.getConfig().getDefaultSessionTicketAgeAdd());
     }
 
     private void prepareIdentity(NewSessionTicketMessage msg) {
-        if (chooser.getConfig().getSessionTicketIdentity() != null) {
-            msg.getTicket().setIdentity(chooser.getConfig().getSessionTicketIdentity());
-        } else {
-            byte[] randomIdentity = new byte[160];
-            RandomHelper.getRandom().nextBytes(randomIdentity);
-            msg.getTicket().setTicketAgeAdd(randomIdentity);
-        }
+        msg.getTicket().setIdentity(chooser.getConfig().getDefaultSessionTicketIdentity());
         msg.getTicket().setIdentityLength(msg.getTicket().getIdentity().getValue().length);
     }
 
     private void prepareNonce(NewSessionTicketMessage msg) {
-        if (chooser.getConfig().getSessionTicketNonce() != null) {
-            msg.getTicket().setTicketNonce(chooser.getConfig().getSessionTicketNonce());
-        } else {
-            byte[] randomNonce = new byte[1];
-            RandomHelper.getRandom().nextBytes(randomNonce);
-            ;
-            msg.getTicket().setTicketAgeAdd(randomNonce);
-        }
+        msg.getTicket().setTicketNonce(chooser.getConfig().getDefaultSessionTicketNonce());
         msg.getTicket().setTicketNonceLength(msg.getTicket().getTicketNonce().getValue().length);
     }
 }

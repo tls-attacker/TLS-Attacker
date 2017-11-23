@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketMessageParser;
@@ -40,7 +41,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        return new NewSessionTicketMessageParser(pointer, message, tlsContext.getLastRecordVersion());
+        return new NewSessionTicketMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -55,14 +56,14 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     @Override
     public void adjustTLSContext(NewSessionTicketMessage message) {
-        if (tlsContext.getSelectedProtocolVersion().isTLS13()) {
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustPskSets(message);
         }
     }
 
     private void adjustPskSets(NewSessionTicketMessage message) {
         LOGGER.debug("Adjusting PSK-Sets");
-        if (tlsContext.getPskSets() == null) {
+        if (tlsContext.getChooser().getPskSets() == null) {
             tlsContext.setPskSets(new LinkedList<PskSet>());
         }
         PskSet pskSet = new PskSet();
@@ -71,7 +72,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         pskSet.setPreSharedKeyIdentity(message.getTicket().getIdentity().getValue());
         pskSet.setTicketAge(getTicketAge());
         pskSet.setPreSharedKey(derivePsk(message));
-        tlsContext.getPskSets().add(pskSet);
+        tlsContext.getChooser().getPskSets().add(pskSet);
 
     }
 
@@ -100,9 +101,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             return psk;
 
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(NewSessionTicketHandler.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("DigestAlgorithm for psk derivation unknown");
+            throw new WorkflowExecutionException(ex.toString());
         }
-        return new byte[0];
     }
 
 }

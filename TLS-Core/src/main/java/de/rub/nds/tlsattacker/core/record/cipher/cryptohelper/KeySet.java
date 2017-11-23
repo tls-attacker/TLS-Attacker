@@ -25,6 +25,10 @@ public class KeySet {
     public KeySet() {
     }
 
+    public KeySet(Tls13KeySetType keySetType) {
+        this.keySetType = keySetType;
+    }
+
     public byte[] getClientWriteMacSecret() {
         return clientWriteMacSecret;
     }

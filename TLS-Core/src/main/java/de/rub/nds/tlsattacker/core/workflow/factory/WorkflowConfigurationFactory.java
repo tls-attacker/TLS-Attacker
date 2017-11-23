@@ -51,6 +51,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMess
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -512,12 +514,26 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createFullZeroRttWorkflow() {
         ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
         WorkflowTrace trace = createHandshakeWorkflow();
+        // Remove extensions that are only required in the 2nd ClientHello
+        for (TLSAction action : trace.getTlsActions()) {
+            if (action.isMessageAction()) {
+                for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
+                    if (msg instanceof ClientHelloMessage) {
+                        List<ExtensionMessage> extensions = ((ClientHelloMessage) msg).getExtensions();
+                        for (int x = 0; x < extensions.size(); x++) {
+                            if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
+                                    || extensions.get(x) instanceof EarlyDataExtensionMessage) {
+                                ((ClientHelloMessage) msg).getExtensions().remove(extensions.get(x));
+                                x--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
-                new NewSessionTicketMessage()));
+                new NewSessionTicketMessage(false)));
         trace.addTlsAction(new ResetConnectionAction());
-        // changing the workflowTraceType to differ between 1st and 2nd
-        // clientHello - otherwise 0rtt extension would be added to both
-        config.setWorkflowTraceType(WorkflowTraceType.ZERO_RTT);
         WorkflowTrace zeroRttTrace = createZeroRttWorkflow();
         for (TLSAction zeroRttAction : zeroRttTrace.getTlsActions()) {
             trace.addTlsAction(zeroRttAction);

@@ -113,8 +113,8 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                 if (handler instanceof PreSharedKeyExtensionHandler && msg instanceof ClientHelloMessage
                         && chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) msg);
+                    preparator.afterPrepare();
                 }
-                preparator.afterPrepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
                 } catch (IOException ex) {

@@ -86,10 +86,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
         try {
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] psk = (context.getChooser().getPsk() != null) ? context.getChooser().getPsk() : new byte[macLength]; // use
-                                                                                                                        // PSK
-                                                                                                                        // if
-                                                                                                                        // available
+            byte[] psk = (context.getConfig().isUsePsk() || context.getPsk() != null) ? context.getChooser().getPsk()
+                    : new byte[macLength]; // use PSK if available
             byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));

@@ -581,15 +581,43 @@ public class Config implements Serializable {
      */
     List<PskKeyExchangeMode> pskKeyExchangeModes;
 
-    private byte[] psk;
-
     /**
-     * Contains all values related to TLS 1.3 PSKs
+     * The PSK to use.
      */
-    private List<PskSet> PskSets;
+    private byte[] psk = new byte[0];
 
     /**
-     * Early Data
+     * The client's early traffic secret.
+     */
+    private byte[] clientEarlyTrafficSecret = new byte[128];
+
+    /**
+     * The early secret of the session.
+     */
+    private byte[] earlySecret = new byte[256];
+
+    /**
+     * The cipher suite used for early data.
+     */
+    private CipherSuite earlyDataCipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
+
+    /**
+     * The psk used for early data (!= earlySecret or earlyTrafficSecret).
+     */
+    private byte[] earlyDataPsk = new byte[256];
+
+    /**
+     * Contains all values related to TLS 1.3 PSKs.
+     */
+    private List<PskSet> PskSets = new LinkedList<>();
+
+    /**
+     * Do we use a psk for our secrets?
+     */
+    private boolean usePsk = false;
+
+    /**
+     * Early data to be sent.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] earlyData = ArrayConverter.hexStringToByteArray("544c532d41747461636b65720a");
@@ -910,9 +938,9 @@ public class Config implements Serializable {
             .hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
                                                                                                                    // Key
-    private byte[] sessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
-    private byte[] sessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
-    private byte[] sessionTicketIdentity = ArrayConverter
+    private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
+    private byte[] defaultSessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
+    private byte[] defaultSessionTicketIdentity = ArrayConverter
             .hexStringToByteArray("5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
 
     /**
@@ -2727,48 +2755,123 @@ public class Config implements Serializable {
     }
 
     /**
-     * @return the sessionTicketAgeAdd
+     * @return the defaultSessionTicketAgeAdd
      */
-    public byte[] getSessionTicketAgeAdd() {
-        return sessionTicketAgeAdd;
+    public byte[] getDefaultSessionTicketAgeAdd() {
+        return defaultSessionTicketAgeAdd;
     }
 
     /**
-     * @param sessionTicketAgeAdd
-     *            the sessionTicketAgeAdd to set
+     * @param defaultSessionTicketAgeAdd
+     *            the defaultSessionTicketAgeAdd to set
      */
-    public void setSessionTicketAgeAdd(byte[] sessionTicketAgeAdd) {
-        this.sessionTicketAgeAdd = sessionTicketAgeAdd;
+    public void setDefaultSessionTicketAgeAdd(byte[] defaultSessionTicketAgeAdd) {
+        this.defaultSessionTicketAgeAdd = defaultSessionTicketAgeAdd;
     }
 
     /**
-     * @return the sessionTicketNonce
+     * @return the defaultSessionTicketNonce
      */
-    public byte[] getSessionTicketNonce() {
-        return sessionTicketNonce;
+    public byte[] getDefaultSessionTicketNonce() {
+        return defaultSessionTicketNonce;
     }
 
     /**
-     * @param sessionTicketNonce
-     *            the sessionTicketNonce to set
+     * @param defaultSessionTicketNonce
+     *            the defaultSessionTicketNonce to set
      */
-    public void setSessionTicketNonce(byte[] sessionTicketNonce) {
-        this.sessionTicketNonce = sessionTicketNonce;
+    public void setDefaultSessionTicketNonce(byte[] defaultSessionTicketNonce) {
+        this.defaultSessionTicketNonce = defaultSessionTicketNonce;
     }
 
     /**
-     * @return the sessionTicketIdentity
+     * @return the defaultSessionTicketIdentity
      */
-    public byte[] getSessionTicketIdentity() {
-        return sessionTicketIdentity;
+    public byte[] getDefaultSessionTicketIdentity() {
+        return defaultSessionTicketIdentity;
     }
 
     /**
-     * @param sessionTicketIdentity
-     *            the sessionTicketIdentity to set
+     * @param defaultSessionTicketIdentity
+     *            the defaultSessionTicketIdentity to set
      */
-    public void setSessionTicketIdentity(byte[] sessionTicketIdentity) {
-        this.sessionTicketIdentity = sessionTicketIdentity;
+    public void setDefaultSessionTicketIdentity(byte[] defaultSessionTicketIdentity) {
+        this.defaultSessionTicketIdentity = defaultSessionTicketIdentity;
+    }
+
+    /**
+     * @return the clientEarlyTrafficSecret
+     */
+    public byte[] getClientEarlyTrafficSecret() {
+        return clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @param clientEarlyTrafficSecret
+     *            the clientEarlyTrafficSecret to set
+     */
+    public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @return the earlySecret
+     */
+    public byte[] getEarlySecret() {
+        return earlySecret;
+    }
+
+    /**
+     * @param earlySecret
+     *            the earlySecret to set
+     */
+    public void setEarlySecret(byte[] earlySecret) {
+        this.earlySecret = earlySecret;
+    }
+
+    /**
+     * @return the earlyDataCipherSuite
+     */
+    public CipherSuite getEarlyDataCipherSuite() {
+        return earlyDataCipherSuite;
+    }
+
+    /**
+     * @param earlyDataCipherSuite
+     *            the earlyDataCipherSuite to set
+     */
+    public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
+        this.earlyDataCipherSuite = earlyDataCipherSuite;
+    }
+
+    /**
+     * @return the earlyDataPsk
+     */
+    public byte[] getEarlyDataPsk() {
+        return earlyDataPsk;
+    }
+
+    /**
+     * @param earlyDataPsk
+     *            the earlyDataPsk to set
+     */
+    public void setEarlyDataPsk(byte[] earlyDataPsk) {
+        this.earlyDataPsk = earlyDataPsk;
+    }
+
+    /**
+     * @return the usePsk
+     */
+    public boolean isUsePsk() {
+        return usePsk;
+    }
+
+    /**
+     * @param usePsk
+     *            the usePsk to set
+     */
+    public void setUsePsk(boolean usePsk) {
+        this.usePsk = usePsk;
     }
 
 }

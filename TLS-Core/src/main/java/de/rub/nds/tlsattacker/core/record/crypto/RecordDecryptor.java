@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -231,24 +232,24 @@ public class RecordDecryptor extends Decryptor {
     private void checkForEndOfEarlyData(byte[] unpaddedBytes) {
         byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
-            adjustRecordLayerAfterEndOfEarlyData();
+            adjustClientCipherAfterEarly();
         }
     }
 
-    public void adjustRecordLayerAfterEndOfEarlyData() {
+    public void adjustClientCipherAfterEarly() {
         try {
-            LOGGER.debug("Adjusting recordCipher after decrypting EOED using different key");
-
             context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-            KeySet keySet = KeySetGenerator.generateKeySet(context, context.getSelectedProtocolVersion(),
-                    context.getActiveClientKeySetType());
-            RecordCipher newRecordCipher = RecordCipherFactory.getRecordCipher(context, keySet);
-            context.getRecordLayer().setRecordCipher(newRecordCipher);
+            LOGGER.debug("Setting cipher for client to use handshake secrets");
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(context, context.getChooser()
+                    .getSelectedProtocolVersion(), context.getActiveClientKeySetType());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(context, clientKeySet, context
+                    .getChooser().getSelectedCipherSuite());
+            context.getRecordLayer().setRecordCipher(recordCipherClient);
             context.getRecordLayer().updateDecryptionCipher();
-
             context.setReadSequenceNumber(0);
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(RecordDecryptor.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.error("Generating KeySet failed - Unknown algorithm");
+            throw new WorkflowExecutionException(ex.toString());
         }
     }
 }
