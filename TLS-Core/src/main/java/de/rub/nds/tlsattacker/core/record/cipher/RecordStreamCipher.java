@@ -89,6 +89,9 @@ public class RecordStreamCipher extends RecordCipher {
             CipherSuite cipherSuite = tlsContext.getChooser().getSelectedCipherSuite();
             bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+            if (cipherAlg == CipherAlgorithm.NULL) {
+                throw new UnsupportedOperationException("Null Ciphers are currently unsupported");
+            }
             int keySize = cipherAlg.getKeySize();
             encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
             decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
