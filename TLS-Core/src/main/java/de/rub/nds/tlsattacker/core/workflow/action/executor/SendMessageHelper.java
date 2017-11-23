@@ -12,16 +12,15 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -108,6 +107,25 @@ public class SendMessageHelper {
             }
         }
         return new MessageActionResult(records, messages);
+    }
+
+    public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
+
+        context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
+
+        if (records == null) {
+            LOGGER.debug("No records specified, nothing to send");
+            return;
+        }
+
+        MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+        sendData(messageBytesCollector, context);
+
+        for (AbstractRecord record : records) {
+            messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
+        }
+        LOGGER.debug("Sending " + records.size() + "records");
+        sendData(messageBytesCollector, context);
     }
 
     private KeySet getKeySet(TlsContext context) {

@@ -82,6 +82,27 @@ public class ReceiveMessageHelper {
         return new MessageActionResult(realRecords, messages);
     }
 
+    public List<AbstractRecord> receiveRecords(TlsContext context) {
+        context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
+        List<AbstractRecord> realRecords = new LinkedList<>();
+        try {
+            byte[] receivedBytes;
+            do {
+                receivedBytes = receiveByteArray(context);
+                if (receivedBytes.length != 0) {
+                    List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
+                    List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
+                    realRecords.addAll(tempRecords);
+                }
+            } while (receivedBytes.length != 0);
+
+        } catch (IOException ex) {
+            LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
+            LOGGER.debug(ex);
+        }
+        return realRecords;
+    }
+
     private boolean receivedFatalAlert(List<ProtocolMessage> messages) {
         for (ProtocolMessage message : messages) {
             if (message instanceof AlertMessage) {

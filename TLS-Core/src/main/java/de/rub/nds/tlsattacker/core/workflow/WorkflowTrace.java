@@ -13,45 +13,10 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ConnectionBoundAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedMessagesAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyBufferedRecordsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyContextFieldAction;
-import de.rub.nds.tlsattacker.core.workflow.action.CopyServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.FindReceivedProtocolMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GeneralAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendRecordAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
-import de.rub.nds.tlsattacker.core.workflow.action.PrintProposedExtensionsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import de.rub.nds.tlsattacker.core.workflow.action.*;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -86,6 +51,8 @@ public class WorkflowTrace implements Serializable {
 
     @HoldsModifiableVariable
     @XmlElements(value = {
+            @XmlElement(type = ForwardRecordsAction.class, name = "ForwardRecordsAction"),
+            @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffersAction"),
             @XmlElement(type = PrintProposedExtensionsAction.class, name = "PrintProposedExtensionsAction"),
             @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessageAction"),
             @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Simple MiTM forwarding proxy, forwards only raw records without parsing.
+
+Example with annotated log:
+openssl s_server -www -accept 4488 -cipher AES128-SHA
+java -jar apps/TLS-Mitm.jar -workflow_input resources/examples/simple_record_forwarding_proxy.xml
+firefox https://localhost:2222
+
+// CH
+01:12:23.281 [main] INFO  core.workflow.action.ForwardRecordsAction - Records received (client2mitm): 1
+01:12:23.281 [main] INFO  core.workflow.action.ForwardRecordsAction - Forwarding 1 records to mitm2server
+// SH, Cert, SHD
+01:12:23.403 [main] INFO  core.workflow.action.ForwardRecordsAction - Records received (mitm2server): 3
+01:12:23.403 [main] INFO  core.workflow.action.ForwardRecordsAction - Forwarding 3 records to client2mitm
+// CKE, CCS, Fin
+01:12:23.510 [main] INFO  core.workflow.action.ForwardRecordsAction - Records received (client2mitm): 3
+01:12:23.510 [main] INFO  core.workflow.action.ForwardRecordsAction - Forwarding 3 records to mitm2server
+// CCS, Fin
+01:12:23.613 [main] INFO  core.workflow.action.ForwardRecordsAction - Records received (mitm2server): 3
+01:12:23.613 [main] INFO  core.workflow.action.ForwardRecordsAction - Forwarding 3 records to client2mitm
+// App
+01:12:23.718 [main] INFO  core.workflow.action.ForwardRecordsAction - Records received (client2mitm): 1
+01:12:23.718 [main] INFO  core.workflow.action.ForwardRecordsAction - Forwarding 1 records to mitm2server
+// App
+01:12:23.827 [main] INFO  core.workflow.action.ForwardRecordsAction - Records received (mitm2server): 1
+01:12:23.827 [main] INFO  core.workflow.action.ForwardRecordsAction - Forwarding 1 records to client2mitm
+-->
+<workflowTrace>
+    <OutboundConnection>
+        <alias>mitm2server</alias>
+        <port>4488</port>
+        <hostname>localhost</hostname>
+        <timeout>100</timeout>
+    </OutboundConnection>
+    <InboundConnection>
+        <alias>client2mitm</alias>
+        <port>2222</port>
+        <timeout>100</timeout>
+    </InboundConnection>
+<!-- CH-->
+<ForwardRecordsAction>
+  <receiveFromAlias>client2mitm</receiveFromAlias>
+  <forwardToAlias>mitm2server</forwardToAlias>
+</ForwardRecordsAction>
+<!-- SH, Cert, SHD-->
+<ForwardRecordsAction>
+  <receiveFromAlias>mitm2server</receiveFromAlias>
+  <forwardToAlias>client2mitm</forwardToAlias>
+</ForwardRecordsAction>
+<!-- CKE, CCS, Fin -->
+<ForwardRecordsAction>
+  <receiveFromAlias>client2mitm</receiveFromAlias>
+  <forwardToAlias>mitm2server</forwardToAlias>
+</ForwardRecordsAction>
+<!-- CCS, Fin -->
+<ForwardRecordsAction>
+  <receiveFromAlias>mitm2server</receiveFromAlias>
+  <forwardToAlias>client2mitm</forwardToAlias>
+</ForwardRecordsAction>
+<!-- App -->
+<ForwardRecordsAction>
+  <receiveFromAlias>client2mitm</receiveFromAlias>
+  <forwardToAlias>mitm2server</forwardToAlias>
+</ForwardRecordsAction>
+<!-- App -->
+<ForwardRecordsAction>
+  <receiveFromAlias>mitm2server</receiveFromAlias>
+  <forwardToAlias>client2mitm</forwardToAlias>
+</ForwardRecordsAction>
+</workflowTrace>
