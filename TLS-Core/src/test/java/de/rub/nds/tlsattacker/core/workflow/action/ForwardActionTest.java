@@ -154,10 +154,10 @@ public class ForwardActionTest {
             sb.append("    <InboundConnection>\n");
             sb.append("        <alias>ctx2</alias>\n");
             sb.append("    </InboundConnection>\n");
-            sb.append("    <ForwardAction>\n");
+            sb.append("    <Forward>\n");
             sb.append("        <receiveFromAlias>ctx1</receiveFromAlias>\n");
             sb.append("        <forwardToAlias>ctx2</forwardToAlias>\n");
-            sb.append("    </ForwardAction>\n");
+            sb.append("    </Forward>\n");
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 

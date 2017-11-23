@@ -12,11 +12,11 @@ if there is only one connection defined in the workflow trace.
     <OutboundConnection>
         <alias>client</alias>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
+    </Send>
 </workflowTrace>
 
 # We expect this normalized trace
@@ -29,13 +29,13 @@ if there is only one connection defined in the workflow trace.
         <timeout>1000</timeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
         <records/>
-    </SendAction>
+    </Send>
 </workflowTrace>
 
 # And this after default filter application:
@@ -44,9 +44,9 @@ if there is only one connection defined in the workflow trace.
     <OutboundConnection>
         <alias>client</alias>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
+    </Send>
 </workflowTrace>

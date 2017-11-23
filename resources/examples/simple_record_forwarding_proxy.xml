@@ -39,33 +39,33 @@ firefox https://localhost:2222
         <timeout>100</timeout>
     </InboundConnection>
 <!-- CH-->
-<ForwardRecordsAction>
+<ForwardRecords>
   <receiveFromAlias>client2mitm</receiveFromAlias>
   <forwardToAlias>mitm2server</forwardToAlias>
-</ForwardRecordsAction>
+</ForwardRecords>
 <!-- SH, Cert, SHD-->
-<ForwardRecordsAction>
+<ForwardRecords>
   <receiveFromAlias>mitm2server</receiveFromAlias>
   <forwardToAlias>client2mitm</forwardToAlias>
-</ForwardRecordsAction>
+</ForwardRecords>
 <!-- CKE, CCS, Fin -->
-<ForwardRecordsAction>
+<ForwardRecords>
   <receiveFromAlias>client2mitm</receiveFromAlias>
   <forwardToAlias>mitm2server</forwardToAlias>
-</ForwardRecordsAction>
+</ForwardRecords>
 <!-- CCS, Fin -->
-<ForwardRecordsAction>
+<ForwardRecords>
   <receiveFromAlias>mitm2server</receiveFromAlias>
   <forwardToAlias>client2mitm</forwardToAlias>
-</ForwardRecordsAction>
+</ForwardRecords>
 <!-- App -->
-<ForwardRecordsAction>
+<ForwardRecords>
   <receiveFromAlias>client2mitm</receiveFromAlias>
   <forwardToAlias>mitm2server</forwardToAlias>
-</ForwardRecordsAction>
+</ForwardRecords>
 <!-- App -->
-<ForwardRecordsAction>
+<ForwardRecords>
   <receiveFromAlias>mitm2server</receiveFromAlias>
   <forwardToAlias>client2mitm</forwardToAlias>
-</ForwardRecordsAction>
+</ForwardRecords>
 </workflowTrace>

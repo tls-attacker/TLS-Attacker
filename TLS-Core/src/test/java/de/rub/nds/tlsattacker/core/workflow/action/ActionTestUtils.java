@@ -74,9 +74,16 @@ public class ActionTestUtils {
             WorkflowTrace trace = new WorkflowTrace();
             T action = actionClass.newInstance();
             trace.addTlsAction(action);
+            String xmlName = action.getClass().getSimpleName();
+            if (xmlName.endsWith("Action")) {
+                xmlName = xmlName.substring(0, xmlName.length() - 6);
+            } else {
+                logger.warn("The action under test does not follow naming convention. " + xmlName
+                        + " does not end with string 'Action'");
+            }
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
             sb.append("<workflowTrace>\n");
-            sb.append("    <").append(action.getClass().getSimpleName()).append("/>\n");
+            sb.append("    <").append(xmlName).append("/>\n");
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 

@@ -15,12 +15,12 @@ With TLS-Server:
         -cipher TLS_RSA_WITH_AES_128_CBC_SHA
 -->
 <workflowTrace>
-    <ReceiveAction>
+    <Receive>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <messages>
             <ServerHello/>
             <Certificate>
@@ -30,24 +30,24 @@ With TLS-Server:
             </Certificate>
             <ServerHelloDone/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <expectedMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
             <Application/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <messages>
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
-    </SendAction>
-    <SendAction>
+    </Send>
+    <Send>
         <messages>
             <Application/>
         </messages>
-    </SendAction>       
+    </Send>       
 </workflowTrace>

@@ -9,11 +9,11 @@
     <OutboundConnection>
         <timeout>44</timeout>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
+    </Send>
 </workflowTrace>
 
 # We expect this normalized trace
@@ -26,13 +26,13 @@
         <timeout>44</timeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
         <records/>
-    </SendAction>
+    </Send>
 </workflowTrace>
 
 # And this after default filter application:
@@ -41,9 +41,9 @@
     <OutboundConnection>
         <timeout>44</timeout>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
+    </Send>
 </workflowTrace>

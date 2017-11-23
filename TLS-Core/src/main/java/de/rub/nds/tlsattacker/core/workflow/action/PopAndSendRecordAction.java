@@ -45,12 +45,12 @@ public class PopAndSendRecordAction extends MessageAction implements SendingActi
         }
         AbstractRecordSerializer s = record.getRecordSerializer();
         tlsContext.getTransportHandler().sendData(s.serialize());
+        setExecuted(true);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("PopAndSendRecordAction:\n");
-        return sb.toString();
+        return "PopAndSendRecordAction";
     }
 
     @Override

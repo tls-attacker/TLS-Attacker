@@ -14,11 +14,11 @@ true for default and custom connections.
         <alias>custom</alias>
         <timeout>44</timeout>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
+    </Send>
 </workflowTrace>
 
 # We expect this normalized trace
@@ -31,13 +31,13 @@ true for default and custom connections.
         <timeout>44</timeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <connectionAlias>custom</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
         <records/>
-    </SendAction>
+    </Send>
 </workflowTrace>
 
 # And this after default filter application:
@@ -47,9 +47,9 @@ true for default and custom connections.
         <alias>custom</alias>
         <timeout>44</timeout>
     </OutboundConnection>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
+    </Send>
 </workflowTrace>

@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class WaitingAction extends TlsAction {
+public class WaitAction extends TlsAction {
 
     /**
      * Default waiting time in milliseconds
@@ -28,12 +28,12 @@ public class WaitingAction extends TlsAction {
      */
     private Long time = new Long(-1);
 
-    public WaitingAction(long time) {
+    public WaitAction(long time) {
         assertValidTime(time);
         this.time = time;
     }
 
-    public WaitingAction() {
+    public WaitAction() {
     }
 
     @Override
@@ -44,7 +44,7 @@ public class WaitingAction extends TlsAction {
             Thread.sleep(time);
             success = true;
         } catch (InterruptedException ex) {
-            Logger.getLogger(WaitingAction.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WaitAction.class.getName()).log(Level.SEVERE, null, ex);
             success = false;
         }
         this.setExecuted(success);
@@ -89,9 +89,9 @@ public class WaitingAction extends TlsAction {
     @Override
     public void normalize(TlsAction defaultAction) {
         super.normalize(defaultAction);
-        if (defaultAction instanceof WaitingAction) {
+        if (defaultAction instanceof WaitAction) {
             if (time == null || time < 0) {
-                time = ((WaitingAction) defaultAction).getTime();
+                time = ((WaitAction) defaultAction).getTime();
             }
         }
         if (time == null || time < 0) {
@@ -115,8 +115,8 @@ public class WaitingAction extends TlsAction {
     @Override
     public void filter(TlsAction defaultAction) {
         long defaultTime = DEFAULT_WAITING_TIME;
-        if (defaultAction instanceof WaitingAction) {
-            WaitingAction a = ((WaitingAction) defaultAction);
+        if (defaultAction instanceof WaitAction) {
+            WaitAction a = ((WaitAction) defaultAction);
             if (a.getTime() >= 0) {
                 defaultTime = a.getTime();
             }
@@ -144,7 +144,7 @@ public class WaitingAction extends TlsAction {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final WaitingAction other = (WaitingAction) obj;
+        final WaitAction other = (WaitAction) obj;
         if (!Objects.equals(this.time, other.time)) {
             return false;
         }

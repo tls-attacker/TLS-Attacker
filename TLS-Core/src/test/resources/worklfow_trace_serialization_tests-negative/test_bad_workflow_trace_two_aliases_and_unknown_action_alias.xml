@@ -15,7 +15,7 @@
         <alias>alias2</alias>
         <port>443</port>
     </InboundConnection>        
-    <ReceiveAction>
+    <Receive>
         <connectionAlias>UnknownAlias</connectionAlias>        
         <messages>
             <ClientHello>
@@ -25,5 +25,5 @@
                 </extensions>
             </ClientHello>
         </messages>
-    </ReceiveAction>
+    </Receive>
 </workflowTrace>

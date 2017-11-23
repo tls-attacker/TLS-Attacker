@@ -123,7 +123,7 @@ public class WorkflowTraceSerializerTest {
 
             StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
             sb.append("<workflowTrace>\n");
-            sb.append("    <SendAction>\n");
+            sb.append("    <Send>\n");
             sb.append("        <messages>\n");
             sb.append("            <ClientHello>\n");
             sb.append("                <extensions>\n");
@@ -132,7 +132,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("                </extensions>\n");
             sb.append("            </ClientHello>\n");
             sb.append("        </messages>\n");
-            sb.append("    </SendAction>\n");
+            sb.append("    </Send>\n");
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
@@ -169,7 +169,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("        <port>1111</port>\n");
             sb.append("        <hostname>host1111</hostname>\n");
             sb.append("    </OutboundConnection>\n");
-            sb.append("    <SendAction>\n");
+            sb.append("    <Send>\n");
             sb.append("        <messages>\n");
             sb.append("            <ClientHello>\n");
             sb.append("                <extensions>\n");
@@ -178,7 +178,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("                </extensions>\n");
             sb.append("            </ClientHello>\n");
             sb.append("        </messages>\n");
-            sb.append("    </SendAction>\n");
+            sb.append("    </Send>\n");
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
@@ -226,7 +226,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("        <alias>alias3</alias>\n");
             sb.append("        <port>1313</port>\n");
             sb.append("    </InboundConnection>\n");
-            sb.append("    <SendAction>\n");
+            sb.append("    <Send>\n");
             sb.append("        <connectionAlias>alias3</connectionAlias>\n");
             sb.append("        <messages>\n");
             sb.append("            <ClientHello>\n");
@@ -236,7 +236,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("                </extensions>\n");
             sb.append("            </ClientHello>\n");
             sb.append("        </messages>\n");
-            sb.append("    </SendAction>\n");
+            sb.append("    </Send>\n");
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 

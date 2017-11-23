@@ -8,19 +8,22 @@ return a list of XmlElement annotations.
 import os
 import glob
 
-exclude_actions = ["SendingAction", "ReceivingAction"]
+exclude_actions = ["SendingAction", "ReceivingAction", "TlsAction", "GeneralAction", "MessageAction"]
 
 action_pkg = '../TLS-Core/src/main/java/de/rub/nds/tlsattacker/core/workflow/action/'
 actions = glob.glob(os.path.join(action_pkg, '*Action.java'))
 actions = [os.path.splitext(os.path.basename(a))[0] for a in actions]
+actions = sorted(actions)
 imports = []
 elements = []
 
-for action_name in actions:
-    if action_name in exclude_actions:
+for class_name in actions:
+    if class_name in exclude_actions:
         continue
-    imports.append('import de.rub.nds.tlsattacker.core.workflow.action.%s;' % action_name)
-    elements.append('@XmlElement(type={0}.class, name="{0}")'.format(action_name))
+    # Exclude "Action" ending in XML name
+    xml_name = class_name[:-6]
+    imports.append('import de.rub.nds.tlsattacker.core.workflow.action.%s;' % class_name)
+    elements.append('@XmlElement(type={0}.class, name="{1}")'.format(class_name, xml_name))
 imports = '\n'.join(imports)
 elements = ',\n'.join(elements)
 

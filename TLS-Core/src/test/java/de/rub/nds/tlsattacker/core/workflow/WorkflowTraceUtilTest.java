@@ -194,7 +194,7 @@ public class WorkflowTraceUtilTest {
         // StringBuilder sb = new
         // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
         // sb.append("<workflowTrace>\n");
-        // sb.append("    <SendAction>\n");
+        // sb.append("    <Send>\n");
         // sb.append("        <messages>\n");
         // sb.append("            <ClientHello>\n");
         // sb.append("                <extensions>\n");
@@ -204,7 +204,7 @@ public class WorkflowTraceUtilTest {
         // sb.append("            </ClientHello>\n");
         // sb.append("        </messages>\n");
         // sb.append("        <records/>\n");
-        // sb.append("    </SendAction>\n");
+        // sb.append("    </Send>\n");
         // sb.append("</workflowTrace>\n");
         // String expected = sb.toString();
         String actual = WorkflowTraceSerializer.write(trace);
@@ -218,7 +218,7 @@ public class WorkflowTraceUtilTest {
         // StringBuilder sb = new
         // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
         // sb.append("<workflowTrace>\n");
-        // sb.append("    <SendAction>\n");
+        // sb.append("    <Send>\n");
         // sb.append("        <messages>\n");
         // sb.append("            <ClientHello>\n");
         // sb.append("                <extensions>\n");
@@ -227,7 +227,7 @@ public class WorkflowTraceUtilTest {
         // sb.append("                </extensions>\n");
         // sb.append("            </ClientHello>\n");
         // sb.append("        </messages>\n");
-        // sb.append("    </SendAction>\n");
+        // sb.append("    </Send>\n");
         // sb.append("</workflowTrace>\n");
         // String expected = sb.toString();
         actual = WorkflowTraceSerializer.write(trace);

@@ -10,10 +10,8 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-
-import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * This action allows the declaration of multiple actions, the right one will

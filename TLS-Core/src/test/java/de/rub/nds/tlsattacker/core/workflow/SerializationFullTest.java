@@ -58,7 +58,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;
@@ -113,7 +113,7 @@ public class SerializationFullTest {
         trace.addTlsAction(new ChangeCompressionAction(CompressionMethod.LZS));
         trace.addTlsAction(new ChangeMasterSecretAction(new byte[] { 0x00, 0x22, 0x44, 0x66, 0x44 }));
         trace.addTlsAction(new ChangePreMasterSecretAction(new byte[] { 0x33, 0x66, 0x55, 0x44, }));
-        trace.addTlsAction(new WaitingAction(10000));
+        trace.addTlsAction(new WaitAction(10000));
         trace.addTlsAction(new ResetConnectionAction());
         trace.addTlsAction(new ChangeProtocolVersionAction(ProtocolVersion.SSL3));
         trace.addTlsAction(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));

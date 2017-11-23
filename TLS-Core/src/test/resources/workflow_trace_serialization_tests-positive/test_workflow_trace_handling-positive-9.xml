@@ -18,68 +18,68 @@ Test a MITM workflow trace
         <port>443</port>
         <hostname>localhost</hostname>
     </OutboundConnection>
-    <ReceiveAction>
+    <Receive>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
-    </SendAction>
-    <SendAction>
+    </Send>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
-    <PrintLastHandledApplicationDataAction>
+    </Receive>
+    <PrintLastHandledApplicationData>
         <connectionAlias>server</connectionAlias>
         <stringEncoding>US_ASCII</stringEncoding>
-    </PrintLastHandledApplicationDataAction>
+    </PrintLastHandledApplicationData>
 </workflowTrace>
 
 
@@ -100,15 +100,15 @@ Test a MITM workflow trace
         <timeout>1000</timeout>
         <transportHandlerType>TCP</transportHandlerType>
     </OutboundConnection>
-    <ReceiveAction>
+    <Receive>
         <connectionAlias>server</connectionAlias>
         <messages/>
         <records/>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ServerHello/>
@@ -116,8 +116,8 @@ Test a MITM workflow trace
             <ServerHelloDone/>
         </messages>
         <records/>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>server</connectionAlias>
         <messages/>
         <records/>
@@ -126,23 +126,23 @@ Test a MITM workflow trace
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
         <records/>
-    </SendAction>
-    <SendAction>
+    </Send>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
         <records/>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>client</connectionAlias>
         <messages/>
         <records/>
@@ -151,8 +151,8 @@ Test a MITM workflow trace
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <RSAClientKeyExchange/>
@@ -160,8 +160,8 @@ Test a MITM workflow trace
             <Finished/>
         </messages>
         <records/>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>client</connectionAlias>
         <messages/>
         <records/>
@@ -169,11 +169,11 @@ Test a MITM workflow trace
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
-    <PrintLastHandledApplicationDataAction>
+    </Receive>
+    <PrintLastHandledApplicationData>
         <connectionAlias>server</connectionAlias>
         <stringEncoding>US_ASCII</stringEncoding>
-    </PrintLastHandledApplicationDataAction>
+    </PrintLastHandledApplicationData>
 </workflowTrace>
 
 
@@ -189,66 +189,66 @@ Test a MITM workflow trace
         <port>443</port>
         <hostname>localhost</hostname>
     </OutboundConnection>
-    <ReceiveAction>
+    <Receive>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <ClientHello/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>server</connectionAlias>
         <expectedMessages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>server</connectionAlias>
         <messages>
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
-    </SendAction>
-    <SendAction>
+    </Send>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <ClientHello/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ServerHello/>
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <connectionAlias>client</connectionAlias>
         <messages>
             <RSAClientKeyExchange/>
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <connectionAlias>client</connectionAlias>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
-    <PrintLastHandledApplicationDataAction>
+    </Receive>
+    <PrintLastHandledApplicationData>
         <connectionAlias>server</connectionAlias>
         <stringEncoding>US_ASCII</stringEncoding>
-    </PrintLastHandledApplicationDataAction>
+    </PrintLastHandledApplicationData>
 </workflowTrace>

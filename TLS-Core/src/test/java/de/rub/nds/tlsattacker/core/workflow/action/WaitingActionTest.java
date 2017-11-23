@@ -29,12 +29,12 @@ public class WaitingActionTest {
     private State state;
     private TlsContext tlsContext;
 
-    private WaitingAction action;
+    private WaitAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        action = new WaitingAction(10);
+        action = new WaitAction(10);
         WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(action);
         state = new State(trace);
@@ -45,7 +45,7 @@ public class WaitingActionTest {
     }
 
     /**
-     * Test of execute method, of class WaitingAction.
+     * Test of execute method, of class WaitAction.
      * 
      * @throws java.io.IOException
      */
@@ -57,7 +57,7 @@ public class WaitingActionTest {
     }
 
     /**
-     * Test of reset method, of class WaitingAction.
+     * Test of reset method, of class WaitAction.
      * 
      * @throws java.io.IOException
      */
@@ -75,13 +75,13 @@ public class WaitingActionTest {
     @Test
     @Category(SlowTests.class)
     public void marshalingEmptyActionYieldsMinimalOutput() {
-        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(WaitingAction.class);
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(WaitAction.class);
     }
 
     @Test
     @Category(SlowTests.class)
     public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
-        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(WaitingAction.class);
+        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(WaitAction.class);
     }
 
     @Test
