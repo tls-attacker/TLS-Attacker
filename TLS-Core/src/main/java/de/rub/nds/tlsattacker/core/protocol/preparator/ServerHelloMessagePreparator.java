@@ -37,12 +37,12 @@ public class ServerHelloMessagePreparator<T extends ServerHelloMessage> extends 
         LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
         prepareRandom(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()));
-        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+        if (!chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareSessionID();
             prepareSessionIDLength();
         }
         prepareCipherSuite();
-        if (!ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()).isTLS13()) {
+        if (!chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareCompressionMethod();
         }
         prepareExtensions();
