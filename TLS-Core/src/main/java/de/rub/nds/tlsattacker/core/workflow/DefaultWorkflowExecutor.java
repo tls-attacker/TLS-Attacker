@@ -30,8 +30,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 
+        List<TlsContext> allTlsContexts = state.getAllTlsContexts();
+
         if (config.isWorkflowExecutorShouldOpen()) {
-            for (TlsContext ctx : state.getAllTlsContexts()) {
+            for (TlsContext ctx : allTlsContexts) {
                 AliasedConnection con = ctx.getConnection();
                 if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
                     LOGGER.info("Waiting for incoming connection on " + con.getHostname() + ":" + con.getPort());
@@ -48,13 +50,16 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
 
         state.getWorkflowTrace().reset();
-
+        int numTlsContexts = allTlsContexts.size();
         List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
         for (TlsAction action : tlsActions) {
-            if (state.getTlsContext().isEarlyCleanShutdown()) {
+
+            // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?
+            if (numTlsContexts == 1 && state.getTlsContext().isEarlyCleanShutdown()) {
                 LOGGER.debug("Clean shutdown of execution flow");
                 break;
             }
+
             try {
                 if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                     action.execute(state);

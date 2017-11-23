@@ -1,6 +1,6 @@
 Usage: <main class> [options]
   Options:
-  * -accept
+    -accept
       A MiTM client can connect to this connection end. Allowed syntax: <PORT> 
       or <CONNECTION_ALIAS>:<PORT>
     -alias
@@ -13,7 +13,7 @@ Usage: <main class> [options]
     -config_output
       Write XML representation of the actual config used during execution to 
       this file
-  * -connect
+    -connect
       Add a server to which the MiTM will connect to. Allowed syntax: 
       <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>
     -debug

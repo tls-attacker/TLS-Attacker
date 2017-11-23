@@ -22,11 +22,11 @@ import org.junit.experimental.categories.Category;
  * line execution of the TLS-Mitm module and checks against expected debug
  * output.
  * 
- * Note: This test is rather strict. If adding similar tests, consider using
- * comparing for Level.INFO.
+ * Note: This test is rather strict. If adding similar tests, consider to
+ * compare based on Level.INFO.
  * 
  * TODO: This is certainly an intermediate solution only. Feel free to remove
- * this test once the testing environment is setup :]
+ * this test once the testing environment is setup :)
  */
 public class TlsMitmStartupTest {
 

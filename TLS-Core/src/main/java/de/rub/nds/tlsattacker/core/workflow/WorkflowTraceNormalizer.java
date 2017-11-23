@@ -57,10 +57,24 @@ public class WorkflowTraceNormalizer {
                 case SERVER:
                     traceConnections.add(defaultInCon);
                     break;
+                case MITM:
+                    traceConnections.add(defaultInCon);
+                    traceConnections.add(defaultOutCon);
+                    break;
                 default:
-                    throw new ConfigurationException("No connections defined in workflow trace and"
+                    throw new ConfigurationException("No connections defined in workflow trace and "
                             + "default configuration for this running mode (" + mode + ") is not "
                             + "supported. Please define some connections in the workflow trace.\n");
+            }
+        }
+
+        // If a MITM trace only holds one explicit definition of a connection,
+        // add the missing connection from config.
+        if (traceConnections.size() == 1 && mode == RunningModeType.MITM) {
+            if (traceConnections.get(0).getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                traceConnections.add(defaultInCon);
+            } else {
+                traceConnections.add(defaultOutCon);
             }
         }
 
@@ -153,7 +167,7 @@ public class WorkflowTraceNormalizer {
             if (!knownAliases.containsAll(action.getAllAliases())) {
                 throw new ConfigurationException("Workflow trace not well defined. "
                         + "Trace has action with reference to unknown connection alias, action: "
-                        + action.toCompactString());
+                        + action.toCompactString() + ", known aliases: " + knownAliases);
             }
         }
     }

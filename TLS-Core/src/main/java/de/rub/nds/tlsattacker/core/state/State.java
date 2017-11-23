@@ -55,9 +55,7 @@ import org.apache.logging.log4j.Logger;
  * Please also have a look at the tests supplied with this class for some
  * initialization examples with expected behavior.
  * </p>
- * <<<<<<< HEAD
- * 
- * ======= >>>>>>> origin/master
+ *
  */
 public class State {
 
@@ -94,7 +92,7 @@ public class State {
     }
 
     /**
-     * Normalize trace and initialize TLS contexts. *
+     * Normalize trace and initialize TLS contexts.
      */
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.

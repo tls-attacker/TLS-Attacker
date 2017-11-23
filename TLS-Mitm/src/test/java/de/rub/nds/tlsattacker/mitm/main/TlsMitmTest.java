@@ -97,8 +97,6 @@ public class TlsMitmTest {
                 ;
 
             LOGGER.info("Starting mitm");
-            // FileHandler fileHandler = new FileHandler("myLogFile");
-            // logger.addHandler(fileHandler);
             TlsMitm mitm = new TlsMitm(mitmParams);
             Thread mitmThread = new Thread(mitm);
             mitmThread.start();

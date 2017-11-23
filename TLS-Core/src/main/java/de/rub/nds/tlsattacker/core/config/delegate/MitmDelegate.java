@@ -26,11 +26,11 @@ public class MitmDelegate extends Delegate {
 
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger("Config");
 
-    @Parameter(names = "-accept", required = true, description = "A MiTM client can connect to this connection end."
+    @Parameter(names = "-accept", description = "A MiTM client can connect to this connection end."
             + " Allowed syntax: <PORT> or <CONNECTION_ALIAS>:<PORT>")
     protected String inboundConnectionStr;
 
-    @Parameter(names = "-connect", required = true, description = "Add a server to which the MiTM will connect to."
+    @Parameter(names = "-connect", description = "Add a server to which the MiTM will connect to."
             + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
     protected String outboundConnectionStr;
 
@@ -58,13 +58,23 @@ public class MitmDelegate extends Delegate {
 
         config.setDefaulRunningMode(RunningModeType.MITM);
 
-        if ((inboundConnectionStr == null) || (outboundConnectionStr == null)) {
-            // Though {inbound, outbound}Connections are required parameters we
-            // can get
-            // here if we call applyDelegate manually, e.g. in tests.
-            throw new ParameterException("{inbound|outbound}ConnectionStr is empty!");
+        if (inboundConnectionStr != null) {
+            setInboundConnection(config);
+        } else {
+            LOGGER.debug("Parameter -accept not specified. Using inbound connection from "
+                    + "-workflow_input or config defaults.");
         }
 
+        if (outboundConnectionStr != null) {
+            setOutboundConnection(config);
+        } else {
+            LOGGER.debug("Parameter -connect not specified. Using outbound connection from "
+                    + "-workflow_input or config defaults.");
+        }
+
+    }
+
+    private void setInboundConnection(Config config) {
         InboundConnection inboundConnection = config.getDefaultServerConnection();
         if (inboundConnection == null) {
             inboundConnection = new InboundConnection();
@@ -85,7 +95,9 @@ public class MitmDelegate extends Delegate {
                         + inboundConnectionStr + ". Expected [CONNECTION_ALIAS:]<PORT>");
         }
         config.setDefaultServerConnection(inboundConnection);
+    }
 
+    private void setOutboundConnection(Config config) {
         OutboundConnection outboundConnection = config.getDefaultClientConnection();
         if (outboundConnection == null) {
             outboundConnection = new OutboundConnection();
