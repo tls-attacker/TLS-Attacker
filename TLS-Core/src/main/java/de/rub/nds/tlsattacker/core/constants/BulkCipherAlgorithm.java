@@ -27,6 +27,7 @@ public enum BulkCipherAlgorithm {
     CAMELLIA,
     SEED,
     ARIA,
+    GOST28147,
     AES;
 
     /**
@@ -59,6 +60,8 @@ public enum BulkCipherAlgorithm {
             return SEED;
         } else if (cipher.contains("ARIA")) {
             return SEED;
+        } else if (cipher.contains("28147")) {
+            return GOST28147;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
     }
