@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
@@ -26,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -136,8 +133,8 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getServerSupportedPointFormats());
 
         if (sharedPointFormats.isEmpty()) {
-            throw new PreparationException("Don't know which point format to use for ECDHE. "
-                    + "Check if pointFormats is set in config.");
+            LOGGER.warn("Don't know which point format to use for ECDHE. " + "Check if pointFormats is set in config.");
+            sharedPointFormats = chooser.getConfig().getDefaultServerSupportedPointFormats();
         }
 
         List<ECPointFormat> unsupportedFormats = new ArrayList<>();
