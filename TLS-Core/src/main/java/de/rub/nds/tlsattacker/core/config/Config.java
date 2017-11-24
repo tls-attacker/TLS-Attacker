@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -822,6 +823,10 @@ public class Config implements Serializable {
 
     private boolean httpsParsingEnabled = false;
 
+    private NamedCurve[] defaultEcdheNamedCurves = new NamedCurve[] { NamedCurve.SECP192R1 };
+
+    private ECPointFormat[] defaultEcPointFormats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
+
     private Config() {
         connectionEnds = new ArrayList<>();
         ConnectionEnd defaultConEnd = new ClientConnectionEnd(DEFAULT_CONNECTION_END_ALIAS, 443, "127.0.0.1");
@@ -908,6 +913,22 @@ public class Config implements Serializable {
         cachedObjectList = new LinkedList<>();
         trustedCaIndicationExtensionAuthorties = new LinkedList<>();
         statusRequestV2RequestList = new LinkedList<>();
+    }
+
+    public ECPointFormat[] getDefaultEcPointFormats() {
+        return defaultEcPointFormats;
+    }
+
+    public void setDefaultEcPointFormats(ECPointFormat[] defaultEcPointFormats) {
+        this.defaultEcPointFormats = defaultEcPointFormats;
+    }
+
+    public NamedCurve[] getDefaultEcdheNamedCurves() {
+        return defaultEcdheNamedCurves;
+    }
+
+    public void setDefaultEcdheNamedCurves(NamedCurve[] defaultEcdheNamedCurves) {
+        this.defaultEcdheNamedCurves = defaultEcdheNamedCurves;
     }
 
     public boolean isHttpsParsingEnabled() {
@@ -1737,7 +1758,7 @@ public class Config implements Serializable {
     /**
      * Sets the Default timeout and sets the default Timeout in every
      * ConnectionEnd
-     * 
+     *
      * @param timeout
      *            Timeout to be set
      */
@@ -2353,7 +2374,7 @@ public class Config implements Serializable {
      * Convenience method for getting a (default) connection end if working with
      * a single end. This should be used when working with a single connection
      * end only, which usually is the default connection end.
-     * 
+     *
      * @return the connection end, if there is only one
      */
     public ConnectionEnd getConnectionEnd() {

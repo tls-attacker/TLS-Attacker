@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -99,13 +101,15 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         try {
             curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of named curves from computations.", ex);
+            LOGGER.warn("Couldn't read list of named curves from computations.", ex);
+            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
         }
         ECPointFormat[] formats;
         try {
             formats = ECPointFormat.pointFormatsFromByteArray(msg.getComputations().getEcPointFormatList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of EC point formats from computations", ex);
+            LOGGER.warn("Couldn't read list of EC point formats from computations", ex);
+            formats = chooser.getConfig().getDefaultEcPointFormats();
         }
 
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
@@ -115,7 +119,14 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
         } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
+            is = new ByteArrayInputStream(ArrayConverter.concatenate(
+                    new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, curves[0].getValue()));
+            try {
+                ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
+            } catch (IOException | IndexOutOfBoundsException ex1) {
+                throw new PreparationException("Failed to generate EC domain parameters", ex);
+            }
+            LOGGER.warn("Failed to generate EC domain parameters", ex);
         }
 
         return ecParams;
