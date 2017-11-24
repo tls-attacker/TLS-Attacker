@@ -227,7 +227,9 @@ public class WorkflowTraceUtil {
     public static List<AbstractRecord> getAllSendRecords(WorkflowTrace trace) {
         List<AbstractRecord> sendRecords = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
-            sendRecords.addAll(action.getSendRecords());
+            if (action.getSendRecords() != null) {
+                sendRecords.addAll(action.getSendRecords());
+            }
         }
         return sendRecords;
     }
