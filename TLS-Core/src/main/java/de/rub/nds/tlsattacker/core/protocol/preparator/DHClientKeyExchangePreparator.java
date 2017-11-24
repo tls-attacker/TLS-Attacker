@@ -58,6 +58,11 @@ public class DHClientKeyExchangePreparator extends ClientKeyExchangePreparator<D
     }
 
     private byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
+        if(modulus == BigInteger.ZERO)
+        {
+            LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
+            return new byte[0];
+        }
         return BigIntegers.asUnsignedByteArray(publicKey.modPow(privateKey, modulus));
     }
 
