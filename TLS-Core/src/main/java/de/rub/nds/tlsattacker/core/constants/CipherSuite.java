@@ -624,4 +624,8 @@ public enum CipherSuite {
     public boolean isTLS13() {
         return this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00;
     }
+
+    public boolean isImplemented() {
+        return getImplemented().contains(this);
+    }
 }

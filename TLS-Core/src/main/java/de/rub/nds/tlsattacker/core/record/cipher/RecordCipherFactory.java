@@ -23,7 +23,7 @@ public class RecordCipherFactory {
     private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);
 
     public static RecordCipher getRecordCipher(TlsContext context) {
-        if (context.getSelectedCipherSuite() == null) {
+        if (context.getSelectedCipherSuite() == null || !context.getChooser().getSelectedCipherSuite().isImplemented()) {
             return new RecordNullCipher();
         } else {
             CipherType type = AlgorithmResolver.getCipherType(context.getChooser().getSelectedCipherSuite());
