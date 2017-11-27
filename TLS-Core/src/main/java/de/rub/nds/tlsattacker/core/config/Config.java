@@ -597,16 +597,19 @@ public class Config implements Serializable {
     /**
      * The PSK to use.
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] psk = new byte[0];
 
     /**
      * The client's early traffic secret.
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] clientEarlyTrafficSecret = new byte[128];
 
     /**
      * The early secret of the session.
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] earlySecret = new byte[256];
 
     /**
@@ -617,6 +620,7 @@ public class Config implements Serializable {
     /**
      * The psk used for early data (!= earlySecret or earlyTrafficSecret).
      */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] earlyDataPsk = new byte[256];
 
     /**
@@ -902,6 +906,7 @@ public class Config implements Serializable {
 
     private BigInteger defaultSRPClientPublicKey = new BigInteger(1, ArrayConverter.hexStringToByteArray("25C843"));
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSRPServerSalt = ArrayConverter.hexStringToByteArray("AABBCCDD");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
@@ -910,12 +915,16 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSRPPassword = "Password".getBytes(Charset.forName("UTF-8"));
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultClientApplicationTrafficSecret = new byte[0];
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultServerApplicationTrafficSecret = new byte[0];
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
@@ -946,13 +955,25 @@ public class Config implements Serializable {
      * NewSessionTicket parameters.
      */
     private long sessionTicketLifetimeHint = 0;
+    
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
+    
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyHMAC = ArrayConverter
             .hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
+    
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
-                                                                                                                   // Key
+    
+    
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)// Key
     private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
+    
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
+    
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSessionTicketIdentity = ArrayConverter
             .hexStringToByteArray("5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
 
