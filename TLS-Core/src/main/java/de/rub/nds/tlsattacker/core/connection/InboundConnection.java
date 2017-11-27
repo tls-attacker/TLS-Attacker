@@ -62,6 +62,14 @@ public class InboundConnection extends AliasedConnection {
     }
 
     @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder("InboundConnection[");
+        sb.append(alias);
+        sb.append(":").append(port).append("]");
+        return sb.toString();
+    }
+
+    @Override
     public void normalize(AliasedConnection defaultCon) {
         if (defaultCon == null) {
             defaultCon = new InboundConnection();
