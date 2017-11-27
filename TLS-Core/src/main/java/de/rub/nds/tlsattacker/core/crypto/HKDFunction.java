@@ -53,6 +53,8 @@ public class HKDFunction {
 
     public static final String RESUMPTION_MASTER_SECRET = "res master";
 
+    public static final String RESUMPTION = "resumption";
+
     public HKDFunction() {
 
     }

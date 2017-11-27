@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -82,10 +83,12 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(context.getChooser()
                 .getSelectedProtocolVersion(), context.getChooser().getSelectedCipherSuite());
-        // PSK = null
+
         try {
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], new byte[macLength]);
+            byte[] psk = (context.getConfig().isUsePsk() || context.getPsk() != null) ? context.getChooser().getPsk()
+                    : new byte[macLength]; // use PSK if available
+            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;

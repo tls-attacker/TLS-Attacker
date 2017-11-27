@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
@@ -65,7 +66,8 @@ public class RecordEncryptor extends Encryptor {
         setUnpaddedRecordBytes(record, cleanBytes);
 
         byte[] padding;
-        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+        if (context.getChooser().getSelectedProtocolVersion().isTLS13()
+                || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             padding = recordCipher.calculatePadding(record.getPaddingLength().getValue());
         } else {
             int paddingLength = recordCipher.calculatePaddingLength(record.getUnpaddedRecordBytes().getValue().length);
@@ -75,7 +77,8 @@ public class RecordEncryptor extends Encryptor {
         setPadding(record, padding);
         setPaddingLength(record);
         byte[] plain;
-        if (context.getChooser().getSelectedProtocolVersion().isTLS13() && context.isEncryptActive()) {
+        if ((context.getChooser().getSelectedProtocolVersion().isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
+                && context.getActiveKeySetTypeWrite() != Tls13KeySetType.NONE) {
             plain = ArrayConverter.concatenate(record.getUnpaddedRecordBytes().getValue(), record
                     .getContentMessageType().getArrayValue(), record.getPadding().getValue());
         } else {

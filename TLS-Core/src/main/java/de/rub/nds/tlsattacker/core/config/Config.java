@@ -29,6 +29,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
@@ -38,6 +39,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
@@ -442,7 +444,20 @@ public class Config implements Serializable {
      * If we generate ClientHello with the KeyShare extension
      */
     private Boolean addKeyShareExtension = false;
+    /**
+     * If we generate ClientHello with the EarlyData extension
+     */
+    private Boolean addEarlyDataExtension = false;
 
+    /**
+     * If we generate ClientHello with the PSKKeyExchangeModes extension
+     */
+    private Boolean addPSKKeyExchangeModesExtension = false;
+
+    /**
+     * If we generate ClientHello with the PreSharedKey extension
+     */
+    private Boolean addPreSharedKeyExtension = false;
     /**
      * If we generate ClientHello with the Padding extension
      */
@@ -573,6 +588,52 @@ public class Config implements Serializable {
      * workflowTrace
      */
     private Boolean updateTimestamps = true;
+
+    /**
+     * PSKKeyExchangeModes to be used in 0-RTT (or TLS 1.3 resumption)
+     */
+    List<PskKeyExchangeMode> pskKeyExchangeModes;
+
+    /**
+     * The PSK to use.
+     */
+    private byte[] psk = new byte[0];
+
+    /**
+     * The client's early traffic secret.
+     */
+    private byte[] clientEarlyTrafficSecret = new byte[128];
+
+    /**
+     * The early secret of the session.
+     */
+    private byte[] earlySecret = new byte[256];
+
+    /**
+     * The cipher suite used for early data.
+     */
+    private CipherSuite earlyDataCipherSuite = CipherSuite.TLS_AES_128_GCM_SHA256;
+
+    /**
+     * The psk used for early data (!= earlySecret or earlyTrafficSecret).
+     */
+    private byte[] earlyDataPsk = new byte[256];
+
+    /**
+     * Contains all values related to TLS 1.3 PSKs.
+     */
+    private List<PskSet> PskSets = new LinkedList<>();
+
+    /**
+     * Do we use a psk for our secrets?
+     */
+    private boolean usePsk = false;
+
+    /**
+     * Early data to be sent.
+     */
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
+    private byte[] earlyData = ArrayConverter.hexStringToByteArray("544c532d41747461636b65720a");
 
     /**
      * The Certificate we initialize CertificateMessages with
@@ -881,14 +942,19 @@ public class Config implements Serializable {
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
-     * Extension defined in RFC5077.
+     * Extension defined in RFC5077, followed by additional TLS 1.3 draft 21
+     * NewSessionTicket parameters.
      */
     private long sessionTicketLifetimeHint = 0;
     private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
     private byte[] sessionTicketKeyHMAC = ArrayConverter
             .hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
-    // Key
+                                                                                                                   // Key
+    private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
+    private byte[] defaultSessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
+    private byte[] defaultSessionTicketIdentity = ArrayConverter
+            .hexStringToByteArray("5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");
 
     /**
      * ClientAuthtication Type, not fully implemented yet
@@ -2125,6 +2191,38 @@ public class Config implements Serializable {
         this.addKeyShareExtension = addKeyShareExtension;
     }
 
+    public boolean isAddEarlyDataExtension() {
+        return addEarlyDataExtension;
+    }
+
+    public void setAddEarlyDataExtension(boolean addEarlyDataExtension) {
+        this.addEarlyDataExtension = addEarlyDataExtension;
+    }
+
+    public boolean isAddPSKKeyExchangeModesExtension() {
+        return addPSKKeyExchangeModesExtension;
+    }
+
+    public void setAddPSKKeyExchangeModesExtension(boolean addPSKKeyExchangeModesExtension) {
+        this.addPSKKeyExchangeModesExtension = addPSKKeyExchangeModesExtension;
+    }
+
+    public boolean isAddPreSharedKeyExtension() {
+        return addPreSharedKeyExtension;
+    }
+
+    public void setAddPreSharedKeyExtension(boolean addPreSharedKeyExtension) {
+        this.addPreSharedKeyExtension = addPreSharedKeyExtension;
+    }
+
+    public void setPSKKeyExchangeModes(List<PskKeyExchangeMode> pskKeyExchangeModes) {
+        this.pskKeyExchangeModes = pskKeyExchangeModes;
+    }
+
+    public List<PskKeyExchangeMode> getPSKKeyExchangeModes() {
+        return pskKeyExchangeModes;
+    }
+
     public int getDefaultDTLSCookieLength() {
         return defaultDTLSCookieLength;
     }
@@ -2615,6 +2713,171 @@ public class Config implements Serializable {
 
     public void setDefaultServerApplicationTrafficSecret(byte[] defaultServerApplicationTrafficSecret) {
         this.defaultServerApplicationTrafficSecret = defaultServerApplicationTrafficSecret;
+    }
+
+    /**
+     * @return the earlyData
+     */
+    public byte[] getEarlyData() {
+        return earlyData;
+    }
+
+    /**
+     * @param earlyData
+     *            the earlyData to set
+     */
+    public void setEarlyData(byte[] earlyData) {
+        this.earlyData = earlyData;
+    }
+
+    /**
+     * @return the PskSets
+     */
+    public List<PskSet> getPskSets() {
+        return PskSets;
+    }
+
+    /**
+     * @param PskSets
+     *            the PskSets to set
+     */
+    public void setPskSets(List<PskSet> PskSets) {
+        this.PskSets = PskSets;
+    }
+
+    /**
+     * @return the psk
+     */
+    public byte[] getPsk() {
+        return psk;
+    }
+
+    /**
+     * @param psk
+     *            the psk to set
+     */
+    public void setPsk(byte[] psk) {
+        this.psk = psk;
+    }
+
+    /**
+     * @return the defaultSessionTicketAgeAdd
+     */
+    public byte[] getDefaultSessionTicketAgeAdd() {
+        return defaultSessionTicketAgeAdd;
+    }
+
+    /**
+     * @param defaultSessionTicketAgeAdd
+     *            the defaultSessionTicketAgeAdd to set
+     */
+    public void setDefaultSessionTicketAgeAdd(byte[] defaultSessionTicketAgeAdd) {
+        this.defaultSessionTicketAgeAdd = defaultSessionTicketAgeAdd;
+    }
+
+    /**
+     * @return the defaultSessionTicketNonce
+     */
+    public byte[] getDefaultSessionTicketNonce() {
+        return defaultSessionTicketNonce;
+    }
+
+    /**
+     * @param defaultSessionTicketNonce
+     *            the defaultSessionTicketNonce to set
+     */
+    public void setDefaultSessionTicketNonce(byte[] defaultSessionTicketNonce) {
+        this.defaultSessionTicketNonce = defaultSessionTicketNonce;
+    }
+
+    /**
+     * @return the defaultSessionTicketIdentity
+     */
+    public byte[] getDefaultSessionTicketIdentity() {
+        return defaultSessionTicketIdentity;
+    }
+
+    /**
+     * @param defaultSessionTicketIdentity
+     *            the defaultSessionTicketIdentity to set
+     */
+    public void setDefaultSessionTicketIdentity(byte[] defaultSessionTicketIdentity) {
+        this.defaultSessionTicketIdentity = defaultSessionTicketIdentity;
+    }
+
+    /**
+     * @return the clientEarlyTrafficSecret
+     */
+    public byte[] getClientEarlyTrafficSecret() {
+        return clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @param clientEarlyTrafficSecret
+     *            the clientEarlyTrafficSecret to set
+     */
+    public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @return the earlySecret
+     */
+    public byte[] getEarlySecret() {
+        return earlySecret;
+    }
+
+    /**
+     * @param earlySecret
+     *            the earlySecret to set
+     */
+    public void setEarlySecret(byte[] earlySecret) {
+        this.earlySecret = earlySecret;
+    }
+
+    /**
+     * @return the earlyDataCipherSuite
+     */
+    public CipherSuite getEarlyDataCipherSuite() {
+        return earlyDataCipherSuite;
+    }
+
+    /**
+     * @param earlyDataCipherSuite
+     *            the earlyDataCipherSuite to set
+     */
+    public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
+        this.earlyDataCipherSuite = earlyDataCipherSuite;
+    }
+
+    /**
+     * @return the earlyDataPsk
+     */
+    public byte[] getEarlyDataPsk() {
+        return earlyDataPsk;
+    }
+
+    /**
+     * @param earlyDataPsk
+     *            the earlyDataPsk to set
+     */
+    public void setEarlyDataPsk(byte[] earlyDataPsk) {
+        this.earlyDataPsk = earlyDataPsk;
+    }
+
+    /**
+     * @return the usePsk
+     */
+    public boolean isUsePsk() {
+        return usePsk;
+    }
+
+    /**
+     * @param usePsk
+     *            the usePsk to set
+     */
+    public void setUsePsk(boolean usePsk) {
+        this.usePsk = usePsk;
     }
 
     public String[] getAlpnAnnouncedProtocols() {

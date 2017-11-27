@@ -9,18 +9,29 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ClientHelloPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,14 +65,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         if (isCookieFieldSet(message)) {
             adjustDTLSCookie(message);
         }
-        if (message.getExtensions() != null) {
-            for (ExtensionMessage extension : message.getExtensions()) {
-                ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant(), HandshakeMessageType.CLIENT_HELLO);
-                handler.adjustTLSContext(extension);
-            }
-        }
+        adjustExtensions(message, HandshakeMessageType.CLIENT_HELLO);
         adjustRandomContext(message);
+        if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()
+                && tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
+            adjustEarlyTrafficSecret();
+            setClientRecordCipherEarly();
+        }
     }
 
     private boolean isCookieFieldSet(ClientHelloMessage message) {
@@ -147,4 +157,51 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         return list;
     }
 
+    @Override
+    public void adjustTlsContextAfterSerialize(ClientHelloMessage message) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
+                && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
+            adjustEarlyTrafficSecret();
+            setClientRecordCipherEarly();
+        }
+    }
+
+    private void adjustEarlyTrafficSecret() {
+        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser()
+                .getEarlyDataCipherSuite());
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS13, tlsContext
+                .getChooser().getEarlyDataCipherSuite());
+
+        byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], tlsContext.getChooser().getEarlyDataPsk());
+        tlsContext.setEarlySecret(earlySecret);
+        byte[] earlyTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), tlsContext
+                .getChooser().getEarlySecret(), HKDFunction.CLIENT_EARLY_TRAFFIC_SECRET, tlsContext.getDigest()
+                .getRawBytes());
+        tlsContext.setClientEarlyTrafficSecret(earlyTrafficSecret);
+        LOGGER.debug("EarlyTrafficSecret: " + ArrayConverter.bytesToHexString(earlyTrafficSecret));
+    }
+
+    private void setClientRecordCipherEarly() {
+        try {
+            tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
+            LOGGER.debug("Setting cipher for client to use early secrets");
+
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
+                    tlsContext.getActiveClientKeySetType());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext
+                    .getChooser().getEarlyDataCipherSuite());
+            tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
+
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
+                tlsContext.setReadSequenceNumber(0);
+                tlsContext.getRecordLayer().updateDecryptionCipher();
+            } else {
+                tlsContext.setWriteSequenceNumber(0);
+                tlsContext.getRecordLayer().updateEncryptionCipher();
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            LOGGER.error("Unable to generate KeySet - unknown algorithm");
+            throw new WorkflowExecutionException(ex.toString());
+        }
+    }
 }

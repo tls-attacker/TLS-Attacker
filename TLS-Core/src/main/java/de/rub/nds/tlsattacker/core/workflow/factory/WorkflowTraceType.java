@@ -20,5 +20,7 @@ public enum WorkflowTraceType {
     HTTPS,
     SSL2_HELLO,
     SIMPLE_MITM_PROXY,
+    ZERO_RTT,
+    FULL_ZERO_RTT,
     FALSE_START;
 }

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -51,6 +52,7 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testEncrypt() throws NoSuchAlgorithmException {
+        context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new InboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
@@ -67,6 +69,7 @@ public class RecordAEADCipherTest {
      */
     @Test
     public void testDecrypt() throws NoSuchAlgorithmException {
+        context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new OutboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
@@ -86,6 +89,7 @@ public class RecordAEADCipherTest {
         context.setServerHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("12756B2CA0395F1A1C3E268EF8610FBBAC8773E22F43BDABA385CE7E780A08B5"));
 
+        context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         assertArrayEquals(ArrayConverter.hexStringToByteArray("B8FF433DBB565709C9A6703B"), cipher.getKeySet()
                 .getClientWriteIv());

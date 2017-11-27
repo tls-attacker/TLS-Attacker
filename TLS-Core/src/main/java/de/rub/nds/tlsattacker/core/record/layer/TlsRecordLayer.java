@@ -128,6 +128,10 @@ public class TlsRecordLayer extends RecordLayer {
         this.cipher = cipher;
     }
 
+    public RecordCipher getRecordCipher() {
+        return cipher;
+    }
+
     @Override
     public void updateEncryptionCipher() {
         encryptor.setRecordCipher(cipher);
@@ -157,6 +161,16 @@ public class TlsRecordLayer extends RecordLayer {
     @Override
     public AbstractRecord getFreshRecord() {
         return new Record(tlsContext.getConfig());
+    }
+
+    @Override
+    public RecordCipher getEncryptor() {
+        return encryptor.getRecordCipher();
+    }
+
+    @Override
+    public RecordCipher getDecryptor() {
+        return decryptor.getRecordCipher();
     }
 
 }

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
@@ -71,7 +72,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
-        if (version.isTLS13()) {
+        if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             return encryptTLS13(request);
         } else {
             return encryptTLS12(request);
@@ -80,7 +81,7 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public byte[] decrypt(byte[] data) {
-        if (version.isTLS13()) {
+        if (version.isTLS13() || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             return decryptTLS13(data);
         } else {
             return decryptTLS12(data);
@@ -171,7 +172,8 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public boolean isUsingPadding() {
-        if (version.isTLS13()) {
+        if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS
+                || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             return true;
         } else {
             return false;

@@ -26,8 +26,10 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
@@ -36,6 +38,7 @@ import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
@@ -44,6 +47,7 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import static de.rub.nds.tlsattacker.core.state.State.LOGGER;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
@@ -93,6 +97,57 @@ public class TlsContext {
      * shared key established during the handshake
      */
     private byte[] serverApplicationTrafficSecret;
+
+    /**
+     * Early traffic secret used to encrypt early data.
+     */
+    private byte[] clientEarlyTrafficSecret;
+
+    /**
+     * ChiperSuite used for early data.
+     */
+    private CipherSuite earlyDataCipherSuite;
+
+    /**
+     * EarlySecret used to derive EarlyTrafficSecret and more.
+     */
+    private byte[] earlySecret;
+
+    /**
+     * The known TLS 1.3 PSK-Sets.
+     */
+    private List<PskSet> pskSets;
+
+    /**
+     * The selected Pre Shared key.
+     */
+    private byte[] psk;
+
+    /**
+     * The selected earlyData PSK.
+     */
+    private byte[] earlyDataPsk;
+
+    /**
+     * Identity of the PSK used for earlyData.
+     */
+    private byte[] earlyDataPSKIdentity;
+
+    /**
+     * Identity of the PSK used for earlyData.
+     */
+    private int selectedIdentityIndex;
+
+    /**
+     * The Client's chosen Kex-Modes.
+     */
+    private List<PskKeyExchangeMode> clientPskKeyExchangeModes;
+
+    /**
+     * Maximum number of bytes to transmit as early-data.
+     */
+    private long maxEarlyDataSize;
+
     /**
      * Master secret established during the handshake.
      */
@@ -317,12 +372,6 @@ public class TlsContext {
 
     private boolean receivedFatalAlert = false;
 
-    private boolean encryptActive = false;
-    /**
-     * TLS 1.3, update keys for application data
-     */
-    private boolean updateKeys = false;
-
     private List<ClientCertificateType> clientCertificateTypes;
 
     private byte[] distinguishedNames;
@@ -334,6 +383,17 @@ public class TlsContext {
     private List<KSEntry> clientKeyShareEntryList;
 
     private KSEntry serverKSEntry;
+
+    /**
+     * the currently used type of keySet by the client
+     */
+    private Tls13KeySetType activeClientKeySetType = Tls13KeySetType.NONE;
+
+    /**
+     * the currently used type of keySet by the server
+     */
+    private Tls13KeySetType activeServerKeySetType = Tls13KeySetType.NONE;
+
     /**
      * sequence number used for the encryption
      */
@@ -919,22 +979,6 @@ public class TlsContext {
 
     public void setReceivedFatalAlert(boolean receivedFatalAlert) {
         this.receivedFatalAlert = receivedFatalAlert;
-    }
-
-    public boolean isEncryptActive() {
-        return encryptActive;
-    }
-
-    public void setEncryptActive(boolean encryptActive) {
-        this.encryptActive = encryptActive;
-    }
-
-    public boolean isUpdateKeys() {
-        return updateKeys;
-    }
-
-    public void setUpdateKeys(boolean updateKeys) {
-        this.updateKeys = updateKeys;
     }
 
     public List<ECPointFormat> getClientPointFormatsList() {
@@ -1653,4 +1697,201 @@ public class TlsContext {
         }
         return info.toString();
     }
+
+    /**
+     * @return the clientEarlyTrafficSecret
+     */
+    public byte[] getClientEarlyTrafficSecret() {
+        return clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @param clientEarlyTrafficSecret
+     *            the clientEarlyTrafficSecret to set
+     */
+    public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @return the maxEarlyDataSize
+     */
+    public long getMaxEarlyDataSize() {
+        return maxEarlyDataSize;
+    }
+
+    /**
+     * @param maxEarlyDataSize
+     *            the maxEarlyDataSize to set
+     */
+    public void setMaxEarlyDataSize(long maxEarlyDataSize) {
+        this.maxEarlyDataSize = maxEarlyDataSize;
+    }
+
+    /**
+     * @return the psk
+     */
+    public byte[] getPsk() {
+        return psk;
+    }
+
+    /**
+     * @param psk
+     *            the psk to set
+     */
+    public void setPsk(byte[] psk) {
+        this.psk = psk;
+    }
+
+    /**
+     * @return the earlySecret
+     */
+    public byte[] getEarlySecret() {
+        return earlySecret;
+    }
+
+    /**
+     * @param earlySecret
+     *            the earlySecret to set
+     */
+    public void setEarlySecret(byte[] earlySecret) {
+        this.earlySecret = earlySecret;
+    }
+
+    /**
+     * @return the earlyDataCipherSuite
+     */
+    public CipherSuite getEarlyDataCipherSuite() {
+        return earlyDataCipherSuite;
+    }
+
+    /**
+     * @param earlyDataCipherSuite
+     *            the earlyDataCipherSuite to set
+     */
+    public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
+        this.earlyDataCipherSuite = earlyDataCipherSuite;
+    }
+
+    /**
+     * @return the earlyDataPSKIdentity
+     */
+    public byte[] getEarlyDataPSKIdentity() {
+        return earlyDataPSKIdentity;
+    }
+
+    /**
+     * @param earlyDataPSKIdentity
+     *            the earlyDataPSKIdentity to set
+     */
+    public void setEarlyDataPSKIdentity(byte[] earlyDataPSKIdentity) {
+        this.earlyDataPSKIdentity = earlyDataPSKIdentity;
+    }
+
+    /**
+     * @return the selectedIdentityIndex
+     */
+    public int getSelectedIdentityIndex() {
+        return selectedIdentityIndex;
+    }
+
+    /**
+     * @param selectedIdentityIndex
+     *            the selectedIdentityIndex to set
+     */
+    public void setSelectedIdentityIndex(int selectedIdentityIndex) {
+        this.selectedIdentityIndex = selectedIdentityIndex;
+    }
+
+    /**
+     * @return the clientPskKeyExchangeModes
+     */
+    public List<PskKeyExchangeMode> getClientPskKeyExchangeModes() {
+        return clientPskKeyExchangeModes;
+    }
+
+    /**
+     * @param clientPskKeyExchangeModes
+     *            the clientPskKeyExchangeModes to set
+     */
+    public void setClientPskKeyExchangeModes(List<PskKeyExchangeMode> clientPskKeyExchangeModes) {
+        this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
+    }
+
+    /**
+     * @return the pskSets
+     */
+    public List<PskSet> getPskSets() {
+        return pskSets;
+    }
+
+    /**
+     * @param pskSets
+     *            the pskSets to set
+     */
+    public void setPskSets(List<PskSet> pskSets) {
+        this.pskSets = pskSets;
+    }
+
+    /**
+     * @return the activeClientKeySetType
+     */
+    public Tls13KeySetType getActiveClientKeySetType() {
+        return activeClientKeySetType;
+    }
+
+    /**
+     * @param activeClientKeySetType
+     *            the activeClientKeySetType to set
+     */
+    public void setActiveClientKeySetType(Tls13KeySetType activeClientKeySetType) {
+        this.activeClientKeySetType = activeClientKeySetType;
+    }
+
+    /**
+     * @return the activeServerKeySetType
+     */
+    public Tls13KeySetType getActiveServerKeySetType() {
+        return activeServerKeySetType;
+    }
+
+    /**
+     * @param activeServerKeySetType
+     *            the activeServerKeySetType to set
+     */
+    public void setActiveServerKeySetType(Tls13KeySetType activeServerKeySetType) {
+        this.activeServerKeySetType = activeServerKeySetType;
+    }
+
+    public Tls13KeySetType getActiveKeySetTypeRead() {
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            return activeClientKeySetType;
+        } else {
+            return activeServerKeySetType;
+        }
+    }
+
+    public Tls13KeySetType getActiveKeySetTypeWrite() {
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            return activeServerKeySetType;
+        } else {
+            return activeClientKeySetType;
+        }
+    }
+
+    /**
+     * @return the earlyDataPsk
+     */
+    public byte[] getEarlyDataPsk() {
+        return earlyDataPsk;
+    }
+
+    /**
+     * @param earlyDataPsk
+     *            the earlyDataPsk to set
+     */
+    public void setEarlyDataPsk(byte[] earlyDataPsk) {
+        this.earlyDataPsk = earlyDataPsk;
+    }
+
 }

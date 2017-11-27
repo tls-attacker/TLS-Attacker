@@ -57,7 +57,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
                     finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getClientHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
-                LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
+                LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
                 mac.update(chooser.getContext().getDigest()

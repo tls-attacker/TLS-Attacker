@@ -40,7 +40,7 @@ Usage: <main class> [options]
     -mitm_workflow_trace_type
       Type of the workflow trace (currently only SIMPLE_MITM_PROXY)
       Default: SIMPLE_MITM_PROXY
-      Possible Values: [FULL, HANDSHAKE, HELLO, SHORT_HELLO, RESUMPTION, FULL_RESUMPTION, CLIENT_RENEGOTIATION, SERVER_RENEGOTIATION, HTTPS, SSL2_HELLO, SIMPLE_MITM_PROXY, FALSE_START]
+      Possible Values: [FULL, HANDSHAKE, HELLO, SHORT_HELLO, RESUMPTION, FULL_RESUMPTION, CLIENT_RENEGOTIATION, SERVER_RENEGOTIATION, HTTPS, SSL2_HELLO, SIMPLE_MITM_PROXY, ZERO_RTT, FULL_ZERO_RTT, FALSE_START]
     -named_curve
       Named curves to be used, divided by a comma
     -output_filter

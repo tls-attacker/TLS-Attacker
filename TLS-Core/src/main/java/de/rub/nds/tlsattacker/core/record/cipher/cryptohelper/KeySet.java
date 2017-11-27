@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher.cryptohelper;
 
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class KeySet {
@@ -19,7 +20,13 @@ public class KeySet {
     private byte[] clientWriteIv;
     private byte[] serverWriteIv;
 
+    private Tls13KeySetType keySetType = Tls13KeySetType.NONE;
+
     public KeySet() {
+    }
+
+    public KeySet(Tls13KeySetType keySetType) {
+        this.keySetType = keySetType;
     }
 
     public byte[] getClientWriteMacSecret() {
@@ -116,5 +123,20 @@ public class KeySet {
         } else {
             return serverWriteIv;
         }
+    }
+
+    /**
+     * @return the keySetType
+     */
+    public Tls13KeySetType getKeySetType() {
+        return keySetType;
+    }
+
+    /**
+     * @param keySetType
+     *            the keySetType to set
+     */
+    public void setKeySetType(Tls13KeySetType keySetType) {
+        this.keySetType = keySetType;
     }
 }

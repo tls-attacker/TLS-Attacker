@@ -42,4 +42,13 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
             tlsContext.setReadSequenceNumber(0);
         }
     }
+
+    @Override
+    public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
+            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.setWriteSequenceNumber(0);
+        }
+    }
+
 }

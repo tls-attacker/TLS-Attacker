@@ -76,6 +76,7 @@ public class WorkflowConfigurationFactoryTest {
         for (int i = 0; i < left.getMessageActions().size(); i++) {
             final MessageAction leftMessageAction = left.getMessageActions().get(i);
             final MessageAction rightMessageAction = right.getMessageActions().get(i);
+
             if (left.getMessageActions().size() != right.getMessageActions().size()
                     || !left.getMessageActions().get(i).getClass().equals(right.getMessageActions().get(i).getClass())) {
                 return false;

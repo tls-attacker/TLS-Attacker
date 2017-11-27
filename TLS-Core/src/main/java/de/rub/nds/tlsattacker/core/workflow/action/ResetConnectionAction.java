@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -35,6 +36,11 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
+        LOGGER.info("Resettin ActiveKeySets");
+        tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
+        tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
+        tlsContext.setReadSequenceNumber(0);
+        tlsContext.setWriteSequenceNumber(0);
         LOGGER.info("Reopening Connection");
         tlsContext.getTransportHandler().initialize();
         setExecuted(true);

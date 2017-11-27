@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -52,12 +53,12 @@ public class RecordPreparatorTest {
     public void testPrepare() throws NoSuchAlgorithmException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        context.setEncryptActive(true);
         context.getConfig().setPaddingLength(0);
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("4B63051EABCD514D7CB6D1899F472B9F56856B01BDBC5B733FBB47269E7EBDC2"));
         context.setServerHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("ACC9DB33EE0968FAE7E06DAA34D642B146092CE7F9C9CF47670C66A0A6CE1C8C"));
+        context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new InboundConnection());
         record.setCleanProtocolMessageBytes(ArrayConverter.hexStringToByteArray("080000020000"));
         recordCipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
