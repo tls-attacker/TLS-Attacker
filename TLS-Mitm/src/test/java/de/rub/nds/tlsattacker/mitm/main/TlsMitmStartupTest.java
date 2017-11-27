@@ -13,7 +13,9 @@ import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import static org.junit.Assert.assertEquals;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -34,6 +36,11 @@ public class TlsMitmStartupTest {
 
     // Grant enough time, 1000 should be enough even for slow systems
     private final int timeout = 1000;
+
+    @Before
+    public void setUp() {
+        Configurator.setRootLevel(Level.INFO);
+    }
 
     @Category(IntegrationTests.class)
     @Test
