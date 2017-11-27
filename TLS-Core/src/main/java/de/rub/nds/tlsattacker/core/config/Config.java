@@ -802,16 +802,16 @@ public class Config implements Serializable {
     private List<CompressionMethod> defaultServerSupportedCompressionMethods;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultMasterSecret = new byte[0];
+    private byte[] defaultMasterSecret;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPreMasterSecret = new byte[0];
+    private byte[] defaultPreMasterSecret;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultClientRandom = new byte[0];
+    private byte[] defaultClientRandom;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerRandom = new byte[0];
+    private byte[] defaultServerRandom;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];

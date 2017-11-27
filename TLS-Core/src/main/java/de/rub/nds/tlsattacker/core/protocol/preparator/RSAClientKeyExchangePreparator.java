@@ -65,7 +65,17 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     }
 
     protected byte[] generatePremasterSecret() {
-        byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+        byte[] tempPremasterSecret = chooser.getPreMasterSecret();
+        if (tempPremasterSecret != null && tempPremasterSecret.length == HandshakeByteLength.PREMASTER_SECRET) {
+            LOGGER.debug("Using preset PreMasterSecret from context.");
+            return tempPremasterSecret;
+        }
+        if (tempPremasterSecret != null) {
+            LOGGER.warn("Found predefined PreMasterSecret of wrong length in " + chooser.getContext()
+                    + "Length required: " + HandshakeByteLength.PREMASTER_SECRET + ", actual: "
+                    + tempPremasterSecret.length + ". Generating new one.");
+        }
+        tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
         chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
         tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
         tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
@@ -103,7 +113,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     }
 
     protected void prepareClientRandom(T msg) {
-        // TODO spooky
+        // TODO spooky, idd!
         clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
         msg.getComputations().setClientRandom(clientRandom);
         LOGGER.debug("ClientRandom: "

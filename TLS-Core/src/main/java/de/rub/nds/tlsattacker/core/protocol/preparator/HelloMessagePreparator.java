@@ -31,17 +31,28 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
     }
 
     protected void prepareRandom(ProtocolVersion version) {
-        byte[] random;
-        if (chooser.getConfig().isUseRandomUnixTime()) {
-            random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
-            chooser.getContext().getRandom().nextBytes(random);
-            msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
-            random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
+        byte[] random = chooser.getClientRandom();
+        if (random != null && random.length == HandshakeByteLength.RANDOM) {
+            LOGGER.debug("Setting client random directly from chooser");
             msg.setRandom(random);
+            return;
         } else {
-            random = new byte[HandshakeByteLength.RANDOM];
-            chooser.getContext().getRandom().nextBytes(random);
-            msg.setRandom(random);
+            if (random != null && random.length != HandshakeByteLength.RANDOM) {
+                LOGGER.warn("Found predefined ClientRandom of wrong length in " + chooser.getContext()
+                        + "Length required: " + HandshakeByteLength.RANDOM + ", actual: " + random.length
+                        + ". Generating new one.");
+            }
+            if (chooser.getConfig().isUseRandomUnixTime()) {
+                random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
+                chooser.getContext().getRandom().nextBytes(random);
+                msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
+                random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
+                msg.setRandom(random);
+            } else {
+                random = new byte[HandshakeByteLength.RANDOM];
+                chooser.getContext().getRandom().nextBytes(random);
+                msg.setRandom(random);
+            }
         }
 
         LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
