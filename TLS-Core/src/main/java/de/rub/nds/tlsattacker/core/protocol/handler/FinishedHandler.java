@@ -114,7 +114,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     private KeySet getKeySet(TlsContext context, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
-            KeySet keySet = KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(), keySetType);
+            KeySet keySet = KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
+                    keySetType);
             return keySet;
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
@@ -125,8 +126,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveServerKeySetType(keySetType);
         LOGGER.debug("Setting cipher for server to use " + keySetType);
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
-        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
-                tlsContext.getChooser().getSelectedCipherSuite());
+        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, tlsContext
+                .getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -142,8 +143,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
         tlsContext.setActiveClientKeySetType(keySetType);
         LOGGER.debug("Setting cipher for client to use " + keySetType);
         KeySet clientKeySet = getKeySet(tlsContext, tlsContext.getActiveClientKeySetType());
-        RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet,
-                tlsContext.getChooser().getSelectedCipherSuite());
+        RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext
+                .getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {

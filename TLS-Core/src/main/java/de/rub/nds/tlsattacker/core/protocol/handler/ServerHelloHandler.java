@@ -138,8 +138,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
-        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet,
-                tlsContext.getChooser().getSelectedCipherSuite());
+        RecordCipher recordCipherServer = RecordCipherFactory.getRecordCipher(tlsContext, serverKeySet, tlsContext
+                .getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
         if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
@@ -154,7 +154,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private KeySet getKeySet(TlsContext context, Tls13KeySetType keySetType) {
         try {
             LOGGER.debug("Generating new KeySet");
-            return KeySetGenerator.generateKeySet(context, tlsContext.getChooser().getSelectedProtocolVersion(), keySetType);
+            return KeySetGenerator.generateKeySet(context, tlsContext.getChooser().getSelectedProtocolVersion(),
+                    keySetType);
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }

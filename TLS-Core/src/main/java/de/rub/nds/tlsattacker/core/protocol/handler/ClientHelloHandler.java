@@ -185,12 +185,13 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
         try {
             tlsContext.setActiveClientKeySetType(Tls13KeySetType.EARLY_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use early secrets");
-            
-            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13, tlsContext.getActiveClientKeySetType());
+
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(tlsContext, ProtocolVersion.TLS13,
+                    tlsContext.getActiveClientKeySetType());
             RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(tlsContext, clientKeySet, tlsContext
                     .getChooser().getEarlyDataCipherSuite());
             tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
-            
+
             if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
                 tlsContext.setReadSequenceNumber(0);
                 tlsContext.getRecordLayer().updateDecryptionCipher();
