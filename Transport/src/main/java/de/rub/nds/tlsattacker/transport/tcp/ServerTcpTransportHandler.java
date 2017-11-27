@@ -84,4 +84,12 @@ public class ServerTcpTransportHandler extends TransportHandler {
             socket.close();
         }
     }
+
+    public int getPort() {
+        if (serverSocket != null) {
+            return serverSocket.getLocalPort();
+        } else {
+            return port;
+        }
+    }
 }

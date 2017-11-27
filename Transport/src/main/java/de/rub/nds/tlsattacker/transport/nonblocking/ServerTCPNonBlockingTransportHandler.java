@@ -111,4 +111,12 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
             clientSocket.close();
         }
     }
+
+    public int getPort() {
+        if (serverSocket != null) {
+            return serverSocket.getLocalPort();
+        } else {
+            return port;
+        }
+    }
 }
