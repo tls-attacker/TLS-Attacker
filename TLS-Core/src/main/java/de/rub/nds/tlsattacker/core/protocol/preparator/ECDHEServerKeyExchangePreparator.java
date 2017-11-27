@@ -198,7 +198,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         switch (curveType) {
             case EXPLICIT_PRIME:
             case EXPLICIT_CHAR2:
-                throw new PreparationException("Signing of explicit curves not implemented yet.");
+                throw new UnsupportedOperationException("Signing of explicit curves not implemented yet.");
             case NAMED_CURVE:
                 ecParams.write(curveType.getValue());
                 try {
