@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +48,7 @@ public class WorkflowTraceSerializer {
     private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
-                    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TLSAction.class,
+                    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TlsAction.class,
                     SendAction.class, ReceiveAction.class);
         }
         return context;
@@ -81,15 +81,13 @@ public class WorkflowTraceSerializer {
      *            WorkflowTrace that should be written
      * @return String containing XML/serialized representation of the
      *         WorkflowTrace
-     * @throws FileNotFoundException
-     *             Is thrown if the File cannot be found
      * @throws JAXBException
      *             Is thrown if the Object cannot be serialized
      * @throws IOException
      *             Is thrown if the Process doesn't have the rights to write to
      *             the File
      */
-    public static String write(WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
+    public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(bos, trace);
         return new String(bos.toByteArray(), "UTF-8");

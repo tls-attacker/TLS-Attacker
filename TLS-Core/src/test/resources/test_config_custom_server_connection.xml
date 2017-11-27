@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <defaultServerConnection>
+        <alias>testConnection</alias>
+        <port>8004</port>
+    </defaultServerConnection>
+</config>

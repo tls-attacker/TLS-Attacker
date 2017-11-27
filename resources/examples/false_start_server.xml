@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- 
+Simple false start trace, try this with Firefox 4 or so, 
+which allows it to be used with TLS_RSA_WITH_AES_128_CBC_SHA :)
+https://ftp.mozilla.org/pub/firefox/releases/4.0/
+
+With firefox about:config:
+    security.ssl.enable_false_start true
+    security.ssl.false_start.require-forward-secrecy false
+    security.ssl.false_start.require-npn false 
+
+With TLS-Server:
+    java -jar apps/TLS-Server.jar -port 5555 \
+        -workflow_input resources/examples/false_start_server.xml \
+        -cipher TLS_RSA_WITH_AES_128_CBC_SHA
+-->
+<workflowTrace>
+    <Receive>
+        <expectedMessages>
+            <ClientHello/>
+        </expectedMessages>
+    </Receive>
+    <Send>
+        <messages>
+            <ServerHello/>
+            <Certificate>
+                <certificatesList>
+                    <certificateConfig>MIIDkDCCAnigAwIBAgIJAKZQwAeUBJ/NMA0GCSqGSIb3DQEBCwUAMFwxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQxFTATBgNVBAMMDFRMUy1BdHRhY2tlcjAgFw0xNzA3MTMxMjUzMThaGA8yMTE3MDYxOTEyNTMxOFowXDELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoMGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDEVMBMGA1UEAwwMVExTLUF0dGFja2VyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyIINbDzoTIQw9oNav8fXqRLhZk9EV4dR83ZQGoxoR2wwctkZxdOb0NvggOcduDvUqy8vm949/7AID1EKX2kpwZZVHys8NpvgUQVMh3VzGVVY/SggNZNNyG7auNSxt/VV5bL+5ydThKdW74bLhnk7XRMz8JcyA8uWlmdm5lXNLMyuGUDkSUuOn7UnlZO3Wv0LN4JD5RqI9uuI3vUiqM1cbAgihqBCaaKHl2D8ukUAXX8mct0iiAnUcnTw/g6lUxwr2VNmwFv2ntwPPDGJhm7coMV63MqTJQrnjZ6soDk6lf+ZUvxH+3Z53TgD5qem+ncYYePZnktVGkCEZosRG37vfQIDAQABo1MwUTAdBgNVHQ4EFgQU56kv5VQ67i/3WS+ACsbmZUHjJoswHwYDVR0jBBgwFoAU56kv5VQ67i/3WS+ACsbmZUHjJoswDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEADVwR4ozxnRvBfk/1Q2lRaFcKp9uFs+y4VAU5Kg7a/k8JfuRoW3KF49m4adIyVxYcpl4gtealhdM9pc1lOvgSQzGBMsn2SkduwIuoBIaz5Dn3ZWNafqipabOr2GUANtdMX8SgRYnprI3DvicIdDps/jtFHjdA9zXxVtbcf/yKLIUs1OOXuUJGHC/KiEx6+36+95GNaq7x8NJX6Vl1TEZld5+g4yU+8r7bvVvl2mAKCmjlHS0cElxOGYZpprxxXo84hOnD7/OdQIOK2ksfODE/YoaqOV3G3qna9JOWzxLsR++noNOIL4uE2a7v+yUsa4GlZmCWBfv9Pw0X5bEkAUkqGg==</certificateConfig>
+                </certificatesList>
+            </Certificate>
+            <ServerHelloDone/>
+        </messages>
+    </Send>
+    <Receive>
+        <expectedMessages>
+            <RSAClientKeyExchange/>
+            <ChangeCipherSpec/>
+            <Finished/>
+            <Application/>
+        </expectedMessages>
+    </Receive>
+    <Send>
+        <messages>
+            <ChangeCipherSpec/>
+            <Finished/>
+        </messages>
+    </Send>
+    <Send>
+        <messages>
+            <Application/>
+        </messages>
+    </Send>       
+</workflowTrace>

@@ -58,7 +58,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private void prepareRequestContext(CertificateMessage msg) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             msg.setRequestContext(chooser.getCertificateRequestContext());
         } else {
             msg.setRequestContext(new byte[0]);

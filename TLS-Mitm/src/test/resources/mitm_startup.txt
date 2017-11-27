@@ -1,0 +1,17 @@
+DEBUG core.config.delegate.Delegate - Using the following security providers
+DEBUG core.config.delegate.Delegate - Provider SUN, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider SunRsaSign, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider SunEC, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider SunJSSE, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider SunJCE, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider SunJGSS, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider SunSASL, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider XMLDSig, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider SunPCSC, version, 1.8
+DEBUG core.config.delegate.Delegate - Provider BC, version, 1.58
+DEBUG mitm.main.TlsMitm - Creating and launching mitm.
+DEBUG core.workflow.factory.WorkflowConfigurationFactory - Building mitm trace for: InboundConnection{ alias=accept:19721 port=19721 type=null timeout=null}, OutboundConnection{ alias=localhost:16710 port=16710 type=null timeout=null}
+DEBUG core.state.State - Created new SIMPLE_MITM_PROXY workflow trace
+DEBUG core.state.ContextContainer - Adding context accept:19721 to inboundTlsContexts
+DEBUG core.state.ContextContainer - Adding context localhost:16710 to outboundTlsContexts
+INFO  core.workflow.WorkflowExecutor - Waiting for incoming connection on localhost:19721

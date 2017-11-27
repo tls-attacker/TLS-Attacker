@@ -14,13 +14,17 @@ import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
@@ -50,6 +54,8 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private TransportHandlerDelegate transportHandlerDelegate;
     @ParametersDelegate
+    private TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate
     private WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate
     private WorkflowOutputDelegate workflowOutputDelegate;
@@ -59,6 +65,12 @@ public class ClientCommandConfig extends TLSDelegateConfig {
     private HeartbeatDelegate heartbeatDelegate;
     @ParametersDelegate
     private CertificateDelegate certificateDelegate;
+    @ParametersDelegate
+    private FilterDelegate filterDelegate;
+    @ParametersDelegate
+    private ConfigOutputDelegate configOutputDelegate;
+    @ParametersDelegate
+    private ListDelegate listDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -71,11 +83,17 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         this.clientDelegate = new ClientDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();
         this.transportHandlerDelegate = new TransportHandlerDelegate();
+        this.timeoutDelegate = new TimeoutDelegate();
         this.workflowInputDelegate = new WorkflowInputDelegate();
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
         this.certificateDelegate = new CertificateDelegate();
+        this.filterDelegate = new FilterDelegate();
+        this.configOutputDelegate = new ConfigOutputDelegate();
+        this.listDelegate = new ListDelegate();
+
+        addDelegate(listDelegate);
         addDelegate(heartbeatDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(maxFragmentLengthDelegate);
@@ -88,15 +106,17 @@ public class ClientCommandConfig extends TLSDelegateConfig {
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
+        addDelegate(timeoutDelegate);
         addDelegate(certificateDelegate);
+        addDelegate(filterDelegate);
+        addDelegate(configOutputDelegate);
     }
 
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
 
-        // Perform a HANDSHAKE if no workflow trace (type) is set explicitly
-        if (config.getWorkflowTraceType() == null && config.getWorkflowTrace() == null) {
+        if (config.getWorkflowTraceType() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         }
         return config;

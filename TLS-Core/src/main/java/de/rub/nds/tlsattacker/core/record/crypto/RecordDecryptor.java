@@ -86,7 +86,7 @@ public class RecordDecryptor extends Decryptor {
             useNoMac(record);
         }
         context.increaseReadSequenceNumber();
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
                 && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             checkForEndOfEarlyData(record.getUnpaddedRecordBytes().getValue());
         }

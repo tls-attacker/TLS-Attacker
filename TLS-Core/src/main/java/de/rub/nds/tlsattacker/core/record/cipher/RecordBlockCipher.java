@@ -8,9 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -22,13 +29,6 @@ import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public final class RecordBlockCipher extends RecordCipher {
 
@@ -73,15 +73,12 @@ public final class RecordBlockCipher extends RecordCipher {
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
 
-            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(
-                    context.getConnectionEnd().getConnectionEndType()), readMac.getAlgorithm()));
-            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(
-                    context.getConnectionEnd().getConnectionEndType()), writeMac.getAlgorithm()));
+            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
+            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
             if (getKeySet().getClientWriteIv() != null && getKeySet().getServerWriteIv() != null) {
-                encryptIv = new IvParameterSpec(getKeySet().getWriteIv(
-                        context.getConnectionEnd().getConnectionEndType()));
-                decryptIv = new IvParameterSpec(getKeySet()
-                        .getReadIv(context.getConnectionEnd().getConnectionEndType()));
+                encryptIv = new IvParameterSpec(getKeySet().getWriteIv(localConEndType));
+                decryptIv = new IvParameterSpec(getKeySet().getReadIv(localConEndType));
             }
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException E) {
             throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), E);
@@ -144,19 +141,19 @@ public final class RecordBlockCipher extends RecordCipher {
     public byte[] decrypt(byte[] data) throws CryptoException {
         try {
             byte[] plaintext;
+            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
-                decryptCipher.init(Cipher.DECRYPT_MODE,
-                        new SecretKeySpec(getKeySet().getReadKey(context.getConnectionEnd().getConnectionEndType()),
-                                bulkCipherAlg.getJavaName()), decryptIv);
+                decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
+                        bulkCipherAlg.getJavaName()), decryptIv);
                 plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
             } else {
                 decryptIv = new IvParameterSpec(getDecryptionIV());
-                decryptCipher.init(Cipher.DECRYPT_MODE,
-                        new SecretKeySpec(getKeySet().getReadKey(context.getConnectionEnd().getConnectionEndType()),
-                                bulkCipherAlg.getJavaName()), decryptIv);
+                decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
+                        bulkCipherAlg.getJavaName()), decryptIv);
                 plaintext = decryptCipher.doFinal(data);
             }
+            LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
             return plaintext;
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
                 | InvalidKeyException | UnsupportedOperationException ex) {

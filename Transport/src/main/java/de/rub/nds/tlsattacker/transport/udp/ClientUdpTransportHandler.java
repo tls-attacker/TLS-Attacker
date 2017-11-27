@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.transport.udp;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
@@ -22,6 +23,12 @@ public class ClientUdpTransportHandler extends TransportHandler {
     private final int port;
 
     private DatagramSocket socket;
+
+    public ClientUdpTransportHandler(Connection connection) {
+        super(connection.getTimeout(), ConnectionEndType.CLIENT);
+        this.hostname = connection.getHostname();
+        this.port = connection.getPort();
+    }
 
     public ClientUdpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);

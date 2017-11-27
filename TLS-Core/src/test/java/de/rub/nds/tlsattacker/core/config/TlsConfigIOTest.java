@@ -8,23 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.config;
 
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.JAXBException;
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 public class TlsConfigIOTest {
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
@@ -39,52 +41,45 @@ public class TlsConfigIOTest {
     }
 
     @Test
+    public void testEmptyConfig() {
+        InputStream stream = Config.class.getResourceAsStream("/test_empty_config.xml");
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("no XML is given");
+        Config config = Config.createConfig(stream);
+    }
+
+    @Test
     public void testIncompleteConfig() {
-        InputStream stream = Config.class.getResourceAsStream("/test_config.xml");
+        InputStream stream = Config.class.getResourceAsStream("/test_incomplete_config.xml");
         Config config = Config.createConfig(stream);
         assertNotNull(config);
         assertTrue(config.getDefaultClientSupportedCiphersuites().size() == 1);
     }
 
-    /**
-     * Verify that a single custom connection end can be loaded properly from
-     * XML.
-     * 
-     * @throws IOException
-     * @throws JAXBException
-     */
     @Test
-    public void testReadCustomConnectionEnd() throws IOException, JAXBException {
-        InputStream stream = Config.class.getResourceAsStream("/test_config_custom_connection_end.xml");
+    public void testReadCustomClientConnection() throws IOException, JAXBException {
+        OutboundConnection expected = new OutboundConnection("testConnection", 8002, "testHostname");
 
-        ClientConnectionEnd expected = new ClientConnectionEnd("testConnectionEnd", 8002, "testHostname");
-
+        InputStream stream = Config.class.getResourceAsStream("/test_config_custom_client_connection.xml");
         Config config = Config.createConfig(stream);
         assertNotNull(config);
-        ConnectionEnd conEnd = config.getConnectionEnd();
-        assertNotNull(conEnd);
-        assertTrue(conEnd.equals(expected));
+
+        OutboundConnection con = config.getDefaultClientConnection();
+        assertNotNull(con);
+        assertThat(con, equalTo(expected));
     }
 
-    /**
-     * Verify that multiple connection ends can be loaded properly from XML.
-     * 
-     * @throws IOException
-     * @throws JAXBException
-     */
     @Test
-    public void testReadMultiConnectionEnds() throws IOException, JAXBException {
-        InputStream stream = Config.class.getResourceAsStream("/test_config_multiple_connection_ends.xml");
+    public void testReadCustomServerConnection() throws IOException, JAXBException {
+        InputStream stream = Config.class.getResourceAsStream("/test_config_custom_server_connection.xml");
 
-        List<ConnectionEnd> expected = new ArrayList<>();
-        expected.add(new ClientConnectionEnd("conEnd1", 1111, "host1111"));
-        expected.add(new ServerConnectionEnd("conEnd2", 4444));
-        expected.add(new ClientConnectionEnd("conEnd3", 2222, "host2222"));
-
+        InboundConnection expected = new InboundConnection("testConnection", 8004);
         Config config = Config.createConfig(stream);
         assertNotNull(config);
-        List<ConnectionEnd> conEnds = config.getConnectionEnds();
-        assertFalse(conEnds.isEmpty());
-        assertTrue(conEnds.equals(expected));
+
+        InboundConnection con = config.getDefaultServerConnection();
+        assertNotNull(con);
+        assertThat(con, equalTo(expected));
     }
+
 }

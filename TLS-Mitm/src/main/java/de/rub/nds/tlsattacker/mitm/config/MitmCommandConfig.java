@@ -13,9 +13,12 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmWorkflowTypeDelegate;
@@ -59,6 +62,12 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
     private CertificateDelegate certificateDelegate;
+    @ParametersDelegate
+    private FilterDelegate filterDelegate;
+    @ParametersDelegate
+    private ListDelegate listDelegate;
+    @ParametersDelegate
+    private ConfigOutputDelegate configOutputDelegate;
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -75,6 +84,10 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.mitmWorkflowTypeDelegate = new MitmWorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.certificateDelegate = new CertificateDelegate();
+        this.filterDelegate = new FilterDelegate();
+        this.listDelegate = new ListDelegate();
+        this.configOutputDelegate = new ConfigOutputDelegate();
+
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(ellipticCurveDelegate);
@@ -82,11 +95,13 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(mitmDelegate);
         addDelegate(signatureAndHashAlgorithmDelegate);
         addDelegate(heartbeatDelegate);
-        addDelegate(workflowOutputDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);
         addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
         addDelegate(mitmWorkflowTypeDelegate);
+        addDelegate(filterDelegate);
+        addDelegate(listDelegate);
+        addDelegate(configOutputDelegate);
     }
 }

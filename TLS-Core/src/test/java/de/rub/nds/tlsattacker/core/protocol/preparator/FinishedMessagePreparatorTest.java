@@ -8,22 +8,20 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import static org.junit.Assert.assertArrayEquals;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import static org.junit.Assert.assertArrayEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FinishedMessagePreparatorTest {
 
@@ -52,11 +50,10 @@ public class FinishedMessagePreparatorTest {
         context.setPrfAlgorithm(PRFAlgorithm.TLS_PRF_SHA256);
         preparator.prepare();
         LOGGER.info(ArrayConverter.bytesToHexString(message.getVerifyData().getValue(), false));
+        // TODO Did not check if this is calculated correctly, just made sure it
+        // is set
         assertArrayEquals(ArrayConverter.hexStringToByteArray("232A2CCB976E313AAA8E0F7A"), message.getVerifyData()
-                .getValue());// TODO Did not check if
-                             // this is calculated
-        // correctly, just made sure it is set
-
+                .getValue());
     }
 
     @Test
@@ -119,7 +116,7 @@ public class FinishedMessagePreparatorTest {
     public void testPrepareTLS13() {
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
-        context.setConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setClientHandshakeTrafficSecret(ArrayConverter
                 .hexStringToByteArray("2E9C9DD264A15D3C1EEC604A7C862934486764F94E35C0BA7E0B9494EAC06E82"));
         context.getDigest().setRawBytes(ArrayConverter.hexStringToByteArray("01010101010101010101010101010101"));

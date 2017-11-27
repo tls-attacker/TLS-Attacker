@@ -13,13 +13,13 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -52,8 +52,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
-        State state = new State(tlsConfig, trace);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
 
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
@@ -70,6 +70,9 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(sendAction);
         trace.addTlsAction(new ReceiveAction(alertMessage));
+
+        State state = new State(tlsConfig, trace);
+
         try {
             WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                     tlsConfig.getWorkflowExecutorType(), state);

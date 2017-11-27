@@ -8,23 +8,25 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.GeneralConnectionEnd;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
@@ -49,6 +51,9 @@ public class RecordBlockCipherTest {
     @Test
     public void testConstructors() throws NoSuchAlgorithmException {
         // This test just checks that the init() method will not break
+        List<AliasedConnection> mixedConnections = new ArrayList<>();
+        mixedConnections.add(new InboundConnection());
+        mixedConnections.add(new OutboundConnection());
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
@@ -57,9 +62,8 @@ public class RecordBlockCipherTest {
                     && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
-                context.setConnectionEnd(new GeneralConnectionEnd());
-                for (ConnectionEndType end : ConnectionEndType.values()) {
-                    ((GeneralConnectionEnd) context.getConnectionEnd()).setConnectionEndType(end);
+                for (AliasedConnection con : mixedConnections) {
+                    context.setConnection(con);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
                         if (version == ProtocolVersion.SSL2 || version.isTLS13()) {
                             continue;
@@ -98,7 +102,7 @@ public class RecordBlockCipherTest {
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
-        context.setConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         RecordBlockCipher cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
     }
 
@@ -109,7 +113,7 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testCalculateMac() throws NoSuchAlgorithmException {
-        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(ArrayConverter
@@ -134,7 +138,7 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testEncryptTls10() throws NoSuchAlgorithmException {
-        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(ArrayConverter
@@ -169,7 +173,7 @@ public class RecordBlockCipherTest {
     @Test
     public void testEncryptTls12() throws NoSuchAlgorithmException {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
-        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(ArrayConverter
@@ -204,7 +208,7 @@ public class RecordBlockCipherTest {
      */
     @Test
     public void testDecrypt10() throws NoSuchAlgorithmException {
-        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(ArrayConverter
@@ -231,7 +235,7 @@ public class RecordBlockCipherTest {
     @Test
     public void testDecrypt12() throws NoSuchAlgorithmException {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
-        context.getConfig().addConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setClientRandom(ArrayConverter

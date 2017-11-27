@@ -48,5 +48,4 @@ public class AlpnExtensionPreparator extends ExtensionPreparator<AlpnExtensionMe
         LOGGER.debug("Prepared the ALPN Extension with announced protocols length "
                 + msg.getAlpnExtensionLength().getValue());
     }
-
 }

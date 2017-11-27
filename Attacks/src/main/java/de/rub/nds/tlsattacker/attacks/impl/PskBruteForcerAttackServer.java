@@ -8,60 +8,20 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.biginteger.BigIntegerModificationFactory;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
-import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
-import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
-import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlertDescription;
-import de.rub.nds.tlsattacker.core.constants.AlertLevel;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.util.CertificateFetcher;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import java.math.BigInteger;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.integer.IntegerModificationFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.ec.ICEPoint;
-import de.rub.nds.tlsattacker.attacks.ec.ICEPointReader;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
@@ -69,7 +29,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessa
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -78,19 +37,13 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import java.nio.charset.Charset;
-import org.bouncycastle.util.BigIntegers;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 
 /**
  *
@@ -149,14 +102,14 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         ClientHelloMessage message = new ClientHelloMessage(tlsConfig);
         trace.addTlsAction(new SendAction(message));
         List<ProtocolMessage> messageList = new LinkedList<>();
         messageList.add(new ServerHelloMessage(tlsConfig));
         messageList.add(new ServerHelloDoneMessage(tlsConfig));
         trace.addTlsAction(new ReceiveAction(messageList));
-        tlsConfig.setWorkflowTrace(trace);
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
@@ -173,9 +126,9 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
     private boolean executeProtocolFlowToServer(byte[] pskTry) {
         Config tlsConfig = config.createConfig();
         tlsConfig.setDefaultPSKKey(pskTry);
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         State state = new State(tlsConfig, trace);
-        state.setWorkflowTrace(trace);
         // state.getTlsContext().setClientSupportedCiphersuites(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
         // tlsConfig.setDefaultSelectedCipherSuite(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
 

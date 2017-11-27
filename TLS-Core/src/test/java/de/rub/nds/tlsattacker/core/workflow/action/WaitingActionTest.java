@@ -8,37 +8,36 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.NoSuchPaddingException;
-import javax.xml.bind.JAXB;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class WaitingActionTest {
 
     private State state;
     private TlsContext tlsContext;
 
-    private WaitingAction action;
+    private WaitAction action;
 
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidAlgorithmParameterException {
-        Config config = Config.createConfig();
-        state = new State(config, new WorkflowTrace(config));
-        action = new WaitingAction(10);
+        action = new WaitAction(10);
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(action);
+        state = new State(trace);
     }
 
     @After
@@ -46,7 +45,7 @@ public class WaitingActionTest {
     }
 
     /**
-     * Test of execute method, of class WaitingAction.
+     * Test of execute method, of class WaitAction.
      * 
      * @throws java.io.IOException
      */
@@ -58,7 +57,7 @@ public class WaitingActionTest {
     }
 
     /**
-     * Test of reset method, of class WaitingAction.
+     * Test of reset method, of class WaitAction.
      * 
      * @throws java.io.IOException
      */
@@ -73,16 +72,21 @@ public class WaitingActionTest {
         assertTrue(action.isExecuted());
     }
 
-    /*
-     * Test of JAXB.marshal and JAXB.unmarshal
-     */
-
     @Test
-    public void testJAXB() {
-        StringWriter writer = new StringWriter();
-        JAXB.marshal(action, writer);
-        WaitingAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), WaitingAction.class);
-        assertEquals(action.getTime(), action2.getTime());
+    @Category(SlowTests.class)
+    public void marshalingEmptyActionYieldsMinimalOutput() {
+        ActionTestUtils.marshalingEmptyActionYieldsMinimalOutput(WaitAction.class);
     }
 
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingEmptyObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(WaitAction.class);
+    }
+
+    @Test
+    @Category(SlowTests.class)
+    public void marshalingAndUnmarshalingFilledObjectYieldsEqualObject() {
+        ActionTestUtils.marshalingAndUnmarshalingFilledObjectYieldsEqualObject(action);
+    }
 }

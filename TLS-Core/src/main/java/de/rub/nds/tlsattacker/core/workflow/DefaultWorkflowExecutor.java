@@ -8,12 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.config.ConfigIO;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,24 +30,36 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 
+        List<TlsContext> allTlsContexts = state.getAllTlsContexts();
+
         if (config.isWorkflowExecutorShouldOpen()) {
-            for (TlsContext ctx : state.getTlsContexts().values()) {
+            for (TlsContext ctx : allTlsContexts) {
+                AliasedConnection con = ctx.getConnection();
+                if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                    LOGGER.info("Waiting for incoming connection on " + con.getHostname() + ":" + con.getPort());
+                } else {
+                    LOGGER.info("Connecting to " + con.getHostname() + ":" + con.getPort());
+                }
                 ctx.initTransportHandler();
+                LOGGER.debug("Connection for " + ctx + " initiliazed");
             }
         }
 
-        for (TlsContext ctx : state.getTlsContexts().values()) {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
             ctx.initRecordLayer();
         }
 
         state.getWorkflowTrace().reset();
+        int numTlsContexts = allTlsContexts.size();
+        List<TlsAction> tlsActions = state.getWorkflowTrace().getTlsActions();
+        for (TlsAction action : tlsActions) {
 
-        List<TLSAction> tlsActions = state.getWorkflowTrace().getTlsActions();
-        for (TLSAction action : tlsActions) {
-            if (state.getTlsContext().isEarlyCleanShutdown()) {
+            // TODO: in multi ctx scenarios, how to handle earlyCleanShutdown ?
+            if (numTlsContexts == 1 && state.getTlsContext().isEarlyCleanShutdown()) {
                 LOGGER.debug("Clean shutdown of execution flow");
                 break;
             }
+
             try {
                 if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                     action.execute(state);
@@ -57,7 +73,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
 
         if (state.getConfig().isWorkflowExecutorShouldClose()) {
-            for (TlsContext ctx : state.getTlsContexts().values()) {
+            for (TlsContext ctx : state.getAllTlsContexts()) {
                 try {
                     ctx.getTransportHandler().closeConnection();
                 } catch (IOException ex) {
@@ -70,14 +86,18 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
-        storeTrace();
+        state.storeTrace();
+
+        if (config.getConfigOutput() != null) {
+            ConfigIO.write(config, new File(config.getConfigOutput()));
+        }
     }
 
     /**
      * Check if a at least one TLS context received a fatal alert.
      */
     private boolean isReceivedFatalAlert() {
-        for (TlsContext ctx : state.getTlsContexts().values()) {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
             if (ctx.isReceivedFatalAlert()) {
                 return true;
             }

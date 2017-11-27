@@ -21,12 +21,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.transport.tcp.timing.TimingClientTcpTransportHandler;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -76,17 +76,13 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
     public void executeAttackRound(Record record) throws IOException {
         Config tlsConfig = config.createConfig();
-        State state = new State(tlsConfig);
-        TlsContext tlsContext = state.getTlsContext();
 
-        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getConnectionEnd().getTimeout(), tlsConfig
-                .getConnectionEnd().getHostname(), tlsConfig.getConnectionEnd().getPort());
+        transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getDefaultClientConnection());
         transportHandler.initialize();
-        tlsContext.setTransportHandler(transportHandler);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
 
-        WorkflowTrace trace = state.getWorkflowTrace();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
+        WorkflowTrace trace = factory.createWorkflowTrace(tlsConfig.getWorkflowTraceType(),
+                tlsConfig.getDefaulRunningMode());
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);
@@ -97,7 +93,13 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         // Server
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ReceiveAction(alertMessage));
+
+        State state = new State(tlsConfig, trace);
+        state.getTlsContext().setTransportHandler(transportHandler);
+
         try {
+            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                    tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow.");

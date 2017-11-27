@@ -8,24 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,8 +28,13 @@ public class SendMessageHelper {
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context) throws IOException {
+        return sendMessages(messages, records, context, true);
+    }
 
-        context.setTalkingConnectionEndType(context.getChooser().getConnectionEnd().getConnectionEndType());
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
+            TlsContext context, boolean prepareMessages) throws IOException {
+
+        context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
 
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
@@ -59,8 +54,13 @@ public class SendMessageHelper {
             }
             lastMessage = message;
             lastType = message.getProtocolMessageType();
-            LOGGER.debug("Preparing " + message.toCompactString());
-            byte[] protocolMessageBytes = handleProtocolMessage(message, context);
+            byte[] protocolMessageBytes;
+            if (prepareMessages) {
+                LOGGER.debug("Preparing " + message.toCompactString());
+                protocolMessageBytes = handleProtocolMessage(message, context);
+            } else {
+                protocolMessageBytes = handleProtocolMessageWithoutPrepare(message, context);
+            }
             if (message.isGoingToBeSent()) {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
             }
@@ -93,6 +93,25 @@ public class SendMessageHelper {
             }
         }
         return new MessageActionResult(records, messages);
+    }
+
+    public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
+
+        context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
+
+        if (records == null) {
+            LOGGER.debug("No records specified, nothing to send");
+            return;
+        }
+
+        MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+        sendData(messageBytesCollector, context);
+
+        for (AbstractRecord record : records) {
+            messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
+        }
+        LOGGER.debug("Sending " + records.size() + "records");
+        sendData(messageBytesCollector, context);
     }
 
     private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
@@ -143,6 +162,12 @@ public class SendMessageHelper {
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
         collector.flushRecordBytes();
+    }
+
+    private byte[] handleProtocolMessageWithoutPrepare(ProtocolMessage message, TlsContext context) {
+        ProtocolMessageHandler handler = message.getHandler(context);
+        byte[] protocolMessageBytes = handler.prepareMessage(message, false);
+        return protocolMessageBytes;
     }
 
     private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {

@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -676,17 +676,13 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public ConnectionEnd getConnectionEnd() {
-        if (context.getConnectionEnd() != null) {
-            return context.getConnectionEnd();
-        } else {
-            return config.getConnectionEnd();
-        }
+    public Connection getConnection() {
+        return context.getConnection();
     }
 
     @Override
     public ConnectionEndType getMyConnectionPeer() {
-        return getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
                 : ConnectionEndType.CLIENT;
     }
 
@@ -732,7 +728,27 @@ public class DefaultChooser extends Chooser {
             return context.getClientKeyShareEntryList();
         } else {
             return new LinkedList<>(); // Todo, maybe add defaultClientKeyShare
-                                       // list to config
+            // list to config
+        }
+    }
+
+    @Override
+    public String getHttpsCookieValue() {
+        String cookieVal = context.getHttpsCookieValue();
+        if (cookieVal != null && !cookieVal.isEmpty()) {
+            return cookieVal;
+        } else {
+            return config.getDefaultHttpsCookieValue();
+        }
+    }
+
+    @Override
+    public String getHttpsCookieName() {
+        String cookieName = context.getHttpsCookieName();
+        if (cookieName != null && !cookieName.isEmpty()) {
+            return cookieName;
+        } else {
+            return config.getDefaultHttpsCookieName();
         }
     }
 
@@ -779,5 +795,10 @@ public class DefaultChooser extends Chooser {
         } else {
             return config.getEarlyDataPsk();
         }
+    }
+
+    @Override
+    public ConnectionEndType getConnectionEndType() {
+        return getConnection().getLocalConnectionEndType();
     }
 }

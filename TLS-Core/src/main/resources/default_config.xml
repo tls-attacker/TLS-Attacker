@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <highestProtocolVersion>TLS12</highestProtocolVersion>
-    <ClientConnectionEnd>
-        <alias>defaultConnectionEnd</alias>
+    <defaultClientConnection>
+        <alias>client</alias>
         <port>443</port>
-        <hostname>127.0.0.1</hostname>
-    </ClientConnectionEnd>
+        <hostname>localhost</hostname>
+    </defaultClientConnection>
+    <defaultServerConnection>
+        <alias>server</alias>
+        <port>443</port>
+    </defaultServerConnection>    
     <clientAuthentication>false</clientAuthentication>
     <supportedSignatureAndHashAlgorithms>
         <hashAlgorithm>SHA512</hashAlgorithm>
@@ -460,4 +464,10 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <chooserType>DEFAULT</chooserType>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <httpsParsingEnabled>false</httpsParsingEnabled>
+    <workflowTraceType>HANDSHAKE</workflowTraceType>
+    <outputFilter>DEFAULT</outputFilter>
+    <applyFiltersInPlace>false</applyFiltersInPlace>
+    <filtersKeepUserSettings>true</filtersKeepUserSettings>
+    <defaultServerApplicationTrafficSecret></defaultServerApplicationTrafficSecret>
+    <defaultClientApplicationTrafficSecret></defaultClientApplicationTrafficSecret>
 </config>

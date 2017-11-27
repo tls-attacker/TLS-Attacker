@@ -26,7 +26,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKBinderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PSKIdentitySerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
@@ -34,8 +33,6 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -56,7 +53,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing PreSharedKeyExtensionMessage");
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             msg.getEntries(chooser);
             prepareLists();
             prepareIdentityListBytes();
@@ -112,7 +109,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
     @Override
     public void afterPrepareExtensionContent() {
-        if (chooser.getContext().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             prepareActualBinders();
         }
     }

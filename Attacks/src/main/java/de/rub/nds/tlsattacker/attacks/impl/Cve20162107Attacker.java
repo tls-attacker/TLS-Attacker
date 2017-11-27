@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -32,6 +33,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -68,7 +70,8 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(tlsConfig);
+        WorkflowTrace trace = cf.createWorkflowTrace(WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         SendAction sendAction = (SendAction) trace.getLastSendingAction();
 
         // We need 2-3 Records,one for every message, while the last one will
@@ -91,7 +94,6 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
         List<ProtocolMessage> messages = new LinkedList<>();
         messages.add(alertMessage);
         action.setExpectedMessages(messages);
-        tlsConfig.setWorkflowTrace(trace);
         State state = new State(tlsConfig, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);

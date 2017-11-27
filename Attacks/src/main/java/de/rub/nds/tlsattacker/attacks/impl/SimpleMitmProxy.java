@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
@@ -23,8 +24,10 @@ public class SimpleMitmProxy extends Attacker<SimpleMitmProxyCommandConfig> {
 
     @Override
     public void executeAttack() {
-        State state = new State(config.createConfig());
-        state.getConfig().setWorkflowTraceType(WorkflowTraceType.SIMPLE_MITM_PROXY);
+        Config conf = Config.createConfig();
+        conf.setWorkflowTraceType(WorkflowTraceType.SIMPLE_MITM_PROXY);
+        State state = new State(conf);
+
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 WorkflowExecutorType.DEFAULT, state);
         workflowExecutor.executeWorkflow();

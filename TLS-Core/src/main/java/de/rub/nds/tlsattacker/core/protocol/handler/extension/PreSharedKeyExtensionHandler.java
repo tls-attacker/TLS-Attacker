@@ -45,13 +45,13 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
 
     @Override
     public ExtensionSerializer getSerializer(PreSharedKeyExtensionMessage message) {
-        return new PreSharedKeyExtensionSerializer(message, context.getConnectionEnd().getConnectionEndType());
+        return new PreSharedKeyExtensionSerializer(message, context.getChooser().getConnectionEndType());
     }
 
     @Override
     public void adjustTLSExtensionContext(PreSharedKeyExtensionMessage message) {
         LOGGER.debug("Adjusting TLS Context for PSK Key Extension Message");
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             if (message.getSelectedIdentity() != null) {
                 adjustPsk(message);
             } else {
@@ -59,7 +59,7 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                 context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
             }
         }
-        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
                 && message.getIdentities() != null && message.getIdentities().size() > 0) {
             selectPsk(message);
             if (context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {

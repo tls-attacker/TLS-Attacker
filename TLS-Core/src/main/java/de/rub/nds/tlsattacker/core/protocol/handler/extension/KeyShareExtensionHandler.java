@@ -54,7 +54,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionSerializer getSerializer(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionSerializer(message, context.getChooser().getConnectionEnd().getConnectionEndType());
+        return new KeyShareExtensionSerializer(message, context.getChooser().getConnectionEndType());
     }
 
     @Override
@@ -92,7 +92,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
-            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
                 } else {

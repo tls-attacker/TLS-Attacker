@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 
 public class TimeoutDelegate extends Delegate {
 
@@ -29,9 +31,18 @@ public class TimeoutDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        if (timeout != null) {
-            config.setDefaultTimeout(timeout);
+        if (timeout == null) {
+            return;
         }
+
+        if (config.getDefaultClientConnection() == null) {
+            config.setDefaultClientConnection(new OutboundConnection());
+        }
+        if (config.getDefaultServerConnection() == null) {
+            config.setDefaultServerConnection(new InboundConnection());
+        }
+        config.getDefaultClientConnection().setTimeout(timeout);
+        config.getDefaultServerConnection().setTimeout(timeout);
     }
 
 }

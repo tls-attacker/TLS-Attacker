@@ -11,12 +11,15 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -68,18 +71,18 @@ public class ClientDelegateTest {
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
-        config.clearConnectionEnds();
         args = new String[2];
         args[0] = "-connect";
-        args[1] = "99.99.99.99:1337";
+        args[1] = "99.99.99.99:1448";
 
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        ConnectionEnd newConEnd = config.getConnectionEnd();
-        assertNotNull(newConEnd);
-        assertTrue(newConEnd.getHostname().equals("99.99.99.99"));
-        assertTrue(newConEnd.getPort() == 1337);
-        assertTrue(newConEnd.getConnectionEndType() == ConnectionEndType.CLIENT);
+
+        AliasedConnection actual = config.getDefaultClientConnection();
+        assertNotNull(actual);
+        assertThat(actual.getHostname(), equalTo("99.99.99.99"));
+        assertThat(actual.getPort(), equalTo(1448));
+        assertThat(actual.getLocalConnectionEndType(), equalTo(ConnectionEndType.CLIENT));
     }
 
     /**
@@ -93,18 +96,17 @@ public class ClientDelegateTest {
         delegate.applyDelegate(config);
     }
 
-    /**
-     * Make sure that applying this delegate removes all previously known
-     * connection ends.
-     */
     @Test
-    public void testApplyDelegateClearsOldConnectionEnds() {
+    public void testApplyDelegateWithEmptyConfig() {
         Config config = Config.createConfig();
-        delegate.setHost("test");
+        config.setDefaultClientConnection(null);
+        String expectedHostname = "testHostname";
+        delegate.setHost(expectedHostname);
         delegate.applyDelegate(config);
-        assertTrue(config.getConnectionEnds().size() == 1);
+        OutboundConnection actual = config.getDefaultClientConnection();
+        assertNotNull(actual);
         // This should pass without ConfigurationException, too.
-        ConnectionEnd ourEnd = config.getConnectionEnd();
+        assertThat(actual.getHostname(), equalTo(expectedHostname));
     }
 
     @Test

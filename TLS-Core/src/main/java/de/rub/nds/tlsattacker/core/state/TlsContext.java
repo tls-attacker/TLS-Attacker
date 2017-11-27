@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -24,6 +25,7 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
@@ -34,12 +36,14 @@ import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -47,7 +51,6 @@ import static de.rub.nds.tlsattacker.core.state.State.LOGGER;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
@@ -76,7 +79,7 @@ public class TlsContext {
     /**
      * The end point of the TLS connection that this context represents.
      */
-    private ConnectionEnd connectionEnd;
+    private AliasedConnection connection;
 
     /**
      * Shared key established during the handshake.
@@ -446,6 +449,12 @@ public class TlsContext {
     private Random random;
 
     @XmlTransient
+    private LinkedList<ProtocolMessage> messageBuffer;
+
+    @XmlTransient
+    private LinkedList<AbstractRecord> recordBuffer;
+
+    @XmlTransient
     private Chooser chooser;
 
     /**
@@ -478,6 +487,17 @@ public class TlsContext {
     private boolean useExtendedMasterSecret;
 
     private Boolean earlyCleanShutdown = false;
+    /**
+     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is
+     * set.
+     */
+    private String httpsCookieName = null;
+
+    /**
+     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie
+     * is set.
+     */
+    private String httpsCookieValue = null;
 
     public TlsContext() {
         this(Config.createConfig());
@@ -493,25 +513,37 @@ public class TlsContext {
      *            The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
-        if (config.getConnectionEnds().size() > 1) {
-            throw new ConfigurationException("Attempting to create context from a config containing"
-                    + " multiple connection ends. Please specify the connection end to use.");
-        }
-        init(config, config.getConnectionEnd());
+        RunningModeType mode = config.getDefaulRunningMode();
+        if (null == mode) {
+            throw new ConfigurationException("Cannot create connection, running mode not set");
+        } else
+            switch (mode) {
+                case CLIENT:
+                    init(config, config.getDefaultClientConnection());
+                    break;
+                case SERVER:
+                    init(config, config.getDefaultServerConnection());
+                    break;
+                default:
+                    throw new ConfigurationException("Cannot create connection for unknown running mode " + "'" + mode
+                            + "'");
+            }
     }
 
-    public TlsContext(Config config, ConnectionEnd conEnd) {
-        init(config, conEnd);
+    public TlsContext(Config config, AliasedConnection connection) {
+        init(config, connection);
     }
 
-    private void init(Config config, ConnectionEnd conEnd) {
+    private void init(Config config, AliasedConnection connection) {
         this.config = config;
         digest = new MessageDigestCollector();
-        connectionEnd = conEnd;
+        this.connection = connection;
         recordLayerType = config.getRecordLayerType();
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
         random = new Random(0);
+        messageBuffer = new LinkedList<>();
+        recordBuffer = new LinkedList<>();
     }
 
     public Chooser getChooser() {
@@ -519,6 +551,22 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public LinkedList<ProtocolMessage> getMessageBuffer() {
+        return messageBuffer;
+    }
+
+    public void setMessageBuffer(LinkedList<ProtocolMessage> messageBuffer) {
+        this.messageBuffer = messageBuffer;
+    }
+
+    public LinkedList<AbstractRecord> getRecordBuffer() {
+        return recordBuffer;
+    }
+
+    public void setRecordBuffer(LinkedList<AbstractRecord> recordBuffer) {
+        this.recordBuffer = recordBuffer;
     }
 
     public HttpContext getHttpContext() {
@@ -1484,12 +1532,12 @@ public class TlsContext {
         return config;
     }
 
-    public ConnectionEnd getConnectionEnd() {
-        return connectionEnd;
+    public AliasedConnection getConnection() {
+        return connection;
     }
 
-    public void setConnectionEnd(ConnectionEnd connectionEnd) {
-        this.connectionEnd = connectionEnd;
+    public void setConnection(AliasedConnection connection) {
+        this.connection = connection;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -1536,6 +1584,15 @@ public class TlsContext {
     }
 
     /**
+     * Get all TLS extension types proposed by the client.
+     *
+     * @return set of proposed extensions. Not null.
+     */
+    public EnumSet<ExtensionType> getProposedExtensions() {
+        return proposedExtensionSet;
+    }
+
+    /**
      * Mark the given TLS extension type as client proposed extension.
      * 
      * @param ext
@@ -1574,6 +1631,22 @@ public class TlsContext {
         this.useExtendedMasterSecret = useExtendedMasterSecret;
     }
 
+    public String getHttpsCookieName() {
+        return httpsCookieName;
+    }
+
+    public void setHttpsCookieName(String httpsCookieName) {
+        this.httpsCookieName = httpsCookieName;
+    }
+
+    public String getHttpsCookieValue() {
+        return httpsCookieValue;
+    }
+
+    public void setHttpsCookieValue(String httpsCookieValue) {
+        this.httpsCookieValue = httpsCookieValue;
+    }
+
     /**
      * Initialize the context's transport handler. Start listening or connect to
      * a server, depending on our connection end type.
@@ -1581,19 +1654,19 @@ public class TlsContext {
     public void initTransportHandler() {
 
         if (transportHandler == null) {
-            if (connectionEnd == null) {
+            if (connection == null) {
                 throw new ConfigurationException("Connection end not set");
             }
-            transportHandler = TransportHandlerFactory.createTransportHandler(connectionEnd);
+            transportHandler = TransportHandlerFactory.createTransportHandler(connection);
         }
 
         try {
             transportHandler.initialize();
         } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values in " + connectionEnd.toString(), ex);
+            throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
             throw new ConfigurationException("Unable to initialize the transport handler with: "
-                    + connectionEnd.toString(), ex);
+                    + connection.toString(), ex);
         }
     }
 
@@ -1610,14 +1683,18 @@ public class TlsContext {
     @Override
     public String toString() {
         StringBuilder info = new StringBuilder();
-        info.append("TlsContext{ '").append(connectionEnd.getAlias()).append("'");
-        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
-            info.append(", listening on port ").append(connectionEnd.getPort());
+        if (connection == null) {
+            info.append("TlsContext{ (no connection set) }");
         } else {
-            info.append(", connected to ").append(connectionEnd.getHostname()).append(":")
-                    .append(connectionEnd.getPort());
+            info.append("TlsContext{'").append(connection.getAlias()).append("'");
+            if (connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                info.append(", listening on port ").append(connection.getPort());
+            } else {
+                info.append(", connected to ").append(connection.getHostname()).append(":")
+                        .append(connection.getPort());
+            }
+            info.append("}");
         }
-        info.append("}");
         return info.toString();
     }
 
@@ -1787,7 +1864,7 @@ public class TlsContext {
     }
 
     public Tls13KeySetType getActiveKeySetTypeRead() {
-        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
             return activeClientKeySetType;
         } else {
             return activeServerKeySetType;
@@ -1795,7 +1872,7 @@ public class TlsContext {
     }
 
     public Tls13KeySetType getActiveKeySetTypeWrite() {
-        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
             return activeServerKeySetType;
         } else {
             return activeClientKeySetType;

@@ -12,24 +12,18 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
-import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -68,8 +62,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustServerRandom(message);
         adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
-                    .getConnectionEndType()) {
+            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                 setServerRecordCipher();
             }
         }
@@ -142,7 +135,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
                 .getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
-        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {

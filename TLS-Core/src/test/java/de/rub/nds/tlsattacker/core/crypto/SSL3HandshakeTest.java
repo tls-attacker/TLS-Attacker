@@ -9,46 +9,12 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.RandomHelper;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.Security;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocketFactory;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -58,17 +24,46 @@ import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.KeystoreHandler;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.security.InvalidKeyException;
+import java.security.KeyManagementException;
 import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.Security;
 import java.security.SignatureException;
-import java.util.logging.Level;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class SSL3HandshakeTest {
 
@@ -120,7 +115,6 @@ public class SSL3HandshakeTest {
         config.setClientAuthentication(false);
         config.setRecordLayerType(RecordLayerType.RECORD);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        config.clearConnectionEnds();
     }
 
     @After
@@ -130,7 +124,8 @@ public class SSL3HandshakeTest {
 
     @Test
     public void testClientHandshake() throws IOException {
-        config.addConnectionEnd(new ClientConnectionEnd("client", TEST_PORT, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(TEST_PORT, "localhost"));
+        config.setDefaulRunningMode(RunningModeType.CLIENT);
 
         final State state = new State(config);
         final WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
@@ -153,7 +148,8 @@ public class SSL3HandshakeTest {
     @Test
     @Ignore("Client Authentication not fully supported yet.")
     public void testClientHandshakeWithClientAuthentication() throws IOException {
-        config.addConnectionEnd(new ClientConnectionEnd("client", TEST_PORT, "localhost"));
+        config.setDefaultClientConnection(new OutboundConnection(TEST_PORT, "localhost"));
+        config.setDefaulRunningMode(RunningModeType.CLIENT);
         config.setClientAuthentication(true);
 
         final State state = new State(config);
@@ -176,7 +172,8 @@ public class SSL3HandshakeTest {
 
     @Test
     public void testServerHandshake() {
-        config.addConnectionEnd(new ServerConnectionEnd(Config.DEFAULT_CONNECTION_END_ALIAS, TEST_PORT));
+        config.setDefaultServerConnection(new InboundConnection(TEST_PORT));
+        config.setDefaulRunningMode(RunningModeType.SERVER);
         final State state = new State(config);
         final WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);
@@ -188,7 +185,8 @@ public class SSL3HandshakeTest {
     @Test
     @Ignore("Client Authentication not fully supported yet.")
     public void testServerHandshakeWithClientAuthentication() {
-        config.addConnectionEnd(new ServerConnectionEnd(Config.DEFAULT_CONNECTION_END_ALIAS, TEST_PORT));
+        config.setDefaultServerConnection(new InboundConnection(TEST_PORT));
+        config.setDefaulRunningMode(RunningModeType.SERVER);
         config.setClientAuthentication(true);
 
         final State state = new State(config);

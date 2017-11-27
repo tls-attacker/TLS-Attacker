@@ -8,11 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.Cert;
 
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CertificateEntry {
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] certificate;
 
     private List<ExtensionMessage> extensions;
@@ -20,6 +26,9 @@ public class CertificateEntry {
     public CertificateEntry(byte[] certificate, List<ExtensionMessage> extensions) {
         this.certificate = certificate;
         this.extensions = extensions;
+    }
+
+    public CertificateEntry() {
     }
 
     public byte[] getCertificate() {

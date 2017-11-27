@@ -113,6 +113,7 @@ public class BasicTlsServer extends Thread {
 
         serverSocket = serverSocketFactory.createServerSocket(port);
         serverSocket.setReuseAddress(true);
+        // TODO:
         // if (cipherSuites != null) {
         // ((SSLServerSocket)
         // serverSocket).setEnabledCipherSuites(cipherSuites);

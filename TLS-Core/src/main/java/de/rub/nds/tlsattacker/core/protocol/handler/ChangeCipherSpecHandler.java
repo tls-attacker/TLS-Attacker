@@ -37,8 +37,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
-                .getConnectionEndType()) {
+        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
             tlsContext.setReadSequenceNumber(0);
         }
@@ -46,8 +45,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEnd()
-                .getConnectionEndType()) {
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setWriteSequenceNumber(0);
         }

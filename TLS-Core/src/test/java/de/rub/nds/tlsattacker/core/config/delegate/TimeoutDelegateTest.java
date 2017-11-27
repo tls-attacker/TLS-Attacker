@@ -11,6 +11,8 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,13 +58,18 @@ public class TimeoutDelegateTest {
     @Test
     public void testApplyDelegate() {
         Config config = Config.createConfig();
+        config.getDefaultClientConnection().setTimeout(1000);
+        config.getDefaultServerConnection().setTimeout(1000);
+        int expectedTimeout = 123;
         args = new String[2];
         args[0] = "-timeout";
-        args[1] = "123";
+        args[1] = Integer.toString(expectedTimeout);
+
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        System.out.println("conend is: " + config.getConnectionEnd());
-        assertTrue(config.getConnectionEnd().getTimeout() == 123);
+
+        assertThat(config.getDefaultClientConnection().getTimeout(), equalTo(expectedTimeout));
+        assertThat(config.getDefaultServerConnection().getTimeout(), equalTo(expectedTimeout));
     }
 
     @Test

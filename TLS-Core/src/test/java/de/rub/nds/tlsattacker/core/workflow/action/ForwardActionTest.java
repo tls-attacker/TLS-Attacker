@@ -15,30 +15,33 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.FakeReceiveMessageHelper;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
+import de.rub.nds.tlsattacker.core.workflow.filter.DefaultFilter;
+import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.crypto.NoSuchPaddingException;
 import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.hamcrest.CoreMatchers.equalTo;
+import org.junit.Assert;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -55,26 +58,26 @@ public class ForwardActionTest {
     public final ExpectedException exception = ExpectedException.none();
 
     private State state;
+    private Config config;
     private TlsContext ctx1;
     private final String ctx1Alias = "ctx1";
     private TlsContext ctx2;
     private final String ctx2Alias = "ctx2";
-    AlertMessage alert;
+    private AlertMessage alert;
+    ForwardAction action;
+    WorkflowTrace trace;
 
     @Before
-    public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            InvalidAlgorithmParameterException {
-
-        Config config = Config.createConfig();
-
+    public void setUp() throws Exception {
+        config = Config.createConfig();
         alert = new AlertMessage(config);
         alert.setConfig(AlertLevel.FATAL, AlertDescription.DECRYPT_ERROR);
         alert.setDescription(AlertDescription.DECODE_ERROR.getValue());
         alert.setLevel(AlertLevel.FATAL.getValue());
 
-        WorkflowTrace trace = new WorkflowTrace();
-        trace.addConnectionEnd(new ClientConnectionEnd(ctx1Alias));
-        trace.addConnectionEnd(new ServerConnectionEnd(ctx2Alias));
+        trace = new WorkflowTrace();
+        trace.addConnection(new OutboundConnection(ctx1Alias));
+        trace.addConnection(new InboundConnection(ctx2Alias));
 
         state = new State(config, trace);
         ctx1 = state.getTlsContext(ctx1Alias);
@@ -94,65 +97,96 @@ public class ForwardActionTest {
         ctx2.setTransportHandler(new FakeTransportHandler(ConnectionEndType.CLIENT));
     }
 
-    /**
-     * Test normal execution.
-     * 
-     * @throws java.lang.Exception
-     */
     @Test
-    public void testExecute() throws Exception {
-        ForwardAction action = new ForwardAction(alert);
-
-        action.setReceiveFromAlias("ctx1");
-        action.setForwardToAlias("ctx2");
-
+    public void executingSetsExecutionFlagsCorrectly() throws Exception {
+        action = new ForwardAction(ctx1Alias, ctx2Alias, alert);
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
     }
 
-    /**
-     * Test execution attempts with missing aliases.
-     * 
-     * @throws java.lang.Exception
-     */
     @Test
-    public void testExecuteMissingAliases() throws Exception {
-        ForwardAction action = new ForwardAction(alert);
-
-        action.setForwardToAlias(null);
-        action.setReceiveFromAlias("set");
-        exception.expect(WorkflowExecutionException.class);
-        exception.expectMessage("Can't execute ForwardAction with empty forwardToAlias");
+    public void executingTwiceThrowsException() throws Exception {
+        action = new ForwardAction(ctx1Alias, ctx2Alias, alert);
         action.execute(state);
-
-        action.setReceiveFromAlias(null);
-        action.setForwardToAlias("set");
+        assertTrue(action.isExecuted());
         exception.expect(WorkflowExecutionException.class);
-        exception.expectMessage("Can't execute ForwardAction with empty receiveFromAlias");
+        exception.expectMessage("Action already executed!");
         action.execute(state);
     }
 
-    /**
-     * Test (de-)serialization.
-     */
     @Test
-    public void testJAXB() {
-        ForwardAction action = new ForwardAction(alert);
+    public void executingWithNullAliasThrowsException() throws Exception {
+        action = new ForwardAction(null, ctx2Alias, alert);
+        exception.expect(WorkflowExecutionException.class);
+        exception.expectMessage("Can't execute ForwardAction with empty");
+        action.execute(state);
 
-        action.setReceiveFromAlias("ctx1");
-        action.setForwardToAlias("ctx2");
+        action = new ForwardAction(ctx1Alias, null, alert);
+        exception.expect(WorkflowExecutionException.class);
+        exception.expectMessage("Can't execute ForwardAction with empty");
+        action.execute(state);
+    }
 
+    @Test
+    public void executingWithEmptyAliasThrowsException() throws Exception {
+        action = new ForwardAction("", ctx2Alias, alert);
+        exception.expect(WorkflowExecutionException.class);
+        exception.expectMessage("Can't execute ForwardAction with empty");
+        action.execute(state);
+
+        action = new ForwardAction(ctx1Alias, "", alert);
+        exception.expect(WorkflowExecutionException.class);
+        exception.expectMessage("Can't execute ForwardAction with empty");
+        action.execute(state);
+    }
+
+    @Test
+    public void marshalingEmptyActionYieldsMinimalOutput() {
+        try {
+            action = new ForwardAction(ctx1Alias, ctx2Alias);
+            trace.addTlsAction(action);
+            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            sb.append("<workflowTrace>\n");
+            sb.append("    <OutboundConnection>\n");
+            sb.append("        <alias>ctx1</alias>\n");
+            sb.append("    </OutboundConnection>\n");
+            sb.append("    <InboundConnection>\n");
+            sb.append("        <alias>ctx2</alias>\n");
+            sb.append("    </InboundConnection>\n");
+            sb.append("    <Forward>\n");
+            sb.append("        <receiveFromAlias>ctx1</receiveFromAlias>\n");
+            sb.append("        <forwardToAlias>ctx2</forwardToAlias>\n");
+            sb.append("    </Forward>\n");
+            sb.append("</workflowTrace>\n");
+            String expected = sb.toString();
+
+            Filter filter = new DefaultFilter(config);
+            filter.applyFilter(trace);
+            filter.postFilter(trace, state.getOriginalWorkflowTrace());
+            String actual = WorkflowTraceSerializer.write(trace);
+            LOGGER.info(actual);
+
+            Assert.assertThat(actual, equalTo(expected));
+
+        } catch (JAXBException | IOException ex) {
+            LOGGER.error(ex.getLocalizedMessage(), ex);
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void marshalingAndUnmarshalingYieldsEqualObject() {
+        action = new ForwardAction(ctx1Alias, ctx2Alias, new ClientHelloMessage());
+        // action.filter();
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        LOGGER.debug(writer.getBuffer().toString());
-
-        TLSAction action2 = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardAction.class);
-        assertEquals(action, action2);
+        TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardAction.class);
+        assertEquals(action, actual);
     }
 
     @Test
-    public void testForwardApplicationMessage() throws Exception {
+    public void forwardingApplicationMessageAdoptsData() throws Exception {
         ApplicationMessage msg = new ApplicationMessage(state.getConfig());
         String receivedData = "Forward application message test";
         msg.setData(receivedData.getBytes());
@@ -161,10 +195,9 @@ public class ForwardActionTest {
         FakeReceiveMessageHelper fakeReceiveHelper = new FakeReceiveMessageHelper();
         fakeReceiveHelper.setMessagesToReturn(receivedMsgs);
 
-        ForwardAction action = new ForwardAction(new ApplicationMessage());
-        action.setReceiveFromAlias("ctx1");
-        action.setForwardToAlias("ctx2");
-        action.setReceiveMessageHelper(fakeReceiveHelper);
+        action = new ForwardAction(ctx1Alias, ctx2Alias, fakeReceiveHelper);
+        action.setMessages(new ApplicationMessage());
+
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
@@ -176,4 +209,5 @@ public class ForwardActionTest {
         String forwardedData = new String(forwardedMsg.getData().getValue());
         assertThat(forwardedData, equalTo(receivedData));
     }
+
 }

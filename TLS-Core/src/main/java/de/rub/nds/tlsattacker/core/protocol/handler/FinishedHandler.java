@@ -53,14 +53,14 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     @Override
     public void adjustTLSContext(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getConnectionEnd().getConnectionEndType()) {
+            if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                 if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
                     adjustApplicationTrafficSecrets();
                     setServerRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 } else {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
-            } else if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             }
         }
@@ -101,7 +101,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     @Override
     public void adjustTlsContextAfterSerialize(FinishedMessage message) {
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
             } else {
                 adjustApplicationTrafficSecrets();
@@ -130,7 +130,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 .getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherServer);
 
-        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {
@@ -147,7 +147,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 .getChooser().getSelectedCipherSuite());
         tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
-        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
             tlsContext.setReadSequenceNumber(0);
             tlsContext.getRecordLayer().updateDecryptionCipher();
         } else {

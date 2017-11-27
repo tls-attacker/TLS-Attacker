@@ -12,14 +12,20 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * RFC draft-ietf-tls-tls13-21
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] keyExchangeModesConfig;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -64,17 +70,10 @@ public class PSKKeyExchangeModesExtensionMessage extends ExtensionMessage {
         this.keyExchangeModesListBytes = ModifiableVariableFactory.safelySetValue(keyExchangeModesListBytes, bytes);
     }
 
-    /**
-     * @return the keyExchangeModesConfig
-     */
     public byte[] getKeyExchangeModesConfig() {
         return keyExchangeModesConfig;
     }
 
-    /**
-     * @param keyExchangeModesConfig
-     *            the keyExchangeModesConfig to set
-     */
     public void setKeyExchangeModesConfig(byte[] keyExchangeModesConfig) {
         this.keyExchangeModesConfig = keyExchangeModesConfig;
     }

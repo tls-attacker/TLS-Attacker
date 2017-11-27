@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -25,6 +26,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import static org.apache.commons.lang3.StringUtils.join;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -69,37 +75,51 @@ public class CertificateDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
+        Map<String, String> mandatoryParameters = new HashMap<>();
+        mandatoryParameters.put("keystore", keystore);
+        mandatoryParameters.put("password", password);
+        mandatoryParameters.put("alias", alias);
+        List<String> missingParameters = new ArrayList<>();
+        for (String p : mandatoryParameters.keySet()) {
+            if (mandatoryParameters.get(p) == null) {
+                missingParameters.add(p);
+            }
+        }
+        if (missingParameters.size() == 3) {
+            return;
+        } else if (!missingParameters.isEmpty()) {
+            throw new ParameterException("The following parameters are required for loading a" + " keystore: "
+                    + join(mandatoryParameters.keySet()));
+        }
         try {
-            if (keystore != null && password != null && alias != null) {
-                KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
-                Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
-                PrivateKey key = null;
-                try {
-                    key = (PrivateKey) store.getKey(alias, password.toCharArray());
-                } catch (UnrecoverableKeyException ex) {
-                    throw new ConfigurationException("Could not load private Key from Keystore", ex);
+            KeyStore store = KeystoreHandler.loadKeyStore(keystore, password);
+            Certificate cert = JKSLoader.loadTLSCertificate(store, alias);
+            PrivateKey key = null;
+            try {
+                key = (PrivateKey) store.getKey(alias, password.toCharArray());
+            } catch (UnrecoverableKeyException ex) {
+                throw new ConfigurationException("Could not load private Key from Keystore", ex);
+            }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            cert.encode(stream);
+            try {
+                if (CertificateUtils.hasDHParameters(cert)) {
+                    DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
+                    applyDHParameters(config, dhParameters);
+                    config.setDefaultDsaCertificate(stream.toByteArray()); // TODO
+                    LOGGER.warn("DH/DSA certificates not fully supported yet");
+                } else if (CertificateUtils.hasECParameters(cert)) {
+                    applyECParameters(config, CertificateUtils.extractECPublicKeyParameters(cert), CertificateUtils
+                            .ecPrivateKeyFromPrivateKey(key).getS());
+                    config.setDefaultEcCertificate(stream.toByteArray());
+                } else if (CertificateUtils.hasRSAParameters(cert)) {
+                    applyRSAParameters(config, CertificateUtils.extractRSAModulus(cert),
+                            CertificateUtils.extractRSAPublicKey(cert),
+                            CertificateUtils.rsaPrivateKeyFromPrivateKey(key).getPrivateExponent());
+                    config.setDefaultRsaCertificate(stream.toByteArray());
                 }
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                cert.encode(stream);
-                try {
-                    if (CertificateUtils.hasDHParameters(cert)) {
-                        DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
-                        applyDHParameters(config, dhParameters);
-                        config.setDefaultDsaCertificate(stream.toByteArray()); // TODO
-                        LOGGER.warn("DH/DSA certificates not fully supported yet");
-                    } else if (CertificateUtils.hasECParameters(cert)) {
-                        applyECParameters(config, CertificateUtils.extractECPublicKeyParameters(cert), CertificateUtils
-                                .ecPrivateKeyFromPrivateKey(key).getS());
-                        config.setDefaultEcCertificate(stream.toByteArray());
-                    } else if (CertificateUtils.hasRSAParameters(cert)) {
-                        applyRSAParameters(config, CertificateUtils.extractRSAModulus(cert),
-                                CertificateUtils.extractRSAPublicKey(cert), CertificateUtils
-                                        .rsaPrivateKeyFromPrivateKey(key).getPrivateExponent());
-                        config.setDefaultRsaCertificate(stream.toByteArray());
-                    }
-                } catch (IOException E) {
-                    throw new ConfigurationException("Could not load private Key from Keystore", E);
-                }
+            } catch (IOException E) {
+                throw new ConfigurationException("Could not load private Key from Keystore", E);
             }
         } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException ex) {
             throw new ConfigurationException("Could not load private Key from Keystore", ex);

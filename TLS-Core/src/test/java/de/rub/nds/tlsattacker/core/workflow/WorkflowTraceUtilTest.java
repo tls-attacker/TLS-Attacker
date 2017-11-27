@@ -18,15 +18,28 @@ import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.rules.ExpectedException;
 
 public class WorkflowTraceUtilTest {
+
+    private static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializerTest.class);
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
 
     private WorkflowTrace trace;
     private Config config;
@@ -55,7 +68,7 @@ public class WorkflowTraceUtilTest {
     @Before
     public void setUp() {
         config = config.createConfig();
-        trace = new WorkflowTrace(config);
+        trace = new WorkflowTrace();
 
         rcvHeartbeat = new ReceiveAction();
         rcvAlertMessage = new ReceiveAction();
@@ -154,4 +167,72 @@ public class WorkflowTraceUtilTest {
         assertTrue(WorkflowTraceUtil.didSendMessage(HandshakeMessageType.FINISHED, trace));
     }
 
+    private void pwf(String pre, WorkflowTrace trace) {
+        LOGGER.info(pre);
+        try {
+            LOGGER.info(WorkflowTraceSerializer.write(trace));
+        } catch (JAXBException | IOException ex) {
+            java.util.logging.Logger.getLogger(WorkflowTraceUtilTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Test
+    public void handleDefaultsOfGoodTraceWithDefaultAliasSucceeds() throws JAXBException, IOException {
+        InputStream stream = Config.class.getResourceAsStream("/test_good_workflow_trace_defaullt_alias.xml");
+
+        try {
+            trace = WorkflowTraceSerializer.read(stream);
+        } catch (JAXBException | IOException | XMLStreamException ex) {
+            System.out.println(ex);
+            fail();
+        }
+        assertNotNull(trace);
+        pwf("after load:", trace);
+
+        WorkflowTraceNormalizer n = new WorkflowTraceNormalizer();
+        n.normalize(trace, config);
+        // StringBuilder sb = new
+        // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+        // sb.append("<workflowTrace>\n");
+        // sb.append("    <Send>\n");
+        // sb.append("        <messages>\n");
+        // sb.append("            <ClientHello>\n");
+        // sb.append("                <extensions>\n");
+        // sb.append("                    <ECPointFormat/>\n");
+        // sb.append("                    <EllipticCurves/>\n");
+        // sb.append("                </extensions>\n");
+        // sb.append("            </ClientHello>\n");
+        // sb.append("        </messages>\n");
+        // sb.append("        <records/>\n");
+        // sb.append("    </Send>\n");
+        // sb.append("</workflowTrace>\n");
+        // String expected = sb.toString();
+        String actual = WorkflowTraceSerializer.write(trace);
+        LOGGER.info(actual);
+        // Assert.assertThat(actual, equalTo(expected));
+        //
+        // Filter filter =
+        // FilterFactory.createWorkflowTraceFilter(FilterType.DEFAULT, config);
+        // WorkflowTrace filteredTrace = filter.filteredCopy(trace, config);
+        // filteredTrace.setConnections(state.getOriginalWorkflowTrace().getConnections());
+        // StringBuilder sb = new
+        // StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+        // sb.append("<workflowTrace>\n");
+        // sb.append("    <Send>\n");
+        // sb.append("        <messages>\n");
+        // sb.append("            <ClientHello>\n");
+        // sb.append("                <extensions>\n");
+        // sb.append("                    <ECPointFormat/>\n");
+        // sb.append("                    <EllipticCurves/>\n");
+        // sb.append("                </extensions>\n");
+        // sb.append("            </ClientHello>\n");
+        // sb.append("        </messages>\n");
+        // sb.append("    </Send>\n");
+        // sb.append("</workflowTrace>\n");
+        // String expected = sb.toString();
+        actual = WorkflowTraceSerializer.write(trace);
+        LOGGER.info(actual);
+        // Assert.assertThat(actual, equalTo(expected));
+
+    }
 }

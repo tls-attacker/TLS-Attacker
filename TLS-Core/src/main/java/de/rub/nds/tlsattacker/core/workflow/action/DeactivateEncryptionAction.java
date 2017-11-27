@@ -13,14 +13,18 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class DeactivateEncryptionAction extends TLSAction {
+/**
+ *
+ * @author Robert Merget - robert.merget@rub.de
+ */
+public class DeactivateEncryptionAction extends ConnectionBoundAction {
 
     public DeactivateEncryptionAction() {
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

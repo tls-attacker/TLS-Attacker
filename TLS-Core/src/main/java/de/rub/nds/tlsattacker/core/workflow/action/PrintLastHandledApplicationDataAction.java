@@ -11,38 +11,50 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Objects;
 
 /**
  * A simple action to print the last handled application data to console. Per
  * default, this prints the raw byte values of the application data as a hex
  * string. An charset for simple encoding can be given to get readable output
- * (if possible). TODO: Don't know if it's useful to have the data in worfklow
- * trace output. TODO: If bored, build a similar action that can decode chunked
- * + gziped HTTP data :-)
  */
-public class PrintLastHandledApplicationDataAction extends TLSAction {
+public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction {
 
     private String lastHandledApplicationData = null;
 
     /**
      * If set, the lastHandledApplicationData will be encoded as String using
-     * the given charset (that is StandardCharsets.UTF_8,
-     * StandardCharsets.ISO_8859_1,...) before printing. If unset, plot raw
-     * bytes as hex string.
+     * the given charset (that is UTF-8, ISO-8859-1,...) before printing. If
+     * unset, plot raw bytes as hex string.
+     * 
+     * Note: we are using String instead of Charset for serialization
+     * purposes...
+     * 
+     * @see https 
+     *      ://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html
+     *      for a list of supported charset names
      */
-    private Charset stringEncoding = null;
+    private String stringEncoding = null;
+
+    public PrintLastHandledApplicationDataAction() {
+    }
+
+    public PrintLastHandledApplicationDataAction(String connectionAlias) {
+        super(connectionAlias);
+    }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        byte[] rawBytes = state.getTlsContext(contextAlias).getChooser().getLastHandledApplicationMessageData();
+        byte[] rawBytes = state.getTlsContext(getConnectionAlias()).getChooser().getLastHandledApplicationMessageData();
         if (stringEncoding != null) {
-            lastHandledApplicationData = new String(rawBytes, stringEncoding);
+            lastHandledApplicationData = new String(rawBytes, Charset.forName(stringEncoding));
         } else {
             lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
         }
-        System.out.println(lastHandledApplicationData);
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Last handled application data: " + lastHandledApplicationData);
     }
 
     public String getLastHandledApplicationData() {
@@ -53,11 +65,18 @@ public class PrintLastHandledApplicationDataAction extends TLSAction {
         this.lastHandledApplicationData = lastHandledApplicationData;
     }
 
-    public Charset getStringEncoding() {
+    public String getStringEncoding() {
         return stringEncoding;
     }
 
-    public void setStringEncoding(Charset stringEncoding) {
+    /**
+     * Set encoding. Supplied String must match an element from Charset.
+     * Example: US-ASCII
+     * 
+     * @param stringEncoding
+     * @see Available charsets can be found in StandardCharsets
+     */
+    public void setStringEncoding(String stringEncoding) {
         this.stringEncoding = stringEncoding;
     }
 
@@ -71,4 +90,32 @@ public class PrintLastHandledApplicationDataAction extends TLSAction {
         lastHandledApplicationData = null;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.lastHandledApplicationData);
+        hash = 53 * hash + Objects.hashCode(this.stringEncoding);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final PrintLastHandledApplicationDataAction other = (PrintLastHandledApplicationDataAction) obj;
+        if (!Objects.equals(this.lastHandledApplicationData, other.lastHandledApplicationData)) {
+            return false;
+        }
+        if (!Objects.equals(this.stringEncoding, other.stringEncoding)) {
+            return false;
+        }
+        return true;
+    }
 }

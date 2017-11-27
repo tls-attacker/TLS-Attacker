@@ -9,7 +9,10 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
+import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -24,18 +27,29 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -45,12 +59,12 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
@@ -86,6 +100,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
             @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
             @XmlElement(type = AlertMessage.class, name = "Alert"),
+            @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -96,6 +111,19 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
+            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
+            @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
+            @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
+            @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
+            @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
+            @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
+            @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
+            @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
+            @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
+            @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
+            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> receivedMessages;
 
@@ -143,37 +171,63 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     protected List<AbstractRecord> sendRecords;
 
     public ForwardAction() {
-        super();
+        this.connectionAlias = null;
+        receiveMessageHelper = new ReceiveMessageHelper();
     }
 
-    public ForwardAction(List<ProtocolMessage> messages) {
+    public ForwardAction(String receiveFromAlias, String forwardToAlias) {
+        this(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
+    }
+
+    /**
+     * Allow to pass a fake ReceiveMessageHelper helper for testing.
+     */
+    protected ForwardAction(String receiveFromAlias, String forwardToAlias, ReceiveMessageHelper receiveMessageHelper) {
+        this.connectionAlias = null;
+        this.receiveFromAlias = receiveFromAlias;
+        this.forwardToAlias = forwardToAlias;
+        this.receiveMessageHelper = receiveMessageHelper;
+    }
+
+    public ForwardAction(String receiveFromAlias, String forwardToAlias, List<ProtocolMessage> messages) {
         super(messages);
+        this.connectionAlias = null;
+        this.receiveFromAlias = receiveFromAlias;
+        this.forwardToAlias = forwardToAlias;
+        receiveMessageHelper = new ReceiveMessageHelper();
     }
 
-    public ForwardAction(ProtocolMessage... messages) {
-        this(new ArrayList(Arrays.asList(messages)));
+    public ForwardAction(String receiveFromAlias, String forwardToAlias, ProtocolMessage... messages) {
+        this(receiveFromAlias, forwardToAlias, Arrays.asList(messages));
+    }
+
+    public void setReceiveFromAlias(String receiveFromAlias) {
+        this.receiveFromAlias = receiveFromAlias;
+    }
+
+    public void setForwardToAlias(String forwardToAlias) {
+        this.forwardToAlias = forwardToAlias;
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        if (receiveFromAlias == null) {
-            throw new WorkflowExecutionException("Can't execute ForwardAction with empty receiveFromAlias");
-        }
-        if (forwardToAlias == null) {
-            throw new WorkflowExecutionException("Can't execute ForwardAction with empty forwardToAlias");
-        }
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        TlsContext receivingCtx = state.getTlsContext(receiveFromAlias);
+        assertAliasesSetProperly();
 
-        if (isExecuted()) {
-            throw new WorkflowExecutionException("Action already executed!");
-        }
+        TlsContext receiveFromCtx = state.getTlsContext(receiveFromAlias);
+        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
 
+        receiveMessages(receiveFromCtx);
+        applyMessages(forwardToCtx);
+        forwardMessages(forwardToCtx);
+    }
+
+    void receiveMessages(TlsContext receiveFromCtx) {
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = receiveMessageHelper.receiveMessages(messages, receivingCtx);
+        MessageActionResult result = receiveMessageHelper.receiveMessages(messages, receiveFromCtx);
         receivedRecords = result.getRecordList();
         receivedMessages = result.getMessageList();
 
@@ -183,18 +237,27 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         LOGGER.info("Received Messages (" + receiveFromAlias + "): " + received);
 
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
+    }
 
+    /**
+     * Apply the contents of the messages to the given TLS context.
+     * 
+     * @param protocolMessages
+     * @param tlsContext
+     */
+    private void applyMessages(TlsContext ctx) {
         for (ProtocolMessage msg : receivedMessages) {
-            LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + forwardToAlias);
-            ProtocolMessageHandler h = msg.getHandler(state.getTlsContext(forwardToAlias));
+            LOGGER.debug("Applying " + msg.toCompactString() + "to forward context " + ctx);
+            ProtocolMessageHandler h = msg.getHandler(ctx);
             h.adjustTLSContext(msg);
         }
+    }
 
-        TlsContext forwardToCtx = state.getTlsContext(forwardToAlias);
+    private void forwardMessages(TlsContext forwardToCtx) {
         LOGGER.info("Forwarding messages (" + forwardToAlias + "): " + getReadableString(messages));
-
         try {
-            result = sendMessageHelper.sendMessages(receivedMessages, receivedRecords, forwardToCtx);
+            MessageActionResult result = sendMessageHelper
+                    .sendMessages(receivedMessages, receivedRecords, forwardToCtx);
             sendMessages = result.getMessageList();
             sendRecords = result.getRecordList();
             if (executedAsPlanned) {
@@ -212,16 +275,8 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         return receiveFromAlias;
     }
 
-    public void setReceiveFromAlias(String receiveFromAlias) {
-        this.receiveFromAlias = receiveFromAlias;
-    }
-
     public String getForwardToAlias() {
         return forwardToAlias;
-    }
-
-    public void setForwardToAlias(String forwardToAlias) {
-        this.forwardToAlias = forwardToAlias;
     }
 
     // TODO: yes, the correct way would be implement equals() for all
@@ -277,14 +332,13 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 17 * hash + Objects.hashCode(this.receiveFromAlias);
-        hash = 17 * hash + Objects.hashCode(this.forwardToAlias);
-        hash = 17 * hash + Objects.hashCode(this.executedAsPlanned);
-        hash = 17 * hash + Objects.hashCode(this.receivedMessages);
-        hash = 17 * hash + Objects.hashCode(this.receivedRecords);
-        hash = 17 * hash + Objects.hashCode(this.sendMessages);
-        hash = 17 * hash + Objects.hashCode(this.sendRecords);
-        hash = 17 * hash + Objects.hashCode(this.messages);
+        hash = 89 * hash + Objects.hashCode(this.receiveFromAlias);
+        hash = 89 * hash + Objects.hashCode(this.forwardToAlias);
+        hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
+        hash = 89 * hash + Objects.hashCode(this.receivedMessages);
+        hash = 89 * hash + Objects.hashCode(this.receivedRecords);
+        hash = 89 * hash + Objects.hashCode(this.sendMessages);
+        hash = 89 * hash + Objects.hashCode(this.sendRecords);
         return hash;
     }
 
@@ -321,7 +375,25 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
         if (!Objects.equals(this.sendRecords, other.sendRecords)) {
             return false;
         }
-        return Objects.equals(this.messages, other.messages);
+        return true;
+    }
+
+    @Override
+    public Set<String> getAllAliases() {
+        Set<String> aliases = new LinkedHashSet<>();
+        aliases.add(forwardToAlias);
+        aliases.add(receiveFromAlias);
+        return aliases;
+    }
+
+    @Override
+    public void assertAliasesSetProperly() throws ConfigurationException {
+        if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
+            throw new WorkflowExecutionException("Can't execute ForwardAction with empty receiveFromAlias");
+        }
+        if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
+            throw new WorkflowExecutionException("Can't execute ForwardAction with empty forwardToAlias");
+        }
     }
 
 }

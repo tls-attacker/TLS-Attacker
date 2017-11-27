@@ -11,12 +11,14 @@ package de.rub.nds.tlsattacker.core.record.layer;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -29,12 +31,12 @@ public class RecordLayerTest {
 
     @Before
     public void setUp() {
-        State state = new State();
-        Config config = state.getConfig();
+
+        Config config = Config.createConfig();
         config.setRecordLayerType(RecordLayerType.RECORD);
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createHandshakeWorkflow();
-        state.setWorkflowTrace(trace);
+        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
+        State state = new State(config, trace);
         TlsContext context = state.getTlsContext();
         context.setRecordLayer(new TlsRecordLayer(context));
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);

@@ -159,7 +159,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
 
     @Override
     public void adjustTlsContextAfterSerialize(ClientHelloMessage message) {
-        if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT
+        if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
                 && tlsContext.isExtensionProposed(ExtensionType.EARLY_DATA)) {
             adjustEarlyTrafficSecret();
             setClientRecordCipherEarly();
@@ -192,7 +192,7 @@ public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessa
                     .getChooser().getEarlyDataCipherSuite());
             tlsContext.getRecordLayer().setRecordCipher(recordCipherClient);
 
-            if (tlsContext.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.SERVER) {
                 tlsContext.setReadSequenceNumber(0);
                 tlsContext.getRecordLayer().updateDecryptionCipher();
             } else {

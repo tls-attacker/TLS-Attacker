@@ -22,7 +22,7 @@ import javax.crypto.interfaces.DHPrivateKey;
 public class KeyGenerator {
 
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             return new CustomRSAPrivateKey(chooser.getRsaModulus(), chooser.getConfig().getDefaultClientRSAPrivateKey());
         } else {
             return new CustomRSAPrivateKey(chooser.getRsaModulus(), chooser.getConfig().getDefaultServerRSAPrivateKey());
@@ -30,7 +30,7 @@ public class KeyGenerator {
     }
 
     public static ECPrivateKey getECPrivateKey(Chooser chooser) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getSelectedCurve());
         } else {
             return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getSelectedCurve());
@@ -42,7 +42,7 @@ public class KeyGenerator {
     }
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getDhModulus(),
                     chooser.getDhGenerator());
         } else {

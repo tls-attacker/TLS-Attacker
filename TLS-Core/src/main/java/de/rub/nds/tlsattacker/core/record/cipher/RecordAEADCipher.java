@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
@@ -18,6 +15,9 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -56,9 +56,9 @@ public class RecordAEADCipher extends RecordCipher {
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
-        encryptKey = new SecretKeySpec(keySet.getWriteKey(this.context.getConnectionEnd().getConnectionEndType()),
+        encryptKey = new SecretKeySpec(keySet.getWriteKey(this.context.getConnection().getLocalConnectionEndType()),
                 bulkCipherAlg.getJavaName());
-        decryptKey = new SecretKeySpec(keySet.getReadKey(this.context.getConnectionEnd().getConnectionEndType()),
+        decryptKey = new SecretKeySpec(keySet.getReadKey(this.context.getConnection().getLocalConnectionEndType()),
                 bulkCipherAlg.getJavaName());
         try {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
@@ -117,7 +117,7 @@ public class RecordAEADCipher extends RecordCipher {
             byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                     RecordByteLength.SEQUENCE_NUMBER);
             byte[] iv = ArrayConverter.concatenate(
-                    getKeySet().getWriteIv(context.getConnectionEnd().getConnectionEndType()), nonce);
+                    getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()), nonce);
             encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
             LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV.getIV()));
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIV);
@@ -155,7 +155,7 @@ public class RecordAEADCipher extends RecordCipher {
             byte[] nonce = Arrays.copyOf(data, SEQUENCE_NUMBER_LENGTH);
             data = Arrays.copyOfRange(data, SEQUENCE_NUMBER_LENGTH, data.length);
             byte[] iv = ArrayConverter.concatenate(
-                    getKeySet().getReadIv(context.getConnectionEnd().getConnectionEndType()), nonce);
+                    getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
             decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
             LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV.getIV()));
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
@@ -198,14 +198,14 @@ public class RecordAEADCipher extends RecordCipher {
     @Override
     public byte[] getEncryptionIV() {
         byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
-        return ArrayConverter.concatenate(getKeySet().getWriteIv(context.getConnectionEnd().getConnectionEndType()),
+        return ArrayConverter.concatenate(getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()),
                 nonce);
     }
 
     @Override
     public byte[] getDecryptionIV() {
         byte[] nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
-        return ArrayConverter.concatenate(getKeySet().getReadIv(context.getConnectionEnd().getConnectionEndType()),
+        return ArrayConverter.concatenate(getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()),
                 nonce);
     }
 }

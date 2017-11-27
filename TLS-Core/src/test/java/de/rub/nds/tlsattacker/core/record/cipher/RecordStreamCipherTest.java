@@ -8,23 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import java.security.Security;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
-import org.junit.Test;
-
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.GeneralConnectionEnd;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.Before;
+import org.junit.Test;
 
 public class RecordStreamCipherTest {
 
@@ -48,6 +46,7 @@ public class RecordStreamCipherTest {
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
+        AliasedConnection[] connections = new AliasedConnection[] { new InboundConnection(), new OutboundConnection() };
         for (CipherSuite suite : CipherSuite.values()) {
             if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV() && !suite.name().contains("WITH_NULL")
                     && !suite.name().contains("CHACHA20_POLY1305")
@@ -55,9 +54,8 @@ public class RecordStreamCipherTest {
                     && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
                     && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
-                context.setConnectionEnd(new GeneralConnectionEnd());
-                for (ConnectionEndType end : ConnectionEndType.values()) {
-                    ((GeneralConnectionEnd) context.getConnectionEnd()).setConnectionEndType(end);
+                for (AliasedConnection con : connections) {
+                    context.setConnection(con);
                     for (ProtocolVersion version : ProtocolVersion.values()) {
                         if (version == ProtocolVersion.SSL2 || version.isTLS13()) {
                             continue;

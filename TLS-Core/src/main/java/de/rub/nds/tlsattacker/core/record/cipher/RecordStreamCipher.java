@@ -8,15 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
@@ -50,16 +51,15 @@ public class RecordStreamCipher extends RecordCipher {
                     cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
-            SecretKey encryptKey = new SecretKeySpec(getKeySet().getWriteKey(
-                    context.getConnectionEnd().getConnectionEndType()), bulkCipherAlg.getJavaName());
-            SecretKey decryptKey = new SecretKeySpec(getKeySet().getReadKey(
-                    context.getConnectionEnd().getConnectionEndType()), bulkCipherAlg.getJavaName());
+            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+            SecretKey encryptKey = new SecretKeySpec(getKeySet().getWriteKey(localConEndType),
+                    bulkCipherAlg.getJavaName());
+            SecretKey decryptKey = new SecretKeySpec(getKeySet().getReadKey(localConEndType),
+                    bulkCipherAlg.getJavaName());
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
-            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(
-                    context.getConnectionEnd().getConnectionEndType()), readMac.getAlgorithm()));
-            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(
-                    context.getConnectionEnd().getConnectionEndType()), writeMac.getAlgorithm()));
+            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
+            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException ex) {
             throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
         }

@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.io.ByteArrayInputStream;
@@ -99,6 +98,7 @@ public class TlsAttackerSocket {
      */
     public byte[] receiveBytes() throws IOException {
         ReceiveAction action = new ReceiveAction(new ApplicationMessage());
+        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
         action.execute(state);
         List<ProtocolMessage> recievedMessages = action.getReceivedMessages();
 
@@ -129,6 +129,7 @@ public class TlsAttackerSocket {
 
     public void send(ProtocolMessage message) {
         SendAction action = new SendAction(message);
+        action.setConnectionAlias(state.getTlsContext().getConnection().getAlias());
         action.execute(state);
     }
 

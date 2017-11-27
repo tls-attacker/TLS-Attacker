@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
@@ -35,6 +36,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -113,8 +115,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     private WorkflowTrace executeProtocolFlow() {
         Config tlsConfig = config.createConfig();
-
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHelloWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(
                 tlsConfig), new FinishedMessage(tlsConfig)));
         trace.addTlsAction(new ReceiveAction(new ChangeCipherSpecMessage(), new FinishedMessage()));

@@ -111,7 +111,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
                         extensionMessage.getExtensionTypeConstant(), msg.getHandshakeMessageType());
                 Preparator preparator = handler.getPreparator(extensionMessage);
                 if (handler instanceof PreSharedKeyExtensionHandler && msg instanceof ClientHelloMessage
-                        && chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+                        && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
                     ((PreSharedKeyExtensionPreparator) preparator).setClientHello((ClientHelloMessage) msg);
                     preparator.afterPrepare();
                 }

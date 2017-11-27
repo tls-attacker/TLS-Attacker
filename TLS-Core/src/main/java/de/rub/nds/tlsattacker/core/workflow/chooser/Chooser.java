@@ -28,7 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -203,7 +203,9 @@ public abstract class Chooser {
 
     public abstract BigInteger getServerRSAPrivateKey();
 
-    public abstract ConnectionEnd getConnectionEnd();
+    public abstract Connection getConnection();
+
+    public abstract ConnectionEndType getConnectionEndType();
 
     public abstract ConnectionEndType getMyConnectionPeer();
 
@@ -212,6 +214,10 @@ public abstract class Chooser {
     public abstract boolean isClientAuthentication();
 
     public abstract byte[] getLastHandledApplicationMessageData();
+
+    public abstract String getHttpsCookieName();
+
+    public abstract String getHttpsCookieValue();
 
     public abstract byte[] getPsk();
 

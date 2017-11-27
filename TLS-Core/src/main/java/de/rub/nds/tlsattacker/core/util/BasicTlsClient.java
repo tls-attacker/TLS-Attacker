@@ -43,6 +43,8 @@ public class BasicTlsClient extends Thread {
     private final int serverPort;
     private final String serverPrettyName;
     private boolean retryConnect;
+    // If retryConnect, sleep retryTimeout milliseconds before retrying
+    private int retryTimeout = 100;
 
     private volatile boolean finished = false;
 
@@ -77,7 +79,7 @@ public class BasicTlsClient extends Thread {
                         socket = getFreshSocket(tlsVersion);
                     } catch (ConnectException x) {
                         LOGGER.info("retry: connect to " + serverPrettyName);
-                        TimeUnit.MILLISECONDS.sleep(10);
+                        TimeUnit.MILLISECONDS.sleep(retryTimeout);
                         continue;
                     }
                     break;

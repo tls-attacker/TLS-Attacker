@@ -145,7 +145,7 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello>
                 <extensions>
@@ -155,8 +155,8 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
                 </extensions>
             </ClientHello>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <expectedMessages>
             <ServerHello>
                 <extensions>
@@ -166,8 +166,8 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <messages>
             <RSAClientKeyExchange>
                 <computations/>
@@ -175,13 +175,13 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
+    </Receive>
 </workflowTrace>
 ```
 Given this XML structure is located in workflow.xml, you would just need to execute:
@@ -204,7 +204,7 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
-    <SendAction>
+    <Send>
         <messages>
             <ClientHello>
                 <extensions>
@@ -214,8 +214,8 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
                 </extensions>
             </ClientHello>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <expectedMessages>
             <ServerHello>
                 <extensions>
@@ -225,8 +225,8 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
             <Certificate/>
             <ServerHelloDone/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <messages>
             <RSAClientKeyExchange>
                 <computations/>
@@ -234,14 +234,14 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
             <ChangeCipherSpec/>
             <Finished/>
         </messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
         <expectedMessages>
             <ChangeCipherSpec/>
             <Finished/>
         </expectedMessages>
-    </ReceiveAction>
-    <SendAction>
+    </Receive>
+    <Send>
         <messages>
             <Heartbeat>
                 <payloadLength>
@@ -251,10 +251,10 @@ We can of course use this concept by constructing our TLS workflows. Imagine you
                 </payloadLength>
             </Heartbeat>
 	</messages>
-    </SendAction>
-    <ReceiveAction>
+    </Send>
+    <Receive>
 		<Heartbeat/>
-    </ReceiveAction>
+    </Receive>
 </workflowTrace>
 ```
 As you can see, we explicitly increased the payload length of the Heartbeat message by 20000.

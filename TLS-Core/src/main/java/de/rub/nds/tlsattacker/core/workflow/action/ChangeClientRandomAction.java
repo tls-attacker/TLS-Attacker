@@ -16,7 +16,11 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public class ChangeClientRandomAction extends TLSAction {
+/**
+ *
+ * @author Robert Merget - robert.merget@rub.de
+ */
+public class ChangeClientRandomAction extends ConnectionBoundAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
@@ -45,7 +49,7 @@ public class ChangeClientRandomAction extends TLSAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

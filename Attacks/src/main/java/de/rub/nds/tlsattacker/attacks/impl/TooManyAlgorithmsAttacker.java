@@ -44,7 +44,7 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
                     .getRandom(random)));
         }
         tlsConfig.setSupportedSignatureAndHashAlgorithms(algorithmList);
-        WorkflowTrace trace = new WorkflowTrace(tlsConfig);
+        WorkflowTrace trace = new WorkflowTrace();
         trace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
         WorkflowExecutor executor = new DefaultWorkflowExecutor(new State(tlsConfig, trace));
         executor.executeWorkflow();

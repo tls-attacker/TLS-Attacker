@@ -12,11 +12,15 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class RenegotiationAction extends TLSAction {
+/**
+ *
+ * @author Robert Merget - robert.merget@rub.de
+ */
+public class RenegotiationAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
