@@ -26,8 +26,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RecordDecryptor extends Decryptor {
 
@@ -141,9 +139,9 @@ public class RecordDecryptor extends Decryptor {
     private void adjustPaddingTLS13(Record record) {
         byte[] unpadded = parseUnpaddedTLS13(record.getPlainRecordBytes().getValue());
         byte contentMessageType = parseContentMessageType(unpadded);
-        LOGGER.info("Parsed ContentMessageType:" + contentMessageType);
+        LOGGER.debug("Parsed ContentMessageType:" + contentMessageType);
         record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
-        LOGGER.info("ContentMessageType:" + record.getContentMessageType());
+        LOGGER.debug("ContentMessageType:" + record.getContentMessageType());
         byte[] unpaddedAndWithoutType = Arrays.copyOf(unpadded, unpadded.length - 1);
         record.setUnpaddedRecordBytes(unpaddedAndWithoutType);
         LOGGER.debug("UnpaddedRecordBytes: "
