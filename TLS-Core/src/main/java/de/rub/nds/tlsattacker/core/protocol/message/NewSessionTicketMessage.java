@@ -23,10 +23,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import java.util.List;
 
-/**
- * 
- * @author Timon Wern <timon.wern@rub.de>
- */
 @XmlRootElement
 public class NewSessionTicketMessage extends HandshakeMessage {
 

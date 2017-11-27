@@ -29,10 +29,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class StaticTicketCrypto {
 
     private static final Logger LOGGER = LogManager.getLogger(StaticTicketCrypto.class);

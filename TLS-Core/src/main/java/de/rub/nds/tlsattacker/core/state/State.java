@@ -43,13 +43,13 @@ import org.apache.logging.log4j.Logger;
  * TLS contexts for workflow execution. These contexts should be considered as
  * dynamic objects, representing TLS connections, calculations and other data
  * exchanged during the TLS actual workflow execution.
- * <p>
+ * </p>
  *
  * <p>
  * Therefore, there is no public interface for setting TLS contexts manually.
  * They are always automatically created based on the connections defined in the
  * workflow trace.
- * <p>
+ * </p>
  * 
  * <p>
  * Please also have a look at the tests supplied with this class for some
@@ -153,6 +153,7 @@ public class State {
      * existingTlsContext.connection equals newTlsContext.connection.
      * 
      * @param newTlsContext
+     *            The new TlsContext to replace the old with
      */
     public void replaceTlsContext(TlsContext newTlsContext) {
         contextContainer.replaceTlsContext(newTlsContext);
@@ -169,9 +170,7 @@ public class State {
      * TODO: Ideally, this would return a deep copy to prevent State
      * invalidation.
      * 
-     * @return the only context known to the state <<<<<<< HEAD
-     * @see this.getTlsContext(String) =======
-     * @see #getTlsContext(java.lang.String) >>>>>>> origin/master
+     * @return the only context known to the state
      */
     public TlsContext getTlsContext() {
         return contextContainer.getTlsContext();
@@ -181,19 +180,17 @@ public class State {
      * Get TLS context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
      * 
-     * <<<<<<< HEAD Note: Be careful when changing the context. I.e. if you
-     * change it's connection, the state can get out of sync.
+     * Note: Be careful when changing the context. I.e. if you change it's
+     * connection, the state can get out of sync.
      * 
      * TODO: Ideally, this would return a deep copy to prevent State
      * invalidation.
      * 
-     * =======
      * 
      * @param alias
-     *            The Alias for which the TLSContext should be returned >>>>>>>
-     *            origin/master
+     *            The Alias for which the TLSContext should be returned
+     * 
      * @return the context with the given connection end alias
-     * @see #getTlsContext()
      */
     public TlsContext getTlsContext(String alias) {
         return contextContainer.getTlsContext(alias);

@@ -66,6 +66,13 @@ public class ForwardRecordsAction extends TlsAction implements ReceivingAction, 
 
     /**
      * Allow to pass a fake ReceiveMessageHelper helper for testing.
+     * 
+     * @param receiveFromAlias
+     *            The Alias of the Connection from which to receive
+     * @param forwardToAlias
+     *            The Alias of the Conntection to which to send
+     * @param receiveMessageHelper
+     *            The messageHelper to use
      */
     protected ForwardRecordsAction(String receiveFromAlias, String forwardToAlias,
             ReceiveMessageHelper receiveMessageHelper) {

@@ -62,10 +62,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public abstract class MessageAction extends ConnectionBoundAction {
 
     @XmlElementWrapper

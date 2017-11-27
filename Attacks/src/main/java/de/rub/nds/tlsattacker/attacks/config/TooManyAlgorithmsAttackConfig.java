@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TooManyAlgorithmsAttackConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "too_many_algorithms";

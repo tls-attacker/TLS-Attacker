@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskServerKeyExchangePreparator extends ServerKeyExchangePreparator<PskServerKeyExchangeMessage> {
 
     private final PskServerKeyExchangeMessage msg;

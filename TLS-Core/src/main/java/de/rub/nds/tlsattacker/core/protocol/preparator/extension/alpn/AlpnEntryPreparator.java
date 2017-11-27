@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.Alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AlpnEntryPreparator extends Preparator<AlpnEntry> {
 
     private final AlpnEntry entry;

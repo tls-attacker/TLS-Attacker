@@ -22,7 +22,6 @@ public class ClientTcpNoDelayTransportHandlerTest {
 
     @Before
     public void setUp() {
-        handler = new ClientTcpNoDelayTransportHandler(0, "localhost", 50001);
     }
 
     @Test
@@ -30,8 +29,9 @@ public class ClientTcpNoDelayTransportHandlerTest {
         ServerSocketChannel serverSocketChannel = null;
         try {
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.socket().bind(new InetSocketAddress(50001));
+            serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
+            handler = new ClientTcpNoDelayTransportHandler(0, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);

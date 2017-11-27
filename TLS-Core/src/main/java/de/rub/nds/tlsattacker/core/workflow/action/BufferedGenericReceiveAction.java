@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class BufferedGenericReceiveAction extends GenericReceiveAction {
 
     public BufferedGenericReceiveAction() {

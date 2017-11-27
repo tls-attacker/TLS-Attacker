@@ -31,7 +31,7 @@ public class AcceptorCallableTest {
 
     @Before
     public void setUp() throws IOException {
-        socket = new ServerSocket(50004);
+        socket = new ServerSocket(0);
         callable = new AcceptorCallable(socket);
         task = new FutureTask<>(callable);
         t = new Thread(task);
@@ -52,7 +52,7 @@ public class AcceptorCallableTest {
     public void testRun() throws IOException, InterruptedException, ExecutionException {
         t.start();
         Socket clientSocket = new Socket();
-        clientSocket.connect(new InetSocketAddress("localhost", 50004));
+        clientSocket.connect(new InetSocketAddress("localhost", socket.getLocalPort()));
         try {
             Thread.currentThread().sleep(10);
         } catch (InterruptedException ex) {

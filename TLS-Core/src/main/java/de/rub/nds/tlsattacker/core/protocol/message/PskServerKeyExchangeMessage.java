@@ -24,9 +24,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Florian Linsner - florian.linsner@rub.de
- */
 @XmlRootElement
 public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 

@@ -14,10 +14,6 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import java.math.BigInteger;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class SRPServerComputations extends KeyExchangeComputations {
 
     /**

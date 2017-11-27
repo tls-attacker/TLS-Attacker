@@ -136,6 +136,7 @@ public final class RecordBlockCipher extends RecordCipher {
      *            correctly padded data
      * @return The raw decrypted Bytes
      * @throws CryptoException
+     *             If something goes wrong during decryption
      */
     @Override
     public byte[] decrypt(byte[] data) throws CryptoException {

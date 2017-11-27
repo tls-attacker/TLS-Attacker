@@ -72,8 +72,6 @@ public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
 
-    private static final int PORT = 44330;
-
     private static final int TIMEOUT = 2000;
 
     private BadRandom random = new BadRandom(new Random(0), null);
@@ -94,12 +92,12 @@ public class TlsClientTest {
             TimeHelper.setProvider(new FixedTimeProvider(0));
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
             KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
-            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
+            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 0);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
             LOGGER.log(Level.INFO, "Testing RSA");
-            testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
+            testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
@@ -115,12 +113,12 @@ public class TlsClientTest {
         try {
             KeyPair k = KeyStoreGenerator.createECKeyPair(256, random);
             KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
-            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT + 1);
+            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 0);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
             LOGGER.log(Level.INFO, "Testing EC");
-            testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
+            testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
                 | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
@@ -213,7 +211,7 @@ public class TlsClientTest {
         TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
         timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
-        clientDelegate.setHost("localhost:" + PORT);
+        clientDelegate.setHost("localhost:" + port);
         Config config = clientCommandConfig.createConfig();
 
         AliasedConnection con = config.getDefaultClientConnection();

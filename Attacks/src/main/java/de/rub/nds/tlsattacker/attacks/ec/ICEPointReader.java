@@ -28,7 +28,8 @@ public class ICEPointReader {
      * this named curve
      * 
      * @param namedCurve
-     * @return
+     *            The NamedCurve as a String
+     * @return the deserialized Points
      */
     public static List<ICEPoint> readPoints(String namedCurve) {
         String namedCurveLow = namedCurve.toLowerCase();

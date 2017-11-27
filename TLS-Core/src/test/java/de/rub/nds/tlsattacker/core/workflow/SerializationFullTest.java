@@ -77,10 +77,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SerializationFullTest {
 
     protected static final Logger LOGGER = LogManager.getLogger(SerializationFullTest.class.getName());

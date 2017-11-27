@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskEcDheServerKeyExchangePreparator extends
         ECDHEServerKeyExchangePreparator<PskEcDheServerKeyExchangeMessage> {
 

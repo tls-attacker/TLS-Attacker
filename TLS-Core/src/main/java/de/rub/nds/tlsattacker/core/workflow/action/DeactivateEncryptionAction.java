@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DeactivateEncryptionAction extends ConnectionBoundAction {
 
     public DeactivateEncryptionAction() {

@@ -15,14 +15,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.crypto.tls.TlsECCUtils;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskEcDhClientKeyExchangePreparator extends
         ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
 

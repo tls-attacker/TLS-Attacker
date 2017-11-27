@@ -29,10 +29,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.Mac;
 
-/**
- * 
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
 
     public NewSessionTicketHandler(TlsContext context) {

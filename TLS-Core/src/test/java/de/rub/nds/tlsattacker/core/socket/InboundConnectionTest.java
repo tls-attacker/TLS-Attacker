@@ -29,10 +29,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class InboundConnectionTest {
 
     private static final Logger LOGGER = LogManager.getLogger(InboundConnectionTest.class);

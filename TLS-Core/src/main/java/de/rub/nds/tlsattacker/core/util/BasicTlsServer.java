@@ -141,4 +141,12 @@ public class BasicTlsServer extends Thread {
     public boolean isInitialized() {
         return initialized;
     }
+
+    public int getPort() {
+        if (serverSocket != null) {
+            return serverSocket.getLocalPort();
+        } else {
+            return port;
+        }
+    }
 }

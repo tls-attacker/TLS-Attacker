@@ -27,10 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class NewSessionTicketMessagePreparatorTest {
 
     private TlsContext context;

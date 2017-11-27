@@ -34,8 +34,10 @@ public abstract class ECOracle {
      * secret was guessed correctly.
      * 
      * @param ecPoint
+     *            The Point
      * @param guessedSecret
-     * @return
+     *            The guessed Secret
+     * @return True if the secret is guessed correctly
      */
     public abstract boolean checkSecretCorrectnes(Point ecPoint, BigInteger guessedSecret);
 
@@ -45,7 +47,8 @@ public abstract class ECOracle {
      * correct.
      * 
      * @param guessedSecret
-     * @return
+     *            The guessed Secret
+     * @return True if the Solution is correct
      */
     public abstract boolean isFinalSolutionCorrect(BigInteger guessedSecret);
 

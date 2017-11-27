@@ -19,10 +19,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 @XmlRootElement
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
 

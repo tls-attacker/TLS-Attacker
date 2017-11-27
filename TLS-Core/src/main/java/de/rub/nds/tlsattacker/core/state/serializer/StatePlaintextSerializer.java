@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
 
-/**
- *
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class StatePlaintextSerializer extends Serializer<StatePlaintext> {
 
     private final StatePlaintext statePlaintext;

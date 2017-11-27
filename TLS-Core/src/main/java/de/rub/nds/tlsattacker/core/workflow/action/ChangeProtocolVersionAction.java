@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import java.util.Objects;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ChangeProtocolVersionAction extends ConnectionBoundAction {
 
     private ProtocolVersion newValue;

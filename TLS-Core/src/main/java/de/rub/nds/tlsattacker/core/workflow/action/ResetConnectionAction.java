@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ResetConnectionAction extends ConnectionBoundAction {
 
     public ResetConnectionAction() {

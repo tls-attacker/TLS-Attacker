@@ -46,10 +46,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.security.NoSuchAlgorithmException;
 
-/**
- *
- * @author florian
- */
 public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackClientCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(PskBruteForcerAttackClient.class);
     private ServerTcpTransportHandler transportHandler;

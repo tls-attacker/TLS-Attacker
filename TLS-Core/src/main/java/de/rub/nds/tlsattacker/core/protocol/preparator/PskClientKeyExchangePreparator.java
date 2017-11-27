@@ -16,10 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<PskClientKeyExchangeMessage> {
 
     private byte[] premasterSecret;

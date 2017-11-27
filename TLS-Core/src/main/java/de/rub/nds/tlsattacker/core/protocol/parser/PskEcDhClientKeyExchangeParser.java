@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskEcDhClientKeyExchangeParser extends ECDHClientKeyExchangeParser<PskEcDhClientKeyExchangeMessage> {
     /**
      * Constructor for the Parser class

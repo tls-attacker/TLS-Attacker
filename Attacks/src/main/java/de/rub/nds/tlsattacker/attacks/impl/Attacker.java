@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * @param <Config>
+ *            The AttackConfig
  */
 public abstract class Attacker<Config extends AttackConfig> {
 

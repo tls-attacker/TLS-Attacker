@@ -29,13 +29,13 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
      * If set, the lastHandledApplicationData will be encoded as String using
      * the given charset (that is UTF-8, ISO-8859-1,...) before printing. If
      * unset, plot raw bytes as hex string.
-     * 
+     *
      * Note: we are using String instead of Charset for serialization
      * purposes...
-     * 
-     * @see https 
-     *      ://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html
-     *      for a list of supported charset names
+     *
+     * <a href=
+     * "https://docs.oracle.com/javase/7/docs/api/java/nio/charset/Charset.html"
+     * >Charset.html</a> for a list of supported charset names
      */
     private String stringEncoding = null;
 
@@ -71,10 +71,11 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
 
     /**
      * Set encoding. Supplied String must match an element from Charset.
-     * Example: US-ASCII
-     * 
+     * Example: US-ASCII Available charsets can be found in StandardCharsets
+     *
      * @param stringEncoding
-     * @see Available charsets can be found in StandardCharsets
+     *            The enconding that should be used
+     * 
      */
     public void setStringEncoding(String stringEncoding) {
         this.stringEncoding = stringEncoding;
