@@ -98,13 +98,12 @@ In case you are a more experienced developer, you can create your own TLS messag
 ```java
 Config config = Config.createConfig();
 WorkflowTrace trace = new WorkflowTrace();
-trace.add(new SendAction(new ClientHelloMessage()));
-trace.add(new ReceiveAction(new ServerHelloMessage())));
-trace.add(new SendAction(new FinishedMessage()));
+trace.addTlsAction(new SendAction(new ClientHelloMessage()));
+trace.addTlsAction(new ReceiveAction(new ServerHelloMessage()));
 State state = new State(config, trace);
-DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
-executor.execute();
-
+DefaultWorkflowExecutor executor = new
+DefaultWorkflowExecutor(state);
+executor.executeWorkflow();
 ```
 TLS-Attacker uses the concept of WorkflowTraces to define a "TLS message flow". A WorkflowTrace consists of a List of Actions which are then executed one after the other.
 Although for a typical "TLS message flow" only SendAction's and ReceiveAction's are needed, the Framework does not stop here and implements alot of different other Actions
