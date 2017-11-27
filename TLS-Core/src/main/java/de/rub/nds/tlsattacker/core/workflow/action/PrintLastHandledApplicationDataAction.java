@@ -55,6 +55,7 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
             lastHandledApplicationData = ArrayConverter.bytesToHexString(rawBytes);
         }
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Last handled application data: " + lastHandledApplicationData);
+        setExecuted(true);
     }
 
     public String getLastHandledApplicationData() {
@@ -83,11 +84,12 @@ public class PrintLastHandledApplicationDataAction extends ConnectionBoundAction
 
     @Override
     public boolean executedAsPlanned() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return isExecuted();
     }
 
     @Override
     public void reset() {
+        setExecuted(false);
         lastHandledApplicationData = null;
     }
 

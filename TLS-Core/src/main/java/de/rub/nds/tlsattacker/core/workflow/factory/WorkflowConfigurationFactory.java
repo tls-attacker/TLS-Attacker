@@ -55,7 +55,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
@@ -455,24 +455,24 @@ public class WorkflowConfigurationFactory {
         trace.addTlsActions(mitmToServerHandshake.getTlsActions());
 
         // Forward request client -> server
-        ForwardAction f = new ForwardAction(clientToMitmAlias, mitmToServerAlias, new ApplicationMessage(config));
+        ForwardMessagesAction f = new ForwardMessagesAction(clientToMitmAlias, mitmToServerAlias,
+                new ApplicationMessage(config));
         trace.addTlsAction(f);
 
-        // Print the application data contents to console
+        // Print client's app data contents
         PrintLastHandledApplicationDataAction p = new PrintLastHandledApplicationDataAction(clientToMitmAlias);
-        p.setStringEncoding("US_ASCII");
+        p.setStringEncoding("US-ASCII");
         trace.addTlsAction(p);
 
-        // // Forward response server -> client
-        // List<ProtocolMessage> messages = new LinkedList<>();
-        // f = new ForwardAction(mitmToServerAlias, clientToMitmAlias, new
-        // ApplicationMessage(config));
-        // trace.addTlsAction(f);
-        //
-        // // Print the server's answer
-        // p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
-        // p.setStringEncoding(StandardCharsets.US_ASCII);
-        // trace.addTlsAction(p);
+        // Forward response server -> client
+        f = new ForwardMessagesAction(mitmToServerAlias, clientToMitmAlias, new ApplicationMessage(config));
+        trace.addTlsAction(f);
+
+        // Print server's app data contents
+        p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
+        p.setStringEncoding("US-ASCII");
+        trace.addTlsAction(p);
+
         return trace;
     }
 

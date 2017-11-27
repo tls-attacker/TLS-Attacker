@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
@@ -126,7 +126,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
         trace.addTlsAction(action);
 
         ApplicationMessage appMsg = new ApplicationMessage(conf);
-        ForwardAction f = new ForwardAction();
+        ForwardMessagesAction f = new ForwardMessagesAction();
         f.setMessages(appMsg);
         f.setReceiveFromAlias(clientConAlias);
         f.setForwardToAlias(serverConAlias);
