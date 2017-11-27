@@ -71,6 +71,7 @@ public class ServerTcpTransportHandlerTest {
             fail();
         }
         handler.closeClientConnection();
+        Thread.sleep(50);
         try {
             socket.getOutputStream().write(123);
             socket.getOutputStream().flush();
