@@ -8,12 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message.extension.KS;
 
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 public class KSEntry {
 
     private NamedCurve group;
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] serializedPublicKey;
 
     public KSEntry(NamedCurve group, byte[] serializedPublicKey) {

@@ -11,11 +11,19 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension.PSK;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class PSKIdentity {
 
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] identityConfig;
+
     private String ticketAgeConfig;
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] ticketAgeAddConfig;
 
     private ModifiableInteger identityLength;
