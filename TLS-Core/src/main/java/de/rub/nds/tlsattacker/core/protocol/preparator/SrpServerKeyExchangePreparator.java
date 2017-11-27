@@ -19,10 +19,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<SrpServerKeyExchangeMessage> {
 
     private BigInteger publicKey;

@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskRsaClientKeyExchangeSerializer extends RSAClientKeyExchangeSerializer<PskRsaClientKeyExchangeMessage> {
     private final PskRsaClientKeyExchangeMessage msg;
 

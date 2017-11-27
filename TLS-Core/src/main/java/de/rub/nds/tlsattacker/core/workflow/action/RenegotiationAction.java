@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class RenegotiationAction extends ConnectionBoundAction {
 
     @Override

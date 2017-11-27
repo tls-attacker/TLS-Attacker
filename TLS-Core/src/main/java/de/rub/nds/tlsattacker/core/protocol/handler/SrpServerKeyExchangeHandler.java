@@ -17,9 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.SrpServerKeyExchangeSeria
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 
-/**
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class SrpServerKeyExchangeHandler extends ServerKeyExchangeHandler<SrpServerKeyExchangeMessage> {
 
     public SrpServerKeyExchangeHandler(TlsContext tlsContext) {

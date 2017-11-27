@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 /**
  * Handler for SRP ClientKeyExchange messages
  *
- * @author Florian Linsner - florian.linsner@rub.de
  */
 public class SrpClientKeyExchangeHandler extends ClientKeyExchangeHandler<SrpClientKeyExchangeMessage> {
 

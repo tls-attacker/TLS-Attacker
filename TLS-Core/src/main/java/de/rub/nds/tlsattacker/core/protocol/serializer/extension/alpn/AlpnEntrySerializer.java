@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.Alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AlpnEntrySerializer extends Serializer<AlpnEntry> {
 
     private final AlpnEntry entry;

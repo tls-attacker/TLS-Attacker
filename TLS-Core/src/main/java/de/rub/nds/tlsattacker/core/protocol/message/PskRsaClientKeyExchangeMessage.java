@@ -21,10 +21,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 @XmlRootElement
 public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage {
 

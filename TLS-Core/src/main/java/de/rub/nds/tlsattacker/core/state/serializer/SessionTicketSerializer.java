@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 
-/**
- *
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class SessionTicketSerializer extends Serializer<SessionTicket> {
 
     private final SessionTicket sessionTicket;

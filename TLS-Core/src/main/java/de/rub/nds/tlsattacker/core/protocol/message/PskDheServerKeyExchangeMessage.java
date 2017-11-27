@@ -19,9 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Florian Linsner - florian.linsner@rub.de
- */
 @XmlRootElement
 public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage {
 

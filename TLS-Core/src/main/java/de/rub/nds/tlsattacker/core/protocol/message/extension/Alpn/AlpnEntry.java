@@ -14,10 +14,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AlpnEntry extends ModifiableVariableHolder implements Serializable {
 
     private ModifiableInteger alpnEntryLength;

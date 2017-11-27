@@ -15,10 +15,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.mlong.ModifiableLong;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 
-/**
- *
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class StatePlaintext {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;

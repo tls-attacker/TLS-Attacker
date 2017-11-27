@@ -18,10 +18,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class StaticTicketCryptoTest {
     private static final Logger LOGGER = LogManager.getLogger(StaticTicketCryptoTest.class);
 

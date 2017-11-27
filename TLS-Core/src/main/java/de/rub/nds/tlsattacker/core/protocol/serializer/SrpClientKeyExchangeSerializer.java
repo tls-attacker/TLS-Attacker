@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class SrpClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<SrpClientKeyExchangeMessage> {
 
     private final SrpClientKeyExchangeMessage msg;

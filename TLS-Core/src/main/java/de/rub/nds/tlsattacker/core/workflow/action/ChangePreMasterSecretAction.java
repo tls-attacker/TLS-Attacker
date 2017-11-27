@@ -17,10 +17,6 @@ import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ChangePreMasterSecretAction extends ConnectionBoundAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)

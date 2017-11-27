@@ -25,10 +25,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 
-/**
- * 
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparator<NewSessionTicketMessage> {
 
     private final NewSessionTicketMessage msg;

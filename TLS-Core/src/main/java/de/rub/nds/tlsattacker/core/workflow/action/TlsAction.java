@@ -29,7 +29,6 @@ import org.apache.logging.log4j.Logger;
  * Executing a WorkflowTrace means iterating through this list and calling
  * execute() on each TlsAction.
  *
- * @author Robert Merget - robert.merget@rub.de
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TlsAction implements Serializable, Aliasable {

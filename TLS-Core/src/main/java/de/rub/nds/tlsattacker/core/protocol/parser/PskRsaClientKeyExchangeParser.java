@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskRsaClientKeyExchangeParser extends RSAClientKeyExchangeParser<PskRsaClientKeyExchangeMessage> {
     /**
      * Constructor for the Parser class

@@ -45,10 +45,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- *
- * @author florian
- */
 public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackServerCommandConfig> {
     private static final Logger LOGGER = LogManager.getLogger(PskBruteForcerAttackServer.class);
 

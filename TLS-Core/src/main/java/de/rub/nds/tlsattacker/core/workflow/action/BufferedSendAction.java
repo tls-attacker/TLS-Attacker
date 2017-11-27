@@ -21,10 +21,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class BufferedSendAction extends MessageAction implements SendingAction {
 
     public BufferedSendAction() {

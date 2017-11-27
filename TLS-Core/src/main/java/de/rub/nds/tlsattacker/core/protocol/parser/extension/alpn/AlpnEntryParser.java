@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.Alpn.AlpnEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AlpnEntryParser extends Parser<AlpnEntry> {
 
     public AlpnEntryParser(int startposition, byte[] array) {

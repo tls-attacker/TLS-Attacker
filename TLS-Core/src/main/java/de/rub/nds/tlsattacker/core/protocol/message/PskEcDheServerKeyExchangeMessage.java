@@ -21,9 +21,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Florian Linsner - florian.linsner@rub.de
- */
 @XmlRootElement
 public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMessage {
 

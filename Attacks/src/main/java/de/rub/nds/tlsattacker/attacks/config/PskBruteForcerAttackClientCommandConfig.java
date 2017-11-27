@@ -24,10 +24,6 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
-/**
- *
- * @author florian
- */
 public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
     public static final String ATTACK_COMMAND = "pskbruteforcerclient";
 

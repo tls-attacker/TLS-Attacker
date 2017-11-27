@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SrpServerKeyExchangeParser extends ServerKeyExchangeParser<SrpServerKeyExchangeMessage> {
 
     private final ProtocolVersion version;

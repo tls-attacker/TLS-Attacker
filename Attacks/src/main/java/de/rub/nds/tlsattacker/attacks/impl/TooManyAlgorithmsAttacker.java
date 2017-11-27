@@ -23,10 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 
     public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config) {

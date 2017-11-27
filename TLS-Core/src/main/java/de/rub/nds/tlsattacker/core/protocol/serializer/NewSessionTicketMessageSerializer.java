@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
 
-/**
- * 
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class NewSessionTicketMessageSerializer extends HandshakeMessageSerializer<NewSessionTicketMessage> {
     private final NewSessionTicketMessage msg;
 

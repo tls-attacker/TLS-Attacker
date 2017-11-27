@@ -17,10 +17,6 @@ import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import java.util.Arrays;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePreparator<PskRsaClientKeyExchangeMessage> {
 
     private byte[] randomValue;

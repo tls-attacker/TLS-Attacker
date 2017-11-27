@@ -17,10 +17,6 @@ import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import java.math.BigInteger;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskDhClientKeyExchangePreparator extends DHClientKeyExchangePreparator<PskDhClientKeyExchangeMessage> {
 
     private final PskDhClientKeyExchangeMessage msg;

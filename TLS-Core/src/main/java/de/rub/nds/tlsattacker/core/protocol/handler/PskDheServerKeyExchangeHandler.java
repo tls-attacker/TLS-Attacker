@@ -16,9 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.PskDheServerKeyExchangeSe
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.math.BigInteger;
 
-/**
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskDheServerKeyExchangeHandler extends ServerKeyExchangeHandler<PskDheServerKeyExchangeMessage> {
 
     public PskDheServerKeyExchangeHandler(TlsContext tlsContext) {

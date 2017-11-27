@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PskDheServerKeyExchangeParser extends DHEServerKeyExchangeParser<PskDheServerKeyExchangeMessage> {
 
     private final ProtocolVersion version;

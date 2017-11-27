@@ -16,10 +16,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import java.io.Serializable;
 
-/**
- *
- * @author Timon Wern <timon.wern@rub.de>
- */
 public class SessionTicket extends ModifiableVariableHolder implements Serializable {
     @ModifiableVariableProperty()
     private ModifiableByteArray keyName;
