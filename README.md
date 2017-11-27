@@ -64,40 +64,9 @@ Currently, the following features are supported:
 - Lots of extensions
 - Tokenbinding (EC) and Tokenbinding over HTTP
 - Sockets
-- PSK
-
-
-Full support for the following Extensions: 
-- EC Point Formats
-- EllipticCurves
-- ExtendedMasterSecret
-- KeyShare
-- MaxFragmentLength
-- Padding
-- SNI
-- Signature and Hash Algorithms
-- Supported Versions
-- Heartbeat
-- Renegotiation
-- Tokenbinding
-
-The following extesions are sendable and receivable but are currently not completely functional:
-- ALPN
-- Cached Info
-- Client Authz
-- Client Certificate Type
-- Client Certificate Url
-- EncryptThenMac
-- Server Authz
-- Server Certificate Type
-- Session Ticket
-- Signed Certificate Timestamp
+- PSK (All modes)
 - SRP
-- Status Request
-- Status Requestv2
-- TruncatedHmac
-- TrustedCaKeys
-- UseSRTP
+- TLS 1.3 0-RTT
 
 ## Usage
 Here we present some very simple examples on using TLS-Attacker.
@@ -277,10 +246,10 @@ The following people have contributed code to the TLS-Attacker project:
 - Matthias Terlinde: More TLS-Extensions
 - Nurullah Erinola: TLS 1.3 Support
 - Lucas Hartmann: TLS-MitM Workflows
-- Florian Linsner: PSK
+- Florian Linsner: PSK, SRP
 - Pierre Tilhaus: Code quality improvements
 - Felix Kleine-Wilde: SSL 3 Support
-
+- Marcel Maehren: 0-RTT Support
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.
