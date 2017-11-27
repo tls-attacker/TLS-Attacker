@@ -181,6 +181,13 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
 
     /**
      * Allow to pass a fake ReceiveMessageHelper helper for testing.
+     * 
+     * @param receiveFromAlias
+     *            The alias of the connection from which to receive
+     * @param forwardToAlias
+     *            The alias of the connection to which to send
+     * @param receiveMessageHelper
+     *            The messageHelper that should be used
      */
     protected ForwardAction(String receiveFromAlias, String forwardToAlias, ReceiveMessageHelper receiveMessageHelper) {
         this.connectionAlias = null;
@@ -242,8 +249,6 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     /**
      * Apply the contents of the messages to the given TLS context.
      * 
-     * @param protocolMessages
-     * @param tlsContext
      */
     private void applyMessages(TlsContext ctx) {
         for (ProtocolMessage msg : receivedMessages) {

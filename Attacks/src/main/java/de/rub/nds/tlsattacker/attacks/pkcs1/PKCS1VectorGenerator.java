@@ -37,8 +37,10 @@ public class PKCS1VectorGenerator {
      * Generates different encrypted PKCS1 vectors
      * 
      * @param publicKey
+     *            The publickey
      * @param type
-     * @return
+     *            the type
+     * @return pkcs1Vectors
      */
     public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
 
@@ -70,8 +72,10 @@ public class PKCS1VectorGenerator {
      * Generates different plain PKCS1 vectors
      * 
      * @param publicKey
+     *            The publickey
      * @param type
-     * @return
+     *            the type
+     * @return pkcs1Vectors
      */
     public static byte[][] generatePlainPkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
         // we do not need secure random here
@@ -115,7 +119,7 @@ public class PKCS1VectorGenerator {
      *            rsa key length in bytes
      * @param symmetricKeyLength
      *            symmetric key length in bytes
-     * @return
+     * @return padded key
      */
     private static byte[] getPaddedKey(int rsaKeyLength, byte[] symmetricKey) {
         byte[] key = new byte[rsaKeyLength];
@@ -194,8 +198,10 @@ public class PKCS1VectorGenerator {
 
     /**
      * @param rsaKeyLength
+     *            rsakeylength
      * @param symmetricKey
-     * @return
+     *            symmetric key
+     * @return differentpositions
      */
     private static byte[][] getEK_DifferentPositionsOf0x00(int rsaKeyLength, byte[] symmetricKey) {
         byte[][] result = new byte[rsaKeyLength - 2][];

@@ -50,13 +50,13 @@ public class ContextContainer {
     /**
      * Get the only defined TLS context.
      * <p>
+     * </p>
      * Convenience method, useful when working with a single context only.
      *
      * @return the only known TLS context
      * @throws ConfigurationException
      *             if there is more than one TLS context in the container
      * 
-     * @see this.getTlsContext(String)
      */
     public TlsContext getTlsContext() {
         if (tlsContexts.isEmpty()) {
@@ -75,8 +75,6 @@ public class ContextContainer {
      * @throws ConfigurationException
      *             if there is no TLS context with the given alias
      * 
-     * @see this.getTlsContext() convenience method for accessing single
-     *      contexts
      */
     public TlsContext getTlsContext(String alias) {
         TlsContext ctx = tlsContexts.get(alias);
@@ -158,6 +156,7 @@ public class ContextContainer {
     /**
      * Replace existing TlsContext with new TlsContext.
      * <p>
+     * </p>
      * The TlsContext can only be replaced if the connection of both the new and
      * the old TlsContext equal.
      * 

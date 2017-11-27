@@ -81,6 +81,9 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     /**
      * Add default values from given defaultAction and initialize empty fields.
+     * 
+     * @param defaultAction
+     *            Not needed / not evaluated
      */
     public void normalize(TlsAction defaultAction) {
         // We don't need any defaults
@@ -94,6 +97,9 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     /**
      * Filter empty fields and default values given in defaultAction.
+     * 
+     * @param defaultAction
+     *            Not needed / not evaluated
      */
     public void filter(TlsAction defaultAction) {
     }
@@ -124,6 +130,8 @@ public abstract class TlsAction implements Serializable, Aliasable {
 
     /**
      * Check that the Action got executed as planned.
+     * 
+     * @return True if the Action executed as planned
      */
     public abstract boolean executedAsPlanned();
 

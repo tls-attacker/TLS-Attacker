@@ -60,6 +60,9 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * hooks.
      *
      * @param message
+     *            The message that should be prepared
+     * @param withPrepare
+     *            if the prepare function should be called or only the rest
      * @return message in bytes
      */
     public byte[] prepareMessage(Message message, boolean withPrepare) {
