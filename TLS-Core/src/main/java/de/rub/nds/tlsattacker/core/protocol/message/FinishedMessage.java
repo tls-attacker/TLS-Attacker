@@ -49,7 +49,7 @@ public class FinishedMessage extends HandshakeMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Verify Data: ");
-        if (verifyData.getOriginalValue() != null) {
+        if (verifyData != null && verifyData.getOriginalValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(verifyData.getValue()));
         }
         return sb.toString();
