@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +50,10 @@ public abstract class RecordLayer {
     public abstract void updateEncryptionCipher();
 
     public abstract void updateDecryptionCipher();
+
+    public abstract RecordCipher getEncryptor();
+
+    public abstract RecordCipher getDecryptor();
 
     public abstract AbstractRecord getFreshRecord();
 }

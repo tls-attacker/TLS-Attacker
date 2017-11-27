@@ -8,8 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -17,6 +20,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
@@ -44,16 +48,16 @@ public class SendMessageHelper {
 
         int recordPosition = 0;
         ProtocolMessageType lastType = null;
+        ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
-            if (message.getProtocolMessageType() != lastType && lastType != null
+            if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                    context.getRecordLayer().updateEncryptionCipher();
-                    context.setWriteSequenceNumber(0);
-                }
+                lastMessage.getHandler(context).adjustTlsContextAfterSerialize(message);
+                lastMessage = null;
             }
+            lastMessage = message;
             lastType = message.getProtocolMessageType();
             LOGGER.debug("Preparing " + message.toCompactString());
             byte[] protocolMessageBytes = handleProtocolMessage(message, context);
@@ -62,23 +66,14 @@ public class SendMessageHelper {
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                message.getHandler(context).adjustTlsContextAfterSerialize(message);
+                lastMessage = null;
             }
-            if (context.getChooser().getSelectedProtocolVersion().isTLS13() && context.isUpdateKeys() == true) {
-                KeySet keySet = getKeySet(context);
-                LOGGER.debug("Setting new Cipher in RecordLayer");
-                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context, keySet);
-                context.getRecordLayer().setRecordCipher(recordCipher);
-                context.getRecordLayer().updateDecryptionCipher();
-                context.getRecordLayer().updateEncryptionCipher();
-                context.setWriteSequenceNumber(0);
-                context.setReadSequenceNumber(0);
-            }
-        }
-        if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-            context.getRecordLayer().updateEncryptionCipher();
-            context.setWriteSequenceNumber(0);
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        if (lastMessage != null) {
+            lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+        }
         sendData(messageBytesCollector, context);
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
             int current = 0;
@@ -98,16 +93,6 @@ public class SendMessageHelper {
             }
         }
         return new MessageActionResult(records, messages);
-    }
-
-    private KeySet getKeySet(TlsContext context) {
-        try {
-            LOGGER.debug("Generating new KeySet");
-            KeySet keySet = KeySetGenerator.generateKeySet(context);
-            return keySet;
-        } catch (NoSuchAlgorithmException ex) {
-            throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
-        }
     }
 
     private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -37,7 +38,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
         prepareContentType(record);
         prepareProtocolVersion(record);
         prepareSequenceNumber(record);
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             preparePaddingLength(record);
         }
         encryptor.encrypt(record);
@@ -45,7 +47,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareContentType(Record record) {
-        if (chooser.getSelectedProtocolVersion().isTLS13() && chooser.getContext().isEncryptActive()) {
+        if ((chooser.getSelectedProtocolVersion().isTLS13() || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS)
+                && chooser.getContext().getActiveKeySetTypeWrite() != Tls13KeySetType.NONE) {
             record.setContentType(ProtocolMessageType.APPLICATION_DATA.getValue());
         } else {
             record.setContentType(type.getValue());
@@ -55,7 +58,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareProtocolVersion(Record record) {
-        if (chooser.getSelectedProtocolVersion().isTLS13()) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                || chooser.getContext().getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             record.setProtocolVersion(ProtocolVersion.TLS10.getValue());
         } else {
             record.setProtocolVersion(chooser.getSelectedProtocolVersion().getValue());

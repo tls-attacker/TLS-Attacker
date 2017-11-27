@@ -12,12 +12,19 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 public class RecordDecryptor extends Decryptor {
@@ -58,7 +65,8 @@ public class RecordDecryptor extends Decryptor {
         record.setPlainRecordBytes(decrypted);
         LOGGER.debug("PlainRecordBytes: " + ArrayConverter.bytesToHexString(record.getPlainRecordBytes().getValue()));
         if (recordCipher.isUsingPadding()) {
-            if (!context.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            if (!context.getChooser().getSelectedProtocolVersion().isTLS13()
+                    && context.getActiveKeySetTypeRead() != Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
                 adjustPaddingTLS(record);
             } else {
                 adjustPaddingTLS13(record);
@@ -78,6 +86,10 @@ public class RecordDecryptor extends Decryptor {
             useNoMac(record);
         }
         context.increaseReadSequenceNumber();
+        if (context.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER
+                && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            checkForEndOfEarlyData(record.getUnpaddedRecordBytes().getValue());
+        }
     }
 
     private void prepareAdditionalMetadata(Record record, byte[] payload) {
@@ -127,9 +139,9 @@ public class RecordDecryptor extends Decryptor {
     private void adjustPaddingTLS13(Record record) {
         byte[] unpadded = parseUnpaddedTLS13(record.getPlainRecordBytes().getValue());
         byte contentMessageType = parseContentMessageType(unpadded);
-        LOGGER.info("Parsed ContentMessageType:" + contentMessageType);
+        LOGGER.debug("Parsed ContentMessageType:" + contentMessageType);
         record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
-        LOGGER.info("ContentMessageType:" + record.getContentMessageType());
+        LOGGER.debug("ContentMessageType:" + record.getContentMessageType());
         byte[] unpaddedAndWithoutType = Arrays.copyOf(unpadded, unpadded.length - 1);
         record.setUnpaddedRecordBytes(unpaddedAndWithoutType);
         LOGGER.debug("UnpaddedRecordBytes: "
@@ -213,5 +225,29 @@ public class RecordDecryptor extends Decryptor {
             throw new CryptoException("Could not extract content type of message.");
         }
         return unpadded[unpadded.length - 1];
+    }
+
+    private void checkForEndOfEarlyData(byte[] unpaddedBytes) {
+        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
+        if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
+            adjustClientCipherAfterEarly();
+        }
+    }
+
+    public void adjustClientCipherAfterEarly() {
+        try {
+            context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+            LOGGER.debug("Setting cipher for client to use handshake secrets");
+            KeySet clientKeySet = KeySetGenerator.generateKeySet(context, context.getChooser()
+                    .getSelectedProtocolVersion(), context.getActiveClientKeySetType());
+            RecordCipher recordCipherClient = RecordCipherFactory.getRecordCipher(context, clientKeySet, context
+                    .getChooser().getSelectedCipherSuite());
+            context.getRecordLayer().setRecordCipher(recordCipherClient);
+            context.getRecordLayer().updateDecryptionCipher();
+            context.setReadSequenceNumber(0);
+        } catch (NoSuchAlgorithmException ex) {
+            LOGGER.error("Generating KeySet failed - Unknown algorithm");
+            throw new WorkflowExecutionException(ex.toString());
+        }
     }
 }

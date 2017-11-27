@@ -132,4 +132,9 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         msg.setCookieLength((byte) msg.getCookie().getValue().length);
         LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
     }
+
+    @Override
+    public void afterPrepare() {
+        afterPrepareExtensions();
+    }
 }

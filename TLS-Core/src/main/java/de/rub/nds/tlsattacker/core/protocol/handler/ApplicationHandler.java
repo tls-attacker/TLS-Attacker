@@ -46,5 +46,4 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
             LOGGER.debug("Send Data:" + readableAppData);
         }
     }
-
 }

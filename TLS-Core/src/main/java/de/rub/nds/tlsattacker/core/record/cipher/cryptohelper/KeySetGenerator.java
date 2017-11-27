@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
@@ -33,29 +34,41 @@ public class KeySetGenerator {
 
     protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());
 
-    public static KeySet generateKeySet(TlsContext context) throws NoSuchAlgorithmException {
-        if (context.getChooser().getSelectedProtocolVersion().isTLS13()) {
-            return getTls13KeySet(context);
+    public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
+            throws NoSuchAlgorithmException {
+        if (protocolVersion.isTLS13()) {
+            return getTls13KeySet(context, keySetType);
         } else {
             return getTlsKeySet(context);
         }
 
     }
 
-    private static KeySet getTls13KeySet(TlsContext context) {
+    public static KeySet generateKeySet(TlsContext context) throws NoSuchAlgorithmException {
+        return generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
+                context.getActiveKeySetTypeWrite());
+    }
+
+    private static KeySet getTls13KeySet(TlsContext context, Tls13KeySetType keySetType) {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        byte[] clientSecret;
-        byte[] serverSecret;
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-        if (!context.isUpdateKeys()) {
+        byte[] clientSecret = new byte[0];
+        byte[] serverSecret = new byte[0];
+        if (keySetType == Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS) {
             clientSecret = context.getChooser().getClientHandshakeTrafficSecret();
             serverSecret = context.getChooser().getServerHandshakeTrafficSecret();
-        } else {
-            context.setUpdateKeys(false);
+        } else if (keySetType == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
             clientSecret = context.getChooser().getClientApplicationTrafficSecret();
             serverSecret = context.getChooser().getServerApplicationTrafficSecret();
+        } else if (keySetType == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            cipherSuite = context.getChooser().getEarlyDataCipherSuite();
+            clientSecret = context.getChooser().getClientEarlyTrafficSecret();
+            serverSecret = context.getChooser().getClientEarlyTrafficSecret(); // won't
+                                                                               // be
+            // used
         }
-        KeySet keySet = new KeySet();
+        LOGGER.debug("ActiveKeySetType is " + keySetType);
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        KeySet keySet = new KeySet(keySetType);
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
         keySet.setClientWriteKey(HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
                 cipherAlg.getKeySize()));

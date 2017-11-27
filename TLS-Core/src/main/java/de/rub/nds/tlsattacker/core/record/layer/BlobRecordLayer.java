@@ -103,4 +103,14 @@ public class BlobRecordLayer extends RecordLayer {
         return new BlobRecord(context.getConfig());
     }
 
+    @Override
+    public RecordCipher getEncryptor() {
+        return encryptor.getRecordCipher();
+    }
+
+    @Override
+    public RecordCipher getDecryptor() {
+        return decryptor.getRecordCipher();
+    }
+
 }

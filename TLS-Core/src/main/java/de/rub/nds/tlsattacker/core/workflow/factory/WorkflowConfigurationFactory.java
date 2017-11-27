@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -27,10 +28,12 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
@@ -38,6 +41,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
@@ -47,6 +51,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMess
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -100,6 +106,10 @@ public class WorkflowConfigurationFactory {
                 return createFullResumptionWorkflow();
             case SIMPLE_MITM_PROXY:
                 return createSimpleMitmProxyWorkflow();
+            case ZERO_RTT:
+                return createZeroRttWorkflow();
+            case FULL_ZERO_RTT:
+                return createFullZeroRttWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -115,7 +125,7 @@ public class WorkflowConfigurationFactory {
 
     /**
      * Create a hello workflow for the default connection end defined in config.
-     * 
+     *
      * @return A HelloWorkflow
      */
     public WorkflowTrace createHelloWorkflow() {
@@ -202,7 +212,7 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a handshake workflow for the default connection end defined in
      * config.
-     * 
+     *
      * @return A HandshakeWorkflow
      */
     public WorkflowTrace createHandshakeWorkflow() {
@@ -398,8 +408,8 @@ public class WorkflowConfigurationFactory {
             }
         }
         if (connectingConnectionEnd == null || acceptingConnectionEnd == null) {// client
-                                                                                // ->
-                                                                                // mitm
+            // ->
+            // mitm
             throw new ConfigurationException("Could not find both necesary connection ends");
         }
         String clientToMitmAlias = acceptingConnectionEnd.getAlias();
@@ -445,6 +455,89 @@ public class WorkflowConfigurationFactory {
         p.setStringEncoding(StandardCharsets.US_ASCII);
         trace.addTlsAction(p);
 
+        return trace;
+    }
+
+    private WorkflowTrace createZeroRttWorkflow() {
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = new WorkflowTrace(config);
+
+        List<ProtocolMessage> clientHelloMessages = new LinkedList<>();
+        List<ProtocolMessage> serverMessages = new LinkedList<>();
+        List<ProtocolMessage> clientMessages = new LinkedList<>();
+
+        ClientHelloMessage clientHello;
+        ApplicationMessage earlyDataMsg;
+
+        if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            clientHello = new ClientHelloMessage(config);
+            earlyDataMsg = new ApplicationMessage(config);
+            earlyDataMsg.setDataConfig(config.getEarlyData());
+        } else {
+            clientHello = new ClientHelloMessage();
+            earlyDataMsg = new ApplicationMessage();
+        }
+        clientHelloMessages.add(clientHello);
+        clientHelloMessages.add(earlyDataMsg);
+
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+                clientHelloMessages));
+
+        ServerHelloMessage serverHello;
+        EncryptedExtensionsMessage encExtMsg;
+        FinishedMessage serverFin = new FinishedMessage(config);
+
+        if (ourConnectionEnd.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            serverHello = new ServerHelloMessage();
+            encExtMsg = new EncryptedExtensionsMessage();
+            encExtMsg.addExtension(new EarlyDataExtensionMessage());
+        } else {
+            serverHello = new ServerHelloMessage(config);
+            encExtMsg = new EncryptedExtensionsMessage(config);
+            encExtMsg.addExtension(new EarlyDataExtensionMessage());
+        }
+
+        serverMessages.add(serverHello);
+        serverMessages.add(encExtMsg);
+        serverMessages.add(serverFin);
+
+        trace.addTlsAction(MessageActionFactory
+                .createAction(ourConnectionEnd, ConnectionEndType.SERVER, serverMessages));
+
+        clientMessages.add(new EndOfEarlyDataMessage());
+        clientMessages.add(new FinishedMessage(config));
+        trace.addTlsAction(MessageActionFactory
+                .createAction(ourConnectionEnd, ConnectionEndType.CLIENT, clientMessages));
+        return trace;
+    }
+
+    private WorkflowTrace createFullZeroRttWorkflow() {
+        ConnectionEnd ourConnectionEnd = getSafeSingleContextConnectionEnd();
+        WorkflowTrace trace = createHandshakeWorkflow();
+        // Remove extensions that are only required in the 2nd ClientHello
+        for (TLSAction action : trace.getTlsActions()) {
+            if (action.isMessageAction()) {
+                for (ProtocolMessage msg : ((MessageAction) action).getMessages()) {
+                    if (msg instanceof ClientHelloMessage) {
+                        List<ExtensionMessage> extensions = ((ClientHelloMessage) msg).getExtensions();
+                        for (int x = 0; x < extensions.size(); x++) {
+                            if (extensions.get(x) instanceof PreSharedKeyExtensionMessage
+                                    || extensions.get(x) instanceof EarlyDataExtensionMessage) {
+                                ((ClientHelloMessage) msg).getExtensions().remove(extensions.get(x));
+                                x--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+                new NewSessionTicketMessage(false)));
+        trace.addTlsAction(new ResetConnectionAction());
+        WorkflowTrace zeroRttTrace = createZeroRttWorkflow();
+        for (TLSAction zeroRttAction : zeroRttTrace.getTlsActions()) {
+            trace.addTlsAction(zeroRttAction);
+        }
         return trace;
     }
 

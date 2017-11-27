@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -53,6 +54,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     public byte[] prepareMessage(Message message) {
         Preparator preparator = getPreparator(message);
         preparator.prepare();
+        preparator.afterPrepare();
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);
@@ -117,6 +119,9 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      *            The Message for which this context should be adjusted
      */
     public abstract void adjustTLSContext(Message message);
+
+    public void adjustTlsContextAfterSerialize(Message message) {
+    }
 
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);

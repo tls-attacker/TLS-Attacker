@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
@@ -36,7 +37,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
@@ -120,12 +123,16 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new SupportedVersionsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
-            KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
-            KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
-            pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
-            extension.getKeyShareList().add(pair);
-            addExtension(extension);
+            addExtension(new KeyShareExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddEarlyDataExtension()) {
+            addExtension(new EarlyDataExtensionMessage());
+        }
+        if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
+            addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddPreSharedKeyExtension()) {
+            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
@@ -304,4 +311,5 @@ public class ClientHelloMessage extends HelloMessage {
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);
     }
+
 }

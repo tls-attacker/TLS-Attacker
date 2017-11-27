@@ -12,10 +12,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
@@ -86,7 +86,13 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing NewSessionTicketMessage");
         prepareTicketLifetimeHint(msg);
-        prepareTicket(msg);
+        if (chooser.getSelectedProtocolVersion().isTLS13()
+                && chooser.getContext().getActiveServerKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+            prepareTicketTls13(msg);
+        } else {
+            prepareTicket(msg);
+        }
+
     }
 
     /**
@@ -123,4 +129,24 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         return plainstate;
     }
 
+    private void prepareTicketTls13(NewSessionTicketMessage msg) {
+        msg.prepareTicket();
+        prepareTicketAgeAdd(msg);
+        prepareNonce(msg);
+        prepareIdentity(msg);
+    }
+
+    private void prepareTicketAgeAdd(NewSessionTicketMessage msg) {
+        msg.getTicket().setTicketAgeAdd(chooser.getConfig().getDefaultSessionTicketAgeAdd());
+    }
+
+    private void prepareIdentity(NewSessionTicketMessage msg) {
+        msg.getTicket().setIdentity(chooser.getConfig().getDefaultSessionTicketIdentity());
+        msg.getTicket().setIdentityLength(msg.getTicket().getIdentity().getValue().length);
+    }
+
+    private void prepareNonce(NewSessionTicketMessage msg) {
+        msg.getTicket().setTicketNonce(chooser.getConfig().getDefaultSessionTicketNonce());
+        msg.getTicket().setTicketNonceLength(msg.getTicket().getTicketNonce().getValue().length);
+    }
 }

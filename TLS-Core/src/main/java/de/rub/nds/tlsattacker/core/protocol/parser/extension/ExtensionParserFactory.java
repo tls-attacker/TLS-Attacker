@@ -81,6 +81,9 @@ public class ExtensionParserFactory {
             case CLIENT_CERTIFICATE_TYPE:
                 parser = new ClientCertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
+            case EARLY_DATA:
+                parser = new EarlyDataExtensionParser(pointer, extensionBytes);
+                break;
             case ENCRYPT_THEN_MAC:
                 parser = new EncryptThenMacExtensionParser(pointer, extensionBytes);
                 break;
@@ -89,6 +92,12 @@ public class ExtensionParserFactory {
                 break;
             case PADDING:
                 parser = new PaddingExtensionParser(pointer, extensionBytes);
+                break;
+            case PRE_SHARED_KEY:
+                parser = new PreSharedKeyExtensionParser(pointer, extensionBytes);
+                break;
+            case PSK_KEY_EXCHANGE_MODES:
+                parser = new PSKKeyExchangeModesExtensionParser(pointer, extensionBytes);
                 break;
             case RENEGOTIATION_INFO:
                 parser = new RenegotiationInfoExtensionParser(pointer, extensionBytes);

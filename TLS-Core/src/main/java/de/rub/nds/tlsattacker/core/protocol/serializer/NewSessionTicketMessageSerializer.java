@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
@@ -38,8 +39,19 @@ public class NewSessionTicketMessageSerializer extends HandshakeMessageSerialize
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing NewSessionTicketMessage");
         writeLifetimeHint(msg);
-        writeTicketLength(msg);
-        writeTicket(msg);
+        if (msg.getTicket().getIdentity() != null) {
+            // TLS 1.3
+            writeTicketAgeAdd(msg);
+            writeTicketNonceLength(msg);
+            writeTicketNonce(msg);
+            writeTicketIdentityLength(msg);
+            writeTicketIdentity(msg);
+            writeExtensions();
+        } else {
+            writeTicketLength(msg);
+            writeTicket(msg);
+        }
+
         return getAlreadySerialized();
     }
 
@@ -69,5 +81,41 @@ public class NewSessionTicketMessageSerializer extends HandshakeMessageSerialize
                 + ArrayConverter.bytesToHexString(msg.getTicket().getEncryptedState().getValue()));
         appendBytes(msg.getTicket().getMAC().getValue());
         LOGGER.debug("MAC: " + ArrayConverter.bytesToHexString(msg.getTicket().getMAC().getValue()));
+    }
+
+    private void writeTicketAgeAdd(NewSessionTicketMessage msg) {
+        appendBytes(msg.getTicket().getTicketAgeAdd().getValue());
+        LOGGER.debug("TicketAgeAdd: " + ArrayConverter.bytesToHexString(msg.getTicket().getTicketAgeAdd().getValue()));
+    }
+
+    private void writeTicketNonceLength(NewSessionTicketMessage msg) {
+        appendBytes(ArrayConverter.intToBytes(msg.getTicket().getTicketNonceLength().getValue(),
+                HandshakeByteLength.TICKET_NONCE_LENGTH));
+        LOGGER.debug("TicketNonceLength: " + msg.getTicket().getTicketNonceLength().getValue());
+    }
+
+    private void writeTicketNonce(NewSessionTicketMessage msg) {
+        appendBytes(msg.getTicket().getTicketNonce().getValue());
+        LOGGER.debug("TicketNonce: " + ArrayConverter.bytesToHexString(msg.getTicket().getTicketNonce().getValue()));
+    }
+
+    private void writeTicketIdentityLength(NewSessionTicketMessage msg) {
+        appendBytes(ArrayConverter.intToBytes(msg.getTicket().getIdentityLength().getValue(),
+                ExtensionByteLength.PSK_IDENTITY_LENGTH));
+        LOGGER.debug("TicketIdentityLength: " + msg.getTicket().getIdentityLength().getValue());
+    }
+
+    private void writeTicketIdentity(NewSessionTicketMessage msg) {
+        appendBytes(msg.getTicket().getIdentity().getValue());
+        LOGGER.debug("TicketIdentity: " + ArrayConverter.bytesToHexString(msg.getTicket().getIdentity().getValue()));
+    }
+
+    private void writeExtensions() {
+        if (hasExtensionLengthField()) {
+            writeExtensionLength();
+            if (hasExtensions()) {
+                writeExtensionBytes();
+            }
+        }
     }
 }
