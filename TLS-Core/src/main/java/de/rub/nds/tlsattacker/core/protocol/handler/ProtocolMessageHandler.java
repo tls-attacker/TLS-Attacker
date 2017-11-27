@@ -66,6 +66,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
         if (withPrepare) {
             Preparator preparator = getPreparator(message);
             preparator.prepare();
+            preparator.afterPrepare();
         }
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
