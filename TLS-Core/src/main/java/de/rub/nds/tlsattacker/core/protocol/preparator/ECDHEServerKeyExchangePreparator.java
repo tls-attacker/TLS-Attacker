@@ -192,8 +192,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
     }
 
     private byte[] generateSignatureContents(ECDHEServerKeyExchangeMessage msg) {
-        EllipticCurveType curveType = EllipticCurveType.getCurveType(msg.getCurveType().getValue());
-
+        EllipticCurveType curveType = chooser.getEcCurveType();
         ByteArrayOutputStream ecParams = new ByteArrayOutputStream();
         switch (curveType) {
             case EXPLICIT_PRIME:
