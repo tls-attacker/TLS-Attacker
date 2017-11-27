@@ -955,24 +955,23 @@ public class Config implements Serializable {
      * NewSessionTicket parameters.
      */
     private long sessionTicketLifetimeHint = 0;
-    
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
-    
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyHMAC = ArrayConverter
             .hexStringToByteArray("536563757265535469636b65744b6579536563757265535469636b65744b6579"); // SecureSTicketKeySecureSTicketKey
-    
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyName = ArrayConverter.hexStringToByteArray("544c532d41747461636b6572204b6579"); // TLS-Attacker
-    
-    
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)// Key
+
+    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSessionTicketAgeAdd = ArrayConverter.hexStringToByteArray("cb8dbe8e");
-    
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSessionTicketNonce = ArrayConverter.hexStringToByteArray("00");
-    
+
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultSessionTicketIdentity = ArrayConverter
             .hexStringToByteArray("5266d21abe0f5156106eb1f0ec54a48a90fbc136de990a8881192211cc83aa7992ceb67d7a40b3f304fdea87e4ca61042c19641fd7493975ec69a3ec3f5fb6404aa4ac5acd5efbea15d454d89888a46fc4e6c6b9a3e0ee08ea21538372ced8d0aca453ceae44ce372a5388ab4cef67c5eae8cc1c72735d2646c19b2c50a4ee9bc97e70c6b57cab276a11a59fc5cbe0f5d2519e164fbf9f07a9dd053bcfc08939b475c7a2e76f04ef2a06cc9672bd4034");

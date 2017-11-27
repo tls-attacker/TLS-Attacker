@@ -22,6 +22,9 @@ public class CertificateEntry {
         this.extensions = extensions;
     }
 
+    public CertificateEntry() {
+    }
+
     public byte[] getCertificate() {
         return certificate;
     }
