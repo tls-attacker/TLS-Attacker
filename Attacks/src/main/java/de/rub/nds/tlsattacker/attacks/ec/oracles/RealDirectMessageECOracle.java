@@ -87,6 +87,7 @@ public class RealDirectMessageECOracle extends ECOracle {
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getKeyBits() / 8, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
+        message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {

@@ -481,7 +481,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with RenegotiationInfo extension
      */
-    private Boolean addRenegotiationInfoExtension = false;
+    private Boolean addRenegotiationInfoExtension = true;
 
     /**
      * If we generate ClientHello with TokenBinding extension.

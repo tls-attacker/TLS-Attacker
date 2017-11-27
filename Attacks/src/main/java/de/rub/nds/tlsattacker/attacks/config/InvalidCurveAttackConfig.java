@@ -49,7 +49,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     private int curveFieldSize = 32;
 
     @Parameter(names = "-protocol_flows", description = "Number of Protocol flows")
-    private int protocolFlows = 5;
+    private int protocolFlows = 15;
 
     // These are for scanning only
     @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true, converter = BigIntegerConverter.class)
