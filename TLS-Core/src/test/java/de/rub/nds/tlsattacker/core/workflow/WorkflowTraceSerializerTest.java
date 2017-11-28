@@ -129,6 +129,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("                <extensions>\n");
             sb.append("                    <ECPointFormat/>\n");
             sb.append("                    <EllipticCurves/>\n");
+            sb.append("                    <RenegotiationInfoExtension/>\n");
             sb.append("                </extensions>\n");
             sb.append("            </ClientHello>\n");
             sb.append("        </messages>\n");
@@ -175,6 +176,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("                <extensions>\n");
             sb.append("                    <ECPointFormat/>\n");
             sb.append("                    <EllipticCurves/>\n");
+            sb.append("                    <RenegotiationInfoExtension/>\n");
             sb.append("                </extensions>\n");
             sb.append("            </ClientHello>\n");
             sb.append("        </messages>\n");
@@ -233,6 +235,7 @@ public class WorkflowTraceSerializerTest {
             sb.append("                <extensions>\n");
             sb.append("                    <ECPointFormat/>\n");
             sb.append("                    <EllipticCurves/>\n");
+            sb.append("                    <RenegotiationInfoExtension/>\n");
             sb.append("                </extensions>\n");
             sb.append("            </ClientHello>\n");
             sb.append("        </messages>\n");

@@ -209,7 +209,7 @@
     <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
     <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
     <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
-    <addRenegotiationInfoExtension>false</addRenegotiationInfoExtension>
+    <addRenegotiationInfoExtension>true</addRenegotiationInfoExtension>
     <addTokenBindingExtension>false</addTokenBindingExtension>
     <addCertificateStatusRequestExtension>false</addCertificateStatusRequestExtension>
     <addAlpnExtension>false</addAlpnExtension>
