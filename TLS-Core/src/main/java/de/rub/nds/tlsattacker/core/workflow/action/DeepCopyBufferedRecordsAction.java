@@ -43,29 +43,28 @@ public class DeepCopyBufferedRecordsAction extends CopyContextFieldAction {
     public void reset() {
         setExecuted(false);
     }
-    
-    private void deepCopyRecords(TlsContext src, TlsContext dst)
-    {
+
+    private void deepCopyRecords(TlsContext src, TlsContext dst) {
         LinkedList<AbstractRecord> recordBuffer = new LinkedList<>();
         ObjectOutputStream outStream;
         ObjectInputStream inStream;
         try {
             for (AbstractRecord record : src.getRecordBuffer()) {
-            
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    outStream = new ObjectOutputStream(stream);
-                    outStream.writeObject(record);
-                    outStream.close();
-                    inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-                    AbstractRecord recordCopy = (AbstractRecord) inStream.readObject();
 
-                    recordBuffer.add(recordCopy);
-            } 
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                outStream = new ObjectOutputStream(stream);
+                outStream.writeObject(record);
+                outStream.close();
+                inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
+                AbstractRecord recordCopy = (AbstractRecord) inStream.readObject();
+
+                recordBuffer.add(recordCopy);
+            }
         } catch (IOException | ClassNotFoundException ex) {
-                LOGGER.error("Error while creating deep copy of recordBuffer");
-                throw new WorkflowExecutionException(ex.toString());
+            LOGGER.error("Error while creating deep copy of recordBuffer");
+            throw new WorkflowExecutionException(ex.toString());
         }
-        
+
         dst.setRecordBuffer(recordBuffer);
     }
 

@@ -42,30 +42,29 @@ public class DeepCopyBufferedMessagesAction extends CopyContextFieldAction {
     public void reset() {
         setExecuted(false);
     }
-    
-    private void deepCopyMessages(TlsContext src, TlsContext dst)
-    {
-       LinkedList<ProtocolMessage> messageBuffer = new LinkedList<>();
+
+    private void deepCopyMessages(TlsContext src, TlsContext dst) {
+        LinkedList<ProtocolMessage> messageBuffer = new LinkedList<>();
         ObjectOutputStream outStream;
         ObjectInputStream inStream;
         try {
             for (ProtocolMessage message : src.getMessageBuffer()) {
-            
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    outStream = new ObjectOutputStream(stream);
-                    outStream.writeObject(message);
-                    outStream.close();
-                    inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-                    ProtocolMessage messageCopy = (ProtocolMessage) inStream.readObject();
 
-                    messageBuffer.add(messageCopy);
-            } 
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                outStream = new ObjectOutputStream(stream);
+                outStream.writeObject(message);
+                outStream.close();
+                inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
+                ProtocolMessage messageCopy = (ProtocolMessage) inStream.readObject();
+
+                messageBuffer.add(messageCopy);
+            }
         } catch (IOException | ClassNotFoundException ex) {
-                LOGGER.error("Error while creating deep copy of messageBuffer");
-                throw new WorkflowExecutionException(ex.toString());
+            LOGGER.error("Error while creating deep copy of messageBuffer");
+            throw new WorkflowExecutionException(ex.toString());
         }
-        
-        dst.setMessageBuffer(messageBuffer); 
+
+        dst.setMessageBuffer(messageBuffer);
     }
 
 }
