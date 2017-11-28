@@ -143,13 +143,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
             responseFingerprintList.add(fingerprint);
         }
-        if (responseFingerprintList.size() == 0) {
+        if (responseFingerprintList.isEmpty()) {
             LOGGER.warn("Could not extract Fingerprints");
             return null;
         }
         ResponseFingerprint fingerprint = responseFingerprintList.get(0);
         for (int i = 1; i < responseFingerprintList.size(); i++) {
-            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, responseFingerprintList.get(i));
+            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, responseFingerprintList.get(i), false);
             if (error != EqualityError.NONE) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
                 LOGGER.info("Fingerprint1: " + fingerprint.toString());

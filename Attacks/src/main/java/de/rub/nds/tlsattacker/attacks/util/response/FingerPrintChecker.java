@@ -22,7 +22,8 @@ public class FingerPrintChecker {
     private FingerPrintChecker() {
     }
 
-    public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2) {
+    public static EqualityError checkEquality(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2,
+            boolean canDecryptAlerts) {
         if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
             return EqualityError.SOCKET_EXCEPTION;
         }
@@ -46,6 +47,9 @@ public class FingerPrintChecker {
         }
         if (!checkAlertRecordEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
             return EqualityError.ALERT_RECORD_CONTENT;
+        }
+        if (!checkAlertMessageEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
+            return EqualityError.ALERT_MESSAGE_CONTENT;
         }
         // If it contains an encrypted alert it is very likely that we cannot
         // just compare the protocolmessages
@@ -92,12 +96,30 @@ public class FingerPrintChecker {
             Record record2 = (Record) abstractRecord2;
             if (record1.getContentMessageType() == ProtocolMessageType.ALERT) {
                 if (record1.getLength().getValue() <= 6) {
-                    // The record is probably not encrypted, therefore the clean
-                    // bytes have to be equal
-                    if (!Arrays.areEqual(record1.getCleanProtocolMessageBytes().getValue(), record2
-                            .getCleanProtocolMessageBytes().getValue())) {
+                    // The record is probably not encrypted, therefore the
+                    // protocol message bytes
+                    if (!Arrays.areEqual(record1.getProtocolMessageBytes().getValue(), record2
+                            .getProtocolMessageBytes().getValue())) {
                         return false;
                     }
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean checkAlertMessageEquality(List<AbstractRecord> recordList1, List<AbstractRecord> recordList2) {
+        for (int i = 0; i < recordList1.size(); i++) {
+            AbstractRecord abstractRecord1 = recordList1.get(i);
+            AbstractRecord abstractRecord2 = recordList2.get(i);
+            Record record1 = (Record) abstractRecord1;
+            Record record2 = (Record) abstractRecord2;
+            if (record1.getContentMessageType() == ProtocolMessageType.ALERT) {
+                // The record is probably not encrypted, therefore the clean
+                // bytes have to be equal
+                if (!Arrays.areEqual(record1.getCleanProtocolMessageBytes().getValue(), record2
+                        .getCleanProtocolMessageBytes().getValue())) {
+                    return false;
                 }
             }
         }
@@ -110,7 +132,7 @@ public class FingerPrintChecker {
             AbstractRecord abstractRecord2 = recordList2.get(i);
             Record record1 = (Record) abstractRecord1;
             Record record2 = (Record) abstractRecord2;
-            if (!Objects.equals(record1.getLength().getValue(), record2.getLength().getValue())) {
+            if (record1.getLength().getValue() != record2.getLength().getValue()) {
                 return false;
             }
         }

@@ -13,20 +13,24 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
+import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
+import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -163,38 +167,29 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         records.addAll(createRecordsWithPlainData(blockSize, macSize));
         records.addAll(createRecordsWithModifiedMac());
         records.addAll(createRecordsWithModifiedPadding());
-        List<State> states = new LinkedList<>();
+
+        List<ResponseFingerprint> responseFingerprintList = new LinkedList<>();
         for (Record record : records) {
             State state = executeTlsFlow(record);
-            states.add(state);
-        }
-        LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
-        LOGGER.debug("If there are different messages, this could indicate the server does not process padding correctly");
+            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+            responseFingerprintList.add(fingerprint);
 
-        LinkedHashSet<ProtocolMessage> pmSet = new LinkedHashSet<>();
-        for (int i = 0; i < lastMessages.size(); i++) {
-            ProtocolMessage pm = lastMessages.get(i);
-            pmSet.add(pm);
-            Record r = records.get(i);
-            LOGGER.debug("----- NEXT TLS CONNECTION WITH MODIFIED APPLICATION DATA RECORD -----");
-            if (r.getPlainRecordBytes() != null) {
-                LOGGER.debug("Plain record bytes of the modified record: ");
-                LOGGER.debug(ArrayConverter.bytesToHexString(r.getPlainRecordBytes().getValue()));
-                LOGGER.debug("Last protocol message in the protocol flow");
+        }
+        if (responseFingerprintList.isEmpty()) {
+            LOGGER.warn("Could not extract Fingerprints");
+            return null;
+        }
+        ResponseFingerprint fingerprint = responseFingerprintList.get(0);
+        for (int i = 1; i < responseFingerprintList.size(); i++) {
+            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, responseFingerprintList.get(i), true);
+            if (error != EqualityError.NONE) {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
+                LOGGER.info("Fingerprint1: " + fingerprint.toString());
+                LOGGER.info("Fingerprint2: " + responseFingerprintList.get(i).toString());
+                return true;
             }
-            LOGGER.debug(pm.toString());
         }
-        List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
-
-        if (pmSet.size() == 1) {
-            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getDefaultClientConnection()
-                    .getHostname(), pmSetList);
-            return false;
-        } else {
-            LOGGER.info("{}, Vulnerable (?), more messages found, recheck in debug mode: {}", tlsConfig
-                    .getDefaultClientConnection().getHostname(), pmSetList);
-            return true;
-        }
+        return false;
     }
 
 }
