@@ -8,18 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.LinkedList;
 
 public class DeepCopyBuffersAction extends CopyContextFieldAction {
+
+    private State state;
 
     public DeepCopyBuffersAction() {
 
@@ -30,9 +24,9 @@ public class DeepCopyBuffersAction extends CopyContextFieldAction {
     }
 
     @Override
-    protected void copyField(TlsContext src, TlsContext dst) {
-        deepCopyRecords(src, dst);
-        deepCopyMessages(src, dst);
+    public void execute(State state) {
+        this.state = state;
+        super.execute(state);
     }
 
     @Override
@@ -45,52 +39,15 @@ public class DeepCopyBuffersAction extends CopyContextFieldAction {
         setExecuted(false);
     }
 
-    private void deepCopyRecords(TlsContext src, TlsContext dst) {
-        LinkedList<AbstractRecord> recordBuffer = new LinkedList<>();
-        ObjectOutputStream outStream;
-        ObjectInputStream inStream;
-        try {
-            for (AbstractRecord record : src.getRecordBuffer()) {
+    @Override
+    protected void copyField(TlsContext srcContext, TlsContext dstContext) {
+        DeepCopyBufferedRecordsAction copyRecords = new DeepCopyBufferedRecordsAction(super.getSrcContextAlias(),
+                super.getDstContextAlias());
+        DeepCopyBufferedMessagesAction copyMessages = new DeepCopyBufferedMessagesAction(super.getSrcContextAlias(),
+                super.getDstContextAlias());
 
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                outStream = new ObjectOutputStream(stream);
-                outStream.writeObject(record);
-                outStream.close();
-                inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-                AbstractRecord recordCopy = (AbstractRecord) inStream.readObject();
-
-                recordBuffer.add(recordCopy);
-            }
-        } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.error("Error while creating deep copy of recordBuffer");
-            throw new WorkflowExecutionException(ex.toString());
-        }
-
-        dst.setRecordBuffer(recordBuffer);
-    }
-
-    private void deepCopyMessages(TlsContext src, TlsContext dst) {
-        LinkedList<ProtocolMessage> messageBuffer = new LinkedList<>();
-        ObjectOutputStream outStream;
-        ObjectInputStream inStream;
-        try {
-            for (ProtocolMessage message : src.getMessageBuffer()) {
-
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                outStream = new ObjectOutputStream(stream);
-                outStream.writeObject(message);
-                outStream.close();
-                inStream = new ObjectInputStream(new ByteArrayInputStream(stream.toByteArray()));
-                ProtocolMessage messageCopy = (ProtocolMessage) inStream.readObject();
-
-                messageBuffer.add(messageCopy);
-            }
-        } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.error("Error while creating deep copy of messageBuffer");
-            throw new WorkflowExecutionException(ex.toString());
-        }
-
-        dst.setMessageBuffer(messageBuffer);
+        copyRecords.execute(state);
+        copyMessages.execute(state);
     }
 
 }
