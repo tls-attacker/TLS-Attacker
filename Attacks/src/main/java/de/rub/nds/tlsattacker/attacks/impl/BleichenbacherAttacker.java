@@ -15,6 +15,10 @@ import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
 import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
+import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
+import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
@@ -131,40 +135,28 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         LOGGER.info("Fetched the following server public key: " + publicKey);
 
-        List<State> states = new LinkedList<>();
+        List<ResponseFingerprint> responseFingerprintList = new LinkedList<>();
         byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
         byte[][] plainVectors = PKCS1VectorGenerator.generatePlainPkcs1Vectors(publicKey, config.getType());
         for (byte[] vector : vectors) {
             State state = executeTlsFlow(vector);
-            states.add(state);
+            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+            responseFingerprintList.add(fingerprint);
         }
-
-        LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");
-        for (int i = 0; i < protocolMessages.size(); i++) {
-            ProtocolMessage pm = protocolMessages.get(i);
-            LOGGER.info("Tested vector: {}", ArrayConverter.bytesToHexString(plainVectors[i]));
-            LOGGER.info("Last server TLS message: {}", pm.getProtocolMessageType());
-            if (pm.getProtocolMessageType() == ProtocolMessageType.ALERT) {
-                AlertMessage alert = (AlertMessage) pm;
-                AlertDescription ad = AlertDescription.getAlertDescription(alert.getDescription().getValue());
-                AlertLevel al = AlertLevel.getAlertLevel(alert.getLevel().getValue());
-                LOGGER.info("  Alert {}: {}", al, ad);
+        if (responseFingerprintList.size() == 0) {
+            LOGGER.warn("Could not extract Fingerprints");
+            return null;
+        }
+        ResponseFingerprint fingerprint = responseFingerprintList.get(0);
+        for (int i = 1; i < responseFingerprintList.size(); i++) {
+            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, responseFingerprintList.get(i));
+            if (error != EqualityError.NONE) {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
+                LOGGER.info("Fingerprint1: " + fingerprint.toString());
+                LOGGER.info("Fingerprint2: " + responseFingerprintList.get(i).toString());
+                return true;
             }
         }
-        HashSet<ProtocolMessage> protocolMessageSet = new HashSet<>(protocolMessages);
-        StringBuilder sb = new StringBuilder("[");
-        for (ProtocolMessage pm : protocolMessageSet) {
-            sb.append(pm.toCompactString()).append(' ');
-        }
-        sb.append(']');
-        if (protocolMessageSet.size() == 1) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig
-                    .getDefaultClientConnection().getHostname(), sb.toString());
-            return false;
-        } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig
-                    .getDefaultClientConnection().getHostname(), sb.toString());
-            return true;
-        }
+        return false;
     }
 }
