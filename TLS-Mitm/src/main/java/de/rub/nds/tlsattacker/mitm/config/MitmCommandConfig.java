@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ExecutorTypeDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
@@ -24,6 +25,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmWorkflowTypeDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.SignatureAndHashAlgorithmDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.TransportHandlerDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowInputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
@@ -68,6 +70,10 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     private ListDelegate listDelegate;
     @ParametersDelegate
     private ConfigOutputDelegate configOutputDelegate;
+    @ParametersDelegate
+    private TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate
+    private ExecutorTypeDelegate executorTypeDelegate;
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -87,6 +93,8 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.filterDelegate = new FilterDelegate();
         this.listDelegate = new ListDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
+        this.timeoutDelegate = new TimeoutDelegate();
+        this.executorTypeDelegate = new ExecutorTypeDelegate();
 
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -103,5 +111,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         addDelegate(filterDelegate);
         addDelegate(listDelegate);
         addDelegate(configOutputDelegate);
+        addDelegate(timeoutDelegate);
+        addDelegate(executorTypeDelegate);
     }
 }

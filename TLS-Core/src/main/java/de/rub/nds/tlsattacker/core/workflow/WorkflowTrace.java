@@ -79,6 +79,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
             @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
             @XmlElement(type = PopAndSendRecordAction.class, name = "PopAndSendRecord"),
+            @XmlElement(type = PopBuffersAction.class, name = "PopBuffers"),
             @XmlElement(type = PopBufferedMessageAction.class, name = "PopBufferedMessage"),
             @XmlElement(type = PopBufferedRecordAction.class, name = "PopBufferedRecord"),
             @XmlElement(type = PrintLastHandledApplicationDataAction.class, name = "PrintLastHandledApplicationData"),

@@ -19,6 +19,9 @@ Usage: <main class> [options]
     -debug
       Show extra debug output (sets logLevel to DEBUG)
       Default: false
+    -executor_type
+      Type of the workflow trace executor
+      Possible Values: [DEFAULT, THREADED_SERVER]
     -heartbeat_mode
       Sets the heartbeat mode
       Possible Values: [PEER_ALLOWED_TO_SEND, PEER_NOT_ALLOWED_TO_SEND]
@@ -37,10 +40,11 @@ Usage: <main class> [options]
     -max_fragment_length
       Maximum fragment length definition for the max fragment length TLS 
       extension (possible byte values 1,2,3, or 4)
-    -mitm_workflow_trace_type
-      Type of the workflow trace (currently only SIMPLE_MITM_PROXY)
+    -mitm_workflow_type
+      Type of the workflow trace (currently only SIMPLE_MITM_PROXY, 
+      RSA_SYNC_PROXY) 
       Default: SIMPLE_MITM_PROXY
-      Possible Values: [FULL, HANDSHAKE, HELLO, SHORT_HELLO, RESUMPTION, FULL_RESUMPTION, CLIENT_RENEGOTIATION, SERVER_RENEGOTIATION, HTTPS, SSL2_HELLO, SIMPLE_MITM_PROXY, ZERO_RTT, FULL_ZERO_RTT, FALSE_START]
+      Possible Values: [FULL, HANDSHAKE, HELLO, SHORT_HELLO, RESUMPTION, FULL_RESUMPTION, CLIENT_RENEGOTIATION, SERVER_RENEGOTIATION, HTTPS, SSL2_HELLO, SIMPLE_MITM_PROXY, ZERO_RTT, FULL_ZERO_RTT, FALSE_START, RSA_SYNC_PROXY]
     -named_curve
       Named curves to be used, divided by a comma
     -output_filter
@@ -56,6 +60,8 @@ Usage: <main class> [options]
     -signature_hash_algo
       Supported Signature and Hash Algorithms seperated by comma eg. 
       RSA-SHA512,DSA-SHA512 
+    -timeout
+      Timeout for socket connection
     -transport_handler_type
       Transport Handler type
       Possible Values: [TCP, EAP_TLS, UDP, NON_BLOCKING_TCP, STREAM, TCP_TIMING, UDP_TIMING, TCP_NO_DELAY]
