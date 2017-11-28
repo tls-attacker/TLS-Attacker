@@ -101,7 +101,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     }
 
-    private ProtocolMessage executeTlsFlow(byte[] encryptedPMS) {
+    private State executeTlsFlow(byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
         State state = new State(config.createConfig());
@@ -117,7 +117,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         cke.setPublicKey(epms);
 
         workflowExecutor.executeWorkflow();
-        return WorkflowTraceUtil.getLastReceivedMessage(trace);
+        return state;
     }
 
     @Override
@@ -131,12 +131,12 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         LOGGER.info("Fetched the following server public key: " + publicKey);
 
-        List<ProtocolMessage> protocolMessages = new LinkedList<>();
+        List<State> states = new LinkedList<>();
         byte[][] vectors = PKCS1VectorGenerator.generatePkcs1Vectors(publicKey, config.getType());
         byte[][] plainVectors = PKCS1VectorGenerator.generatePlainPkcs1Vectors(publicKey, config.getType());
         for (byte[] vector : vectors) {
-            ProtocolMessage pm = executeTlsFlow(vector);
-            protocolMessages.add(pm);
+            State state = executeTlsFlow(vector);
+            states.add(state);
         }
 
         LOGGER.info("The following list of protocol messages was found (the last protocol message in the client-server communication):");

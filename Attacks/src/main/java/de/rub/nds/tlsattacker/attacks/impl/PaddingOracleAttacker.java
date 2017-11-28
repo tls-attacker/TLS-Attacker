@@ -47,7 +47,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private final List<ProtocolMessage> lastMessages;
     private final Config tlsConfig;
-    private State state;
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig) {
         super(paddingOracleConfig, false);
@@ -60,7 +59,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public void executeAttackRound(Record record) {
+    public State executeTlsFlow(Record record) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
@@ -71,18 +70,13 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ReceiveAction(alertMessage));
 
-        state = new State(tlsConfig, trace);
+        State state = new State(tlsConfig, trace);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
 
-        try {
-            workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException ex) {
-            LOGGER.info("Not possible to finalize the defined workflow.");
-            LOGGER.debug(ex);
-        }
-        lastMessages.add(WorkflowTraceUtil.getLastReceivedMessage(trace));
+        workflowExecutor.executeWorkflow();
+        return state;
     }
 
     private List<Record> createRecordsWithPlainData(int blocksize, int macSize) {
@@ -169,8 +163,10 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         records.addAll(createRecordsWithPlainData(blockSize, macSize));
         records.addAll(createRecordsWithModifiedMac());
         records.addAll(createRecordsWithModifiedPadding());
+        List<State> states = new LinkedList<>();
         for (Record record : records) {
-            executeAttackRound(record);
+            State state = executeTlsFlow(record);
+            states.add(state);
         }
         LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
         LOGGER.debug("If there are different messages, this could indicate the server does not process padding correctly");
