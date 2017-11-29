@@ -76,4 +76,13 @@ public class ResponseFingerprint {
         return messageList;
     }
 
+    @Override
+    public String toString() {
+        return "ResponseFingerprint{" + "receivedTransportHandlerException=" + receivedTransportHandlerException
+                + ", encryptedAlert=" + encryptedAlert + ", numberRecordsReceived=" + numberRecordsReceived
+                + ", numberOfMessageReceived=" + numberOfMessageReceived + ", recordClasses=" + recordClasses
+                + ", messageClasses=" + messageClasses + ", messageList=" + messageList + ", recordList=" + recordList
+                + '}';
+    }
+
 }

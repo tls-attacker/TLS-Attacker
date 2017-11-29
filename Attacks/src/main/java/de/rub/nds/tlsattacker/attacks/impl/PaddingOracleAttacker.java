@@ -35,6 +35,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,6 +65,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     }
 
     public State executeTlsFlow(Record record) {
+        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
@@ -168,27 +170,34 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         records.addAll(createRecordsWithModifiedMac());
         records.addAll(createRecordsWithModifiedPadding());
 
-        List<ResponseFingerprint> responseFingerprintList = new LinkedList<>();
+        HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
         for (Record record : records) {
             State state = executeTlsFlow(record);
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+            AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
+                    .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
+            int length = ((Record) lastRecord).getLength().getValue();
+            List<ResponseFingerprint> responseFingerprintList = responseMap.get(length);
+            if (responseFingerprintList == null) {
+                responseFingerprintList = new LinkedList<>();
+                responseMap.put(length, responseFingerprintList);
+            }
             responseFingerprintList.add(fingerprint);
 
         }
-        if (responseFingerprintList.isEmpty()) {
-            LOGGER.warn("Could not extract Fingerprints");
-            return null;
-        }
-        ResponseFingerprint fingerprint = responseFingerprintList.get(0);
-        for (int i = 1; i < responseFingerprintList.size(); i++) {
-            EqualityError error = FingerPrintChecker.checkEquality(fingerprint, responseFingerprintList.get(i), true);
-            if (error != EqualityError.NONE) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
-                LOGGER.info("Fingerprint1: " + fingerprint.toString());
-                LOGGER.info("Fingerprint2: " + responseFingerprintList.get(i).toString());
-                return true;
+        for (List<ResponseFingerprint> list : responseMap.values()) {
+            ResponseFingerprint fingerprint = list.get(0);
+            for (int i = 1; i < list.size(); i++) {
+                EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
+                if (error != EqualityError.NONE) {
+                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
+                    LOGGER.info("Fingerprint1: " + fingerprint.toString());
+                    LOGGER.info("Fingerprint2: " + list.get(i).toString());
+                    return true;
+                }
             }
         }
+
         return false;
     }
 

