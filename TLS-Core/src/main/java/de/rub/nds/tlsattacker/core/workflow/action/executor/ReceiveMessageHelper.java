@@ -164,7 +164,7 @@ public class ReceiveMessageHelper {
         } catch (ParserException ex) {
             LOGGER.debug(ex);
             LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
-            byte[] extraBytes = null;
+            byte[] extraBytes = new byte[0];
             try {
                 extraBytes = receiveByteArray(context);
             } catch (IOException ex2) {
@@ -174,7 +174,7 @@ public class ReceiveMessageHelper {
                 return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
             }
             LOGGER.debug("Did not receive more Bytes. Parsing records softly");
-            return context.getRecordLayer().parseRecordsSoftly(extraBytes);
+            return context.getRecordLayer().parseRecordsSoftly(recordBytes);
         }
     }
 
