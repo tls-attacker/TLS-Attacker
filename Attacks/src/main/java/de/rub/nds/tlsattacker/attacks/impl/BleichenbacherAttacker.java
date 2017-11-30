@@ -45,8 +45,6 @@ import org.apache.logging.log4j.Logger;
  * Sends differently formatted PKCS#1 messages to the TLS server and observes
  * the server responses. In case there are differences in the server responses,
  * it is very likely that it is possible to execute Bleichenbacher attacks.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 
@@ -161,11 +159,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         sb.append(']');
         if (protocolMessageSet.size() == 1) {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, NOT vulnerable, one message found: {}", tlsConfig
-                    .getConnectionEnd().getHostname(), sb.toString());
+                    .getDefaultClientConnection().getHostname(), sb.toString());
             return false;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig.getConnectionEnd()
-                    .getHostname(), sb.toString());
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "{}, Vulnerable (probably), found: {}", tlsConfig
+                    .getDefaultClientConnection().getHostname(), sb.toString());
             return true;
         }
     }

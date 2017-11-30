@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusr
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CertificateStatusRequestV2ExtensionParser extends
         ExtensionParser<CertificateStatusRequestV2ExtensionMessage> {
 

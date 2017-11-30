@@ -13,9 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeySharePairParser extends Parser<KeySharePair> {
 
     private KeySharePair pair;
@@ -55,7 +52,7 @@ public class KeySharePairParser extends Parser<KeySharePair> {
      */
     private void parseKeyShareLength(KeySharePair pair) {
         pair.setKeyShareLength(parseIntField(ExtensionByteLength.KEY_SHARE_LENGTH));
-        LOGGER.debug("ServerNameLength: " + pair.getKeyShareLength().getValue());
+        LOGGER.debug("KeyShareLength: " + pair.getKeyShareLength().getValue());
     }
 
     /**
@@ -67,7 +64,7 @@ public class KeySharePairParser extends Parser<KeySharePair> {
      */
     private void parseKeyShare(KeySharePair pair) {
         pair.setKeyShare(parseByteArrayField(pair.getKeyShareLength().getValue()));
-        LOGGER.debug("ServerName: " + ArrayConverter.bytesToHexString(pair.getKeyShare().getValue()));
+        LOGGER.debug("KeyShare: " + ArrayConverter.bytesToHexString(pair.getKeyShare().getValue()));
     }
 
 }

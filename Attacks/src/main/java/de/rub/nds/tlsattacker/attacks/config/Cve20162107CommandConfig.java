@@ -22,10 +22,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class Cve20162107CommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "cve20162107";
@@ -70,6 +66,10 @@ public class Cve20162107CommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
+        config.setQuickReceive(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
         if (cipherSuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);

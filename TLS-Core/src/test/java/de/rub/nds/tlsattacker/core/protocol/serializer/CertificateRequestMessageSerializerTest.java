@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class CertificateRequestMessageSerializerTest {
 
@@ -33,20 +29,19 @@ public class CertificateRequestMessageSerializerTest {
     private byte[] message;
     private int start;
     private byte[] expectedPart;
-
     private HandshakeMessageType type;
     private int length;
-
     private int certTypesCount;
     private byte[] certTypes;
     private int sigHashAlgsLength;
     private byte[] sigHashAlgs;
     private int distinguishedNamesLength;
     private byte[] disitinguishedNames;
+    private ProtocolVersion version;
 
     public CertificateRequestMessageSerializerTest(byte[] message, int start, byte[] expectedPart,
             HandshakeMessageType type, int length, int certTypesCount, byte[] certTypes, int sigHashAlgsLength,
-            byte[] sigHashAlgs, int distinguishedNamesLength, byte[] disitinguishedNames) {
+            byte[] sigHashAlgs, int distinguishedNamesLength, byte[] disitinguishedNames, ProtocolVersion version) {
         this.message = message;
         this.start = start;
         this.expectedPart = expectedPart;
@@ -58,6 +53,7 @@ public class CertificateRequestMessageSerializerTest {
         this.sigHashAlgs = sigHashAlgs;
         this.distinguishedNamesLength = distinguishedNamesLength;
         this.disitinguishedNames = disitinguishedNames;
+        this.version = version;
     }
 
     /**
@@ -75,8 +71,7 @@ public class CertificateRequestMessageSerializerTest {
         message.setSignatureHashAlgorithms(sigHashAlgs);
         message.setDistinguishedNamesLength(distinguishedNamesLength);
         message.setDistinguishedNames(disitinguishedNames);
-        CertificateRequestMessageSerializer serializer = new CertificateRequestMessageSerializer(message,
-                ProtocolVersion.TLS12);
+        CertificateRequestMessageSerializer serializer = new CertificateRequestMessageSerializer(message, version);
         assertArrayEquals(expectedPart, serializer.serialize());
     }
 

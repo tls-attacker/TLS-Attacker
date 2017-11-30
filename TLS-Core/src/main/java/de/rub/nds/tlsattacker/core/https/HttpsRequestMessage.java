@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
+import de.rub.nds.tlsattacker.core.https.header.CookieHeader;
 import de.rub.nds.tlsattacker.core.https.header.DateHeader;
 import de.rub.nds.tlsattacker.core.https.header.ExpiresHeader;
 import de.rub.nds.tlsattacker.core.https.header.GenericHttpsHeader;
@@ -30,10 +31,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class HttpsRequestMessage extends ProtocolMessage {
 
     @XmlElementWrapper
@@ -43,7 +40,8 @@ public class HttpsRequestMessage extends ProtocolMessage {
             @XmlElement(type = ExpiresHeader.class, name = "ExpiresHeader"),
             @XmlElement(type = LocationHeader.class, name = "LocationHeader"),
             @XmlElement(type = HostHeader.class, name = "HostHeader"),
-            @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader") })
+            @XmlElement(type = TokenBindingHeader.class, name = "TokenBindingHeader"),
+            @XmlElement(type = TokenBindingHeader.class, name = "CookieHeader") })
     @HoldsModifiableVariable
     private List<HttpsHeader> header;
 
@@ -71,6 +69,9 @@ public class HttpsRequestMessage extends ProtocolMessage {
         header.add(new GenericHttpsHeader("Accept-Language", "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4"));
         if (config.isAddTokenBindingExtension()) {
             header.add(new TokenBindingHeader());
+        }
+        if (config.isAddHttpsCookie()) {
+            header.add(new CookieHeader());
         }
         header.add(new GenericHttpsHeader("Upgrade-Insecure-Requests", "1"));
         header.add(new GenericHttpsHeader(

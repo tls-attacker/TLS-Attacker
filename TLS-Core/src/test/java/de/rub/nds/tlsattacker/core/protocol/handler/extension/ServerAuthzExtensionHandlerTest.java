@@ -23,10 +23,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ServerAuthzExtensionHandlerTest {
 
     private final byte[] authzFormatListAsBytes = ArrayConverter.hexStringToByteArray("00010203");

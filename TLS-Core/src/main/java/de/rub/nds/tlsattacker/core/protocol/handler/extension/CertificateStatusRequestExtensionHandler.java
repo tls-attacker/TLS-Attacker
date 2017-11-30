@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CertificateStat
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CertificateStatusRequestExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CertificateStatusRequestExtensionHandler extends
         ExtensionHandler<CertificateStatusRequestExtensionMessage> {
 

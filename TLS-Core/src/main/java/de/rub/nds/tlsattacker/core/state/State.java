@@ -10,16 +10,26 @@ package de.rub.nds.tlsattacker.core.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceNormalizer;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.filter.Filter;
+import de.rub.nds.tlsattacker.core.workflow.filter.FilterFactory;
+import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The central object passed around during program execution. The state
@@ -33,104 +43,120 @@ import org.apache.logging.log4j.LogManager;
  * TLS contexts for workflow execution. These contexts should be considered as
  * dynamic objects, representing TLS connections, calculations and other data
  * exchanged during the TLS actual workflow execution.
+ * </p>
+ *
  * <p>
- * 
- * <p>
- * Therefore, there is no interface for setting TLS contexts manually. They are
- * always automatically created based on the connection ends defined in the
+ * Therefore, there is no public interface for setting TLS contexts manually.
+ * They are always automatically created based on the connections defined in the
  * workflow trace.
- * <p>
+ * </p>
  * 
  * <p>
  * Please also have a look at the tests supplied with this class for some
  * initialization examples with expected behavior.
  * </p>
- * 
- * 
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+ *
  */
 public class State {
 
-    protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(State.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger(State.class.getName());
 
+    private final ContextContainer contextContainer = new ContextContainer();
     private Config config = null;
-
-    /**
-     * All TLS contexts required for workflow execution. These map is managed
-     * automatically based on the connection ends defined in the workflow trace.
-     * Should not be set manually.
-     */
-    private final Map<String, TlsContext> tlsContexts = new HashMap<>();
-
-    /**
-     * A listening (also accepting) TLS context is a context with a server
-     * socket on our side. Should not be set manually.
-     */
-    private final List<TlsContext> listeningTlsContexts = new ArrayList<>();
-
-    /**
-     * A connecting TLS context is a context which holds a connection
-     * established from our side to a remote server. Should not be set manually.
-     */
-    private final List<TlsContext> connectingTlsContexts = new ArrayList<>();
+    private RunningModeType runningMode = null;
 
     @HoldsModifiableVariable
-    private WorkflowTrace workflowTrace = null;
+    private final WorkflowTrace workflowTrace;
+    private WorkflowTrace originalWorkflowTrace;
 
     public State() {
         this(Config.createConfig());
     }
 
-    public State(Config config) {
-        this.config = config;
+    public State(WorkflowTrace trace) {
+        this(Config.createConfig(), trace);
     }
 
-    public State(Config config, WorkflowTrace trace) {
+    public State(Config config) {
         this.config = config;
-        setWorkflowTrace(trace);
+        runningMode = config.getDefaulRunningMode();
+        this.workflowTrace = loadWorkflowTrace();
+        initState();
+    }
+
+    public State(Config config, WorkflowTrace workflowTrace) {
+        this.config = config;
+        runningMode = config.getDefaulRunningMode();
+        this.workflowTrace = workflowTrace;
+        initState();
     }
 
     /**
-     * Set a new workflow trace. Existing TLS contexts are discarded and fresh
-     * contexts are initialized based on the config and the given connection
-     * ends in the trace. If the trace does not define any connection ends,
-     * default values are loaded from config, if any.
-     * 
-     * @param trace
-     *            The workflow trace to execute.
+     * Normalize trace and initialize TLS contexts.
      */
-    public final void setWorkflowTrace(WorkflowTrace trace) {
-        if (!tlsContexts.isEmpty()) {
-            LOGGER.debug("Setting new workflow trace, clearing old contexts.");
-            clearTlsContexts();
+    public final void initState() {
+        // Keep a snapshot to restore user defined trace values after filtering.
+        if (config.isFiltersKeepUserSettings()) {
+            originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
         }
-        if (trace.getConnectionEnds() == null) {
-            LOGGER.debug("Workflow trace does not define any connection ends. "
-                    + "Adding connection end(s) from default config");
-            trace.setConnectionEnds(config.getConnectionEnds());
-        }
-        List<ConnectionEnd> conEnds = trace.getConnectionEnds();
 
-        if (conEnds.size() == 1) {
-            ConnectionEnd conEnd = conEnds.get(0);
-            TlsContext ctx = new TlsContext(config, conEnd);
-            if (conEnd.getAlias() == null) {
-                LOGGER.debug("Missing connection end alias in workflow trace, using default" + " alias ("
-                        + config.DEFAULT_CONNECTION_END_ALIAS + ").");
-                conEnd.setAlias(config.DEFAULT_CONNECTION_END_ALIAS);
-            }
+        WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
+        normalizer.normalize(workflowTrace, config, runningMode);
+        workflowTrace.setDirty(false);
+
+        for (AliasedConnection con : workflowTrace.getConnections()) {
+            TlsContext ctx = new TlsContext(config, con);
             addTlsContext(ctx);
-        } else {
-            for (ConnectionEnd conEnd : conEnds) {
-                TlsContext ctx = new TlsContext(config, conEnd);
-                addTlsContext(ctx);
-            }
         }
-        this.workflowTrace = trace;
+    }
+
+    private WorkflowTrace loadWorkflowTrace() {
+        WorkflowTrace trace = null;
+
+        if (config.getWorkflowInput() != null) {
+            try {
+                trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
+                LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
+            } catch (FileNotFoundException ex) {
+                LOGGER.warn("Could not read workflow trace. File not found: " + config.getWorkflowInput());
+                LOGGER.debug(ex);
+            } catch (JAXBException | IOException | XMLStreamException ex) {
+                LOGGER.warn("Could not read workflow trace: " + config.getWorkflowInput());
+                LOGGER.debug(ex);
+            }
+        } else if (config.getWorkflowTraceType() != null) {
+            WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+            trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
+            LOGGER.debug("Created new " + config.getWorkflowTraceType() + " workflow trace");
+        }
+
+        if (trace == null) {
+            throw new ConfigurationException("Could not load workflow trace");
+        }
+        return trace;
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public WorkflowTrace getWorkflowTrace() {
         return workflowTrace;
+    }
+
+    public WorkflowTrace getOriginalWorkflowTrace() {
+        return originalWorkflowTrace;
+    }
+
+    /**
+     * Replace existing TlsContext with new TlsContext. This can only be done if
+     * existingTlsContext.connection equals newTlsContext.connection.
+     * 
+     * @param newTlsContext
+     *            The new TlsContext to replace the old with
+     */
+    public void replaceTlsContext(TlsContext newTlsContext) {
+        contextContainer.replaceTlsContext(newTlsContext);
     }
 
     /**
@@ -138,85 +164,150 @@ public class State {
      * should be used only if there is exactly one context defined in the state.
      * This would typically be the default context as defined in the config.
      * 
+     * Note: Be careful when changing the context. I.e. if you change it's
+     * connection, the state can get out of sync.
+     * 
+     * TODO: Ideally, this would return a deep copy to prevent State
+     * invalidation.
+     * 
      * @return the only context known to the state
-     * @see getTlsContext(String)
      */
     public TlsContext getTlsContext() {
-        if (tlsContexts.isEmpty()) {
-            if (workflowTrace == null) {
-                throw new ConfigurationException("No context defined, perhaps because no"
-                        + " workflow trace is loaded yet.");
-            }
-            throw new ConfigurationException("No context defined.");
-        }
-        if (tlsContexts.size() > 1) {
-            throw new ConfigurationException("getTlsContext requires an alias if multiple contexts are defined");
-        }
-        return tlsContexts.entrySet().iterator().next().getValue();
+        return contextContainer.getTlsContext();
     }
 
     /**
      * Get TLS context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
      * 
+     * Note: Be careful when changing the context. I.e. if you change it's
+     * connection, the state can get out of sync.
+     * 
+     * TODO: Ideally, this would return a deep copy to prevent State
+     * invalidation.
+     * 
+     * 
+     * @param alias
+     *            The Alias for which the TLSContext should be returned
+     * 
      * @return the context with the given connection end alias
-     * @see convenience method for single context states: getTlsContext()
      */
     public TlsContext getTlsContext(String alias) {
-        if (tlsContexts.get(alias) == null) {
-            throw new ConfigurationException("No context defined with alias '" + alias + "'.");
-        }
-        return tlsContexts.get(alias);
+        return contextContainer.getTlsContext(alias);
     }
 
-    public Map<String, TlsContext> getTlsContexts() {
-        return Collections.unmodifiableMap(tlsContexts);
+    public List<TlsContext> getAllTlsContexts() {
+        return contextContainer.getAllContexts();
     }
 
-    public List<TlsContext> getListeningTlsContexts() {
-        return Collections.unmodifiableList(listeningTlsContexts);
+    public List<TlsContext> getInboundTlsContexts() {
+        return contextContainer.getInboundTlsContexts();
     }
 
-    public List<TlsContext> getConnectingTlsContexts() {
-        return Collections.unmodifiableList(connectingTlsContexts);
+    public List<TlsContext> getOutboundTlsContexts() {
+        return contextContainer.getOutboundTlsContexts();
     }
 
-    public Config getConfig() {
-        return config;
+    public RunningModeType getRunningMode() {
+        return runningMode;
+    }
+
+    public void setRunningMode(RunningModeType runningMode) {
+        this.runningMode = runningMode;
     }
 
     private void addTlsContext(TlsContext context) {
-        ConnectionEnd conEnd = context.getConnectionEnd();
-        String alias = conEnd.getAlias();
-        if (alias == null) {
-            throw new ConfigurationException("Connection end alias not set (null). Can't add the TLS context.");
-        }
-        if (tlsContexts.containsKey(alias)) {
-            throw new ConfigurationException("Connection end alias already in use: " + alias);
-        }
+        contextContainer.addTlsContext(context);
+    }
 
-        LOGGER.debug("Adding context " + alias);
-        tlsContexts.put(alias, context);
+    /**
+     * Get a filtered copy of the state's workflow trace.
+     * 
+     * @return a filtered copy of the input workflow trace
+     */
+    public WorkflowTrace getFilteredTraceCopy() {
+        return getFilteredTraceCopy(workflowTrace);
+    }
 
-        if (conEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
-            LOGGER.trace("Adding context " + alias + " to listeningCtxs");
-            listeningTlsContexts.add(context);
-        } else {
-            LOGGER.trace("Adding context " + alias + " to connectingCtxs");
-            connectingTlsContexts.add(context);
+    /**
+     * Return a filtered copy of the given workflow trace. This method does not
+     * modify the input trace.
+     * 
+     * @param trace
+     *            The workflow trace that should be filtered
+     * @return A filtered copy of the input workflow trace
+     */
+    private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
+        WorkflowTrace filtered = WorkflowTrace.copy(trace);
+        filterTrace(filtered);
+        return filtered;
+    }
+
+    /**
+     * Apply filters to trace in place.
+     * 
+     * @param trace
+     *            The workflow trace that should be filtered
+     */
+    private void filterTrace(WorkflowTrace trace) {
+        List<FilterType> filters = config.getOutputFilters();
+        if ((filters == null) || (filters.isEmpty())) {
+            LOGGER.debug("No filters to apply, ouput filter list is empty");
+            return;
+        }
+        // Filters contains null if set loaded from -config with entry
+        // <outputFilters/>.
+        if (filters.contains(null)) {
+            LOGGER.debug("No filters to apply");
+            return;
+        }
+        for (FilterType filterType : config.getOutputFilters()) {
+            Filter filter = FilterFactory.createWorkflowTraceFilter(filterType, config);
+            filter.applyFilter(trace);
+            if (config.isFiltersKeepUserSettings()) {
+                filter.postFilter(trace, originalWorkflowTrace);
+            }
         }
     }
 
-    private void clearTlsContexts() {
-        LOGGER.debug("Clearing contexts from state");
-        tlsContexts.clear();
-        listeningTlsContexts.clear();
-        connectingTlsContexts.clear();
+    /**
+     * Serialize and write states workflow trace to file.
+     */
+    public void storeTrace() {
+        assertWorkflowTraceNotNull("storeTrace");
 
-        LOGGER.debug("Removing connection ends from workflow trace");
-        if (workflowTrace != null) {
-            workflowTrace.clearConnectionEnds();
+        Random random = new Random();
+        if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
+            try {
+                File f = new File(config.getWorkflowOutput());
+                if (f.isDirectory()) {
+                    f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
+                }
+                WorkflowTrace filteredTrace;
+                if (config.isApplyFiltersInPlace()) {
+                    filteredTrace = workflowTrace;
+                    filterTrace(filteredTrace);
+                } else {
+                    filteredTrace = getFilteredTraceCopy(workflowTrace);
+                }
+                WorkflowTraceSerializer.write(f, filteredTrace);
+            } catch (JAXBException | IOException ex) {
+                LOGGER.info("Could not serialize WorkflowTrace.");
+                LOGGER.debug(ex);
+            }
         }
+    }
+
+    private void assertWorkflowTraceNotNull(String operation_name) {
+        if (workflowTrace != null) {
+            return;
+        }
+
+        StringBuilder err = new StringBuilder("No workflow trace loaded.");
+        if (operation_name != null && !operation_name.isEmpty()) {
+            err.append(" Operation ").append(operation_name).append(" not permitted");
+        }
+        throw new ConfigurationException(err.toString());
     }
 
 }

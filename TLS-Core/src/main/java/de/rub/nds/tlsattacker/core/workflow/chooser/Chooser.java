@@ -24,10 +24,11 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -35,10 +36,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public abstract class Chooser {
 
     protected static final Logger LOGGER = LogManager.getLogger(Chooser.class.getName());
@@ -140,6 +137,36 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
+    public abstract BigInteger getSRPModulus();
+
+    public abstract BigInteger getPSKModulus();
+
+    public abstract byte[] getPSKIdentity();
+
+    public abstract byte[] getPSKIdentityHint();
+
+    public abstract BigInteger getPSKServerPrivateKey();
+
+    public abstract BigInteger getPSKServerPublicKey();
+
+    public abstract BigInteger getPSKGenerator();
+
+    public abstract BigInteger getSRPGenerator();
+
+    public abstract BigInteger getSRPServerPrivateKey();
+
+    public abstract BigInteger getSRPServerPublicKey();
+
+    public abstract BigInteger getSRPClientPrivateKey();
+
+    public abstract BigInteger getSRPClientPublicKey();
+
+    public abstract byte[] getSRPServerSalt();
+
+    public abstract byte[] getSRPPassword();
+
+    public abstract byte[] getSRPIdentity();
+
     public abstract BigInteger getServerEcPrivateKey();
 
     public abstract BigInteger getClientEcPrivateKey();
@@ -164,6 +191,10 @@ public abstract class Chooser {
 
     public abstract byte[] getClientHandshakeTrafficSecret();
 
+    public abstract byte[] getClientApplicationTrafficSecret();
+
+    public abstract byte[] getServerApplicationTrafficSecret();
+
     public abstract KSEntry getServerKSEntry();
 
     public abstract RecordLayerType getRecordLayerType();
@@ -172,7 +203,9 @@ public abstract class Chooser {
 
     public abstract BigInteger getServerRSAPrivateKey();
 
-    public abstract ConnectionEnd getConnectionEnd();
+    public abstract Connection getConnection();
+
+    public abstract ConnectionEndType getConnectionEndType();
 
     public abstract ConnectionEndType getMyConnectionPeer();
 
@@ -181,4 +214,20 @@ public abstract class Chooser {
     public abstract boolean isClientAuthentication();
 
     public abstract byte[] getLastHandledApplicationMessageData();
+
+    public abstract String getHttpsCookieName();
+
+    public abstract String getHttpsCookieValue();
+
+    public abstract byte[] getPsk();
+
+    public abstract List<PskSet> getPskSets();
+
+    public abstract CipherSuite getEarlyDataCipherSuite();
+
+    public abstract byte[] getClientEarlyTrafficSecret();
+
+    public abstract byte[] getEarlySecret();
+
+    public abstract byte[] getEarlyDataPsk();
 }

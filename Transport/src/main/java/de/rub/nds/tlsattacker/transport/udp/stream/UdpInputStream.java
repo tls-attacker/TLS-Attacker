@@ -14,10 +14,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class UdpInputStream extends InputStream {
 
     private final static int BUFFER_SIZE = 16384;

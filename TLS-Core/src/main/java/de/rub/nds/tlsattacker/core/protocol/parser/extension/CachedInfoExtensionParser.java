@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensionMessage> {
 
     private List<CachedObject> cachedObjectList;

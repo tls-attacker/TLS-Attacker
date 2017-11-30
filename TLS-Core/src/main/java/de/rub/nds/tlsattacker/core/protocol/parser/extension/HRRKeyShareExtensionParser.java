@@ -12,9 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class HRRKeyShareExtensionParser extends ExtensionParser<HRRKeyShareExtensionMessage> {
 
     public HRRKeyShareExtensionParser(int startposition, byte[] array) {

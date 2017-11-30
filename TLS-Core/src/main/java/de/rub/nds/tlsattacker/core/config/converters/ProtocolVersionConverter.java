@@ -15,8 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 /**
  * Converts a protocol version string to a protocol Version enum (for command
  * line purposes).
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ProtocolVersionConverter implements IStringConverter<ProtocolVersion> {
 

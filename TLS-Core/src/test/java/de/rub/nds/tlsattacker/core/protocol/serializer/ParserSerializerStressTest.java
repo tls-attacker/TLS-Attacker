@@ -65,10 +65,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ParserSerializerStressTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ParserSerializerStressTest.class);

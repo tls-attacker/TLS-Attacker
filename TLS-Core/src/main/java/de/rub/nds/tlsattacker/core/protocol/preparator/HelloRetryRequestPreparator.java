@@ -15,9 +15,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class HelloRetryRequestPreparator extends HandshakeMessagePreparator<HelloRetryRequestMessage> {
 
     private final HelloRetryRequestMessage msg;

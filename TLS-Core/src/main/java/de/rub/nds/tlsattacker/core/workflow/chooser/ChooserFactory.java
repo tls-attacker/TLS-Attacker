@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ChooserType;
 import de.rub.nds.tlsattacker.core.exceptions.InvalidChooserTypeException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ChooserFactory {
 
     public static Chooser getChooser(ChooserType type, TlsContext context, Config config) {

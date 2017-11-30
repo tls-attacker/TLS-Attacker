@@ -12,15 +12,12 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.server.config.ServerCommandConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger(Main.class.getName());
@@ -34,18 +31,24 @@ public class Main {
                 commander.usage();
                 return;
             }
+            ListDelegate list = (ListDelegate) config.getDelegate(ListDelegate.class);
+            if (list.isSet()) {
+                list.plotListing();
+                return;
+            }
+
             Config tlsConfig = null;
             try {
                 tlsConfig = config.createConfig();
                 TlsServer server = new TlsServer();
-                server.startTlsServer(tlsConfig);
+                server.run(tlsConfig);
             } catch (ConfigurationException E) {
-                LOGGER.warn("Encountered a ConfigurationException aborting.");
+                LOGGER.warn("Encountered a ConfigurationException aborting. Try -debug for more info");
                 LOGGER.debug(E);
                 commander.usage();
             }
         } catch (ParameterException E) {
-            LOGGER.warn("Could not parse provided parameters");
+            LOGGER.warn("Could not parse provided parameters. Try -debug for more info");
             LOGGER.debug(E);
             commander.usage();
         }

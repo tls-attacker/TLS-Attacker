@@ -21,10 +21,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class PaddingOracleCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "padding_oracle";
@@ -82,7 +78,8 @@ public class PaddingOracleCommandConfig extends AttackConfig {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
         }
-
+        // config.setQuickReceive(true);
+        // config.setEarlyStop(true);
         return config;
     }
 }

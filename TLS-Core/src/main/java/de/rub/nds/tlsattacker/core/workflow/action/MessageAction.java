@@ -24,19 +24,29 @@ import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EndOfEarlyDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PSKClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -46,18 +56,13 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper
 import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
-public abstract class MessageAction extends TLSAction {
+public abstract class MessageAction extends ConnectionBoundAction {
 
     @XmlElementWrapper
     @HoldsModifiableVariable
@@ -72,12 +77,13 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-            @XmlElement(type = PSKClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
             @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
             @XmlElement(type = AlertMessage.class, name = "Alert"),
+            @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -90,14 +96,25 @@ public abstract class MessageAction extends TLSAction {
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
             @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
+            @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
+            @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
+            @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
+            @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
+            @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
+            @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
+            @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
+            @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
+            @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
+            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
-    protected List<ProtocolMessage> messages;
+    protected List<ProtocolMessage> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
             @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> records;
+    protected List<AbstractRecord> records = new ArrayList<>();
 
     @XmlTransient
     protected ReceiveMessageHelper receiveMessageHelper;
@@ -106,7 +123,6 @@ public abstract class MessageAction extends TLSAction {
     protected SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
-        messages = new LinkedList<>();
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
@@ -121,6 +137,23 @@ public abstract class MessageAction extends TLSAction {
         this.messages = new ArrayList<>(Arrays.asList(messages));
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
+    }
+
+    public MessageAction(String connectionAlias) {
+        super(connectionAlias);
+        receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();
+    }
+
+    public MessageAction(String connectionAlias, List<ProtocolMessage> messages) {
+        super(connectionAlias);
+        this.messages = new ArrayList<>(messages);
+        receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();
+    }
+
+    public MessageAction(String connectionAlias, ProtocolMessage... messages) {
+        this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {
@@ -141,6 +174,9 @@ public abstract class MessageAction extends TLSAction {
 
     public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
+        if (messages == null) {
+            return builder.toString();
+        }
         for (ProtocolMessage message : messages) {
             if (verbose) {
                 builder.append(message.toString());
@@ -178,4 +214,51 @@ public abstract class MessageAction extends TLSAction {
     public void setRecords(AbstractRecord... records) {
         this.records = new ArrayList<>(Arrays.asList(records));
     }
+
+    public void clearRecords() {
+        this.records = null;
+    }
+
+    @Override
+    public void normalize() {
+        super.normalize();
+        initEmptyLists();
+    }
+
+    @Override
+    public void normalize(TlsAction defaultAction) {
+        super.normalize(defaultAction);
+        initEmptyLists();
+    }
+
+    @Override
+    public void filter() {
+        super.filter();
+        stripEmptyLists();
+    }
+
+    @Override
+    public void filter(TlsAction defaultAction) {
+        super.filter(defaultAction);
+        stripEmptyLists();
+    }
+
+    private void stripEmptyLists() {
+        if (messages == null || messages.isEmpty()) {
+            messages = null;
+        }
+        if (records == null || records.isEmpty()) {
+            records = null;
+        }
+    }
+
+    private void initEmptyLists() {
+        if (messages == null) {
+            messages = new ArrayList<>();
+        }
+        if (records == null) {
+            records = new ArrayList<>();
+        }
+    }
+
 }

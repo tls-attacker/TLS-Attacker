@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.https.header.ContentLengthHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ContentLengthHeaderPreparator extends Preparator<ContentLengthHeader> {
 
     private ContentLengthHeader header;

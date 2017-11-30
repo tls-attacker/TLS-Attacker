@@ -18,10 +18,6 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     private final int port;
@@ -116,7 +112,11 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
         }
     }
 
-    public ServerSocket getServerSocket() {
-        return serverSocket;
+    public int getPort() {
+        if (serverSocket != null) {
+            return serverSocket.getLocalPort();
+        } else {
+            return port;
+        }
     }
 }

@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class WorkflowOutputDelegate extends Delegate {
 
     @Parameter(names = "-workflow_output", description = "This parameter allows you to serialize the whole workflow trace into a specific XML file")

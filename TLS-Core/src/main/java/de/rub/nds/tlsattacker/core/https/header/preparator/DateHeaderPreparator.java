@@ -16,10 +16,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class DateHeaderPreparator extends Preparator<DateHeader> {
 
     private DateHeader header;

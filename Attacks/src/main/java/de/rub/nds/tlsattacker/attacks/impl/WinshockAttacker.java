@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
@@ -23,14 +24,13 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * Allows to execute the Winshock attack, by setting the CertificateVerify
  * protocol message properties. I
- *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
@@ -44,7 +44,8 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
     public void executeAttack() {
         Config tlsConfig = config.createConfig();
         tlsConfig.setClientAuthentication(true);
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         State state = new State(tlsConfig, trace);
         ModifiableByteArray signature = new ModifiableByteArray();
         signature.setModification(ByteArrayModificationFactory.explicitValue(ArrayConverter

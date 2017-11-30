@@ -23,10 +23,6 @@ import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class BleichenbacherCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "bleichenbacher";
@@ -97,6 +93,8 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
+        config.setQuickReceive(true);
+        config.setEarlyStop(true);
         return config;
     }
 

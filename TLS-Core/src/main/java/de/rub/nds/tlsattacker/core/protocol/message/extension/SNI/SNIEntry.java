@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.NameType;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SNIEntry implements Serializable {
 
     private String name;

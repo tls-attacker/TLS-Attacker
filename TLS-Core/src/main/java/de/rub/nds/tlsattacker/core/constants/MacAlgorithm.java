@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum MacAlgorithm {
 
     NULL("null", 0),
     AEAD("null", 0),
+    SSLMAC_MD5("SslMacMD5", 16), // supported by SunJCE
+    SSLMAC_SHA1("SslMacSHA1", 20), // supported by SunJCE
     HMAC_MD5("HmacMD5", 16),
     HMAC_SHA1("HmacSHA1", 20),
     HMAC_SHA256("HmacSHA256", 32),

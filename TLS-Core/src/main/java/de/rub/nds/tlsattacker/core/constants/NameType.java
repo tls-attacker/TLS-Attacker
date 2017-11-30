@@ -13,8 +13,6 @@ import java.util.Map;
 
 /**
  * Name Type for Server Name Indication
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public enum NameType {
 

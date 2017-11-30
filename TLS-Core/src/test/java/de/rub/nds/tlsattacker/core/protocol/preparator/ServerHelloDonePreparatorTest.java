@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerHelloDonePreparatorTest {
 
     private TlsContext context;

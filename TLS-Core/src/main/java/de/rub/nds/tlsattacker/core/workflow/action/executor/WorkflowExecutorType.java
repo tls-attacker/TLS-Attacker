@@ -8,10 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public enum WorkflowExecutorType {
-    DEFAULT
+    DEFAULT,
+    THREADED_SERVER
 }

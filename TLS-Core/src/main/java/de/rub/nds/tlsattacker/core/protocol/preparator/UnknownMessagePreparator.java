@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownMessage> {
 
     private final UnknownMessage msg;

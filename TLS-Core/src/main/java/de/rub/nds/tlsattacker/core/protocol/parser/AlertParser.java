@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class AlertParser extends ProtocolMessageParser<AlertMessage> {
 
     /**

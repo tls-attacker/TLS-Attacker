@@ -17,16 +17,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class ModifiableVariableAnalyzerTest {
 
     /**
      * Test of getAllModifiableVariableFields method, of class
      * ModifiableVariableAnalyzer.
-     * 
      */
     @Test
     public void testGetAllModifiableVariableFields() {

@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationIn
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RenegotiationInfoExtensionHandler extends ExtensionHandler<RenegotiationInfoExtensionMessage> {
 
     public RenegotiationInfoExtensionHandler(TlsContext context) {
@@ -48,7 +44,7 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
             LOGGER.warn("The RenegotiationInfo length shouldn't exceed 2 bytes as defined in RFC 5246. "
                     + "Length was " + message.getExtensionLength().getValue());
         }
-        if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEnd().getConnectionEndType()) {
+        if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
             context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {

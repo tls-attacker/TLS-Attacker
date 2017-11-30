@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * RFC7366
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class EncryptThenMacExtensionMessage extends ExtensionMessage {
 

@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * Describes Server Name Indication extension from
  * http://tools.ietf.org/html/rfc6066
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 

@@ -14,9 +14,6 @@ import org.junit.Test;
 import java.math.BigInteger;
 import static org.junit.Assert.assertEquals;
 
-/**
- * @author Christoph Penkert <christoph.penkert@rub.de>
- */
 public class BigIntegerConverterTest {
     private BigIntegerConverter converter;
 

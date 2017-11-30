@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
+import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -24,10 +25,6 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- * @author Robert Merget - robert.merget@rub.de
- */
 public class FinishedMessagePreparator extends HandshakeMessagePreparator<FinishedMessage> {
 
     private byte[] verifyData;
@@ -52,15 +49,15 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());
                 Mac mac = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName());
                 byte[] finishedKey;
-                LOGGER.debug("Connection End: " + chooser.getConnectionEnd().getConnectionEndType());
-                if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+                LOGGER.debug("Connection End: " + chooser.getConnectionEndType());
+                if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
                     finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getServerHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 } else {
                     finishedKey = HKDFunction.expandLabel(hkdfAlgortihm, chooser.getClientHandshakeTrafficSecret(),
                             HKDFunction.FINISHED, new byte[0], mac.getMacLength());
                 }
-                LOGGER.debug("Finisched key: " + ArrayConverter.bytesToHexString(finishedKey));
+                LOGGER.debug("Finished key: " + ArrayConverter.bytesToHexString(finishedKey));
                 SecretKeySpec keySpec = new SecretKeySpec(finishedKey, mac.getAlgorithm());
                 mac.init(keySpec);
                 mac.update(chooser.getContext().getDigest()
@@ -69,6 +66,13 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
             } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
                 throw new CryptoException(ex);
             }
+        } else if (chooser.getSelectedProtocolVersion().isSSL()) {
+            LOGGER.trace("Calculating VerifyData:");
+            final byte[] handshakeMessageContent = chooser.getContext().getDigest().getRawBytes();
+            final byte[] masterSecret = chooser.getMasterSecret();
+            LOGGER.debug("Using MasterSecret:" + ArrayConverter.bytesToHexString(masterSecret));
+            final ConnectionEndType endType = chooser.getConnectionEndType();
+            return SSLUtils.calculateFinishedData(handshakeMessageContent, masterSecret, endType);
         } else {
             LOGGER.trace("Calculating VerifyData:");
             PRFAlgorithm prfAlgorithm = chooser.getPRFAlgorithm();
@@ -78,7 +82,7 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
             byte[] handshakeMessageHash = chooser.getContext().getDigest()
                     .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
-            if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
+            if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
                 // TODO put this in seperate config option
                 return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
                         PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.state;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
@@ -24,26 +25,32 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
+import static de.rub.nds.tlsattacker.core.state.State.LOGGER;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
@@ -58,13 +65,6 @@ import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class TlsContext {
 
     /**
@@ -79,7 +79,7 @@ public class TlsContext {
     /**
      * The end point of the TLS connection that this context represents.
      */
-    private ConnectionEnd connectionEnd;
+    private AliasedConnection connection;
 
     /**
      * Shared key established during the handshake.
@@ -89,10 +89,64 @@ public class TlsContext {
     private byte[] clientHandshakeTrafficSecret;
 
     private byte[] serverHandshakeTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] clientApplicationTrafficSecret;
+    /**
+     * shared key established during the handshake
+     */
+    private byte[] serverApplicationTrafficSecret;
 
-    private byte[] clientApplicationTrafficSecret0;
+    /**
+     * Early traffic secret used to encrypt early data.
+     */
+    private byte[] clientEarlyTrafficSecret;
 
-    private byte[] serverApplicationTrafficSecret0;
+    /**
+     * ChiperSuite used for early data.
+     */
+    private CipherSuite earlyDataCipherSuite;
+
+    /**
+     * EarlySecret used to derive EarlyTrafficSecret and more.
+     */
+    private byte[] earlySecret;
+
+    /**
+     * The known TLS 1.3 PSK-Sets.
+     */
+    private List<PskSet> pskSets;
+
+    /**
+     * The selected Pre Shared key.
+     */
+    private byte[] psk;
+
+    /**
+     * The selected earlyData PSK.
+     */
+    private byte[] earlyDataPsk;
+
+    /**
+     * Identity of the PSK used for earlyData.
+     */
+    private byte[] earlyDataPSKIdentity;
+
+    /**
+     * Identity of the PSK used for earlyData.
+     */
+    private int selectedIdentityIndex;
+
+    /**
+     * The Client's chosen Kex-Modes.
+     */
+    private List<PskKeyExchangeMode> clientPskKeyExchangeModes;
+
+    /**
+     * Maximum number of bytes to transmit as early-data.
+     */
+    private long maxEarlyDataSize;
 
     /**
      * Master secret established during the handshake.
@@ -258,6 +312,38 @@ public class TlsContext {
 
     private BigInteger clientDhPublicKey;
 
+    private BigInteger srpModulus;
+
+    private BigInteger pskModulus;
+
+    private BigInteger serverPSKPrivateKey;
+
+    private BigInteger serverPSKPublicKey;
+
+    private BigInteger pskGenerator;
+
+    private BigInteger srpGenerator;
+
+    private BigInteger serverSRPPublicKey;
+
+    private BigInteger serverSRPPrivateKey;
+
+    private BigInteger clientSRPPublicKey;
+
+    private BigInteger clientSRPPrivateKey;
+
+    private byte[] srpServerSalt;
+
+    private byte[] srpPassword;
+
+    private byte[] srpIdentity;
+
+    private byte[] pskKey;
+
+    private byte[] pskIdentity;
+
+    private byte[] pskIdentityHint;
+
     private NamedCurve selectedCurve;
 
     private CustomECPoint clientEcPublicKey;
@@ -286,12 +372,6 @@ public class TlsContext {
 
     private boolean receivedFatalAlert = false;
 
-    private boolean encryptActive = false;
-    /**
-     * TLS 1.3, update keys for application data
-     */
-    private boolean updateKeys = false;
-
     private List<ClientCertificateType> clientCertificateTypes;
 
     private byte[] distinguishedNames;
@@ -304,8 +384,24 @@ public class TlsContext {
 
     private KSEntry serverKSEntry;
 
-    private int sequenceNumber = 0;
+    /**
+     * the currently used type of keySet by the client
+     */
+    private Tls13KeySetType activeClientKeySetType = Tls13KeySetType.NONE;
 
+    /**
+     * the currently used type of keySet by the server
+     */
+    private Tls13KeySetType activeServerKeySetType = Tls13KeySetType.NONE;
+
+    /**
+     * sequence number used for the encryption
+     */
+    private long writeSequenceNumber = 0;
+    /**
+     * sequence number used for the decryption
+     */
+    private long readSequenceNumber = 0;
     /**
      * supported protocol versions
      */
@@ -353,10 +449,17 @@ public class TlsContext {
     private Random random;
 
     @XmlTransient
+    private LinkedList<ProtocolMessage> messageBuffer;
+
+    @XmlTransient
+    private LinkedList<AbstractRecord> recordBuffer;
+
+    @XmlTransient
     private Chooser chooser;
 
     /**
-     * Contains the TLS extensions proposed by the client.
+     * Contains the TLS extensions proposed by the client. private boolean
+     * earlyCleanShutdown;
      */
     private final EnumSet<ExtensionType> proposedExtensionSet = EnumSet.noneOf(ExtensionType.class);
 
@@ -383,6 +486,19 @@ public class TlsContext {
      */
     private boolean useExtendedMasterSecret;
 
+    private Boolean earlyCleanShutdown = false;
+    /**
+     * Add a cookie with this name to HTTPS header if config.isAddHttpsCookie is
+     * set.
+     */
+    private String httpsCookieName = null;
+
+    /**
+     * Add a cookie with this value to HTTPS header if config.isAddHttpsCookie
+     * is set.
+     */
+    private String httpsCookieValue = null;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -394,27 +510,40 @@ public class TlsContext {
      * single context scenarios.
      *
      * @param config
+     *            The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
-        if (config.getConnectionEnds().size() > 1) {
-            throw new ConfigurationException("Attempting to create context from a config containing"
-                    + " multiple connection ends. Please specify the connection end to use.");
-        }
-        init(config, config.getConnectionEnd());
+        RunningModeType mode = config.getDefaulRunningMode();
+        if (null == mode) {
+            throw new ConfigurationException("Cannot create connection, running mode not set");
+        } else
+            switch (mode) {
+                case CLIENT:
+                    init(config, config.getDefaultClientConnection());
+                    break;
+                case SERVER:
+                    init(config, config.getDefaultServerConnection());
+                    break;
+                default:
+                    throw new ConfigurationException("Cannot create connection for unknown running mode " + "'" + mode
+                            + "'");
+            }
     }
 
-    public TlsContext(Config config, ConnectionEnd conEnd) {
-        init(config, conEnd);
+    public TlsContext(Config config, AliasedConnection connection) {
+        init(config, connection);
     }
 
-    private void init(Config config, ConnectionEnd conEnd) {
+    private void init(Config config, AliasedConnection connection) {
         this.config = config;
         digest = new MessageDigestCollector();
-        connectionEnd = conEnd;
+        this.connection = connection;
         recordLayerType = config.getRecordLayerType();
         httpContext = new HttpContext();
         sessionList = new LinkedList<>();
         random = new Random(0);
+        messageBuffer = new LinkedList<>();
+        recordBuffer = new LinkedList<>();
     }
 
     public Chooser getChooser() {
@@ -422,6 +551,22 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public LinkedList<ProtocolMessage> getMessageBuffer() {
+        return messageBuffer;
+    }
+
+    public void setMessageBuffer(LinkedList<ProtocolMessage> messageBuffer) {
+        this.messageBuffer = messageBuffer;
+    }
+
+    public LinkedList<AbstractRecord> getRecordBuffer() {
+        return recordBuffer;
+    }
+
+    public void setRecordBuffer(LinkedList<AbstractRecord> recordBuffer) {
+        this.recordBuffer = recordBuffer;
     }
 
     public HttpContext getHttpContext() {
@@ -563,6 +708,134 @@ public class TlsContext {
 
     public void setServerEcPublicKey(CustomECPoint serverEcPublicKey) {
         this.serverEcPublicKey = serverEcPublicKey;
+    }
+
+    public BigInteger getSRPGenerator() {
+        return srpGenerator;
+    }
+
+    public void setSRPGenerator(BigInteger srpGenerator) {
+        this.srpGenerator = srpGenerator;
+    }
+
+    public BigInteger getSRPModulus() {
+        return srpModulus;
+    }
+
+    public void setSRPModulus(BigInteger srpModulus) {
+        this.srpModulus = srpModulus;
+    }
+
+    public byte[] getPSKIdentity() {
+        return pskIdentity;
+    }
+
+    public void setPSKIdentity(byte[] pskIdentity) {
+        this.pskIdentity = pskIdentity;
+    }
+
+    public byte[] getPSKIdentityHint() {
+        return pskIdentityHint;
+    }
+
+    public void setPSKIdentityHint(byte[] pskIdentityHint) {
+        this.pskIdentityHint = pskIdentityHint;
+    }
+
+    public BigInteger getPSKModulus() {
+        return pskModulus;
+    }
+
+    public void setPSKModulus(BigInteger pskModulus) {
+        this.pskModulus = pskModulus;
+    }
+
+    public BigInteger getServerPSKPrivateKey() {
+        return serverPSKPrivateKey;
+    }
+
+    public void setServerPSKPrivateKey(BigInteger serverPSKPrivateKey) {
+        this.serverPSKPrivateKey = serverPSKPrivateKey;
+    }
+
+    public BigInteger getServerPSKPublicKey() {
+        return serverPSKPublicKey;
+    }
+
+    public void setServerPSKPublicKey(BigInteger serverPSKPublicKey) {
+        this.serverPSKPublicKey = serverPSKPublicKey;
+    }
+
+    public BigInteger getPSKGenerator() {
+        return pskGenerator;
+    }
+
+    public void setPSKGenerator(BigInteger pskGenerator) {
+        this.pskGenerator = pskGenerator;
+    }
+
+    public BigInteger getServerSRPPublicKey() {
+        return serverSRPPublicKey;
+    }
+
+    public void setServerSRPPublicKey(BigInteger serverSRPPublicKey) {
+        this.serverSRPPublicKey = serverSRPPublicKey;
+    }
+
+    public BigInteger getServerSRPPrivateKey() {
+        return serverSRPPrivateKey;
+    }
+
+    public void setServerSRPPrivateKey(BigInteger serverSRPPrivateKey) {
+        this.serverSRPPrivateKey = serverSRPPrivateKey;
+    }
+
+    public BigInteger getClientSRPPublicKey() {
+        return clientSRPPublicKey;
+    }
+
+    public void setClientSRPPublicKey(BigInteger clientSRPPublicKey) {
+        this.clientSRPPublicKey = clientSRPPublicKey;
+    }
+
+    public BigInteger getClientSRPPrivateKey() {
+        return clientSRPPrivateKey;
+    }
+
+    public void setClientSRPPrivateKey(BigInteger clientSRPPrivateKey) {
+        this.clientSRPPrivateKey = clientSRPPrivateKey;
+    }
+
+    public byte[] getSRPServerSalt() {
+        return srpServerSalt;
+    }
+
+    public void setSRPServerSalt(byte[] srpServerSalt) {
+        this.srpServerSalt = srpServerSalt;
+    }
+
+    public byte[] getPSKKey() {
+        return pskKey;
+    }
+
+    public void setPSKKeyt(byte[] pskKey) {
+        this.pskKey = pskKey;
+    }
+
+    public byte[] getSRPPassword() {
+        return srpPassword;
+    }
+
+    public void setSRPPassword(byte[] srpPassword) {
+        this.srpPassword = srpPassword;
+    }
+
+    public byte[] getSRPIdentity() {
+        return srpIdentity;
+    }
+
+    public void setSRPIdentity(byte[] srpIdentity) {
+        this.srpIdentity = srpIdentity;
     }
 
     public BigInteger getDhGenerator() {
@@ -708,22 +981,6 @@ public class TlsContext {
         this.receivedFatalAlert = receivedFatalAlert;
     }
 
-    public boolean isEncryptActive() {
-        return encryptActive;
-    }
-
-    public void setEncryptActive(boolean encryptActive) {
-        this.encryptActive = encryptActive;
-    }
-
-    public boolean isUpdateKeys() {
-        return updateKeys;
-    }
-
-    public void setUpdateKeys(boolean updateKeys) {
-        this.updateKeys = updateKeys;
-    }
-
     public List<ECPointFormat> getClientPointFormatsList() {
         return clientPointFormatsList;
     }
@@ -780,12 +1037,28 @@ public class TlsContext {
         this.clientSupportedCompressions = new ArrayList(Arrays.asList(clientSupportedCompressions));
     }
 
-    public int getSequenceNumber() {
-        return sequenceNumber;
+    public long getWriteSequenceNumber() {
+        return writeSequenceNumber;
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    public void setWriteSequenceNumber(long writeSequenceNumber) {
+        this.writeSequenceNumber = writeSequenceNumber;
+    }
+
+    public void increaseWriteSequenceNumber() {
+        this.writeSequenceNumber++;
+    }
+
+    public long getReadSequenceNumber() {
+        return readSequenceNumber;
+    }
+
+    public void setReadSequenceNumber(long readSequenceNumber) {
+        this.readSequenceNumber = readSequenceNumber;
+    }
+
+    public void increaseReadSequenceNumber() {
+        this.readSequenceNumber++;
     }
 
     public List<CipherSuite> getClientSupportedCiphersuites() {
@@ -975,20 +1248,20 @@ public class TlsContext {
         this.serverHandshakeTrafficSecret = serverHandshakeTrafficSecret;
     }
 
-    public byte[] getClientApplicationTrafficSecret0() {
-        return clientApplicationTrafficSecret0;
+    public byte[] getClientApplicationTrafficSecret() {
+        return clientApplicationTrafficSecret;
     }
 
-    public void setClientApplicationTrafficSecret0(byte[] clientApplicationTrafficSecret0) {
-        this.clientApplicationTrafficSecret0 = clientApplicationTrafficSecret0;
+    public void setClientApplicationTrafficSecret(byte[] clientApplicationTrafficSecret) {
+        this.clientApplicationTrafficSecret = clientApplicationTrafficSecret;
     }
 
-    public byte[] getServerApplicationTrafficSecret0() {
-        return serverApplicationTrafficSecret0;
+    public byte[] getServerApplicationTrafficSecret() {
+        return serverApplicationTrafficSecret;
     }
 
-    public void setServerApplicationTrafficSecret0(byte[] serverApplicationTrafficSecret0) {
-        this.serverApplicationTrafficSecret0 = serverApplicationTrafficSecret0;
+    public void setServerApplicationTrafficSecret(byte[] serverApplicationTrafficSecret) {
+        this.serverApplicationTrafficSecret = serverApplicationTrafficSecret;
     }
 
     public byte[] getHandshakeSecret() {
@@ -1235,8 +1508,16 @@ public class TlsContext {
         this.clientRSAPrivateKey = clientRSAPrivateKey;
     }
 
+    public boolean isEarlyCleanShutdown() {
+        return earlyCleanShutdown;
+    }
+
     public Random getRandom() {
         return random;
+    }
+
+    public void setEarlyCleanShutdown(boolean earlyCleanShutdown) {
+        this.earlyCleanShutdown = earlyCleanShutdown;
     }
 
     public void setRandom(Random random) {
@@ -1251,12 +1532,12 @@ public class TlsContext {
         return config;
     }
 
-    public ConnectionEnd getConnectionEnd() {
-        return connectionEnd;
+    public AliasedConnection getConnection() {
+        return connection;
     }
 
-    public void setConnectionEnd(ConnectionEnd connectionEnd) {
-        this.connectionEnd = connectionEnd;
+    public void setConnection(AliasedConnection connection) {
+        this.connection = connection;
     }
 
     public RecordLayerType getRecordLayerType() {
@@ -1295,6 +1576,7 @@ public class TlsContext {
      * Check if the given TLS extension type was proposed by the client.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by client, false otherwise
      */
     public boolean isExtensionProposed(ExtensionType ext) {
@@ -1302,9 +1584,19 @@ public class TlsContext {
     }
 
     /**
+     * Get all TLS extension types proposed by the client.
+     *
+     * @return set of proposed extensions. Not null.
+     */
+    public EnumSet<ExtensionType> getProposedExtensions() {
+        return proposedExtensionSet;
+    }
+
+    /**
      * Mark the given TLS extension type as client proposed extension.
      * 
      * @param ext
+     *            The ExtensionType that is proposed
      */
     public void addProposedExtension(ExtensionType ext) {
         proposedExtensionSet.add(ext);
@@ -1314,6 +1606,7 @@ public class TlsContext {
      * Check if the given TLS extension type was sent by the server.
      *
      * @param ext
+     *            The ExtensionType to check for
      * @return true if extension was proposed by server, false otherwise
      */
     public boolean isExtensionNegotiated(ExtensionType ext) {
@@ -1322,6 +1615,9 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as server negotiated extension.
+     * 
+     * @param ext
+     *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);
@@ -1335,6 +1631,22 @@ public class TlsContext {
         this.useExtendedMasterSecret = useExtendedMasterSecret;
     }
 
+    public String getHttpsCookieName() {
+        return httpsCookieName;
+    }
+
+    public void setHttpsCookieName(String httpsCookieName) {
+        this.httpsCookieName = httpsCookieName;
+    }
+
+    public String getHttpsCookieValue() {
+        return httpsCookieValue;
+    }
+
+    public void setHttpsCookieValue(String httpsCookieValue) {
+        this.httpsCookieValue = httpsCookieValue;
+    }
+
     /**
      * Initialize the context's transport handler. Start listening or connect to
      * a server, depending on our connection end type.
@@ -1342,19 +1654,19 @@ public class TlsContext {
     public void initTransportHandler() {
 
         if (transportHandler == null) {
-            if (connectionEnd == null) {
+            if (connection == null) {
                 throw new ConfigurationException("Connection end not set");
             }
-            transportHandler = TransportHandlerFactory.createTransportHandler(connectionEnd);
+            transportHandler = TransportHandlerFactory.createTransportHandler(connection);
         }
 
         try {
             transportHandler.initialize();
         } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values in " + connectionEnd.toString(), ex);
+            throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
             throw new ConfigurationException("Unable to initialize the transport handler with: "
-                    + connectionEnd.toString(), ex);
+                    + connection.toString(), ex);
         }
     }
 
@@ -1371,15 +1683,215 @@ public class TlsContext {
     @Override
     public String toString() {
         StringBuilder info = new StringBuilder();
-        info.append("TlsContext{ '").append(connectionEnd.getAlias()).append("'");
-        if (connectionEnd.getConnectionEndType() == ConnectionEndType.SERVER) {
-            info.append(", listening on port ").append(connectionEnd.getPort());
+        if (connection == null) {
+            info.append("TlsContext{ (no connection set) }");
         } else {
-            info.append(", connected to ").append(connectionEnd.getHostname()).append(":")
-                    .append(connectionEnd.getPort());
+            info.append("TlsContext{'").append(connection.getAlias()).append("'");
+            if (connection.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
+                info.append(", listening on port ").append(connection.getPort());
+            } else {
+                info.append(", connected to ").append(connection.getHostname()).append(":")
+                        .append(connection.getPort());
+            }
+            info.append("}");
         }
-        info.append("}");
         return info.toString();
+    }
+
+    /**
+     * @return the clientEarlyTrafficSecret
+     */
+    public byte[] getClientEarlyTrafficSecret() {
+        return clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @param clientEarlyTrafficSecret
+     *            the clientEarlyTrafficSecret to set
+     */
+    public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
+        this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
+    }
+
+    /**
+     * @return the maxEarlyDataSize
+     */
+    public long getMaxEarlyDataSize() {
+        return maxEarlyDataSize;
+    }
+
+    /**
+     * @param maxEarlyDataSize
+     *            the maxEarlyDataSize to set
+     */
+    public void setMaxEarlyDataSize(long maxEarlyDataSize) {
+        this.maxEarlyDataSize = maxEarlyDataSize;
+    }
+
+    /**
+     * @return the psk
+     */
+    public byte[] getPsk() {
+        return psk;
+    }
+
+    /**
+     * @param psk
+     *            the psk to set
+     */
+    public void setPsk(byte[] psk) {
+        this.psk = psk;
+    }
+
+    /**
+     * @return the earlySecret
+     */
+    public byte[] getEarlySecret() {
+        return earlySecret;
+    }
+
+    /**
+     * @param earlySecret
+     *            the earlySecret to set
+     */
+    public void setEarlySecret(byte[] earlySecret) {
+        this.earlySecret = earlySecret;
+    }
+
+    /**
+     * @return the earlyDataCipherSuite
+     */
+    public CipherSuite getEarlyDataCipherSuite() {
+        return earlyDataCipherSuite;
+    }
+
+    /**
+     * @param earlyDataCipherSuite
+     *            the earlyDataCipherSuite to set
+     */
+    public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
+        this.earlyDataCipherSuite = earlyDataCipherSuite;
+    }
+
+    /**
+     * @return the earlyDataPSKIdentity
+     */
+    public byte[] getEarlyDataPSKIdentity() {
+        return earlyDataPSKIdentity;
+    }
+
+    /**
+     * @param earlyDataPSKIdentity
+     *            the earlyDataPSKIdentity to set
+     */
+    public void setEarlyDataPSKIdentity(byte[] earlyDataPSKIdentity) {
+        this.earlyDataPSKIdentity = earlyDataPSKIdentity;
+    }
+
+    /**
+     * @return the selectedIdentityIndex
+     */
+    public int getSelectedIdentityIndex() {
+        return selectedIdentityIndex;
+    }
+
+    /**
+     * @param selectedIdentityIndex
+     *            the selectedIdentityIndex to set
+     */
+    public void setSelectedIdentityIndex(int selectedIdentityIndex) {
+        this.selectedIdentityIndex = selectedIdentityIndex;
+    }
+
+    /**
+     * @return the clientPskKeyExchangeModes
+     */
+    public List<PskKeyExchangeMode> getClientPskKeyExchangeModes() {
+        return clientPskKeyExchangeModes;
+    }
+
+    /**
+     * @param clientPskKeyExchangeModes
+     *            the clientPskKeyExchangeModes to set
+     */
+    public void setClientPskKeyExchangeModes(List<PskKeyExchangeMode> clientPskKeyExchangeModes) {
+        this.clientPskKeyExchangeModes = clientPskKeyExchangeModes;
+    }
+
+    /**
+     * @return the pskSets
+     */
+    public List<PskSet> getPskSets() {
+        return pskSets;
+    }
+
+    /**
+     * @param pskSets
+     *            the pskSets to set
+     */
+    public void setPskSets(List<PskSet> pskSets) {
+        this.pskSets = pskSets;
+    }
+
+    /**
+     * @return the activeClientKeySetType
+     */
+    public Tls13KeySetType getActiveClientKeySetType() {
+        return activeClientKeySetType;
+    }
+
+    /**
+     * @param activeClientKeySetType
+     *            the activeClientKeySetType to set
+     */
+    public void setActiveClientKeySetType(Tls13KeySetType activeClientKeySetType) {
+        this.activeClientKeySetType = activeClientKeySetType;
+    }
+
+    /**
+     * @return the activeServerKeySetType
+     */
+    public Tls13KeySetType getActiveServerKeySetType() {
+        return activeServerKeySetType;
+    }
+
+    /**
+     * @param activeServerKeySetType
+     *            the activeServerKeySetType to set
+     */
+    public void setActiveServerKeySetType(Tls13KeySetType activeServerKeySetType) {
+        this.activeServerKeySetType = activeServerKeySetType;
+    }
+
+    public Tls13KeySetType getActiveKeySetTypeRead() {
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            return activeClientKeySetType;
+        } else {
+            return activeServerKeySetType;
+        }
+    }
+
+    public Tls13KeySetType getActiveKeySetTypeWrite() {
+        if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
+            return activeServerKeySetType;
+        } else {
+            return activeClientKeySetType;
+        }
+    }
+
+    /**
+     * @return the earlyDataPsk
+     */
+    public byte[] getEarlyDataPsk() {
+        return earlyDataPsk;
+    }
+
+    /**
+     * @param earlyDataPsk
+     *            the earlyDataPsk to set
+     */
+    public void setEarlyDataPsk(byte[] earlyDataPsk) {
+        this.earlyDataPsk = earlyDataPsk;
     }
 
 }

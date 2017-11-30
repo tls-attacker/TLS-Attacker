@@ -21,9 +21,6 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum NamedCurve {
 
     SECT163K1(new byte[] { (byte) 0, (byte) 1 }, "sect163k1"),

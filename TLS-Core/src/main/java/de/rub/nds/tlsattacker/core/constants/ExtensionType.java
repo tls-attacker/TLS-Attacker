@@ -13,9 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum ExtensionType {
 
     SERVER_NAME_INDICATION(new byte[] { (byte) 0, (byte) 0 }),
@@ -46,7 +43,10 @@ public enum ExtensionType {
     CACHED_INFO(new byte[] { (byte) 0, (byte) 25 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
     KEY_SHARE(new byte[] { (byte) 0, (byte) 40 }),
+    PRE_SHARED_KEY(new byte[] { (byte) 0, (byte) 41 }),
+    EARLY_DATA(new byte[] { (byte) 0, (byte) 42 }),
     SUPPORTED_VERSIONS(new byte[] { (byte) 0, (byte) 43 }),
+    PSK_KEY_EXCHANGE_MODES(new byte[] { (byte) 0, (byte) 45 }),
     RENEGOTIATION_INFO(new byte[] { (byte) 0xFF, (byte) 0x01 }),
     // TODO Grease logic implementation, because the tests fail if the lines
     // aren't commented
@@ -121,6 +121,7 @@ public enum ExtensionType {
         list.add(CLIENT_AUTHZ);
         list.add(CLIENT_CERTIFICATE_TYPE);
         list.add(CLIENT_CERTIFICATE_URL);
+        list.add(EARLY_DATA);
         list.add(EC_POINT_FORMATS);
         list.add(ELLIPTIC_CURVES);
         list.add(ENCRYPT_THEN_MAC);
@@ -129,6 +130,8 @@ public enum ExtensionType {
         list.add(KEY_SHARE);
         list.add(MAX_FRAGMENT_LENGTH);
         list.add(PADDING);
+        list.add(PRE_SHARED_KEY);
+        list.add(PSK_KEY_EXCHANGE_MODES);
         list.add(RENEGOTIATION_INFO);
         list.add(SERVER_AUTHZ);
         list.add(SERVER_CERTIFICATE_TYPE);
@@ -156,6 +159,7 @@ public enum ExtensionType {
         list.add(CLIENT_AUTHZ);
         list.add(CLIENT_CERTIFICATE_TYPE);
         list.add(CLIENT_CERTIFICATE_URL);
+        list.add(EARLY_DATA);
         list.add(EC_POINT_FORMATS);
         list.add(ELLIPTIC_CURVES);
         list.add(ENCRYPT_THEN_MAC);
@@ -164,6 +168,8 @@ public enum ExtensionType {
         list.add(KEY_SHARE);
         list.add(MAX_FRAGMENT_LENGTH);
         list.add(PADDING);
+        list.add(PRE_SHARED_KEY);
+        list.add(PSK_KEY_EXCHANGE_MODES);
         list.add(RENEGOTIATION_INFO);
         list.add(SERVER_AUTHZ);
         list.add(SERVER_CERTIFICATE_TYPE);
@@ -185,12 +191,15 @@ public enum ExtensionType {
 
     public static List<ExtensionType> getImplemented() {
         List<ExtensionType> list = new LinkedList<>();
+        list.add(EARLY_DATA);
         list.add(EC_POINT_FORMATS);
         list.add(ELLIPTIC_CURVES);
         list.add(EXTENDED_MASTER_SECRET);
         list.add(KEY_SHARE);
         list.add(MAX_FRAGMENT_LENGTH);
         list.add(PADDING);
+        list.add(PRE_SHARED_KEY);
+        list.add(PSK_KEY_EXCHANGE_MODES);
         list.add(SERVER_NAME_INDICATION);
         list.add(SIGNATURE_AND_HASH_ALGORITHMS);
         list.add(SUPPORTED_VERSIONS);

@@ -14,21 +14,10 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.extension.RenegotiationIn
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RenegotiationInfoExtensionPreparator extends ExtensionPreparator<RenegotiationInfoExtensionMessage> {
 
     private final RenegotiationInfoExtensionMessage message;
 
-    /**
-     * Constructor
-     *
-     * @param chooser
-     * @param message
-     * @param serializer
-     */
     public RenegotiationInfoExtensionPreparator(Chooser chooser, RenegotiationInfoExtensionMessage message,
             RenegotiationInfoExtensionSerializer serializer) {
         super(chooser, message, serializer);

@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.util.wrapper;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class MutableInt {
     private int value;
 

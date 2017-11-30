@@ -13,7 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.AlertLevel;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
@@ -32,10 +31,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ReceiveMessageHelper {
 
     protected static final Logger LOGGER = LogManager.getLogger(ReceiveMessageHelper.class.getName());
@@ -54,12 +49,12 @@ public class ReceiveMessageHelper {
      * @param expectedMessages
      *            Messages which should be received
      * @param context
+     *            The context on which Messages should be received
      * @return Actually received Messages
      */
     public MessageActionResult receiveMessages(List<ProtocolMessage> expectedMessages, TlsContext context) {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
-
-        List<AbstractRecord> records = new LinkedList<>();
+        List<AbstractRecord> realRecords = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
         try {
             byte[] receivedBytes;
@@ -67,8 +62,8 @@ public class ReceiveMessageHelper {
             do {
                 receivedBytes = receiveByteArray(context);
                 if (receivedBytes.length != 0) {
-                    records = parseRecords(receivedBytes, context);
-                    List<List<AbstractRecord>> recordGroups = getRecordGroups(records);
+                    List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
+                    List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
                     for (List<AbstractRecord> recordGroup : recordGroups) {
                         messages.addAll(processRecordGroup(recordGroup, context));
                     }
@@ -76,6 +71,7 @@ public class ReceiveMessageHelper {
                         shouldContinue = shouldContinue(expectedMessages, messages, context);
 
                     }
+                    realRecords.addAll(tempRecords);
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
 
@@ -83,7 +79,28 @@ public class ReceiveMessageHelper {
             LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
             LOGGER.debug(ex);
         }
-        return new MessageActionResult(records, messages);
+        return new MessageActionResult(realRecords, messages);
+    }
+
+    public List<AbstractRecord> receiveRecords(TlsContext context) {
+        context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
+        List<AbstractRecord> realRecords = new LinkedList<>();
+        try {
+            byte[] receivedBytes;
+            do {
+                receivedBytes = receiveByteArray(context);
+                if (receivedBytes.length != 0) {
+                    List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
+                    List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
+                    realRecords.addAll(tempRecords);
+                }
+            } while (receivedBytes.length != 0);
+
+        } catch (IOException ex) {
+            LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
+            LOGGER.debug(ex);
+        }
+        return realRecords;
     }
 
     private boolean receivedFatalAlert(List<ProtocolMessage> messages) {
@@ -147,7 +164,7 @@ public class ReceiveMessageHelper {
         } catch (ParserException ex) {
             LOGGER.debug(ex);
             LOGGER.debug("Could not parse provided Bytes into records. Waiting for more Packets");
-            byte[] extraBytes = null;
+            byte[] extraBytes = new byte[0];
             try {
                 extraBytes = receiveByteArray(context);
             } catch (IOException ex2) {
@@ -157,11 +174,11 @@ public class ReceiveMessageHelper {
                 return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
             }
             LOGGER.debug("Did not receive more Bytes. Parsing records softly");
-            return context.getRecordLayer().parseRecordsSoftly(extraBytes);
+            return context.getRecordLayer().parseRecordsSoftly(recordBytes);
         }
     }
 
-    private List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
+    public List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
         byte[] cleanProtocolMessageBytes = getCleanBytes(records);
         return handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(records), context);
     }
@@ -195,6 +212,7 @@ public class ReceiveMessageHelper {
                 LOGGER.debug(exCorrectMsg);
                 try {
                     if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
+                        LOGGER.warn("Trying to parse Message as UnknownHandshakeMessage");
                         result = tryHandleAsUnknownHandshakeMessage(cleanProtocolMessageBytes, dataPointer,
                                 typeFromRecord, context);
                     } else {

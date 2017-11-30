@@ -14,11 +14,7 @@ import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
-public class ChangeCipherSuiteAction extends TLSAction {
+public class ChangeCipherSuiteAction extends ConnectionBoundAction {
 
     private CipherSuite newValue = null;
     private CipherSuite oldValue = null;
@@ -46,7 +42,7 @@ public class ChangeCipherSuiteAction extends TLSAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

@@ -19,10 +19,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class ICEPointReader {
 
     static Logger LOGGER = LogManager.getLogger(ICEPointReader.class);
@@ -32,7 +28,8 @@ public class ICEPointReader {
      * this named curve
      * 
      * @param namedCurve
-     * @return
+     *            The NamedCurve as a String
+     * @return the deserialized Points
      */
     public static List<ICEPoint> readPoints(String namedCurve) {
         String namedCurveLow = namedCurve.toLowerCase();
