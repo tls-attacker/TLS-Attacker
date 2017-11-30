@@ -97,7 +97,6 @@ public enum NamedCurve {
 
     protected static final Logger LOGGER = LogManager.getLogger(NamedCurve.class.getName());
 
-    
     public static final int LENGTH = 2;
 
     private byte[] value;
@@ -127,8 +126,7 @@ public enum NamedCurve {
     }
 
     private static Integer valueToInt(byte[] value) {
-        if(value.length < 2)
-        {
+        if (value.length < 2) {
             LOGGER.warn("Could not convert NamedCurve. Returning null");
             return null;
         }
