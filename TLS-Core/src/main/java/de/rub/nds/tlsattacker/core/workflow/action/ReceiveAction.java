@@ -230,15 +230,19 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public boolean executedAsPlanned() {
         if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (messages == null || expectedMessages.size() > messages.size())
+            if (messages == null || expectedMessages.size() > messages.size()) {
                 return false;
+            }
         } else {
-            if (messages.size() != expectedMessages.size())
+            if (messages == null || messages.size() != expectedMessages.size()) {
                 return false;
+            }
         }
-        for (int i = 0; i < expectedMessages.size(); i++)
-            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass()))
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
                 return false;
+            }
+        }
         return true;
     }
 

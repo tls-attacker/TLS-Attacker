@@ -303,7 +303,9 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (getExtensions() != null) {
             for (ExtensionMessage em : getExtensions()) {
-                holders.add(em);
+                if (em != null) {
+                    holders.addAll(em.getAllModifiableVariableHolders());
+                }
             }
         }
         return holders;
