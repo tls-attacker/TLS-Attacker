@@ -161,7 +161,11 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         if (this.extensions == null) {
             extensions = new LinkedList<>();
         }
-        this.extensions.add(extension);
+        if (extension != null) {
+            this.extensions.add(extension);
+        } else {
+            LOGGER.error("Cannot add null Extension");
+        }
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
