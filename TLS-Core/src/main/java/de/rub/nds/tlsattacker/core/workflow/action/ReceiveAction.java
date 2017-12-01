@@ -58,48 +58,90 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
-            @XmlElement(type = CertificateMessage.class, name = "Certificate"),
-            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
-            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
-            @XmlElement(type = ClientHelloMessage.class, name = "ClientHello"),
-            @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest"),
-            @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange"),
-            @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
-            @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
-            @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
-            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-            @XmlElement(type = FinishedMessage.class, name = "Finished"),
-            @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
-            @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
-            @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
-            @XmlElement(type = AlertMessage.class, name = "Alert"),
-            @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
-            @XmlElement(type = ApplicationMessage.class, name = "Application"),
-            @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
-            @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
-            @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
-            @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-            @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
-            @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
-            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
-            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
-            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
-            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
-            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
-            @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
-            @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
-            @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
-            @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
-            @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
-            @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
-            @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
-            @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
-            @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
-            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
-            @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
+    @XmlElements(value = {
+        @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage")
+        ,
+            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage")
+        ,
+            @XmlElement(type = CertificateMessage.class, name = "Certificate")
+        ,
+            @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify")
+        ,
+            @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest")
+        ,
+            @XmlElement(type = ClientHelloMessage.class, name = "ClientHello")
+        ,
+            @XmlElement(type = HelloVerifyRequestMessage.class, name = "HelloVerifyRequest")
+        ,
+            @XmlElement(type = DHClientKeyExchangeMessage.class, name = "DHClientKeyExchange")
+        ,
+            @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange")
+        ,
+            @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange")
+        ,
+            @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange")
+        ,
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange")
+        ,
+            @XmlElement(type = FinishedMessage.class, name = "Finished")
+        ,
+            @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange")
+        ,
+            @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone")
+        ,
+            @XmlElement(type = ServerHelloMessage.class, name = "ServerHello")
+        ,
+            @XmlElement(type = AlertMessage.class, name = "Alert")
+        ,
+            @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket")
+        ,
+            @XmlElement(type = ApplicationMessage.class, name = "Application")
+        ,
+            @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec")
+        ,
+            @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello")
+        ,
+            @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello")
+        ,
+            @XmlElement(type = UnknownMessage.class, name = "UnknownMessage")
+        ,
+            @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage")
+        ,
+            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage")
+        ,
+            @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest")
+        ,
+            @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat")
+        ,
+            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage")
+        ,
+            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest")
+        ,
+            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse")
+        ,
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange")
+        ,
+            @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange")
+        ,
+            @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange")
+        ,
+            @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange")
+        ,
+            @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange")
+        ,
+            @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange")
+        ,
+            @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange")
+        ,
+            @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange")
+        ,
+            @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange")
+        ,
+            @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData")
+        ,
+            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions")
+        ,
+            @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest")})
     protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
 
     @XmlElement
@@ -229,21 +271,33 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
+        if (messages == null) {
+            return false;
+        }
+
         if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (messages == null || expectedMessages.size() > messages.size()) {
+            if (expectedMessages.size() > messages.size()) {
                 return false;
             }
         } else {
-            if (messages == null || messages.size() != expectedMessages.size()) {
+            if (messages.size() != expectedMessages.size()) {
                 return false;
             }
         }
-        for (int i = 0; i < expectedMessages.size(); i++) {
+    }
+    for (int i = 0;
+
+    i< expectedMessages.size ();
+    i
+
+    
+        ++) {
             if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
-                return false;
-            }
+            return false;
         }
-        return true;
+    }
+
+return true;
     }
 
     public List<ProtocolMessage> getExpectedMessages() {
@@ -267,24 +321,24 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void reset() {
+        public void reset() {
         messages = null;
         records = null;
         setExecuted(null);
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
+        public List<ProtocolMessage> getReceivedMessages() {
         return messages;
     }
 
     @Override
-    public List<AbstractRecord> getReceivedRecords() {
+        public List<AbstractRecord> getReceivedRecords() {
         return records;
     }
 
     @Override
-    public int hashCode() {
+        public int hashCode() {
         int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.expectedMessages);
         hash = 67 * hash + Objects.hashCode(this.messages);
@@ -294,7 +348,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public boolean equals(Object obj) {
+        public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -318,25 +372,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void normalize() {
+        public void normalize() {
         super.normalize();
         initEmptyLists();
     }
 
     @Override
-    public void normalize(TlsAction defaultAction) {
+        public void normalize(TlsAction defaultAction) {
         super.normalize(defaultAction);
         initEmptyLists();
     }
 
     @Override
-    public void filter() {
+        public void filter() {
         super.filter();
         filterEmptyLists();
     }
 
     @Override
-    public void filter(TlsAction defaultCon) {
+        public void filter(TlsAction defaultCon) {
         super.filter(defaultCon);
         filterEmptyLists();
     }
@@ -350,17 +404,19 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
-        }
+        
+
+}
     }
 
     public enum ReceiveOption {
-        EARLY_CLEAN_SHUTDOWN,
-        CHECK_ONLY_EXPECTED;
+    EARLY_CLEAN_SHUTDOWN,
+    CHECK_ONLY_EXPECTED;
 
-        public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
-            HashSet<ReceiveOption> options = new HashSet<>();
-            options.addAll(Arrays.asList(receiveOptions));
-            return options;
-        }
+    public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
+        HashSet<ReceiveOption> options = new HashSet<>();
+        options.addAll(Arrays.asList(receiveOptions));
+        return options;
     }
+}
 }
