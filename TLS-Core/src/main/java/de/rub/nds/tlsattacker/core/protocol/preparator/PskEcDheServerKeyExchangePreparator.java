@@ -10,14 +10,10 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
-import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
-import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 public class PskEcDheServerKeyExchangePreparator extends
         ECDHEServerKeyExchangePreparator<PskEcDheServerKeyExchangeMessage> {
 
-    private ECPublicKeyParameters pubEcParams;
-    private ECPrivateKeyParameters privEcParams;
     private final PskEcDheServerKeyExchangeMessage msg;
 
     public PskEcDheServerKeyExchangePreparator(Chooser chooser, PskEcDheServerKeyExchangeMessage message) {
