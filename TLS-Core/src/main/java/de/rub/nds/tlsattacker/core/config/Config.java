@@ -244,7 +244,7 @@ public class Config implements Serializable {
      * ticket since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] TLSSessionTicket = new byte[0];
+    private byte[] tlsSessionTicket = new byte[0];
 
     /**
      * Renegotiation info for the RenegotiationInfo extension for the Client.
@@ -2288,12 +2288,12 @@ public class Config implements Serializable {
         this.keySharePrivate = keySharePrivate;
     }
 
-    public byte[] getTLSSessionTicket() {
-        return TLSSessionTicket;
+    public byte[] getTlsSessionTicket() {
+        return tlsSessionTicket;
     }
 
-    public void setTLSSessionTicket(byte[] TLSSessionTicket) {
-        this.TLSSessionTicket = TLSSessionTicket;
+    public void setTlsSessionTicket(byte[] tlsSessionTicket) {
+        this.tlsSessionTicket = tlsSessionTicket;
     }
 
     public byte[] getDefaultSignedCertificateTimestamp() {
