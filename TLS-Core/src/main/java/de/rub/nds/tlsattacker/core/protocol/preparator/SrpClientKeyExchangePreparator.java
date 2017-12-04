@@ -54,7 +54,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         premasterSecret = calculateClientPremasterSecret(msg.getComputations().getModulus().getValue(), msg
                 .getComputations().getGenerator().getValue(), msg.getComputations().getPrivateKey().getValue(), msg
                 .getComputations().getServerPublicKey().getValue(), clientPublicKey, msg.getComputations().getSalt()
-                .getValue(), msg.getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword()
+                        .getValue(), msg.getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword()
                 .getValue());
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
@@ -129,6 +129,10 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             return paddingArray;
         }
         int paddingByteLength = modulusByteLength - paddingArray.length;
+        if (paddingByteLength < 0) {
+            LOGGER.warn("Negative SRP Padding Size. Using 0");
+            paddingByteLength = 0;
+        }
         padding = new byte[paddingByteLength];
         byte[] output = ArrayConverter.concatenate(padding, paddingArray);
         return output;
