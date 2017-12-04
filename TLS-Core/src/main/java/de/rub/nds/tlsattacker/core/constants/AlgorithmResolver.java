@@ -313,7 +313,7 @@ public class AlgorithmResolver {
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
                 || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a CipherType");
         }
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");

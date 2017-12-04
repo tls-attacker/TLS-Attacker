@@ -29,7 +29,7 @@ public class ServerHelloMessagePreparator extends HelloMessagePreparator<ServerH
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ServerHelloMessage");
         prepareProtocolVersion();
-        prepareRandom(ProtocolVersion.getProtocolVersion(msg.getProtocolVersion().getValue()));
+        prepareRandom();
         if (!chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareSessionID();
             prepareSessionIDLength();

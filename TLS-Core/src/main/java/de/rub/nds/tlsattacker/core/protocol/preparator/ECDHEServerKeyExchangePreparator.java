@@ -286,7 +286,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         try {
             curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of named curves from computations", ex);
+            LOGGER.warn("Could not get named Curves from ByteArray");
+            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
         }
         msg.setNamedCurve(curves[0].getValue());
     }
