@@ -48,7 +48,6 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
@@ -63,7 +62,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.ConnectionEnd;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -633,7 +631,7 @@ public class Config implements Serializable {
     /**
      * Do we use a psk for our secrets?
      */
-    private boolean usePsk = false;
+    private Boolean usePsk = false;
 
     /**
      * Early data to be sent.
@@ -943,13 +941,13 @@ public class Config implements Serializable {
     private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
             "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
-    private boolean useRandomUnixTime = true;
+    private Boolean useRandomUnixTime = true;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private boolean useAllProvidedRecords = false;
+    private Boolean useAllProvidedRecords = false;
 
-    private boolean httpsParsingEnabled = false;
+    private Boolean httpsParsingEnabled = false;
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
@@ -1134,27 +1132,27 @@ public class Config implements Serializable {
         this.defaultEcdheNamedCurves = defaultEcdheNamedCurves;
     }
 
-    public boolean isHttpsParsingEnabled() {
+    public Boolean isHttpsParsingEnabled() {
         return httpsParsingEnabled;
     }
 
-    public void setHttpsParsingEnabled(boolean httpsParsingEnabled) {
+    public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
         this.httpsParsingEnabled = httpsParsingEnabled;
     }
 
-    public boolean isUseRandomUnixTime() {
+    public Boolean isUseRandomUnixTime() {
         return useRandomUnixTime;
     }
 
-    public void setUseRandomUnixTime(boolean useRandomUnixTime) {
+    public void setUseRandomUnixTime(Boolean useRandomUnixTime) {
         this.useRandomUnixTime = useRandomUnixTime;
     }
 
-    public boolean isUseAllProvidedRecords() {
+    public Boolean isUseAllProvidedRecords() {
         return useAllProvidedRecords;
     }
 
-    public void setUseAllProvidedRecords(boolean useAllProvidedRecords) {
+    public void setUseAllProvidedRecords(Boolean useAllProvidedRecords) {
         this.useAllProvidedRecords = useAllProvidedRecords;
     }
 
@@ -1174,11 +1172,11 @@ public class Config implements Serializable {
         this.chooserType = chooserType;
     }
 
-    public boolean isEarlyStop() {
+    public Boolean isEarlyStop() {
         return earlyStop;
     }
 
-    public void setEarlyStop(boolean earlyStop) {
+    public void setEarlyStop(Boolean earlyStop) {
         this.earlyStop = earlyStop;
     }
 
@@ -1286,27 +1284,27 @@ public class Config implements Serializable {
         this.defaultCertificateRequestContext = defaultCertificateRequestContext;
     }
 
-    public boolean isWorkflowExecutorShouldOpen() {
+    public Boolean isWorkflowExecutorShouldOpen() {
         return workflowExecutorShouldOpen;
     }
 
-    public void setWorkflowExecutorShouldOpen(boolean workflowExecutorShouldOpen) {
+    public void setWorkflowExecutorShouldOpen(Boolean workflowExecutorShouldOpen) {
         this.workflowExecutorShouldOpen = workflowExecutorShouldOpen;
     }
 
-    public boolean isWorkflowExecutorShouldClose() {
+    public Boolean isWorkflowExecutorShouldClose() {
         return workflowExecutorShouldClose;
     }
 
-    public void setWorkflowExecutorShouldClose(boolean workflowExecutorShouldClose) {
+    public void setWorkflowExecutorShouldClose(Boolean workflowExecutorShouldClose) {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
-    public boolean isStopRecievingAfterFatal() {
+    public Boolean isStopRecievingAfterFatal() {
         return stopRecievingAfterFatal;
     }
 
-    public void setStopRecievingAfterFatal(boolean stopRecievingAfterFatal) {
+    public void setStopRecievingAfterFatal(Boolean stopRecievingAfterFatal) {
         this.stopRecievingAfterFatal = stopRecievingAfterFatal;
     }
 
@@ -1804,19 +1802,19 @@ public class Config implements Serializable {
         this.defaultSelectedCipherSuite = defaultSelectedCipherSuite;
     }
 
-    public boolean isQuickReceive() {
+    public Boolean isQuickReceive() {
         return quickReceive;
     }
 
-    public void setQuickReceive(boolean quickReceive) {
+    public void setQuickReceive(Boolean quickReceive) {
         this.quickReceive = quickReceive;
     }
 
-    public boolean isResetWorkflowtracesBeforeSaving() {
+    public Boolean isResetWorkflowtracesBeforeSaving() {
         return resetWorkflowtracesBeforeSaving;
     }
 
-    public void setResetWorkflowtracesBeforeSaving(boolean resetWorkflowtracesBeforeSaving) {
+    public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
         this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
     }
 
@@ -1828,27 +1826,27 @@ public class Config implements Serializable {
         this.recordLayerType = recordLayerType;
     }
 
-    public boolean isFlushOnMessageTypeChange() {
+    public Boolean isFlushOnMessageTypeChange() {
         return flushOnMessageTypeChange;
     }
 
-    public void setFlushOnMessageTypeChange(boolean flushOnMessageTypeChange) {
+    public void setFlushOnMessageTypeChange(Boolean flushOnMessageTypeChange) {
         this.flushOnMessageTypeChange = flushOnMessageTypeChange;
     }
 
-    public boolean isCreateRecordsDynamically() {
+    public Boolean isCreateRecordsDynamically() {
         return createRecordsDynamically;
     }
 
-    public void setCreateRecordsDynamically(boolean createRecordsDynamically) {
+    public void setCreateRecordsDynamically(Boolean createRecordsDynamically) {
         this.createRecordsDynamically = createRecordsDynamically;
     }
 
-    public boolean isCreateIndividualRecords() {
+    public Boolean isCreateIndividualRecords() {
         return createIndividualRecords;
     }
 
-    public void setCreateIndividualRecords(boolean createIndividualRecords) {
+    public void setCreateIndividualRecords(Boolean createIndividualRecords) {
         this.createIndividualRecords = createIndividualRecords;
     }
 
@@ -1895,27 +1893,27 @@ public class Config implements Serializable {
         this.heartbeatPaddingLength = heartbeatPaddingLength;
     }
 
-    public boolean isAddPaddingExtension() {
+    public Boolean isAddPaddingExtension() {
         return addPaddingExtension;
     }
 
-    public void setAddPaddingExtension(boolean addPaddingExtension) {
+    public void setAddPaddingExtension(Boolean addPaddingExtension) {
         this.addPaddingExtension = addPaddingExtension;
     }
 
-    public boolean isAddExtendedMasterSecretExtension() {
+    public Boolean isAddExtendedMasterSecretExtension() {
         return addExtendedMasterSecretExtension;
     }
 
-    public void setAddExtendedMasterSecretExtension(boolean addExtendedMasterSecretExtension) {
+    public void setAddExtendedMasterSecretExtension(Boolean addExtendedMasterSecretExtension) {
         this.addExtendedMasterSecretExtension = addExtendedMasterSecretExtension;
     }
 
-    public boolean isAddSessionTicketTLSExtension() {
+    public Boolean isAddSessionTicketTLSExtension() {
         return addSessionTicketTLSExtension;
     }
 
-    public void setAddSessionTicketTLSExtension(boolean addSessionTicketTLSExtension) {
+    public void setAddSessionTicketTLSExtension(Boolean addSessionTicketTLSExtension) {
         this.addSessionTicketTLSExtension = addSessionTicketTLSExtension;
     }
 
@@ -1939,11 +1937,11 @@ public class Config implements Serializable {
         this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
-    public boolean isWaitOnlyForExpectedDTLS() {
+    public Boolean isWaitOnlyForExpectedDTLS() {
         return waitOnlyForExpectedDTLS;
     }
 
-    public void setWaitOnlyForExpectedDTLS(boolean waitOnlyForExpectedDTLS) {
+    public void setWaitOnlyForExpectedDTLS(Boolean waitOnlyForExpectedDTLS) {
         this.waitOnlyForExpectedDTLS = waitOnlyForExpectedDTLS;
     }
 
@@ -1951,11 +1949,11 @@ public class Config implements Serializable {
         return defaultApplicationMessageData;
     }
 
-    public boolean isDoDTLSRetransmits() {
+    public Boolean isDoDTLSRetransmits() {
         return doDTLSRetransmits;
     }
 
-    public void setDoDTLSRetransmits(boolean doDTLSRetransmits) {
+    public void setDoDTLSRetransmits(Boolean doDTLSRetransmits) {
         this.doDTLSRetransmits = doDTLSRetransmits;
     }
 
@@ -1963,11 +1961,11 @@ public class Config implements Serializable {
         this.defaultApplicationMessageData = defaultApplicationMessageData;
     }
 
-    public boolean isEnforceSettings() {
+    public Boolean isEnforceSettings() {
         return enforceSettings;
     }
 
-    public void setEnforceSettings(boolean enforceSettings) {
+    public void setEnforceSettings(Boolean enforceSettings) {
         this.enforceSettings = enforceSettings;
     }
 
@@ -2015,19 +2013,19 @@ public class Config implements Serializable {
         this.highestProtocolVersion = highestProtocolVersion;
     }
 
-    public boolean isUpdateTimestamps() {
+    public Boolean isUpdateTimestamps() {
         return updateTimestamps;
     }
 
-    public void setUpdateTimestamps(boolean updateTimestamps) {
+    public void setUpdateTimestamps(Boolean updateTimestamps) {
         this.updateTimestamps = updateTimestamps;
     }
 
-    public boolean isServerSendsApplicationData() {
+    public Boolean isServerSendsApplicationData() {
         return serverSendsApplicationData;
     }
 
-    public void setServerSendsApplicationData(boolean serverSendsApplicationData) {
+    public void setServerSendsApplicationData(Boolean serverSendsApplicationData) {
         this.serverSendsApplicationData = serverSendsApplicationData;
     }
 
@@ -2063,11 +2061,11 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public boolean isSniHostnameFatal() {
+    public Boolean isSniHostnameFatal() {
         return sniHostnameFatal;
     }
 
-    public void setSniHostnameFatal(boolean sniHostnameFatal) {
+    public void setSniHostnameFatal(Boolean sniHostnameFatal) {
         this.sniHostnameFatal = sniHostnameFatal;
     }
 
@@ -2095,11 +2093,11 @@ public class Config implements Serializable {
         this.keyShareType = keyShareType;
     }
 
-    public boolean isDynamicWorkflow() {
+    public Boolean isDynamicWorkflow() {
         throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
-    public void setDynamicWorkflow(boolean dynamicWorkflow) {
+    public void setDynamicWorkflow(Boolean dynamicWorkflow) {
         throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
@@ -2118,7 +2116,7 @@ public class Config implements Serializable {
         return clientAuthentication;
     }
 
-    public void setClientAuthentication(boolean clientAuthentication) {
+    public void setClientAuthentication(Boolean clientAuthentication) {
         this.clientAuthentication = clientAuthentication;
     }
 
@@ -2168,91 +2166,91 @@ public class Config implements Serializable {
         this.heartbeatMode = heartbeatMode;
     }
 
-    public boolean isAddECPointFormatExtension() {
+    public Boolean isAddECPointFormatExtension() {
         return addECPointFormatExtension;
     }
 
-    public void setAddECPointFormatExtension(boolean addECPointFormatExtension) {
+    public void setAddECPointFormatExtension(Boolean addECPointFormatExtension) {
         this.addECPointFormatExtension = addECPointFormatExtension;
     }
 
-    public boolean isAddEllipticCurveExtension() {
+    public Boolean isAddEllipticCurveExtension() {
         return addEllipticCurveExtension;
     }
 
-    public void setAddEllipticCurveExtension(boolean addEllipticCurveExtension) {
+    public void setAddEllipticCurveExtension(Boolean addEllipticCurveExtension) {
         this.addEllipticCurveExtension = addEllipticCurveExtension;
     }
 
-    public boolean isAddHeartbeatExtension() {
+    public Boolean isAddHeartbeatExtension() {
         return addHeartbeatExtension;
     }
 
-    public void setAddHeartbeatExtension(boolean addHeartbeatExtension) {
+    public void setAddHeartbeatExtension(Boolean addHeartbeatExtension) {
         this.addHeartbeatExtension = addHeartbeatExtension;
     }
 
-    public boolean isAddMaxFragmentLengthExtenstion() {
+    public Boolean isAddMaxFragmentLengthExtenstion() {
         return addMaxFragmentLengthExtenstion;
     }
 
-    public void setAddMaxFragmentLengthExtenstion(boolean addMaxFragmentLengthExtenstion) {
+    public void setAddMaxFragmentLengthExtenstion(Boolean addMaxFragmentLengthExtenstion) {
         this.addMaxFragmentLengthExtenstion = addMaxFragmentLengthExtenstion;
     }
 
-    public boolean isAddServerNameIndicationExtension() {
+    public Boolean isAddServerNameIndicationExtension() {
         return addServerNameIndicationExtension;
     }
 
-    public void setAddServerNameIndicationExtension(boolean addServerNameIndicationExtension) {
+    public void setAddServerNameIndicationExtension(Boolean addServerNameIndicationExtension) {
         this.addServerNameIndicationExtension = addServerNameIndicationExtension;
     }
 
-    public boolean isAddSignatureAndHashAlgrorithmsExtension() {
+    public Boolean isAddSignatureAndHashAlgrorithmsExtension() {
         return addSignatureAndHashAlgrorithmsExtension;
     }
 
-    public void setAddSignatureAndHashAlgrorithmsExtension(boolean addSignatureAndHashAlgrorithmsExtension) {
+    public void setAddSignatureAndHashAlgrorithmsExtension(Boolean addSignatureAndHashAlgrorithmsExtension) {
         this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
     }
 
-    public boolean isAddSupportedVersionsExtension() {
+    public Boolean isAddSupportedVersionsExtension() {
         return addSupportedVersionsExtension;
     }
 
-    public void setAddSupportedVersionsExtension(boolean addSupportedVersionsExtension) {
+    public void setAddSupportedVersionsExtension(Boolean addSupportedVersionsExtension) {
         this.addSupportedVersionsExtension = addSupportedVersionsExtension;
     }
 
-    public boolean isAddKeyShareExtension() {
+    public Boolean isAddKeyShareExtension() {
         return addKeyShareExtension;
     }
 
-    public void setAddKeyShareExtension(boolean addKeyShareExtension) {
+    public void setAddKeyShareExtension(Boolean addKeyShareExtension) {
         this.addKeyShareExtension = addKeyShareExtension;
     }
 
-    public boolean isAddEarlyDataExtension() {
+    public Boolean isAddEarlyDataExtension() {
         return addEarlyDataExtension;
     }
 
-    public void setAddEarlyDataExtension(boolean addEarlyDataExtension) {
+    public void setAddEarlyDataExtension(Boolean addEarlyDataExtension) {
         this.addEarlyDataExtension = addEarlyDataExtension;
     }
 
-    public boolean isAddPSKKeyExchangeModesExtension() {
+    public Boolean isAddPSKKeyExchangeModesExtension() {
         return addPSKKeyExchangeModesExtension;
     }
 
-    public void setAddPSKKeyExchangeModesExtension(boolean addPSKKeyExchangeModesExtension) {
+    public void setAddPSKKeyExchangeModesExtension(Boolean addPSKKeyExchangeModesExtension) {
         this.addPSKKeyExchangeModesExtension = addPSKKeyExchangeModesExtension;
     }
 
-    public boolean isAddPreSharedKeyExtension() {
+    public Boolean isAddPreSharedKeyExtension() {
         return addPreSharedKeyExtension;
     }
 
-    public void setAddPreSharedKeyExtension(boolean addPreSharedKeyExtension) {
+    public void setAddPreSharedKeyExtension(Boolean addPreSharedKeyExtension) {
         this.addPreSharedKeyExtension = addPreSharedKeyExtension;
     }
 
@@ -2264,19 +2262,19 @@ public class Config implements Serializable {
         return pskKeyExchangeModes;
     }
 
-    public int getDefaultDTLSCookieLength() {
+    public Integer getDefaultDTLSCookieLength() {
         return defaultDTLSCookieLength;
     }
 
-    public void setDefaultDTLSCookieLength(int defaultDTLSCookieLength) {
+    public void setDefaultDTLSCookieLength(Integer defaultDTLSCookieLength) {
         this.defaultDTLSCookieLength = defaultDTLSCookieLength;
     }
 
-    public int getPaddingLength() {
+    public Integer getPaddingLength() {
         return paddingLength;
     }
 
-    public void setPaddingLength(int paddingLength) {
+    public void setPaddingLength(Integer paddingLength) {
         this.paddingLength = paddingLength;
     }
 
@@ -2304,11 +2302,11 @@ public class Config implements Serializable {
         this.defaultSignedCertificateTimestamp = defaultSignedCertificateTimestamp;
     }
 
-    public boolean isAddSignedCertificateTimestampExtension() {
+    public Boolean isAddSignedCertificateTimestampExtension() {
         return addSignedCertificateTimestampExtension;
     }
 
-    public void setAddSignedCertificateTimestampExtension(boolean addSignedCertificateTimestampExtension) {
+    public void setAddSignedCertificateTimestampExtension(Boolean addSignedCertificateTimestampExtension) {
         this.addSignedCertificateTimestampExtension = addSignedCertificateTimestampExtension;
     }
 
@@ -2320,11 +2318,11 @@ public class Config implements Serializable {
         this.defaultClientRenegotiationInfo = defaultClientRenegotiationInfo;
     }
 
-    public boolean isAddRenegotiationInfoExtension() {
+    public Boolean isAddRenegotiationInfoExtension() {
         return addRenegotiationInfoExtension;
     }
 
-    public void setAddRenegotiationInfoExtension(boolean addRenegotiationInfoExtension) {
+    public void setAddRenegotiationInfoExtension(Boolean addRenegotiationInfoExtension) {
         this.addRenegotiationInfoExtension = addRenegotiationInfoExtension;
     }
 
@@ -2348,11 +2346,11 @@ public class Config implements Serializable {
         this.defaultTokenBindingKeyParameters = new ArrayList(Arrays.asList(defaultTokenBindingKeyParameters));
     }
 
-    public boolean isAddTokenBindingExtension() {
+    public Boolean isAddTokenBindingExtension() {
         return addTokenBindingExtension;
     }
 
-    public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
+    public void setAddTokenBindingExtension(Boolean addTokenBindingExtension) {
         this.addTokenBindingExtension = addTokenBindingExtension;
     }
 
@@ -2485,11 +2483,11 @@ public class Config implements Serializable {
         this.clientAuthzExtensionDataFormat = clientAuthzExtensionDataFormat;
     }
 
-    public boolean isCertificateTypeExtensionMessageState() {
+    public Boolean isCertificateTypeExtensionMessageState() {
         return certificateTypeExtensionMessageState;
     }
 
-    public void setCertificateTypeExtensionMessageState(boolean certificateTypeExtensionMessageState) {
+    public void setCertificateTypeExtensionMessageState(Boolean certificateTypeExtensionMessageState) {
         this.certificateTypeExtensionMessageState = certificateTypeExtensionMessageState;
     }
 
@@ -2509,19 +2507,19 @@ public class Config implements Serializable {
         this.trustedCaIndicationExtensionAuthorties = trustedCaIndicationExtensionAuthorties;
     }
 
-    public boolean isClientCertificateTypeExtensionMessageState() {
+    public Boolean isClientCertificateTypeExtensionMessageState() {
         return clientCertificateTypeExtensionMessageState;
     }
 
-    public void setClientCertificateTypeExtensionMessageState(boolean clientCertificateTypeExtensionMessageState) {
+    public void setClientCertificateTypeExtensionMessageState(Boolean clientCertificateTypeExtensionMessageState) {
         this.clientCertificateTypeExtensionMessageState = clientCertificateTypeExtensionMessageState;
     }
 
-    public boolean isCachedInfoExtensionIsClientState() {
+    public Boolean isCachedInfoExtensionIsClientState() {
         return cachedInfoExtensionIsClientState;
     }
 
-    public void setCachedInfoExtensionIsClientState(boolean cachedInfoExtensionIsClientState) {
+    public void setCachedInfoExtensionIsClientState(Boolean cachedInfoExtensionIsClientState) {
         this.cachedInfoExtensionIsClientState = cachedInfoExtensionIsClientState;
     }
 
@@ -2541,131 +2539,131 @@ public class Config implements Serializable {
         this.statusRequestV2RequestList = statusRequestV2RequestList;
     }
 
-    public boolean isAddCertificateStatusRequestExtension() {
+    public Boolean isAddCertificateStatusRequestExtension() {
         return addCertificateStatusRequestExtension;
     }
 
-    public void setAddCertificateStatusRequestExtension(boolean addCertificateStatusRequestExtension) {
+    public void setAddCertificateStatusRequestExtension(Boolean addCertificateStatusRequestExtension) {
         this.addCertificateStatusRequestExtension = addCertificateStatusRequestExtension;
     }
 
-    public boolean isAddAlpnExtension() {
+    public Boolean isAddAlpnExtension() {
         return addAlpnExtension;
     }
 
-    public void setAddAlpnExtension(boolean addAlpnExtension) {
+    public void setAddAlpnExtension(Boolean addAlpnExtension) {
         this.addAlpnExtension = addAlpnExtension;
     }
 
-    public boolean isAddSRPExtension() {
+    public Boolean isAddSRPExtension() {
         return addSRPExtension;
     }
 
-    public void setAddSRPExtension(boolean addSRPExtension) {
+    public void setAddSRPExtension(Boolean addSRPExtension) {
         this.addSRPExtension = addSRPExtension;
     }
 
-    public boolean isAddSRTPExtension() {
+    public Boolean isAddSRTPExtension() {
         return addSRTPExtension;
     }
 
-    public void setAddSRTPExtension(boolean addSRTPExtension) {
+    public void setAddSRTPExtension(Boolean addSRTPExtension) {
         this.addSRTPExtension = addSRTPExtension;
     }
 
-    public boolean isAddTruncatedHmacExtension() {
+    public Boolean isAddTruncatedHmacExtension() {
         return addTruncatedHmacExtension;
     }
 
-    public void setAddTruncatedHmacExtension(boolean addTruncatedHmacExtension) {
+    public void setAddTruncatedHmacExtension(Boolean addTruncatedHmacExtension) {
         this.addTruncatedHmacExtension = addTruncatedHmacExtension;
     }
 
-    public boolean isAddUserMappingExtension() {
+    public Boolean isAddUserMappingExtension() {
         return addUserMappingExtension;
     }
 
-    public void setAddUserMappingExtension(boolean addUserMappingExtension) {
+    public void setAddUserMappingExtension(Boolean addUserMappingExtension) {
         this.addUserMappingExtension = addUserMappingExtension;
     }
 
-    public boolean isAddCertificateTypeExtension() {
+    public Boolean isAddCertificateTypeExtension() {
         return addCertificateTypeExtension;
     }
 
-    public void setAddCertificateTypeExtension(boolean addCertificateTypeExtension) {
+    public void setAddCertificateTypeExtension(Boolean addCertificateTypeExtension) {
         this.addCertificateTypeExtension = addCertificateTypeExtension;
     }
 
-    public boolean isAddClientAuthzExtension() {
+    public Boolean isAddClientAuthzExtension() {
         return addClientAuthzExtension;
     }
 
-    public void setAddClientAuthzExtension(boolean addClientAuthzExtension) {
+    public void setAddClientAuthzExtension(Boolean addClientAuthzExtension) {
         this.addClientAuthzExtension = addClientAuthzExtension;
     }
 
-    public boolean isAddServerAuthzExtension() {
+    public Boolean isAddServerAuthzExtension() {
         return addServerAuthzExtension;
     }
 
-    public void setAddServerAuthzExtension(boolean addServerAuthzExtension) {
+    public void setAddServerAuthzExtension(Boolean addServerAuthzExtension) {
         this.addServerAuthzExtension = addServerAuthzExtension;
     }
 
-    public boolean isAddClientCertificateTypeExtension() {
+    public Boolean isAddClientCertificateTypeExtension() {
         return addClientCertificateTypeExtension;
     }
 
-    public void setAddClientCertificateTypeExtension(boolean addClientCertificateTypeExtension) {
+    public void setAddClientCertificateTypeExtension(Boolean addClientCertificateTypeExtension) {
         this.addClientCertificateTypeExtension = addClientCertificateTypeExtension;
     }
 
-    public boolean isAddServerCertificateTypeExtension() {
+    public Boolean isAddServerCertificateTypeExtension() {
         return addServerCertificateTypeExtension;
     }
 
-    public void setAddServerCertificateTypeExtension(boolean addServerCertificateTypeExtension) {
+    public void setAddServerCertificateTypeExtension(Boolean addServerCertificateTypeExtension) {
         this.addServerCertificateTypeExtension = addServerCertificateTypeExtension;
     }
 
-    public boolean isAddEncryptThenMacExtension() {
+    public Boolean isAddEncryptThenMacExtension() {
         return addEncryptThenMacExtension;
     }
 
-    public void setAddEncryptThenMacExtension(boolean addEncryptThenMacExtension) {
+    public void setAddEncryptThenMacExtension(Boolean addEncryptThenMacExtension) {
         this.addEncryptThenMacExtension = addEncryptThenMacExtension;
     }
 
-    public boolean isAddCachedInfoExtension() {
+    public Boolean isAddCachedInfoExtension() {
         return addCachedInfoExtension;
     }
 
-    public void setAddCachedInfoExtension(boolean addCachedInfoExtension) {
+    public void setAddCachedInfoExtension(Boolean addCachedInfoExtension) {
         this.addCachedInfoExtension = addCachedInfoExtension;
     }
 
-    public boolean isAddClientCertificateUrlExtension() {
+    public Boolean isAddClientCertificateUrlExtension() {
         return addClientCertificateUrlExtension;
     }
 
-    public void setAddClientCertificateUrlExtension(boolean addClientCertificateUrlExtension) {
+    public void setAddClientCertificateUrlExtension(Boolean addClientCertificateUrlExtension) {
         this.addClientCertificateUrlExtension = addClientCertificateUrlExtension;
     }
 
-    public boolean isAddTrustedCaIndicationExtension() {
+    public Boolean isAddTrustedCaIndicationExtension() {
         return addTrustedCaIndicationExtension;
     }
 
-    public void setAddTrustedCaIndicationExtension(boolean addTrustedCaIndicationExtension) {
+    public void setAddTrustedCaIndicationExtension(Boolean addTrustedCaIndicationExtension) {
         this.addTrustedCaIndicationExtension = addTrustedCaIndicationExtension;
     }
 
-    public boolean isAddCertificateStatusRequestV2Extension() {
+    public Boolean isAddCertificateStatusRequestV2Extension() {
         return addCertificateStatusRequestV2Extension;
     }
 
-    public void setAddCertificateStatusRequestV2Extension(boolean addCertificateStatusRequestV2Extension) {
+    public void setAddCertificateStatusRequestV2Extension(Boolean addCertificateStatusRequestV2Extension) {
         this.addCertificateStatusRequestV2Extension = addCertificateStatusRequestV2Extension;
     }
 
@@ -2708,11 +2706,11 @@ public class Config implements Serializable {
         this.defaultRunningMode = defaulRunningMode;
     }
 
-    public boolean isStopActionsAfterFatal() {
+    public Boolean isStopActionsAfterFatal() {
         return stopActionsAfterFatal;
     }
 
-    public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
+    public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 
@@ -2909,7 +2907,7 @@ public class Config implements Serializable {
     /**
      * @return the usePsk
      */
-    public boolean isUsePsk() {
+    public Boolean isUsePsk() {
         return usePsk;
     }
 
@@ -2917,7 +2915,7 @@ public class Config implements Serializable {
      * @param usePsk
      *            the usePsk to set
      */
-    public void setUsePsk(boolean usePsk) {
+    public void setUsePsk(Boolean usePsk) {
         this.usePsk = usePsk;
     }
 
