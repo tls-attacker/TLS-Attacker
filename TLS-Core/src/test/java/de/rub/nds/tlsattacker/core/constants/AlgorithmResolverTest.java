@@ -158,11 +158,11 @@ public class AlgorithmResolverTest {
         // Checks that we can retrieve all ciphersuites key exchange algorithms
         // and
         // that none throws an unsupported operation exception
-        // Only IllegalArgmumentExceptions are allowed here
+        // Only UnsupportedOperationException are allowed here
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getKeyExchangeAlgorithm(suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
             }
         }
     }
@@ -212,7 +212,7 @@ public class AlgorithmResolverTest {
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getCipher(suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
             }
         }
     }
@@ -239,7 +239,7 @@ public class AlgorithmResolverTest {
         for (CipherSuite suite : CipherSuite.values()) {
             try {
                 AlgorithmResolver.getCipherType(suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
             }
         }
     }
@@ -306,7 +306,7 @@ public class AlgorithmResolverTest {
             try {
                 AlgorithmResolver.getMacAlgorithm(ProtocolVersion.SSL3, suite);
                 AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, suite);
-            } catch (IllegalArgumentException E) {
+            } catch (UnsupportedOperationException E) {
 
             }
         }
