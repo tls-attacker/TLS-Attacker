@@ -138,17 +138,17 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_AES_128_GCM_SHA256) == null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableKeyExchangeUnknown() {
         AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableKeyExchangeReno() {
         AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableKeyExchangeFallback() {
         AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
     }
@@ -217,17 +217,17 @@ public class AlgorithmResolverTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherUnknown() {
         AlgorithmResolver.getCipher(CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherReno() {
         AlgorithmResolver.getCipher(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherFallback() {
         AlgorithmResolver.getCipher(CipherSuite.TLS_FALLBACK_SCSV);
     }
@@ -244,17 +244,17 @@ public class AlgorithmResolverTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherTypeUnknown() {
         AlgorithmResolver.getCipherType(CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherTypeReno() {
         AlgorithmResolver.getCipherType(CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherTypeFallback() {
         AlgorithmResolver.getCipherType(CipherSuite.TLS_FALLBACK_SCSV);
     }
@@ -312,17 +312,17 @@ public class AlgorithmResolverTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableMACUnknown() {
         AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_UNKNOWN_CIPHER);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableMACReno() {
         AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableMACFallback() {
         AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_FALLBACK_SCSV);
     }
