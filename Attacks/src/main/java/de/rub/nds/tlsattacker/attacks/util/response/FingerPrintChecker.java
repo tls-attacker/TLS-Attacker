@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import java.util.List;
-import java.util.Objects;
 import org.bouncycastle.util.Arrays;
 
 public class FingerPrintChecker {
