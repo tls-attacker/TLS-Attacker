@@ -1626,6 +1626,10 @@ public class TlsContext {
         negotiatedExtensionSet.add(ext);
     }
 
+    public EnumSet<ExtensionType> getNegotiatedExtensionSet() {
+        return negotiatedExtensionSet;
+    }
+
     public boolean isUseExtendedMasterSecret() {
         return useExtendedMasterSecret;
     }
