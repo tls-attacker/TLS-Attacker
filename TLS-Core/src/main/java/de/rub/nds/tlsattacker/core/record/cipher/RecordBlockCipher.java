@@ -115,8 +115,9 @@ public final class RecordBlockCipher extends RecordCipher {
                             .getJavaName()), encryptIv);
             ciphertext = encryptCipher.update(request.getPlainText());
             if (!useExplicitIv) {
-                setNextIv(ciphertext);
+                setNextEncryptIv(ciphertext);
             }
+            LOGGER.debug("encryptIv: " + ArrayConverter.bytesToHexString(encryptIv.getIV()));
             return new EncryptionResult(encryptIv.getIV(), ciphertext, useExplicitIv);
 
         } catch (InvalidKeyException | InvalidAlgorithmParameterException ex) {
@@ -124,7 +125,7 @@ public final class RecordBlockCipher extends RecordCipher {
         }
     }
 
-    private void setNextIv(byte[] ciphertext) {
+    private void setNextEncryptIv(byte[] ciphertext) {
         encryptIv = new IvParameterSpec(Arrays.copyOfRange(ciphertext,
                 ciphertext.length - encryptCipher.getBlockSize(), ciphertext.length));
     }
@@ -145,21 +146,33 @@ public final class RecordBlockCipher extends RecordCipher {
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
+                LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
+
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
                         bulkCipherAlg.getJavaName()), decryptIv);
                 plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
             } else {
                 decryptIv = new IvParameterSpec(getDecryptionIV());
+                LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
+
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
                         bulkCipherAlg.getJavaName()), decryptIv);
                 plaintext = decryptCipher.doFinal(data);
+
+                // Set next IV
+                setNextDecryptIv(data);
             }
-            LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
+
             return plaintext;
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
                 | InvalidKeyException | UnsupportedOperationException ex) {
             throw new CryptoException(ex);
         }
+    }
+
+    private void setNextDecryptIv(byte[] ciphertext) {
+        decryptIv = new IvParameterSpec(Arrays.copyOfRange(ciphertext,
+                ciphertext.length - decryptCipher.getBlockSize(), ciphertext.length));
     }
 
     @Override
