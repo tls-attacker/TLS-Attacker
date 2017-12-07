@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.pkcs1.PKCS1VectorGenerator;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
@@ -36,7 +35,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -50,13 +48,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttacker.class);
 
-    private final List<ProtocolMessage> lastMessages;
     private final Config tlsConfig;
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig) {
         super(paddingOracleConfig, false);
         tlsConfig = paddingOracleConfig.createConfig();
-        lastMessages = new LinkedList<>();
     }
 
     @Override
