@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public State executeTlsFlow(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, encryptedPMS);
         State state = new State(tlsConfig, trace);
-
+        tlsConfig.setWorkflowExecutorShouldClose(false);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
@@ -85,6 +86,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
             State state = executeTlsFlow(bbWorkflowType, pkcs1Vector.getEncryptedValue());
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+            clearConnections(state);
             responseFingerprintList.add(fingerprint);
         }
         if (responseFingerprintList.isEmpty()) {
@@ -109,5 +111,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     public void executeAttack() {
         // removed for now
         throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    private void clearConnections(State state) {
+        try {
+            state.getTlsContext().getTransportHandler().closeConnection();
+        } catch (IOException ex) {
+            LOGGER.debug(ex);
+        }
     }
 }

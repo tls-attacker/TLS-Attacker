@@ -15,6 +15,7 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 public enum EqualityError {
     NONE,
     SOCKET_EXCEPTION,
+    SOCKET_STATE,
     ALERT_COUNT,
     MESSAGE_COUNT,
     RECORD_COUNT,

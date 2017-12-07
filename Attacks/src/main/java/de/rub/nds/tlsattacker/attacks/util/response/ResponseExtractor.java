@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
+import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -15,6 +16,9 @@ import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
+import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
+import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,8 +38,25 @@ public class ResponseExtractor {
         List<Class<ProtocolMessage>> messageClasses = extractMessageClasses(action);
         List<ProtocolMessage> messageList = action.getReceivedMessages();
         List<AbstractRecord> recordList = action.getReceivedRecords();
+        SocketState socketState = extractSocketState(state);
         return new ResponseFingerprint(receivedTransportHandlerException, receivedAnEncryptedAlert,
-                numberRecordsReceived, numberOfMessageReceived, recordClasses, messageClasses, messageList, recordList);
+                numberRecordsReceived, numberOfMessageReceived, recordClasses, messageClasses, messageList, recordList,
+                socketState);
+    }
+
+    private static SocketState extractSocketState(State state) {
+        try {
+            if (state.getTlsContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
+                SocketState socketState = (((ClientTcpTransportHandler) (state.getTlsContext().getTransportHandler()))
+                        .getSocketState());
+                return socketState;
+            } else {
+                return null;
+            }
+        } catch (InvalidTransportHandlerStateException ex) {
+            LOGGER.warn(ex);
+            return null;
+        }
     }
 
     private static List<Class<AbstractRecord>> extractRecordClasses(ReceivingAction action) {

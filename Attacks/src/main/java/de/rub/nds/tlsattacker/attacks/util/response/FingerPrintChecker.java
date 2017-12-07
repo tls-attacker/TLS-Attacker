@@ -58,6 +58,9 @@ public class FingerPrintChecker {
         if (!checkMessageClassEquality(fingerprint1.getMessageClasses(), fingerprint2.getMessageClasses())) {
             return EqualityError.MESSAGE_CLASS;
         }
+        if (!checkSocketState(fingerprint1, fingerprint2)) {
+            return EqualityError.SOCKET_STATE;
+        }
         return EqualityError.NONE;
 
     }
@@ -84,6 +87,10 @@ public class FingerPrintChecker {
             }
         }
         return true;
+    }
+
+    private static boolean checkSocketState(ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2) {
+        return fingerprint1.getSocketState() == fingerprint2.getSocketState();
     }
 
     private static boolean checkAlertRecordEquality(List<AbstractRecord> recordList1, List<AbstractRecord> recordList2) {

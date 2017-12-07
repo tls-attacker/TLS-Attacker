@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.util.response;
 
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.util.List;
 
 public class ResponseFingerprint {
@@ -30,10 +31,12 @@ public class ResponseFingerprint {
 
     private final List<AbstractRecord> recordList;
 
+    private final SocketState socketState;
+
     public ResponseFingerprint(boolean receivedTransportHandlerException, boolean encryptedAlert,
             int numberRecordsReceived, int numberOfMessageReceived, List<Class<AbstractRecord>> recordClasses,
             List<Class<ProtocolMessage>> messageClasses, List<ProtocolMessage> messageList,
-            List<AbstractRecord> recordList) {
+            List<AbstractRecord> recordList, SocketState socketState) {
         this.receivedTransportHandlerException = receivedTransportHandlerException;
         this.encryptedAlert = encryptedAlert;
         this.numberRecordsReceived = numberRecordsReceived;
@@ -42,6 +45,11 @@ public class ResponseFingerprint {
         this.messageClasses = messageClasses;
         this.messageList = messageList;
         this.recordList = recordList;
+        this.socketState = socketState;
+    }
+
+    public SocketState getSocketState() {
+        return socketState;
     }
 
     public List<AbstractRecord> getRecordList() {
@@ -82,7 +90,6 @@ public class ResponseFingerprint {
                 + ", encryptedAlert=" + encryptedAlert + ", numberRecordsReceived=" + numberRecordsReceived
                 + ", numberOfMessageReceived=" + numberOfMessageReceived + ", recordClasses=" + recordClasses
                 + ", messageClasses=" + messageClasses + ", messageList=" + messageList + ", recordList=" + recordList
-                + '}';
+                + ", socketState=" + socketState + '}';
     }
-
 }
