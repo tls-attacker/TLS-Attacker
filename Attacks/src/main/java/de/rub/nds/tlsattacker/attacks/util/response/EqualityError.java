@@ -26,5 +26,6 @@ public enum EqualityError {
     ENCRYPTED_ALERT,
     RECORD_CONTENT_TYPE,
     RECORD_LENGTH,
-    RECORD_VERSION
+    RECORD_VERSION;
+
 }

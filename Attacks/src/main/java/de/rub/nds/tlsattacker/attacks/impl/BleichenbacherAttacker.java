@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Vector;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1VectorGenerator;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
+import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
@@ -72,8 +73,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         // we execute the attack with different protocol flows and
         // return true as soon as we find the first inconsistency
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                "A server is considered vulnerable to this attack if he responds differently to these testvectors.");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is not considered vulnerable if he always responds the same way.");
         for (BleichenbacherWorkflowType bbWorkflowType : BleichenbacherWorkflowType.values()) {
-            if (isVulnerable(bbWorkflowType, pkcs1Vectors)) {
+            EqualityError error = isVulnerable(bbWorkflowType, pkcs1Vectors);
+            if (error != EqualityError.NONE) {
+
                 return true;
             }
         }
@@ -81,7 +87,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return false;
     }
 
-    private Boolean isVulnerable(BleichenbacherWorkflowType bbWorkflowType, List<Pkcs1Vector> pkcs1Vectors) {
+    private EqualityError isVulnerable(BleichenbacherWorkflowType bbWorkflowType, List<Pkcs1Vector> pkcs1Vectors) {
         List<ResponseFingerprint> responseFingerprintList = new LinkedList<>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
             State state = executeTlsFlow(bbWorkflowType, pkcs1Vector.getEncryptedValue());
@@ -97,14 +103,14 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         for (int i = 1; i < responseFingerprintList.size(); i++) {
             EqualityError error = FingerPrintChecker.checkEquality(fingerprint, responseFingerprintList.get(i), false);
             if (error != EqualityError.NONE) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality error with {}: {}",
-                        bbWorkflowType.getDescription(), error);
-                LOGGER.info("Fingerprint1: {}", fingerprint.toString());
-                LOGGER.info("Fingerprint2: {}", responseFingerprintList.get(i).toString());
-                return true;
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                        EqualityErrorTranslator.translation(error, fingerprint, responseFingerprintList.get(i)));
+                LOGGER.debug("Fingerprint1: {}", fingerprint.toString());
+                LOGGER.debug("Fingerprint2: {}", responseFingerprintList.get(i).toString());
+                return error;
             }
         }
-        return false;
+        return EqualityError.NONE;
     }
 
     @Override

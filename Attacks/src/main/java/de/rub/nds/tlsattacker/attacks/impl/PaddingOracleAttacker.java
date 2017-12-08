@@ -14,15 +14,17 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
+import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -34,6 +36,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,7 +74,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         trace.addTlsAction(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ReceiveAction(alertMessage));
-
+        tlsConfig.setWorkflowExecutorShouldClose(false);
         State state = new State(tlsConfig, trace);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
@@ -157,6 +160,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     @Override
     public Boolean isVulnerable() {
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing for PaddingOracle...");
         int macSize = AlgorithmResolver.getMacAlgorithm(tlsConfig.getDefaultSelectedProtocolVersion(),
                 tlsConfig.getDefaultSelectedCipherSuite()).getSize();
         int blockSize = AlgorithmResolver.getCipher(tlsConfig.getDefaultSelectedCipherSuite())
@@ -168,8 +172,17 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
         HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
         for (Record record : records) {
-            State state = executeTlsFlow(record);
+            State state;
+            try {
+                state = executeTlsFlow(record);
+
+            } catch (WorkflowExecutionException | ConfigurationException E) {
+                LOGGER.warn(E);
+                LOGGER.warn("TLS-Attacker failed execute a Handshake. Skipping to next record");
+                continue;
+            }
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+            clearConnections(state);
             AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
                     .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
             int length = ((Record) lastRecord).getLength().getValue();
@@ -181,20 +194,34 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             responseFingerprintList.add(fingerprint);
 
         }
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                "A server is considered vulnerable to this attack if he responds differently to these testvectors.");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is not considered vulnerable if he always responds the same way.");
+
         for (List<ResponseFingerprint> list : responseMap.values()) {
             ResponseFingerprint fingerprint = list.get(0);
             for (int i = 1; i < list.size(); i++) {
                 EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
                 if (error != EqualityError.NONE) {
                     LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
-                    LOGGER.info("Fingerprint1: " + fingerprint.toString());
-                    LOGGER.info("Fingerprint2: " + list.get(i).toString());
+                    LOGGER.debug("Fingerprint1: " + fingerprint.toString());
+                    LOGGER.debug("Fingerprint2: " + list.get(i).toString());
+                    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                            EqualityErrorTranslator.translation(error, fingerprint, list.get(i)));
                     return true;
                 }
+
             }
         }
-
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, EqualityErrorTranslator.translation(EqualityError.NONE, null, null));
         return false;
     }
 
+    private void clearConnections(State state) {
+        try {
+            state.getTlsContext().getTransportHandler().closeConnection();
+        } catch (IOException ex) {
+            LOGGER.debug(ex);
+        }
+    }
 }
