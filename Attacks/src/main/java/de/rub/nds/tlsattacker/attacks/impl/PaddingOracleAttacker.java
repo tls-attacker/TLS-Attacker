@@ -61,6 +61,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     public State executeTlsFlow(Record record) {
         tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
+        tlsConfig.setEarlyStop(true);
+        tlsConfig.setStopActionsAfterFatal(true);
+        tlsConfig.setQuickReceive(true);
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);

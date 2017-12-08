@@ -21,15 +21,15 @@ import org.apache.logging.log4j.LogManager;
  * @author Robert Merget <robert.merget@rub.de>
  */
 public class ConnectivityChecker {
-    
+
     private final Connection connection;
-    
+
     public static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Attacker.class);
-    
+
     public ConnectivityChecker(Connection connection) {
         this.connection = connection;
     }
-    
+
     public boolean isConnectable() {
         if (connection.getTransportHandlerType() == null) {
             connection.setTransportHandlerType(TransportHandlerType.TCP);
@@ -55,5 +55,5 @@ public class ConnectivityChecker {
             return false;
         }
     }
-    
+
 }
