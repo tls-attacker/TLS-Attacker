@@ -36,22 +36,18 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Tests for the availability of the OpenSSL padding oracle (CVE-2016-2107).
  */
 public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(Cve20162107Attacker.class);
-
     private final List<ProtocolMessage> lastMessages;
 
     private boolean vulnerable;
 
     public Cve20162107Attacker(Cve20162107CommandConfig config) {
-        super(config, false);
+        super(config);
         lastMessages = new LinkedList<>();
     }
 

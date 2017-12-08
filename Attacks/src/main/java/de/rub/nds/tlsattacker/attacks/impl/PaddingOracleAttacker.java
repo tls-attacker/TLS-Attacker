@@ -40,8 +40,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
@@ -49,12 +47,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(PaddingOracleAttacker.class);
-
     private final Config tlsConfig;
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig) {
-        super(paddingOracleConfig, false);
+        super(paddingOracleConfig);
         tlsConfig = paddingOracleConfig.createConfig();
     }
 

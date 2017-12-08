@@ -13,39 +13,63 @@ package de.rub.nds.tlsattacker.attacks.impl;
  *
  * Copyright 2014-2016 Ruhr University Bochum / Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
+import de.rub.nds.tlsattacker.attacks.connectivity.ConnectivityChecker;
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @param <Config>
- *            The AttackConfig
+ * @param <AttConfig>
  */
-public abstract class Attacker<Config extends AttackConfig> {
+public abstract class Attacker<AttConfig extends AttackConfig> {
 
     public static Logger LOGGER = LogManager.getLogger(Attacker.class);
 
-    protected Config config;
+    protected AttConfig config;
 
-    protected final boolean saveToScan;
-
-    public Attacker(Config config, boolean saveToScan) {
+    public Attacker(AttConfig config) {
         this.config = config;
-        this.saveToScan = saveToScan;
+    }
+
+    public void attack() {
+        if (config.isWithConnectiviyCheck()) {
+            if (!canConnect()) {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
+                return;
+            }
+        }
+        executeAttack();
+    }
+
+    public Boolean checkVulnerability() {
+        if (config.isWithConnectiviyCheck()) {
+            if (!canConnect()) {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
+                return null;
+            }
+        }
+        return isVulnerable();
     }
 
     /**
      * Executes a given attack.
      */
-    public abstract void executeAttack();
+    protected abstract void executeAttack();
 
-    public abstract Boolean isVulnerable();
+    protected abstract Boolean isVulnerable();
 
-    public Config getConfig() {
+    public AttConfig getConfig() {
         return config;
+    }
+
+    protected Boolean canConnect() {
+        Config tlsConfig = config.createConfig();
+        ConnectivityChecker checker = new ConnectivityChecker(tlsConfig.getDefaultClientConnection());
+        return checker.isConnectable();
     }
 }

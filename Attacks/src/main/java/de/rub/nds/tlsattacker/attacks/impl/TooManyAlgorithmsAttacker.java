@@ -26,7 +26,7 @@ import java.util.Random;
 public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 
     public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override

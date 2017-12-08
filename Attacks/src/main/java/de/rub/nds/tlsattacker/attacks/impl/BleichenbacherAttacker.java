@@ -29,8 +29,6 @@ import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Sends differently formatted PKCS#1 messages to the TLS server and observes
@@ -39,12 +37,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(BleichenbacherAttacker.class);
-
     private final Config tlsConfig;
 
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig) {
-        super(bleichenbacherConfig, false);
+        super(bleichenbacherConfig);
         tlsConfig = bleichenbacherConfig.createConfig();
     }
 

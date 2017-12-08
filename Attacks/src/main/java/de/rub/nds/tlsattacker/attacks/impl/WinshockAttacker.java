@@ -34,10 +34,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(WinshockAttacker.class);
-
     public WinshockAttacker(WinshockCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override
