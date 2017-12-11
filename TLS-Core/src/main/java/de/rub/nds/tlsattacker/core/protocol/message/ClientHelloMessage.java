@@ -199,8 +199,8 @@ public class ClientHelloMessage extends HelloMessage {
         }
         if (tlsConfig.isAddPreSharedKeyExtension()) {
             addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
-        } 
-        //In TLS 1.3, the PSK ext has to be the last ClientHello extension
+        }
+        // In TLS 1.3, the PSK ext has to be the last ClientHello extension
     }
 
     public ModifiableInteger getCompressionLength() {
