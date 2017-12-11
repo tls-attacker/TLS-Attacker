@@ -71,8 +71,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // return true as soon as we find the first inconsistency
         LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                 "A server is considered vulnerable to this attack if he responds differently to these testvectors.");
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is not considered vulnerable if he always responds the same way.");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered not vulnerable if he always responds the same way.");
         for (BleichenbacherWorkflowType bbWorkflowType : BleichenbacherWorkflowType.values()) {
+            LOGGER.debug("Testing: " + bbWorkflowType);
             EqualityError error = isVulnerable(bbWorkflowType, pkcs1Vectors);
             if (error != EqualityError.NONE) {
 

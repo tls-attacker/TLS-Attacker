@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
@@ -47,7 +48,7 @@ public class Main {
     private static Logger LOGGER = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
-        GeneralDelegate generalDelegate = new GeneralDelegate();
+        GeneralDelegate generalDelegate = new GeneralAttackDelegate();
         JCommander jc = new JCommander(generalDelegate);
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);

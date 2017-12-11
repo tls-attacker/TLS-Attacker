@@ -61,12 +61,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
-
-        // if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() !=
-        // Level.TRACE) {
-        // Configurator.setAllLevels("de.rub.nds.tlsattacker.core",
-        // Level.ERROR);
-        // }
     }
 
     public Type getType() {

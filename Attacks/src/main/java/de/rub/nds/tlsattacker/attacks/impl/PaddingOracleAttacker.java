@@ -195,7 +195,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         }
         LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                 "A server is considered vulnerable to this attack if he responds differently to these testvectors.");
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is not considered vulnerable if he always responds the same way.");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered not vulnerable if he always responds the same way.");
 
         for (List<ResponseFingerprint> list : responseMap.values()) {
             ResponseFingerprint fingerprint = list.get(0);
