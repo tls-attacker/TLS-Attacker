@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- A MITM trace to replay 0-RTT data by sending it to another server with the same certificate
+
+Run server 1 using:
+openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem -tls1_3 -early_data
+Run server 2 using:
+openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem -tls1_3 -early_data -port 4434
+
+Run client using:
+openssl s_client -connect 127.0.0.1:4433 -tls1_3 -early_data earlyDataFile -sess_out 0rtt.pem
+
+Stop the client, start TlsAttacker using this trace and run client again using:
+openssl s_client -connect 127.0.0.1:4432 -tls1_3 -early_data earlyDataFile -sess_in 0rtt.pem
+
+Server 1 should accept and print the early data (although EndOfEarlyData is missing)
+Server 2 should accept the re-transmitted application data
+-->
+<workflowTrace>
+	<OutboundConnection>
+        <alias>mitm2server</alias>
+        <port>4433</port>
+        <hostname>localhost</hostname>
+        <timeout>100</timeout>
+    </OutboundConnection>
+	<OutboundConnection>
+        <alias>mitm2server2</alias>
+        <port>4434</port>
+        <hostname>localhost</hostname>
+        <timeout>100</timeout>
+    </OutboundConnection>
+    <InboundConnection>
+        <alias>client2mitm</alias>
+        <port>4432</port>
+        <timeout>100</timeout>
+    </InboundConnection>
+	<!-- Buffer incoming ClientHello and early data -->
+	<BufferedGenericReceive>
+		<connectionAlias>client2mitm</connectionAlias>
+		<messages/>
+		<records/>
+	</BufferedGenericReceive>
+	<!-- Copy buffers to send the messages to the 1st server -->
+	<DeepCopyBuffers>
+		<from>client2mitm</from>
+		<to>mitm2server</to>
+	</DeepCopyBuffers>
+	<!-- Copy buffers to send the messages to the 2nd server -->
+	<DeepCopyBuffers>
+		<from>client2mitm</from>
+		<to>mitm2server2</to>
+	</DeepCopyBuffers>
+	<!-- Send ClientHello to 1st server -->
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server</connectionAlias>
+	</PopAndSendRecord>
+	<!-- Send early data to 1st server -->
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server</connectionAlias>
+	</PopAndSendRecord>
+	<!-- Send ClientHello to 2nd server -->
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server2</connectionAlias>
+	</PopAndSendRecord>
+	<!-- Send early data to 2nd server -->
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server2</connectionAlias>
+	</PopAndSendRecord>
+	<!-- Reset connection to 1st server (from now on, the  client will only talk to server 2)-->
+	<ResetConnection>
+		<connectionAlias>mitm2server</connectionAlias>
+	</ResetConnection>
+	<!-- Forward server responses to client -->
+	<ForwardRecords>
+		<receiveFromAlias>mitm2server2</receiveFromAlias>
+		<forwardToAlias>client2mitm</forwardToAlias>
+	</ForwardRecords>
+	<!-- Forward client's handshake messages + retransmitted AppData to Server -->
+	<ForwardRecords>
+		<receiveFromAlias>client2mitm</receiveFromAlias>
+		<forwardToAlias>mitm2server2</forwardToAlias>
+	</ForwardRecords>
+</workflowTrace>

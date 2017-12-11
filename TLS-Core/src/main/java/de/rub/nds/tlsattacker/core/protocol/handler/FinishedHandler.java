@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
@@ -60,7 +61,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                 } else {
                     setClientRecordCipher(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS);
                 }
-            } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            } else if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
+                    || tlsContext.isExtensionNegotiated(ExtensionType.EARLY_DATA) == false) {
                 setClientRecordCipher(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             }
         }
