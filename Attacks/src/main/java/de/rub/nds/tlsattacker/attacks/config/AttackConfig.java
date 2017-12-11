@@ -27,7 +27,7 @@ public abstract class AttackConfig extends TLSDelegateConfig {
         return skipConnectionCheck;
     }
 
-    public void setSkipConnectionCheck(boolean withConnectiviyCheck) {
-        this.skipConnectionCheck = withConnectiviyCheck;
+    public void setSkipConnectionCheck(boolean skipConnectionCheck) {
+        this.skipConnectionCheck = skipConnectionCheck;
     }
 }
