@@ -70,12 +70,11 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // we execute the attack with different protocol flows and
         // return true as soon as we find the first inconsistency
         LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                "A server is considered vulnerable to this attack if he responds differently to these testvectors.");
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is not considered vulnerable if he always responds the same way.");
+                "A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered secure if it always responds the same way.");
         for (BleichenbacherWorkflowType bbWorkflowType : BleichenbacherWorkflowType.values()) {
             EqualityError error = isVulnerable(bbWorkflowType, pkcs1Vectors);
             if (error != EqualityError.NONE) {
-
                 return true;
             }
         }
@@ -95,10 +94,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             LOGGER.warn("Could not extract Fingerprints");
             return null;
         }
+        for (int i = 0; i < responseFingerprintList.size(); i++) {
+            ResponseFingerprint fingerprint = responseFingerprintList.get(i);
+            Pkcs1Vector pkcs1Vector = pkcs1Vectors.get(i);
+            LOGGER.debug("\n PKCS#1 vector: {}\n Fingerprint: {}", pkcs1Vector.getDescription(),
+                    fingerprint.toString());
+        }
         ResponseFingerprint fingerprint = responseFingerprintList.get(0);
         for (int i = 1; i < responseFingerprintList.size(); i++) {
             EqualityError error = FingerPrintChecker.checkEquality(fingerprint, responseFingerprintList.get(i), false);
             if (error != EqualityError.NONE) {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found a difference in responses in the {}.",
+                        bbWorkflowType.getDescription());
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                         EqualityErrorTranslator.translation(error, fingerprint, responseFingerprintList.get(i)));
                 LOGGER.debug("Fingerprint1: {}", fingerprint.toString());
