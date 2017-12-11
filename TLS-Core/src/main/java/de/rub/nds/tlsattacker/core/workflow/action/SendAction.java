@@ -74,6 +74,7 @@ public class SendAction extends MessageAction implements SendingAction {
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
         } catch (IOException E) {
+            tlsContext.setReceivedTransportHandlerException(true);
             LOGGER.debug(E);
             setExecuted(false);
         }

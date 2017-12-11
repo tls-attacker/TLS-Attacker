@@ -25,15 +25,11 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
-    public static Logger LOGGER = LogManager.getLogger(EarlyCCSAttacker.class);
-
     public EarlyCCSAttacker(EarlyCCSCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override

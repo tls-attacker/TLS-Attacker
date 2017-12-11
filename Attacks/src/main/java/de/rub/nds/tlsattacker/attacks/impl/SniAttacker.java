@@ -18,10 +18,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class SniAttacker extends Attacker<SniTestCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(SniAttacker.class);
-
     public SniAttacker(SniTestCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override
