@@ -31,10 +31,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class CertificateUtils {
 
     protected static final Logger LOGGER = LogManager.getLogger(CertificateUtils.class.getName());
@@ -43,7 +39,8 @@ public class CertificateUtils {
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
      * @param cert
-     * @return
+     *            The Certificate from which the PublicKey should be extracted
+     * @return The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {

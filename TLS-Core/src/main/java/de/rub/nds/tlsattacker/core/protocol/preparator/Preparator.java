@@ -14,9 +14,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
+ *            The Object that should be prepared
  */
 public abstract class Preparator<T> {
 
@@ -37,6 +36,10 @@ public abstract class Preparator<T> {
 
     public T getObject() {
         return object;
+    }
+
+    public void afterPrepare() {
+
     }
 
 }

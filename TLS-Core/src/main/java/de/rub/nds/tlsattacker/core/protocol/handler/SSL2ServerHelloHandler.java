@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class SSL2ServerHelloHandler extends ProtocolMessageHandler<SSL2ServerHelloMessage> {
 
     public SSL2ServerHelloHandler(TlsContext context) {

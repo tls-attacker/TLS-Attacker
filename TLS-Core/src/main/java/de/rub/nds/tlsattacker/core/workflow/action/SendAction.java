@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -27,8 +26,6 @@ import java.util.Objects;
 
 /**
  * todo print configured records
- *
- * @author Robert Merget - robert.merget@rub.de
  */
 public class SendAction extends MessageAction implements SendingAction {
 
@@ -37,27 +34,38 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     public SendAction(List<ProtocolMessage> messages) {
-        super();
-        this.messages = messages;
+        super(messages);
     }
 
     public SendAction(ProtocolMessage... messages) {
-        this(Arrays.asList(messages));
+        this(new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public SendAction(String connectionAlias) {
+        super(connectionAlias);
+    }
+
+    public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
+        super(connectionAlias, messages);
+    }
+
+    public SendAction(String connectionAlias, ProtocolMessage... messages) {
+        super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(connectionAlias);
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
         String sending = getReadableString(messages);
-        if (contextAlias == null) {
+        if (hasDefaultAlias()) {
             LOGGER.info("Sending messages: " + sending);
         } else {
-            LOGGER.info("Sending messages (" + contextAlias + "): " + sending);
+            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
 
         try {
@@ -74,10 +82,30 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Send Action:\n");
-        sb.append("Messages:\n");
-        for (ProtocolMessage message : messages) {
-            sb.append(message.toCompactString());
-            sb.append(", ");
+        sb.append("\tMessages:");
+        if (messages != null) {
+            for (ProtocolMessage message : messages) {
+                sb.append(message.toCompactString());
+                sb.append(", ");
+            }
+        } else {
+            sb.append("null (no messages set)");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder(super.toCompactString());
+        if ((messages != null) && (!messages.isEmpty())) {
+            sb.append(" (");
+            for (ProtocolMessage message : messages) {
+                sb.append(message.toCompactString());
+                sb.append(",");
+            }
+            sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
+        } else {
+            sb.append(" (no messages set)");
         }
         return sb.toString();
     }
@@ -161,15 +189,16 @@ public class SendAction extends MessageAction implements SendingAction {
         if (!Objects.equals(this.records, other.records)) {
             return false;
         }
-        return true;
+        return super.equals(obj);
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
+        int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.messages);
         hash = 67 * hash + Objects.hashCode(this.records);
 
         return hash;
     }
+
 }

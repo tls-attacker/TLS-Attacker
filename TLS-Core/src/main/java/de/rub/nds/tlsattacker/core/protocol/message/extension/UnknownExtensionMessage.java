@@ -15,9 +15,6 @@ import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class UnknownExtensionMessage extends ExtensionMessage {
 
     private byte[] typeConfig;

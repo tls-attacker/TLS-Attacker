@@ -13,15 +13,11 @@ import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import static de.rub.nds.tlsattacker.core.workflow.action.TLSAction.LOGGER;
+import static de.rub.nds.tlsattacker.core.workflow.action.TlsAction.LOGGER;
 import java.util.Arrays;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
-public class ChangePreMasterSecretAction extends TLSAction {
+public class ChangePreMasterSecretAction extends ConnectionBoundAction {
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] newValue = null;
@@ -50,7 +46,7 @@ public class ChangePreMasterSecretAction extends TLSAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

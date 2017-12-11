@@ -13,9 +13,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 
 /**
- *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
+ *            The ClientKeyExchangeMessage that should be parsed
  */
 public abstract class ClientKeyExchangeParser<T extends ClientKeyExchangeMessage> extends HandshakeMessageParser<T> {
 

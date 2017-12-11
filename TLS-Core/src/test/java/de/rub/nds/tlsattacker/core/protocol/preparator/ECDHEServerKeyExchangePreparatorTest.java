@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadFixedRandom;
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
@@ -22,8 +21,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStoreException;
@@ -41,8 +40,8 @@ import org.junit.Test;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
+
  *
  */
 public class ECDHEServerKeyExchangePreparatorTest {
@@ -99,7 +98,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private void loadTestVectorsToContext() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
             CertificateException, KeyStoreException, UnrecoverableKeyException {
 
-        tlsContext.setConnectionEnd(new ServerConnectionEnd());
+        tlsContext.setConnection(new InboundConnection());
 
         Config config = tlsContext.getConfig();
         config.setDefaultRSAModulus(new BigInteger(

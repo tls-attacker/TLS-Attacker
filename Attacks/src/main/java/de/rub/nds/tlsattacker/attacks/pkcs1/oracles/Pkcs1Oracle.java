@@ -16,16 +16,14 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Oracle template for Bleichenbacher/Manger attack.
- * 
- * @author Christopher Meyer - christopher.meyer@rub.de
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- * @version 0.1
- * 
- *          Jun 12, 2012
+ *
+ * @version 0.1 Jun 12, 2012
  */
 public abstract class Pkcs1Oracle {
 
-    /** logger */
+    /**
+     * logger
+     */
     static Logger LOGGER = LogManager.getLogger(Pkcs1Oracle.class);
 
     /*
@@ -53,7 +51,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Gets the blocksize of the encryption algorithm.
-     * 
+     *
      * @return Blocksize
      */
     public int getBlockSize() {
@@ -62,7 +60,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Gets the total number of queries performed by this oracle.
-     * 
+     *
      * @return Number of queries
      */
     public long getNumberOfQueries() {
@@ -71,7 +69,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Gets the public key of this oracle.
-     * 
+     *
      * @return Public key
      */
     public PublicKey getPublicKey() {
@@ -80,7 +78,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Checks for PKCS conformity - 00 02 padding 00 pms
-     * 
+     *
      * @param msg
      *            Encrypted message to check for conformity
      * @return True if PKCS conforming, else false
@@ -90,7 +88,7 @@ public abstract class Pkcs1Oracle {
     /**
      * Returns true if the oracle is a plaintext oracle (does not decrypt the
      * data received)
-     * 
+     *
      * @return isPlaintextOracle
      */
     public boolean isPlaintextOracle() {
@@ -99,7 +97,7 @@ public abstract class Pkcs1Oracle {
 
     /**
      * Returns the oracle type
-     * 
+     *
      * @return
      */
     public OracleType getOracleType() {

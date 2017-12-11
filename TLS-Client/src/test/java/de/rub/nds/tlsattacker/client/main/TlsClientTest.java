@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.TimeoutDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -25,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -33,8 +35,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -68,15 +68,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.ErrorCollector;
 
-/**
- *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class TlsClientTest {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsClientTest.class);
-
-    private static final int PORT = 44330;
 
     private static final int TIMEOUT = 2000;
 
@@ -98,12 +92,12 @@ public class TlsClientTest {
             TimeHelper.setProvider(new FixedTimeProvider(0));
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, random);
             KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
-            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT);
+            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 0);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
             LOGGER.log(Level.INFO, "Testing RSA");
-            testExecuteWorkflows(PublicKeyAlgorithm.RSA, PORT);
+            testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
                 | KeyStoreException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
@@ -119,12 +113,12 @@ public class TlsClientTest {
         try {
             KeyPair k = KeyStoreGenerator.createECKeyPair(256, random);
             KeyStore ks = KeyStoreGenerator.createKeyStore(k, random);
-            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", PORT + 1);
+            tlsServer = new BasicTlsServer(ks, KeyStoreGenerator.PASSWORD, "TLS", 0);
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
             LOGGER.log(Level.INFO, "Testing EC");
-            testExecuteWorkflows(PublicKeyAlgorithm.EC, PORT + 1);
+            testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
                 | UnrecoverableKeyException | KeyManagementException | InvalidKeyException | NoSuchProviderException
@@ -143,12 +137,15 @@ public class TlsClientTest {
     public void testExecuteWorkflows(PublicKeyAlgorithm algorithm, int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
+        TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
+        timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
         clientDelegate.setHost("localhost:" + port);
         Config config = clientCommandConfig.createConfig();
-        config.setDefaultTimeout(TIMEOUT);
         config.setEnforceSettings(false);
         List<String> serverList = Arrays.asList(tlsServer.getCipherSuites());
+        config.setHighestProtocolVersion(ProtocolVersion.SSL3);
+        testProtocolCompatibility(serverList, config, algorithm);
         config.setHighestProtocolVersion(ProtocolVersion.TLS10);
         testProtocolCompatibility(serverList, config, algorithm);
         config.setHighestProtocolVersion(ProtocolVersion.TLS11);
@@ -168,13 +165,14 @@ public class TlsClientTest {
         for (CipherSuite cs : CipherSuite.getImplemented()) {
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
             requiredAlgorithms.remove(algorithm);
-            if (serverList.contains(cs.toString()) && cs.isSupportedInProtocol(config.getHighestProtocolVersion())
-                    && requiredAlgorithms.isEmpty()) {
+            final boolean serverSupportsCipherSuite = serverList.contains(cs.toString());
+            final boolean cipherSuiteIsSupportedByProtocolVersion = cs.isSupportedInProtocol(config
+                    .getHighestProtocolVersion());
+            if (serverSupportsCipherSuite && cipherSuiteIsSupportedByProtocolVersion && requiredAlgorithms.isEmpty()) {
                 LinkedList<CipherSuite> cslist = new LinkedList<>();
                 cslist.add(cs);
                 config.setDefaultClientSupportedCiphersuites(cslist);
                 config.setDefaultSelectedCipherSuite(cs);
-                config.setWorkflowTrace(null);
                 boolean result = testExecuteWorkflow(config);
                 LOGGER.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
                         + result);
@@ -210,26 +208,26 @@ public class TlsClientTest {
     private boolean testCustomWorkflow(int port) {
         ClientCommandConfig clientCommandConfig = new ClientCommandConfig(new GeneralDelegate());
         clientCommandConfig.getGeneralDelegate().setLogLevel(Level.INFO);
+        TimeoutDelegate timeoutDelegate = (TimeoutDelegate) clientCommandConfig.getDelegate(TimeoutDelegate.class);
+        timeoutDelegate.setTimeout(TIMEOUT);
         ClientDelegate clientDelegate = (ClientDelegate) clientCommandConfig.getDelegate(ClientDelegate.class);
-        clientDelegate.setHost("localhost:" + PORT);
+        clientDelegate.setHost("localhost:" + port);
         Config config = clientCommandConfig.createConfig();
-        config.setDefaultTimeout(TIMEOUT);
-        config.setWorkflowTraceType(WorkflowTraceType.HELLO);
 
-        State state = new State(config, new WorkflowTrace(config));
-        ConnectionEnd ourConnectionEnd = new ClientConnectionEnd();
+        AliasedConnection con = config.getDefaultClientConnection();
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.CLIENT, new ClientHelloMessage(
+                config)));
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER, new ServerHelloMessage(
+                config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
 
-        WorkflowTrace trace = state.getWorkflowTrace();
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
-                new ClientHelloMessage(config)));
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
-                new ServerHelloMessage(config), new CertificateMessage(config), new ServerHelloDoneMessage(config)));
-
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.CLIENT,
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.CLIENT,
                 new RSAClientKeyExchangeMessage(config), new ChangeCipherSpecMessage(config), new FinishedMessage(
                         config)));
-        trace.addTlsAction(MessageActionFactory.createAction(ourConnectionEnd, ConnectionEndType.SERVER,
+        trace.addTlsAction(MessageActionFactory.createAction(con, ConnectionEndType.SERVER,
                 new ChangeCipherSpecMessage(config), new FinishedMessage(config)));
+
+        State state = new State(config, trace);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 config.getWorkflowExecutorType(), state);
         try {

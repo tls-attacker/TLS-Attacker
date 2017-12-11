@@ -19,11 +19,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
     private final ClientHelloMessage msg;
@@ -136,5 +131,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     private void prepareCookieLength(ClientHelloMessage msg) {
         msg.setCookieLength((byte) msg.getCookie().getValue().length);
         LOGGER.debug("CookieLength: " + msg.getCookieLength().getValue());
+    }
+
+    @Override
+    public void afterPrepare() {
+        afterPrepareExtensions();
     }
 }

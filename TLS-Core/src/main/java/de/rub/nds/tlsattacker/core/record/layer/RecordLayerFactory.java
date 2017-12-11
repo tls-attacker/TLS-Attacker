@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class RecordLayerFactory {
 
     public static RecordLayer getRecordLayer(RecordLayerType type, TlsContext context) {

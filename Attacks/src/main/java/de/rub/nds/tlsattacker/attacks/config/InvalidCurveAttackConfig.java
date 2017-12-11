@@ -26,11 +26,9 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class InvalidCurveAttackConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "invalid_curve";
@@ -55,8 +53,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     // These are for scanning only
     @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true, converter = BigIntegerConverter.class)
-    private BigInteger premasterSecret = new BigInteger(
-            "b70bf043c144935756f8f4578c369cf960ee510a5a0f90e93a373a21f0d1397f", 16);
+    private BigInteger premasterSecret;
 
     @Parameter(names = "-public_point_base_x", hidden = true, description = "Public key point coordinate X sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
     private BigInteger publicPointBaseX = new BigInteger(
@@ -65,6 +62,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @Parameter(names = "-public_point_base_y", hidden = true, description = "Public key point coordinate Y sent to the server (use 0x at the beginning for a hex value)", converter = BigIntegerConverter.class)
     private BigInteger publicPointBaseY = new BigInteger(
             "4a2e0ded57a5156bb82eb4314c37fd4155395a7e51988af289cce531b9c17192", 16);
+
+    @Parameter(names = "-ephemeral", description = "If set to true, the attack with ephemeral cipher suites (ECDHE) is attempted.")
+    private boolean ephemeral = false;
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;
@@ -93,6 +93,14 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
+        if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
+        }
+
+        if (delegate.getLogLevel() == Level.TRACE) {
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.TRACE);
+        }
+
     }
 
     public BigInteger getPremasterSecret() {
@@ -159,6 +167,14 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         this.serverType = serverType;
     }
 
+    public boolean isEphemeral() {
+        return ephemeral;
+    }
+
+    public void setEphemeral(boolean ephemeral) {
+        this.ephemeral = ephemeral;
+    }
+
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
@@ -168,8 +184,36 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     public Config createConfig() {
         Config config = super.createConfig();
         List<CipherSuite> cipherSuites = new LinkedList<>();
-        cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
-        cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        if (ephemeral) {
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_RC4_128_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_RC4_128_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA);
+            config.setDefaultSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
+        } else {
+            cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384);
+            cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384);
+            config.setDefaultSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        }
+        config.setQuickReceive(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
+        config.setAddECPointFormatExtension(true);
+        config.setAddEllipticCurveExtension(true);
         config.setDefaultClientSupportedCiphersuites(cipherSuites);
         List<NamedCurve> namedCurves = new LinkedList<>();
         namedCurves.add(namedCurve);

@@ -14,6 +14,8 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -28,6 +30,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,8 +40,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
  * server is vulnerable to poodle.
- *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
 
@@ -46,12 +47,11 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private final List<ProtocolMessage> lastMessages;
     private final Config tlsConfig;
-    private final State state;
+    private State state;
 
-    public PaddingOracleAttacker(PaddingOracleCommandConfig config) {
-        super(config, false);
-        state = new State();
-        tlsConfig = state.getConfig();
+    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig) {
+        super(paddingOracleConfig, false);
+        tlsConfig = paddingOracleConfig.createConfig();
         lastMessages = new LinkedList<>();
     }
 
@@ -61,8 +61,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     }
 
     public void executeAttackRound(Record record) {
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
-        state.setWorkflowTrace(trace);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction sendAction = new SendAction(applicationMessage);
         sendAction.setRecords(new LinkedList<AbstractRecord>());
@@ -70,6 +70,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         trace.addTlsAction(sendAction);
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(new ReceiveAction(alertMessage));
+
+        state = new State(tlsConfig, trace);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
@@ -83,28 +85,34 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         lastMessages.add(WorkflowTraceUtil.getLastReceivedMessage(trace));
     }
 
-    private List<Record> createRecordsWithPlainData() {
+    private List<Record> createRecordsWithPlainData(int blocksize, int macSize) {
         List<Record> records = new LinkedList<>();
         for (int i = 0; i < 64; i++) {
             byte[] padding = createPaddingBytes(i);
-            int messageSize = config.getBlockSize() - (padding.length % config.getBlockSize());
+            int messageSize = blocksize - (padding.length % blocksize);
             byte[] message = new byte[messageSize];
             byte[] plain = ArrayConverter.concatenate(message, padding);
+            if (plain.length > macSize) {
+                Record r = createRecordWithPlainData(plain);
+                records.add(r);
+            }
+        }
+        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255 };
+        if (plain.length > macSize) {
             Record r = createRecordWithPlainData(plain);
             records.add(r);
         }
-        Record r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255 });
-        records.add(r);
-
-        r = createRecordWithPlainData(new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255 });
-        records.add(r);
-
+                (byte) 255 };
+        if (plain.length > macSize) {
+            Record r = createRecordWithPlainData(plain);
+            records.add(r);
+        }
         return records;
     }
 
@@ -153,13 +161,16 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     @Override
     public Boolean isVulnerable() {
+        int macSize = AlgorithmResolver.getMacAlgorithm(tlsConfig.getDefaultSelectedProtocolVersion(),
+                tlsConfig.getDefaultSelectedCipherSuite()).getSize();
+        int blockSize = AlgorithmResolver.getCipher(tlsConfig.getDefaultSelectedCipherSuite())
+                .getNonceBytesFromHandshake();
         List<Record> records = new LinkedList<>();
-        records.addAll(createRecordsWithPlainData());
+        records.addAll(createRecordsWithPlainData(blockSize, macSize));
         records.addAll(createRecordsWithModifiedMac());
         records.addAll(createRecordsWithModifiedPadding());
         for (Record record : records) {
             executeAttackRound(record);
-
         }
         LOGGER.debug("All the attack runs executed. The following messages arrived at the ends of the connections");
         LOGGER.debug("If there are different messages, this could indicate the server does not process padding correctly");
@@ -180,12 +191,12 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         List<ProtocolMessage> pmSetList = new LinkedList<>(pmSet);
 
         if (pmSet.size() == 1) {
-            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getConnectionEnd().getHostname(),
-                    pmSetList);
+            LOGGER.info("{}, NOT vulnerable, one message found: {}", tlsConfig.getDefaultClientConnection()
+                    .getHostname(), pmSetList);
             return false;
         } else {
             LOGGER.info("{}, Vulnerable (?), more messages found, recheck in debug mode: {}", tlsConfig
-                    .getConnectionEnd().getHostname(), pmSetList);
+                    .getDefaultClientConnection().getHostname(), pmSetList);
             return true;
         }
     }

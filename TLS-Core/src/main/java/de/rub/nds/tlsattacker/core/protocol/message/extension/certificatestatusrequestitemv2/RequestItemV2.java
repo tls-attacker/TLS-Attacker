@@ -17,10 +17,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RequestItemV2 implements Serializable {
 
     @ModifiableVariableProperty

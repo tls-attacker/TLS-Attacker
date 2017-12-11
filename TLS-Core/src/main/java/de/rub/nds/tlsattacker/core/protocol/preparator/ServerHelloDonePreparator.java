@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerHelloDonePreparator extends HandshakeMessagePreparator<ServerHelloDoneMessage> {
 
     private final ServerHelloDoneMessage message;

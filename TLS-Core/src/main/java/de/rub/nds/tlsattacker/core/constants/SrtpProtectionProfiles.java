@@ -15,8 +15,6 @@ import java.util.Map;
 
 /**
  * RFC5764
- * 
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public enum SrtpProtectionProfiles {
     SRTP_AES128_CM_HMAC_SHA1_80(new byte[] { 0x00, 0x01 }),

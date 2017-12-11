@@ -15,9 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
 
     private List<KeySharePair> pairList;

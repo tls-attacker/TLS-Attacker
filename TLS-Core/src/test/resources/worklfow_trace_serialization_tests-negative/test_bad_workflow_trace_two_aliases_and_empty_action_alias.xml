@@ -1,0 +1,25 @@
+# Even with this config
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+</config>
+
+# The following is a bad workflow trace input
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <OutboundConnection>
+        <alias>theAlias</alias>
+        <port>1111</port>
+        <hostname>host1111</hostname>
+    </OutboundConnection>
+    <Send>
+        <connectionAlias>UnknownAlias</connectionAlias>
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>
+                    <EllipticCurves/>
+                </extensions>
+            </ClientHello>
+        </messages>
+    </Send>
+</workflowTrace>

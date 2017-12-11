@@ -13,18 +13,19 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,8 +35,6 @@ import org.apache.logging.log4j.Logger;
 /**
  * Executes a poodle attack. It logs an error in case the tested server is
  * vulnerable to poodle.
- *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
@@ -53,13 +52,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        tlsConfig.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
-        State state = new State(tlsConfig);
-        TlsContext tlsContext = state.getTlsContext();
-
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                tlsConfig.getWorkflowExecutorType(), state);
-        WorkflowTrace trace = state.getWorkflowTrace();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
 
         ModifiableByteArray padding = new ModifiableByteArray();
         // we xor just the first byte in the padding
@@ -76,15 +70,19 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         AlertMessage alertMessage = new AlertMessage(tlsConfig);
         trace.addTlsAction(sendAction);
         trace.addTlsAction(new ReceiveAction(alertMessage));
+
+        State state = new State(tlsConfig, trace);
+
         try {
+            WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                    tlsConfig.getWorkflowExecutorType(), state);
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
             LOGGER.info("Not possible to finalize the defined workflow");
             LOGGER.debug(ex);
             return null;
         }
-        System.out.println(trace.toString());
-        if (tlsContext.isReceivedFatalAlert()) {
+        if (state.getTlsContext().isReceivedFatalAlert()) {
             LOGGER.info("NOT Vulnerable. The modified message padding was identified, the server correctly responds with an alert message");
             return false;
         } else {

@@ -8,33 +8,35 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action;
 
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
-public class ResetConnectionAction extends TLSAction {
+public class ResetConnectionAction extends ConnectionBoundAction {
 
     public ResetConnectionAction() {
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException, IOException {
-        TlsContext tlsContext = state.getTlsContext(getContextAlias());
+        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
 
         LOGGER.info("Terminating Connection");
         tlsContext.getTransportHandler().closeClientConnection();
         LOGGER.info("Resseting Cipher");
-        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher());
+        tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
+        LOGGER.info("Resettin ActiveKeySets");
+        tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
+        tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
+        tlsContext.setReadSequenceNumber(0);
+        tlsContext.setWriteSequenceNumber(0);
         LOGGER.info("Reopening Connection");
         tlsContext.getTransportHandler().initialize();
         setExecuted(true);

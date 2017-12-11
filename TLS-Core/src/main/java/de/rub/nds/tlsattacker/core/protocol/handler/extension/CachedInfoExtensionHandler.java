@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.CachedInfoExten
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.CachedInfoExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedInfoExtensionHandler extends ExtensionHandler<CachedInfoExtensionMessage> {
 
     public CachedInfoExtensionHandler(TlsContext context) {

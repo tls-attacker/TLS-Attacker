@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class TrustedAuthoritySerializer extends Serializer<TrustedAuthority> {
 
     private final TrustedAuthority trustedAuthority;

@@ -3,12 +3,39 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>2.0Beta3</version>
+    <version>2.1</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
     <url>https://github.com/RUB-NDS/TLS-Attacker</url>
     <description>TLS-Attacker is a Java-based framework for analyzing TLS libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/) and the Hackmanit GmbH (http://hackmanit.de/). </description>
+    
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    
+    <!-- Information to version control system -->
+    <scm>
+        <connection>scm:git:git://github.com/RUB-NDS/TLS-Attacker.git</connection>
+        <developerConnection>scm:git:ssh://github.com/RUB-NDS/TLS-Attacker.git</developerConnection>
+        <url>https://github.com/RUB-NDS/TLS-Attacker/tree/master</url>
+    </scm>
+    
     <developers>
         <developer>
             <id>jsomorovsky</id>
@@ -42,6 +69,7 @@
         <module>TLS-Server</module>
         <module>TLS-Mitm</module>
         <module>Attacks</module>
+        <module>TraceTool</module>
     </modules>
     <dependencies>
         <dependency>
@@ -103,7 +131,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.6</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.rub.nds</groupId>
@@ -252,6 +279,62 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${skip.signature}</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- deploy with the following command: mvn nexus-staging:release -->
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -299,5 +382,8 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <licenseOwner>Ruhr University Bochum, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
+        <!-- We redefine the signature generation process, whic is enabled by default, 
+        but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
+        <skip.signature>true</skip.signature>
     </properties>
 </project>

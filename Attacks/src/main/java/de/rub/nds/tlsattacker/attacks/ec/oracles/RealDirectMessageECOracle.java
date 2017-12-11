@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.DivisionException;
 import de.rub.nds.tlsattacker.core.crypto.ec.ECComputer;
@@ -26,6 +27,8 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
@@ -35,10 +38,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.util.BigIntegers;
 
-/**
- *
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class RealDirectMessageECOracle extends ECOracle {
 
     private final Config config;
@@ -67,12 +66,9 @@ public class RealDirectMessageECOracle extends ECOracle {
     @Override
     public boolean checkSecretCorrectnes(Point ecPoint, BigInteger secret) {
 
-        State state = new State(config);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
 
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
-
-        WorkflowTrace trace = state.getWorkflowTrace();
         ECDHClientKeyExchangeMessage message = (ECDHClientKeyExchangeMessage) WorkflowTraceUtil.getFirstSendMessage(
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
 
@@ -91,11 +87,16 @@ public class RealDirectMessageECOracle extends ECOracle {
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getKeyBits() / 8, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
+        message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {
             LOGGER.info("Number of queries so far: {}", numberOfQueries);
         }
+
+        State state = new State(config, trace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
+                config.getWorkflowExecutorType(), state);
 
         boolean valid = true;
         try {

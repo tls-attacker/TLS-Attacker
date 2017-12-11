@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RequestItemV2Parser extends Parser<RequestItemV2> {
 
     public RequestItemV2Parser(int startposition, byte[] array) {

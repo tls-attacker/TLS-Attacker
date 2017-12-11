@@ -9,48 +9,34 @@
 package de.rub.nds.tlsattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCipherSuiteAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeClientRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeCompressionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangePreMasterSecretAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeProtocolVersionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ChangeServerRandomAction;
-import de.rub.nds.tlsattacker.core.workflow.action.DeactivateEncryptionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
+import de.rub.nds.tlsattacker.core.workflow.action.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * A wrapper class over a list of protocol expectedMessages.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -58,49 +44,66 @@ public class WorkflowTrace implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkflowTrace.class);
 
-    @XmlTransient
-    Config config;
+    @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
+            @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
+            @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
+    private List<AliasedConnection> connections = new ArrayList<>();
 
-    @XmlElements(value = { @XmlElement(type = ConnectionEnd.class, name = "ConnectionEnd"),
-            @XmlElement(type = ServerConnectionEnd.class, name = "ServerConnectionEnd"),
-            @XmlElement(type = ClientConnectionEnd.class, name = "ClientConnectionEnd") })
-    private List<ConnectionEnd> connectionEnds;
-
-    /**
-     * Workflow
-     */
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = TLSAction.class, name = "TLSAction"),
-            @XmlElement(type = SendAction.class, name = "SendAction"),
-            @XmlElement(type = ReceiveAction.class, name = "ReceiveAction"),
-            @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryptionAction"),
-            @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuiteAction"),
-            @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompressionAction"),
-            @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecretAction"),
-            @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecretAction"),
-            @XmlElement(type = WaitingAction.class, name = "Wait"),
-            @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
-            @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersionAction"),
-            @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandomAction"),
-            @XmlElement(type = RenegotiationAction.class, name = "RenegotiationAction"),
+    @XmlElements(value = { @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
+            @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceive"),
+            @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
+            @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuite"),
+            @XmlElement(type = ChangeClientRandomAction.class, name = "ChangeClientRandom"),
+            @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
+            @XmlElement(type = ChangeMasterSecretAction.class, name = "ChangeMasterSecret"),
+            @XmlElement(type = ChangePreMasterSecretAction.class, name = "ChangePreMasterSecret"),
+            @XmlElement(type = ChangeProtocolVersionAction.class, name = "ChangeProtocolVersion"),
+            @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandom"),
+            @XmlElement(type = ClearBuffersAction.class, name = "ClearBuffers"),
+            @XmlElement(type = ConnectionBoundAction.class, name = "ConnectionBound"),
+            @XmlElement(type = CopyBufferedMessagesAction.class, name = "CopyBufferedMessages"),
+            @XmlElement(type = CopyBufferedRecordsAction.class, name = "CopyBufferedRecords"),
+            @XmlElement(type = CopyBuffersAction.class, name = "CopyBuffers"),
+            @XmlElement(type = CopyClientRandomAction.class, name = "CopyClientRandom"),
+            @XmlElement(type = CopyContextFieldAction.class, name = "CopyContextField"),
+            @XmlElement(type = CopyServerRandomAction.class, name = "CopyServerRandom"),
+            @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
+            @XmlElement(type = FindReceivedProtocolMessageAction.class, name = "FindReceivedProtocolMessage"),
+            @XmlElement(type = ForwardAction.class, name = "Forward"),
+            @XmlElement(type = ForwardRecordsAction.class, name = "ForwardRecords"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
-            @XmlElement(type = ChangeServerRandomAction.class, name = "ChangeServerRandomAction") })
-    private List<TLSAction> tlsActions;
+            @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
+            @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
+            @XmlElement(type = PopAndSendRecordAction.class, name = "PopAndSendRecord"),
+            @XmlElement(type = PopBufferedMessageAction.class, name = "PopBufferedMessage"),
+            @XmlElement(type = PopBufferedRecordAction.class, name = "PopBufferedRecord"),
+            @XmlElement(type = PrintLastHandledApplicationDataAction.class, name = "PrintLastHandledApplicationData"),
+            @XmlElement(type = PrintProposedExtensionsAction.class, name = "PrintProposedExtensions"),
+            @XmlElement(type = ReceiveAction.class, name = "Receive"),
+            @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
+            @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
+            @XmlElement(type = SendAction.class, name = "Send"), @XmlElement(type = WaitAction.class, name = "Wait") })
+    private List<TlsAction> tlsActions = new ArrayList<>();
 
     private String name = null;
     private String description = null;
+
+    // A dirty flag used to determine if the WorkflowTrace is well defined or
+    // not.
+    @XmlTransient
+    private boolean dirty = true;
 
     public WorkflowTrace() {
         this.tlsActions = new LinkedList<>();
     }
 
-    public WorkflowTrace(Config config) {
-        this.tlsActions = new LinkedList<>();
-        this.config = config;
+    public WorkflowTrace(List<AliasedConnection> cons) {
+        this.connections = cons;
     }
 
     public void reset() {
-        for (TLSAction action : getTlsActions()) {
+        for (TlsAction action : getTlsActions()) {
             action.reset();
         }
     }
@@ -113,84 +116,77 @@ public class WorkflowTrace implements Serializable {
         this.description = description;
     }
 
-    public void addTlsAction(TLSAction action) {
-        assertValidAlias(action.getContextAlias());
+    public List<TlsAction> getTlsActions() {
+        return tlsActions;
+    }
+
+    public void addTlsAction(TlsAction action) {
+        dirty = true;
         tlsActions.add(action);
     }
 
-    public void addTlsActions(List<TLSAction> actions) {
-        for (TLSAction action : actions) {
+    public void addTlsActions(TlsAction... actions) {
+        addTlsActions(Arrays.asList(actions));
+    }
+
+    public void addTlsActions(List<TlsAction> actions) {
+        for (TlsAction action : actions) {
             addTlsAction(action);
         }
     }
 
-    public void addTlsActions(TLSAction... actions) {
-        addTlsActions(Arrays.asList(actions));
-    }
-
-    public void addTlsAction(int position, TLSAction action) {
-        assertValidAlias(action.getContextAlias());
+    public void addTlsAction(int position, TlsAction action) {
+        dirty = true;
         tlsActions.add(position, action);
     }
 
-    public TLSAction removeTlsAction(int index) {
+    public TlsAction removeTlsAction(int index) {
+        dirty = true;
         return tlsActions.remove(index);
     }
 
-    public List<TLSAction> getTlsActions() {
-        return tlsActions;
-    }
-
-    public void setTlsActions(List<TLSAction> tlsActions) {
+    public void setTlsActions(List<TlsAction> tlsActions) {
+        dirty = true;
         this.tlsActions = tlsActions;
     }
 
-    public void setTlsActions(TLSAction... tlsActions) {
-        this.tlsActions = Arrays.asList(tlsActions);
+    public void setTlsActions(TlsAction... tlsActions) {
+        setTlsActions(new ArrayList<>(Arrays.asList(tlsActions)));
     }
 
-    public boolean addConnectionEnd(ConnectionEnd con) {
-        if (connectionEnds == null) {
-            connectionEnds = new ArrayList<>();
-        }
-        return connectionEnds.add(con);
+    public List<AliasedConnection> getConnections() {
+        return connections;
     }
 
-    public void addConnectionEnd(int position, ConnectionEnd con) {
-        connectionEnds.add(position, con);
+    /**
+     * Set connections of the workflow trace. Use only if you know what you are
+     * doing. Unless you are manually configuring workflow traces (say for MiTM
+     * or unit tests), there shouldn't be any need to call this method.
+     * 
+     * @param connections
+     *            new connection to use with this workflow trace
+     */
+    public void setConnections(List<AliasedConnection> connections) {
+        dirty = true;
+        this.connections = connections;
     }
 
-    public ConnectionEnd removeConnectionEnd(int index) {
-        return connectionEnds.remove(index);
-    }
-
-    public List<ConnectionEnd> getConnectionEnds() {
-        if (connectionEnds == null) {
-            if ((config != null) && (config.getConnectionEnds() != null)) {
-                return config.getConnectionEnds();
-            }
-            throw new ConfigurationException("This workflow trace does not know about any " + "connection end(s).");
-        }
-        return connectionEnds;
-    }
-
-    public void setConnectionEnds(List<ConnectionEnd> conEnds) {
-        this.connectionEnds = conEnds;
-    }
-
-    public void setConnectionEnds(ConnectionEnd... conEnds) {
-        this.connectionEnds = Arrays.asList(conEnds);
-    }
-
-    public void clearConnectionEnds() {
-        if (connectionEnds != null) {
-            connectionEnds.clear();
-        }
+    /**
+     * Add a connection to the workflow trace. Use only if you know what you are
+     * doing. Unless you are manually configuring workflow traces (say for MiTM
+     * or unit tests), there shouldn't be any need to call this method.
+     * 
+     * @param connection
+     *            new connection to add to the workflow trace
+     */
+    public void addConnection(AliasedConnection connection) {
+        dirty = true;
+        this.connections.add(connection);
     }
 
     public List<MessageAction> getMessageActions() {
         List<MessageAction> messageActions = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (action instanceof MessageAction) {
                 messageActions.add((MessageAction) action);
             }
@@ -200,7 +196,7 @@ public class WorkflowTrace implements Serializable {
 
     public List<ReceivingAction> getReceivingActions() {
         List<ReceivingAction> receiveActions = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (action instanceof ReceivingAction) {
                 receiveActions.add((ReceivingAction) action);
             }
@@ -210,7 +206,7 @@ public class WorkflowTrace implements Serializable {
 
     public List<SendingAction> getSendingActions() {
         List<SendingAction> sendActions = new LinkedList<>();
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (action instanceof SendingAction) {
                 sendActions.add((SendingAction) action);
             }
@@ -218,11 +214,26 @@ public class WorkflowTrace implements Serializable {
         return sendActions;
     }
 
-    public TLSAction getLastAction() {
+    /**
+     * Get the last TlsAction of the workflow trace.
+     * 
+     * @return the last TlsAction of the workflow trace. Null if no actions are
+     *         defined
+     */
+    public TlsAction getLastAction() {
         int size = tlsActions.size();
-        return tlsActions.get(size - 1);
+        if (size != 0) {
+            return tlsActions.get(size - 1);
+        }
+        return null;
     }
 
+    /**
+     * Get the last MessageAction of the workflow trace.
+     * 
+     * @return the last MessageAction of the workflow trace. Null if no message
+     *         actions are defined
+     */
     public MessageAction getLastMessageAction() {
         for (int i = tlsActions.size() - 1; i > 0; i--) {
             if (tlsActions.get(i) instanceof MessageAction) {
@@ -232,10 +243,31 @@ public class WorkflowTrace implements Serializable {
         return null;
     }
 
+    /**
+     * Get the last SendingAction of the workflow trace.
+     * 
+     * @return the last SendingAction of the workflow trace. Null if no sending
+     *         actions are defined
+     */
     public SendingAction getLastSendingAction() {
         for (int i = tlsActions.size() - 1; i > 0; i--) {
             if (tlsActions.get(i) instanceof SendingAction) {
-                return (SendAction) (tlsActions.get(i));
+                return (SendingAction) (tlsActions.get(i));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the last ReceivingActionAction of the workflow trace.
+     * 
+     * @return the last ReceivingActionAction of the workflow trace. Null if no
+     *         receiving actions are defined
+     */
+    public ReceivingAction getLastReceivingAction() {
+        for (int i = tlsActions.size() - 1; i > 0; i--) {
+            if (tlsActions.get(i) instanceof ReceivingAction) {
+                return (ReceivingAction) (tlsActions.get(i));
             }
         }
         return null;
@@ -252,7 +284,7 @@ public class WorkflowTrace implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Trace Actions:");
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             sb.append("\n");
             sb.append(action.toString());
         }
@@ -290,7 +322,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public boolean executedAsPlanned() {
-        for (TLSAction action : tlsActions) {
+        for (TlsAction action : tlsActions) {
             if (!action.executedAsPlanned()) {
                 return false;
             }
@@ -298,26 +330,46 @@ public class WorkflowTrace implements Serializable {
         return true;
     }
 
-    /**
-     * Check if the given alias matches one of our connection ends.
-     */
-    private void assertValidAlias(String alias) {
-        StringBuilder errMsg = new StringBuilder("known aliases: ");
-        List<ConnectionEnd> conEnds = getConnectionEnds();
-        if ((conEnds != null) && (!conEnds.isEmpty())) {
-            for (ConnectionEnd conEnd : conEnds) {
-                if (conEnd.getAlias().equals(alias)) {
-                    return;
-                }
-                errMsg.append(conEnd.getAlias()).append(' ');
-            }
-        }
-        errMsg.insert(0, "Action alias '" + alias + "' refers to an unknown connection end - ");
-        throw new ConfigurationException(errMsg.toString());
+    public boolean isDirty() {
+        return dirty;
     }
 
-    public void setConfig(Config config) {
-        this.config = config;
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    /**
+     * Copy a workflow trace.
+     * 
+     * TODO: This should be replaced by a better copy method. Using
+     * serialization is slow and needs some additional "tweaks", i.e. we have to
+     * manually restore important fields marked as XmlTransient. This problem
+     * arises because the classes are configured for nice JAXB output, and not
+     * for copying/storing full objects.
+     * 
+     * @param orig
+     *            the original WorkflowTrace object to copy
+     * @return a copy of the original WorkflowTrace
+     */
+    public static WorkflowTrace copy(WorkflowTrace orig) {
+        WorkflowTrace copy = null;
+
+        List<TlsAction> origActions = orig.getTlsActions();
+
+        try {
+            String origTraceStr = WorkflowTraceSerializer.write(orig);
+            InputStream is = new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
+            copy = WorkflowTraceSerializer.read(is);
+        } catch (JAXBException | IOException | XMLStreamException ex) {
+            throw new ConfigurationException("Could not copy workflow trace: " + ex);
+        }
+
+        List<TlsAction> copiedActions = copy.getTlsActions();
+        for (int i = 0; i < origActions.size(); i++) {
+            copiedActions.get(i).setSingleConnectionWorkflow(origActions.get(i).isSingleConnectionWorkflow());
+        }
+
+        return copy;
     }
 
 }

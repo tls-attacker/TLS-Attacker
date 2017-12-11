@@ -15,9 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ApplicationMessagePrepara
 import de.rub.nds.tlsattacker.core.protocol.serializer.ApplicationMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessage> {
 
     public ApplicationHandler(TlsContext tlsContext) {
@@ -49,5 +46,4 @@ public class ApplicationHandler extends ProtocolMessageHandler<ApplicationMessag
             LOGGER.debug("Send Data:" + readableAppData);
         }
     }
-
 }

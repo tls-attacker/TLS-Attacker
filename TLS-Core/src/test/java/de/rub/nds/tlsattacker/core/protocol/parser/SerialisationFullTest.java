@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
@@ -57,8 +58,9 @@ import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.WaitingAction;
+import de.rub.nds.tlsattacker.core.workflow.action.WaitAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -75,10 +77,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SerialisationFullTest {
 
     protected static final Logger LOGGER = LogManager.getLogger(SerialisationFullTest.class.getName());
@@ -104,13 +102,14 @@ public class SerialisationFullTest {
         config.setAddSupportedVersionsExtension(true);
         config.setAddTokenBindingExtension(true);
 
-        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createFullWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(config).createWorkflowTrace(WorkflowTraceType.FULL,
+                RunningModeType.CLIENT);
         trace.addTlsAction(new ChangeCipherSuiteAction(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA));
         trace.addTlsAction(new ChangeClientRandomAction(new byte[] { 0x00, 0x11, 0x22, 0x33 }));
         trace.addTlsAction(new ChangeCompressionAction(CompressionMethod.LZS));
         trace.addTlsAction(new ChangeMasterSecretAction(new byte[] { 0x00, 0x22, 0x44, 0x66, 0x44 }));
         trace.addTlsAction(new ChangePreMasterSecretAction(new byte[] { 0x33, 0x66, 0x55, 0x44, }));
-        trace.addTlsAction(new WaitingAction(10000));
+        trace.addTlsAction(new WaitAction(10000));
         trace.addTlsAction(new ResetConnectionAction());
         trace.addTlsAction(new ChangeProtocolVersionAction(ProtocolVersion.SSL3));
         trace.addTlsAction(new ChangeServerRandomAction(new byte[] { 0x77, 0x77, 0x77, 0x77, 0x77 }));

@@ -21,9 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum NamedCurve {
 
     SECT163K1(new byte[] { (byte) 0, (byte) 1 }, "sect163k1"),

@@ -8,20 +8,24 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp;
 
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ClientTcpTransportHandler extends TransportHandler {
 
     protected Socket socket;
     protected String hostname;
     protected int port;
+
+    public ClientTcpTransportHandler(Connection connection) {
+        super(connection.getTimeout(), ConnectionEndType.CLIENT);
+        this.hostname = connection.getHostname();
+        this.port = connection.getPort();
+    }
 
     public ClientTcpTransportHandler(long timeout, String hostname, int port) {
         super(timeout, ConnectionEndType.CLIENT);
@@ -39,7 +43,11 @@ public class ClientTcpTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
-        socket = new Socket(hostname, port);
+        socket = new Socket();
+        socket.connect(new InetSocketAddress(hostname, port), (int) timeout);
+        if (!socket.isConnected()) {
+            throw new IOException("Could not connect to " + hostname + ":" + "port");
+        }
         setStreams(socket.getInputStream(), socket.getOutputStream());
     }
 

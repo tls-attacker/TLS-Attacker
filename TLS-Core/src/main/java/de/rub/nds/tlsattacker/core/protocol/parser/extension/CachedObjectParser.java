@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedO
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedObjectParser extends Parser<CachedObject> {
 
     private final CachedObject cachedObject;

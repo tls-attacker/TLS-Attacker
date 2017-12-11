@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -34,8 +35,6 @@ import javax.crypto.Mac;
  * This handler processes the KeyShare extensions in ClientHello and ServerHello
  * messages, as defined in
  * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.7
- *
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
  */
 public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtensionMessage> {
 
@@ -55,7 +54,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
 
     @Override
     public KeyShareExtensionSerializer getSerializer(KeyShareExtensionMessage message) {
-        return new KeyShareExtensionSerializer(message, context.getChooser().getConnectionEnd().getConnectionEndType());
+        return new KeyShareExtensionSerializer(message, context.getChooser().getConnectionEndType());
     }
 
     @Override
@@ -76,7 +75,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             }
             adjustHandshakeTrafficSecrets();
         } else {
-            context.setClientKSEntryList(ksEntryList);
+            context.setClientKeyShareEntryList(ksEntryList);
         }
     }
 
@@ -84,14 +83,16 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
         HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
         DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(context.getChooser()
                 .getSelectedProtocolVersion(), context.getChooser().getSelectedCipherSuite());
-        // PSK = null
+
         try {
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], new byte[macLength]);
+            byte[] psk = (context.getConfig().isUsePsk() || context.getPsk() != null) ? context.getChooser().getPsk()
+                    : new byte[macLength]; // use PSK if available
+            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
             byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
                     HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
             byte[] sharedSecret;
-            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+            if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
                 if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
                 } else {
@@ -99,13 +100,13 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                 }
             } else {
                 int pos = 0;
-                for (KSEntry entry : context.getClientKSEntryList()) {
+                for (KSEntry entry : context.getChooser().getClientKeyShareEntryList()) {
                     if (entry.getGroup() == NamedCurve.ECDH_X25519) {
-                        pos = context.getClientKSEntryList().indexOf(entry);
+                        pos = context.getChooser().getClientKeyShareEntryList().indexOf(entry);
                     }
                 }
-                if (context.getClientKSEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
-                    sharedSecret = computeSharedSecretECDH(context.getClientKSEntryList().get(pos));
+                if (context.getChooser().getClientKeyShareEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(context.getChooser().getClientKeyShareEntryList().get(pos));
                 } else {
                     throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
                 }

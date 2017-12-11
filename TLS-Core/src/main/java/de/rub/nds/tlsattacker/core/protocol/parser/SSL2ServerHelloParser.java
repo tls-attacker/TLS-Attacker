@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class SSL2ServerHelloParser extends ProtocolMessageParser {
 
     public SSL2ServerHelloParser(byte[] message, int pointer, ProtocolVersion selectedProtocolVersion) {

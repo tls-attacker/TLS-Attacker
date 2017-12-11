@@ -12,8 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -21,10 +19,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class SendMessageHelper {
 
     protected static final Logger LOGGER = LogManager.getLogger(SendMessageHelper.class.getName());
@@ -34,8 +28,13 @@ public class SendMessageHelper {
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context) throws IOException {
+        return sendMessages(messages, records, context, true);
+    }
 
-        context.setTalkingConnectionEndType(context.getChooser().getConnectionEnd().getConnectionEndType());
+    public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
+            TlsContext context, boolean prepareMessages) throws IOException {
+
+        context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
 
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
@@ -44,39 +43,37 @@ public class SendMessageHelper {
 
         int recordPosition = 0;
         ProtocolMessageType lastType = null;
+        ProtocolMessage lastMessage = null;
         MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
         for (ProtocolMessage message : messages) {
-            if (message.getProtocolMessageType() != lastType && lastType != null
+            if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-                    context.getRecordLayer().updateEncryptionCipher();
-                    context.setSequenceNumber(0);
-                }
+                lastMessage.getHandler(context).adjustTlsContextAfterSerialize(message);
+                lastMessage = null;
             }
+            lastMessage = message;
             lastType = message.getProtocolMessageType();
-            LOGGER.debug("Preparing " + message.toCompactString());
-            byte[] protocolMessageBytes = handleProtocolMessage(message, context);
+            byte[] protocolMessageBytes;
+            if (prepareMessages) {
+                LOGGER.debug("Preparing " + message.toCompactString());
+                protocolMessageBytes = handleProtocolMessage(message, context);
+            } else {
+                protocolMessageBytes = handleProtocolMessageWithoutPrepare(message, context);
+            }
             if (message.isGoingToBeSent()) {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+                message.getHandler(context).adjustTlsContextAfterSerialize(message);
+                lastMessage = null;
             }
-            if (context.getChooser().getSelectedProtocolVersion().isTLS13() && context.isUpdateKeys() == true) {
-                LOGGER.debug("Setting new Cipher in RecordLayer");
-                RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(context);
-                context.getRecordLayer().setRecordCipher(recordCipher);
-                context.getRecordLayer().updateDecryptionCipher();
-                context.getRecordLayer().updateEncryptionCipher();
-                context.setSequenceNumber(0);
-            }
-        }
-        if (lastType == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
-            context.getRecordLayer().updateEncryptionCipher();
-            context.setSequenceNumber(0);
         }
         recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
+        if (lastMessage != null) {
+            lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
+        }
         sendData(messageBytesCollector, context);
         if (context.getConfig().isUseAllProvidedRecords() && recordPosition < records.size()) {
             int current = 0;
@@ -96,6 +93,25 @@ public class SendMessageHelper {
             }
         }
         return new MessageActionResult(records, messages);
+    }
+
+    public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
+
+        context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
+
+        if (records == null) {
+            LOGGER.debug("No records specified, nothing to send");
+            return;
+        }
+
+        MessageBytesCollector messageBytesCollector = new MessageBytesCollector();
+        sendData(messageBytesCollector, context);
+
+        for (AbstractRecord record : records) {
+            messageBytesCollector.appendRecordBytes(record.getRecordSerializer().serialize());
+        }
+        LOGGER.debug("Sending " + records.size() + "records");
+        sendData(messageBytesCollector, context);
     }
 
     private int flushBytesToRecords(MessageBytesCollector collector, ProtocolMessageType type,
@@ -146,6 +162,12 @@ public class SendMessageHelper {
     private void sendData(MessageBytesCollector collector, TlsContext context) throws IOException {
         context.getTransportHandler().sendData(collector.getRecordBytes());
         collector.flushRecordBytes();
+    }
+
+    private byte[] handleProtocolMessageWithoutPrepare(ProtocolMessage message, TlsContext context) {
+        ProtocolMessageHandler handler = message.getHandler(context);
+        byte[] protocolMessageBytes = handler.prepareMessage(message, false);
+        return protocolMessageBytes;
     }
 
     private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {
