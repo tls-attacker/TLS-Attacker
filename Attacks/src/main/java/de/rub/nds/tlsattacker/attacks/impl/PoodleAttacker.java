@@ -23,7 +23,7 @@ import java.util.List;
 public class PoodleAttacker extends Attacker {
 
     public PoodleAttacker(PoodleCommandConfig config) {
-        super(config, true);
+        super(config);
     }
 
     @Override

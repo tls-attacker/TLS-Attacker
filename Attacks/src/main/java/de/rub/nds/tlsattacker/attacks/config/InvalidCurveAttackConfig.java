@@ -93,14 +93,6 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
-        if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
-        }
-
-        if (delegate.getLogLevel() == Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.TRACE);
-        }
-
     }
 
     public BigInteger getPremasterSecret() {

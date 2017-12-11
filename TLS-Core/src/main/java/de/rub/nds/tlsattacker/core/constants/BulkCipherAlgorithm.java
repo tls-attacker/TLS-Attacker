@@ -24,6 +24,7 @@ public enum BulkCipherAlgorithm {
     CAMELLIA,
     SEED,
     ARIA,
+    CHACHA20_POLY1305,
     GOST28147,
     AES;
 
@@ -60,6 +61,8 @@ public enum BulkCipherAlgorithm {
             return ARIA;
         } else if (cipher.contains("28147")) {
             return GOST28147;
+        } else if (cipher.contains("CHACHA20_POLY1305")) {
+            return CHACHA20_POLY1305;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
     }
@@ -90,6 +93,8 @@ public enum BulkCipherAlgorithm {
             return SEED;
         } else if (cipher.contains("ARIA")) {
             return ARIA;
+        } else if (cipher.contains("CHACHA20_POLY1305")) {
+            return CHACHA20_POLY1305;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherAlgorithm.name()
                 + " is not supported yet.");

@@ -30,8 +30,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskClientKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
@@ -47,19 +45,24 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.security.NoSuchAlgorithmException;
 
 public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackClientCommandConfig> {
-    private static final Logger LOGGER = LogManager.getLogger(PskBruteForcerAttackClient.class);
+
     private ServerTcpTransportHandler transportHandler;
+
     private RecordLayer recordLayer;
+
     private TlsContext tlsContext;
+
     private Config tlsConfig;
+
     private RecordDecryptor decryptor;
+
     private ReceiveMessageHelper helper;
 
     // private DefaultChooser chooser;
 
     public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config) {
         // chooser= tlsContext.getChooser();
-        super(config, false);
+        super(config);
         tlsConfig = config.createConfig();
         tlsContext = new TlsContext(tlsConfig);
         // tlsConfig = config.createConfig();
@@ -128,7 +131,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                 try {
                     decryptor.decrypt(trace.getReceivingActions().get(1).getReceivedRecords().get(2));
                 } catch (CryptoException E) {
-                    LOGGER.info("neeeeeeeeeeeeein");
+                    E.printStackTrace();
                 }
 
             } catch (NoSuchAlgorithmException ex) {

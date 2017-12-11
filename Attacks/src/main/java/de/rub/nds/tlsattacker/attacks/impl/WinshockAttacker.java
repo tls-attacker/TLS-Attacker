@@ -25,8 +25,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Allows to execute the Winshock attack, by setting the CertificateVerify
@@ -34,10 +32,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(WinshockAttacker.class);
-
     public WinshockAttacker(WinshockCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override
