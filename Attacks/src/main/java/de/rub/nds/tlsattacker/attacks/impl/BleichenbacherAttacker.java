@@ -98,8 +98,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         for (int i = 0; i < responseFingerprintList.size(); i++) {
             ResponseFingerprint fingerprint = responseFingerprintList.get(i);
             Pkcs1Vector pkcs1Vector = pkcs1Vectors.get(i);
-            LOGGER.debug("\n PKCS#1 vector: {}\n Fingerprint: {}", pkcs1Vector.getDescription(),
-                    fingerprint.toString());
+            LOGGER.debug("\n PKCS#1 vector: {}\n Fingerprint: {}", pkcs1Vector.getDescription(), fingerprint.toString());
         }
         ResponseFingerprint fingerprint = responseFingerprintList.get(0);
         for (int i = 1; i < responseFingerprintList.size(); i++) {

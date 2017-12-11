@@ -159,7 +159,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     @Override
     public Boolean isVulnerable() {
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing for PaddingOracle...");
         int macSize = AlgorithmResolver.getMacAlgorithm(tlsConfig.getDefaultSelectedProtocolVersion(),
                 tlsConfig.getDefaultSelectedCipherSuite()).getSize();
         int blockSize = AlgorithmResolver.getCipher(tlsConfig.getDefaultSelectedCipherSuite())
@@ -194,8 +193,8 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
         }
         LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                "A server is considered vulnerable to this attack if he responds differently to these testvectors.");
-        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered not vulnerable if he always responds the same way.");
+                "A server is considered vulnerable to this attack if it responds differently to the test vectors.");
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered secure if it always responds the same way.");
 
         for (List<ResponseFingerprint> list : responseMap.values()) {
             ResponseFingerprint fingerprint = list.get(0);

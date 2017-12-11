@@ -131,7 +131,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                 try {
                     decryptor.decrypt(trace.getReceivingActions().get(1).getReceivedRecords().get(2));
                 } catch (CryptoException E) {
-                    LOGGER.info("neeeeeeeeeeeeein");
+                    E.printStackTrace();
                 }
 
             } catch (NoSuchAlgorithmException ex) {

@@ -111,7 +111,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Server uses PSK");
             return true;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not Vulnerable (probably), Server not uses PSK");
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not Vulnerable (probably), Server does not use PSK");
             return false;
         }
     }

@@ -37,6 +37,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
     }
 
     public void attack() {
+        LOGGER.debug("Attackign with: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
@@ -47,6 +48,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
     }
 
     public Boolean checkVulnerability() {
+        LOGGER.debug("Checking: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
