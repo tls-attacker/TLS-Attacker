@@ -12,8 +12,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import java.io.Serializable;
 
-public class PSKBinder {
+public class PSKBinder implements Serializable {
 
     private CipherSuite binderCipherConfig;
 
