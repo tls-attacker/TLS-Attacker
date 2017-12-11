@@ -58,10 +58,10 @@ public class EqualityErrorTranslator {
                 builder.append("The server seems to respond with records which have different protocol versions.");
                 break;
             case SOCKET_EXCEPTION:
-                builder.append("The server seems to ocassionally respond with a socket exception");
+                builder.append("The server seems to ocassionally respond with a socket exception.");
                 break;
             case SOCKET_STATE:
-                builder.append("The server seems to ocassionally move the TCP socket in different sates. Note that this difference is prone to false-positives if the network is unreliable.");
+                builder.append("The server seems to ocassionally move the TCP socket in different states. Note that this difference is prone to false-positives if the network is unreliable.");
                 break;
             default:
                 builder.append(error.toString());
