@@ -45,7 +45,6 @@ public class CertificateFetcher {
         config.setWorkflowTraceType(WorkflowTraceType.HELLO);
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 WorkflowExecutorType.DEFAULT, state);
-
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException E) {
