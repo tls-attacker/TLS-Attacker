@@ -32,7 +32,7 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing ClientHelloMessage");
         prepareProtocolVersion(msg);
-        prepareRandom(chooser.getConfig().getHighestProtocolVersion());
+        prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();
         prepareCompressions(msg);

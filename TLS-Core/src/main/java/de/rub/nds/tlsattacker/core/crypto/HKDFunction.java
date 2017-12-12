@@ -61,7 +61,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Extract output as defined in RFC 5869
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDFAlgorithm
      * @param salt
@@ -88,7 +88,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Expand output as defined in RFC 5869
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDF Algoirhtm
      * @param prk
@@ -116,6 +116,9 @@ public class HKDFunction {
                     mac.update(ArrayConverter.hexStringToByteArray(Integer.toHexString(i)));
                 }
                 ti = mac.doFinal();
+                if (ti.length == 0) {
+                    throw new CryptoException("Could not expand HKDF. Mac Algorithm of 0 size");
+                }
                 stream.write(ti);
                 i++;
             }
@@ -140,7 +143,7 @@ public class HKDFunction {
 
     /**
      * Computes Derive-Secret output as defined in TLS 1.3
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDF Algorithm
      * @param hashAlgorithm
@@ -168,7 +171,7 @@ public class HKDFunction {
 
     /**
      * Computes HKDF-Expand-Label output as defined in TLS 1.3
-     * 
+     *
      * @param hkdfAlgortihm
      *            The HKDF Algorithm
      * @param prk

@@ -179,17 +179,21 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 LOGGER.warn("TLS-Attacker failed execute a Handshake. Skipping to next record");
                 continue;
             }
-            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
-            clearConnections(state);
-            AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
-                    .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
-            int length = ((Record) lastRecord).getLength().getValue();
-            List<ResponseFingerprint> responseFingerprintList = responseMap.get(length);
-            if (responseFingerprintList == null) {
-                responseFingerprintList = new LinkedList<>();
-                responseMap.put(length, responseFingerprintList);
+            if (state.getWorkflowTrace().allActionsExecuted()) {
+                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+                clearConnections(state);
+                AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
+                        .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
+                int length = ((Record) lastRecord).getLength().getValue();
+                List<ResponseFingerprint> responseFingerprintList = responseMap.get(length);
+                if (responseFingerprintList == null) {
+                    responseFingerprintList = new LinkedList<>();
+                    responseMap.put(length, responseFingerprintList);
+                }
+                responseFingerprintList.add(fingerprint);
+            } else {
+                LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
             }
-            responseFingerprintList.add(fingerprint);
 
         }
         LOGGER.log(LogLevel.CONSOLE_OUTPUT,

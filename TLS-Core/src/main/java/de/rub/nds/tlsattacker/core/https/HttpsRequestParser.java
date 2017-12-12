@@ -38,7 +38,11 @@ public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessag
             HttpsHeaderParser parser = new HttpsHeaderParser(pointer, bytesLeft);
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
+            if (pointer == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing HttpsHeader");
+            }
             pointer = parser.getPointer();
+
         }
         LOGGER.info(new String(getAlreadyParsed(), Charset.forName("ASCII")));
         return message;

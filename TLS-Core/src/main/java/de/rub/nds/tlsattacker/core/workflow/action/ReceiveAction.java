@@ -12,6 +12,34 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.EncryptedExtensionsMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -41,12 +69,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
             @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
             @XmlElement(type = AlertMessage.class, name = "Alert"),
             @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
+            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -200,16 +230,25 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (messages == null || expectedMessages.size() > messages.size())
-                return false;
-        } else {
-            if (messages.size() != expectedMessages.size())
-                return false;
+        if (messages == null) {
+            return false;
         }
-        for (int i = 0; i < expectedMessages.size(); i++)
-            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass()))
+
+        if (checkOnlyExpected != null && checkOnlyExpected) {
+            if (expectedMessages.size() > messages.size()) {
                 return false;
+            }
+        } else {
+            if (messages.size() != expectedMessages.size()) {
+                return false;
+            }
+        }
+        for (int i = 0; i < expectedMessages.size(); i++) {
+            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -317,6 +356,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
+
         }
     }
 

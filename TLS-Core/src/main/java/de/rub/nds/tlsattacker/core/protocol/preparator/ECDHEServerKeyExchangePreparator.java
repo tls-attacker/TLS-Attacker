@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
@@ -102,13 +101,15 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         try {
             curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of named curves from computations.", ex);
+            LOGGER.warn("Couldn't read list of named curves from computations.", ex);
+            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
         }
         ECPointFormat[] formats;
         try {
             formats = ECPointFormat.pointFormatsFromByteArray(msg.getComputations().getEcPointFormatList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of EC point formats from computations", ex);
+            LOGGER.warn("Couldn't read list of EC point formats from computations", ex);
+            formats = chooser.getConfig().getDefaultEcPointFormats();
         }
 
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
@@ -118,7 +119,14 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
         } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
+            is = new ByteArrayInputStream(ArrayConverter.concatenate(
+                    new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, curves[0].getValue()));
+            try {
+                ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
+            } catch (IOException | IndexOutOfBoundsException ex1) {
+                throw new PreparationException("Failed to generate EC domain parameters", ex);
+            }
+            LOGGER.warn("Failed to generate EC domain parameters", ex);
         }
 
         return ecParams;
@@ -128,8 +136,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getServerSupportedPointFormats());
 
         if (sharedPointFormats.isEmpty()) {
-            throw new PreparationException("Don't know which point format to use for ECDHE. "
-                    + "Check if pointFormats is set in config.");
+            LOGGER.warn("Don't know which point format to use for ECDHE. " + "Check if pointFormats is set in config.");
+            sharedPointFormats = chooser.getConfig().getDefaultServerSupportedPointFormats();
         }
 
         List<ECPointFormat> unsupportedFormats = new ArrayList<>();
@@ -187,13 +195,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     }
 
     protected byte[] generateSignatureContents(T msg) {
-        EllipticCurveType curveType = EllipticCurveType.getCurveType(msg.getCurveType().getValue());
-
+        EllipticCurveType curveType = chooser.getEcCurveType();
         ByteArrayOutputStream ecParams = new ByteArrayOutputStream();
         switch (curveType) {
             case EXPLICIT_PRIME:
             case EXPLICIT_CHAR2:
-                throw new PreparationException("Signing of explicit curves not implemented yet.");
+                throw new UnsupportedOperationException("Signing of explicit curves not implemented yet.");
             case NAMED_CURVE:
                 ecParams.write(curveType.getValue());
                 try {
@@ -279,7 +286,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         try {
             curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of named curves from computations", ex);
+            LOGGER.warn("Could not get named Curves from ByteArray");
+            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
         }
         msg.setNamedCurve(curves[0].getValue());
     }

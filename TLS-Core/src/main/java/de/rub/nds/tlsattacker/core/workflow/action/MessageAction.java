@@ -47,6 +47,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -77,6 +78,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = DHEServerKeyExchangeMessage.class, name = "DHEServerKeyExchange"),
             @XmlElement(type = ECDHClientKeyExchangeMessage.class, name = "ECDHClientKeyExchange"),
             @XmlElement(type = ECDHEServerKeyExchangeMessage.class, name = "ECDHEServerKeyExchange"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PSKClientKeyExchange"),
             @XmlElement(type = FinishedMessage.class, name = "Finished"),
             @XmlElement(type = RSAClientKeyExchangeMessage.class, name = "RSAClientKeyExchange"),
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
@@ -92,6 +94,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
             @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),

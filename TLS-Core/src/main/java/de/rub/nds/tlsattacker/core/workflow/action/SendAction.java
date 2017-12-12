@@ -147,7 +147,7 @@ public class SendAction extends MessageAction implements SendingAction {
                     LOGGER.debug(ex);
                 }
                 if (mv != null) {
-                    if (mv.getModification() != null) {
+                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
                         mv.setOriginalValue(null);
                     } else {
                         try {

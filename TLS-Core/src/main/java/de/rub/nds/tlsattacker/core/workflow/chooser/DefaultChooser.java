@@ -295,7 +295,7 @@ public class DefaultChooser extends Chooser {
         if (context.getSessionTicketTLS() != null) {
             return context.getSessionTicketTLS();
         } else {
-            return config.getTLSSessionTicket();
+            return config.getTlsSessionTicket();
         }
     }
 

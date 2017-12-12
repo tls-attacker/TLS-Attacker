@@ -21,7 +21,8 @@ public class RecordCipherFactory {
     private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);
 
     public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
-        if (cipherSuite == null) {
+        if (context.getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
+            LOGGER.warn("Cipher not implemented. Using Null Cipher instead");
             return new RecordNullCipher(context);
         } else {
             CipherType type = AlgorithmResolver.getCipherType(cipherSuite);

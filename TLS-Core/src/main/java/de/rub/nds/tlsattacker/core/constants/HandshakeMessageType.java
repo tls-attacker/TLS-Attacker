@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public enum HandshakeMessageType {
 
-    UNKNOWN,
+    UNKNOWN((byte) 255),
     HELLO_REQUEST((byte) 0),
     CLIENT_HELLO((byte) 1),
     SERVER_HELLO((byte) 2),

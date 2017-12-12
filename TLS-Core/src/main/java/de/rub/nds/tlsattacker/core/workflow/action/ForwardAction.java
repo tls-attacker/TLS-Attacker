@@ -50,6 +50,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownHandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -110,6 +111,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
             @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
             @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
@@ -151,6 +153,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
             @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
             @XmlElement(type = AlertMessage.class, name = "Alert"),
+            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
@@ -181,7 +184,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
 
     /**
      * Allow to pass a fake ReceiveMessageHelper helper for testing.
-     * 
+     *
      * @param receiveFromAlias
      *            The alias of the connection from which to receive
      * @param forwardToAlias
@@ -248,7 +251,7 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
 
     /**
      * Apply the contents of the messages to the given TLS context.
-     * 
+     *
      */
     private void applyMessages(TlsContext ctx) {
         for (ProtocolMessage msg : receivedMessages) {

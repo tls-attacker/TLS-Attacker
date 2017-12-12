@@ -78,8 +78,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
         CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
-        tlsContext.setSelectedCipherSuite(suite);
-        LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+        if (suite != null) {
+            tlsContext.setSelectedCipherSuite(suite);
+            LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+        } else {
+            LOGGER.warn("Unknown CipherSuite, did not adjust Context");
+        }
     }
 
     private void adjustServerRandom(ServerHelloMessage message) {
@@ -90,8 +94,12 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private void adjustSelectedCompression(ServerHelloMessage message) {
         CompressionMethod method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod()
                 .getValue());
-        tlsContext.setSelectedCompressionMethod(method);
-        LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+        if (method != null) {
+            tlsContext.setSelectedCompressionMethod(method);
+            LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+        } else {
+            LOGGER.warn("Unknown CompressionAlgorithm, did not adjust Context");
+        }
     }
 
     private void adjustSelectedSessionID(ServerHelloMessage message) {

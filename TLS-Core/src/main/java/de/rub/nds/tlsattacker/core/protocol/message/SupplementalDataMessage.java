@@ -39,6 +39,11 @@ public class SupplementalDataMessage extends HandshakeMessage {
         this.entries = new LinkedList<>(entries);
     }
 
+    public SupplementalDataMessage() {
+        super(HandshakeMessageType.SUPPLEMENTAL_DATA);
+        this.entries = new LinkedList<>();
+    }
+
     public List<SupplementalDataEntry> getEntries() {
         return entries;
     }

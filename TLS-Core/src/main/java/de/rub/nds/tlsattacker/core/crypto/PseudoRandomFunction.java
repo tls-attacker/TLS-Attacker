@@ -143,6 +143,9 @@ public class PseudoRandomFunction {
                 mac.update(ai);
                 mac.update(labelSeed);
                 buf2 = mac.doFinal();
+                if (buf2.length == 0) {
+                    throw new CryptoException("Could not Calc PRF output. Mac length is zero!");
+                }
                 out = ArrayConverter.concatenate(out, buf2);
             }
             return Arrays.copyOf(out, size);

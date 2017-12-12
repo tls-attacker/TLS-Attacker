@@ -33,7 +33,12 @@ public class PSKKeyExchangeModesExtensionPreparator extends ExtensionPreparator<
     }
 
     private void prepareListBytes() {
-        msg.setKeyExchangeModesListBytes(msg.getKeyExchangeModesConfig());
+        if (msg.getKeyExchangeModesConfig() == null) {
+            LOGGER.warn("No PSKKeyExchangeModes configured. Using empty byte[]");
+            msg.setKeyExchangeModesListBytes(new byte[0]);
+        } else {
+            msg.setKeyExchangeModesListBytes(msg.getKeyExchangeModesConfig());
+        }
     }
 
     private void prepareListLength() {
