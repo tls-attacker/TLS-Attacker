@@ -61,27 +61,33 @@ public class ResponseExtractor {
 
     private static List<Class<AbstractRecord>> extractRecordClasses(ReceivingAction action) {
         List<Class<AbstractRecord>> classList = new LinkedList<>();
-        for (AbstractRecord record : action.getReceivedRecords()) {
-            classList.add((Class<AbstractRecord>) record.getClass());
+        if (action.getReceivedRecords() != null) {
+            for (AbstractRecord record : action.getReceivedRecords()) {
+                classList.add((Class<AbstractRecord>) record.getClass());
+            }
         }
         return classList;
     }
 
     private static List<Class<ProtocolMessage>> extractMessageClasses(ReceivingAction action) {
         List<Class<ProtocolMessage>> classList = new LinkedList<>();
-        for (ProtocolMessage message : action.getReceivedMessages()) {
-            classList.add((Class<ProtocolMessage>) message.getClass());
+        if (action.getReceivedMessages() != null) {
+            for (ProtocolMessage message : action.getReceivedMessages()) {
+                classList.add((Class<ProtocolMessage>) message.getClass());
+            }
         }
         return classList;
     }
 
     private static boolean didReceiveEncryptedAlert(ReceivingAction action) {
-        for (AbstractRecord abstractRecord : action.getReceivedRecords()) {
-            if (abstractRecord instanceof Record) {
-                Record record = (Record) abstractRecord;
-                if (record.getContentMessageType() == ProtocolMessageType.ALERT) {
-                    if (record.getLength().getValue() > 6) {
-                        return true;
+        if (action.getReceivedRecords() != null) {
+            for (AbstractRecord abstractRecord : action.getReceivedRecords()) {
+                if (abstractRecord instanceof Record) {
+                    Record record = (Record) abstractRecord;
+                    if (record.getContentMessageType() == ProtocolMessageType.ALERT) {
+                        if (record.getLength().getValue() > 6) {
+                            return true;
+                        }
                     }
                 }
             }
