@@ -26,19 +26,24 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
 
     @Override
     public void parseExtensionMessageContent(ServerNameIndicationExtensionMessage msg) {
-        parseServerNameListLength(msg);
-        parseServerNameListBytes(msg);
-        int position = 0;
-        pairList = new LinkedList<>();
-        while (position < msg.getServerNameListLength().getValue()) {
-            ServerNamePairParser parser = new ServerNamePairParser(position, msg.getServerNameListBytes().getValue());
-            pairList.add(parser.parse());
-            if (position == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
+        if (msg.getExtensionLength().getValue() > 0) {
+            parseServerNameListLength(msg);
+            parseServerNameListBytes(msg);
+            int position = 0;
+            pairList = new LinkedList<>();
+            while (position < msg.getServerNameListLength().getValue()) {
+                ServerNamePairParser parser = new ServerNamePairParser(position, msg.getServerNameListBytes()
+                        .getValue());
+                pairList.add(parser.parse());
+                if (position == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
+                }
+                position = parser.getPointer();
             }
-            position = parser.getPointer();
+            parseServerNameList(msg);
+        } else {
+            LOGGER.debug("Received empty SNI Extension");
         }
-        parseServerNameList(msg);
     }
 
     @Override
