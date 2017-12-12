@@ -87,9 +87,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         List<ResponseFingerprint> responseFingerprintList = new LinkedList<>();
         for (Pkcs1Vector pkcs1Vector : pkcs1Vectors) {
             State state = executeTlsFlow(bbWorkflowType, pkcs1Vector.getEncryptedValue());
-            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+            if (state.getWorkflowTrace().allActionsExecuted()) {
+                ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+                responseFingerprintList.add(fingerprint);
+            } else {
+                LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            }
             clearConnections(state);
-            responseFingerprintList.add(fingerprint);
         }
         if (responseFingerprintList.isEmpty()) {
             LOGGER.warn("Could not extract Fingerprints");
