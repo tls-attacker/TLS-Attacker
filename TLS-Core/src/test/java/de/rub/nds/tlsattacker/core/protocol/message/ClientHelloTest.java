@@ -32,6 +32,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -116,6 +117,22 @@ public class ClientHelloTest {
         m.marshal(trace, writer);
         String xmlString = writer.toString();
         assertNotNull(xmlString);
+    }
+    
+    @Test
+    public void testToString()
+    {
+        ClientHelloMessage message = new ClientHelloMessage();
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("ClientHelloMessage:")
+                .append("\n  Protocol Version: ").append("null")
+                .append("\n  Client Unix Time: ").append("null")
+                .append("\n  Client Random: ").append("null")
+                .append("\n  Session ID: ").append("null")
+                .append("\n  Supported Cipher Suites: ").append("null")
+                .append("\n  Supported Compression Methods: ").append("null");
+        Assert.assertEquals(message.toString(), sb.toString());
     }
 
 }

@@ -132,8 +132,9 @@ public class CertificateRequestMessage extends HandshakeMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("CertificateRequestMessage:");
+        sb.append("\n  Certificate Types Count: ");
         if (clientCertificateTypesCount != null) {
-            sb.append("\n  Certificate Types Count: ").append(clientCertificateTypesCount.getValue());
+            sb.append(clientCertificateTypesCount.getValue());
         } else {
             sb.append("null");
         }
@@ -162,9 +163,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
         } else {
             sb.append("null");
         }
+        sb.append("\n  Distinguished Names Length: ");
         if (distinguishedNamesLength != null) {
-            sb.append("\n  Distinguished Names Length: ");
             sb.append(distinguishedNamesLength.getValue());
+        } else {
+            sb.append("null");
         }
         // sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();
