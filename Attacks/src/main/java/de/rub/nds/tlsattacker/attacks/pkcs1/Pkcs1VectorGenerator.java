@@ -32,7 +32,7 @@ public class Pkcs1VectorGenerator {
 
     /**
      * Generates different encrypted PKCS1 vectors
-     * 
+     *
      * @param publicKey
      *            The publickey
      * @param type
@@ -59,9 +59,24 @@ public class Pkcs1VectorGenerator {
         }
     }
 
+    public static Pkcs1Vector generateCorrectPkcs1Vector(RSAPublicKey publicKey, ProtocolVersion protocolVersion) {
+        Pkcs1Vector encryptedVector = getPlainCorrect(publicKey.getModulus().bitLength(), protocolVersion);
+        try {
+            Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
+            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
+            // encrypt all the padded keys
+            byte[] encrypted = rsa.doFinal(encryptedVector.getPlainValue());
+            encryptedVector.setEncryptedValue(encrypted);
+            return encryptedVector;
+        } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException
+                | NoSuchPaddingException ex) {
+            throw new ConfigurationException("The PKCS#1 attack vectors could not be generated.", ex);
+        }
+    }
+
     /**
      * Generates different plain PKCS1 vectors
-     * 
+     *
      * @param publicKeyBitLength
      *            The publicKeyBitLength
      * @param type
@@ -110,9 +125,18 @@ public class Pkcs1VectorGenerator {
         return pkcs1Vectors;
     }
 
+    private static Pkcs1Vector getPlainCorrect(int publicKeyBitLength, ProtocolVersion protocolVersion) {
+        byte[] keyBytes = new byte[HandshakeByteLength.PREMASTER_SECRET];
+        Arrays.fill(keyBytes, (byte) 42);
+        keyBytes[0] = protocolVersion.getMajor();
+        keyBytes[1] = protocolVersion.getMinor();
+        int publicKeyByteLength = publicKeyBitLength / 8;
+        return new Pkcs1Vector("Correctly formatted PKCS#1 PMS message", getPaddedKey(publicKeyByteLength, keyBytes));
+    }
+
     /**
      * Generates a validly padded message
-     * 
+     *
      * @param rsaKeyLength
      *            rsa key length in bytes
      * @param symmetricKey
