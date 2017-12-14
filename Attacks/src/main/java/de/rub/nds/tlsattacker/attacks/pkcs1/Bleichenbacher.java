@@ -40,7 +40,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         int i = 0;
         boolean solutionFound = false;
 
-        LOGGER.debug("Step 1: Blinding");
+        LOGGER.info("Step 1: Blinding");
         if (this.msgIsPKCS) {
             LOGGER.info("Step skipped --> " + "Message is considered as PKCS compliant.");
             LOGGER.info("Testing the validity of the original message");
