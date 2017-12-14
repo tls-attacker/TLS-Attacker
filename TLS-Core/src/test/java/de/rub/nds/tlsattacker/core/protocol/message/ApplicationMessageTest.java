@@ -34,11 +34,19 @@ public class ApplicationMessageTest {
      */
     @Test
     public void testToString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nApplicationMessage:");
+        sb.append("\n  Data: ").append("null");
+
+        assertEquals(sb.toString(), message.toString());
+
         byte[] data = { 123 };
         message.setData(data);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("APPLICATION\n  Data:").append(ArrayConverter.bytesToHexString(data));
+        sb.setLength(0);
+        sb.append("\nApplicationMessage:");
+        sb.append("\n  Data: ").append(ArrayConverter.bytesToHexString(data));
 
         assertEquals(sb.toString(), message.toString());
     }

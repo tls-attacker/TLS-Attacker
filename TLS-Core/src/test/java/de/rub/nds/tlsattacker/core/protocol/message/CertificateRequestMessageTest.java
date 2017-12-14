@@ -33,12 +33,12 @@ public class CertificateRequestMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("CertificateRequestMessage:")
-                .append("\n  Certificate Types Count: ").append("null")
-                .append("\n  Certificate Types: ").append("null")
-                .append("\n  Signature Hash Algorithms Length: ").append("null")
-                .append("\n  Signature Hash Algorithms: ").append("null")
-                .append("\n  Distinguished Names Length: ").append("null");
+        sb.append("\nCertificateRequestMessage:");
+        sb.append("\n  Certificate Types Count: ").append("null");
+        sb.append("\n  Certificate Types: ").append("null");
+        sb.append("\n  Signature Hash Algorithms Length: ").append("null");
+        sb.append("\n  Signature Hash Algorithms: ").append("null");
+        sb.append("\n  Distinguished Names Length: ").append("null");
         assertEquals(message.toString(), sb.toString());
     }
 

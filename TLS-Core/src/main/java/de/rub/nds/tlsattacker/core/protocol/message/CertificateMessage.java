@@ -170,7 +170,7 @@ public class CertificateMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("CertificateMessage:");
+        sb.append("\nCertificateMessage:");
         sb.append("\n  Certificates Length: ");
         if (certificatesListLength != null) {
             sb.append(certificatesListLength.getValue());

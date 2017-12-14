@@ -118,20 +118,20 @@ public class ClientHelloTest {
         String xmlString = writer.toString();
         assertNotNull(xmlString);
     }
-    
+
     @Test
-    public void testToString()
-    {
+    public void testToString() {
         ClientHelloMessage message = new ClientHelloMessage();
         StringBuilder sb = new StringBuilder();
-        
-        sb.append("ClientHelloMessage:")
-                .append("\n  Protocol Version: ").append("null")
-                .append("\n  Client Unix Time: ").append("null")
-                .append("\n  Client Random: ").append("null")
-                .append("\n  Session ID: ").append("null")
-                .append("\n  Supported Cipher Suites: ").append("null")
-                .append("\n  Supported Compression Methods: ").append("null");
+
+        sb.append("\nClientHelloMessage:");
+        sb.append("\n  Protocol Version: ").append("null");
+        sb.append("\n  Client Unix Time: ").append("null");
+        sb.append("\n  Client Random: ").append("null");
+        sb.append("\n  Session ID: ").append("null");
+        sb.append("\n  Supported Cipher Suites: ").append("null");
+        sb.append("\n  Supported Compression Methods: ").append("null");
+        sb.append("\n  Extensions: ").append("null");
         Assert.assertEquals(message.toString(), sb.toString());
     }
 
