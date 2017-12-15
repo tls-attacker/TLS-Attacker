@@ -172,13 +172,13 @@ public class CertificateMessage extends HandshakeMessage {
         StringBuilder sb = new StringBuilder();
         sb.append("\nCertificateMessage:");
         sb.append("\n  Certificates Length: ");
-        if (certificatesListLength != null) {
+        if (certificatesListLength != null && certificatesListLength.getValue() != null) {
             sb.append(certificatesListLength.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  Certificate:\n");
-        if (certificatesListBytes != null) {
+        if (certificatesListBytes != null && certificatesListBytes.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(certificatesListBytes.getValue()));
         } else {
             sb.append("null");

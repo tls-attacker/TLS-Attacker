@@ -98,25 +98,28 @@ public class HeartbeatMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nHeartbeatMessage:");
+        sb.append("\n  Type: ");
         if (heartbeatMessageType != null && heartbeatMessageType.getValue() != null) {
-            sb.append("\nHeartbeat message:\n  Type: ");
             sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));
+        } else {
+            sb.append("null");
         }
         sb.append("\n  Payload Length: ");
-        if (payloadLength != null) {
+        if (payloadLength != null && payloadLength.getValue() != null) {
             sb.append(payloadLength.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  Payload: ");
-        if (payload != null) {
+        if (payload != null && payload.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Padding: ");
-        if (padding != null) {
+        if (padding != null && padding.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
         } else {
             sb.append("null");

@@ -35,6 +35,9 @@ public class HelloRequestMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nHelloRequestMessage:");
+
+        return sb.toString();
     }
 }
