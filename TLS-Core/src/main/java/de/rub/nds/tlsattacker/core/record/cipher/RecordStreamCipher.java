@@ -92,7 +92,7 @@ public class RecordStreamCipher extends RecordCipher {
 
     @Override
     public byte[] calculatePadding(int paddingLength) {
-        return new byte[] {};
+        return new byte[0];
     }
 
     @Override

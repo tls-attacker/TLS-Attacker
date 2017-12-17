@@ -161,7 +161,11 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         if (this.extensions == null) {
             extensions = new LinkedList<>();
         }
-        this.extensions.add(extension);
+        if (extension != null) {
+            this.extensions.add(extension);
+        } else {
+            LOGGER.error("Cannot add null Extension");
+        }
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
@@ -319,7 +323,9 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (getExtensions() != null) {
             for (ExtensionMessage em : getExtensions()) {
-                holders.add(em);
+                if (em != null) {
+                    holders.addAll(em.getAllModifiableVariableHolders());
+                }
             }
         }
         return holders;

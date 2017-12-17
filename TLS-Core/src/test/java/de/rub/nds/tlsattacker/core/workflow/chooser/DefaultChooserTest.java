@@ -496,8 +496,8 @@ public class DefaultChooserTest {
         context.setSessionTicketTLS(null);
         byte[] sessionTicketTLS = ArrayConverter.hexStringToByteArray("122131123987891238098123");
         byte[] sessionTicketTLS2 = ArrayConverter.hexStringToByteArray("1221311239878912380981281294");
-        config.setTLSSessionTicket(sessionTicketTLS);
-        assertArrayEquals(sessionTicketTLS, config.getTLSSessionTicket());
+        config.setTlsSessionTicket(sessionTicketTLS);
+        assertArrayEquals(sessionTicketTLS, config.getTlsSessionTicket());
         assertArrayEquals(sessionTicketTLS, chooser.getSessionTicketTLS());
         context.setSessionTicketTLS(sessionTicketTLS2);
         assertArrayEquals(sessionTicketTLS2, chooser.getSessionTicketTLS());

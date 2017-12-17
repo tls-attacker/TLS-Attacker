@@ -74,6 +74,7 @@ public class SendAction extends MessageAction implements SendingAction {
             records = new ArrayList<>(result.getRecordList());
             setExecuted(true);
         } catch (IOException E) {
+            tlsContext.setReceivedTransportHandlerException(true);
             LOGGER.debug(E);
             setExecuted(false);
         }
@@ -146,7 +147,7 @@ public class SendAction extends MessageAction implements SendingAction {
                     LOGGER.debug(ex);
                 }
                 if (mv != null) {
-                    if (mv.getModification() != null) {
+                    if (mv.getModification() != null || mv.isCreateRandomModification()) {
                         mv.setOriginalValue(null);
                     } else {
                         try {

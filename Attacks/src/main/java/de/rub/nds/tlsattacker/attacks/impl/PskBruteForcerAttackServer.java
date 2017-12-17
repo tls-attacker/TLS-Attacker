@@ -38,18 +38,15 @@ import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import java.nio.charset.Charset;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackServerCommandConfig> {
-    private static final Logger LOGGER = LogManager.getLogger(PskBruteForcerAttackServer.class);
 
     public PskBruteForcerAttackServer(PskBruteForcerAttackServerCommandConfig config) {
-        super(config, false);
+        super(config);
         // tlsConfig = config.createConfig();
 
     }
@@ -114,7 +111,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (probably), Server uses PSK");
             return true;
         } else {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not Vulnerable (probably), Server not uses PSK");
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not Vulnerable (probably), Server does not use PSK");
             return false;
         }
     }

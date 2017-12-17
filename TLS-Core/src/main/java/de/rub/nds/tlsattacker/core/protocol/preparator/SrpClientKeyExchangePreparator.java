@@ -129,6 +129,10 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             return paddingArray;
         }
         int paddingByteLength = modulusByteLength - paddingArray.length;
+        if (paddingByteLength < 0) {
+            LOGGER.warn("Negative SRP Padding Size. Using 0");
+            paddingByteLength = 0;
+        }
         padding = new byte[paddingByteLength];
         byte[] output = ArrayConverter.concatenate(padding, paddingArray);
         return output;

@@ -33,7 +33,6 @@ public class UnknownMessagePreparator extends ProtocolMessagePreparator<UnknownM
         } else {
             msg.setCompleteResultingMessage(new byte[0]);
         }
-        msg.setCompleteResultingMessage(msg.getDataConfig());
         LOGGER.debug("CompleteResultinMessage: "
                 + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
     }

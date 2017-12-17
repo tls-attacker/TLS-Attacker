@@ -457,7 +457,13 @@ public enum CipherSuite {
     }
 
     private static int valueToInt(byte[] value) {
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        if (value.length >= 2) {
+            return (value[0] & 0xff) << 8 | (value[1] & 0xff);
+        } else if (value.length == 1) {
+            return value[0];
+        } else {
+            return 0;
+        }
     }
 
     public static List<CipherSuite> getCiphersuites(byte[] values) {
@@ -691,5 +697,9 @@ public enum CipherSuite {
      */
     public boolean isTLS13() {
         return this.getByteValue()[0] == (byte) 0x13 && this.getByteValue()[1] != (byte) 0x00;
+    }
+
+    public boolean isImplemented() {
+        return getImplemented().contains(this);
     }
 }

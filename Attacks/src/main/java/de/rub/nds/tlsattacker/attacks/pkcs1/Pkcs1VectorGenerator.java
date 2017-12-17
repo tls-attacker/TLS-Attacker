@@ -11,12 +11,14 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
-import java.util.Random;
+import java.util.LinkedList;
+import java.util.List;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -24,14 +26,9 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @version 0.1
- */
-public class PKCS1VectorGenerator {
+public class Pkcs1VectorGenerator {
 
-    private static final int STATIC_VECTOR_SIZE = 11;
-
-    private static final Logger LOGGER = LogManager.getLogger(PKCS1VectorGenerator.class);
+    private static final Logger LOGGER = LogManager.getLogger(Pkcs1VectorGenerator.class);
 
     /**
      * Generates different encrypted PKCS1 vectors
@@ -40,28 +37,22 @@ public class PKCS1VectorGenerator {
      *            The publickey
      * @param type
      *            the type
-     * @return pkcs1Vectors
+     * @param protocolVersion
+     * @return encrypted pkcs1Vectors
      */
-    public static byte[][] generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
-
-        // compute the number of all vectors that are being generated
-        int rsaKeyLength = publicKey.getModulus().bitLength() / 8;
-        int vectorSize = STATIC_VECTOR_SIZE;
-        if (type == BleichenbacherCommandConfig.Type.FULL) {
-            vectorSize += rsaKeyLength - 2;
-        }
-        byte[][] plainPaddedKeys = generatePlainPkcs1Vectors(publicKey, type);
-
+    public static List<Pkcs1Vector> generatePkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type,
+            ProtocolVersion protocolVersion) {
+        List<Pkcs1Vector> encryptedVectors = generatePlainPkcs1Vectors(publicKey.getModulus().bitLength(), type,
+                protocolVersion);
         try {
             Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[][] encryptedKeys = new byte[vectorSize][];
             // encrypt all the padded keys
-            for (int i = 0; i < encryptedKeys.length; i++) {
-                encryptedKeys[i] = rsa.doFinal(plainPaddedKeys[i]);
+            for (Pkcs1Vector vector : encryptedVectors) {
+                byte[] encrypted = rsa.doFinal(vector.getPlainValue());
+                vector.setEncryptedValue(encrypted);
             }
-
-            return encryptedKeys;
+            return encryptedVectors;
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchAlgorithmException
                 | NoSuchPaddingException ex) {
             throw new ConfigurationException("The different PKCS#1 attack vectors could not be generated.", ex);
@@ -71,45 +62,52 @@ public class PKCS1VectorGenerator {
     /**
      * Generates different plain PKCS1 vectors
      * 
-     * @param publicKey
-     *            The publickey
+     * @param publicKeyBitLength
+     *            The publicKeyBitLength
      * @param type
      *            the type
+     * @param protocolVersion
      * @return pkcs1Vectors
      */
-    public static byte[][] generatePlainPkcs1Vectors(RSAPublicKey publicKey, BleichenbacherCommandConfig.Type type) {
-        // we do not need secure random here
-        Random random = new Random();
+    public static List<Pkcs1Vector> generatePlainPkcs1Vectors(int publicKeyBitLength,
+            BleichenbacherCommandConfig.Type type, ProtocolVersion protocolVersion) {
         byte[] keyBytes = new byte[HandshakeByteLength.PREMASTER_SECRET];
-        random.nextBytes(keyBytes);
-        int rsaKeyLength = publicKey.getModulus().bitLength() / 8;
-
-        // compute the number of all vectors that are being generated
-        int vectorSize = STATIC_VECTOR_SIZE;
-        if (type == BleichenbacherCommandConfig.Type.FULL) {
-            vectorSize += rsaKeyLength - 2;
-        }
+        Arrays.fill(keyBytes, (byte) 42);
+        keyBytes[0] = protocolVersion.getMajor();
+        keyBytes[1] = protocolVersion.getMinor();
+        int publicKeyByteLength = publicKeyBitLength / 8;
 
         // create plain padded keys
-        byte[][] plainPaddedKeys = new byte[vectorSize][];
-        plainPaddedKeys[0] = getEK_NoNullByte(rsaKeyLength, keyBytes);
-        plainPaddedKeys[1] = getEK_NullByteInPadding(rsaKeyLength, keyBytes);
-        plainPaddedKeys[2] = getEK_NullByteInPkcsPadding(rsaKeyLength, keyBytes);
-        plainPaddedKeys[3] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 0);
-        plainPaddedKeys[4] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 1);
-        plainPaddedKeys[5] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 8);
-        plainPaddedKeys[6] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 16);
-        plainPaddedKeys[7] = getEK_SymmetricKeyOfSize(rsaKeyLength, keyBytes, 32);
-        plainPaddedKeys[8] = getEK_WrongFirstByte(rsaKeyLength, keyBytes);
-        plainPaddedKeys[9] = getEK_WrongSecondByte(rsaKeyLength, keyBytes);
-        // correct key (with invalid TLS version number)
-        plainPaddedKeys[10] = getPaddedKey(rsaKeyLength, keyBytes);
+        List<Pkcs1Vector> pkcs1Vectors = new LinkedList<>();
+        pkcs1Vectors.add(new Pkcs1Vector("Correctly formatted PKCS#1 PMS message", getPaddedKey(publicKeyByteLength,
+                keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("Wrong first byte (0x00 set to 0x17)", getEK_WrongFirstByte(
+                publicKeyByteLength, keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("Wrong second byte (0x02 set to 0x17)", getEK_WrongSecondByte(
+                publicKeyByteLength, keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("Invalid TLS version in PMS", getEK_WrongTlsVersion(publicKeyByteLength,
+                keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("Correctly formatted PKCS#1 PMS message, but 1 byte shorter", getPaddedKey(
+                publicKeyByteLength - 1, keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("No 0x00 in message", getEK_NoNullByte(publicKeyByteLength, keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("0x00 in PKCS#1 padding (first 8 bytes after 0x00 0x02)",
+                getEK_NullByteInPkcsPadding(publicKeyByteLength, keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("0x00 in some padding byte", getEK_NullByteInPadding(publicKeyByteLength,
+                keyBytes)));
+        pkcs1Vectors.add(new Pkcs1Vector("0x00 on the last position  (|PMS| = 0)", getEK_SymmetricKeyOfSize(
+                publicKeyByteLength, keyBytes, 0)));
+        pkcs1Vectors.add(new Pkcs1Vector("0x00 on the next to last position (|PMS| = 1)", getEK_SymmetricKeyOfSize(
+                publicKeyByteLength, keyBytes, 1)));
+        pkcs1Vectors.add(new Pkcs1Vector("0x00 on the 9th position from the rigth (|PMS| = 8)",
+                getEK_SymmetricKeyOfSize(publicKeyByteLength, keyBytes, 8)));
 
         if (type == BleichenbacherCommandConfig.Type.FULL) {
-            byte[][] additionalPaddedKeys = getEK_DifferentPositionsOf0x00(rsaKeyLength, keyBytes);
-            System.arraycopy(additionalPaddedKeys, 0, plainPaddedKeys, STATIC_VECTOR_SIZE, additionalPaddedKeys.length);
+            List<Pkcs1Vector> additionalVectors = getEK_DifferentPositionsOf0x00(publicKeyByteLength, keyBytes);
+            for (Pkcs1Vector vector : additionalVectors) {
+                pkcs1Vectors.add(vector);
+            }
         }
-        return plainPaddedKeys;
+        return pkcs1Vectors;
     }
 
     /**
@@ -117,8 +115,8 @@ public class PKCS1VectorGenerator {
      * 
      * @param rsaKeyLength
      *            rsa key length in bytes
-     * @param symmetricKeyLength
-     *            symmetric key length in bytes
+     * @param symmetricKey
+     *            symmetric key to be padded
      * @return padded key
      */
     private static byte[] getPaddedKey(int rsaKeyLength, byte[] symmetricKey) {
@@ -136,6 +134,15 @@ public class PKCS1VectorGenerator {
         LOGGER.debug("Generated a PKCS1 padded message a correct key length, but invalid protocol version: {}",
                 ArrayConverter.bytesToHexString(key));
 
+        return key;
+    }
+
+    private static byte[] getEK_WrongTlsVersion(int rsaKeyLength, byte[] symmetricKey) {
+        byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
+        key[rsaKeyLength - symmetricKey.length] = 0x42;
+        key[rsaKeyLength - symmetricKey.length + 1] = 0x42;
+        LOGGER.debug("Generated a PKCS1 padded message with a wrong TLS version bytes: {}",
+                ArrayConverter.bytesToHexString(key));
         return key;
     }
 
@@ -201,10 +208,10 @@ public class PKCS1VectorGenerator {
      *            rsakeylength
      * @param symmetricKey
      *            symmetric key
-     * @return differentpositions
+     * @return Pkcs1Vectors
      */
-    private static byte[][] getEK_DifferentPositionsOf0x00(int rsaKeyLength, byte[] symmetricKey) {
-        byte[][] result = new byte[rsaKeyLength - 2][];
+    private static List<Pkcs1Vector> getEK_DifferentPositionsOf0x00(int rsaKeyLength, byte[] symmetricKey) {
+        List<Pkcs1Vector> vectors = new LinkedList<>();
         for (int i = 2; i < rsaKeyLength; i++) {
             // generate padded key
             byte[] key = getPaddedKey(rsaKeyLength, symmetricKey);
@@ -214,18 +221,16 @@ public class PKCS1VectorGenerator {
                     key[j] = 0x01;
                 }
             }
-            result[i - 2] = key;
-            // insert 0x00 to an incorrect position
-            result[i - 2][i] = 0x00;
+            key[i] = 0x00;
+            vectors.add(new Pkcs1Vector(("0x00 on a wrong position (" + i + ")"), key));
         }
         LOGGER.debug("Generated PKCS1 vectors with different invalid 0x00 positions");
-
-        return result;
+        return vectors;
     }
 
     /**
      * No instantiation needed, only one static method used
      */
-    private PKCS1VectorGenerator() {
+    private Pkcs1VectorGenerator() {
     }
 }

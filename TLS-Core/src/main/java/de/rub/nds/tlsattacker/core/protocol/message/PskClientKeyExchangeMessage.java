@@ -29,7 +29,7 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @HoldsModifiableVariable
     @XmlElement
-    protected PSKPremasterComputations premastersecret;
+    protected PSKPremasterComputations computations;
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableByteArray identity;
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -64,7 +64,7 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public PSKPremasterComputations getComputations() {
-        return premastersecret;
+        return computations;
     }
 
     public ModifiableByteArray getIdentity() {
@@ -103,16 +103,16 @@ public class PskClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public void prepareComputations() {
-        if (premastersecret == null) {
-            premastersecret = new PSKPremasterComputations();
+        if (computations == null) {
+            computations = new PSKPremasterComputations();
         }
     }
 
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (premastersecret != null) {
-            holders.add(premastersecret);
+        if (computations != null) {
+            holders.add(computations);
         }
         return holders;
     }

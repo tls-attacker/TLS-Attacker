@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import java.util.LinkedList;
@@ -43,6 +44,9 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
         while (position < msg.getKeyShareListLength().getValue()) {
             KeySharePairParser parser = new KeySharePairParser(position, msg.getKeyShareListBytes().getValue());
             pairList.add(parser.parse());
+            if (position == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing KeySharePairs");
+            }
             position = parser.getPointer();
         }
         parseKeyShareList(msg);

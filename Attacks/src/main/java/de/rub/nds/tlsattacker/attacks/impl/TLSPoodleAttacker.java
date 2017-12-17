@@ -38,10 +38,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(TLSPoodleAttacker.class);
-
     public TLSPoodleAttacker(TLSPoodleCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override

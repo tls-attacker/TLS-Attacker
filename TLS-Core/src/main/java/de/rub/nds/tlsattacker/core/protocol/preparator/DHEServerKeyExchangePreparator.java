@@ -48,9 +48,6 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         setComputedGenerator(msg);
         setComputedModulus(msg);
         setComputedPrivateKey(msg);
-        BigInteger modulus = msg.getComputations().getModulus().getValue();
-        BigInteger generator = msg.getComputations().getGenerator().getValue();
-        BigInteger privateKey = msg.getComputations().getPrivateKey().getValue();
     }
 
     protected void prepareDheParams() {

@@ -17,11 +17,12 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
 public class BleichenbacherCommandConfig extends AttackConfig {
 
@@ -37,17 +38,12 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
     private AttackDelegate attackDelegate;
-    @Parameter(names = "-valid_response", description = "Bleichenbacher oracle responds with true if the last server "
-            + "message contains this string")
-    private String validResponseContent;
-    @Parameter(names = "-invalid_response", description = "Bleichenbacher oracle responds with false if the last server "
-            + "message contains this string")
-    private String invalidResponseContent;
     @Parameter(names = "-encrypted_premaster_secret", description = "Encrypted premaster secret from the RSA client key "
             + "exchange message. You can retrieve this message from the Wireshark traffic. Find the client key exchange "
             + "message, right click on the \"EncryptedPremaster\" value and copy this value as a Hex Stream.")
     private String encryptedPremasterSecret;
-    @Parameter(names = "-type", description = "Type of the Bleichenbacher Test results in a different number of server test quries")
+    @Parameter(names = "-type", description = "Type of the Bleichenbacher test. FAST contains only basic server test queries. "
+            + "FULL results in a comprehensive server evaluation.")
     private Type type = Type.FAST;
     @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the original "
             + "message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts with 0x00 0x02.")
@@ -65,10 +61,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
-
-        if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
-        }
     }
 
     public Type getType() {
@@ -84,31 +76,26 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         Config config = super.createConfig();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_MD5);
-            cipherSuites.add(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
+            for (CipherSuite suite : CipherSuite.getImplemented()) {
+                if (AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA
+                        || AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA_PSK) {
+                    cipherSuites.add(suite);
+                }
+            }
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
         config.setQuickReceive(true);
         config.setEarlyStop(true);
+        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setStopActionsAfterFatal(true);
+        config.setAddECPointFormatExtension(false);
+        config.setAddEllipticCurveExtension(false);
         return config;
     }
 
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
-    }
-
-    public String getValidResponseContent() {
-        return validResponseContent;
-    }
-
-    public String getInvalidResponseContent() {
-        return invalidResponseContent;
     }
 
     public String getEncryptedPremasterSecret() {

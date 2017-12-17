@@ -499,6 +499,8 @@ public class TlsContext {
      */
     private String httpsCookieValue = null;
 
+    private boolean receivedTransportHandlerException = false;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -516,7 +518,7 @@ public class TlsContext {
         RunningModeType mode = config.getDefaulRunningMode();
         if (null == mode) {
             throw new ConfigurationException("Cannot create connection, running mode not set");
-        } else
+        } else {
             switch (mode) {
                 case CLIENT:
                     init(config, config.getDefaultClientConnection());
@@ -528,6 +530,7 @@ public class TlsContext {
                     throw new ConfigurationException("Cannot create connection for unknown running mode " + "'" + mode
                             + "'");
             }
+        }
     }
 
     public TlsContext(Config config, AliasedConnection connection) {
@@ -1594,7 +1597,7 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as client proposed extension.
-     * 
+     *
      * @param ext
      *            The ExtensionType that is proposed
      */
@@ -1615,12 +1618,16 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as server negotiated extension.
-     * 
+     *
      * @param ext
      *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);
+    }
+
+    public EnumSet<ExtensionType> getNegotiatedExtensionSet() {
+        return negotiatedExtensionSet;
     }
 
     public boolean isUseExtendedMasterSecret() {
@@ -1894,4 +1901,11 @@ public class TlsContext {
         this.earlyDataPsk = earlyDataPsk;
     }
 
+    public boolean isReceivedTransportHandlerException() {
+        return receivedTransportHandlerException;
+    }
+
+    public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
+        this.receivedTransportHandlerException = receivedTransportHandlerException;
+    }
 }

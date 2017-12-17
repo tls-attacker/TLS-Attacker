@@ -78,6 +78,7 @@ public class ReceiveMessageHelper {
         } catch (IOException ex) {
             LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
             LOGGER.debug(ex);
+            context.setReceivedTransportHandlerException(true);
         }
         return new MessageActionResult(realRecords, messages);
     }
@@ -99,6 +100,7 @@ public class ReceiveMessageHelper {
         } catch (IOException ex) {
             LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
             LOGGER.debug(ex);
+            context.setReceivedTransportHandlerException(true);
         }
         return realRecords;
     }
@@ -169,6 +171,7 @@ public class ReceiveMessageHelper {
                 extraBytes = receiveByteArray(context);
             } catch (IOException ex2) {
                 LOGGER.warn("Could not receive more Bytes", ex2);
+                context.setReceivedTransportHandlerException(true);
             }
             if (extraBytes != null && extraBytes.length >= 0) {
                 return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
@@ -238,6 +241,9 @@ public class ReceiveMessageHelper {
                 }
             }
             if (result != null) {
+                if (dataPointer == result.getParserPosition()) {
+                    throw new ParserException("Ran into an infinite loop while parsing ProtocolMessages");
+                }
                 dataPointer = result.getParserPosition();
                 LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
                 receivedMessages.add(result.getMessage());

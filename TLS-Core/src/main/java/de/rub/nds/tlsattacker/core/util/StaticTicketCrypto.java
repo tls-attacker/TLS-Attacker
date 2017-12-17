@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -45,10 +46,7 @@ public class StaticTicketCrypto {
             result = cipher.doFinal(plaintext);
         } catch (InvalidKeyException | InvalidAlgorithmParameterException | IllegalBlockSizeException
                 | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
-            LOGGER.warn("Encountered exception while encrypting the StatePlaintext with " + cipherAlgorithm.name());
-            LOGGER.debug(ex);
-            throw new WorkflowExecutionException(
-                    "Error while StatePlaintext Encryption. See Debug-Log for more Information.");
+            throw new CryptoException("Error while StatePlaintext Encryption. See Debug-Log for more Information.", ex);
         }
         return result;
     }
@@ -67,8 +65,7 @@ public class StaticTicketCrypto {
                 | BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException ex) {
             LOGGER.warn("Encountered exception while encrypting the StatePlaintext with " + cipherAlgorithm.name());
             LOGGER.debug(ex);
-            throw new WorkflowExecutionException(
-                    "Error while StatePlaintext Decryption. See Debug-Log for more Information.");
+            throw new CryptoException("Error while StatePlaintext Decryption. See Debug-Log for more Information.");
         }
         return result;
     }
@@ -84,7 +81,7 @@ public class StaticTicketCrypto {
             LOGGER.warn("Encountered exception while generating the HMAC " + macAlgorithm.name()
                     + " of an encryptedState.");
             LOGGER.debug(ex);
-            throw new WorkflowExecutionException("Error while HMAC generation. See Debug-Log for more Information.");
+            throw new CryptoException("Error while HMAC generation. See Debug-Log for more Information.");
         }
         return result;
     }

@@ -160,7 +160,7 @@ public class AlgorithmResolver {
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
                 || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a KeyExchangeAlgorithm");
         }
         throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
@@ -253,7 +253,8 @@ public class AlgorithmResolver {
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
                 || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name() + " does not specify a Cipher");
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
+                    + " does not specify a Cipher");
         }
         throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
     }
@@ -265,33 +266,7 @@ public class AlgorithmResolver {
      * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
-        String cipher = cipherSuite.toString().toUpperCase();
-        if (cipher.contains("3DES_EDE")) {
-            return DESede;
-        } else if (cipher.contains("AES")) {
-            return AES;
-        } else if (cipher.contains("RC4")) {
-            return RC4;
-        } else if (cipher.contains("RC2")) {
-            return RC2; // Tode add export rc2
-        } else if (cipher.contains("WITH_NULL")) {
-            return NULL;
-        } else if (cipher.contains("IDEA")) {
-            return IDEA;
-        } else if (cipher.contains("DES40")) {
-            return DES40;
-        } else if (cipher.contains("DES")) {
-            return DES;
-        } else if (cipher.contains("WITH_FORTEZZA")) {
-            return FORTEZZA;
-        } else if (cipher.contains("CAMELLIA")) {
-            return CAMELLIA;
-        } else if (cipher.contains("SEED")) {
-            return SEED;
-        } else if (cipher.contains("ARIA")) {
-            return SEED;
-        }
-        throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
+        return BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
     }
 
     /**
@@ -313,7 +288,7 @@ public class AlgorithmResolver {
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
                 || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a CipherType");
         }
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
@@ -354,7 +329,7 @@ public class AlgorithmResolver {
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
                 || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
                 || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a MAC-Algorithm");
         }
         if (result != null) {

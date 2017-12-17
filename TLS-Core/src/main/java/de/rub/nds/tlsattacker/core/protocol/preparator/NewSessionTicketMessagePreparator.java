@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import de.rub.nds.tlsattacker.core.state.StatePlaintext;
@@ -60,15 +61,22 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         StatePlaintext plainstate = generateStatePlaintext();
         StatePlaintextSerializer plaintextSerializer = new StatePlaintextSerializer(plainstate);
         byte[] plainstateSerialized = plaintextSerializer.serialize();
-        byte[] encryptedstate = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainstateSerialized, keyaes,
-                newticket.getIV().getValue());
-        newticket.setEncryptedState(encryptedstate);
+        byte[] encryptedState;
+        try {
+            encryptedState = StaticTicketCrypto.encrypt(CipherAlgorithm.AES_128_CBC, plainstateSerialized, keyaes,
+                    newticket.getIV().getValue());
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not encrypt SessionState. Using empty byte[]");
+            LOGGER.debug(E);
+            encryptedState = new byte[0];
+        }
+        newticket.setEncryptedState(encryptedState);
 
         byte[] keyhmac = cfg.getSessionTicketKeyHMAC();
         // Mac(Name + IV + TicketLength + Ticket)
         byte[] macinput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
-                ArrayConverter.intToBytes(encryptedstate.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
-                encryptedstate);
+                ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
+                encryptedState);
         byte[] hmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, macinput, keyhmac);
         newticket.setMAC(hmac);
 
@@ -94,7 +102,7 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
     /**
      * Generates the StatePlaintext for the SessionTicket, mayby put this as
      * static function in the StatePlaintext class for better testing/debugging
-     * 
+     *
      * @return A struct with Stateinformation defined in
      *         https://tools.ietf.org/html/rfc5077#section-4
      */

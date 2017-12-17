@@ -30,7 +30,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         this.msg = message;
     }
 
-    protected void prepareRandom(ProtocolVersion version) {
+    protected void prepareRandom() {
         byte[] random;
         if (chooser.getConfig().isUseRandomUnixTime()) {
             random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
