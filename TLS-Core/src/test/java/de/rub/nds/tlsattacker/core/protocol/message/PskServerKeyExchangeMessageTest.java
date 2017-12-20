@@ -18,14 +18,14 @@ import org.junit.Test;
  * @author Pierre Tilhaus
  */
 public class PskServerKeyExchangeMessageTest {
-    
+
     PskServerKeyExchangeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new PskServerKeyExchangeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -52,21 +52,24 @@ public class PskServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getIdentityHintLength method, of class PskServerKeyExchangeMessage.
+     * Test of getIdentityHintLength method, of class
+     * PskServerKeyExchangeMessage.
      */
     @Test
     public void testGetIdentityHintLength() {
     }
 
     /**
-     * Test of setIdentityHintLength method, of class PskServerKeyExchangeMessage.
+     * Test of setIdentityHintLength method, of class
+     * PskServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHintLength_ModifiableInteger() {
     }
 
     /**
-     * Test of setIdentityHintLength method, of class PskServerKeyExchangeMessage.
+     * Test of setIdentityHintLength method, of class
+     * PskServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHintLength_int() {
@@ -88,7 +91,7 @@ public class PskServerKeyExchangeMessageTest {
         sb.append("\nPskServerKeyExchangeMessage:");
         sb.append("\n  IdentityHintLength: ").append("null");
         sb.append("\n  IdentityHint: ").append("null");
-        
+
         Assert.assertEquals(message.toString(), sb.toString());
     }
 
@@ -114,10 +117,11 @@ public class PskServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getAllModifiableVariableHolders method, of class PskServerKeyExchangeMessage.
+     * Test of getAllModifiableVariableHolders method, of class
+     * PskServerKeyExchangeMessage.
      */
     @Test
     public void testGetAllModifiableVariableHolders() {
     }
-    
+
 }

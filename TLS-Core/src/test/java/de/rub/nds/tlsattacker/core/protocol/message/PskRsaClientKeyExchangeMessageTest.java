@@ -20,14 +20,14 @@ import static org.junit.Assert.*;
  * @author Pierre Tilhaus
  */
 public class PskRsaClientKeyExchangeMessageTest {
-    
+
     PskRsaClientKeyExchangeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new PskRsaClientKeyExchangeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -41,7 +41,7 @@ public class PskRsaClientKeyExchangeMessageTest {
         sb.append("\nPskRsaClientKeyExchangeMessage:");
         sb.append("\n  PSKIdentityLength: ").append("null");
         sb.append("\n  PSKIdentity: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
 
@@ -67,21 +67,24 @@ public class PskRsaClientKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getIdentityLength method, of class PskRsaClientKeyExchangeMessage.
+     * Test of getIdentityLength method, of class
+     * PskRsaClientKeyExchangeMessage.
      */
     @Test
     public void testGetIdentityLength() {
     }
 
     /**
-     * Test of setIdentityLength method, of class PskRsaClientKeyExchangeMessage.
+     * Test of setIdentityLength method, of class
+     * PskRsaClientKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityLength_ModifiableInteger() {
     }
 
     /**
-     * Test of setIdentityLength method, of class PskRsaClientKeyExchangeMessage.
+     * Test of setIdentityLength method, of class
+     * PskRsaClientKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityLength_int() {
@@ -100,5 +103,5 @@ public class PskRsaClientKeyExchangeMessageTest {
     @Test
     public void testToCompactString() {
     }
-    
+
 }

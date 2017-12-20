@@ -20,55 +20,61 @@ import static org.junit.Assert.*;
  * @author Pierre Tilhaus
  */
 public class PskEcDheServerKeyExchangeMessageTest {
-    
+
     PskEcDheServerKeyExchangeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new PskEcDheServerKeyExchangeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
 
     /**
-     * Test of getIdentityHint method, of class PskEcDheServerKeyExchangeMessage.
+     * Test of getIdentityHint method, of class
+     * PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testGetIdentityHint() {
     }
 
     /**
-     * Test of setIdentityHint method, of class PskEcDheServerKeyExchangeMessage.
+     * Test of setIdentityHint method, of class
+     * PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHint_ModifiableByteArray() {
     }
 
     /**
-     * Test of setIdentityHint method, of class PskEcDheServerKeyExchangeMessage.
+     * Test of setIdentityHint method, of class
+     * PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHint_byteArr() {
     }
 
     /**
-     * Test of getIdentityHintLength method, of class PskEcDheServerKeyExchangeMessage.
+     * Test of getIdentityHintLength method, of class
+     * PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testGetIdentityHintLength() {
     }
 
     /**
-     * Test of setIdentityHintLength method, of class PskEcDheServerKeyExchangeMessage.
+     * Test of setIdentityHintLength method, of class
+     * PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHintLength_ModifiableInteger() {
     }
 
     /**
-     * Test of setIdentityHintLength method, of class PskEcDheServerKeyExchangeMessage.
+     * Test of setIdentityHintLength method, of class
+     * PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHintLength_int() {
@@ -84,7 +90,7 @@ public class PskEcDheServerKeyExchangeMessageTest {
         sb.append("\n  Curve Type: ").append("null");
         sb.append("\n  Named Curve: ").append("null");
         sb.append("\n  Public Key: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
 
@@ -96,10 +102,11 @@ public class PskEcDheServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of toCompactString method, of class PskEcDheServerKeyExchangeMessage.
+     * Test of toCompactString method, of class
+     * PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testToCompactString() {
     }
-    
+
 }

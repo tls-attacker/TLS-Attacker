@@ -88,21 +88,19 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
         StringBuilder sb = new StringBuilder();
         sb.append("\nHelloVerifyRequestMessage:");
         sb.append("\n  ProtocolVersion: ");
-        if(protocolVersion != null && protocolVersion.getValue() != null)
-        {
+        if (protocolVersion != null && protocolVersion.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Cookie Length: ");
-        if(cookieLength != null && cookieLength.getValue() != null){
+        if (cookieLength != null && cookieLength.getValue() != null) {
             sb.append(cookieLength.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  Cookie: ");
-        if(cookie != null && cookie.getValue() != null)
-        {
+        if (cookie != null && cookie.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(cookie.getValue()));
         } else {
             sb.append("null");

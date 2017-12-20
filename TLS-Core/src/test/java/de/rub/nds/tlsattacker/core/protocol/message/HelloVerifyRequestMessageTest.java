@@ -20,14 +20,14 @@ import static org.junit.Assert.*;
  * @author Pierre Tilhaus
  */
 public class HelloVerifyRequestMessageTest {
-    
-   HelloVerifyRequestMessage message;
-    
+
+    HelloVerifyRequestMessage message;
+
     @Before
     public void setUp() {
         message = new HelloVerifyRequestMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -112,8 +112,8 @@ public class HelloVerifyRequestMessageTest {
         sb.append("\n  ProtocolVersion: ").append("null");
         sb.append("\n  Cookie Length: ").append("null");
         sb.append("\n  Cookie: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
-    
+
 }

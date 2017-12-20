@@ -20,14 +20,14 @@ import static org.junit.Assert.*;
  * @author Pierre Tilhaus
  */
 public class PskDhClientKeyExchangeMessageTest {
-    
+
     PskDhClientKeyExchangeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new PskDhClientKeyExchangeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -41,7 +41,7 @@ public class PskDhClientKeyExchangeMessageTest {
         sb.append("\nPskDhClientKeyExchangeMessage:");
         sb.append("\n  PSKIdentity Length: ").append("null");
         sb.append("\n  PSKIdentity: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
 
@@ -100,5 +100,5 @@ public class PskDhClientKeyExchangeMessageTest {
     @Test
     public void testToCompactString() {
     }
-    
+
 }

@@ -20,14 +20,14 @@ import static org.junit.Assert.*;
  * @author Pierre Tilhaus
  */
 public class NewSessionTicketMessageTest {
-    
+
     NewSessionTicketMessage message;
-    
+
     @Before
     public void setUp() {
         message = new NewSessionTicketMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -98,7 +98,7 @@ public class NewSessionTicketMessageTest {
         sb.append("\n  TicketLifeTimeHint: ").append("null");
         sb.append("\n  TicketLength: ").append("null");
         sb.append("\n  Ticket: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
 
@@ -110,7 +110,8 @@ public class NewSessionTicketMessageTest {
     }
 
     /**
-     * Test of getAllModifiableVariableHolders method, of class NewSessionTicketMessage.
+     * Test of getAllModifiableVariableHolders method, of class
+     * NewSessionTicketMessage.
      */
     @Test
     public void testGetAllModifiableVariableHolders() {
@@ -122,5 +123,5 @@ public class NewSessionTicketMessageTest {
     @Test
     public void testGetHandler() {
     }
-    
+
 }

@@ -20,14 +20,14 @@ import static org.junit.Assert.*;
  * @author Pierre Tilhaus
  */
 public class PskDheServerKeyExchangeMessageTest {
-    
+
     PskDheServerKeyExchangeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new PskDheServerKeyExchangeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -54,21 +54,24 @@ public class PskDheServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getIdentityHintLength method, of class PskDheServerKeyExchangeMessage.
+     * Test of getIdentityHintLength method, of class
+     * PskDheServerKeyExchangeMessage.
      */
     @Test
     public void testGetIdentityHintLength() {
     }
 
     /**
-     * Test of setIdentityHintLength method, of class PskDheServerKeyExchangeMessage.
+     * Test of setIdentityHintLength method, of class
+     * PskDheServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHintLength_ModifiableInteger() {
     }
 
     /**
-     * Test of setIdentityHintLength method, of class PskDheServerKeyExchangeMessage.
+     * Test of setIdentityHintLength method, of class
+     * PskDheServerKeyExchangeMessage.
      */
     @Test
     public void testSetIdentityHintLength_int() {
@@ -84,7 +87,7 @@ public class PskDheServerKeyExchangeMessageTest {
         sb.append("\n  Modulus p: ").append("null");
         sb.append("\n  Generator g: ").append("null");
         sb.append("\n  Public Key: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
 
@@ -101,5 +104,5 @@ public class PskDheServerKeyExchangeMessageTest {
     @Test
     public void testToCompactString() {
     }
-    
+
 }

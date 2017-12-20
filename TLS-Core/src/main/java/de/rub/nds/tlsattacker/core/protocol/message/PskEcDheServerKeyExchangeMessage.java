@@ -66,7 +66,7 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
         StringBuilder sb = new StringBuilder();
         sb.append("\nPskEcDheServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ");
-        if(this.curveType != null && this.curveType.getValue() != null){
+        if (this.curveType != null && this.curveType.getValue() != null) {
             sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
         } else {
             sb.append("null");
@@ -78,7 +78,7 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        if(getPublicKey() != null){
+        if (getPublicKey() != null) {
             sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
         } else {
             sb.append("null");

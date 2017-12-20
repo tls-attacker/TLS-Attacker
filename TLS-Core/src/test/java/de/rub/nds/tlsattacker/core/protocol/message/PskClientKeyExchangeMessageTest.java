@@ -22,12 +22,12 @@ import static org.junit.Assert.*;
 public class PskClientKeyExchangeMessageTest {
 
     PskClientKeyExchangeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new PskClientKeyExchangeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -41,7 +41,7 @@ public class PskClientKeyExchangeMessageTest {
         sb.append("\nPskClientKeyExchangeMessage:");
         sb.append("\n  PSKIdentity Length: ").append("null");
         sb.append("\n  PSKIdentity: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
 
@@ -116,10 +116,11 @@ public class PskClientKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getAllModifiableVariableHolders method, of class PskClientKeyExchangeMessage.
+     * Test of getAllModifiableVariableHolders method, of class
+     * PskClientKeyExchangeMessage.
      */
     @Test
     public void testGetAllModifiableVariableHolders() {
     }
-    
+
 }
