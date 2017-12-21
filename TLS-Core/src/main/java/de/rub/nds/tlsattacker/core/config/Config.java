@@ -88,28 +88,6 @@ public class Config implements Serializable {
         return ConfigIO.read(stream);
     }
 
-    public static Config createEmptyConfig() {
-        Config c = new Config();
-        for (Field field : c.getClass().getDeclaredFields()) {
-            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()) {
-                field.setAccessible(true);
-                try {
-                    field.set(c, null);
-                } catch (IllegalAccessException e) {
-                    LOGGER.warn("Could not set field in Config!", e);
-                }
-            }
-        }
-        return c;
-    }
-
-    public static Config mergeWithDefaultValues(Config c) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ConfigIO.write(c, byteArrayOutputStream);
-        c = ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
-        return c;
-    }
-
     /**
      * List of filters to apply on workflow traces before serialization.
      */
@@ -954,7 +932,7 @@ public class Config implements Serializable {
      * Extension defined in RFC5077, followed by additional TLS 1.3 draft 21
      * NewSessionTicket parameters.
      */
-    private long sessionTicketLifetimeHint = 0;
+    private Long sessionTicketLifetimeHint = 0l;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
