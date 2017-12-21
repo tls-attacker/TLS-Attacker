@@ -62,6 +62,10 @@ public class MultiReceiveAction extends GenericReceiveAction {
         selectedAction.setExecuted(super.isExecuted());
     }
 
+    public List<ReceiveAction> getExpectedActionCandidates() {
+        return expectedActionCandidates;
+    }
+
     private boolean compareExpectedActionsWithReceivedActions(ReceiveAction actionCandidate) {
         List<ProtocolMessage> expectedMessagesCandidate = actionCandidate.getExpectedMessages();
         if (expectedMessagesCandidate.size() != super.getReceivedMessages().size())
