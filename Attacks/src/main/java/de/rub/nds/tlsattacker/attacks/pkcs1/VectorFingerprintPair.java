@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class VectorFingerprintPair {
 
     private ResponseFingerprint fingerprint;

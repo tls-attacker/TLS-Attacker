@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
@@ -18,17 +16,11 @@ import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.io.IOException;
 import java.security.PublicKey;
@@ -36,13 +28,13 @@ import java.security.interfaces.RSAPublicKey;
 
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
-    private AttackConfig attackConfig;
+    private final AttackConfig attackConfig;
 
     private final ResponseFingerprint validResponseContent;
 
     private final ResponseFingerprint invalidResponseContent;
 
-    private BleichenbacherWorkflowType type;
+    private final BleichenbacherWorkflowType type;
 
     public RealDirectMessagePkcs1Oracle(PublicKey pubKey, AttackConfig config,
             ResponseFingerprint validResponseContent, ResponseFingerprint invalidResponseContent,
@@ -85,7 +77,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             }
 
         } catch (WorkflowExecutionException e) {
-            e.printStackTrace();
+            LOGGER.debug(e.getLocalizedMessage(), e);
         }
         return conform;
     }
@@ -95,7 +87,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
             return fingerprint;
         } else {
-            LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+            LOGGER.debug("Could not execute Workflow. Something went wrong... Check the debug output for more information");
         }
         return null;
     }

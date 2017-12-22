@@ -65,8 +65,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public Boolean isVulnerable() {
-        RSAPublicKey publicKey;
-        publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return null;
@@ -149,8 +148,16 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public void executeAttack() {
-        RSAPublicKey publicKey;
-        publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
+        // needs to execute the isVulnerable method to configure the workflow
+        // type
+        boolean vulnerable = isVulnerable();
+        LOGGER.info("Using the following oracle type: {}", vulnerableType);
+
+        if (!vulnerable) {
+            LOGGER.warn("The server is not vulnerable to the Bleichenbacher attack");
+            return;
+        }
+        RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return;
