@@ -164,7 +164,7 @@ public class Main {
         } else {
 
             if (attacker.getConfig().isExecuteAttack()) {
-                attacker.checkVulnerability();
+                attacker.attack();
             } else {
                 try {
                     Boolean result = attacker.checkVulnerability();
