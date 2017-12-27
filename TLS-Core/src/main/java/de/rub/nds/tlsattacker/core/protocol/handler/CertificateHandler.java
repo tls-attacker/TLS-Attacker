@@ -114,7 +114,7 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             } else {
                 LOGGER.warn("Could not adjust Certificate publicKey");
             }
-        } catch (IOException E) {
+        } catch (IOException | IllegalArgumentException E) {
             throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", E);
         }
     }

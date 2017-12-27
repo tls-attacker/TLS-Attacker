@@ -17,10 +17,10 @@ import java.util.Map;
  * RFC5764
  */
 public enum SrtpProtectionProfiles {
-    SRTP_AES128_CM_HMAC_SHA1_80(new byte[] { 0x00, 0x01 }),
-    SRTP_AES128_CM_HMAC_SHA1_32(new byte[] { 0x00, 0x02 }),
-    SRTP_NULL_HMAC_SHA1_80(new byte[] { 0x00, 0x05 }),
-    SRTP_NULL_HMAC_SHA1_32(new byte[] { 0x00, 0x06 });
+    SRTP_AES128_CM_HMAC_SHA1_80(new byte[]{0x00, 0x01}),
+    SRTP_AES128_CM_HMAC_SHA1_32(new byte[]{0x00, 0x02}),
+    SRTP_NULL_HMAC_SHA1_80(new byte[]{0x00, 0x05}),
+    SRTP_NULL_HMAC_SHA1_32(new byte[]{0x00, 0x06});
 
     private final byte[] srtpProtectionProfiles;
     private static final Map<Integer, SrtpProtectionProfiles> MAP;
@@ -48,13 +48,17 @@ public enum SrtpProtectionProfiles {
         List<SrtpProtectionProfiles> profileList = new ArrayList<>(value.length / 2);
 
         for (int i = 0; i < value.length; i += 2) {
-            profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[] { value[i], value[i + 1] }));
+            profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[]{value[i], value[i + 1]}));
         }
 
         return profileList;
     }
 
     private static int valueToInt(byte[] value) {
+        if (value.length != 2) {
+            //TODO warn
+            return 0;
+        }
         return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 

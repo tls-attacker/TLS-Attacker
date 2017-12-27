@@ -106,7 +106,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
                         pos = context.getChooser().getClientKeyShareEntryList().indexOf(entry);
                     }
                 }
-                if (context.getChooser().getClientKeyShareEntryList().size() > pos && context.getChooser().getClientKeyShareEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
+                if (context.getChooser().getClientKeyShareEntryList().size() > pos
+                        && context.getChooser().getClientKeyShareEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
                     sharedSecret = computeSharedSecretECDH(context.getChooser().getClientKeyShareEntryList().get(pos));
                 } else {
                     throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
