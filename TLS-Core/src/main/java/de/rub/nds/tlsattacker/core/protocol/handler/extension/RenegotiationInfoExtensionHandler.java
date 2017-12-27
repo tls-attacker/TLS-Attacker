@@ -46,6 +46,8 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
         }
         if (context.getTalkingConnectionEndType() != context.getChooser().getConnectionEndType()) {
             context.setRenegotiationInfo(message.getRenegotiationInfo().getValue());
+            LOGGER.debug("The context RenegotiationInfo was set to "
+                + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
         }
         if (context.getTalkingConnectionEndType() == ConnectionEndType.SERVER) {
             if (message.getRenegotiationInfo().getValue().length == 1
@@ -53,8 +55,7 @@ public class RenegotiationInfoExtensionHandler extends ExtensionHandler<Renegoti
                 context.setSecureRenegotiation(true);
             }
         }
-        LOGGER.debug("The context RenegotiationInfo was set to "
-                + ArrayConverter.bytesToHexString(message.getRenegotiationInfo()));
+        
     }
 
 }
