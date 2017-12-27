@@ -72,23 +72,33 @@ public class RecordAEADCipher extends RecordCipher {
 
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
-        if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            return encryptTLS13(request);
-        } else {
-            return encryptTLS12(request);
+        try {
+            if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+                return encryptTLS13(request);
+            } else {
+                return encryptTLS12(request);
+            }
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning unencrypted data.", E);
+            return new EncryptionResult(request.getPlainText());
         }
     }
 
     @Override
     public byte[] decrypt(byte[] data) {
-        if (version.isTLS13() || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-            return decryptTLS13(data);
-        } else {
-            return decryptTLS12(data);
+        try {
+            if (version.isTLS13() || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+                return decryptTLS13(data);
+            } else {
+                return decryptTLS12(data);
+            }
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", E);
+            return data;
         }
     }
 
-    private EncryptionResult encryptTLS13(EncryptionRequest request) {
+    private EncryptionResult encryptTLS13(EncryptionRequest request) throws CryptoException {
         try {
             byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                     RecordByteLength.SEQUENCE_NUMBER);
@@ -112,7 +122,7 @@ public class RecordAEADCipher extends RecordCipher {
         return new GCMParameterSpec(GCM_TAG_LENGTH * 8, param);
     }
 
-    private EncryptionResult encryptTLS12(EncryptionRequest request) {
+    private EncryptionResult encryptTLS12(EncryptionRequest request) throws CryptoException {
         try {
             byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
                     RecordByteLength.SEQUENCE_NUMBER);
@@ -132,7 +142,7 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
-    private byte[] decryptTLS13(byte[] data) {
+    private byte[] decryptTLS13(byte[] data) throws CryptoException {
         try {
             LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
             byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
@@ -150,7 +160,7 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
-    private byte[] decryptTLS12(byte[] data) {
+    private byte[] decryptTLS12(byte[] data) throws CryptoException {
         try {
             byte[] nonce = Arrays.copyOf(data, SEQUENCE_NUMBER_LENGTH);
             data = Arrays.copyOfRange(data, SEQUENCE_NUMBER_LENGTH, data.length);

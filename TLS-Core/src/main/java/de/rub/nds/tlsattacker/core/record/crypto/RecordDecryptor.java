@@ -46,7 +46,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     @Override
-    public void decrypt(Record record) {
+    public void decrypt(Record record) throws CryptoException {
         LOGGER.debug("Decrypting Record");
         record.setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
@@ -92,14 +92,14 @@ public class RecordDecryptor extends Decryptor {
         }
     }
 
-    private void prepareAdditionalMetadata(Record record, byte[] payload) {
+    private void prepareAdditionalMetadata(Record record, byte[] payload) throws CryptoException {
         prepareNonMetaDataMaced(record, payload);
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
         recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
     }
 
-    private void prepareNonMetaDataMaced(Record record, byte[] payload) {
+    private void prepareNonMetaDataMaced(Record record, byte[] payload) throws CryptoException {
         if (recordCipher.isUsingTags() && !context.getChooser().getSelectedProtocolVersion().isTLS13()) {
             if (payload.length < recordCipher.getTagSize()) {
                 throw new CryptoException("Ciphertext contains no tag");
@@ -117,7 +117,7 @@ public class RecordDecryptor extends Decryptor {
                 && recordCipher.isUsingMac();
     }
 
-    private void adjustMac(Record record) {
+    private void adjustMac(Record record) throws CryptoException {
         byte[] cleanBytes;
         byte[] mac = parseMac(record.getUnpaddedRecordBytes().getValue());
         record.setMac(mac);
@@ -136,7 +136,7 @@ public class RecordDecryptor extends Decryptor {
         record.setUnpaddedRecordBytes(record.getPlainRecordBytes());
     }
 
-    private void adjustPaddingTLS13(Record record) {
+    private void adjustPaddingTLS13(Record record) throws CryptoException {
         byte[] unpadded = parseUnpaddedTLS13(record.getPlainRecordBytes().getValue());
         byte contentMessageType = parseContentMessageType(unpadded);
         LOGGER.debug("Parsed ContentMessageType:" + contentMessageType);
@@ -154,7 +154,7 @@ public class RecordDecryptor extends Decryptor {
         LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
     }
 
-    private void adjustPaddingTLS(Record record) {
+    private void adjustPaddingTLS(Record record) throws CryptoException {
         int paddingLength = parsePaddingLength(record.getPlainRecordBytes().getValue());
         record.setPaddingLength(paddingLength);
         LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
@@ -175,14 +175,14 @@ public class RecordDecryptor extends Decryptor {
      * @param decrypted
      * @return
      */
-    private int parsePaddingLength(byte[] decrypted) {
+    private int parsePaddingLength(byte[] decrypted) throws CryptoException {
         if (decrypted.length == 0) {
             throw new CryptoException("Could not extract padding.");
         }
         return decrypted[decrypted.length - 1];
     }
 
-    private byte[] parseUnpadded(byte[] decrypted, int paddingLength) {
+    private byte[] parseUnpadded(byte[] decrypted, int paddingLength) throws CryptoException {
         if (paddingLength > decrypted.length) {
             throw new CryptoException("Could not unpad decrypted Data. Padding length greater than data length");
         }
@@ -190,7 +190,7 @@ public class RecordDecryptor extends Decryptor {
         return Arrays.copyOf(decrypted, paddingStart);
     }
 
-    private byte[] parseUnpaddedTLS13(byte[] decrypted) {
+    private byte[] parseUnpaddedTLS13(byte[] decrypted) throws CryptoException {
         if (decrypted.length == 0) {
             throw new CryptoException("Could not extract padding.");
         }
@@ -201,7 +201,7 @@ public class RecordDecryptor extends Decryptor {
         return Arrays.copyOf(decrypted, i + 1);
     }
 
-    private byte[] parsePadding(byte[] decrypted, int paddingLength) {
+    private byte[] parsePadding(byte[] decrypted, int paddingLength) throws CryptoException {
         int paddingStart = decrypted.length - paddingLength - 1;
         if (paddingStart > decrypted.length) {
             throw new CryptoException("Could parse Padding. Padding start greater than data length");
@@ -209,7 +209,7 @@ public class RecordDecryptor extends Decryptor {
         return Arrays.copyOfRange(decrypted, paddingStart, decrypted.length);
     }
 
-    private byte[] parseMac(byte[] unpadded) {
+    private byte[] parseMac(byte[] unpadded) throws CryptoException {
         if (unpadded.length - recordCipher.getMacLength() < 0) {
             throw new CryptoException("Could not parse MAC, not enough bytes left");
         }
@@ -220,21 +220,21 @@ public class RecordDecryptor extends Decryptor {
         return Arrays.copyOf(unpadded, (unpadded.length - recordCipher.getMacLength()));
     }
 
-    private byte parseContentMessageType(byte[] unpadded) {
+    private byte parseContentMessageType(byte[] unpadded) throws CryptoException {
         if (unpadded.length == 0) {
             throw new CryptoException("Could not extract content type of message.");
         }
         return unpadded[unpadded.length - 1];
     }
 
-    private void checkForEndOfEarlyData(byte[] unpaddedBytes) {
+    private void checkForEndOfEarlyData(byte[] unpaddedBytes) throws CryptoException {
         byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
             adjustClientCipherAfterEarly();
         }
     }
 
-    public void adjustClientCipherAfterEarly() {
+    public void adjustClientCipherAfterEarly() throws CryptoException {
         try {
             context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
             LOGGER.debug("Setting cipher for client to use handshake secrets");

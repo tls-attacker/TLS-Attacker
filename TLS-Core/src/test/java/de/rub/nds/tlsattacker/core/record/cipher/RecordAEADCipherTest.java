@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -51,7 +52,7 @@ public class RecordAEADCipherTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testEncrypt() throws NoSuchAlgorithmException {
+    public void testEncrypt() throws NoSuchAlgorithmException, CryptoException {
         context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new InboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
@@ -68,7 +69,7 @@ public class RecordAEADCipherTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testDecrypt() throws NoSuchAlgorithmException {
+    public void testDecrypt() throws NoSuchAlgorithmException, CryptoException {
         context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         context.setConnection(new OutboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
@@ -79,7 +80,7 @@ public class RecordAEADCipherTest {
     }
 
     @Test
-    public void testInit() throws NoSuchAlgorithmException {
+    public void testInit() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13_DRAFT21);
         context.setHandshakeSecret(ArrayConverter

@@ -25,6 +25,8 @@ import de.rub.nds.tlsattacker.core.state.serializer.StatePlaintextSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.util.TimeHelper;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparator<NewSessionTicketMessage> {
 
@@ -77,7 +79,14 @@ public class NewSessionTicketMessagePreparator extends HandshakeMessagePreparato
         byte[] macinput = ArrayConverter.concatenate(cfg.getSessionTicketKeyName(), iv,
                 ArrayConverter.intToBytes(encryptedState.length, HandshakeByteLength.ENCRYPTED_STATE_LENGTH),
                 encryptedState);
-        byte[] hmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, macinput, keyhmac);
+        byte[] hmac;
+        try {
+            hmac = StaticTicketCrypto.generateHMAC(MacAlgorithm.HMAC_SHA256, macinput, keyhmac);
+        } catch (CryptoException ex) {
+            LOGGER.warn("Could generate HMAC. Using empty byte[]");
+            LOGGER.debug(ex);
+            hmac = new byte[0];
+        }
         newticket.setMAC(hmac);
 
         SessionTicketSerializer sessionTicketSerializer = new SessionTicketSerializer(newticket);

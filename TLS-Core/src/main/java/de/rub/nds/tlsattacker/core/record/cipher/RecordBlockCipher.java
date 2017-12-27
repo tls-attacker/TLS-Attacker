@@ -105,7 +105,7 @@ public final class RecordBlockCipher extends RecordCipher {
      *             If something goes wrong during Encryption
      */
     @Override
-    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
+    public EncryptionResult encrypt(EncryptionRequest request) {
         try {
             byte[] ciphertext;
             encryptIv = new IvParameterSpec(request.getInitialisationVector());
@@ -121,7 +121,8 @@ public final class RecordBlockCipher extends RecordCipher {
             return new EncryptionResult(encryptIv.getIV(), ciphertext, useExplicitIv);
 
         } catch (InvalidKeyException | InvalidAlgorithmParameterException ex) {
-            throw new CryptoException(ex);
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning unencrypted data.", ex);
+            return new EncryptionResult(request.getPlainText());
         }
     }
 
@@ -140,7 +141,7 @@ public final class RecordBlockCipher extends RecordCipher {
      *             If something goes wrong during decryption
      */
     @Override
-    public byte[] decrypt(byte[] data) throws CryptoException {
+    public byte[] decrypt(byte[] data) {
         try {
             byte[] plaintext;
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
@@ -166,7 +167,8 @@ public final class RecordBlockCipher extends RecordCipher {
             return plaintext;
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
                 | InvalidKeyException | UnsupportedOperationException ex) {
-            throw new CryptoException(ex);
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", ex);
+            return data;
         }
     }
 

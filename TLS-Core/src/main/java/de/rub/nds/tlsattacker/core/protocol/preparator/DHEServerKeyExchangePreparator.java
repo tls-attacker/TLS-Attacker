@@ -12,7 +12,9 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
+import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
@@ -37,7 +39,12 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
         prepareDheParams();
         selectedSignatureHashAlgo = chooser.getSelectedSigHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg);
-        signature = generateSignature(selectedSignatureHashAlgo);
+        signature = new byte[0];
+        try {
+            signature = generateSignature(selectedSignatureHashAlgo);
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not generate Signature! Using empty one instead!", E);
+        }
         prepareSignature(msg);
         prepareSignatureLength(msg);
 
@@ -72,7 +79,7 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
 
     }
 
-    protected byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
+    protected byte[] generateSignature(SignatureAndHashAlgorithm algorithm) throws CryptoException {
         return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
     }
 

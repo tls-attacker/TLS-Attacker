@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
@@ -25,8 +26,6 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
 
 public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
@@ -96,7 +95,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             LOGGER.debug("Derived PSK: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
             LOGGER.error("DigestAlgorithm for psk derivation unknown");
             throw new WorkflowExecutionException(ex.toString());
         }

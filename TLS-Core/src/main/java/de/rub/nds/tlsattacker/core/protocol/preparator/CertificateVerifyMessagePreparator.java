@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.CertificateVerifiyConstants;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -32,13 +33,18 @@ public class CertificateVerifyMessagePreparator extends HandshakeMessagePreparat
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing CertificateVerifiyMessage");
         algorithm = chooser.getSelectedSigHashAlgorithm();
-        signature = createSignature();
+        signature = new byte[0];
+        try {
+            signature = createSignature();
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not generate Signature! Using empty one instead!", E);
+        }
         prepareSignature(msg);
         prepareSignatureLength(msg);
         prepareSignatureHashAlgorithm(msg);
     }
 
-    private byte[] createSignature() {
+    private byte[] createSignature() throws CryptoException {
         byte[] toBeSigned = chooser.getContext().getDigest().getRawBytes();
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
@@ -60,7 +61,7 @@ public class RecordEncryptorTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testEncryptTLS13() throws NoSuchAlgorithmException {
+    public void testEncryptTLS13() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setClientHandshakeTrafficSecret(ArrayConverter
@@ -81,7 +82,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12Block() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12Block() throws NoSuchAlgorithmException, CryptoException {
         Random random = new TestRandomData(
                 ArrayConverter.hexStringToByteArray("91A3B6AAA2B64D126E5583B04C113259C948E1D0B39BB9560CD5409B6ECAFEDB"));//
         // explicit
@@ -126,7 +127,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12Stream() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12Stream() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.setMasterSecret(ArrayConverter
@@ -165,7 +166,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12AEAD() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12AEAD() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setMasterSecret(ArrayConverter
@@ -202,7 +203,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS10Block() throws NoSuchAlgorithmException {
+    public void testEncryptTLS10Block() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setMasterSecret(ArrayConverter
@@ -242,7 +243,7 @@ public class RecordEncryptorTest {
     }
 
     // @Test
-    public void testEncryptTLS10Stream() throws NoSuchAlgorithmException {
+    public void testEncryptTLS10Stream() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.setMasterSecret(ArrayConverter
@@ -283,7 +284,7 @@ public class RecordEncryptorTest {
     }
 
     // @Test
-    public void testEncryptTLS12BlockEncrypthThenMac() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12BlockEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
@@ -316,7 +317,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12StreamEncrypthThenMac() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12StreamEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_RC4_128_SHA);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);
@@ -330,7 +331,7 @@ public class RecordEncryptorTest {
     }
 
     @Test
-    public void testEncryptTLS12AEADEncrypthThenMac() throws NoSuchAlgorithmException {
+    public void testEncryptTLS12AEADEncrypthThenMac() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.addNegotiatedExtension(ExtensionType.ENCRYPT_THEN_MAC);

@@ -19,6 +19,7 @@ import org.junit.Test;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -56,7 +57,7 @@ public class ClientKeyExchangeHandlerTest {
      * @throws NoSuchAlgorithmException
      */
     @Test
-    public void testMasterSecretCalculationSSL3() throws NoSuchAlgorithmException {
+    public void testMasterSecretCalculationSSL3() throws NoSuchAlgorithmException, CryptoException {
         byte[] preMasterSecret = ArrayConverter.hexStringToByteArray(StringUtils.repeat("01", 48));
         byte[] serverRdm = ArrayConverter.hexStringToByteArray(StringUtils.repeat("02", 32));
         byte[] clientRdm = ArrayConverter.hexStringToByteArray(StringUtils.repeat("03", 32));

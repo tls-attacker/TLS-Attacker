@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
@@ -124,8 +125,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
                     + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException(ex);
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
+            throw new AdjustmentException(ex);
         }
     }
 

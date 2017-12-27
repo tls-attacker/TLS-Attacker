@@ -70,7 +70,8 @@ public class PseudoRandomFunction {
      *            The size
      * @return the Prf output
      */
-    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size) {
+    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
+            throws CryptoException {
 
         switch (prfAlgorithm) {
             case TLS_PRF_SHA256:
@@ -101,7 +102,8 @@ public class PseudoRandomFunction {
      *            The size
      * @return the Prf output
      */
-    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm) {
+    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm)
+            throws CryptoException {
         try {
             byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             SecretKeySpec keySpec = null;

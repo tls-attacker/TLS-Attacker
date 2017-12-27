@@ -134,7 +134,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
                     E.printStackTrace();
                 }
 
-            } catch (NoSuchAlgorithmException ex) {
+            } catch (NoSuchAlgorithmException | CryptoException ex) {
                 throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
             }
 

@@ -67,7 +67,7 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
-    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
+    public EncryptionResult encrypt(EncryptionRequest request) {
         return new EncryptionResult(encryptCipher.update(request.getPlainText()));
     }
 

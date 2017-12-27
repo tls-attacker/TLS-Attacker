@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -26,6 +27,8 @@ import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @param <Message>
@@ -48,7 +51,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         }
     }
 
-    protected byte[] calculateMasterSecret(ClientKeyExchangeMessage message) {
+    protected byte[] calculateMasterSecret(ClientKeyExchangeMessage message) throws CryptoException {
         Chooser chooser = tlsContext.getChooser();
         if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3) {
             LOGGER.debug("Calculate SSL MasterSecret with Client and Server Nonces, which are: "
@@ -77,7 +80,12 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
     }
 
     protected void adjustMasterSecret(ClientKeyExchangeMessage message) {
-        byte[] masterSecret = calculateMasterSecret(message);
+        byte[] masterSecret;
+        try {
+            masterSecret = calculateMasterSecret(message);
+        } catch (CryptoException ex) {
+            throw new UnsupportedOperationException("Could not calculate masterSecret", ex);
+        }
         tlsContext.setMasterSecret(masterSecret);
         LOGGER.debug("Set MasterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
     }
@@ -100,7 +108,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         try {
             LOGGER.debug("Generating new KeySet");
             return KeySetGenerator.generateKeySet(context);
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
     }

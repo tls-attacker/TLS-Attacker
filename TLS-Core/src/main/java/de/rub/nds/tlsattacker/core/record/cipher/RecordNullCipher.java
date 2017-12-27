@@ -27,7 +27,7 @@ public class RecordNullCipher extends RecordCipher {
      * @return The EncryptionResult
      */
     @Override
-    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
+    public EncryptionResult encrypt(EncryptionRequest request) {
         return new EncryptionResult(request.getPlainText());
     }
 

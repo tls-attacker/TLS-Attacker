@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.KeyGenerator;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -104,7 +105,7 @@ public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<Tok
             stream.write(new byte[] { message.getKeyParameter().getValue() });
             stream.write(TokenCalculator.calculateEKM(chooser, 32));
             return stream.toByteArray();
-        } catch (IOException ex) {
+        } catch (IOException | CryptoException ex) {
             throw new PreparationException("Could not generate data to be Signed!", ex);
         }
     }

@@ -34,7 +34,8 @@ public class StaticTicketCrypto {
 
     private static final Logger LOGGER = LogManager.getLogger(StaticTicketCrypto.class);
 
-    public static byte[] encrypt(CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv) {
+    public static byte[] encrypt(CipherAlgorithm cipherAlgorithm, byte[] plaintextUnpadded, byte[] key, byte[] iv)
+            throws CryptoException {
         byte[] result = new byte[0];
         try {
             byte[] plaintext = addPadding(plaintextUnpadded, cipherAlgorithm.getKeySize());
@@ -51,7 +52,8 @@ public class StaticTicketCrypto {
         return result;
     }
 
-    public static byte[] decrypt(CipherAlgorithm cipherAlgorithm, byte[] ciphertext, byte[] key, byte[] iv) {
+    public static byte[] decrypt(CipherAlgorithm cipherAlgorithm, byte[] ciphertext, byte[] key, byte[] iv)
+            throws CryptoException {
         byte[] result = new byte[0];
         try {
             Cipher cipher = Cipher.getInstance(cipherAlgorithm.getJavaName());
@@ -70,7 +72,7 @@ public class StaticTicketCrypto {
         return result;
     }
 
-    public static byte[] generateHMAC(MacAlgorithm macAlgorithm, byte[] plaintext, byte[] key) {
+    public static byte[] generateHMAC(MacAlgorithm macAlgorithm, byte[] plaintext, byte[] key) throws CryptoException {
         byte[] result = new byte[0];
         try {
             Mac mac = Mac.getInstance(macAlgorithm.getJavaName());
@@ -86,7 +88,8 @@ public class StaticTicketCrypto {
         return result;
     }
 
-    public static boolean verifyHMAC(MacAlgorithm macalgo, byte[] mac, byte[] plaintext, byte[] key) {
+    public static boolean verifyHMAC(MacAlgorithm macalgo, byte[] mac, byte[] plaintext, byte[] key)
+            throws CryptoException {
         byte[] newmac = generateHMAC(macalgo, plaintext, key);
         boolean result = Arrays.equals(mac, newmac);
         return result;

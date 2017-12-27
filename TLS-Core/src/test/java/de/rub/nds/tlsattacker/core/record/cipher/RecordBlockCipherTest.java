@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -49,7 +50,7 @@ public class RecordBlockCipherTest {
     }
 
     @Test
-    public void testConstructors() throws NoSuchAlgorithmException {
+    public void testConstructors() throws NoSuchAlgorithmException, CryptoException {
         // This test just checks that the init() method will not break
         List<AliasedConnection> mixedConnections = new ArrayList<>();
         mixedConnections.add(new InboundConnection());
@@ -96,7 +97,7 @@ public class RecordBlockCipherTest {
 
     @SuppressWarnings("unused")
     @Test
-    public void test() throws NoSuchAlgorithmException {
+    public void test() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
         context.setClientRandom(new byte[] { 0 });
@@ -112,7 +113,7 @@ public class RecordBlockCipherTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testCalculateMac() throws NoSuchAlgorithmException {
+    public void testCalculateMac() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -137,7 +138,7 @@ public class RecordBlockCipherTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testEncryptTls10() throws NoSuchAlgorithmException {
+    public void testEncryptTls10() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -171,7 +172,7 @@ public class RecordBlockCipherTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testEncryptTls12() throws NoSuchAlgorithmException {
+    public void testEncryptTls12() throws NoSuchAlgorithmException, CryptoException {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
@@ -207,7 +208,7 @@ public class RecordBlockCipherTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testDecrypt10() throws NoSuchAlgorithmException {
+    public void testDecrypt10() throws NoSuchAlgorithmException, CryptoException {
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS10);
@@ -233,7 +234,7 @@ public class RecordBlockCipherTest {
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
-    public void testDecrypt12() throws NoSuchAlgorithmException {
+    public void testDecrypt12() throws NoSuchAlgorithmException, CryptoException {
         RandomHelper.setRandom(new BadRandom(new Random(0), null));
         context.setConnection(new OutboundConnection());
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);

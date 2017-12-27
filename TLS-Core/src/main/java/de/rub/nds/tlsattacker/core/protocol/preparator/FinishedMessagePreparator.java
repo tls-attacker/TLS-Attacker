@@ -22,6 +22,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -38,12 +40,16 @@ public class FinishedMessagePreparator extends HandshakeMessagePreparator<Finish
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing FinishedMessage");
-        verifyData = computeVerifyData();
-
+        try {
+            verifyData = computeVerifyData();
+        } catch (CryptoException ex) {
+            LOGGER.warn("Could not compute VerifyData! Using empty verifyData.", ex);
+            verifyData = new byte[0];
+        }
         prepareVerifyData(msg);
     }
 
-    private byte[] computeVerifyData() {
+    private byte[] computeVerifyData() throws CryptoException {
         if (chooser.getSelectedProtocolVersion().isTLS13()) {
             try {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(chooser.getSelectedCipherSuite());

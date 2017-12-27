@@ -57,7 +57,7 @@ public class CustomECPrivateKey implements ECPrivateKey {
             ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
             return ecParameters;
         } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
-            throw new CryptoException("Could not generate ECParameterSpec", ex);
+            throw new UnsupportedOperationException("Could not generate ECParameterSpec", ex);
         }
     }
 

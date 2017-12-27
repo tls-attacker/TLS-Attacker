@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
@@ -95,8 +96,8 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
                     + ArrayConverter.bytesToHexString(serverApplicationTrafficSecret));
             tlsContext.setMasterSecret(masterSecret);
             LOGGER.debug("Set masterSecret in Context to " + ArrayConverter.bytesToHexString(masterSecret));
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException(ex);
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
+            throw new AdjustmentException(ex);
         }
     }
 
@@ -119,7 +120,7 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
             KeySet keySet = KeySetGenerator.generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
                     keySetType);
             return keySet;
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
     }
