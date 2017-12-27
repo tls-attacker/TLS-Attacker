@@ -173,7 +173,7 @@ public class ReceiveMessageHelper {
                 LOGGER.warn("Could not receive more Bytes", ex2);
                 context.setReceivedTransportHandlerException(true);
             }
-            if (extraBytes != null && extraBytes.length >= 0) {
+            if (extraBytes != null && extraBytes.length > 0) {
                 return parseRecords(ArrayConverter.concatenate(recordBytes, extraBytes), context);
             }
             LOGGER.debug("Did not receive more Bytes. Parsing records softly");
