@@ -73,7 +73,8 @@ public class SrpClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nSrpClientKeyExchangeMessage:\n");
         return sb.toString();
     }
 

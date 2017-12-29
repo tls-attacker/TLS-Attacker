@@ -51,8 +51,15 @@ public class UnknownMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("   \nData").append(ArrayConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nUnknownMessage:");
+        sb.append("\n  Data: ");
+        if(getCompleteResultingMessage() != null && getCompleteResultingMessage().getValue() != null)
+        {
+            sb.append(ArrayConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
+        } else {    
+            sb.append("null");
+        }
         return sb.toString();
     }
 }
