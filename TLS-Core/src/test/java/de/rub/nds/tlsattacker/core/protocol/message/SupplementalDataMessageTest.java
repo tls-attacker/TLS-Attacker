@@ -17,17 +17,17 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Pierre Tilhaus  <pierre.tilhaus@rub.de>
+ * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
  */
 public class SupplementalDataMessageTest {
-    
+
     SupplementalDataMessage message;
-    
+
     @Before
     public void setUp() {
         message = new SupplementalDataMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -47,35 +47,40 @@ public class SupplementalDataMessageTest {
     }
 
     /**
-     * Test of getSupplementalDataLength method, of class SupplementalDataMessage.
+     * Test of getSupplementalDataLength method, of class
+     * SupplementalDataMessage.
      */
     @Test
     public void testGetSupplementalDataLength() {
     }
 
     /**
-     * Test of setSupplementalDataLength method, of class SupplementalDataMessage.
+     * Test of setSupplementalDataLength method, of class
+     * SupplementalDataMessage.
      */
     @Test
     public void testSetSupplementalDataLength() {
     }
 
     /**
-     * Test of getSupplementalDataBytes method, of class SupplementalDataMessage.
+     * Test of getSupplementalDataBytes method, of class
+     * SupplementalDataMessage.
      */
     @Test
     public void testGetSupplementalDataBytes() {
     }
 
     /**
-     * Test of setSupplementalDataBytes method, of class SupplementalDataMessage.
+     * Test of setSupplementalDataBytes method, of class
+     * SupplementalDataMessage.
      */
     @Test
     public void testSetSupplementalDataBytes_ModifiableByteArray() {
     }
 
     /**
-     * Test of setSupplementalDataBytes method, of class SupplementalDataMessage.
+     * Test of setSupplementalDataBytes method, of class
+     * SupplementalDataMessage.
      */
     @Test
     public void testSetSupplementalDataBytes_byteArr() {
@@ -97,8 +102,8 @@ public class SupplementalDataMessageTest {
         sb.append("\nSupplementalDataMessage:");
         sb.append("\n  Supplemental Data Length: ").append("null");
         sb.append("\n  SupplementalDataEntries:\n").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
-    
+
 }

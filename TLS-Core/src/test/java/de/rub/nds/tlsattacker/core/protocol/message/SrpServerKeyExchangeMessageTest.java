@@ -17,17 +17,17 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Pierre Tilhaus  <pierre.tilhaus@rub.de>
+ * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
  */
 public class SrpServerKeyExchangeMessageTest {
-    
+
     SrpServerKeyExchangeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new SrpServerKeyExchangeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -177,7 +177,7 @@ public class SrpServerKeyExchangeMessageTest {
         sb.append("\n  Public Key: ").append("null");
         sb.append("\n  Signature and Hash Algorithm: ").append("null");
         sb.append("\n  Signature: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
 
@@ -203,10 +203,11 @@ public class SrpServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getAllModifiableVariableHolders method, of class SrpServerKeyExchangeMessage.
+     * Test of getAllModifiableVariableHolders method, of class
+     * SrpServerKeyExchangeMessage.
      */
     @Test
     public void testGetAllModifiableVariableHolders() {
     }
-    
+
 }

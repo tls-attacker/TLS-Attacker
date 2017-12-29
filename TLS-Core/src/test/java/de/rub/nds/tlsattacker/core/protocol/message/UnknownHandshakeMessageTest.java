@@ -17,17 +17,17 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Pierre Tilhaus  <pierre.tilhaus@rub.de>
+ * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
  */
 public class UnknownHandshakeMessageTest {
-    
+
     UnknownHandshakeMessage message;
-    
+
     @Before
     public void setUp() {
         message = new UnknownHandshakeMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -82,8 +82,8 @@ public class UnknownHandshakeMessageTest {
         StringBuilder sb = new StringBuilder();
         sb.append("\nUnknownHandshakeMessage:");
         sb.append("\n  Data: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
-    
+
 }

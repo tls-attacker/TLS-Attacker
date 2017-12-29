@@ -17,17 +17,17 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Pierre Tilhaus  <pierre.tilhaus@rub.de>
+ * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
  */
 public class UnknownMessageTest {
-    
+
     UnknownMessage message;
-    
+
     @Before
     public void setUp() {
         message = new UnknownMessage();
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -68,8 +68,8 @@ public class UnknownMessageTest {
         StringBuilder sb = new StringBuilder();
         sb.append("\nUnknownMessage:");
         sb.append("\n  Data: ").append("null");
-        
+
         assertEquals(message.toString(), sb.toString());
     }
-    
+
 }

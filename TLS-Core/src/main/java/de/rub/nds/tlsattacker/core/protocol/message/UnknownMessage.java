@@ -54,10 +54,9 @@ public class UnknownMessage extends ProtocolMessage {
         StringBuilder sb = new StringBuilder();
         sb.append("\nUnknownMessage:");
         sb.append("\n  Data: ");
-        if(getCompleteResultingMessage() != null && getCompleteResultingMessage().getValue() != null)
-        {
+        if (getCompleteResultingMessage() != null && getCompleteResultingMessage().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getCompleteResultingMessage().getValue()));
-        } else {    
+        } else {
             sb.append("null");
         }
         return sb.toString();

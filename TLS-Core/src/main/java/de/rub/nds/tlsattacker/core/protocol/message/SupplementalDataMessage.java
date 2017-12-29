@@ -83,15 +83,13 @@ public class SupplementalDataMessage extends HandshakeMessage {
         StringBuilder sb = new StringBuilder();
         sb.append("\nSupplementalDataMessage:");
         sb.append("\n  Supplemental Data Length: ");
-        if(supplementalDataLength != null && supplementalDataLength.getValue() != null)
-        {
+        if (supplementalDataLength != null && supplementalDataLength.getValue() != null) {
             sb.append(supplementalDataLength.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  SupplementalDataEntries:\n");
-        if(!entries.isEmpty())
-        {
+        if (!entries.isEmpty()) {
             for (SupplementalDataEntry entry : entries) {
                 sb.append("\n   Supplemental Data Type: ").append(entry.getSupplementalDataType().getValue());
                 sb.append("\n   Supplemental Data Length: ").append(entry.getSupplementalDataLength().getValue());
@@ -101,8 +99,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
         } else {
             sb.append("null");
         }
-        
-        
+
         return sb.toString();
     }
 
