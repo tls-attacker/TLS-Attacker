@@ -22,7 +22,7 @@ public class RecordCipherFactory {
 
     public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
         if (context.getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
-            LOGGER.warn("Cipher not implemented. Using Null Cipher instead");
+            LOGGER.warn("Cipher "+  cipherSuite.name() + " not implemented. Using Null Cipher instead");
             return new RecordNullCipher(context);
         } else {
             CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
