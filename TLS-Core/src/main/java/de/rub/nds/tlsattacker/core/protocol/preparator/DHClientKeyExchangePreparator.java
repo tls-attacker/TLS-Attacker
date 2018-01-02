@@ -59,7 +59,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
             LOGGER.warn("Modulus is ZERO. Returning 0 publicKey");
             return BigInteger.ZERO;
         }
-        return generator.modPow(privateKey, modulus);
+        return generator.modPow(privateKey.abs(), modulus.abs());
     }
 
     protected byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
