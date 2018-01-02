@@ -30,8 +30,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
@@ -95,13 +93,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {
-        CompressionMethod method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod()
-                .getValue());
-        if (method != null) {
-            tlsContext.setSelectedCompressionMethod(method);
-            LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+        if (message.getSelectedCompressionMethod() != null) {
+            CompressionMethod method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod()
+                    .getValue());
+            if (method != null) {
+                tlsContext.setSelectedCompressionMethod(method);
+                LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+            } else {
+                LOGGER.warn("Unknown CompressionAlgorithm, did not adjust Context");
+            }
         } else {
-            LOGGER.warn("Unknown CompressionAlgorithm, did not adjust Context");
+            LOGGER.warn("Not adjusting CompressionMethod - Method is null!");
         }
     }
 
