@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import java.util.Arrays;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
@@ -27,8 +25,6 @@ import de.rub.nds.tlsattacker.core.state.Session;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @param <Message>
