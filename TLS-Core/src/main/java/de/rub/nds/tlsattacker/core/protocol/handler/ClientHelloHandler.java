@@ -36,8 +36,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClientHelloHandler extends HandshakeMessageHandler<ClientHelloMessage> {
 
