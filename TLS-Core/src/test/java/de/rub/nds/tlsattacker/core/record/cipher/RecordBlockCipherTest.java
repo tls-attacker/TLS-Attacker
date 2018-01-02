@@ -59,9 +59,9 @@ public class RecordBlockCipherTest {
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
         for (CipherSuite suite : CipherSuite.getImplemented()) {
-            if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV()
-                    && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK && !suite.name().contains("FORTEZZA")
-                    && !suite.name().contains("GOST") && !suite.name().contains("ARIA")) {
+            if (!suite.isSCSV() && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK
+                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
+                    && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : mixedConnections) {
                     context.setConnection(con);
@@ -109,7 +109,7 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of calculateMac method, of class RecordBlockCipher.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
@@ -134,7 +134,7 @@ public class RecordBlockCipherTest {
 
     /**
      * Test of encrypt method, of class RecordBlockCipher, for TLS10.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test

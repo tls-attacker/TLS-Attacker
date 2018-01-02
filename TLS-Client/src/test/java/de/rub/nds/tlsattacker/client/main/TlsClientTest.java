@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
@@ -59,6 +60,7 @@ import java.util.Set;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import static org.hamcrest.Matchers.is;
@@ -96,7 +98,7 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(Level.INFO, "Testing RSA");
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing RSA");
             testExecuteWorkflows(PublicKeyAlgorithm.RSA, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | CertificateException | IOException | InvalidKeyException
@@ -117,7 +119,7 @@ public class TlsClientTest {
             new Thread(tlsServer).start();
             while (!tlsServer.isInitialized())
                 ;
-            LOGGER.log(Level.INFO, "Testing EC");
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing EC");
             testExecuteWorkflows(PublicKeyAlgorithm.EC, tlsServer.getPort());
             tlsServer.shutdown();
         } catch (NoSuchAlgorithmException | KeyStoreException | IOException | CertificateException
@@ -174,8 +176,8 @@ public class TlsClientTest {
                 config.setDefaultClientSupportedCiphersuites(cslist);
                 config.setDefaultSelectedCipherSuite(cs);
                 boolean result = testExecuteWorkflow(config);
-                LOGGER.info("Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:"
-                        + result);
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                        "Testing " + config.getHighestProtocolVersion().name() + ": " + cs.name() + " Succes:" + result);
                 collector.checkThat(" " + config.getHighestProtocolVersion().name() + ":" + cs.name() + " failed.",
                         result, is(true));
             }
@@ -238,5 +240,4 @@ public class TlsClientTest {
 
         return trace.executedAsPlanned();
     }
-
 }

@@ -49,8 +49,7 @@ public class RecordStreamCipherTest {
         context.setMasterSecret(new byte[] { 0 });
         AliasedConnection[] connections = new AliasedConnection[] { new InboundConnection(), new OutboundConnection() };
         for (CipherSuite suite : CipherSuite.values()) {
-            if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV() && !suite.name().contains("WITH_NULL")
-                    && !suite.name().contains("CHACHA20_POLY1305")
+            if (!suite.isSCSV() && !suite.name().contains("WITH_NULL") && !suite.name().contains("CHACHA20_POLY1305")
                     && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
                     && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
                     && !suite.name().contains("ARIA")) {

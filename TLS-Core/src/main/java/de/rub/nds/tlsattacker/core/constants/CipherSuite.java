@@ -410,8 +410,7 @@ public enum CipherSuite {
     TLS_CECPQ1_RSA_WITH_CHACHA20_POLY1305_SHA256(0x16B7),
     TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0x16B8),
     TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384(0x16B9),
-    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA),
-    TLS_UNKNOWN_CIPHER(0x9999);
+    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA);
     // TODO Grease logic implementation, because the tests fail if the lines
     // aren't commented
     // GREASE constants
@@ -488,9 +487,6 @@ public enum CipherSuite {
 
     public static CipherSuite getCipherSuite(int value) {
         CipherSuite cs = MAP.get(value);
-        if (cs == null) {
-            return TLS_UNKNOWN_CIPHER;
-        }
         return cs;
     }
 
