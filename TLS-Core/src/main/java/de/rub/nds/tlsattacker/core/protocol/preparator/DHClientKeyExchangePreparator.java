@@ -67,7 +67,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
             LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
             return new byte[0];
         }
-        return BigIntegers.asUnsignedByteArray(publicKey.modPow(privateKey.abs(), modulus));
+        return BigIntegers.asUnsignedByteArray(publicKey.modPow(privateKey.abs(), modulus.abs()));
     }
 
     protected void setComputationGenerator(T msg) {
