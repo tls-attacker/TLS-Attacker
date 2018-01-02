@@ -185,6 +185,8 @@ public class RecordDecryptor extends Decryptor {
     private byte[] parseUnpadded(byte[] decrypted, int paddingLength) throws CryptoException {
         if (paddingLength > decrypted.length) {
             throw new CryptoException("Could not unpad decrypted Data. Padding length greater than data length");
+        } else if (paddingLength == decrypted.length) {
+            return new byte[0];
         }
         int paddingStart = decrypted.length - paddingLength - 1;
         return Arrays.copyOf(decrypted, paddingStart);
@@ -228,7 +230,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private void checkForEndOfEarlyData(byte[] unpaddedBytes) throws CryptoException {
-        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
+        byte[] endOfEarlyData = new byte[]{5, 0, 0, 0};
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
             adjustClientCipherAfterEarly();
         }
