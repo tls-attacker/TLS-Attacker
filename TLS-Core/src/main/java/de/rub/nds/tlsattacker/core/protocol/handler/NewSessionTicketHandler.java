@@ -63,7 +63,11 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         }
         PskSet pskSet = new PskSet();
         pskSet.setCipherSuite(tlsContext.getChooser().getSelectedCipherSuite());
-        pskSet.setTicketAgeAdd(message.getTicket().getTicketAgeAdd().getValue());
+        if (message.getTicket().getTicketAgeAdd() != null) {
+            pskSet.setTicketAgeAdd(message.getTicket().getTicketAgeAdd().getValue());
+        } else {
+            LOGGER.warn("No TicketAge specified in SessionTicket");
+        }
         pskSet.setPreSharedKeyIdentity(message.getTicket().getIdentity().getValue());
         pskSet.setTicketAge(getTicketAge());
         pskSet.setPreSharedKey(derivePsk(message));
@@ -88,7 +92,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
                     tlsContext.getMasterSecret(), HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest()
-                            .getRawBytes());
+                    .getRawBytes());
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
             byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumptionMasterSecret, HKDFunction.RESUMPTION, message
                     .getTicket().getTicketNonce().getValue(), macLength);
