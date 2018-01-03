@@ -71,8 +71,8 @@ public class RecordDecryptor extends Decryptor {
         LOGGER.debug("Decrypting:" + ArrayConverter.bytesToHexString(encrypted));
         DecryptionResult result = recordCipher.decrypt(encrypted);
         byte[] decrypted = result.getDecryptedCipherText();
-
         record.getComputations().setPlainRecordBytes(decrypted);
+        record.getComputations().setInitialisationVector(result.getInitialisationVector());
         LOGGER.debug("PlainRecordBytes: "
                 + ArrayConverter.bytesToHexString(record.getComputations().getPlainRecordBytes().getValue()));
         if (recordCipher.isUsingPadding()) {
