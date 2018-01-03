@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -39,7 +40,8 @@ public class RecordDecryptor extends Decryptor {
     @Override
     public void decrypt(BlobRecord record) {
         LOGGER.debug("Decrypting BlobRecord");
-        byte[] decrypted = recordCipher.decrypt(record.getProtocolMessageBytes().getValue());
+        DecryptionResult result = recordCipher.decrypt(record.getProtocolMessageBytes().getValue());
+        byte[] decrypted = result.getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(decrypted);
         LOGGER.debug("CleanProtocolMessageBytes: "
                 + ArrayConverter.bytesToHexString(record.getCleanProtocolMessageBytes().getValue()));
@@ -49,6 +51,12 @@ public class RecordDecryptor extends Decryptor {
     public void decrypt(Record record) throws CryptoException {
         LOGGER.debug("Decrypting Record");
         record.prepareComputations();
+        if (recordCipher.getKeySet() != null) {
+            record.getComputations().setMacKey(
+                    recordCipher.getKeySet().getReadMacSecret(context.getChooser().getConnectionEndType()));
+            record.getComputations().setCipherKey(
+                    recordCipher.getKeySet().getReadKey(context.getChooser().getConnectionEndType()));
+        }
         record.getComputations().setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
@@ -61,7 +69,8 @@ public class RecordDecryptor extends Decryptor {
             encrypted = removeMac(record.getProtocolMessageBytes().getValue());
         }
         LOGGER.debug("Decrypting:" + ArrayConverter.bytesToHexString(encrypted));
-        byte[] decrypted = recordCipher.decrypt(encrypted);
+        DecryptionResult result = recordCipher.decrypt(encrypted);
+        byte[] decrypted = result.getDecryptedCipherText();
 
         record.getComputations().setPlainRecordBytes(decrypted);
         LOGGER.debug("PlainRecordBytes: "

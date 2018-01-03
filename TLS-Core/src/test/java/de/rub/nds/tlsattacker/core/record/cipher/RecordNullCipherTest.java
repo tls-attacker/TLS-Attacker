@@ -38,7 +38,7 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testDecrypt() {
-        assertArrayEquals(record.decrypt(data), data);
+        assertArrayEquals(record.decrypt(data).getDecryptedCipherText(), data);
     }
 
     /**

@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -85,16 +86,18 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] data) {
+    public DecryptionResult decrypt(byte[] data) {
         try {
+            byte[] decrypted;
             if (version.isTLS13() || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-                return decryptTLS13(data);
+                decrypted = decryptTLS13(data);
             } else {
-                return decryptTLS12(data);
+                decrypted = decryptTLS12(data);
             }
+            return new DecryptionResult(null, decrypted, null);
         } catch (CryptoException E) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", E);
-            return data;
+            return new DecryptionResult(null, data, null);
         }
     }
 

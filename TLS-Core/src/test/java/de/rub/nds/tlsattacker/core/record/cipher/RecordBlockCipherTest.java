@@ -222,7 +222,7 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("BCD644DF7E82BF0097E1B0C16CDD53199733EE70629FA82DAC7B0B4F6100B602ACBA3B8EA6A7741B");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] plaintext = cipher.decrypt(data);
+        byte[] plaintext = cipher.decrypt(data).getDecryptedCipherText();
         byte[] correctPlaintext = ArrayConverter
                 .hexStringToByteArray("1400000CC84350158844FE559EC327B77F44B9791ECB11453B7FC40ED27C35DDDC7C250603030303");
         assertArrayEquals(plaintext, correctPlaintext);
@@ -249,7 +249,7 @@ public class RecordBlockCipherTest {
                 .hexStringToByteArray("45DCB1853201C59037AFF4DFE3F442B7CDB4DB1348894AE76E251F4491A6F5F859B2DE12879C6D86D4BDC83CAB854E33EF5CC51B25942E64EC6730AB1DDB5806E900B7B0C32D9BFF59C0F01334C0F673");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] plaintext = cipher.decrypt(data);
+        byte[] plaintext = cipher.decrypt(data).getDecryptedCipherText();
         byte[] correctPlaintext = ArrayConverter
                 .hexStringToByteArray("7F1F9E3AA2EAD435ED42143C54D81FEDAC85A400AF369CABFA1B77EBB3647B534FB8447306D14FE610F897EBE455A43ED47140370DB20BF3181067641D20E425");
         assertArrayEquals(plaintext, correctPlaintext);

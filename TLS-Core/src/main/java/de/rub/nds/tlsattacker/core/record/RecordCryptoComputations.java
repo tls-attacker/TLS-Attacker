@@ -20,7 +20,7 @@ import java.math.BigInteger;
  */
 public class RecordCryptoComputations {
 
-    private ModifiableByteArray encryptionKey;
+    private ModifiableByteArray cipherKey;
 
     private ModifiableByteArray macKey;
 
@@ -45,16 +45,16 @@ public class RecordCryptoComputations {
     public RecordCryptoComputations() {
     }
 
-    public ModifiableByteArray getEncryptionKey() {
-        return encryptionKey;
+    public ModifiableByteArray getCipherKey() {
+        return cipherKey;
     }
 
-    public void setEncryptionKey(ModifiableByteArray encryptionKey) {
-        this.encryptionKey = encryptionKey;
+    public void setCipherKey(ModifiableByteArray cipherKey) {
+        this.cipherKey = cipherKey;
     }
 
-    public void setEncryptionKey(byte[] encryptionKey) {
-        this.encryptionKey = ModifiableVariableFactory.safelySetValue(this.encryptionKey, encryptionKey);
+    public void setCipherKey(byte[] cipherKey) {
+        this.cipherKey = ModifiableVariableFactory.safelySetValue(this.cipherKey, cipherKey);
     }
 
     public ModifiableByteArray getMacKey() {
