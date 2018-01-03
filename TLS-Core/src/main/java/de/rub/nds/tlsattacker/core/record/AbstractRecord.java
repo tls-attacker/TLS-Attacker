@@ -99,4 +99,6 @@ public abstract class AbstractRecord extends ModifiableVariableHolder {
     public abstract AbstractRecordSerializer getRecordSerializer();
 
     public abstract void adjustContext(TlsContext context);
+
+    public abstract void prepareComputations();
 }

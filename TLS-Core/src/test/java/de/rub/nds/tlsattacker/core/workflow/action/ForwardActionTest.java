@@ -209,5 +209,4 @@ public class ForwardActionTest {
         String forwardedData = new String(forwardedMsg.getData().getValue());
         assertThat(forwardedData, equalTo(receivedData));
     }
-
 }

@@ -69,7 +69,7 @@ public class RecordPreparatorTest {
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);
         assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS10.getValue());
-        assertTrue(record.getPaddingLength().getValue() == 0);
+        assertTrue(record.getComputations().getPaddingLength().getValue() == 0);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"), record
                 .getProtocolMessageBytes().getValue());
     }

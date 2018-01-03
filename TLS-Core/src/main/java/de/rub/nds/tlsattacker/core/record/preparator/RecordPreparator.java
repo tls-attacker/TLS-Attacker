@@ -35,6 +35,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     @Override
     public void prepare() {
         LOGGER.debug("Preparing Record");
+        record.prepareComputations();
         prepareContentType(record);
         prepareProtocolVersion(record);
         prepareSequenceNumber(record);
@@ -68,8 +69,8 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void prepareSequenceNumber(Record record) {
-        record.setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
-        LOGGER.debug("SequenceNumber: " + record.getSequenceNumber().getValue());
+        record.getComputations().setSequenceNumber(BigInteger.valueOf(chooser.getContext().getWriteSequenceNumber()));
+        LOGGER.debug("SequenceNumber: " + record.getComputations().getSequenceNumber().getValue());
     }
 
     private void prepareLength(Record record) {
@@ -78,7 +79,7 @@ public class RecordPreparator extends AbstractRecordPreparator<Record> {
     }
 
     private void preparePaddingLength(Record record) {
-        record.setPaddingLength(chooser.getConfig().getPaddingLength());
-        LOGGER.debug("PaddingLength: " + record.getPaddingLength().getValue());
+        record.getComputations().setPaddingLength(chooser.getConfig().getPaddingLength());
+        LOGGER.debug("PaddingLength: " + record.getComputations().getPaddingLength().getValue());
     }
 }

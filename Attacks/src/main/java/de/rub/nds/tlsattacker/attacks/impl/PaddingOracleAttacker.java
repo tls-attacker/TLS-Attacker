@@ -119,7 +119,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
         plainData.setModification(modifier);
-        r.setPlainRecordBytes(plainData);
+        r.getComputations().setPlainRecordBytes(plainData);
         return r;
     }
 
@@ -130,7 +130,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         ModifiableByteArray padding = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
         padding.setModification(modifier);
-        r.setPadding(padding);
+        r.getComputations().setPadding(padding);
         records.add(r);
 
         return records;
@@ -143,7 +143,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         ModifiableByteArray mac = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1, 1, 1 }, 0);
         mac.setModification(modifier);
-        r.setMac(mac);
+        r.getComputations().setMac(mac);
         records.add(r);
 
         return records;
