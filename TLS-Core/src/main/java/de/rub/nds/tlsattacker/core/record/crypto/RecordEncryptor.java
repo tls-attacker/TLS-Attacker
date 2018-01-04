@@ -56,7 +56,7 @@ public class RecordEncryptor extends Encryptor {
             if (cipherSuite.isUsingMac()) {
                 byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
                         .getAuthenticatedMetaData().getValue(), record.getComputations().getNonMetaDataMaced()
-                        .getValue()));
+                        .getValue()), context.getChooser().getConnectionEndType());
                 setMac(record, mac);
             }
         }
@@ -95,7 +95,7 @@ public class RecordEncryptor extends Encryptor {
             record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
             recordCipher.setAdditionalAuthenticatedData(record.getComputations().getAuthenticatedMetaData().getValue());
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
-                    .getAuthenticatedMetaData().getValue(), encrypted));
+                    .getAuthenticatedMetaData().getValue(), encrypted), context.getChooser().getConnectionEndType());
             setMac(record, mac);
             encrypted = ArrayConverter.concatenate(encrypted, record.getComputations().getMac().getValue());
         }

@@ -42,6 +42,10 @@ public class RecordCryptoComputations {
 
     private ModifiableByteArray authenticatedMetaData;
 
+    private Boolean paddingValid = null;
+
+    private Boolean macValid = null;
+
     public RecordCryptoComputations() {
     }
 
@@ -178,5 +182,21 @@ public class RecordCryptoComputations {
 
     public void setPaddingLength(Integer paddingLength) {
         this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
+    }
+
+    public Boolean getPaddingValid() {
+        return paddingValid;
+    }
+
+    public void setPaddingValid(Boolean paddingValid) {
+        this.paddingValid = paddingValid;
+    }
+
+    public Boolean getMacValid() {
+        return macValid;
+    }
+
+    public void setMacValid(Boolean macValid) {
+        this.macValid = macValid;
     }
 }

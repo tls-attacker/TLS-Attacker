@@ -88,11 +88,18 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     @Override
-    public byte[] calculateMac(byte[] data) {
-        writeMac.update(data);
+    public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
         LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
-        byte[] result = writeMac.doFinal();
-        LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
+        byte[] result;
+        if (connectionEndType == context.getChooser().getConnectionEndType()) {
+            writeMac.update(data);
+            result = writeMac.doFinal();
+
+        } else {
+            readMac.update(data);
+            result = readMac.doFinal();
+        }
+        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
     }
 

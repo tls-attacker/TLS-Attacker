@@ -138,6 +138,7 @@ public class SSL3HandshakeTest {
         } catch (IOException | InvalidKeyException | KeyManagementException | KeyStoreException
                 | NoSuchAlgorithmException | NoSuchProviderException | SignatureException | UnrecoverableKeyException
                 | CertificateException | OperatorCreationException E) {
+            Assert.fail();
         } finally {
             if (tlsServer != null) {
                 tlsServer.shutdown();

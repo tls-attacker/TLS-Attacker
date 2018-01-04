@@ -126,7 +126,7 @@ public class RecordBlockCipherTest {
         byte[] data = ArrayConverter.hexStringToByteArray("000000000000000016030100101400000CCE92FBEC9131F48A63FED31F");
 
         cipher = new RecordBlockCipher(context, KeySetGenerator.generateKeySet(context));
-        byte[] mac = cipher.calculateMac(data);
+        byte[] mac = cipher.calculateMac(data, context.getChooser().getConnectionEndType());
         byte[] correctMac = ArrayConverter.hexStringToByteArray("71573F726479AA9108FB86A4FA16BC1D5CB57530");
         assertArrayEquals(mac, correctMac);
 

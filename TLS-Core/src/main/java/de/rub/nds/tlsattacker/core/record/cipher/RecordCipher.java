@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +75,7 @@ public abstract class RecordCipher {
         return 0;
     }
 
-    public byte[] calculateMac(byte[] data) {
+    public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
         return new byte[0];
     }
 

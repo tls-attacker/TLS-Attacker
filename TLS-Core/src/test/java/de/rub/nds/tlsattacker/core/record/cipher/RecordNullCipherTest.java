@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -46,7 +47,7 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testCalculateMac() {
-        assertArrayEquals(record.calculateMac(data), new byte[0]);
+        assertArrayEquals(record.calculateMac(data, ConnectionEndType.CLIENT), new byte[0]);
     }
 
     /**

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.crypto;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
@@ -60,10 +61,11 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        prepareAdditionalMetadata(record, encrypted);
 
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.trace("EncryptThenMac is active");
+            prepareNonMetaDataMaced(record, encrypted);
+            prepareAdditionalMetadata(record, encrypted);
             byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
             record.getComputations().setMac(mac);
             encrypted = removeMac(record.getProtocolMessageBytes().getValue());
@@ -87,12 +89,14 @@ public class RecordDecryptor extends Decryptor {
         }
         if (!isEncryptThenMac(cipherSuite) && recordCipher.isUsingMac()) {
             LOGGER.trace("EncryptThenMac is not active");
-            prepareAdditionalMetadata(record, record.getComputations().getUnpaddedRecordBytes().getValue());
             if (cipherSuite.isUsingMac()) {
                 adjustMac(record);
             } else {
                 useNoMac(record);
             }
+            prepareNonMetaDataMaced(record, record.getCleanProtocolMessageBytes().getValue());
+            prepareAdditionalMetadata(record, record.getCleanProtocolMessageBytes().getValue());
+
         } else {
             useNoMac(record);
         }
@@ -101,12 +105,49 @@ public class RecordDecryptor extends Decryptor {
                 && context.getActiveClientKeySetType() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             checkForEndOfEarlyData(record.getComputations().getUnpaddedRecordBytes().getValue());
         }
+        record.getComputations().setPaddingValid(isPaddingValid(record));
+        record.getComputations().setMacValid(isMacValid(record));
+    }
+
+    private Boolean isPaddingValid(Record record) {
+        ModifiableByteArray padding = record.getComputations().getPadding();
+        if (padding != null && padding.getValue() != null && padding.getValue().length > 0) {
+            for (int i = 0; i < padding.getValue().length; i++) {
+                if (padding.getValue()[i] != padding.getValue().length - 1) {
+                    LOGGER.debug("Padding is invalid");
+                    return false;
+                }
+            }
+            LOGGER.debug("Padding is valid");
+            return true;
+        } else {
+            return null;
+        }
+    }
+
+    private Boolean isMacValid(Record record) {
+        ModifiableByteArray mac = record.getComputations().getMac();
+        if (mac != null && mac.getValue() != null && mac.getValue().length > 0) {
+            byte[] toBeMaced;
+            toBeMaced = ArrayConverter.concatenate(record.getComputations().getAuthenticatedMetaData().getValue(),
+                    record.getComputations().getNonMetaDataMaced().getValue());
+            if (Arrays.equals(recordCipher.calculateMac(toBeMaced, context.getChooser().getMyConnectionPeer()),
+                    mac.getValue())) {
+                LOGGER.debug("Mac is valid");
+                return true;
+            } else {
+                LOGGER.debug("Mac is invalid");
+                return false;
+            }
+        } else {
+            return null;
+        }
     }
 
     private void prepareAdditionalMetadata(Record record, byte[] payload) throws CryptoException {
-        prepareNonMetaDataMaced(record, payload);
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
+        record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
         recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
     }
 
