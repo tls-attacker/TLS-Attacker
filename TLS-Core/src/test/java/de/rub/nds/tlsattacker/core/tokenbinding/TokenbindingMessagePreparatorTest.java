@@ -72,7 +72,7 @@ public class TokenbindingMessagePreparatorTest {
 
     /**
      * Test of prepareProtocolMessageContents method, of class
- TokenBindingMessagePreparator.
+     * TokenBindingMessagePreparator.
      * 
      * @throws java.lang.Exception
      */
