@@ -1052,7 +1052,7 @@ public class Config implements Serializable {
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
         filtersKeepUserSettings = true;
-        pskKeyExchangeModes =new LinkedList<>();
+        pskKeyExchangeModes = new LinkedList<>();
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
     }

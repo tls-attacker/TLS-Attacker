@@ -48,7 +48,7 @@ public class TokenbindingMessagePreparatorTest {
 
     private TokenBindingMessage message;
 
-    private TokenbindingMessagePreparator preparator;
+    private TokenBindingMessagePreparator preparator;
 
     @Before
     public void setUp() {
@@ -56,7 +56,7 @@ public class TokenbindingMessagePreparatorTest {
         context = new TlsContext(config);
         chooser = context.getChooser();
         message = new TokenBindingMessage();
-        preparator = new TokenbindingMessagePreparator(chooser, message);
+        preparator = new TokenBindingMessagePreparator(chooser, message);
         config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
                 HashAlgorithm.SHA256));
         context.setClientRandom(ArrayConverter
@@ -72,7 +72,7 @@ public class TokenbindingMessagePreparatorTest {
 
     /**
      * Test of prepareProtocolMessageContents method, of class
-     * TokenbindingMessagePreparator.
+ TokenBindingMessagePreparator.
      * 
      * @throws java.lang.Exception
      */

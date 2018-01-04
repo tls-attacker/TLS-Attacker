@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessageSerializer;
-import de.rub.nds.tlsattacker.core.tokenbinding.TokenbindingMessagePreparator;
+import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessagePreparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.util.Base64;
 
@@ -28,7 +28,7 @@ public class TokenBindingHeaderPreparator extends Preparator<TokenBindingHeader>
     @Override
     public void prepare() {
         header.setHeaderName("Sec-Token-Binding");
-        TokenbindingMessagePreparator preparator = new TokenbindingMessagePreparator(chooser, header.getMessage());
+        TokenBindingMessagePreparator preparator = new TokenBindingMessagePreparator(chooser, header.getMessage());
         preparator.prepare();
         TokenBindingMessageSerializer serializer = new TokenBindingMessageSerializer(header.getMessage(),
                 chooser.getSelectedProtocolVersion());
