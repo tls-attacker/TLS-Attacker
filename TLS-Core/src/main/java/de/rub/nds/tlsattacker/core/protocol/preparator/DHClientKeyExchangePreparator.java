@@ -55,7 +55,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     protected BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
-        if (modulus == BigInteger.ZERO) {
+        if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning 0 publicKey");
             return BigInteger.ZERO;
         }
@@ -63,7 +63,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     protected byte[] calculatePremasterSecret(BigInteger modulus, BigInteger privateKey, BigInteger publicKey) {
-        if (modulus == BigInteger.ZERO) {
+        if (modulus.compareTo(BigInteger.ZERO) == 0) {
             LOGGER.warn("Modulus is ZERO. Returning empty premaster Secret");
             return new byte[0];
         }
