@@ -25,9 +25,7 @@ Usage: <main class> [options]
     -h, -help
       Prints usage for all the existing commands.
     -keystore
-      Java Key Store (JKS) file to use as a certificate. In case TLS Client is 
-      used, the client sends ClientCertificate in the TLS handshake. Use 
-      keyword empty to enforce an empty ClientCertificate message.
+      Java Key Store (JKS) file to use as a certificate
     -list
       Plot a list of available parameters
       Possible Values: [ciphers, filters, curves, sign_hash_algos, workflow_trace_types]

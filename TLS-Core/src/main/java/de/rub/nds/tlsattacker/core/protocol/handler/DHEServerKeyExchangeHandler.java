@@ -50,13 +50,13 @@ public class DHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<DHESer
      * @param context
      */
     private void adjustDhGenerator(DHEServerKeyExchangeMessage message) {
-        tlsContext.setDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
-        LOGGER.debug("Dh Generator: " + tlsContext.getDhGenerator());
+        tlsContext.setServerDhGenerator(new BigInteger(1, message.getGenerator().getValue()));
+        LOGGER.debug("Dh Generator: " + tlsContext.getServerDhGenerator());
     }
 
     private void adjustDhModulus(DHEServerKeyExchangeMessage message) {
-        tlsContext.setDhModulus(new BigInteger(1, message.getModulus().getValue()));
-        LOGGER.debug("Dh Modulus: " + tlsContext.getDhModulus());
+        tlsContext.setServerDhModulus(new BigInteger(1, message.getModulus().getValue()));
+        LOGGER.debug("Dh Modulus: " + tlsContext.getServerDhModulus());
     }
 
     private void adjustServerPublicKey(DHEServerKeyExchangeMessage message) {

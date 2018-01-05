@@ -70,12 +70,12 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     protected void setComputationGenerator(T msg) {
-        msg.getComputations().setGenerator(chooser.getDhGenerator());
+        msg.getComputations().setGenerator(chooser.getServerDhGenerator());
         LOGGER.debug("Generator: " + msg.getComputations().getGenerator().getValue());
     }
 
     protected void setComputationModulus(T msg) {
-        msg.getComputations().setModulus(chooser.getDhModulus());
+        msg.getComputations().setModulus(chooser.getServerDhModulus());
         LOGGER.debug("Modulus: " + msg.getComputations().getModulus().getValue());
     }
 
@@ -109,7 +109,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         BigInteger privateKey = chooser.getDhServerPrivateKey();
         BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
         msg.prepareComputations();
-        premasterSecret = calculatePremasterSecret(chooser.getDhModulus(), privateKey, clientPublic);
+        premasterSecret = calculatePremasterSecret(chooser.getServerDhModulus(), privateKey, clientPublic);
         preparePremasterSecret(msg);
         prepareClientRandom(msg);
     }
