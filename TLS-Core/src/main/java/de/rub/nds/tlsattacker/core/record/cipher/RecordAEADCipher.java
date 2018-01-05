@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
@@ -86,18 +87,18 @@ public class RecordAEADCipher extends RecordCipher {
     }
 
     @Override
-    public DecryptionResult decrypt(byte[] data) {
+    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
         try {
             byte[] decrypted;
             if (version.isTLS13() || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
-                decrypted = decryptTLS13(data);
+                decrypted = decryptTLS13(decryptionRequest);
             } else {
-                decrypted = decryptTLS12(data);
+                decrypted = decryptTLS12(decryptionRequest);
             }
             return new DecryptionResult(null, decrypted, null);
         } catch (CryptoException E) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", E);
-            return new DecryptionResult(null, data, null);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), null);
         }
     }
 
@@ -135,8 +136,8 @@ public class RecordAEADCipher extends RecordCipher {
             LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV.getIV()));
             encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIV);
             LOGGER.debug("Encrypting GCM with the following AAD: {}",
-                    ArrayConverter.bytesToHexString(additionalAuthenticatedData));
-            encryptCipher.updateAAD(additionalAuthenticatedData);
+                    ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
+            encryptCipher.updateAAD(request.getAdditionalAuthenticatedData());
             byte[] ciphertext = encryptCipher.doFinal(request.getPlainText());
             return new EncryptionResult(encryptIV.getIV(), ArrayConverter.concatenate(nonce, ciphertext), false);
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException
@@ -145,7 +146,7 @@ public class RecordAEADCipher extends RecordCipher {
         }
     }
 
-    private byte[] decryptTLS13(byte[] data) throws CryptoException {
+    private byte[] decryptTLS13(DecryptionRequest decryptionRequest) throws CryptoException {
         try {
             LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
             byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
@@ -155,26 +156,28 @@ public class RecordAEADCipher extends RecordCipher {
             decryptIV = prepareAeadParameters(nonce, getDecryptionIV());
             LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV.getIV()));
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
-            LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
-            return decryptCipher.doFinal(data);
+            LOGGER.debug("Decrypting the following GCM ciphertext: {}",
+                    ArrayConverter.bytesToHexString(decryptionRequest.getCipherText()));
+            return decryptCipher.doFinal(decryptionRequest.getCipherText());
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException
                 | InvalidAlgorithmParameterException ex) {
             throw new CryptoException(ex);
         }
     }
 
-    private byte[] decryptTLS12(byte[] data) throws CryptoException {
+    private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {
         try {
-            byte[] nonce = Arrays.copyOf(data, SEQUENCE_NUMBER_LENGTH);
-            data = Arrays.copyOfRange(data, SEQUENCE_NUMBER_LENGTH, data.length);
+            byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
+            byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
+                    decryptionRequest.getCipherText().length);
             byte[] iv = ArrayConverter.concatenate(
                     getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
             decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
             LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV.getIV()));
             decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
             LOGGER.debug("Decrypting GCM with the following AAD: {}",
-                    ArrayConverter.bytesToHexString(additionalAuthenticatedData));
-            decryptCipher.updateAAD(additionalAuthenticatedData);
+                    ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
+            decryptCipher.updateAAD(decryptionRequest.getAdditionalAuthenticatedData());
             LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
             return decryptCipher.doFinal(data);
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException

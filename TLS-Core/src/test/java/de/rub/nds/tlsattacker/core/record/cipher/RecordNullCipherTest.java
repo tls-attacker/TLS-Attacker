@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -31,7 +32,8 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testEncrypt() {
-        assertArrayEquals(record.encrypt(new EncryptionRequest(data)).getCompleteEncryptedCipherText(), data);
+        assertArrayEquals(record.encrypt(new EncryptionRequest(data, null, null)).getCompleteEncryptedCipherText(),
+                data);
     }
 
     /**
@@ -39,7 +41,7 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testDecrypt() {
-        assertArrayEquals(record.decrypt(data).getDecryptedCipherText(), data);
+        assertArrayEquals(record.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText(), data);
     }
 
     /**

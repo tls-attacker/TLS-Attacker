@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
@@ -59,7 +60,7 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public void decryptRecord(AbstractRecord record) {
         byte[] data = record.getProtocolMessageBytes().getValue();
-        data = cipher.decrypt(data).getDecryptedCipherText();
+        data = cipher.decrypt(new DecryptionRequest(data, null)).getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(data);
     }
 

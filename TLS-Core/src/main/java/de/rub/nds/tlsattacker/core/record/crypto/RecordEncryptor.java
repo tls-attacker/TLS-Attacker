@@ -30,7 +30,8 @@ public class RecordEncryptor extends Encryptor {
     @Override
     public void encrypt(BlobRecord record) {
         LOGGER.debug("Encrypting BlobRecord");
-        byte[] encrypted = recordCipher.encrypt(getEncryptionRequest(record.getCleanProtocolMessageBytes().getValue()))
+        byte[] encrypted = recordCipher.encrypt(
+                getEncryptionRequest(record.getCleanProtocolMessageBytes().getValue(), null))
                 .getCompleteEncryptedCipherText();
         record.setProtocolMessageBytes(encrypted);
         LOGGER.debug("ProtocolMessageBytes: "
@@ -52,7 +53,6 @@ public class RecordEncryptor extends Encryptor {
             byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                     .getSelectedProtocolVersion());
             record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
-            recordCipher.setAdditionalAuthenticatedData(record.getComputations().getAuthenticatedMetaData().getValue());
             if (cipherSuite.isUsingMac()) {
                 byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
                         .getAuthenticatedMetaData().getValue(), record.getComputations().getNonMetaDataMaced()
@@ -85,15 +85,14 @@ public class RecordEncryptor extends Encryptor {
         }
         setPlainRecordBytes(record, plain);
         byte[] encrypted = recordCipher.encrypt(
-                getEncryptionRequest(record.getComputations().getPlainRecordBytes().getValue()))
-                .getCompleteEncryptedCipherText();
+                getEncryptionRequest(record.getComputations().getPlainRecordBytes().getValue(), record
+                        .getComputations().getAuthenticatedMetaData().getValue())).getCompleteEncryptedCipherText();
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.debug("EncryptThenMac Extension active");
             record.getComputations().setNonMetaDataMaced(encrypted);
             byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                     .getSelectedProtocolVersion());
             record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
-            recordCipher.setAdditionalAuthenticatedData(record.getComputations().getAuthenticatedMetaData().getValue());
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
                     .getAuthenticatedMetaData().getValue(), encrypted), context.getChooser().getConnectionEndType());
             setMac(record, mac);
@@ -142,7 +141,7 @@ public class RecordEncryptor extends Encryptor {
                 + ArrayConverter.bytesToHexString(record.getProtocolMessageBytes().getValue()));
     }
 
-    private EncryptionRequest getEncryptionRequest(byte[] data) {
-        return new EncryptionRequest(data, recordCipher.getEncryptionIV());
+    private EncryptionRequest getEncryptionRequest(byte[] data, byte[] additionalAuthenticatedData) {
+        return new EncryptionRequest(data, recordCipher.getEncryptionIV(), additionalAuthenticatedData);
     }
 }

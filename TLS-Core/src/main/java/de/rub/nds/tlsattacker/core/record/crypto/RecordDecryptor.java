@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
@@ -41,7 +42,8 @@ public class RecordDecryptor extends Decryptor {
     @Override
     public void decrypt(BlobRecord record) {
         LOGGER.debug("Decrypting BlobRecord");
-        DecryptionResult result = recordCipher.decrypt(record.getProtocolMessageBytes().getValue());
+        DecryptionResult result = recordCipher.decrypt(new DecryptionRequest(null, record.getProtocolMessageBytes()
+                .getValue()));
         byte[] decrypted = result.getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(decrypted);
         LOGGER.debug("CleanProtocolMessageBytes: "
@@ -61,17 +63,17 @@ public class RecordDecryptor extends Decryptor {
         record.getComputations().setSequenceNumber(BigInteger.valueOf(context.getReadSequenceNumber()));
         byte[] encrypted = record.getProtocolMessageBytes().getValue();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-
+        prepareNonMetaDataMaced(record, encrypted);
+        prepareAdditionalMetadata(record);
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.trace("EncryptThenMac is active");
-            prepareNonMetaDataMaced(record, encrypted);
-            prepareAdditionalMetadata(record, encrypted);
             byte[] mac = parseMac(record.getProtocolMessageBytes().getValue());
             record.getComputations().setMac(mac);
             encrypted = removeMac(record.getProtocolMessageBytes().getValue());
         }
         LOGGER.debug("Decrypting:" + ArrayConverter.bytesToHexString(encrypted));
-        DecryptionResult result = recordCipher.decrypt(encrypted);
+        DecryptionResult result = recordCipher.decrypt(new DecryptionRequest(record.getComputations()
+                .getAuthenticatedMetaData().getValue(), encrypted));
         byte[] decrypted = result.getDecryptedCipherText();
         record.getComputations().setPlainRecordBytes(decrypted);
         record.getComputations().setInitialisationVector(result.getInitialisationVector());
@@ -95,7 +97,7 @@ public class RecordDecryptor extends Decryptor {
                 useNoMac(record);
             }
             prepareNonMetaDataMaced(record, record.getCleanProtocolMessageBytes().getValue());
-            prepareAdditionalMetadata(record, record.getCleanProtocolMessageBytes().getValue());
+            prepareAdditionalMetadata(record);
 
         } else {
             useNoMac(record);
@@ -144,11 +146,10 @@ public class RecordDecryptor extends Decryptor {
         }
     }
 
-    private void prepareAdditionalMetadata(Record record, byte[] payload) throws CryptoException {
+    private void prepareAdditionalMetadata(Record record) throws CryptoException {
         byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                 .getSelectedProtocolVersion());
         record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
-        recordCipher.setAdditionalAuthenticatedData(additionalAuthenticatedData);
     }
 
     private void prepareNonMetaDataMaced(Record record, byte[] payload) throws CryptoException {

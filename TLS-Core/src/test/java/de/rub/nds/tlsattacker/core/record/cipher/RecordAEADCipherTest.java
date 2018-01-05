@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
@@ -48,7 +49,7 @@ public class RecordAEADCipherTest {
 
     /**
      * Test of the encrypt method, of class RecordAEADCipher.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
@@ -57,7 +58,8 @@ public class RecordAEADCipherTest {
         context.setConnection(new InboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] plaintext = ArrayConverter.hexStringToByteArray("08000002000016");
-        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(plaintext)).getCompleteEncryptedCipherText();
+        byte[] ciphertext = cipher.encrypt(new EncryptionRequest(plaintext, null, null))
+                .getCompleteEncryptedCipherText();
         byte[] ciphertext_correct = ArrayConverter
                 .hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
         assertArrayEquals(ciphertext, ciphertext_correct);
@@ -65,7 +67,7 @@ public class RecordAEADCipherTest {
 
     /**
      * Test of the decrypt method, of class RecordAEADCipher.
-     * 
+     *
      * @throws java.security.NoSuchAlgorithmException
      */
     @Test
@@ -74,7 +76,7 @@ public class RecordAEADCipherTest {
         context.setConnection(new OutboundConnection());
         this.cipher = new RecordAEADCipher(context, KeySetGenerator.generateKeySet(context));
         byte[] ciphertext = ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229");
-        byte[] plaintext = cipher.decrypt(ciphertext).getDecryptedCipherText();
+        byte[] plaintext = cipher.decrypt(new DecryptionRequest(null, ciphertext)).getDecryptedCipherText();
         byte[] plaintext_correct = ArrayConverter.hexStringToByteArray("08000002000016");
         assertArrayEquals(plaintext, plaintext_correct);
     }

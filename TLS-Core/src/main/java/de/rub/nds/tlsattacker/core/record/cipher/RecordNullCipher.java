@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -35,13 +35,12 @@ public class RecordNullCipher extends RecordCipher {
     /**
      * Null Cipher just passes the data through
      *
-     * @param data
-     *            The raw data that should be decrypted
+     * @param decryptionRequest
      * @return The raw decrypted Data
      */
     @Override
-    public DecryptionResult decrypt(byte[] data) {
-        return new DecryptionResult(null, data, null);
+    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
+        return new DecryptionResult(null, decryptionRequest.getCipherText(), null);
     }
 
     @Override
