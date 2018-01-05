@@ -2091,6 +2091,7 @@ public class Config implements Serializable {
     }
 
     public final void setDefaultClientSupportedCiphersuites(CipherSuite... defaultClientSupportedCiphersuites) {
+        this.defaultClientSupportedCiphersuites = new ArrayList(Arrays.asList(defaultClientSupportedCiphersuites));
     }
 
     public Boolean isClientAuthentication() {
