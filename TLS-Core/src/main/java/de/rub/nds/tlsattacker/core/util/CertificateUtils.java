@@ -132,6 +132,22 @@ public class CertificateUtils {
         }
     }
 
+    public static BigInteger extractRSAModulus(PrivateKey key) throws IOException {
+        if (key instanceof RSAPrivateKey) {
+            return ((RSAPublicKey) key).getModulus();
+        } else {
+            throw new IOException();
+        }
+    }
+
+    public static BigInteger extractRSAPrivateExponent(PrivateKey key) throws IOException {
+        if (key instanceof RSAPrivateKey) {
+            return ((RSAPrivateKey) ((RSAPublicKey) key)).getPrivateExponent();
+        } else {
+            throw new IOException();
+        }
+    }
+
     public static BigInteger extractRSAPublicKey(Certificate cert) throws IOException {
         if (hasRSAParameters(cert)) {
             RSAPublicKey rsaPubKey = (RSAPublicKey) parsePublicKey(cert);
