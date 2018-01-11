@@ -549,29 +549,29 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getDhModulus method, of class DefaultChooser.
+     * Test of getServerDhModulus method, of class DefaultChooser.
      */
     @Test
     public void testGetDhModulus() {
-        context.setDhModulus(null);
-        config.setDefaultDhModulus(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultDhModulus());
-        assertEquals(BigInteger.ONE, chooser.getDhModulus());
-        context.setDhModulus(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhModulus());
+        context.setServerDhModulus(null);
+        config.setDefaultServerDhModulus(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerDhModulus());
+        assertEquals(BigInteger.ONE, chooser.getServerDhModulus());
+        context.setServerDhModulus(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerDhModulus());
     }
 
     /**
-     * Test of getDhGenerator method, of class DefaultChooser.
+     * Test of getServerDhGenerator method, of class DefaultChooser.
      */
     @Test
     public void testGetDhGenerator() {
-        context.setDhGenerator(null);
-        config.setDefaultDhGenerator(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultDhGenerator());
-        assertEquals(BigInteger.ONE, chooser.getDhGenerator());
-        context.setDhGenerator(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getDhGenerator());
+        context.setServerDhGenerator(null);
+        config.setDefaultServerDhGenerator(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerDhGenerator());
+        assertEquals(BigInteger.ONE, chooser.getServerDhGenerator());
+        context.setServerDhGenerator(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerDhGenerator());
     }
 
     /**
@@ -704,12 +704,12 @@ public class DefaultChooserTest {
      */
     @Test
     public void testGetRsaModulus() {
-        context.setRsaModulus(null);
-        config.setDefaultRSAModulus(BigInteger.ONE);
-        assertEquals(BigInteger.ONE, config.getDefaultRSAModulus());
-        assertEquals(BigInteger.ONE, chooser.getRsaModulus());
-        context.setRsaModulus(BigInteger.TEN);
-        assertEquals(BigInteger.TEN, chooser.getRsaModulus());
+        context.setServerRsaModulus(null);
+        config.setDefaultServerRSAModulus(BigInteger.ONE);
+        assertEquals(BigInteger.ONE, config.getDefaultServerRSAModulus());
+        assertEquals(BigInteger.ONE, chooser.getServerRsaModulus());
+        context.setServerRsaModulus(BigInteger.TEN);
+        assertEquals(BigInteger.TEN, chooser.getServerRsaModulus());
     }
 
     /**

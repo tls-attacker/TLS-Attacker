@@ -47,7 +47,6 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import static de.rub.nds.tlsattacker.core.state.State.LOGGER;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
@@ -300,9 +299,13 @@ public class TlsContext {
      */
     private List<AuthzDataFormat> serverAuthzDataFormatList;
 
-    private BigInteger dhGenerator;
+    private BigInteger serverDhGenerator;
 
-    private BigInteger dhModulus;
+    private BigInteger serverDhModulus;
+
+    private BigInteger clientDhGenerator;
+
+    private BigInteger clientDhModulus;
 
     private BigInteger serverDhPrivateKey;
 
@@ -346,6 +349,8 @@ public class TlsContext {
 
     private NamedCurve selectedCurve;
 
+    private NamedCurve ecCertificateCurve;
+
     private CustomECPoint clientEcPublicKey;
 
     private CustomECPoint serverEcPublicKey;
@@ -354,7 +359,9 @@ public class TlsContext {
 
     private BigInteger clientEcPrivateKey;
 
-    private BigInteger rsaModulus;
+    private BigInteger clientRsaModulus;
+
+    private BigInteger serverRsaModulus;
 
     private BigInteger serverRSAPublicKey;
 
@@ -649,12 +656,20 @@ public class TlsContext {
         this.clientSupportedProtocolVersions = new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
     }
 
-    public BigInteger getRsaModulus() {
-        return rsaModulus;
+    public BigInteger getClientRsaModulus() {
+        return clientRsaModulus;
     }
 
-    public void setRsaModulus(BigInteger rsaModulus) {
-        this.rsaModulus = rsaModulus;
+    public void setClientRsaModulus(BigInteger clientRsaModulus) {
+        this.clientRsaModulus = clientRsaModulus;
+    }
+
+    public BigInteger getServerRsaModulus() {
+        return serverRsaModulus;
+    }
+
+    public void setServerRsaModulus(BigInteger serverRsaModulus) {
+        this.serverRsaModulus = serverRsaModulus;
     }
 
     public BigInteger getServerRSAPublicKey() {
@@ -841,20 +856,20 @@ public class TlsContext {
         this.srpIdentity = srpIdentity;
     }
 
-    public BigInteger getDhGenerator() {
-        return dhGenerator;
+    public BigInteger getServerDhGenerator() {
+        return serverDhGenerator;
     }
 
-    public void setDhGenerator(BigInteger dhGenerator) {
-        this.dhGenerator = dhGenerator;
+    public void setServerDhGenerator(BigInteger dhGenerator) {
+        this.serverDhGenerator = dhGenerator;
     }
 
-    public BigInteger getDhModulus() {
-        return dhModulus;
+    public BigInteger getServerDhModulus() {
+        return serverDhModulus;
     }
 
-    public void setDhModulus(BigInteger dhModulus) {
-        this.dhModulus = dhModulus;
+    public void setServerDhModulus(BigInteger serverDhModulus) {
+        this.serverDhModulus = serverDhModulus;
     }
 
     public BigInteger getServerDhPublicKey() {
@@ -1907,5 +1922,29 @@ public class TlsContext {
 
     public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
         this.receivedTransportHandlerException = receivedTransportHandlerException;
+    }
+
+    public NamedCurve getEcCertificateCurve() {
+        return ecCertificateCurve;
+    }
+
+    public void setEcCertificateCurve(NamedCurve ecCertificateCurve) {
+        this.ecCertificateCurve = ecCertificateCurve;
+    }
+
+    public BigInteger getClientDhGenerator() {
+        return clientDhGenerator;
+    }
+
+    public void setClientDhGenerator(BigInteger clientDhGenerator) {
+        this.clientDhGenerator = clientDhGenerator;
+    }
+
+    public BigInteger getClientDhModulus() {
+        return clientDhModulus;
+    }
+
+    public void setClientDhModulus(BigInteger clientDhModulus) {
+        this.clientDhModulus = clientDhModulus;
     }
 }

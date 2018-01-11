@@ -125,9 +125,13 @@ public abstract class Chooser {
 
     public abstract List<TokenBindingKeyParameters> getTokenBindingKeyParameters();
 
-    public abstract BigInteger getDhModulus();
+    public abstract BigInteger getServerDhModulus();
 
-    public abstract BigInteger getDhGenerator();
+    public abstract BigInteger getServerDhGenerator();
+
+    public abstract BigInteger getClientDhModulus();
+
+    public abstract BigInteger getClientDhGenerator();
 
     public abstract BigInteger getDhServerPrivateKey();
 
@@ -173,13 +177,17 @@ public abstract class Chooser {
 
     public abstract NamedCurve getSelectedCurve();
 
+    public abstract NamedCurve getEcCertificateCurve();
+
     public abstract CustomECPoint getClientEcPublicKey();
 
     public abstract CustomECPoint getServerEcPublicKey();
 
     public abstract EllipticCurveType getEcCurveType();
 
-    public abstract BigInteger getRsaModulus();
+    public abstract BigInteger getClientRsaModulus();
+
+    public abstract BigInteger getServerRsaModulus();
 
     public abstract BigInteger getServerRSAPublicKey();
 

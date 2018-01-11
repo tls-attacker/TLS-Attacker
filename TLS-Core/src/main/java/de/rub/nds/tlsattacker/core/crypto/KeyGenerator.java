@@ -23,17 +23,21 @@ public class KeyGenerator {
 
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomRSAPrivateKey(chooser.getRsaModulus(), chooser.getConfig().getDefaultClientRSAPrivateKey());
+            return new CustomRSAPrivateKey(chooser.getClientRsaModulus(), chooser.getConfig()
+                    .getDefaultClientRSAPrivateKey());
         } else {
-            return new CustomRSAPrivateKey(chooser.getRsaModulus(), chooser.getConfig().getDefaultServerRSAPrivateKey());
+            return new CustomRSAPrivateKey(chooser.getServerRsaModulus(), chooser.getConfig()
+                    .getDefaultServerRSAPrivateKey());
         }
     }
 
     public static ECPrivateKey getECPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getSelectedCurve());
+            return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getConfig()
+                    .getDefaultEcCertificateCurve());
         } else {
-            return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getSelectedCurve());
+            return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getConfig()
+                    .getDefaultEcCertificateCurve());
         }
     }
 
@@ -43,11 +47,11 @@ public class KeyGenerator {
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getDhModulus(),
-                    chooser.getDhGenerator());
+            return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getClientDhModulus(),
+                    chooser.getClientDhGenerator());
         } else {
-            return new CustomDHPrivateKey(chooser.getDhServerPrivateKey(), chooser.getDhModulus(),
-                    chooser.getDhGenerator());
+            return new CustomDHPrivateKey(chooser.getDhServerPrivateKey(), chooser.getServerDhModulus(),
+                    chooser.getServerDhGenerator());
         }
     }
 
