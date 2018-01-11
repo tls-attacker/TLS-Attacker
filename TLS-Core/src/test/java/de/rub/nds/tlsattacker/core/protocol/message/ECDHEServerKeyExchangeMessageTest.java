@@ -33,48 +33,6 @@ public class ECDHEServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getCurveType method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetCurveType() {
-    }
-
-    /**
-     * Test of setCurveType method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetCurveType_ModifiableByte() {
-    }
-
-    /**
-     * Test of setCurveType method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetCurveType_byte() {
-    }
-
-    /**
-     * Test of getNamedCurve method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetNamedCurve() {
-    }
-
-    /**
-     * Test of setNamedCurve method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetNamedCurve_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setNamedCurve method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetNamedCurve_byteArr() {
-    }
-
-    /**
      * Test of toString method, of class ECDHEServerKeyExchangeMessage.
      */
     @Test
@@ -89,42 +47,4 @@ public class ECDHEServerKeyExchangeMessageTest {
 
         assertEquals(message.toString(), sb.toString());
     }
-
-    /**
-     * Test of getComputations method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetComputations() {
-    }
-
-    /**
-     * Test of getHandler method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
-    /**
-     * Test of toCompactString method, of class ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testToCompactString() {
-    }
-
-    /**
-     * Test of prepareComputations method, of class
-     * ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testPrepareComputations() {
-    }
-
-    /**
-     * Test of getAllModifiableVariableHolders method, of class
-     * ECDHEServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetAllModifiableVariableHolders() {
-    }
-
 }

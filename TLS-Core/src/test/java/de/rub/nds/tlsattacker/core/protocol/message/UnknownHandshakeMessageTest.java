@@ -33,48 +33,6 @@ public class UnknownHandshakeMessageTest {
     }
 
     /**
-     * Test of getDataConfig method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testGetDataConfig() {
-    }
-
-    /**
-     * Test of setDataConfig method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testSetDataConfig() {
-    }
-
-    /**
-     * Test of getData method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testGetData() {
-    }
-
-    /**
-     * Test of setData method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testSetData_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setData method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testSetData_byteArr() {
-    }
-
-    /**
-     * Test of getHandler method, of class UnknownHandshakeMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
-    /**
      * Test of toString method, of class UnknownHandshakeMessage.
      */
     @Test

@@ -33,34 +33,6 @@ public class UnknownMessageTest {
     }
 
     /**
-     * Test of getDataConfig method, of class UnknownMessage.
-     */
-    @Test
-    public void testGetDataConfig() {
-    }
-
-    /**
-     * Test of setDataConfig method, of class UnknownMessage.
-     */
-    @Test
-    public void testSetDataConfig() {
-    }
-
-    /**
-     * Test of toCompactString method, of class UnknownMessage.
-     */
-    @Test
-    public void testToCompactString() {
-    }
-
-    /**
-     * Test of getHandler method, of class UnknownMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
-    /**
      * Test of toString method, of class UnknownMessage.
      */
     @Test

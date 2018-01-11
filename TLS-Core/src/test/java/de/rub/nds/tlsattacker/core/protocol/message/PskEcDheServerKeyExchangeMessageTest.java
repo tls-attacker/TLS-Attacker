@@ -33,54 +33,6 @@ public class PskEcDheServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getIdentityHint method, of class
-     * PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetIdentityHint() {
-    }
-
-    /**
-     * Test of setIdentityHint method, of class
-     * PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHint_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setIdentityHint method, of class
-     * PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHint_byteArr() {
-    }
-
-    /**
-     * Test of getIdentityHintLength method, of class
-     * PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetIdentityHintLength() {
-    }
-
-    /**
-     * Test of setIdentityHintLength method, of class
-     * PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHintLength_ModifiableInteger() {
-    }
-
-    /**
-     * Test of setIdentityHintLength method, of class
-     * PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHintLength_int() {
-    }
-
-    /**
      * Test of toString method, of class PskEcDheServerKeyExchangeMessage.
      */
     @Test
@@ -92,21 +44,6 @@ public class PskEcDheServerKeyExchangeMessageTest {
         sb.append("\n  Public Key: ").append("null");
 
         assertEquals(message.toString(), sb.toString());
-    }
-
-    /**
-     * Test of getHandler method, of class PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
-    /**
-     * Test of toCompactString method, of class
-     * PskEcDheServerKeyExchangeMessage.
-     */
-    @Test
-    public void testToCompactString() {
     }
 
 }

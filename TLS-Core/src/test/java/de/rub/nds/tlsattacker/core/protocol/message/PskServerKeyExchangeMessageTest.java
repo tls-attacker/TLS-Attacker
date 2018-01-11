@@ -31,58 +31,6 @@ public class PskServerKeyExchangeMessageTest {
     }
 
     /**
-     * Test of getIdentityHint method, of class PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetIdentityHint() {
-    }
-
-    /**
-     * Test of setIdentityHint method, of class PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHint_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setIdentityHint method, of class PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHint_byteArr() {
-    }
-
-    /**
-     * Test of getIdentityHintLength method, of class
-     * PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetIdentityHintLength() {
-    }
-
-    /**
-     * Test of setIdentityHintLength method, of class
-     * PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHintLength_ModifiableInteger() {
-    }
-
-    /**
-     * Test of setIdentityHintLength method, of class
-     * PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testSetIdentityHintLength_int() {
-    }
-
-    /**
-     * Test of getComputations method, of class PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetComputations() {
-    }
-
-    /**
      * Test of toString method, of class PskServerKeyExchangeMessage.
      */
     @Test
@@ -93,35 +41,6 @@ public class PskServerKeyExchangeMessageTest {
         sb.append("\n  IdentityHint: ").append("null");
 
         Assert.assertEquals(message.toString(), sb.toString());
-    }
-
-    /**
-     * Test of getHandler method, of class PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
-    /**
-     * Test of toCompactString method, of class PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testToCompactString() {
-    }
-
-    /**
-     * Test of prepareComputations method, of class PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testPrepareComputations() {
-    }
-
-    /**
-     * Test of getAllModifiableVariableHolders method, of class
-     * PskServerKeyExchangeMessage.
-     */
-    @Test
-    public void testGetAllModifiableVariableHolders() {
     }
 
 }

@@ -33,48 +33,6 @@ public class ServerHelloMessageTest {
     }
 
     /**
-     * Test of getSelectedCipherSuite method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testGetSelectedCipherSuite() {
-    }
-
-    /**
-     * Test of setSelectedCipherSuite method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testSetSelectedCipherSuite_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setSelectedCipherSuite method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testSetSelectedCipherSuite_byteArr() {
-    }
-
-    /**
-     * Test of getSelectedCompressionMethod method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testGetSelectedCompressionMethod() {
-    }
-
-    /**
-     * Test of setSelectedCompressionMethod method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testSetSelectedCompressionMethod_ModifiableByte() {
-    }
-
-    /**
-     * Test of setSelectedCompressionMethod method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testSetSelectedCompressionMethod_byte() {
-    }
-
-    /**
      * Test of toString method, of class ServerHelloMessage.
      */
     @Test
@@ -90,13 +48,6 @@ public class ServerHelloMessageTest {
         sb.append("\n  Extensions: ").append("null");
 
         assertEquals(message.toString(), sb.toString());
-    }
-
-    /**
-     * Test of getHandler method, of class ServerHelloMessage.
-     */
-    @Test
-    public void testGetHandler() {
     }
 
 }

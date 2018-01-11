@@ -33,48 +33,6 @@ public class HelloRetryRequestMessageTest {
     }
 
     /**
-     * Test of getProtocolVersion method, of class HelloRetryRequestMessage.
-     */
-    @Test
-    public void testGetProtocolVersion() {
-    }
-
-    /**
-     * Test of setProtocolVersion method, of class HelloRetryRequestMessage.
-     */
-    @Test
-    public void testSetProtocolVersion_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setProtocolVersion method, of class HelloRetryRequestMessage.
-     */
-    @Test
-    public void testSetProtocolVersion_byteArr() {
-    }
-
-    /**
-     * Test of getSelectedCipherSuite method, of class HelloRetryRequestMessage.
-     */
-    @Test
-    public void testGetSelectedCipherSuite() {
-    }
-
-    /**
-     * Test of setSelectedCipherSuite method, of class HelloRetryRequestMessage.
-     */
-    @Test
-    public void testSetSelectedCipherSuite_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setSelectedCipherSuite method, of class HelloRetryRequestMessage.
-     */
-    @Test
-    public void testSetSelectedCipherSuite_byteArr() {
-    }
-
-    /**
      * Test of toString method, of class HelloRetryRequestMessage.
      */
     @Test
@@ -86,13 +44,6 @@ public class HelloRetryRequestMessageTest {
         sb.append("\n  Extensions: ").append("null");
 
         assertEquals(message.toString(), sb.toString());
-    }
-
-    /**
-     * Test of getHandler method, of class HelloRetryRequestMessage.
-     */
-    @Test
-    public void testGetHandler() {
     }
 
 }

@@ -32,27 +32,6 @@ public class ChangeCipherSpecMessageTest {
     }
 
     /**
-     * Test of getCcsProtocolType method, of class ChangeCipherSpecMessage.
-     */
-    @Test
-    public void testGetCcsProtocolType() {
-    }
-
-    /**
-     * Test of setCcsProtocolType method, of class ChangeCipherSpecMessage.
-     */
-    @Test
-    public void testSetCcsProtocolType_ModifiableByte() {
-    }
-
-    /**
-     * Test of setCcsProtocolType method, of class ChangeCipherSpecMessage.
-     */
-    @Test
-    public void testSetCcsProtocolType_byte() {
-    }
-
-    /**
      * Test of toString method, of class ChangeCipherSpecMessage.
      */
     @Test
@@ -63,19 +42,4 @@ public class ChangeCipherSpecMessageTest {
 
         assertEquals(sb.toString(), message.toString());
     }
-
-    /**
-     * Test of toCompactString method, of class ChangeCipherSpecMessage.
-     */
-    @Test
-    public void testToCompactString() {
-    }
-
-    /**
-     * Test of getHandler method, of class ChangeCipherSpecMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
 }

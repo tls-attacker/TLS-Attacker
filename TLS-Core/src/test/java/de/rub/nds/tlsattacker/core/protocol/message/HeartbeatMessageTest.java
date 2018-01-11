@@ -33,90 +33,6 @@ public class HeartbeatMessageTest {
     }
 
     /**
-     * Test of getHeartbeatMessageType method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testGetHeartbeatMessageType() {
-    }
-
-    /**
-     * Test of setHeartbeatMessageType method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetHeartbeatMessageType_ModifiableByte() {
-    }
-
-    /**
-     * Test of setHeartbeatMessageType method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetHeartbeatMessageType_byte() {
-    }
-
-    /**
-     * Test of getPayloadLength method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testGetPayloadLength() {
-    }
-
-    /**
-     * Test of setPayloadLength method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetPayloadLength_ModifiableInteger() {
-    }
-
-    /**
-     * Test of setPayloadLength method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetPayloadLength_int() {
-    }
-
-    /**
-     * Test of getPayload method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testGetPayload() {
-    }
-
-    /**
-     * Test of setPayload method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetPayload_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setPayload method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetPayload_byteArr() {
-    }
-
-    /**
-     * Test of getPadding method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testGetPadding() {
-    }
-
-    /**
-     * Test of setPadding method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetPadding_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setPadding method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testSetPadding_byteArr() {
-    }
-
-    /**
      * Test of toString method, of class HeartbeatMessage.
      */
     @Test
@@ -129,20 +45,6 @@ public class HeartbeatMessageTest {
         sb.append("\n  Padding: ").append("null");
 
         assertEquals(message.toString(), sb.toString());
-    }
-
-    /**
-     * Test of toCompactString method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testToCompactString() {
-    }
-
-    /**
-     * Test of getHandler method, of class HeartbeatMessage.
-     */
-    @Test
-    public void testGetHandler() {
     }
 
 }

@@ -33,67 +33,6 @@ public class SupplementalDataMessageTest {
     }
 
     /**
-     * Test of getEntries method, of class SupplementalDataMessage.
-     */
-    @Test
-    public void testGetEntries() {
-    }
-
-    /**
-     * Test of setEntries method, of class SupplementalDataMessage.
-     */
-    @Test
-    public void testSetEntries() {
-    }
-
-    /**
-     * Test of getSupplementalDataLength method, of class
-     * SupplementalDataMessage.
-     */
-    @Test
-    public void testGetSupplementalDataLength() {
-    }
-
-    /**
-     * Test of setSupplementalDataLength method, of class
-     * SupplementalDataMessage.
-     */
-    @Test
-    public void testSetSupplementalDataLength() {
-    }
-
-    /**
-     * Test of getSupplementalDataBytes method, of class
-     * SupplementalDataMessage.
-     */
-    @Test
-    public void testGetSupplementalDataBytes() {
-    }
-
-    /**
-     * Test of setSupplementalDataBytes method, of class
-     * SupplementalDataMessage.
-     */
-    @Test
-    public void testSetSupplementalDataBytes_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setSupplementalDataBytes method, of class
-     * SupplementalDataMessage.
-     */
-    @Test
-    public void testSetSupplementalDataBytes_byteArr() {
-    }
-
-    /**
-     * Test of getHandler method, of class SupplementalDataMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
-    /**
      * Test of toString method, of class SupplementalDataMessage.
      */
     @Test

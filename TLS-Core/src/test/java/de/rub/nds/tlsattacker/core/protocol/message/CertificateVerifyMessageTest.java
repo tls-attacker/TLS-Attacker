@@ -34,72 +34,6 @@ public class CertificateVerifyMessageTest {
     }
 
     /**
-     * Test of getSignatureHashAlgorithm method, of class
-     * CertificateVerifyMessage.
-     */
-    @Test
-    public void testGetSignatureHashAlgorithm() {
-    }
-
-    /**
-     * Test of setSignatureHashAlgorithm method, of class
-     * CertificateVerifyMessage.
-     */
-    @Test
-    public void testSetSignatureHashAlgorithm_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setSignatureHashAlgorithm method, of class
-     * CertificateVerifyMessage.
-     */
-    @Test
-    public void testSetSignatureHashAlgorithm_byteArr() {
-    }
-
-    /**
-     * Test of getSignatureLength method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testGetSignatureLength() {
-    }
-
-    /**
-     * Test of setSignatureLength method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testSetSignatureLength_ModifiableInteger() {
-    }
-
-    /**
-     * Test of setSignatureLength method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testSetSignatureLength_int() {
-    }
-
-    /**
-     * Test of getSignature method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testGetSignature() {
-    }
-
-    /**
-     * Test of setSignature method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testSetSignature_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setSignature method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testSetSignature_byteArr() {
-    }
-
-    /**
      * Test of toString method, of class CertificateVerifyMessage.
      */
     @Test
@@ -109,12 +43,4 @@ public class CertificateVerifyMessageTest {
                 .append("\n  Signature Length: ").append("null").append("\n  Signature: ").append("null");
         assertEquals(message.toString(), sb.toString());
     }
-
-    /**
-     * Test of getHandler method, of class CertificateVerifyMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
 }

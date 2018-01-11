@@ -33,27 +33,6 @@ public class FinishedMessageTest {
     }
 
     /**
-     * Test of getVerifyData method, of class FinishedMessage.
-     */
-    @Test
-    public void testGetVerifyData() {
-    }
-
-    /**
-     * Test of setVerifyData method, of class FinishedMessage.
-     */
-    @Test
-    public void testSetVerifyData_ModifiableByteArray() {
-    }
-
-    /**
-     * Test of setVerifyData method, of class FinishedMessage.
-     */
-    @Test
-    public void testSetVerifyData_byteArr() {
-    }
-
-    /**
      * Test of toString method, of class FinishedMessage.
      */
     @Test
@@ -64,12 +43,4 @@ public class FinishedMessageTest {
 
         assertEquals(message.toString(), sb.toString());
     }
-
-    /**
-     * Test of getHandler method, of class FinishedMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
 }

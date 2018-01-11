@@ -44,11 +44,4 @@ public class EncryptedExtensionsMessageTest {
         assertEquals(message.toString(), sb.toString());
     }
 
-    /**
-     * Test of getHandler method, of class EncryptedExtensionsMessage.
-     */
-    @Test
-    public void testGetHandler() {
-    }
-
 }

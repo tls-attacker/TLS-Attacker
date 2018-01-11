@@ -33,62 +33,6 @@ public class NewSessionTicketMessageTest {
     }
 
     /**
-     * Test of getTicketLifetimeHint method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testGetTicketLifetimeHint() {
-    }
-
-    /**
-     * Test of setTicketLifetimeHint method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testSetTicketLifetimeHint_ModifiableLong() {
-    }
-
-    /**
-     * Test of setTicketLifetimeHint method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testSetTicketLifetimeHint_long() {
-    }
-
-    /**
-     * Test of getTicket method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testGetTicket() {
-    }
-
-    /**
-     * Test of prepareTicket method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testPrepareTicket() {
-    }
-
-    /**
-     * Test of getTicketLength method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testGetTicketLength() {
-    }
-
-    /**
-     * Test of setTicketLength method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testSetTicketLength_int() {
-    }
-
-    /**
-     * Test of setTicketLength method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testSetTicketLength_ModifiableInteger() {
-    }
-
-    /**
      * Test of toString method, of class NewSessionTicketMessage.
      */
     @Test
@@ -100,28 +44,6 @@ public class NewSessionTicketMessageTest {
         sb.append("\n  Ticket: ").append("null");
 
         assertEquals(message.toString(), sb.toString());
-    }
-
-    /**
-     * Test of toCompactString method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testToCompactString() {
-    }
-
-    /**
-     * Test of getAllModifiableVariableHolders method, of class
-     * NewSessionTicketMessage.
-     */
-    @Test
-    public void testGetAllModifiableVariableHolders() {
-    }
-
-    /**
-     * Test of getHandler method, of class NewSessionTicketMessage.
-     */
-    @Test
-    public void testGetHandler() {
     }
 
 }
