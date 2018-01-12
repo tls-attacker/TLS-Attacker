@@ -67,7 +67,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     protected abstract void prepareHandshakeMessageContents();
 
     private void prepareFragmentLenth(HandshakeMessage msg) {
-        msg.setFragmentLength(serializer.serializeHandshakeMessageContent().length);
+        msg.setFragmentLength(msg.getLength().getOriginalValue());
         LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
     }
 
@@ -77,6 +77,7 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
     }
 
     private void prepareMessageSeq(HandshakeMessage msg) {
+        // TODO this should be flight seq
         msg.setMessageSeq((int) chooser.getContext().getWriteSequenceNumber());
         LOGGER.debug("MessageSeq: " + msg.getMessageSeq().getValue());
     }

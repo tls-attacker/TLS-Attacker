@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
@@ -161,8 +162,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @return True if the message has an Extension field
      */
     protected boolean hasExtensionLengthField(T message) {
-        return message.getLength().getValue() + HandshakeByteLength.MESSAGE_TYPE
-                + HandshakeByteLength.MESSAGE_LENGTH_FIELD > getPointer() - getStartPoint();
+        return message.getLength().getValue() > getPointer() - getStartPoint() + 1;
     }
 
     /**

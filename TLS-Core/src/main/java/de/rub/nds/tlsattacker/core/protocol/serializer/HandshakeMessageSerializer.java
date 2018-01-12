@@ -60,7 +60,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
         writeType();
         writeLength();
         if (version.isDTLS()) {
-            writeSequenceNumber();
+            writeMessageSequence();
             writeFragmentOffset();
             writeFragmentLength();
         }
@@ -73,7 +73,7 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     /**
      * Writes the SequenzNumber of the HandshakeMessage into the final byte[]
      */
-    private void writeSequenceNumber() {
+    private void writeMessageSequence() {
         appendInt(msg.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
         LOGGER.debug("SequenceNumber: " + msg.getMessageSeq().getValue());
     }

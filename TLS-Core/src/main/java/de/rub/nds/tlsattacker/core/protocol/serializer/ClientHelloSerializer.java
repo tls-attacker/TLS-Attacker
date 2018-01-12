@@ -37,6 +37,10 @@ public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMes
         writeRandom();
         writeSessionIDLength();
         writeSessionID();
+        if (msg.getCookie() != null) {
+            appendByte(msg.getCookieLength().getValue());
+            appendBytes(msg.getCookie().getValue());
+        }
         writeCipherSuiteLength(msg);
         writeCipherSuites(msg);
         writeCompressionLength(msg);

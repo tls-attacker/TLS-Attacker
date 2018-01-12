@@ -24,7 +24,10 @@ public class RecordByteLength {
      */
     public static final int PROTOCOL_VERSION = 2;
     public static final int EPOCH = 2;
+
     public static final int SEQUENCE_NUMBER = 8;
+
+    public static final int DTLS_SEQUENCE_NUMBER = 6;
 
     private RecordByteLength() {
     }

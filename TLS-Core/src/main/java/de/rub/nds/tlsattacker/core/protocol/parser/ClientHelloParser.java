@@ -38,6 +38,10 @@ public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
         parseRandom(msg);
         parseSessionIDLength(msg);
         parseSessionID(msg);
+        if (getVersion().isDTLS()) {
+            msg.setCookieLength(parseByteField(1));
+            msg.setCookie(parseByteArrayField(msg.getCookieLength().getValue()));
+        }
         parseCipherSuiteLength(msg);
         parseCipherSuites(msg);
         parseCompressionLength(msg);

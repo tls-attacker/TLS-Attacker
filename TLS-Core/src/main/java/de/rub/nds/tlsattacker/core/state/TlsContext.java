@@ -508,6 +508,8 @@ public class TlsContext {
 
     private boolean receivedTransportHandlerException = false;
 
+    private int epoch = 0;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -585,6 +587,14 @@ public class TlsContext {
 
     public void setHttpContext(HttpContext httpContext) {
         this.httpContext = httpContext;
+    }
+
+    public int getEpoch() {
+        return epoch;
+    }
+
+    public void setEpoch(int epoch) {
+        this.epoch = epoch;
     }
 
     public Session getSession(byte[] sessionId) {

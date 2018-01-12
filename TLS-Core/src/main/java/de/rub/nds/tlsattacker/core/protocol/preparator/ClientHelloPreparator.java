@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import org.apache.logging.log4j.message.Message;
 
 public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMessage> {
 
@@ -35,6 +36,10 @@ public class ClientHelloPreparator extends HelloMessagePreparator<ClientHelloMes
         prepareRandom();
         prepareSessionID();
         prepareSessionIDLength();
+        if (chooser.getSelectedProtocolVersion().isDTLS()) {
+            msg.setCookie(chooser.getDtlsCookie());
+            msg.setCookieLength((byte) (msg.getCookie().getValue().length));
+        }
         prepareCompressions(msg);
         prepareCompressionLength(msg);
         prepareCipherSuites(msg);

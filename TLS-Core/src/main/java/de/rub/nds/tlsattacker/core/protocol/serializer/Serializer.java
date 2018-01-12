@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +41,7 @@ public abstract class Serializer<T> {
     /**
      * This method is responsible to write the appropriate bytes to the output
      * Stream This should be done by calling the different append methods.
-     * 
+     *
      * @return The already serialized Bytes
      */
     protected abstract byte[] serializeBytes();
@@ -65,9 +66,13 @@ public abstract class Serializer<T> {
         appendBytes(ArrayConverter.intToBytes(i, length));
     }
 
+    protected final void appendBigInteger(BigInteger i, int length) {
+        appendBytes(ArrayConverter.bigIntegerToByteArray(i, length, true));
+    }
+
     /**
      * Adds a byte to the final byte[].
-     * 
+     *
      * @param b
      *            Byte which should be added
      */
@@ -77,7 +82,7 @@ public abstract class Serializer<T> {
 
     /**
      * Adds a byte[] to the final byte[].
-     * 
+     *
      * @param bytes
      *            bytes that should be added
      */
@@ -96,7 +101,7 @@ public abstract class Serializer<T> {
 
     /**
      * Creates the final byte[]
-     * 
+     *
      * @return The final byte[]
      */
     public final byte[] serialize() {
