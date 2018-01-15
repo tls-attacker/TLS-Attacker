@@ -54,7 +54,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         prepareClientRandom(msg);
 
         if (paddedPremasterSecret.length == 0) {
-            paddedPremasterSecret = new byte[] { 0 };
+            paddedPremasterSecret = new byte[]{0};
         }
         BigInteger biPaddedPremasterSecret = new BigInteger(1, paddedPremasterSecret);
         BigInteger biEncrypted = biPaddedPremasterSecret.modPow(chooser.getServerRSAPublicKey(),
@@ -96,8 +96,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
 
     protected void preparePlainPaddedPremasterSecret(T msg) {
         msg.getComputations().setPlainPaddedPremasterSecret(
-                ArrayConverter.concatenate(new byte[] { 0x00, 0x02 }, padding, new byte[] { 0x00 }, msg
-                        .getComputations().getPremasterSecret().getValue()));
+                ArrayConverter.concatenate(new byte[]{0x00, 0x02}, padding, new byte[]{0x00}, msg
+                .getComputations().getPremasterSecret().getValue()));
         LOGGER.debug("PlainPaddedPremasterSecret: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
@@ -123,7 +123,11 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     protected byte[] decryptPremasterSecret() {
         BigInteger bigIntegerEncryptedPremasterSecret = new BigInteger(1, msg.getPublicKey().getValue());
         BigInteger serverPrivateKey = chooser.getConfig().getDefaultServerRSAPrivateKey();
-        BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey, chooser.getRsaModulus());
+        if (chooser.getRsaModulus().equals(BigInteger.ZERO)) {
+            LOGGER.warn("RSA Modulus is Zero, returning new byte[0] as decryptedPremasterSecret");
+            return new byte[0];
+        }
+        BigInteger decrypted = bigIntegerEncryptedPremasterSecret.modPow(serverPrivateKey, chooser.getRsaModulus().abs());
         return decrypted.toByteArray();
     }
 
