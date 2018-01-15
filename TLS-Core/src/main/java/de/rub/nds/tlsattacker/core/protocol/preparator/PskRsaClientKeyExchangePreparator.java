@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePreparator<PskRsaClientKeyExchangeMessage> {
 
-    private byte[] randomValue;
     private final PskRsaClientKeyExchangeMessage msg;
     private ByteArrayOutputStream outputStream;
 
