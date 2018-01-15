@@ -147,7 +147,8 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             ByteArrayInputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(
                     ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
-        } catch (IOException | IllegalArgumentException | ClassCastException E) {
+        } catch (Exception E) {
+            //This could really be anything. From classCast exception to Arrayindexoutofbounds
             LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
                     + ArrayConverter.bytesToHexString(bytesToParse, false));
             LOGGER.debug(E);
