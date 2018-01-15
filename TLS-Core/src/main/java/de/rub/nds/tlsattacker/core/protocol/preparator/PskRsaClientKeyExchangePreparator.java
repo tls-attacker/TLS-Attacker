@@ -63,6 +63,14 @@ public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePrepa
         int keyByteLength = chooser.getRsaModulus().bitLength() / 8;
         // the number of random bytes in the pkcs1 message
         int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
+        if (randomByteLength < 0) {
+            LOGGER.warn("RandomByteLength < 0, using 0 instead");
+            randomByteLength = 0;
+        }
+        if (randomByteLength > paddedPremasterSecret.length) {
+            LOGGER.warn("RandomByteLength > paddedPreMasterSecret.length, using paddedPreMasterSecret.length instead");
+            randomByteLength = paddedPremasterSecret.length;
+        }
         premasterSecret = generatePremasterSecret(Arrays.copyOfRange(paddedPremasterSecret, randomByteLength,
                 paddedPremasterSecret.length));
         LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
