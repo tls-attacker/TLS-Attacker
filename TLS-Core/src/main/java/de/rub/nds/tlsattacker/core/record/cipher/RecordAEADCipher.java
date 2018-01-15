@@ -167,6 +167,10 @@ public class RecordAEADCipher extends RecordCipher {
 
     private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {
         try {
+            if (decryptionRequest.getCipherText().length < SEQUENCE_NUMBER_LENGTH) {
+                LOGGER.warn("Could not DecryptCipherText. Too short. Returning undecrypted Ciphertext");
+                return decryptionRequest.getCipherText();
+            }
             byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
             byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
                     decryptionRequest.getCipherText().length);
