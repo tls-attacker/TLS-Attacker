@@ -18,9 +18,13 @@ public class MessageActionResult {
 
     private final List<ProtocolMessage> messageList;
 
-    public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList) {
+    private final List<ProtocolMessage> messageFragmentList;
+
+    public MessageActionResult(List<AbstractRecord> recordList, List<ProtocolMessage> messageList,
+            List<ProtocolMessage> messageFragmentList) {
         this.recordList = recordList;
         this.messageList = messageList;
+        this.messageFragmentList = messageFragmentList;
     }
 
     public List<AbstractRecord> getRecordList() {
@@ -29,5 +33,9 @@ public class MessageActionResult {
 
     public List<ProtocolMessage> getMessageList() {
         return messageList;
+    }
+
+    public List<ProtocolMessage> getMessageFragmentList() {
+        return messageFragmentList;
     }
 }

@@ -8,9 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
+import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
@@ -33,9 +39,8 @@ public class SendMessageHelper {
 
     public MessageActionResult sendMessages(List<ProtocolMessage> messages, List<AbstractRecord> records,
             TlsContext context, boolean prepareMessages) throws IOException {
-
+        List<ProtocolMessage> fragmentMessages = new LinkedList<>();
         context.setTalkingConnectionEndType(context.getChooser().getConnectionEndType());
-
         if (records == null) {
             LOGGER.trace("No Records Specified, creating emtpy list");
             records = new LinkedList<>();
@@ -62,7 +67,22 @@ public class SendMessageHelper {
                 protocolMessageBytes = handleProtocolMessageWithoutPrepare(message, context);
             }
             if (message.isGoingToBeSent()) {
-                messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+                if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                    if (message.isHandshakeMessage()) {
+                        HandshakeMessageType handshakeMessageType = ((HandshakeMessage) message)
+                                .getHandshakeMessageType();
+                        DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment(handshakeMessageType,
+                                protocolMessageBytes);
+                        byte[] preparedFragment = fragment.getHandler(context).prepareMessage(fragment);
+                        messageBytesCollector.appendProtocolMessageBytes(preparedFragment);
+                        fragmentMessages.add(fragment);
+                    } else {
+                        messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+                        fragmentMessages.add(message);
+                    }
+                } else {
+                    messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+                }
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
@@ -92,7 +112,10 @@ public class SendMessageHelper {
                 current++;
             }
         }
-        return new MessageActionResult(records, messages);
+        if (fragmentMessages.isEmpty()) {
+            fragmentMessages = null;
+        }
+        return new MessageActionResult(records, messages, fragmentMessages);
     }
 
     public void sendRecords(List<AbstractRecord> records, TlsContext context) throws IOException {
@@ -171,8 +194,26 @@ public class SendMessageHelper {
     }
 
     private byte[] handleProtocolMessage(ProtocolMessage message, TlsContext context) {
-        ProtocolMessageHandler handler = message.getHandler(context);
-        byte[] protocolMessageBytes = handler.prepareMessage(message);
-        return protocolMessageBytes;
+        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+            Preparator preparator = message.getHandler(context).getPreparator(message);
+            preparator.prepare();
+            preparator.afterPrepare();
+            message.getHandler(context).adjustTLSContext(message);
+            byte[] messageBytes;
+            if (message instanceof HandshakeMessage) {
+                HandshakeMessageSerializer serializer = (HandshakeMessageSerializer) message.getHandler(context)
+                        .getSerializer(message);
+                messageBytes = serializer.serializeHandshakeMessageContent();
+            } else {
+                Serializer serializer = message.getHandler(context).getSerializer(message);
+                messageBytes = serializer.serialize();
+            }
+            message.setCompleteResultingMessage(messageBytes);
+            return message.getCompleteResultingMessage().getValue();
+        } else {
+            ProtocolMessageHandler handler = message.getHandler(context);
+            byte[] protocolMessageBytes = handler.prepareMessage(message);
+            return protocolMessageBytes;
+        }
     }
 }

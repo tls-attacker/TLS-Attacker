@@ -71,11 +71,11 @@ public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
         if (!getVersion().isTLS13()) {
             parseSelectedComressionMethod(msg);
         }
+        LOGGER.trace("Checking for ExtensionLengthField");
         if (hasExtensionLengthField(msg)) {
+            LOGGER.trace("Parsing ExtensionLength field");
             parseExtensionLength(msg);
-            if (hasExtensions(msg)) {
-                parseExtensionBytes(msg);
-            }
+            parseExtensionBytes(msg);
         }
     }
 

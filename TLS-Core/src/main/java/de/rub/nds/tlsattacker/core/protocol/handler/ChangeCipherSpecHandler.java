@@ -49,6 +49,7 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
             tlsContext.getRecordLayer().updateEncryptionCipher();
             tlsContext.setWriteSequenceNumber(0);
         }
+        tlsContext.setEpoch(tlsContext.getEpoch() + 1);
     }
 
 }

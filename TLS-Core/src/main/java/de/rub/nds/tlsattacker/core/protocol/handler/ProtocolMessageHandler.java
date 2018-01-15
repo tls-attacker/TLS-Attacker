@@ -99,7 +99,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      *            The pointer (startposition) into the message bytes
      * @return The Parser result
      */
-    public ParserResult parseMessage(byte[] message, int pointer) {
+    public ParserResult parseMessage(byte[] message, int pointer, boolean onlyParse) {
         Parser<Message> parser = getParser(message, pointer);
         Message parsedMessage = parser.parse();
         if (parsedMessage instanceof HandshakeMessage) {
@@ -108,13 +108,14 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             }
         }
         try {
-            prepareAfterParse(parsedMessage);
-            adjustTLSContext(parsedMessage);
+            if (!onlyParse) {
+                prepareAfterParse(parsedMessage);
+                adjustTLSContext(parsedMessage);
+            }
         } catch (AdjustmentException | UnsupportedOperationException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
         }
-
         return new ParserResult(parsedMessage, parser.getPointer());
     }
 

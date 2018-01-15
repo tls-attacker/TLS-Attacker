@@ -10,17 +10,20 @@ package de.rub.nds.tlsattacker.core.workflow.action.executor;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.DtlsHandshakeMessageFragmentHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.DtlsHandshakeMessageFragment;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -28,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,6 +60,7 @@ public class ReceiveMessageHelper {
         context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
         List<AbstractRecord> realRecords = new LinkedList<>();
         List<ProtocolMessage> messages = new LinkedList<>();
+        List<ProtocolMessage> fragmentedMessages = new LinkedList<>();
         try {
             byte[] receivedBytes;
             boolean shouldContinue = true;
@@ -65,7 +70,14 @@ public class ReceiveMessageHelper {
                     List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
                     List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
                     for (List<AbstractRecord> recordGroup : recordGroups) {
-                        messages.addAll(processRecordGroup(recordGroup, context));
+                        if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                            decryptRecords(recordGroup, context);
+                            fragmentedMessages.addAll(collectMessageFragments(recordGroup, recordGroup.get(0)
+                                    .getContentMessageType(), context));
+                            messages.addAll(processFragmentGroup(fragmentedMessages, context));
+                        } else {
+                            messages.addAll(processRecordGroup(recordGroup, context));
+                        }
                     }
                     if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
                         shouldContinue = shouldContinue(expectedMessages, messages, context);
@@ -80,7 +92,10 @@ public class ReceiveMessageHelper {
             LOGGER.debug(ex);
             context.setReceivedTransportHandlerException(true);
         }
-        return new MessageActionResult(realRecords, messages);
+        if (fragmentedMessages.size() == 0) {
+            fragmentedMessages = null;
+        }
+        return new MessageActionResult(realRecords, messages, fragmentedMessages);
     }
 
     public List<AbstractRecord> receiveRecords(TlsContext context) {
@@ -92,7 +107,6 @@ public class ReceiveMessageHelper {
                 receivedBytes = receiveByteArray(context);
                 if (receivedBytes.length != 0) {
                     List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-                    List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
                     realRecords.addAll(tempRecords);
                 }
             } while (receivedBytes.length != 0);
@@ -252,15 +266,51 @@ public class ReceiveMessageHelper {
         return receivedMessages;
     }
 
+    private List<ProtocolMessage> handleFragments(byte[] cleanProtocolMessageBytes, ProtocolMessageType typeFromRecord,
+            TlsContext context) {
+        int dataPointer = 0;
+        List<ProtocolMessage> receivedFragmentMessages = new LinkedList<>();
+        while (dataPointer < cleanProtocolMessageBytes.length) {
+            ParserResult result = null;
+            try {
+                if (typeFromRecord == ProtocolMessageType.HANDSHAKE) {
+                    result = tryParseAsDtlsMessageFragment(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
+                            context);
+                } else {
+                    result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord, context);
+                }
+            } catch (ParserException | AdjustmentException exCorrectMsg) {
+                LOGGER.warn("Could not parse Message as a DtlsMessageFragment/NonHsMessage");
+                LOGGER.debug(exCorrectMsg);
+                try {
+                    result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
+                } catch (ParserException exUnknownMsg) {
+                    LOGGER.warn("Could not parse Message as UnknownMessage");
+                    LOGGER.debug(exUnknownMsg);
+                    break;
+                }
+            }
+            if (result != null) {
+                if (dataPointer == result.getParserPosition()) {
+                    throw new ParserException("Ran into an infinite loop while parsing ProtocolMessages");
+                }
+                dataPointer = result.getParserPosition();
+                LOGGER.debug("The following message was parsed: {}", result.getMessage().toString());
+                receivedFragmentMessages.add(result.getMessage());
+            }
+        }
+        return receivedFragmentMessages;
+    }
+
     private ParserResult tryHandleAsHttpsMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
             throws ParserException, AdjustmentException {
         try {
             HttpsRequestHandler handler = new HttpsRequestHandler(context);
-            return handler.parseMessage(protocolMessageBytes, pointer);
+            return handler.parseMessage(protocolMessageBytes, pointer, false);
         } catch (ParserException E) {
             try {
                 HttpsResponseHandler handler = new HttpsResponseHandler(context);
-                return handler.parseMessage(protocolMessageBytes, pointer);
+                return handler.parseMessage(protocolMessageBytes, pointer, false);
             } catch (ParserException E2) {
                 throw new ParserException("Could not parse ApplicationData as HTTPS", E2);
             }
@@ -271,24 +321,37 @@ public class ReceiveMessageHelper {
             ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
         HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(protocolMessageBytes[pointer]);
         ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
-        return pmh.parseMessage(protocolMessageBytes, pointer);
+        return pmh.parseMessage(protocolMessageBytes, pointer, false);
+    }
+
+    private ParserResult tryParseAsCorrectMessage(byte[] protocolMessageBytes, int pointer,
+            ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
+        HandshakeMessageType handshakeMessageType = HandshakeMessageType.getMessageType(protocolMessageBytes[pointer]);
+        ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, handshakeMessageType);
+        return pmh.parseMessage(protocolMessageBytes, pointer, true);
+    }
+
+    private ParserResult tryParseAsDtlsMessageFragment(byte[] protocolMessageBytes, int pointer,
+            ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
+        DtlsHandshakeMessageFragmentHandler fragmentHandler = new DtlsHandshakeMessageFragmentHandler(context);
+        return fragmentHandler.parseMessage(protocolMessageBytes, pointer, true);
     }
 
     private ParserResult tryHandleAsSslMessage(byte[] cleanProtocolMessageBytes, int dataPointer, TlsContext context) {
         ProtocolMessageHandler pmh = new SSL2ServerHelloHandler(context);
-        return pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
+        return pmh.parseMessage(cleanProtocolMessageBytes, dataPointer, false);
     }
 
     private ParserResult tryHandleAsUnknownHandshakeMessage(byte[] protocolMessageBytes, int pointer,
             ProtocolMessageType typeFromRecord, TlsContext context) throws ParserException, AdjustmentException {
         ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, typeFromRecord, HandshakeMessageType.UNKNOWN);
-        return pmh.parseMessage(protocolMessageBytes, pointer);
+        return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
     private ParserResult tryHandleAsUnknownMessage(byte[] protocolMessageBytes, int pointer, TlsContext context)
             throws ParserException, AdjustmentException {
         ProtocolMessageHandler pmh = HandlerFactory.getHandler(context, ProtocolMessageType.UNKNOWN, null);
-        return pmh.parseMessage(protocolMessageBytes, pointer);
+        return pmh.parseMessage(protocolMessageBytes, pointer, false);
     }
 
     private byte[] getCleanBytes(List<AbstractRecord> recordSubGroup) {
@@ -353,5 +416,54 @@ public class ReceiveMessageHelper {
         for (AbstractRecord record : recordGroup) {
             record.adjustContext(context);
         }
+    }
+
+    private List<ProtocolMessage> collectMessageFragments(List<AbstractRecord> recordGroup,
+            ProtocolMessageType typeFromRecord, TlsContext context) {
+        byte[] cleanBytes = getCleanBytes(recordGroup);
+        return handleFragments(cleanBytes, typeFromRecord, context);
+    }
+
+    private List<ProtocolMessage> processFragmentGroup(List<ProtocolMessage> fragmentedMessages, TlsContext context) {
+        List<ProtocolMessage> realMessages = new LinkedList<>();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        ProtocolMessageType lastRecordType = null;
+        for (ProtocolMessage message : fragmentedMessages) {
+            if (lastRecordType == null) {
+                lastRecordType = message.getProtocolMessageType();
+            }
+            if (message instanceof DtlsHandshakeMessageFragment) {
+                DtlsHandshakeMessageFragment fragment = (DtlsHandshakeMessageFragment) message;
+                if (fragment.getFragmentOffset().getValue() == 0) {
+                    stream.write(fragment.getType().getValue());
+                    try {
+                        stream.write(ArrayConverter.intToBytes(fragment.getLength().getValue(),
+                                HandshakeByteLength.MESSAGE_LENGTH_FIELD));
+                    } catch (IOException ex) {
+                        LOGGER.warn("Could not write fragment to stream.", ex);
+                    }
+                }
+                try {
+                    stream.write(fragment.getContent().getValue());
+                } catch (IOException ex) {
+                    LOGGER.warn("Could not write fragment to stream.", ex);
+                }
+            } else {
+                message.getHandler(context).prepareAfterParse(message);
+                message.getHandler(context).adjustTLSContext(message);
+                realMessages.add(message);
+            }
+            lastRecordType = message.getProtocolMessageType();
+        }
+        if (stream.size() > 0) {
+            realMessages.addAll(handleCleanBytes(stream.toByteArray(), lastRecordType, context));
+            for (ProtocolMessage realMessage : realMessages) {
+                // This cannot work in the general case.....
+                realMessage.getHandler(context).prepareAfterParse(realMessage);
+                realMessage.getHandler(context).adjustTLSContext(realMessage);
+
+            }
+        }
+        return realMessages;
     }
 }

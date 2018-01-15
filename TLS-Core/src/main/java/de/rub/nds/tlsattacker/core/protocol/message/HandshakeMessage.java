@@ -77,15 +77,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length = null;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
-    private ModifiableInteger messageSeq = null;
-
-    @ModifiableVariableProperty
-    private ModifiableInteger fragmentOffset = null;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger fragmentLength = null;
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean includeInDigest = null;
 
@@ -232,42 +223,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
-    public ModifiableInteger getMessageSeq() {
-        return messageSeq;
-    }
-
-    public ModifiableInteger getFragmentOffset() {
-        return fragmentOffset;
-    }
-
-    public ModifiableInteger getFragmentLength() {
-        return fragmentLength;
-    }
-
-    public void setMessageSeq(int messageSeq) {
-        this.messageSeq = ModifiableVariableFactory.safelySetValue(this.messageSeq, messageSeq);
-    }
-
-    public void setMessageSeq(ModifiableInteger messageSeq) {
-        this.messageSeq = messageSeq;
-    }
-
-    public void setFragmentOffset(int fragmentOffset) {
-        this.fragmentOffset = ModifiableVariableFactory.safelySetValue(this.fragmentOffset, fragmentOffset);
-    }
-
-    public void setFragmentOffset(ModifiableInteger fragmentOffset) {
-        this.fragmentOffset = fragmentOffset;
-    }
-
-    public void setFragmentLength(int fragmentLength) {
-        this.fragmentLength = ModifiableVariableFactory.safelySetValue(this.fragmentLength, fragmentLength);
-    }
-
-    public void setFragmentLength(ModifiableInteger fragmentLength) {
-        this.fragmentLength = fragmentLength;
-    }
-
     public HandshakeMessageType getHandshakeMessageType() {
         return handshakeMessageType;
     }
@@ -284,15 +239,6 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         }
         if (length != null && length.getValue() != null) {
             sb.append("\n  Length: ").append(length.getValue());
-        }
-        if (messageSeq != null && messageSeq.getValue() != null) {
-            sb.append("\n  message_seq: ").append(messageSeq.getValue());
-        }
-        if (fragmentOffset != null && fragmentOffset.getValue() != null) {
-            sb.append("\n  fragment_offset: ").append(fragmentOffset.getValue());
-        }
-        if (fragmentLength != null && fragmentLength.getValue() != null) {
-            sb.append("\n  fragment_length: ").append(fragmentLength.getValue());
         }
         return sb.toString();
     }

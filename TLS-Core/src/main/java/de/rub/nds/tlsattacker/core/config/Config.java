@@ -209,6 +209,11 @@ public class Config implements Serializable {
      * Should we terminate the connection on a wrong SNI ?
      */
     private Boolean sniHostnameFatal = false;
+    
+    /**
+     * If set to true retransmits wont appear in the workflowtrace
+     */
+    private Boolean ignoreDtlsRetransmits = true;
 
     /**
      * MaxFragmentLength in MaxFragmentLengthExtension
@@ -2949,5 +2954,13 @@ public class Config implements Serializable {
 
     public void setDefaultClientDhModulus(BigInteger defaultClientDhModulus) {
         this.defaultClientDhModulus = defaultClientDhModulus;
+    }
+
+    public Boolean getIgnoreDtlsRetransmits() {
+        return ignoreDtlsRetransmits;
+    }
+
+    public void setIgnoreDtlsRetransmits(Boolean ignoreDtlsRetransmits) {
+        this.ignoreDtlsRetransmits = ignoreDtlsRetransmits;
     }
 }

@@ -59,40 +59,11 @@ public abstract class HandshakeMessageSerializer<T extends HandshakeMessage> ext
     public final byte[] serializeProtocolMessageContent() {
         writeType();
         writeLength();
-        if (version.isDTLS()) {
-            writeMessageSequence();
-            writeFragmentOffset();
-            writeFragmentLength();
-        }
         serializeHandshakeMessageContent();
         return getAlreadySerialized();
     }
 
     public abstract byte[] serializeHandshakeMessageContent();
-
-    /**
-     * Writes the SequenzNumber of the HandshakeMessage into the final byte[]
-     */
-    private void writeMessageSequence() {
-        appendInt(msg.getMessageSeq().getValue(), HandshakeByteLength.DTLS_MESSAGE_SEQUENCE);
-        LOGGER.debug("SequenceNumber: " + msg.getMessageSeq().getValue());
-    }
-
-    /**
-     * Writes the FragmentOffset of the HandshakeMessage into the final byte[]
-     */
-    private void writeFragmentOffset() {
-        appendInt(msg.getFragmentOffset().getValue(), HandshakeByteLength.DTLS_FRAGMENT_OFFSET);
-        LOGGER.debug("FragmentOffset: " + msg.getFragmentOffset().getValue());
-    }
-
-    /**
-     * Writes the FragmentLength of the HandshakeMessage into the final byte[]
-     */
-    private void writeFragmentLength() {
-        appendInt(msg.getFragmentLength().getValue(), HandshakeByteLength.DTLS_FRAGMENT_LENGTH);
-        LOGGER.debug("FragmentLength: " + msg.getFragmentLength().getValue());
-    }
 
     /**
      * Checks if the message has an ExtensionsLength field
