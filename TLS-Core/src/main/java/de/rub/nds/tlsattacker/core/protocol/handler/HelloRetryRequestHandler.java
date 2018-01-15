@@ -74,7 +74,11 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
     private void adjustSelectedCiphersuite(HelloRetryRequestMessage message) {
         CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         tlsContext.setSelectedCipherSuite(suite);
-        LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+        if (suite != null) {
+            LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+        } else {
+            LOGGER.warn("Could not determine selected CipherSuite. Not Adjusting Context");
+        }
     }
 
 }
