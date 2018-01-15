@@ -38,8 +38,7 @@ public class CertificateUtils {
     /**
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
-     * @param cert
-     *            The Certificate from which the PublicKey should be extracted
+     * @param cert The Certificate from which the PublicKey should be extracted
      * @return The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
