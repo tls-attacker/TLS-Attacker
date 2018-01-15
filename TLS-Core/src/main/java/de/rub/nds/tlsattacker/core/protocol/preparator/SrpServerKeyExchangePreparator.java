@@ -78,12 +78,12 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         BigInteger publickey;
         BigInteger k = calculateSRP6Multiplier(modulus, generator);
         BigInteger x = calculateX(salt, identity, password);
-        BigInteger v = generator.modPow(x, modulus);
-        BigInteger helpValue1 = generator.modPow(privateKey, modulus);
+        BigInteger v = generator.modPow(x, modulus.abs());
+        BigInteger helpValue1 = generator.modPow(privateKey, modulus.abs());
         BigInteger helpValue2 = k.multiply(v);
-        helpValue2.mod(modulus);
+        helpValue2.mod(modulus.abs());
         helpValue1 = helpValue2.add(helpValue1);
-        publickey = helpValue1.mod(modulus);
+        publickey = helpValue1.mod(modulus.abs());
         LOGGER.debug(ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
         LOGGER.debug(ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(publickey)));
         return publickey;
