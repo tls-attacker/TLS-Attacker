@@ -264,6 +264,9 @@ public class RecordDecryptor extends Decryptor {
         if (paddingStart > decrypted.length) {
             throw new CryptoException("Could parse Padding. Padding start greater than data length");
         }
+        if (paddingStart < 0) {
+            throw new CryptoException("Could not parse Padding. Padding start is negative");
+        }
         return Arrays.copyOfRange(decrypted, paddingStart, decrypted.length);
     }
 

@@ -151,6 +151,10 @@ public final class RecordBlockCipher extends RecordCipher {
         try {
             byte[] plaintext;
             byte[] usedIv;
+            if (decryptionRequest.getCipherText().length % decryptCipher.getBlockSize() != 0) {
+                LOGGER.warn("Ciphertext is not a multiple of the Blocksize. Not Decrypting");
+                return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv);
+            }
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             if (useExplicitIv) {
                 decryptIv = new IvParameterSpec(Arrays.copyOf(decryptionRequest.getCipherText(),
