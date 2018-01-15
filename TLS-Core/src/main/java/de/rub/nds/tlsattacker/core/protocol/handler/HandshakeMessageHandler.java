@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.KeyShareExtensionH
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
@@ -33,6 +34,9 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
             KeyShareExtensionHandler keyShareHandler = null;
             KeyShareExtensionMessage keyShareExtension = null;
             for (ExtensionMessage extension : message.getExtensions()) {
+                if (extension instanceof HRRKeyShareExtensionMessage) { //TODO fix design flaw
+                    handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
+                }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
                         extension.getExtensionTypeConstant(), handshakeMessageType);
                 if (handler instanceof KeyShareExtensionHandler) {

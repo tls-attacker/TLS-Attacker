@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateMessageSerializer;
@@ -159,8 +160,12 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
             for (CertificateEntry entry : message.getCertificatesListAsEntry()) {
                 if (entry.getExtensions() != null) {
                     for (ExtensionMessage extension : entry.getExtensions()) {
+                        HandshakeMessageType handshakeMessageType = HandshakeMessageType.CERTIFICATE;
+                        if (extension instanceof HRRKeyShareExtensionMessage) { //TODO fix design flaw
+                            handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
+                        }
                         ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                                extension.getExtensionTypeConstant(), HandshakeMessageType.CERTIFICATE);
+                                extension.getExtensionTypeConstant(), handshakeMessageType);
                         handler.adjustTLSContext(extension);
                     }
                 }

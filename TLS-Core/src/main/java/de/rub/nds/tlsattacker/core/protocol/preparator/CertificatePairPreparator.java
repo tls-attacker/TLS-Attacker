@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
@@ -54,8 +55,12 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (pair.getExtensionsConfig() != null) {
             for (ExtensionMessage extensionMessage : pair.getExtensionsConfig()) {
+                HandshakeMessageType handshakeMessageType = HandshakeMessageType.CERTIFICATE;
+                if (extensionMessage instanceof HRRKeyShareExtensionMessage) {
+                    handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
+                }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
-                        extensionMessage.getExtensionTypeConstant(), HandshakeMessageType.CERTIFICATE);
+                        extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
