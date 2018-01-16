@@ -49,7 +49,10 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
                 HandshakeMessageType handshakeMessageType = HandshakeMessageType.ENCRYPTED_EXTENSIONS;
-                if (extension instanceof HRRKeyShareExtensionMessage) { //TODO fix design flawv
+                if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
+                                                                        // fix
+                                                                        // design
+                                                                        // flawv
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,

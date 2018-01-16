@@ -145,10 +145,10 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         byte[] srpParams = ArrayConverter.concatenate(ArrayConverter.intToBytes(msg.getModulusLength().getValue(),
                 HandshakeByteLength.SRP_MODULUS_LENGTH), msg.getModulus().getValue(), ArrayConverter.intToBytes(msg
                 .getGeneratorLength().getValue(), HandshakeByteLength.SRP_GENERATOR_LENGTH), msg.getGenerator()
-                        .getValue(), ArrayConverter.intToBytes(msg.getSaltLength().getValue(),
-                        HandshakeByteLength.SRP_SALT_LENGTH), msg.getSalt().getValue(), ArrayConverter.intToBytes(msg
+                .getValue(), ArrayConverter.intToBytes(msg.getSaltLength().getValue(),
+                HandshakeByteLength.SRP_SALT_LENGTH), msg.getSalt().getValue(), ArrayConverter.intToBytes(msg
                 .getPublicKeyLength().getValue(), HandshakeByteLength.SRP_PUBLICKEY_LENGTH), msg.getPublicKey()
-                        .getValue());
+                .getValue());
         return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
                 .getServerRandom().getValue(), srpParams);
 

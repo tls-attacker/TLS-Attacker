@@ -148,7 +148,8 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                     ArrayConverter.intToBytes(lengthBytes, HandshakeByteLength.CERTIFICATES_LENGTH), bytesToParse));
             return Certificate.parse(stream);
         } catch (Exception E) {
-            //This could really be anything. From classCast exception to Arrayindexoutofbounds
+            // This could really be anything. From classCast exception to
+            // Arrayindexoutofbounds
             LOGGER.warn("Could not parse Certificate bytes into Certificate object:"
                     + ArrayConverter.bytesToHexString(bytesToParse, false));
             LOGGER.debug(E);
@@ -162,7 +163,10 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                 if (entry.getExtensions() != null) {
                     for (ExtensionMessage extension : entry.getExtensions()) {
                         HandshakeMessageType handshakeMessageType = HandshakeMessageType.CERTIFICATE;
-                        if (extension instanceof HRRKeyShareExtensionMessage) { //TODO fix design flaw
+                        if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
+                                                                                // fix
+                                                                                // design
+                                                                                // flaw
                             handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                         }
                         ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,

@@ -34,7 +34,10 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
             KeyShareExtensionHandler keyShareHandler = null;
             KeyShareExtensionMessage keyShareExtension = null;
             for (ExtensionMessage extension : message.getExtensions()) {
-                if (extension instanceof HRRKeyShareExtensionMessage) { //TODO fix design flaw
+                if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
+                                                                        // fix
+                                                                        // design
+                                                                        // flaw
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,

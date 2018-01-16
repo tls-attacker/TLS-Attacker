@@ -72,11 +72,13 @@ public class SignatureAndHashAlgorithm implements Serializable {
             signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[1]);
         }
         if (hashAlgorithm == null) {
-            LOGGER.warn("Could not parse " + ArrayConverter.bytesToHexString(value) + " into a HashAlgorithm. Using NONE");
+            LOGGER.warn("Could not parse " + ArrayConverter.bytesToHexString(value)
+                    + " into a HashAlgorithm. Using NONE");
             hashAlgorithm = HashAlgorithm.NONE;
         }
         if (signatureAlgorithm == null) {
-            LOGGER.warn("Could not parse " + ArrayConverter.bytesToHexString(value) + " into a SignatureAlgorithm. Using ANONYMOUS");
+            LOGGER.warn("Could not parse " + ArrayConverter.bytesToHexString(value)
+                    + " into a SignatureAlgorithm. Using ANONYMOUS");
             signatureAlgorithm = SignatureAlgorithm.ANONYMOUS;
         }
     }
@@ -88,9 +90,9 @@ public class SignatureAndHashAlgorithm implements Serializable {
 
     public byte[] getByteValue() {
         if (signatureAlgorithm == SignatureAlgorithm.RSA_PSS) {
-            return new byte[]{signatureAlgorithm.getValue(), hashAlgorithm.getValue()};
+            return new byte[] { signatureAlgorithm.getValue(), hashAlgorithm.getValue() };
         } else {
-            return new byte[]{hashAlgorithm.getValue(), signatureAlgorithm.getValue()};
+            return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };
         }
     }
 
