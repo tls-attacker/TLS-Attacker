@@ -39,7 +39,7 @@ public class KeySetGeneratorTest {
      * be generated without throwing an exception
      */
     @Test
-    @Category(IntegrationTests.class)
+    // @Category(IntegrationTests.class)
     public void testGenerateKeySet() {
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             for (ProtocolVersion version : ProtocolVersion.values()) {
@@ -51,8 +51,6 @@ public class KeySetGeneratorTest {
                         continue;
                     }
                     TlsContext context = new TlsContext();
-                    context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
-                    context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                     context.setSelectedCipherSuite(suite);
                     context.setSelectedProtocolVersion(version);
                     assertNotNull(KeySetGenerator.generateKeySet(context));
