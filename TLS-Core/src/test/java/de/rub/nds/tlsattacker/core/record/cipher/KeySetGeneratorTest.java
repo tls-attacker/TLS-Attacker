@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.security.NoSuchAlgorithmException;
@@ -50,6 +51,8 @@ public class KeySetGeneratorTest {
                         continue;
                     }
                     TlsContext context = new TlsContext();
+                    context.setActiveClientKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
+                    context.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
                     context.setSelectedCipherSuite(suite);
                     context.setSelectedProtocolVersion(version);
                     assertNotNull(KeySetGenerator.generateKeySet(context));
