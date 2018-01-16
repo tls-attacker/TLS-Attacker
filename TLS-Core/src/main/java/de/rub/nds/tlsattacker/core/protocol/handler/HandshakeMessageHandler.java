@@ -30,21 +30,10 @@ public abstract class HandshakeMessageHandler<ProtocolMessage extends HandshakeM
 
     protected void adjustExtensions(ProtocolMessage message, HandshakeMessageType handshakeMessageType) {
         if (message.getExtensions() != null) {
-            KeyShareExtensionHandler keyShareHandler = null;
-            KeyShareExtensionMessage keyShareExtension = null;
             for (ExtensionMessage extension : message.getExtensions()) {
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
                         extension.getExtensionTypeConstant(), handshakeMessageType);
-                if (handler instanceof KeyShareExtensionHandler) {
-                    keyShareHandler = (KeyShareExtensionHandler) handler;
-                    keyShareExtension = (KeyShareExtensionMessage) extension;
-                } else {
-                    handler.adjustTLSContext(extension);
-                }
-            }
-            if (keyShareHandler != null) // delay KeyShare to process PSK first
-            {
-                keyShareHandler.adjustTLSContext(keyShareExtension);
+                handler.adjustTLSContext(extension);
             }
         }
     }
