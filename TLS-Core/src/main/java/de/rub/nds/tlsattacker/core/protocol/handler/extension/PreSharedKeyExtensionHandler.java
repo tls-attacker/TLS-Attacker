@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
