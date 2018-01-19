@@ -110,7 +110,7 @@ public class CertificateUtils {
             SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
             return (DHPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
         } else {
-            throw new IOException();
+            return null;
         }
     }
 
@@ -119,7 +119,7 @@ public class CertificateUtils {
             SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
             return (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
         } else {
-            throw new IOException();
+            return null;
         }
     }
 
@@ -128,7 +128,7 @@ public class CertificateUtils {
             RSAPublicKey rsaPubKey = (RSAPublicKey) parsePublicKey(cert);
             return rsaPubKey.getModulus();
         } else {
-            throw new IOException();
+            return null;
         }
     }
 
@@ -136,7 +136,7 @@ public class CertificateUtils {
         if (key instanceof RSAPrivateKey) {
             return ((RSAPublicKey) key).getModulus();
         } else {
-            throw new IOException();
+            return null;
         }
     }
 
@@ -144,7 +144,7 @@ public class CertificateUtils {
         if (key instanceof RSAPrivateKey) {
             return ((RSAPrivateKey) ((RSAPublicKey) key)).getPrivateExponent();
         } else {
-            throw new IOException();
+            return null;
         }
     }
 
@@ -153,7 +153,7 @@ public class CertificateUtils {
             RSAPublicKey rsaPubKey = (RSAPublicKey) parsePublicKey(cert);
             return rsaPubKey.getPublicExponent();
         } else {
-            throw new IOException();
+            return null;
         }
     }
 }
