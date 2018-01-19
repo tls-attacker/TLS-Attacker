@@ -644,9 +644,14 @@ public class Config implements Serializable {
 
     private Boolean doDTLSRetransmits = false;
 
-    private BigInteger defaultDhGenerator = new BigInteger("2");
+    private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
-    private BigInteger defaultDhModulus = new BigInteger(
+    private BigInteger defaultServerDhModulus = new BigInteger(
+            "15458150092069033378601573800816703249401189342134115050806105600042321586262936062413786779796157671421516779431947968642017250021834283152850968840396649272235097918348324");
+
+    private BigInteger defaultClientDhGenerator = new BigInteger("2");
+
+    private BigInteger defaultClientDhModulus = new BigInteger(
             "15458150092069033378601573800816703249401189342134115050806105600042321586262936062413786779796157671421516779431947968642017250021834283152850968840396649272235097918348324");
 
     private BigInteger defaultServerDhPrivateKey = new BigInteger(
@@ -813,6 +818,8 @@ public class Config implements Serializable {
 
     private NamedCurve defaultSelectedCurve = NamedCurve.SECP192R1;
 
+    private NamedCurve defaultEcCertificateCurve = NamedCurve.SECP192R1;
+
     private CustomECPoint defaultClientEcPublicKey;
 
     private CustomECPoint defaultServerEcPublicKey;
@@ -823,7 +830,12 @@ public class Config implements Serializable {
     private BigInteger defaultClientEcPrivateKey = new BigInteger(
             "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
-    private BigInteger defaultRSAModulus = new BigInteger(
+    private BigInteger defaultServerRSAModulus = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("00c8820d6c3ce84c8430f6835abfc7d7a912e1664f44578751f376501a8c68476c3072d919c5d39bd0dbe080e71db83bd4ab2f2f9bde3dffb0080f510a5f6929c196551f2b3c369be051054c877573195558fd282035934dc86edab8d4b1b7f555e5b2fee7275384a756ef86cb86793b5d1333f0973203cb96966766e655cd2cccae1940e4494b8e9fb5279593b75afd0b378243e51a88f6eb88def522a8cd5c6c082286a04269a2879760fcba45005d7f2672dd228809d47274f0fe0ea5531c2bd95366c05bf69edc0f3c3189866edca0c57adcca93250ae78d9eaca0393a95ff9952fc47fb7679dd3803e6a7a6fa771861e3d99e4b551a4084668b111b7eef7d"));// TODO
+
+    private BigInteger defaultClientRSAModulus = new BigInteger(
             1,
             ArrayConverter
                     .hexStringToByteArray("00c8820d6c3ce84c8430f6835abfc7d7a912e1664f44578751f376501a8c68476c3072d919c5d39bd0dbe080e71db83bd4ab2f2f9bde3dffb0080f510a5f6929c196551f2b3c369be051054c877573195558fd282035934dc86edab8d4b1b7f555e5b2fee7275384a756ef86cb86793b5d1333f0973203cb96966766e655cd2cccae1940e4494b8e9fb5279593b75afd0b378243e51a88f6eb88def522a8cd5c6c082286a04269a2879760fcba45005d7f2672dd228809d47274f0fe0ea5531c2bd95366c05bf69edc0f3c3189866edca0c57adcca93250ae78d9eaca0393a95ff9952fc47fb7679dd3803e6a7a6fa771861e3d99e4b551a4084668b111b7eef7d"));// TODO
@@ -1433,15 +1445,16 @@ public class Config implements Serializable {
         this.defaultServerRSAPrivateKey = defaultServerRSAPrivateKey;
     }
 
-    public BigInteger getDefaultRSAModulus() {
-        return defaultRSAModulus;
+    public BigInteger getDefaultServerRSAModulus() {
+        return defaultServerRSAModulus;
     }
 
-    public void setDefaultRSAModulus(BigInteger defaultRSAModulus) {
-        if (defaultRSAModulus.signum() == 1) {
-            this.defaultRSAModulus = defaultRSAModulus;
+    public void setDefaultServerRSAModulus(BigInteger defaultServerRSAModulus) {
+        if (defaultServerRSAModulus.signum() == 1) {
+            this.defaultServerRSAModulus = defaultServerRSAModulus;
         } else {
-            throw new IllegalArgumentException("Modulus cannot be negative or zero" + defaultRSAModulus.toString());
+            throw new IllegalArgumentException("Modulus cannot be negative or zero"
+                    + defaultServerRSAModulus.toString());
         }
     }
 
@@ -1950,23 +1963,24 @@ public class Config implements Serializable {
         this.enforceSettings = enforceSettings;
     }
 
-    public BigInteger getDefaultDhGenerator() {
-        return defaultDhGenerator;
+    public BigInteger getDefaultServerDhGenerator() {
+        return defaultServerDhGenerator;
     }
 
-    public void setDefaultDhGenerator(BigInteger defaultDhGenerator) {
-        this.defaultDhGenerator = defaultDhGenerator;
+    public void setDefaultServerDhGenerator(BigInteger defaultServerDhGenerator) {
+        this.defaultServerDhGenerator = defaultServerDhGenerator;
     }
 
-    public BigInteger getDefaultDhModulus() {
-        return defaultDhModulus;
+    public BigInteger getDefaultServerDhModulus() {
+        return defaultServerDhModulus;
     }
 
-    public void setDefaultDhModulus(BigInteger defaultDhModulus) {
-        if (defaultDhModulus.signum() == 1) {
-            this.defaultDhModulus = defaultDhModulus;
+    public void setDefaultServerDhModulus(BigInteger defaultServerDhModulus) {
+        if (defaultServerDhModulus.signum() == 1) {
+            this.defaultServerDhModulus = defaultServerDhModulus;
         } else {
-            throw new IllegalArgumentException("Modulus cannot be negative or zero:" + defaultDhModulus.toString());
+            throw new IllegalArgumentException("Modulus cannot be negative or zero:"
+                    + defaultServerDhModulus.toString());
         }
     }
 
@@ -2907,5 +2921,37 @@ public class Config implements Serializable {
 
     public void setAlpnAnnouncedProtocols(String[] alpnAnnouncedProtocols) {
         this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+    }
+
+    public NamedCurve getDefaultEcCertificateCurve() {
+        return defaultEcCertificateCurve;
+    }
+
+    public void setDefaultEcCertificateCurve(NamedCurve defaultEcCertificateCurve) {
+        this.defaultEcCertificateCurve = defaultEcCertificateCurve;
+    }
+
+    public BigInteger getDefaultClientRSAModulus() {
+        return defaultClientRSAModulus;
+    }
+
+    public void setDefaultClientRSAModulus(BigInteger defaultClientRSAModulus) {
+        this.defaultClientRSAModulus = defaultClientRSAModulus;
+    }
+
+    public BigInteger getDefaultClientDhGenerator() {
+        return defaultClientDhGenerator;
+    }
+
+    public void setDefaultClientDhGenerator(BigInteger defaultClientDhGenerator) {
+        this.defaultClientDhGenerator = defaultClientDhGenerator;
+    }
+
+    public BigInteger getDefaultClientDhModulus() {
+        return defaultClientDhModulus;
+    }
+
+    public void setDefaultClientDhModulus(BigInteger defaultClientDhModulus) {
+        this.defaultClientDhModulus = defaultClientDhModulus;
     }
 }

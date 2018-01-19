@@ -74,77 +74,8 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
             if (ksEntryList.size() > 0) {
                 context.setServerKSEntry(ksEntryList.get(0));
             }
-            adjustHandshakeTrafficSecrets();
         } else {
             context.setClientKeyShareEntryList(ksEntryList);
         }
     }
-
-    private void adjustHandshakeTrafficSecrets() {
-        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(context.getChooser().getSelectedCipherSuite());
-        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(context.getChooser()
-                .getSelectedProtocolVersion(), context.getChooser().getSelectedCipherSuite());
-
-        try {
-            int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
-            byte[] psk = (context.getConfig().isUsePsk() || context.getPsk() != null) ? context.getChooser().getPsk()
-                    : new byte[macLength]; // use PSK if available
-            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
-            byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
-                    HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
-            byte[] sharedSecret;
-            if (context.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                if (context.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
-                    sharedSecret = computeSharedSecretECDH(context.getChooser().getServerKSEntry());
-                } else {
-                    throw new UnsupportedOperationException(
-                            "Currently only the key exchange group ECDH_X25519 is supported");
-                }
-            } else {
-                int pos = 0;
-                for (KSEntry entry : context.getChooser().getClientKeyShareEntryList()) {
-                    if (entry.getGroup() == NamedCurve.ECDH_X25519) {
-                        pos = context.getChooser().getClientKeyShareEntryList().indexOf(entry);
-                    }
-                }
-                if (context.getChooser().getClientKeyShareEntryList().size() > pos
-                        && context.getChooser().getClientKeyShareEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
-                    sharedSecret = computeSharedSecretECDH(context.getChooser().getClientKeyShareEntryList().get(pos));
-                } else {
-                    throw new UnsupportedOperationException(
-                            "Currently only the key exchange group ECDH_X25519 is supported");
-                }
-            }
-            byte[] handshakeSecret = HKDFunction.extract(hkdfAlgortihm, saltHandshakeSecret, sharedSecret);
-            context.setHandshakeSecret(handshakeSecret);
-            LOGGER.debug("Set handshakeSecret in Context to " + ArrayConverter.bytesToHexString(handshakeSecret));
-            byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
-                    handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-            context.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
-            LOGGER.debug("Set clientHandshakeTrafficSecret in Context to "
-                    + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
-            byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
-                    handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, context.getDigest().getRawBytes());
-            context.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
-            LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
-                    + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
-        } catch (NoSuchAlgorithmException | CryptoException ex) {
-            throw new AdjustmentException(ex);
-        }
-    }
-
-    /**
-     * Computes the shared secret for ECDH_X25519
-     *
-     * @return
-     */
-    private byte[] computeSharedSecretECDH(KSEntry keyShare) {
-        byte[] privateKey = context.getConfig().getKeySharePrivate();
-        byte[] publicKey = keyShare.getSerializedPublicKey();
-        Curve25519.clamp(privateKey);
-        byte[] sharedSecret = new byte[32];
-        Curve25519.curve(sharedSecret, privateKey, publicKey);
-        return sharedSecret;
-    }
-
 }

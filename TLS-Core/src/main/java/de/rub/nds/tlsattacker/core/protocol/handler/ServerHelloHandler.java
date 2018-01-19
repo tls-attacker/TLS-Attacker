@@ -12,12 +12,21 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
@@ -30,6 +39,9 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.crypto.Mac;
 
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
 
@@ -63,6 +75,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         adjustServerRandom(message);
         adjustExtensions(message, HandshakeMessageType.SERVER_HELLO);
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
+            adjustHandshakeTrafficSecrets();
             if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
                 setServerRecordCipher();
             }
@@ -172,5 +185,72 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             setServerRecordCipher();
         }
+    }
+
+    private void adjustHandshakeTrafficSecrets() {
+        HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(tlsContext.getChooser()
+                .getSelectedCipherSuite());
+        DigestAlgorithm digestAlgo = AlgorithmResolver.getDigestAlgorithm(tlsContext.getChooser()
+                .getSelectedProtocolVersion(), tlsContext.getChooser().getSelectedCipherSuite());
+
+        try {
+            int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
+            byte[] psk = (tlsContext.getConfig().isUsePsk() || tlsContext.getPsk() != null) ? tlsContext.getChooser()
+                    .getPsk() : new byte[macLength]; // use PSK if available
+            byte[] earlySecret = HKDFunction.extract(hkdfAlgortihm, new byte[0], psk);
+            byte[] saltHandshakeSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(), earlySecret,
+                    HKDFunction.DERIVED, ArrayConverter.hexStringToByteArray(""));
+            byte[] sharedSecret = new byte[macLength];
+            if (tlsContext.getChooser().getConnectionEndType() == ConnectionEndType.CLIENT
+                    && tlsContext.isExtensionNegotiated(ExtensionType.KEY_SHARE)) {
+                if (tlsContext.getChooser().getServerKSEntry().getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(tlsContext.getChooser().getServerKSEntry());
+                } else {
+                    throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
+                }
+            } else if (tlsContext.isExtensionNegotiated(ExtensionType.KEY_SHARE)) {
+                int pos = 0;
+                for (KSEntry entry : tlsContext.getChooser().getClientKeyShareEntryList()) {
+                    if (entry.getGroup() == NamedCurve.ECDH_X25519) {
+                        pos = tlsContext.getChooser().getClientKeyShareEntryList().indexOf(entry);
+                    }
+                }
+                if (tlsContext.getChooser().getClientKeyShareEntryList().get(pos).getGroup() == NamedCurve.ECDH_X25519) {
+                    sharedSecret = computeSharedSecretECDH(tlsContext.getChooser().getClientKeyShareEntryList()
+                            .get(pos));
+                } else {
+                    throw new PreparationException("Currently only the key exchange group ECDH_X25519 is supported");
+                }
+            }
+            byte[] handshakeSecret = HKDFunction.extract(hkdfAlgortihm, saltHandshakeSecret, sharedSecret);
+            tlsContext.setHandshakeSecret(handshakeSecret);
+            LOGGER.debug("Set handshakeSecret in Context to " + ArrayConverter.bytesToHexString(handshakeSecret));
+            byte[] clientHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
+                    handshakeSecret, HKDFunction.CLIENT_HANDSHAKE_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+            tlsContext.setClientHandshakeTrafficSecret(clientHandshakeTrafficSecret);
+            LOGGER.debug("Set clientHandshakeTrafficSecret in Context to "
+                    + ArrayConverter.bytesToHexString(clientHandshakeTrafficSecret));
+            byte[] serverHandshakeTrafficSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
+                    handshakeSecret, HKDFunction.SERVER_HANDSHAKE_TRAFFIC_SECRET, tlsContext.getDigest().getRawBytes());
+            tlsContext.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
+            LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
+                    + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
+        } catch (CryptoException | NoSuchAlgorithmException ex) {
+            throw new AdjustmentException(ex);
+        }
+    }
+
+    /**
+     * Computes the shared secret for ECDH_X25519
+     *
+     * @return
+     */
+    private byte[] computeSharedSecretECDH(KSEntry keyShare) {
+        byte[] privateKey = tlsContext.getConfig().getKeySharePrivate();
+        byte[] publicKey = keyShare.getSerializedPublicKey();
+        Curve25519.clamp(privateKey);
+        byte[] sharedSecret = new byte[32];
+        Curve25519.curve(sharedSecret, privateKey, publicKey);
+        return sharedSecret;
     }
 }

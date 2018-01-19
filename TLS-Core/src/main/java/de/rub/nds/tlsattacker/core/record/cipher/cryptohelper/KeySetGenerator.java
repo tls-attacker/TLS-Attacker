@@ -62,9 +62,12 @@ public class KeySetGenerator {
         } else if (keySetType == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             cipherSuite = context.getChooser().getEarlyDataCipherSuite();
             clientSecret = context.getChooser().getClientEarlyTrafficSecret();
-            serverSecret = context.getChooser().getClientEarlyTrafficSecret(); // won't
-                                                                               // be
-            // used
+            serverSecret = context.getChooser().getClientEarlyTrafficSecret();
+        } else if (keySetType == Tls13KeySetType.NONE) {
+            LOGGER.warn("KeySet is NONE! , returning empty KeySet");
+            return new KeySet(keySetType);
+        } else {
+            throw new CryptoException("Unknown KeySetType:" + keySetType.name());
         }
         LOGGER.debug("ActiveKeySetType is " + keySetType);
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);

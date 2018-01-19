@@ -119,12 +119,12 @@ public class DHEServerKeyExchangePreparator<T extends DHEServerKeyExchangeMessag
     }
 
     protected void setComputedModulus(T msg) {
-        msg.getComputations().setModulus(chooser.getDhModulus());
+        msg.getComputations().setModulus(chooser.getServerDhModulus());
         LOGGER.debug("Modulus used for Computations: " + msg.getComputations().getModulus().getValue().toString(16));
     }
 
     protected void setComputedGenerator(T msg) {
-        msg.getComputations().setGenerator(chooser.getDhGenerator());
+        msg.getComputations().setGenerator(chooser.getServerDhGenerator());
         LOGGER.debug("Generator used for Computations: " + msg.getComputations().getGenerator().getValue().toString(16));
     }
 
