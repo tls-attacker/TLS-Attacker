@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.forensics.analyzer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -46,7 +46,8 @@ public class ForensicAnalyzer {
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow) throws IOException {
         WorkflowTrace reconstructed = new WorkflowTrace();
         int tracePosition = 0; // The action we are currently looking at.
-        TlsContext context = new TlsContext(); // initialise an empty Config
+        State state = new State(); // initialise an empty state
+        TlsContext context = state.getTlsContext();
         context.setRecordLayer(new TlsRecordLayer(context));
 
         if (!isSupported(executedWorkflow)) {
@@ -54,7 +55,7 @@ public class ForensicAnalyzer {
         }
         while (tracePosition < executedWorkflow.getTlsActions().size()) {
             boolean sending;
-            List<TLSAction> joinedActions;
+            List<TlsAction> joinedActions;
             if (executedWorkflow.getTlsActions().get(tracePosition) instanceof SendingAction) {
                 joinedActions = joinSendActions(tracePosition, executedWorkflow);
                 sending = true;
@@ -67,7 +68,8 @@ public class ForensicAnalyzer {
             context.setTransportHandler(new StreamTransportHandler(1, ConnectionEndType.CLIENT,
                     new ByteArrayInputStream(joinedRecordBytes), new ByteArrayOutputStream()));
             context.getTransportHandler().initialize();
-            MessageActionResult parsedMessageResult = ReceiveMessageHelper.receiveMessages(context);
+            ReceiveMessageHelper helper = new ReceiveMessageHelper();
+            MessageActionResult parsedMessageResult = helper.receiveMessages(context);
             tracePosition += joinedActions.size();
             if (sending) {
                 SendAction reconstructedAction = new SendAction(parsedMessageResult.getMessageList());
@@ -83,9 +85,9 @@ public class ForensicAnalyzer {
         return reconstructed;
     }
 
-    public byte[] joinRecordBytes(List<TLSAction> sendActions) {
+    public byte[] joinRecordBytes(List<TlsAction> sendActions) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (TLSAction action : sendActions) {
+        for (TlsAction action : sendActions) {
             if (action instanceof MessageAction) {
                 MessageAction msgAction = (MessageAction) action;
                 List<AbstractRecord> records = msgAction.getRecords();
@@ -104,7 +106,7 @@ public class ForensicAnalyzer {
     }
 
     public boolean isSupported(WorkflowTrace trace) {
-        for (TLSAction action : trace.getTlsActions()) {
+        for (TlsAction action : trace.getTlsActions()) {
             if (!(action instanceof SendAction || action instanceof ReceiveAction || action instanceof GenericReceiveAction)) {
                 return false;
             }
@@ -112,10 +114,10 @@ public class ForensicAnalyzer {
         return true;
     }
 
-    public List<TLSAction> joinSendActions(int position, WorkflowTrace trace) {
-        List<TLSAction> joinedActions = new LinkedList<>();
+    public List<TlsAction> joinSendActions(int position, WorkflowTrace trace) {
+        List<TlsAction> joinedActions = new LinkedList<>();
         for (int i = position; i < trace.getTlsActions().size(); i++) {
-            TLSAction action = trace.getTlsActions().get(i);
+            TlsAction action = trace.getTlsActions().get(i);
             if (action instanceof SendAction) {
                 joinedActions.add(action);
             } else {
@@ -125,10 +127,10 @@ public class ForensicAnalyzer {
         return joinedActions;
     }
 
-    public List<TLSAction> joinReceiveActions(int position, WorkflowTrace trace) {
-        List<TLSAction> joinedActions = new LinkedList<>();
+    public List<TlsAction> joinReceiveActions(int position, WorkflowTrace trace) {
+        List<TlsAction> joinedActions = new LinkedList<>();
         for (int i = position; i < trace.getTlsActions().size(); i++) {
-            TLSAction action = trace.getTlsActions().get(i);
+            TlsAction action = trace.getTlsActions().get(i);
             if (action instanceof ReceiveAction || action instanceof GenericReceiveAction) {
                 joinedActions.add(action);
             } else {

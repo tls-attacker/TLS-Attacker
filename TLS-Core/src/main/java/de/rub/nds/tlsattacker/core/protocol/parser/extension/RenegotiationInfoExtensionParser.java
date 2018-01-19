@@ -12,10 +12,6 @@ import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RenegotiationInfoExtensionParser extends ExtensionParser<RenegotiationInfoExtensionMessage> {
 
     public RenegotiationInfoExtensionParser(int startposition, byte[] array) {

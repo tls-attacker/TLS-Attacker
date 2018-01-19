@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class SniTestCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "sni_test";

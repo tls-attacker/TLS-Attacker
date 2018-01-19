@@ -29,13 +29,9 @@ import org.apache.logging.log4j.Logger;
 import sun.security.ssl.SSLSocketImpl;
 
 /**
- * BasicTlsClient for integration tests.
- *
- * A TLS Client thread that establishes a default TLS session with the given TLS
- * server. If no server is specified, try to connect to 127.0.0.1:4433 using
- * TLS1.2 and TLS_RSA_WITH_AES_128_CBC_SHA.
- * 
- * @author Robert Merget <robert.merget@rub.de>
+ * BasicTlsClient for integration tests. A TLS Client thread that establishes a
+ * default TLS session with the given TLS server. If no server is specified, try
+ * to connect to 127.0.0.1:4433 using TLS1.2 and TLS_RSA_WITH_AES_128_CBC_SHA.
  */
 public class BasicTlsClient extends Thread {
 
@@ -47,6 +43,8 @@ public class BasicTlsClient extends Thread {
     private final int serverPort;
     private final String serverPrettyName;
     private boolean retryConnect;
+    // If retryConnect, sleep retryTimeout milliseconds before retrying
+    private int retryTimeout = 100;
 
     private volatile boolean finished = false;
 
@@ -81,7 +79,7 @@ public class BasicTlsClient extends Thread {
                         socket = getFreshSocket(tlsVersion);
                     } catch (ConnectException x) {
                         LOGGER.info("retry: connect to " + serverPrettyName);
-                        TimeUnit.MILLISECONDS.sleep(10);
+                        TimeUnit.MILLISECONDS.sleep(retryTimeout);
                         continue;
                     }
                     break;

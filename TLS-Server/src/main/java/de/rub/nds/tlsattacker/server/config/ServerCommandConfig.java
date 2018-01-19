@@ -13,9 +13,12 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MaxFragmentLengthDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ServerDelegate;
@@ -26,11 +29,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.WorkflowOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.WorkflowTypeDelegate;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class ServerCommandConfig extends TLSDelegateConfig {
 
     public static final String COMMAND = "server";
@@ -61,6 +59,12 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     private MaxFragmentLengthDelegate maxFragmentLengthDelegate;
     @ParametersDelegate
     private CertificateDelegate certificateDelegate;
+    @ParametersDelegate
+    private FilterDelegate filterDelegate;
+    @ParametersDelegate
+    private ListDelegate listDelegate;
+    @ParametersDelegate
+    private ConfigOutputDelegate configOutputDelegate;
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -77,6 +81,10 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
         this.maxFragmentLengthDelegate = new MaxFragmentLengthDelegate();
         this.certificateDelegate = new CertificateDelegate();
+        this.filterDelegate = new FilterDelegate();
+        this.listDelegate = new ListDelegate();
+        this.configOutputDelegate = new ConfigOutputDelegate();
+
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(ellipticCurveDelegate);
@@ -89,6 +97,9 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(workflowTypeDelegate);
         addDelegate(transportHandlerDelegate);
         addDelegate(certificateDelegate);
+        addDelegate(filterDelegate);
+        addDelegate(listDelegate);
+        addDelegate(configOutputDelegate);
     }
 
     @Override
@@ -96,7 +107,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         Config config = super.createConfig();
 
         // Run FULL trace if no workflow trace (type) is set explicitly
-        if ((config.getWorkflowTrace() == null) && (config.getWorkflowTraceType() == null)) {
+        if (config.getWorkflowTraceType() == null) {
             config.setWorkflowTraceType(WorkflowTraceType.FULL);
         }
         return config;

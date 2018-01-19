@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.TrustedCaIndica
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.TrustedCaIndicationExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class TrustedCaIndicationExtensionHandler extends ExtensionHandler<TrustedCaIndicationExtensionMessage> {
 
     public TrustedCaIndicationExtensionHandler(TlsContext context) {

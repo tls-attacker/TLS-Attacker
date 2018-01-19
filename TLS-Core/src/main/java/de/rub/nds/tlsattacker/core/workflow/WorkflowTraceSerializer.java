@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +36,6 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class WorkflowTraceSerializer {
 
     static final Logger LOGGER = LogManager.getLogger(WorkflowTraceSerializer.class.getName());
@@ -49,17 +45,10 @@ public class WorkflowTraceSerializer {
      */
     private static JAXBContext context;
 
-    /**
-     * Returns an initialized JaxbContext
-     *
-     * @return
-     * @throws JAXBException
-     * @throws IOException
-     */
     private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
             context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
-                    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TLSAction.class,
+                    ModificationFilter.class, VariableModification.class, ModifiableVariable.class, TlsAction.class,
                     SendAction.class, ReceiveAction.class);
         }
         return context;
@@ -92,26 +81,27 @@ public class WorkflowTraceSerializer {
      *            WorkflowTrace that should be written
      * @return String containing XML/serialized representation of the
      *         WorkflowTrace
-     * @throws FileNotFoundException
-     *             Is thrown if the File cannot be found
      * @throws JAXBException
      *             Is thrown if the Object cannot be serialized
      * @throws IOException
      *             Is thrown if the Process doesn't have the rights to write to
      *             the File
      */
-    public static String write(WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
+    public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(bos, trace);
         return new String(bos.toByteArray(), "UTF-8");
     }
 
     /**
-     *
      * @param outputStream
+     *            The OutputStream to which the Trace should be written to
      * @param workflowTrace
+     *            The WorkflowTrace that should be written
      * @throws JAXBException
+     *             JAXBException if the JAXB reports a problem
      * @throws IOException
+     *             If something goes wrong while writing to the stream
      */
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace) throws JAXBException, IOException {
         context = getJAXBContext();
@@ -123,12 +113,15 @@ public class WorkflowTraceSerializer {
     }
 
     /**
-     *
      * @param inputStream
-     * @return
+     *            The InputStream from which the Parameter should be read
+     * @return The deserialized WorkflowTrace
      * @throws JAXBException
+     *             JAXBException if the JAXB reports a problem
      * @throws IOException
+     *             If something goes wrong while writing to the stream
      * @throws XMLStreamException
+     *             If there is a Problem with the XML Stream
      */
     public static WorkflowTrace read(InputStream inputStream) throws JAXBException, IOException, XMLStreamException {
         context = getJAXBContext();

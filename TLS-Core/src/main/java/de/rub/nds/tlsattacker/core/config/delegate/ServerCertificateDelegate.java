@@ -99,7 +99,7 @@ public class ServerCertificateDelegate extends Delegate {
                         config.setDefaultServerRSAPrivateKey(CertificateUtils.rsaPrivateKeyFromPrivateKey(key)
                                 .getPrivateExponent());
                         config.setDefaultRsaCertificate(stream.toByteArray());
-                        LOGGER.debug("Loaded RSA certificate data:\nmodulus: " + config.getDefaultRSAModulus()
+                        LOGGER.debug("Loaded RSA certificate data:\nmodulus: " + config.getDefaultServerRSAModulus()
                                 + "\npubkey: " + config.getDefaultServerRSAPublicKey() + "\nprivkey: "
                                 + config.getDefaultServerRSAPrivateKey());
                     } else {
@@ -124,7 +124,7 @@ public class ServerCertificateDelegate extends Delegate {
     }
 
     private void applyRSAParameters(Config config, BigInteger modulus, BigInteger publicKey) {
-        config.setDefaultRSAModulus(modulus);
+        config.setDefaultServerRSAModulus(modulus);
         config.setDefaultServerRSAPublicKey(publicKey);
     }
 }

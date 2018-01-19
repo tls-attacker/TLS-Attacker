@@ -23,9 +23,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Robert Merget - robert.merget@rub.de
- */
 public class TlsAttackerSocketTest {
 
     private TlsAttackerSocket socket;
@@ -40,7 +37,7 @@ public class TlsAttackerSocketTest {
     @Before
     public void setUp() {
         Config config = Config.createConfig();
-        state = new State(config, new WorkflowTrace(config));
+        state = new State(config, new WorkflowTrace());
         context = state.getTlsContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);

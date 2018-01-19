@@ -9,16 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensionMessage> {
 
     private List<CachedObject> cachedObjectList;
@@ -44,6 +41,9 @@ public class CachedInfoExtensionParser extends ExtensionParser<CachedInfoExtensi
             CachedObjectParser parser = new CachedObjectParser(position, msg.getCachedInfoBytes().getValue(),
                     connectionEndType);
             cachedObjectList.add(parser.parse());
+            if (position == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing CachedObjects");
+            }
             position = parser.getPointer();
         }
         msg.setCachedInfo(cachedObjectList);

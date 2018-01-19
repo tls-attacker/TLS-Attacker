@@ -24,10 +24,9 @@ import java.util.List;
  * This handler processes the EllipticCurves extensions, as defined in
  * https://tools.ietf.org/search/rfc4492#section-5.1.1
  * 
- * But in TLS 1.3 this extensions renamed to SupportedGroups. See:
- * https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6
+ * But in TLS 1.3 this extensions renamed to SupportedGroups.
  * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
+ * See: https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
 

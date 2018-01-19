@@ -17,10 +17,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SessionTicketTLSExtensionPreparatorTest {
 
     private final int extensionLength = 0;
@@ -45,7 +41,7 @@ public class SessionTicketTLSExtensionPreparatorTest {
      */
     @Test
     public void testPreparator() {
-        context.getConfig().setTLSSessionTicket(ticket);
+        context.getConfig().setTlsSessionTicket(ticket);
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.SESSION_TICKET.getValue(), message.getExtensionType().getValue());

@@ -9,17 +9,13 @@
 package de.rub.nds.tlsattacker.core.unittest.helper;
 
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import java.util.List;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class WorkFlowTraceFakeExecuter {
     public static void execute(WorkflowTrace trace) {
-        List<TLSAction> actionList = trace.getTlsActions();
-        for (TLSAction action : actionList) {
+        List<TlsAction> actionList = trace.getTlsActions();
+        for (TlsAction action : actionList) {
             action.setExecuted(Boolean.TRUE);
         }
     }

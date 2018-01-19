@@ -1,0 +1,36 @@
+Test custom connection in workflow trace
+
+# Given this config:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+</config>
+
+# And this input trace
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <OutboundConnection>
+        <alias>custom</alias>
+        <timeout>44</timeout>
+    </OutboundConnection>
+</workflowTrace>
+
+# We expect this normalized trace
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <OutboundConnection>
+        <alias>custom</alias>
+        <port>443</port>
+        <hostname>localhost</hostname>
+        <timeout>44</timeout>
+        <transportHandlerType>TCP</transportHandlerType>
+    </OutboundConnection>
+</workflowTrace>
+
+# And this after default filter application:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <OutboundConnection>
+        <alias>custom</alias>
+        <timeout>44</timeout>
+    </OutboundConnection>
+</workflowTrace>

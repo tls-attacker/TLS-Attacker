@@ -23,10 +23,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class TrustedCaIndicationExtensionHandlerTest {
 
     private final List<TrustedAuthority> trustedAuthorities = Arrays.asList(new TrustedAuthority((byte) 0,

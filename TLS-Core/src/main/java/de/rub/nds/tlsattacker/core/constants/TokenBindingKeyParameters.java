@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public enum TokenBindingKeyParameters {
     RSA2048_PKCS1_5((byte) 0),
     RSA2048_PSS((byte) 1),

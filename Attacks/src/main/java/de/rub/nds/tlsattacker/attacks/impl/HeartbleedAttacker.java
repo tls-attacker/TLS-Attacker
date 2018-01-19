@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -27,21 +28,16 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 
 /**
  * Executes the Heartbeat attack against a server and logs an error in case the
  * server responds with a valid heartbeat message.
- *
- * @author Juraj Somorovsky (juraj.somorovsky@rub.de)
  */
 public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(HeartbleedAttacker.class);
-
     public HeartbleedAttacker(HeartbleedCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override
@@ -52,7 +48,8 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
     @Override
     public Boolean isVulnerable() {
         Config tlsConfig = config.createConfig();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createHandshakeWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
+                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         HeartbeatMessage message = new HeartbeatMessage(tlsConfig);
         trace.addTlsAction(new SendAction(message));
         trace.addTlsAction(new ReceiveAction(new HeartbeatMessage()));

@@ -12,13 +12,12 @@ import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.BasicTlsServer;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.recording.ClientRecordingTcpTransportHandler;
 import de.rub.nds.tlsattacker.util.FixedTimeProvider;
 import de.rub.nds.tlsattacker.util.TimeHelper;
@@ -40,7 +39,6 @@ import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -101,9 +99,9 @@ public class RecordedWorkflowTest {
         Config c = Config.createConfig();
         c.setDefaultSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
         c.setDefaultClientSupportedCiphersuites(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
-        c.addConnectionEnd(new ClientConnectionEnd(Config.DEFAULT_CONNECTION_END_ALIAS, 4555, "localhost"));
         c.setWorkflowExecutorShouldOpen(false);
-        WorkflowTrace trace = new WorkflowConfigurationFactory(c).createFullWorkflow();
+        WorkflowTrace trace = new WorkflowConfigurationFactory(c).createWorkflowTrace(WorkflowTraceType.FULL,
+                RunningModeType.CLIENT);
         transportHandler = new ClientRecordingTcpTransportHandler(1000, "localhost", 4555);
         transportHandler.initialize();
         State state = new State(c, trace);

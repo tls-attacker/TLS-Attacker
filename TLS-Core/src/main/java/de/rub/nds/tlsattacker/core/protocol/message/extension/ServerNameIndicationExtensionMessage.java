@@ -22,8 +22,6 @@ import java.util.List;
 /**
  * Describes Server Name Indication extension from
  * http://tools.ietf.org/html/rfc6066
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
 
@@ -78,7 +76,9 @@ public class ServerNameIndicationExtensionMessage extends ExtensionMessage {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (serverNameList != null) {
             for (ServerNamePair pair : serverNameList) {
-                holders.addAll(pair.getAllModifiableVariableHolders());
+                if (pair != null) {
+                    holders.addAll(pair.getAllModifiableVariableHolders());
+                }
             }
         }
         return holders;

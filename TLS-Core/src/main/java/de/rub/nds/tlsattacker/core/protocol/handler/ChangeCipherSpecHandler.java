@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ChangeCipherSpecPreparato
 import de.rub.nds.tlsattacker.core.protocol.serializer.ChangeCipherSpecSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipherSpecMessage> {
 
     public ChangeCipherSpecHandler(TlsContext tlsContext) {
@@ -41,9 +37,18 @@ public class ChangeCipherSpecHandler extends ProtocolMessageHandler<ChangeCipher
 
     @Override
     public void adjustTLSContext(ChangeCipherSpecMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEnd()
-                .getConnectionEndType()) {
+        if (tlsContext.getTalkingConnectionEndType() != tlsContext.getChooser().getConnectionEndType()) {
             tlsContext.getRecordLayer().updateDecryptionCipher();
+            tlsContext.setReadSequenceNumber(0);
         }
     }
+
+    @Override
+    public void adjustTlsContextAfterSerialize(ChangeCipherSpecMessage message) {
+        if (tlsContext.getTalkingConnectionEndType() == tlsContext.getChooser().getConnectionEndType()) {
+            tlsContext.getRecordLayer().updateEncryptionCipher();
+            tlsContext.setWriteSequenceNumber(0);
+        }
+    }
+
 }

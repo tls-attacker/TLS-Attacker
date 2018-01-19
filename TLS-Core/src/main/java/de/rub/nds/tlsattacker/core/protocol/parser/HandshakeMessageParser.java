@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.ExtensionParser;
@@ -22,7 +23,6 @@ import java.util.List;
 /**
  * An abstract Parser class for HandshakeMessages
  *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
  *            Type of the HandshakeMessages to parse
  */
@@ -47,6 +47,7 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
      * @param expectedType
      *            The expected type of the parsed HandshakeMessage
      * @param version
+     *            The Version with which this message should be parsed
      */
     public HandshakeMessageParser(int pointer, byte[] array, HandshakeMessageType expectedType, ProtocolVersion version) {
         super(pointer, array, version);
@@ -143,6 +144,9 @@ public abstract class HandshakeMessageParser<T extends HandshakeMessage> extends
             ExtensionParser parser = ExtensionParserFactory.getExtensionParser(extensionBytes, pointer,
                     message.getHandshakeMessageType());
             extensionMessages.add(parser.parse());
+            if (pointer == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing Extensions");
+            }
             pointer = parser.getPointer();
         }
         message.setExtensions(extensionMessages);

@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ExtendedMasterSecretExtensionSerializer extends ExtensionSerializer<ExtendedMasterSecretExtensionMessage> {
 
     public ExtendedMasterSecretExtensionSerializer(ExtendedMasterSecretExtensionMessage message) {

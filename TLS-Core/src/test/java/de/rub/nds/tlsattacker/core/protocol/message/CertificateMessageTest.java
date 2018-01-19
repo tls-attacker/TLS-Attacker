@@ -17,10 +17,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
- */
 public class CertificateMessageTest {
     CertificateMessage message;
 

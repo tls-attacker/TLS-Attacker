@@ -22,10 +22,6 @@ import de.rub.nds.tlsattacker.core.record.serializer.AbstractRecordSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public abstract class AbstractRecord extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)

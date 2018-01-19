@@ -12,9 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificatePairSerializer extends Serializer<CertificatePair> {
 
     private final CertificatePair pair;
@@ -28,7 +25,7 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
         LOGGER.debug("Serializing CertificatePair");
         writeCertificateLength(pair);
         writeCertificate(pair);
-        if (pair.getExtensions() != null) {
+        if (pair.getExtensions() != null && pair.getExtensions().getOriginalValue() != null) {
             writeExtensionsLength(pair);
             writeExtensions(pair);
         }

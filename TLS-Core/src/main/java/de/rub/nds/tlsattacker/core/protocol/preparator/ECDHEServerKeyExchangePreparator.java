@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
@@ -33,25 +32,41 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
 import org.bouncycastle.math.ec.ECPoint;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
-public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparator<ECDHEServerKeyExchangeMessage> {
+public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMessage> extends
+        ServerKeyExchangePreparator<T> {
 
-    private final ECDHEServerKeyExchangeMessage msg;
-    private ECPublicKeyParameters pubEcParams;
-    private ECPrivateKeyParameters privEcParams;
+    protected final T msg;
+    protected ECPublicKeyParameters pubEcParams;
+    protected ECPrivateKeyParameters privEcParams;
 
-    public ECDHEServerKeyExchangePreparator(Chooser chooser, ECDHEServerKeyExchangeMessage msg) {
+    public ECDHEServerKeyExchangePreparator(Chooser chooser, T msg) {
         super(chooser, msg);
         this.msg = msg;
     }
 
     @Override
     public void prepareHandshakeMessageContents() {
+        setEcDhParams();
+        prepareEcDhParams();
+        SignatureAndHashAlgorithm signHashAlgo;
+        signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
+        prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
 
+        byte[] signature = generateSignature(msg, signHashAlgo);
+        prepareSignature(msg, signature);
+        prepareSignatureLength(msg);
+    }
+
+    protected void prepareEcDhParams() {
+        preparePrivateKey(msg);
+        prepareSerializedPublicKey(msg, pubEcParams.getQ());
+        prepareSerializedPublicKeyLength(msg);
+        prepareClientRandom(msg);
+        prepareServerRandom(msg);
+
+    }
+
+    protected void setEcDhParams() {
         msg.prepareComputations();
         generateNamedCurveList(msg);
         generatePointFormatList(msg);
@@ -64,22 +79,9 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
         pubEcParams = (ECPublicKeyParameters) keyPair.getPublic();
         privEcParams = (ECPrivateKeyParameters) keyPair.getPrivate();
-        preparePrivateKey(msg);
-        prepareSerializedPublicKey(msg, pubEcParams.getQ());
-        prepareSerializedPublicKeyLength(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
-
-        SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
-        prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
-
-        byte[] signature = generateSignature(msg, signHashAlgo);
-        prepareSignature(msg, signature);
-        prepareSignatureLength(msg);
     }
 
-    private ECDomainParameters generateEcParameters(ECDHEServerKeyExchangeMessage msg) {
+    protected ECDomainParameters generateEcParameters(T msg) {
 
         if (msg.getComputations() == null) {
             throw new PreparationException("Message computations not initialized");
@@ -99,13 +101,15 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         try {
             curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of named curves from computations.", ex);
+            LOGGER.warn("Couldn't read list of named curves from computations.", ex);
+            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
         }
         ECPointFormat[] formats;
         try {
             formats = ECPointFormat.pointFormatsFromByteArray(msg.getComputations().getEcPointFormatList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of EC point formats from computations", ex);
+            LOGGER.warn("Couldn't read list of EC point formats from computations", ex);
+            formats = chooser.getConfig().getDefaultEcPointFormats();
         }
 
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
@@ -115,18 +119,25 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
         } catch (IOException ex) {
-            throw new PreparationException("Failed to generate EC domain parameters", ex);
+            is = new ByteArrayInputStream(ArrayConverter.concatenate(
+                    new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, curves[0].getValue()));
+            try {
+                ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
+            } catch (IOException | IndexOutOfBoundsException ex1) {
+                throw new PreparationException("Failed to generate EC domain parameters", ex);
+            }
+            LOGGER.warn("Failed to generate EC domain parameters", ex);
         }
 
         return ecParams;
     }
 
-    private void generatePointFormatList(ECDHEServerKeyExchangeMessage msg) {
+    protected void generatePointFormatList(T msg) {
         List<ECPointFormat> sharedPointFormats = new ArrayList<>(chooser.getServerSupportedPointFormats());
 
         if (sharedPointFormats.isEmpty()) {
-            throw new PreparationException("Don't know which point format to use for ECDHE. "
-                    + "Check if pointFormats is set in config.");
+            LOGGER.warn("Don't know which point format to use for ECDHE. " + "Check if pointFormats is set in config.");
+            sharedPointFormats = chooser.getConfig().getDefaultServerSupportedPointFormats();
         }
 
         List<ECPointFormat> unsupportedFormats = new ArrayList<>();
@@ -152,7 +163,7 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         }
     }
 
-    private void generateNamedCurveList(ECDHEServerKeyExchangeMessage msg) {
+    protected void generateNamedCurveList(T msg) {
         List<NamedCurve> sharedCurves = new ArrayList<>(chooser.getConfig().getNamedCurves());
 
         if (sharedCurves.isEmpty()) {
@@ -183,14 +194,13 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         }
     }
 
-    private byte[] generateSignatureContents(ECDHEServerKeyExchangeMessage msg) {
-        EllipticCurveType curveType = EllipticCurveType.getCurveType(msg.getCurveType().getValue());
-
+    protected byte[] generateSignatureContents(T msg) {
+        EllipticCurveType curveType = chooser.getEcCurveType();
         ByteArrayOutputStream ecParams = new ByteArrayOutputStream();
         switch (curveType) {
             case EXPLICIT_PRIME:
             case EXPLICIT_CHAR2:
-                throw new PreparationException("Signing of explicit curves not implemented yet.");
+                throw new UnsupportedOperationException("Signing of explicit curves not implemented yet.");
             case NAMED_CURVE:
                 ecParams.write(curveType.getValue());
                 try {
@@ -212,40 +222,39 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
 
     }
 
-    private byte[] generateSignature(ECDHEServerKeyExchangeMessage msg, SignatureAndHashAlgorithm algorithm) {
+    protected byte[] generateSignature(T msg, SignatureAndHashAlgorithm algorithm) {
         return SignatureCalculator.generateSignature(algorithm, chooser, generateSignatureContents(msg));
     }
 
-    private void prepareSignatureAndHashAlgorithm(ECDHEServerKeyExchangeMessage msg,
-            SignatureAndHashAlgorithm signHashAlgo) {
+    protected void prepareSignatureAndHashAlgorithm(T msg, SignatureAndHashAlgorithm signHashAlgo) {
         msg.setSignatureAndHashAlgorithm(signHashAlgo.getByteValue());
         LOGGER.debug("SignatureAndHashAlgorithm: "
                 + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
-    private void prepareClientRandom(ECDHEServerKeyExchangeMessage msg) {
+    protected void prepareClientRandom(T msg) {
         msg.getComputations().setClientRandom(chooser.getClientRandom());
         LOGGER.debug("ClientRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
     }
 
-    private void prepareServerRandom(ECDHEServerKeyExchangeMessage msg) {
+    protected void prepareServerRandom(T msg) {
         msg.getComputations().setServerRandom(chooser.getServerRandom());
         LOGGER.debug("ServerRandom: "
                 + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
     }
 
-    private void prepareSignature(ECDHEServerKeyExchangeMessage msg, byte[] signature) {
+    protected void prepareSignature(T msg, byte[] signature) {
         msg.setSignature(signature);
         LOGGER.debug("Signature: " + ArrayConverter.bytesToHexString(msg.getSignature().getValue()));
     }
 
-    private void prepareSignatureLength(ECDHEServerKeyExchangeMessage msg) {
+    protected void prepareSignatureLength(T msg) {
         msg.setSignatureLength(msg.getSignature().getValue().length);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 
-    private void prepareSerializedPublicKey(ECDHEServerKeyExchangeMessage msg, ECPoint pubKey) {
+    protected void prepareSerializedPublicKey(T msg, ECPoint pubKey) {
         ECPointFormat[] formats;
         try {
             formats = ECPointFormat.pointFormatsFromByteArray(msg.getComputations().getEcPointFormatList().getValue());
@@ -263,26 +272,27 @@ public class ECDHEServerKeyExchangePreparator extends ServerKeyExchangePreparato
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
-    private void prepareSerializedPublicKeyLength(ECDHEServerKeyExchangeMessage msg) {
+    protected void prepareSerializedPublicKeyLength(T msg) {
         msg.setPublicKeyLength(msg.getPublicKey().getValue().length);
         LOGGER.debug("SerializedPublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void prepareCurveType(ECDHEServerKeyExchangeMessage msg) {
+    protected void prepareCurveType(T msg) {
         msg.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
     }
 
-    private void prepareNamedCurve(ECDHEServerKeyExchangeMessage msg) {
+    protected void prepareNamedCurve(T msg) {
         NamedCurve[] curves;
         try {
             curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            throw new PreparationException("Couldn't read list of named curves from computations", ex);
+            LOGGER.warn("Could not get named Curves from ByteArray");
+            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
         }
         msg.setNamedCurve(curves[0].getValue());
     }
 
-    private void preparePrivateKey(ECDHEServerKeyExchangeMessage msg) {
+    protected void preparePrivateKey(T msg) {
         msg.getComputations().setPrivateKey(privEcParams.getD());
         LOGGER.debug("PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
     }

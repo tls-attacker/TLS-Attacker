@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.delegate.Delegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import java.io.File;
@@ -18,10 +19,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public abstract class TLSDelegateConfig {
 
     protected static final Logger LOGGER = LogManager.getLogger(TLSDelegateConfig.class.getName());
@@ -68,12 +65,12 @@ public abstract class TLSDelegateConfig {
             if (configFile.exists()) {
                 config = Config.createConfig(configFile);
             } else {
-                LOGGER.warn("Could not find default Config File");
-                config = Config.createConfig();
+                throw new ParameterException("Could not find config file: " + defaultConfig);
             }
         } else {
             config = Config.createConfig();
         }
+
         for (Delegate delegate : getDelegateList()) {
             delegate.applyDelegate(config);
         }

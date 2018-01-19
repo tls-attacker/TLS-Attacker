@@ -10,47 +10,45 @@ package de.rub.nds.tlsattacker.transport.tcp;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ClientTcpTransportHandlerTest {
 
     private ClientTcpTransportHandler handler;
 
     @Before
     public void setUp() {
-        handler = new ClientTcpTransportHandler(100, "localhost", 50001);
     }
 
     /**
      * Test of closeConnection method, of class ClientTcpTransportHandler.
+     *
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
+        handler = new ClientTcpTransportHandler(100, "localhost", 0);
         handler.closeConnection();
     }
 
     /**
      * Test of initialize method, of class ClientTcpTransportHandler.
+     *
+     * @throws java.io.IOException
      */
     @Test
     public void testInitialize() throws IOException {
         ServerSocketChannel serverSocketChannel = null;
         try {
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.socket().bind(new InetSocketAddress(50001));
+            serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
+            handler = new ClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);
@@ -72,8 +70,9 @@ public class ClientTcpTransportHandlerTest {
         Socket s = null;
         try {
             serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.socket().bind(new InetSocketAddress(50001));
+            serverSocketChannel.socket().bind(new InetSocketAddress(0));
             serverSocketChannel.configureBlocking(false);
+            handler = new ClientTcpTransportHandler(100, "localhost", serverSocketChannel.socket().getLocalPort());
             handler.initialize();
             SocketChannel acceptChannel = serverSocketChannel.accept();
             assertNotNull(acceptChannel);

@@ -18,10 +18,6 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class CustomECPrivateKey implements ECPrivateKey {
 
     private final BigInteger privatekey;

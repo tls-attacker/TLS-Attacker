@@ -13,18 +13,16 @@ import java.util.Map;
 
 /**
  * Also called Handshake Type
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
  */
 public enum HandshakeMessageType {
 
-    UNKNOWN,
+    UNKNOWN((byte) 255),
     HELLO_REQUEST((byte) 0),
     CLIENT_HELLO((byte) 1),
     SERVER_HELLO((byte) 2),
     HELLO_VERIFY_REQUEST((byte) 3),
     NEW_SESSION_TICKET((byte) 4),
+    END_OF_EARLY_DATA((byte) 5),
     HELLO_RETRY_REQUEST((byte) 6),
     ENCRYPTED_EXTENSIONS((byte) 8),
     CERTIFICATE((byte) 11),
@@ -33,7 +31,8 @@ public enum HandshakeMessageType {
     SERVER_HELLO_DONE((byte) 14),
     CERTIFICATE_VERIFY((byte) 15),
     CLIENT_KEY_EXCHANGE((byte) 16),
-    FINISHED((byte) 20);
+    FINISHED((byte) 20),
+    SUPPLEMENTAL_DATA((byte) 23);
 
     private int value;
 

@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenBindingMessageSerializer extends ProtocolMessageSerializer<TokenBindingMessage> {
 
     private final TokenBindingMessage message;

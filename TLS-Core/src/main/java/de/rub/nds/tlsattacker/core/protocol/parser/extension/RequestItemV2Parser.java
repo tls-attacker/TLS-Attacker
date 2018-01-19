@@ -9,16 +9,13 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.RequestItemV2;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class RequestItemV2Parser extends Parser<RequestItemV2> {
 
     public RequestItemV2Parser(int startposition, byte[] array) {
@@ -42,7 +39,10 @@ public class RequestItemV2Parser extends Parser<RequestItemV2> {
         while (position < item.getResponderIdListBytes().getValue().length) {
             ResponderIdParser parser = new ResponderIdParser(position, item.getResponderIdListBytes().getValue());
             resonderIds.add(parser.parse());
-            position += parser.getPointer();
+            if (position == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing ResponderId");
+            }
+            position = parser.getPointer();
         }
         item.setResponderIdList(resonderIds);
 

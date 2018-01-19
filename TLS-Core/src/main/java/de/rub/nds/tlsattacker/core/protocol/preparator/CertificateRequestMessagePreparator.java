@@ -18,10 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateRequestMessagePreparator extends HandshakeMessagePreparator<CertificateRequestMessage> {
 
     private byte[] certTypes;

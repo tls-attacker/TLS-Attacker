@@ -19,53 +19,49 @@ import de.rub.nds.tlsattacker.transport.udp.ServerUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingClientUdpTransportHandler;
 import de.rub.nds.tlsattacker.transport.udp.timing.TimingServerUdpTransportHandler;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class TransportHandlerFactory {
 
-    public static TransportHandler createTransportHandler(ConnectionEnd conEnd) {
-        ConnectionEndType ourConEndType = conEnd.getConnectionEndType();
-        Long timeout = new Long(conEnd.getTimeout());
-
-        switch (conEnd.getTransportHandlerType()) {
+    public static TransportHandler createTransportHandler(Connection con) {
+        ConnectionEndType localConEndType = con.getLocalConnectionEndType();
+        Long timeout = new Long(con.getTimeout());
+        switch (con.getTransportHandlerType()) {
             case TCP:
-                if (ourConEndType == ConnectionEndType.CLIENT) {
-                    return new ClientTcpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientTcpTransportHandler(timeout, con.getHostname(), con.getPort());
                 } else {
-                    return new ServerTcpTransportHandler(timeout, conEnd.getPort());
+                    return new ServerTcpTransportHandler(timeout, con.getPort());
                 }
             case EAP_TLS:
                 throw new UnsupportedOperationException("EAP_TLS is currently not supported");
             case UDP:
-                if (ourConEndType == ConnectionEndType.CLIENT) {
-                    return new ClientUdpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientUdpTransportHandler(timeout, con.getHostname(), con.getPort());
                 } else {
-                    return new ServerUdpTransportHandler(timeout, conEnd.getPort());
+                    return new ServerUdpTransportHandler(timeout, con.getPort());
                 }
             case NON_BLOCKING_TCP:
-                if (ourConEndType == ConnectionEndType.CLIENT) {
+                if (localConEndType == ConnectionEndType.CLIENT) {
                     throw new UnsupportedOperationException("NON_BLOCKING_TCP-Transporthandler is not supported");
                 } else {
-                    return new ServerTCPNonBlockingTransportHandler(timeout, conEnd.getPort());
+                    return new ServerTCPNonBlockingTransportHandler(timeout, con.getPort());
                 }
             case STREAM:
                 throw new UnsupportedOperationException("STREAM TransportHandler can only be created manually");
             case TCP_TIMING:
-                if (ourConEndType == ConnectionEndType.CLIENT) {
-                    return new TimingClientTcpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new TimingClientTcpTransportHandler(timeout, con.getHostname(), con.getPort());
                 } else {
-                    return new TimingServerTcpTransportHandler(timeout, conEnd.getPort());
+                    return new TimingServerTcpTransportHandler(timeout, con.getPort());
                 }
             case UDP_TIMING:
-                if (ourConEndType == ConnectionEndType.CLIENT) {
-                    return new TimingClientUdpTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new TimingClientUdpTransportHandler(timeout, con.getHostname(), con.getPort());
                 } else {
-                    return new TimingServerUdpTransportHandler(timeout, conEnd.getPort());
+                    return new TimingServerUdpTransportHandler(timeout, con.getPort());
                 }
             case TCP_NO_DELAY:
-                if (ourConEndType == ConnectionEndType.CLIENT) {
-                    return new ClientTcpNoDelayTransportHandler(timeout, conEnd.getHostname(), conEnd.getPort());
+                if (localConEndType == ConnectionEndType.CLIENT) {
+                    return new ClientTcpNoDelayTransportHandler(timeout, con.getHostname(), con.getPort());
                 } else {
                     throw new UnsupportedOperationException(
                             "This transport handler type is only supported in client mode");

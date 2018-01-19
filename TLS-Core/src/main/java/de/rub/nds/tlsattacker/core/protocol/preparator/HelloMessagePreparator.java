@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
@@ -18,9 +17,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
- *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
+ *            The HelloMessage that should be prepared
  */
 public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         HandshakeMessagePreparator<HandshakeMessage> {
@@ -32,7 +30,7 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
         this.msg = message;
     }
 
-    protected void prepareRandom(ProtocolVersion version) {
+    protected void prepareRandom() {
         byte[] random;
         if (chooser.getConfig().isUseRandomUnixTime()) {
             random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];

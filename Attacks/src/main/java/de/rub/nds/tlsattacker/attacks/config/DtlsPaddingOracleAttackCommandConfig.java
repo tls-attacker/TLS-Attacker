@@ -23,9 +23,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Florian Pfützenreuter <florian.pfuetzenreuter@rub.de>
- */
 public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "dtls_potest";
@@ -114,7 +111,7 @@ public class DtlsPaddingOracleAttackCommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        config.getConnectionEnd().setTransportHandlerType(TransportHandlerType.UDP);
+        config.getDefaultClientConnection().setTransportHandlerType(TransportHandlerType.UDP);
         config.setHighestProtocolVersion(ProtocolVersion.DTLS12);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
 

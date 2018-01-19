@@ -13,10 +13,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import org.junit.Test;
 
-/**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class ClientCommandConfigTest {
 
     /**

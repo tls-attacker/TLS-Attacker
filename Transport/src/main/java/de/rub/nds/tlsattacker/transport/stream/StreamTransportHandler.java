@@ -14,10 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class StreamTransportHandler extends TransportHandler {
 
     private final InputStream inputStream;

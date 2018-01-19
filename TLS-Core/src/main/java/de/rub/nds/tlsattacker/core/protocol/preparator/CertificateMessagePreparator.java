@@ -20,11 +20,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class CertificateMessagePreparator extends HandshakeMessagePreparator<CertificateMessage> {
 
     private final CertificateMessage msg;
@@ -63,7 +58,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
     }
 
     private void prepareRequestContext(CertificateMessage msg) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             msg.setRequestContext(chooser.getCertificateRequestContext());
         } else {
             msg.setRequestContext(new byte[0]);

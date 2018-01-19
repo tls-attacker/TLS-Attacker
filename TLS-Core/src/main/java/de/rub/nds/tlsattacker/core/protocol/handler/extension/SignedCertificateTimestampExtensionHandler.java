@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.SignedCertifica
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SignedCertificateTimestampExtensionHandler extends
         ExtensionHandler<SignedCertificateTimestampExtensionMessage> {
 

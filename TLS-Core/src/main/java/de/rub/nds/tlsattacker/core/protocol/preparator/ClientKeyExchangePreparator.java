@@ -12,9 +12,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
+ *            The ClientKeyExchangeMessage that should be prepared
  */
 public abstract class ClientKeyExchangePreparator<T extends ClientKeyExchangeMessage> extends
         HandshakeMessagePreparator<ClientKeyExchangeMessage> {

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<tlsConfig>
+    <defaultClientConnection>
+        <alias>client</alias>
+        <port>8002</port>
+        <hostname>testHostname</hostname>
+    </defaultClientConnection>      
+    <highestProtocolVersion>TLS12</highestProtocolVersion>
+    <alias>default</alias>
+    <password>password</password>
+    <clientAuthentication>false</clientAuthentication>
+    <sessionResumption>false</sessionResumption>
+    <renegotiation>false</renegotiation>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA512</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA384</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA256</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA224</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA1</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>MD5</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <fuzzingMode>false</fuzzingMode>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
+    <supportedCompressionMethods>NULL</supportedCompressionMethods>
+    <dynamicWorkflow>false</dynamicWorkflow>
+    <pointFormats>UNCOMPRESSED</pointFormats>
+    <namedCurves>SECP192R1</namedCurves>
+    <namedCurves>SECP256R1</namedCurves>
+    <namedCurves>SECP384R1</namedCurves>
+    <namedCurves>SECP521R1</namedCurves>
+    <heartbeatMode>PEER_ALLOWED_TO_SEND</heartbeatMode>
+    <sniHostname>localhost</sniHostname>
+    <sniType>HOST_NAME</sniType>
+    <sniHostnameFatal>false</sniHostnameFatal>
+    <serverPort>443</serverPort>
+    <maxFragmentLength>TWO_9</maxFragmentLength>
+    <TLSSessionTicket></TLSSessionTicket>
+    <defaultRenegotiationInfo></defaultRenegotiationInfo>
+    <defaultSignedCertificateTimestamp></defaultSignedCertificateTimestamp>
+    <defaultTokenBindingVersion>DRAFT_13</defaultTokenBindingVersion>
+    <defaultTokenBindingKeyParameters>ECDSAP256</defaultTokenBindingKeyParameters>
+    <defaultTokenBindingKeyParameters>RSA2048_PKCS1_5</defaultTokenBindingKeyParameters>
+    <defaultTokenBindingKeyParameters>RSA2048_PSS</defaultTokenBindingKeyParameters>
+    <tlsTimeout>400</tlsTimeout>
+    <timeout>1000</timeout>
+    <transportHandlerType>TCP</transportHandlerType>
+    <verifyWorkflow>false</verifyWorkflow>
+    <serverSendsApplicationData>false</serverSendsApplicationData>
+    <addECPointFormatExtension>true</addECPointFormatExtension>
+    <addEllipticCurveExtension>true</addEllipticCurveExtension>
+    <addHeartbeatExtension>false</addHeartbeatExtension>
+    <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
+    <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
+    <addSignatureAndHashAlgrorithmsExtension>false</addSignatureAndHashAlgrorithmsExtension>
+    <addPaddingExtension>false</addPaddingExtension>
+    <addExtendedMasterSecretExtension>false</addExtendedMasterSecretExtension>
+    <addSessionTicketTLSExtension>false</addSessionTicketTLSExtension>
+    <addSignedCertificateTimestampExtension>false</addSignedCertificateTimestampExtension>
+    <addRenegotiationInfoExtension>false</addRenegotiationInfoExtension>
+    <addTokenBindingExtension>false</addTokenBindingExtension>
+    <sessionId></sessionId>
+    <updateTimestamps>true</updateTimestamps>
+    <distinguishedNames></distinguishedNames>
+    <enforceSettings>false</enforceSettings>
+    <doDTLSRetransmits>false</doDTLSRetransmits>
+    <fixedDHModulus>
+FF FF FF FF FF FF FF FF  C9 0F DA A2 21 68 C2 34
+C4 C6 62 8B 80 DC 1C D1  29 02 4E 08 8A 67 CC 74
+02 0B BE A6 3B 13 9B 22  51 4A 08 79 8E 34 04 DD
+EF 95 19 B3 CD 3A 43 1B  30 2B 0A 6D F2 5F 14 37
+4F E1 35 6D 6D 51 C2 45  E4 85 B5 76 62 5E 7E C6
+F4 4C 42 E9 A6 37 ED 6B  0B FF 5C B6 F4 06 B7 ED
+EE 38 6B FB 5A 89 9F A5  AE 9F 24 11 7C 4B 1F E6
+49 28 66 51 EC E4 5B 3D  C2 00 7C B8 A1 63 BF 05
+98 DA 48 36 1C 55 D3 9A  69 16 3F A8 FD 24 CF 5F
+83 65 5D 23 DC A3 AD 96  1C 62 F3 56 20 85 52 BB
+9E D5 29 07 70 96 96 6D  67 0C 35 4E 4A BC 98 04
+F1 74 6C 08 CA 18 21 7C  32 90 5E 46 2E 36 CE 3B
+E3 9E 77 2C 18 0E 86 03  9B 27 83 A2 EC 07 A2 8F
+B5 C5 5D F0 6F 4C 52 C9  DE 2B CB F6 95 58 17 18
+39 95 49 7C EA 95 6A E5  15 D2 26 18 98 FA 05 10
+15 72 8E 5A 8A AC AA 68  FF FF FF FF FF FF FF FF
+</fixedDHModulus>
+    <fixedDHg>02</fixedDHg>
+    <defaultApplicationMessageData>Test</defaultApplicationMessageData>
+    <waitOnlyForExpectedDTLS>true</waitOnlyForExpectedDTLS>
+    <clientCertificateTypes>RSA_SIGN</clientCertificateTypes>
+    <heartbeatPayloadLength>256</heartbeatPayloadLength>
+    <heartbeatMinPaddingLength>16</heartbeatMinPaddingLength>
+    <heartbeatMaxPaddingLength>256</heartbeatMaxPaddingLength>
+    <defaultDTLSCookieLength>6</defaultDTLSCookieLength>
+    <defaultMaxRecordData>1048576</defaultMaxRecordData>
+    <defaultPaddingExtensionBytes>AAAAAAAA</defaultPaddingExtensionBytes>
+    <executorType>TLS</executorType>
+    <flushOnMessageTypeChange>true</flushOnMessageTypeChange>
+    <createRecordsDynamically>true</createRecordsDynamically>
+    <createIndividualRecords>true</createIndividualRecords>
+    <recordLayerType>RECORD</recordLayerType>
+    <stripWorkflowtracesBeforeSaving>false</stripWorkflowtracesBeforeSaving>
+    <quickReceive>true</quickReceive>
+    <defaultSelectedCipherSuite>TLS_RSA_WITH_AES_128_CBC_SHA</defaultSelectedCipherSuite>
+    <defaultSelectedSignatureAndHashAlgorithm>
+        <hashAlgorithm>SHA1</hashAlgorithm>
+        <signatureAlgorithm>RSA</signatureAlgorithm>
+    </defaultSelectedSignatureAndHashAlgorithm>
+    <defaultLastRecordProtocolVersion>TLS10</defaultLastRecordProtocolVersion>
+    <defaultSelectedProtocolVersion>TLS12</defaultSelectedProtocolVersion>
+    <defaultHighestClientProtocolVersion>TLS12</defaultHighestClientProtocolVersion>
+    <defaultMaxFragmentLength>TWO_12</defaultMaxFragmentLength>
+    <defaultHeartbeatMode>PEER_ALLOWED_TO_SEND</defaultHeartbeatMode>
+    <defaultMasterSecret></defaultMasterSecret>
+    <defaultPreMasterSecret></defaultPreMasterSecret>
+    <defaultClientRandom></defaultClientRandom>
+    <defaultServerRandom></defaultServerRandom>
+    <defaultClientSessionId></defaultClientSessionId>
+    <defaultServerSessionId></defaultServerSessionId>
+    <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
+    <defaultDtlsCookie></defaultDtlsCookie>
+    <defaultPRFAlgorithm>TLS_PRF_LEGACY</defaultPRFAlgorithm>
+</tlsConfig>

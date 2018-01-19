@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum BulkCipherAlgorithm {
 
     /**
@@ -27,11 +24,14 @@ public enum BulkCipherAlgorithm {
     CAMELLIA,
     SEED,
     ARIA,
+    CHACHA20_POLY1305,
+    GOST28147,
     AES;
 
     /**
      * @param cipherSuite
-     * @return
+     *            The CipherSuite to choose the BulkCipherAlgorithm from
+     * @return The BulkCipherAlgorithm of the Ciphersuite
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
         String cipher = cipherSuite.toString().toUpperCase();
@@ -58,9 +58,46 @@ public enum BulkCipherAlgorithm {
         } else if (cipher.contains("SEED")) {
             return SEED;
         } else if (cipher.contains("ARIA")) {
-            return SEED;
+            return ARIA;
+        } else if (cipher.contains("28147")) {
+            return GOST28147;
+        } else if (cipher.contains("CHACHA20_POLY1305")) {
+            return CHACHA20_POLY1305;
         }
         throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
+    }
+
+    public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherAlgorithm cipherAlgorithm) {
+        String cipher = cipherAlgorithm.toString().toUpperCase();
+        if (cipher.contains("DES_EDE")) {
+            return DESede;
+        } else if (cipher.contains("AES")) {
+            return AES;
+        } else if (cipher.contains("RC4")) {
+            return RC4;
+        } else if (cipher.contains("RC2")) {
+            return RC2;
+        } else if (cipher.contains("NULL")) {
+            return NULL;
+        } else if (cipher.contains("IDEA")) {
+            return IDEA;
+        } else if (cipher.contains("DES40")) {
+            return DES40;
+        } else if (cipher.contains("DES")) {
+            return DES;
+        } else if (cipher.contains("FORTEZZA")) {
+            return FORTEZZA;
+        } else if (cipher.contains("CAMELLIA")) {
+            return CAMELLIA;
+        } else if (cipher.contains("SEED")) {
+            return SEED;
+        } else if (cipher.contains("ARIA")) {
+            return ARIA;
+        } else if (cipher.contains("CHACHA20_POLY1305")) {
+            return CHACHA20_POLY1305;
+        }
+        throw new UnsupportedOperationException("The cipher algorithm from " + cipherAlgorithm.name()
+                + " is not supported yet.");
     }
 
     public String getJavaName() {

@@ -8,12 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -22,12 +16,12 @@ import java.security.SignatureException;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
-import java.util.Random;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
+import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+
 public class SignatureCalculator {
 
     private SignatureCalculator() {

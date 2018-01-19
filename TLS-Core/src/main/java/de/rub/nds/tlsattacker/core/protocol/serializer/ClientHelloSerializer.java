@@ -13,11 +13,6 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class ClientHelloSerializer extends HelloMessageSerializer<ClientHelloMessage> {
 
     private final ClientHelloMessage msg;

@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionM
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.KeyShareExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.KeyShareExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ClientConnectionEnd;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,9 +28,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeyShareExtensionHandlerTest {
 
     private TlsContext context;
@@ -51,7 +48,7 @@ public class KeyShareExtensionHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        context.setConnectionEnd(new ClientConnectionEnd());
+        context.setConnection(new OutboundConnection());
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
@@ -69,15 +66,6 @@ public class KeyShareExtensionHandlerTest {
                 ArrayConverter.hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c"),
                 entry.getSerializedPublicKey());
         assertTrue(entry.getGroup() == NamedCurve.ECDH_X25519);
-        assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("EA2F968FD0A381E4B041E6D8DDBF6DA93DE4CEAC862693D3026323E780DB9FC3"),
-                context.getHandshakeSecret());
-        assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("C56CAE0B1A64467A0E3A3337F8636965787C9A741B0DAB63E503076051BCA15C"),
-                context.getClientHandshakeTrafficSecret());
-        assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("DBF731F5EE037C4494F24701FF074AD4048451C0E2803BC686AF1F2D18E861F5"),
-                context.getServerHandshakeTrafficSecret());
     }
 
     /**

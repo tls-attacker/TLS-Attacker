@@ -8,15 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum SignatureAlgorithm {
 
     ANONYMOUS((byte) 0),

@@ -31,10 +31,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public class TlsRecordLayer extends RecordLayer {
 
     protected final TlsContext tlsContext;
@@ -46,14 +42,14 @@ public class TlsRecordLayer extends RecordLayer {
 
     public TlsRecordLayer(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
-        cipher = new RecordNullCipher();
+        cipher = new RecordNullCipher(tlsContext);
         encryptor = new RecordEncryptor(cipher, tlsContext);
         decryptor = new RecordDecryptor(cipher, tlsContext);
     }
 
     /**
-     *
      * @param rawRecordData
+     *            The RawRecordData that should be parsed
      * @return list of parsed records or null, if there was not enough data
      */
     @Override
@@ -66,6 +62,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
+                if (dataPointer == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing HttpsHeader");
+                }
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
                 throw new ParserException("Could not parse provided Data as Record", E);
@@ -85,6 +84,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 Record record = parser.parse();
                 records.add(record);
+                if (dataPointer == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing Records");
+                }
                 dataPointer = parser.getPointer();
             } catch (ParserException E) {
                 LOGGER.debug("Could not parse Record, parsing as Blob");
@@ -93,6 +95,9 @@ public class TlsRecordLayer extends RecordLayer {
                         .getSelectedProtocolVersion());
                 AbstractRecord record = blobParser.parse();
                 records.add(record);
+                if (dataPointer == blobParser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing BlobRecords");
+                }
                 dataPointer = blobParser.getPointer();
             }
         }
@@ -134,6 +139,10 @@ public class TlsRecordLayer extends RecordLayer {
         this.cipher = cipher;
     }
 
+    public RecordCipher getRecordCipher() {
+        return cipher;
+    }
+
     @Override
     public void updateEncryptionCipher() {
         encryptor.setRecordCipher(cipher);
@@ -163,6 +172,16 @@ public class TlsRecordLayer extends RecordLayer {
     @Override
     public AbstractRecord getFreshRecord() {
         return new Record(tlsContext.getConfig());
+    }
+
+    @Override
+    public RecordCipher getEncryptor() {
+        return encryptor.getRecordCipher();
+    }
+
+    @Override
+    public RecordCipher getDecryptor() {
+        return decryptor.getRecordCipher();
     }
 
 }

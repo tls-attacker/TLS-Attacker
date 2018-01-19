@@ -52,7 +52,7 @@ package de.rub.nds.tlsattacker.core.workflow;
 //
 ///**
 // *
-// * @author Juraj Somorovsky - juraj.somorovsky@rub.de
+
 // */
 //public class GenericWorkflowExecutorTest
 //{

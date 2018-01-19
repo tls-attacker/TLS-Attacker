@@ -22,10 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CertificateStatusRequestV2ExtensionParserTest {
 
     private final int listLength = 48;

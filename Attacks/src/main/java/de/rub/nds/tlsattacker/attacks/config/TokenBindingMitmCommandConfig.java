@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.MitmDelegate;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class TokenBindingMitmCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "token_binding_mitm";

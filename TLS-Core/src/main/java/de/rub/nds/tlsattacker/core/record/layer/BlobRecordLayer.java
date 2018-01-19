@@ -28,10 +28,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class BlobRecordLayer extends RecordLayer {
 
     private final TlsContext context;
@@ -42,7 +38,7 @@ public class BlobRecordLayer extends RecordLayer {
 
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
-        cipher = new RecordNullCipher();
+        cipher = new RecordNullCipher(context);
         encryptor = new RecordEncryptor(cipher, context);
         decryptor = new RecordDecryptor(cipher, context);
     }
@@ -107,6 +103,16 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public AbstractRecord getFreshRecord() {
         return new BlobRecord(context.getConfig());
+    }
+
+    @Override
+    public RecordCipher getEncryptor() {
+        return encryptor.getRecordCipher();
+    }
+
+    @Override
+    public RecordCipher getDecryptor() {
+        return decryptor.getRecordCipher();
     }
 
 }

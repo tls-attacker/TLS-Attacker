@@ -29,10 +29,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @XmlRootElement
 public class CertificateMessage extends HandshakeMessage {
 
@@ -78,6 +74,7 @@ public class CertificateMessage extends HandshakeMessage {
                 certificatesList.add(pair);
             }
         } catch (IOException ex) {
+            LOGGER.debug(ex);
             LOGGER.warn("Could not parse configured Certificate into a real Certificate. Just sending bytes as they are (with added Length field)");
             CertificatePair pair = new CertificatePair();
             pair.setCertificateConfig(CertificateByteChooser.chooseCertificateType(tlsConfig));

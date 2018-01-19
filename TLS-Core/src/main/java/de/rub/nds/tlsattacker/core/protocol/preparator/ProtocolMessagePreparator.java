@@ -12,9 +12,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 /**
- *
- * @author Robert Merget - robert.merget@rub.de
  * @param <T>
+ *            The ProtocolMessage that should be prepared
  */
 public abstract class ProtocolMessagePreparator<T extends ProtocolMessage> extends Preparator<T> {
 

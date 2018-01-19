@@ -19,10 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class RSAClientKeyExchangeParserTest {
 
@@ -56,7 +52,16 @@ public class RSAClientKeyExchangeParserTest {
                                 256,
                                 ArrayConverter
                                         .hexStringToByteArray("cccf06b7672e22591d90fdcff119a6966432475187607b2a420ad0e573540725016f2b05dea5a0d1d3bc3a1d64f7364a061965f9299b81c67fc49b1b6161ed2724c3ded7867f56be96e5141510dcadece2d5487336f8719b136f02b939ef9268f845a47eb6842b087e1e0317d1953e95c4d5d4c80fade6911d8885ebe9f7b7adb19f5b1bda81ceffe59686a77d1fb9274a4361db3227716377d4ad881118ce92fe95934d46ec8427181e731751a69d341ff663245874d9e96b608bd661fde04676538c807d76c524ee56a94e72746cce2fac8c0267ca44bc69032a7879db4ea3ab2d18d711a0ee6892d0daf17bac446a587a94eeb4c8c56f8fdae28511070a75"),
-                                ProtocolVersion.TLS10 } });
+                                ProtocolVersion.TLS10 },
+                        {
+                                ArrayConverter
+                                        .hexStringToByteArray("100000801a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230"),
+                                HandshakeMessageType.CLIENT_KEY_EXCHANGE,
+                                128,
+                                128,
+                                ArrayConverter
+                                        .hexStringToByteArray("1a4dc552ddd7e1e25dbaff38dd447b3a6fdc85120e2f760fefdab88e5adbbc710f3d0843f07c9f4f5ac01bc4cea02c4030c272074aa04b1b80a71123b73ea4efbe928b54a83fe4b39472bf66a953c7dc11cfb13ea08f92047996799ce702eb72a7c69bdfd98b91a09bcb836414752d93d3641740f8ed5cfff682225434052230"),
+                                ProtocolVersion.SSL3 } });
     }
 
     private final byte[] message;
@@ -83,12 +88,13 @@ public class RSAClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        RSAClientKeyExchangeParser parser = new RSAClientKeyExchangeParser(0, message, version);
+        RSAClientKeyExchangeParser<RSAClientKeyExchangeMessage> parser = new RSAClientKeyExchangeParser(0, message,
+                version);
         RSAClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
-        assertTrue(msg.getLength().getValue() == length);
-        assertTrue(msg.getType().getValue() == type.getValue());
-        assertTrue(serializedKeyLength == msg.getPublicKeyLength().getValue());
+        assertEquals(length, msg.getLength().getValue().intValue());
+        assertEquals(type.getValue(), msg.getType().getValue().byteValue());
+        assertEquals(serializedKeyLength, msg.getPublicKeyLength().getValue().intValue());
         assertArrayEquals(serializedKey, msg.getPublicKey().getValue());
     }
 

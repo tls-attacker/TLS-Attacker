@@ -21,10 +21,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DHEServerKeyExchangePreparatorTest {
 
     private TlsContext context;
@@ -45,12 +41,12 @@ public class DHEServerKeyExchangePreparatorTest {
     @Test
     public void testPrepare() {
         context.getConfig()
-                .setDefaultDhGenerator(
+                .setDefaultServerDhGenerator(
                         new BigInteger(
                                 ArrayConverter
                                         .hexStringToByteArray("a51883e9ac0539859df3d25c716437008bb4bd8ec4786eb4bc643299daef5e3e5af5863a6ac40a597b83a27583f6a658d408825105b16d31b6ed088fc623f648fd6d95e9cefcb0745763cddf564c87bcf4ba7928e74fd6a3080481f588d535e4c026b58a21e1e5ec412ff241b436043e29173f1dc6cb943c09742de989547288")));
         context.getConfig()
-                .setDefaultDhModulus(
+                .setDefaultServerDhModulus(
                         new BigInteger(
                                 1,
                                 ArrayConverter

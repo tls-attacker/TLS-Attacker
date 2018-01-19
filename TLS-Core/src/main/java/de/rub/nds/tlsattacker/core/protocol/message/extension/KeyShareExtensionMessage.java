@@ -13,14 +13,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeyShareExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -35,6 +33,15 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     public KeyShareExtensionMessage() {
         super(ExtensionType.KEY_SHARE);
         keyShareList = new LinkedList<>();
+    }
+
+    public KeyShareExtensionMessage(Config tlsConfig) {
+        super(ExtensionType.KEY_SHARE);
+        keyShareList = new LinkedList<>();
+        KeySharePair pair = new KeySharePair();
+        pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
+        pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
+        keyShareList.add(pair);
     }
 
     public ModifiableInteger getKeyShareListLength() {

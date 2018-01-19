@@ -25,8 +25,6 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 /**
  * Pseudo random function computation for TLS 1.0 - 1.2 (for TLS 1.0, bouncy
  * castle TlsUtils are used)
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class PseudoRandomFunction {
 
@@ -61,11 +59,16 @@ public class PseudoRandomFunction {
      * Computes PRF output of the provided size using the given mac algorithm
      *
      * @param prfAlgorithm
+     *            PRFAlogirhtm
      * @param secret
+     *            The Secret
      * @param label
+     *            The Label
      * @param seed
+     *            The Seed
      * @param size
-     * @return
+     *            The size
+     * @return the Prf output
      */
     public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size) {
 
@@ -86,12 +89,17 @@ public class PseudoRandomFunction {
     /**
      * PRF computation for TLS 1.2
      *
+     * @param prfAlgorithm
+     *            PRFAlogirhtm
      * @param secret
+     *            The Secret
      * @param label
+     *            The Label
      * @param seed
+     *            The Seed
      * @param size
-     * @param macAlgorithm
-     * @return
+     *            The size
+     * @return the Prf output
      */
     private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm) {
         try {
@@ -135,6 +143,9 @@ public class PseudoRandomFunction {
                 mac.update(ai);
                 mac.update(labelSeed);
                 buf2 = mac.doFinal();
+                if (buf2.length == 0) {
+                    throw new CryptoException("Could not Calc PRF output. Mac length is zero!");
+                }
                 out = ArrayConverter.concatenate(out, buf2);
             }
             return Arrays.copyOf(out, size);

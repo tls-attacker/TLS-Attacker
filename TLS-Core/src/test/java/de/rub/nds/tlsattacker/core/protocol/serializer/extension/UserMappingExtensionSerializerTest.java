@@ -16,10 +16,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class UserMappingExtensionSerializerTest {
     private final ExtensionType extensionType = ExtensionType.USER_MAPPING;
     private final byte[] extensionBytes = ArrayConverter.hexStringToByteArray("0006000140");

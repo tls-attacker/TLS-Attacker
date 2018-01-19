@@ -28,6 +28,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
@@ -36,7 +37,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtension
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
@@ -56,12 +59,6 @@ import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
@@ -126,12 +123,13 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new SupportedVersionsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
-            KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
-            KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
-            pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
-            extension.getKeyShareList().add(pair);
-            addExtension(extension);
+            addExtension(new KeyShareExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddEarlyDataExtension()) {
+            addExtension(new EarlyDataExtensionMessage());
+        }
+        if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
+            addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
@@ -155,7 +153,7 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new CertificateStatusRequestExtensionMessage());
         }
         if (tlsConfig.isAddAlpnExtension()) {
-            addExtension(new AlpnExtensionMessage());
+            addExtension(new AlpnExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddSRPExtension()) {
             addExtension(new SRPExtensionMessage());
@@ -199,6 +197,10 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddCertificateStatusRequestV2Extension()) {
             addExtension(new CertificateStatusRequestV2ExtensionMessage());
         }
+        if (tlsConfig.isAddPreSharedKeyExtension()) {
+            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
+        }
+        // In TLS 1.3, the PSK ext has to be the last ClientHello extension
     }
 
     public ModifiableInteger getCompressionLength() {
@@ -310,4 +312,5 @@ public class ClientHelloMessage extends HelloMessage {
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);
     }
+
 }

@@ -14,9 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum HashAlgorithm {
 
     NONE((byte) 0, ""),

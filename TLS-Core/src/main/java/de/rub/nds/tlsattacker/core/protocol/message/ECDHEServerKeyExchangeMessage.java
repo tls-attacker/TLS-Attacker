@@ -25,19 +25,16 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 @XmlRootElement
 public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByte curveType;
+    protected ModifiableByte curveType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray namedCurve;
+    protected ModifiableByteArray namedCurve;
 
-    private ECDHEServerComputations computations;
+    protected ECDHEServerComputations computations;
 
     public ECDHEServerKeyExchangeMessage() {
         super();

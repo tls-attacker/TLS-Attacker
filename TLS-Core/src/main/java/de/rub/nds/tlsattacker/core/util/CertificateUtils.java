@@ -31,10 +31,6 @@ import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.X509CertificateObject;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class CertificateUtils {
 
     protected static final Logger LOGGER = LogManager.getLogger(CertificateUtils.class.getName());
@@ -43,13 +39,14 @@ public class CertificateUtils {
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
      * @param cert
-     * @return
+     *            The Certificate from which the PublicKey should be extracted
+     * @return The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {
             X509CertificateObject certObj = new X509CertificateObject(cert.getCertificateAt(0));
             return certObj.getPublicKey();
-        } catch (CertificateParsingException ex) {
+        } catch (CertificateParsingException | IllegalArgumentException | ClassCastException ex) {
             LOGGER.warn("Could not extract public key from Certificate!");
             LOGGER.debug(ex);
             return null;
@@ -62,7 +59,7 @@ public class CertificateUtils {
             KeyFactory f = KeyFactory.getInstance("EC");
             ECPrivateKeySpec s = f.getKeySpec(key, ECPrivateKeySpec.class);
             k = (ECPrivateKey) f.generatePrivate(s);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;
@@ -76,7 +73,7 @@ public class CertificateUtils {
             KeyFactory f = KeyFactory.getInstance("RSA");
             RSAPrivateKeySpec s = f.getKeySpec(key, RSAPrivateKeySpec.class);
             k = (RSAPrivateKey) f.generatePrivate(s);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | IllegalArgumentException | ClassCastException ex) {
             LOGGER.warn("Could not convert key to EC private key!");
             LOGGER.debug(ex);
             return null;

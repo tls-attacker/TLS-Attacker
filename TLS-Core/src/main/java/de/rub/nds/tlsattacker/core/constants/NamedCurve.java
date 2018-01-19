@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,10 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum NamedCurve {
 
     SECT163K1(new byte[] { (byte) 0, (byte) 1 }, "sect163k1"),
@@ -95,6 +92,8 @@ public enum NamedCurve {
     // GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }),
     NONE(new byte[] { (byte) 0, (byte) 0 }, "");
 
+    protected static final Logger LOGGER = LogManager.getLogger(NamedCurve.class.getName());
+
     public static final int LENGTH = 2;
 
     private byte[] value;
@@ -123,7 +122,11 @@ public enum NamedCurve {
         this.javaName = javaName;
     }
 
-    private static int valueToInt(byte[] value) {
+    private static Integer valueToInt(byte[] value) {
+        if (value.length < 2) {
+            LOGGER.warn("Could not convert NamedCurve. Returning null");
+            return null;
+        }
         return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
@@ -144,7 +147,7 @@ public enum NamedCurve {
         return c;
     }
 
-    public int getIntValue() {
+    public Integer getIntValue() {
         return valueToInt(value);
     }
 

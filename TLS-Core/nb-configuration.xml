@@ -26,7 +26,12 @@
         <netbeans.compile.on.save>all</netbeans.compile.on.save>
     </properties>
     <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>Aliasable</word>
+        <word>charset</word>
+        <word>charsets</word>
         <word>config</word>
+        <word>unmarshal</word>
         <word>workflow</word>
+        <word>workflows</word>
     </spellchecker-wordlist>
 </project-shared-configuration>

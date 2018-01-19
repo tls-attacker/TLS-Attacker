@@ -21,10 +21,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * 
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- */
 public class ICEAttacker {
 
     private static Logger LOGGER = LogManager.getLogger(ICEAttacker.class);
@@ -181,9 +177,13 @@ public class ICEAttacker {
      * compute the server private key with CRT.
      * 
      * @param usedOracleEquations
+     *            The used oracle equations
      * @param congs
+     *            The congruences
      * @param modulis
+     *            The modulis
      * @param pointer
+     *            the pointer
      */
     public void bruteForceWithAdditionalOracleEquations(int[] usedOracleEquations, BigInteger[] congs,
             BigInteger[] modulis, int pointer) {
@@ -213,9 +213,12 @@ public class ICEAttacker {
      * Computes CRT from a given combination of congs and modulis
      * 
      * @param usedOracleEquations
+     *            The used oracle equations
      * @param congs
+     *            The congruences
      * @param modulis
-     * @return
+     *            The modulis
+     * @return CRTF
      */
     private BigInteger computeCRTFromCombination(int[] usedOracleEquations, BigInteger[] congs, BigInteger[] modulis) {
         BigInteger[] usedCongs = new BigInteger[usedOracleEquations.length];
@@ -239,7 +242,8 @@ public class ICEAttacker {
      * Uses the oracle to get a congruence for a specific point
      * 
      * @param point
-     * @return
+     *            A Point
+     * @return The Congruence
      */
     private BigInteger getCongruence(ICEPoint point) {
         BigInteger secretModOrder = BigInteger.ZERO;

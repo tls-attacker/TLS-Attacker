@@ -21,10 +21,6 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class GeneralDelegate extends Delegate {
 
     @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")

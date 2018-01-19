@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HeartbeatExtensionParser extends ExtensionParser<HeartbeatExtensionMessage> {
 
     public HeartbeatExtensionParser(int startposition, byte[] array) {

@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
-public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientKeyExchangeMessage> {
+public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> extends ClientKeyExchangeParser<T> {
 
     /**
      * Constructor for the Parser class
@@ -36,15 +32,20 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
     }
 
     @Override
-    protected void parseHandshakeMessageContent(DHClientKeyExchangeMessage msg) {
+    protected void parseHandshakeMessageContent(T msg) {
         LOGGER.debug("Parsing DHClientKeyExchangeMessage");
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
     }
 
+    protected void parseDhParams(T msg) {
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
+    }
+
     @Override
-    protected DHClientKeyExchangeMessage createHandshakeMessage() {
-        return new DHClientKeyExchangeMessage();
+    protected T createHandshakeMessage() {
+        return (T) new DHClientKeyExchangeMessage();
     }
 
     /**
@@ -54,8 +55,12 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPublicKeyLength(DHClientKeyExchangeMessage message) {
-        message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+    private void parseSerializedPublicKeyLength(T message) {
+        if (getVersion().isSSL()) {
+            message.setPublicKeyLength(getBytesLeft());
+        } else {
+            message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
+        }
         LOGGER.debug("SerializedPublicKeyLength: " + message.getPublicKeyLength().getValue());
     }
 
@@ -66,7 +71,7 @@ public class DHClientKeyExchangeParser extends ClientKeyExchangeParser<DHClientK
      * @param msg
      *            Message to write in
      */
-    private void parseSerializedPublicKey(DHClientKeyExchangeMessage message) {
+    private void parseSerializedPublicKey(T message) {
         message.setPublicKey(parseByteArrayField(message.getPublicKeyLength().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(message.getPublicKey().getValue()));
     }
