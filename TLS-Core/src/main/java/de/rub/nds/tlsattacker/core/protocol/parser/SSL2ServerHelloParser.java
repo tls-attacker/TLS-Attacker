@@ -44,7 +44,20 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
      *            Message to write in
      */
     private void parseMessageLength(SSL2ServerHelloMessage message) {
-        message.setMessageLength(parseIntField(SSL2ByteLength.LENGTH));
+        // The "wonderful" SSL2 message length field:
+        // 2-byte header: RECORD-LENGTH = ((byte[0] & 0x7f) << 8)) | byte[1];
+        // 3-byte header: RECORD-LENGTH = ((byte[0] & 0x3f) << 8)) | byte[1];
+        // If most significant bit on first byte is set: 2-byte header.
+        // O/w, 3-byte header.
+        byte[] first2Bytes = parseByteArrayField(2);
+        int mask;
+        if ((first2Bytes[0] & 0x80) == 0) {
+            mask = 0x3f;
+        } else {
+            mask = 0x7f;
+        }
+        int len = ((first2Bytes[0] & mask) << 8) | (first2Bytes[1] & 0xFF);
+        message.setMessageLength(len);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 
