@@ -146,11 +146,8 @@ public class SSL2ClientHelloMessage extends SSL2ClientMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            sb.append(super.toString()).append("\n  Protocol Version: ");
+            sb.append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
-        }
-        if (getType() != null && getType().getValue() != null) {
-            sb.append("\n Type: ").append(getType().getValue());
         }
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
             sb.append("\n Supported CipherSuites: ").append(

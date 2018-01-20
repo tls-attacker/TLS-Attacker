@@ -12,7 +12,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
 public abstract class SSL2ClientMessage extends ProtocolMessage {
 
@@ -49,6 +51,14 @@ public abstract class SSL2ClientMessage extends ProtocolMessage {
 
     public void setType(byte type) {
         this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        if (getType() != null && getType().getValue() != null) {
+            sb.append("\n Type: ").append(getType().getValue());
+        }
+        return sb.toString();
     }
 
 }
