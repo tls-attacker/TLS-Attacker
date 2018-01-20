@@ -59,8 +59,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                 context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
             }
         }
-        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
-                && message.getIdentities() != null && message.getIdentities().size() > 0) {
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER && message.getIdentities() != null
+                && message.getIdentities().size() > 0) {
             selectPsk(message);
             if (context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 selectEarlyDataPsk(message);
