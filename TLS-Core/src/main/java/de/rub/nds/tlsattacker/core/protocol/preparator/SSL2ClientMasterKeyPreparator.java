@@ -61,7 +61,7 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator {
         prepareClearKey(message);
         prepareClearKeyLength(message);
 
-        LOGGER.debug("RSA Modulus: ", chooser.getServerRsaModulus().toString());
+        LOGGER.debug("RSA Modulus: " + chooser.getServerRsaModulus().toString());
 
         // byte[] challenge = new byte[16];
         // chooser.getContext().getRandom().nextBytes(challenge);
