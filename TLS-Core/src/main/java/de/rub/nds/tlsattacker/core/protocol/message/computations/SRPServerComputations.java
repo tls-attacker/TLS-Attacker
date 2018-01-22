@@ -12,15 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.math.BigInteger;
 
 public class SRPServerComputations extends KeyExchangeComputations {
-
-    /**
-     * server's private key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger privateKey;
 
     /**
      * dh modulus used for computations
@@ -47,18 +42,6 @@ public class SRPServerComputations extends KeyExchangeComputations {
     private ModifiableByteArray serverRandom;
 
     public SRPServerComputations() {
-    }
-
-    public ModifiableBigInteger getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(ModifiableBigInteger privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
     public ModifiableByteArray getSRPIdentity() {
@@ -131,5 +114,10 @@ public class SRPServerComputations extends KeyExchangeComputations {
 
     public void setServerRandom(byte[] serverRandom) {
         this.serverRandom = ModifiableVariableFactory.safelySetValue(this.serverRandom, serverRandom);
+    }
+
+    @Override
+    public void setSecretsInConfig(Config config) {
+        config.setDefaultSRPPassword(srpPassword.getValue());
     }
 }

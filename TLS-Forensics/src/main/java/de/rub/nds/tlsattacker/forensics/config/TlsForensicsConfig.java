@@ -26,6 +26,9 @@ public class TlsForensicsConfig {
     @Parameter(names = "-workflow", description = "The Workflow which should be analyzed", required = true)
     private String workflowInput = null;
 
+    @Parameter(names = "-debug", description = "Enables debug mode")
+    private boolean debug = false;
+
     public TlsForensicsConfig() {
     }
 
@@ -37,4 +40,11 @@ public class TlsForensicsConfig {
         this.workflowInput = workflowInput;
     }
 
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
 }

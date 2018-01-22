@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import java.math.BigInteger;
 
@@ -18,8 +19,6 @@ public class ECDHClientComputations extends KeyExchangeComputations {
     private ModifiableBigInteger serverPublicKeyX;
 
     private ModifiableBigInteger serverPublicKeyY;
-
-    private ModifiableBigInteger clientPrivateKey;
 
     private CustomECPoint clientPublicKey;
 
@@ -55,15 +54,8 @@ public class ECDHClientComputations extends KeyExchangeComputations {
         this.serverPublicKeyY = ModifiableVariableFactory.safelySetValue(this.serverPublicKeyY, serverPublicKeyY);
     }
 
-    public ModifiableBigInteger getClientPrivateKey() {
-        return clientPrivateKey;
-    }
-
-    public void setClientPrivateKey(ModifiableBigInteger clientPrivateKey) {
-        this.clientPrivateKey = clientPrivateKey;
-    }
-
-    public void setClientPrivateKey(BigInteger clientPrivateKey) {
-        this.clientPrivateKey = ModifiableVariableFactory.safelySetValue(this.clientPrivateKey, clientPrivateKey);
+    @Override
+    public void setSecretsInConfig(Config config) {
+        config.setDefaultClientEcPrivateKey(getPrivateKey().getValue());
     }
 }

@@ -22,13 +22,13 @@ import de.rub.nds.tlsattacker.forensics.analyzer.ForensicAnalyzer;
 import de.rub.nds.tlsattacker.forensics.config.TlsForensicsConfig;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  *
@@ -44,12 +44,18 @@ public class Main {
         Exception ex = null;
         try {
             commander.parse(args);
+            if (config.isDebug()) {
+                Configurator.setRootLevel(org.apache.logging.log4j.Level.ALL);
+            }
             // Cmd was parsable
             try {
                 String workflowFile = config.getWorkflowInput();
                 WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(new File(workflowFile)));
                 ForensicAnalyzer analyzer = new ForensicAnalyzer();
                 WorkflowTrace realWorkflowTrace = analyzer.getRealWorkflowTrace(trace);
+                LOGGER.info("Provided WorkflowTrace:");
+                LOGGER.info(trace.toString());
+                LOGGER.info("Reconstructed WorkflowTrace:");
                 LOGGER.info(realWorkflowTrace.toString());
             } catch (ConfigurationException E) {
                 LOGGER.info("Encountered an Exception. Aborting.");

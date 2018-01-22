@@ -49,22 +49,27 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         CustomECPoint serverPublicKey = chooser.getServerEcPublicKey();
         BigInteger privateKey = chooser.getClientEcPrivateKey();
         // Set everything in computations and reload
-        msg.getComputations().setClientPrivateKey(privateKey);
+        msg.getComputations().setPrivateKey(privateKey);
         msg.getComputations().setServerPublicKeyX(serverPublicKey.getX());
         msg.getComputations().setServerPublicKeyY(serverPublicKey.getY());
         ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
         serverPublicKey = new CustomECPoint(msg.getComputations().getServerPublicKeyX().getValue(), msg
                 .getComputations().getServerPublicKeyY().getValue());
-        privateKey = msg.getComputations().getClientPrivateKey().getValue();
+        privateKey = msg.getComputations().getPrivateKey().getValue();
+        LOGGER.debug("PrivateKey used:" + privateKey);
+
         ECPoint clientPublicKey = ecParams.getCurve().getMultiplier().multiply(ecParams.getG(), privateKey);
         CustomECPoint customClientPublicKey = new CustomECPoint(clientPublicKey.getRawXCoord().toBigInteger(),
                 clientPublicKey.getRawYCoord().toBigInteger());
         msg.getComputations().setClientPublicKey(customClientPublicKey);
+        LOGGER.debug("Server PublicKey used:" + serverPublicKey.toString());
+
         try {
             premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(new ECPublicKeyParameters(ecParams.getCurve()
                     .createPoint(serverPublicKey.getX(), serverPublicKey.getY()), ecParams),
                     new ECPrivateKeyParameters(privateKey, ecParams));
         } catch (IllegalArgumentException E) {
+            LOGGER.warn("Could not calculate premasterSecret", E);
             premasterSecret = chooser.getPreMasterSecret();
         }
         // Set and update premaster secret
@@ -160,8 +165,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             CustomECPoint customClientKey = new CustomECPoint(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
                     clientPublicKey.getQ().getRawYCoord().toBigInteger());
             msg.getComputations().setClientPublicKey(customClientKey);
-
+            LOGGER.debug("PublicKey used:" + customClientKey.toString());
             BigInteger privatekey = chooser.getServerEcPrivateKey();
+            LOGGER.debug("PrivateKey used:" + chooser.getServerEcPrivateKey());
+
             computePremasterSecret(clientPublicKey,
                     new ECPrivateKeyParameters(privatekey, clientPublicKey.getParameters()));
             preparePremasterSecret(msg);

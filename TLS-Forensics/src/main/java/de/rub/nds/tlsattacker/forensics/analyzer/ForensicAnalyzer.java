@@ -8,6 +8,12 @@
  */
 package de.rub.nds.tlsattacker.forensics.analyzer;
 
+import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -26,9 +32,11 @@ import de.rub.nds.tlsattacker.transport.stream.StreamTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * This class tries to reconstruct WorkflowTraces
@@ -40,18 +48,28 @@ public class ForensicAnalyzer {
     protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(ForensicAnalyzer.class
             .getName());
 
+    private ConnectionEndType connectionEndType;
+
     public ForensicAnalyzer() {
     }
 
     public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow) throws IOException {
+        Security.addProvider(new BouncyCastleProvider());
+        if (!isSupported(executedWorkflow)) {
+            return null;
+        }
         WorkflowTrace reconstructed = new WorkflowTrace();
         int tracePosition = 0; // The action we are currently looking at.
         State state = new State(); // initialise an empty state
         TlsContext context = state.getTlsContext();
         context.setRecordLayer(new TlsRecordLayer(context));
-
-        if (!isSupported(executedWorkflow)) {
-            return null;
+        adjustPrivateKeys(state, executedWorkflow);
+        // Try to determin if the trace was a client or server trace
+        connectionEndType = ConnectionEndType.CLIENT;
+        if (executedWorkflow.getTlsActions().size() > 0) {
+            if (!(executedWorkflow.getTlsActions().get(0) instanceof SendingAction)) {
+                connectionEndType = ConnectionEndType.SERVER;
+            }
         }
         while (tracePosition < executedWorkflow.getTlsActions().size()) {
             boolean sending;
@@ -64,20 +82,30 @@ public class ForensicAnalyzer {
                 sending = false;
             }
             byte[] joinedRecordBytes = joinRecordBytes(joinedActions);
-
             context.setTransportHandler(new StreamTransportHandler(1, ConnectionEndType.CLIENT,
                     new ByteArrayInputStream(joinedRecordBytes), new ByteArrayOutputStream()));
             context.getTransportHandler().initialize();
             ReceiveMessageHelper helper = new ReceiveMessageHelper();
-            MessageActionResult parsedMessageResult = helper.receiveMessages(context);
+            if (sending) {
+                context.setTalkingConnectionEndType(connectionEndType);
+            } else {
+                context.setTalkingConnectionEndType(connectionEndType.getPeer());
+            }
+            if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+                context.setConnection(new InboundConnection());
+            } else {
+                context.setConnection(new OutboundConnection());
+            }
             tracePosition += joinedActions.size();
+            MessageActionResult parsedMessageResult = helper.receiveMessages(context);
             if (sending) {
                 SendAction reconstructedAction = new SendAction(parsedMessageResult.getMessageList());
                 reconstructedAction.setRecords(parsedMessageResult.getRecordList());
                 reconstructed.addTlsAction(reconstructedAction);
             } else {
-                ReceiveAction reconstructedAction = new ReceiveAction(parsedMessageResult.getMessageList());
+                GenericReceiveAction reconstructedAction = new GenericReceiveAction();
                 reconstructedAction.setRecords(parsedMessageResult.getRecordList());
+                reconstructedAction.setMessages(parsedMessageResult.getMessageList());
                 reconstructed.addTlsAction(reconstructedAction);
             }
         }
@@ -138,5 +166,19 @@ public class ForensicAnalyzer {
             }
         }
         return joinedActions;
+    }
+
+    public void adjustPrivateKeys(State state, WorkflowTrace executedTrace) {
+        Config config = state.getConfig();
+        List<SendingAction> sendingActions = executedTrace.getSendingActions();
+        for (SendingAction action : sendingActions) {
+            for (ProtocolMessage message : action.getSendMessages()) {
+                for (ModifiableVariableHolder holder : message.getAllModifiableVariableHolders()) {
+                    if (holder instanceof KeyExchangeComputations) {
+                        ((KeyExchangeComputations) holder).setSecretsInConfig(config);
+                    }
+                }
+            }
+        }
     }
 }

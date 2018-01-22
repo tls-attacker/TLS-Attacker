@@ -115,9 +115,10 @@ public class CertificateHandler extends HandshakeMessageHandler<CertificateMessa
                     tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
                 }
             } else {
-                LOGGER.warn("Could not adjust Certificate publicKey");
+                LOGGER.warn("Could not adjust Certificate publicKey. Ceritifcate does not seem to Contain a PublicKey");
             }
         } catch (IOException | IllegalArgumentException E) {
+            LOGGER.debug(E);
             throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", E);
         }
     }
