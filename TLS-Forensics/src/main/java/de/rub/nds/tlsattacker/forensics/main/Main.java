@@ -16,6 +16,7 @@ package de.rub.nds.tlsattacker.forensics.main;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.tlsattacker.forensics.analyzer.ForensicAnalyzer;
@@ -23,12 +24,20 @@ import de.rub.nds.tlsattacker.forensics.config.TlsForensicsConfig;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.security.PrivateKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.openssl.PEMKeyPair;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 /**
  *
@@ -52,7 +61,47 @@ public class Main {
                 String workflowFile = config.getWorkflowInput();
                 WorkflowTrace trace = WorkflowTraceSerializer.read(new FileInputStream(new File(workflowFile)));
                 ForensicAnalyzer analyzer = new ForensicAnalyzer();
-                WorkflowTrace realWorkflowTrace = analyzer.getRealWorkflowTrace(trace);
+                BigInteger rsaPrivateKey = null;
+                if (config.getKeyFile() != null) {
+                    File keyFile = new File(config.getKeyFile());
+                    if (keyFile.exists()) {
+                        FileInputStream fileInputStream = new FileInputStream(keyFile);
+                        InputStreamReader reader = new InputStreamReader(fileInputStream);
+                        PEMParser parser = null;
+                        try {
+                            parser = new PEMParser(reader);
+                            Object obj = parser.readObject();
+                            if (obj instanceof PEMKeyPair) {
+                                PEMKeyPair pair = (PEMKeyPair) obj;
+                                obj = pair.getPrivateKeyInfo();
+                            }
+                            PrivateKeyInfo privKeyInfo = (PrivateKeyInfo) obj;
+                            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+                            PrivateKey privateKey = converter.getPrivateKey(privKeyInfo);
+                            if (privateKey instanceof RSAPrivateKey) {
+                                rsaPrivateKey = ((RSAPrivateKey) privateKey).getPrivateExponent();
+                                LOGGER.info("RSA privateKey:" + rsaPrivateKey.toString());
+                            } else {
+                                LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                                        "PrivateKey file does not look like an RSA private key!");
+                            }
+                        } catch (Exception E) {
+                            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Could not read private key");
+                            E.printStackTrace();
+                            return;
+                        } finally {
+                            if (parser != null) {
+                                parser.close();
+                            }
+                            fileInputStream.close();
+                            reader.close();
+                        }
+                    } else {
+                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "PrivateKey file does not exist!");
+                        return;
+                    }
+                }
+                WorkflowTrace realWorkflowTrace = analyzer.getRealWorkflowTrace(trace, rsaPrivateKey);
                 LOGGER.info("Provided WorkflowTrace:");
                 LOGGER.info(trace.toString());
                 LOGGER.info("Reconstructed WorkflowTrace:");

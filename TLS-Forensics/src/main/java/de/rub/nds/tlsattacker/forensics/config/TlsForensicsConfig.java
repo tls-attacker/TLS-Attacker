@@ -26,6 +26,9 @@ public class TlsForensicsConfig {
     @Parameter(names = "-workflow", description = "The Workflow which should be analyzed", required = true)
     private String workflowInput = null;
 
+    @Parameter(names = "-key", description = "The private key of the Server used (RSA only). Otherwise we cannot decrypt after the CKE/CCS")
+    private String keyFile = null;
+
     @Parameter(names = "-debug", description = "Enables debug mode")
     private boolean debug = false;
 
@@ -46,5 +49,13 @@ public class TlsForensicsConfig {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
+    }
+
+    public String getKeyFile() {
+        return keyFile;
+    }
+
+    public void setKeyFile(String keyFile) {
+        this.keyFile = keyFile;
     }
 }

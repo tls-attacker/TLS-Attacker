@@ -32,6 +32,7 @@ import de.rub.nds.tlsattacker.transport.stream.StreamTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,7 +54,8 @@ public class ForensicAnalyzer {
     public ForensicAnalyzer() {
     }
 
-    public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow) throws IOException {
+    public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow, BigInteger rsaPrivateKey)
+            throws IOException {
         Security.addProvider(new BouncyCastleProvider());
         if (!isSupported(executedWorkflow)) {
             return null;
@@ -62,6 +64,10 @@ public class ForensicAnalyzer {
         int tracePosition = 0; // The action we are currently looking at.
         State state = new State(); // initialise an empty state
         TlsContext context = state.getTlsContext();
+        if (rsaPrivateKey != null) {
+            context.getConfig().setDefaultClientRSAPrivateKey(rsaPrivateKey);
+            context.getConfig().setDefaultServerRSAPrivateKey(rsaPrivateKey);
+        }
         context.setRecordLayer(new TlsRecordLayer(context));
         adjustPrivateKeys(state, executedWorkflow);
         // Try to determin if the trace was a client or server trace
@@ -112,6 +118,10 @@ public class ForensicAnalyzer {
         }
 
         return reconstructed;
+    }
+
+    public WorkflowTrace getRealWorkflowTrace(WorkflowTrace executedWorkflow) throws IOException {
+        return getRealWorkflowTrace(executedWorkflow, null);
     }
 
     public byte[] joinRecordBytes(List<TlsAction> sendActions) {
