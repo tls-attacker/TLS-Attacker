@@ -16,46 +16,50 @@ import java.math.BigInteger;
 
 public class ECDHClientComputations extends KeyExchangeComputations {
 
-    private ModifiableBigInteger serverPublicKeyX;
+    // This is the public key used for the computation
+    private ModifiableBigInteger publicKeyX;
 
-    private ModifiableBigInteger serverPublicKeyY;
+    private ModifiableBigInteger publicKeyY;
 
-    private CustomECPoint clientPublicKey;
+    private ModifiableBigInteger computedPublicKeyX;
 
-    public CustomECPoint getClientPublicKey() {
-        return clientPublicKey;
+    private ModifiableBigInteger computedPublicKeyY;
+
+    public CustomECPoint getPublicKey() {
+        return new CustomECPoint(publicKeyX.getValue(), publicKeyY.getValue());
     }
 
-    public void setClientPublicKey(CustomECPoint clientPublicKey) {
-        this.clientPublicKey = clientPublicKey;
-    }
-
-    public ModifiableBigInteger getServerPublicKeyX() {
-        return serverPublicKeyX;
-    }
-
-    public void setServerPublicKeyX(ModifiableBigInteger serverPublicKeyX) {
-        this.serverPublicKeyX = serverPublicKeyX;
-    }
-
-    public void setServerPublicKeyX(BigInteger serverPublicKeyX) {
-        this.serverPublicKeyX = ModifiableVariableFactory.safelySetValue(this.serverPublicKeyX, serverPublicKeyX);
-    }
-
-    public ModifiableBigInteger getServerPublicKeyY() {
-        return serverPublicKeyY;
-    }
-
-    public void setServerPublicKeyY(ModifiableBigInteger serverPublicKeyY) {
-        this.serverPublicKeyY = serverPublicKeyY;
-    }
-
-    public void setServerPublicKeyY(BigInteger serverPublicKeyY) {
-        this.serverPublicKeyY = ModifiableVariableFactory.safelySetValue(this.serverPublicKeyY, serverPublicKeyY);
+    public void setPublicKey(BigInteger x, BigInteger y) {
+        this.publicKeyX = ModifiableVariableFactory.safelySetValue(this.publicKeyX, x);
+        this.publicKeyY = ModifiableVariableFactory.safelySetValue(this.publicKeyY, y);
     }
 
     @Override
     public void setSecretsInConfig(Config config) {
         config.setDefaultClientEcPrivateKey(getPrivateKey().getValue());
+    }
+
+    public ModifiableBigInteger getComputedPublicKeyX() {
+        return computedPublicKeyX;
+    }
+
+    public void setComputedPublicKeyX(ModifiableBigInteger computedPublicKeyX) {
+        this.computedPublicKeyX = computedPublicKeyX;
+    }
+
+    public void setComputedPublicKeyX(BigInteger computedPublicKeyX) {
+        this.computedPublicKeyX = ModifiableVariableFactory.safelySetValue(this.computedPublicKeyX, computedPublicKeyX);
+    }
+
+    public ModifiableBigInteger getComputedPublicKeyY() {
+        return computedPublicKeyY;
+    }
+
+    public void setComputedPublicKeyY(BigInteger computedPublicKeyY) {
+        this.computedPublicKeyY = ModifiableVariableFactory.safelySetValue(this.computedPublicKeyY, computedPublicKeyY);
+    }
+
+    public void setComputedPublicKeyY(ModifiableBigInteger computedPublicKeyY) {
+        this.computedPublicKeyY = computedPublicKeyY;
     }
 }

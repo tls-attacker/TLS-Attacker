@@ -97,6 +97,7 @@ public class ForensicAnalyzer {
                 context.setConnection(new OutboundConnection());
             }
             tracePosition += joinedActions.size();
+            context.setReversePrepareAfterParse(sending);
             MessageActionResult parsedMessageResult = helper.receiveMessages(context);
             if (sending) {
                 SendAction reconstructedAction = new SendAction(parsedMessageResult.getMessageList());

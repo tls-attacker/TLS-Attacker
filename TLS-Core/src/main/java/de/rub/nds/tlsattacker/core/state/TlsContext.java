@@ -508,6 +508,11 @@ public class TlsContext {
 
     private boolean receivedTransportHandlerException = false;
 
+    /**
+     * Experimental flag for forensics and reparsing
+     */
+    private boolean reversePrepareAfterParse = false;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -561,6 +566,14 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public boolean isReversePrepareAfterParse() {
+        return reversePrepareAfterParse;
+    }
+
+    public void setReversePrepareAfterParse(boolean reversePrepareAfterParse) {
+        this.reversePrepareAfterParse = reversePrepareAfterParse;
     }
 
     public LinkedList<ProtocolMessage> getMessageBuffer() {

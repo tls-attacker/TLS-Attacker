@@ -28,16 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     /**
-     * EC public key x coordinate
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableBigInteger publicKeyBaseX;
-    /**
-     * EC public key y coordinate
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    protected ModifiableBigInteger publicKeyBaseY;
-    /**
      * EC point format of the encoded EC point
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -62,30 +52,6 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     public ECDHClientKeyExchangeMessage(Config tlsConfig) {
         super(tlsConfig);
-    }
-
-    public ModifiableBigInteger getPublicKeyBaseX() {
-        return publicKeyBaseX;
-    }
-
-    public void setPublicKeyBaseX(ModifiableBigInteger publicKeyBaseX) {
-        this.publicKeyBaseX = publicKeyBaseX;
-    }
-
-    public void setPublicKeyBaseX(BigInteger ecPointBaseX) {
-        this.publicKeyBaseX = ModifiableVariableFactory.safelySetValue(this.publicKeyBaseX, ecPointBaseX);
-    }
-
-    public ModifiableBigInteger getPublicKeyBaseY() {
-        return publicKeyBaseY;
-    }
-
-    public void setPublicKeyBaseY(ModifiableBigInteger publicKeyBaseY) {
-        this.publicKeyBaseY = publicKeyBaseY;
-    }
-
-    public void setPublicKeyBaseY(BigInteger ecPointBaseY) {
-        this.publicKeyBaseY = ModifiableVariableFactory.safelySetValue(this.publicKeyBaseY, ecPointBaseY);
     }
 
     public ModifiableByte getEcPointFormat() {

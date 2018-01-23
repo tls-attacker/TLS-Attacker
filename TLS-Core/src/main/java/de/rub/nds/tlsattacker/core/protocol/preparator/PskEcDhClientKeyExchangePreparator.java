@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 
 public class PskEcDhClientKeyExchangePreparator extends
         ECDHClientKeyExchangePreparator<PskEcDhClientKeyExchangeMessage> {
@@ -32,12 +34,12 @@ public class PskEcDhClientKeyExchangePreparator extends
         msg.setIdentity(chooser.getPSKIdentity());
         msg.setIdentityLength(msg.getIdentity().getValue().length);
         super.prepareHandshakeMessageContents();
-        premasterSecret = generatePremasterSecret(premasterSecret);
-        preparePremasterSecret(msg);
     }
 
-    private byte[] generatePremasterSecret(byte[] ecdhValue) {
-
+    @Override
+    protected void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
+        super.computePremasterSecret(publicKey, privateKey);
+        byte[] ecdhValue = msg.getComputations().getPremasterSecret().getValue();
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ArrayConverter.intToBytes(ecdhValue.length, HandshakeByteLength.PSK_LENGTH));
@@ -52,14 +54,7 @@ public class PskEcDhClientKeyExchangePreparator extends
             LOGGER.debug(ex);
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
-        LOGGER.debug("PremasterSecret: " + tempPremasterSecret);
-        return tempPremasterSecret;
-    }
-
-    @Override
-    public void prepareAfterParse() {
-        super.prepareAfterParse();
-        premasterSecret = generatePremasterSecret(premasterSecret);
-        preparePremasterSecret(msg);
+        LOGGER.debug("PSK PremasterSecret: " + tempPremasterSecret);
+        msg.getComputations().setPremasterSecret(tempPremasterSecret);
     }
 }

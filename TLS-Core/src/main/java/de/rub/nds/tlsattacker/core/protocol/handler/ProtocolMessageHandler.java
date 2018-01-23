@@ -140,7 +140,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
 
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);
-        prep.prepareAfterParse();
+        prep.prepareAfterParse(tlsContext.isReversePrepareAfterParse());
     }
 
     @Override

@@ -17,11 +17,8 @@ import java.math.BigInteger;
 
 public class DHClientComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger serverPublicKey;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger clientPublicKey;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    private ModifiableBigInteger publicKey;
 
     /**
      * dh modulus used for computations
@@ -73,28 +70,16 @@ public class DHClientComputations extends KeyExchangeComputations {
         this.serverRandom = serverRandom;
     }
 
-    public ModifiableBigInteger getServerPublicKey() {
-        return serverPublicKey;
+    public ModifiableBigInteger getPublicKey() {
+        return publicKey;
     }
 
-    public void setServerPublicKey(ModifiableBigInteger serverPublicKey) {
-        this.serverPublicKey = serverPublicKey;
+    public void setPublicKey(ModifiableBigInteger publicKey) {
+        this.publicKey = publicKey;
     }
 
-    public void setServerPublicKey(BigInteger serverPublicKey) {
-        this.serverPublicKey = ModifiableVariableFactory.safelySetValue(this.serverPublicKey, serverPublicKey);
-    }
-
-    public ModifiableBigInteger getClientPublicKey() {
-        return clientPublicKey;
-    }
-
-    public void setClientPublicKey(ModifiableBigInteger clientPublicKey) {
-        this.clientPublicKey = clientPublicKey;
-    }
-
-    public void setClientPublicKey(BigInteger clientPublicKey) {
-        this.clientPublicKey = ModifiableVariableFactory.safelySetValue(this.clientPublicKey, clientPublicKey);
+    public void setPublicKey(BigInteger serverPublicKey) {
+        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, serverPublicKey);
     }
 
     @Override

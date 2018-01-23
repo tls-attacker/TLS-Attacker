@@ -30,21 +30,13 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     @Override
     public void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing DHClientExchangeMessage");
-        msg.prepareComputations();
-        setDhParams();
-
-        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
-                .getPrivateKey().getValue(), msg.getComputations().getServerPublicKey().getValue());
-        clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations()
-                .getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
+        prepareAfterParse(true);
         prepareDhParams();
     }
 
-    protected void setDhParams() {
-        setComputationGenerator(msg);
-        setComputationModulus(msg);
-        setComputationPrivateKey(msg);
-        setComputationServerPublicKey(msg);
+    protected void setDhParams(boolean clientMode) {
+        setComputationPrivateKey(msg, clientMode);
+        setComputationPublicKey(msg, clientMode);
     }
 
     protected void prepareDhParams() {
@@ -106,22 +98,39 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
     }
 
     @Override
-    public void prepareAfterParse() {
-        BigInteger privateKey = chooser.getDhServerPrivateKey();
-        BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
+    public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
-        premasterSecret = calculatePremasterSecret(chooser.getServerDhModulus(), privateKey, clientPublic);
-        preparePremasterSecret(msg);
         prepareClientRandom(msg);
+        setComputationGenerator(msg);
+        setComputationModulus(msg);
+        setComputationPrivateKey(msg, clientMode);
+        if (clientMode) {
+            clientPublicKey = calculatePublicKey(msg.getComputations().getGenerator().getValue(), msg.getComputations()
+                    .getModulus().getValue(), msg.getComputations().getPrivateKey().getValue());
+            preparePublicKey(msg);
+        }
+        setComputationPublicKey(msg, clientMode);
+        premasterSecret = calculatePremasterSecret(msg.getComputations().getModulus().getValue(), msg.getComputations()
+                .getPrivateKey().getValue(), msg.getComputations().getPublicKey().getValue());
+        preparePremasterSecret(msg);
+
     }
 
-    protected void setComputationPrivateKey(T msg) {
-        msg.getComputations().setPrivateKey(chooser.getDhClientPrivateKey());
+    protected void setComputationPrivateKey(T msg, boolean clientMode) {
+        if (clientMode) {
+            msg.getComputations().setPrivateKey(chooser.getDhClientPrivateKey());
+        } else {
+            msg.getComputations().setPrivateKey(chooser.getDhServerPrivateKey());
+        }
         LOGGER.debug("Computation PrivateKey: " + msg.getComputations().getPrivateKey().getValue().toString());
     }
 
-    protected void setComputationServerPublicKey(T msg) {
-        msg.getComputations().setServerPublicKey(chooser.getDhServerPublicKey());
-        LOGGER.debug("Computation PublicKey: " + msg.getComputations().getServerPublicKey().getValue().toString());
+    protected void setComputationPublicKey(T msg, boolean clientMode) {
+        if (clientMode) {
+            msg.getComputations().setPublicKey(chooser.getDhServerPublicKey());
+        } else {
+            msg.getComputations().setPublicKey(new BigInteger(1, msg.getPublicKey().getValue()));
+        }
+        LOGGER.debug("Computation PublicKey: " + msg.getComputations().getPublicKey().getValue().toString());
     }
 }

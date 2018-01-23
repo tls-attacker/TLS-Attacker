@@ -71,10 +71,12 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     @Override
-    public void prepareAfterParse() {
-        msg.prepareComputations();
-        premasterSecret = generatePremasterSecret();
-        preparePremasterSecret(msg);
-        prepareClientRandom(msg);
+    public void prepareAfterParse(boolean clientMode) {
+        if (!clientMode) {
+            msg.prepareComputations();
+            premasterSecret = generatePremasterSecret();
+            preparePremasterSecret(msg);
+            prepareClientRandom(msg);
+        }
     }
 }

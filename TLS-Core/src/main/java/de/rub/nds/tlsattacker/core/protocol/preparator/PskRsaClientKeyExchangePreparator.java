@@ -32,16 +32,16 @@ public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePrepa
         msg.setIdentity(chooser.getPSKIdentity());
         msg.setIdentityLength(msg.getIdentity().getValue().length);
         super.prepareHandshakeMessageContents();
-        premasterSecret = generatePremasterSecret(msg.getComputations().getPremasterSecret().getValue());
-        preparePremasterSecret(msg);
     }
 
-    private byte[] generatePremasterSecret(byte[] randomValue) {
+    @Override
+    protected byte[] generatePremasterSecret() {
+        byte[] premasterSecret = super.generatePremasterSecret();
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ArrayConverter.intToBytes(HandshakeByteLength.PREMASTER_SECRET,
                     HandshakeByteLength.ENCRYPTED_PREMASTER_SECRET_LENGTH));
-            outputStream.write(randomValue);
+            outputStream.write(premasterSecret);
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                     HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
@@ -51,30 +51,5 @@ public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePrepa
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
         return tempPremasterSecret;
-    }
-
-    @Override
-    public void prepareAfterParse() {
-        // Decrypt premaster secret
-        msg.prepareComputations();
-        byte[] paddedPremasterSecret = decryptPremasterSecret();
-        LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
-
-        int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
-        // the number of random bytes in the pkcs1 message
-        int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
-        if (randomByteLength < 0) {
-            LOGGER.warn("RandomByteLength < 0, using 0 instead");
-            randomByteLength = 0;
-        }
-        if (randomByteLength > paddedPremasterSecret.length) {
-            LOGGER.warn("RandomByteLength > paddedPreMasterSecret.length, using paddedPreMasterSecret.length instead");
-            randomByteLength = paddedPremasterSecret.length;
-        }
-        premasterSecret = generatePremasterSecret(Arrays.copyOfRange(paddedPremasterSecret, randomByteLength,
-                paddedPremasterSecret.length));
-        LOGGER.debug("PaddedPremaster:" + ArrayConverter.bytesToHexString(paddedPremasterSecret));
-        preparePremasterSecret(msg);
-        prepareClientRandom(msg);
     }
 }
