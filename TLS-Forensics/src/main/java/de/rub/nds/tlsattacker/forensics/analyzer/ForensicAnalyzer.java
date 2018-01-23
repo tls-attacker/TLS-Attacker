@@ -127,18 +127,20 @@ public class ForensicAnalyzer {
     public byte[] joinRecordBytes(List<TlsAction> sendActions) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         for (TlsAction action : sendActions) {
-            if (action instanceof MessageAction) {
-                MessageAction msgAction = (MessageAction) action;
-                List<AbstractRecord> records = msgAction.getRecords();
-                for (AbstractRecord record : records) {
-                    try {
-                        stream.write(record.getCompleteRecordBytes().getValue());
-                    } catch (IOException ex) {
-                        LOGGER.warn("Could not write to ByteArrayOutputStream.", ex);
+            if (action.isExecuted()) {
+                if (action instanceof MessageAction) {
+                    MessageAction msgAction = (MessageAction) action;
+                    List<AbstractRecord> records = msgAction.getRecords();
+                    for (AbstractRecord record : records) {
+                        try {
+                            stream.write(record.getCompleteRecordBytes().getValue());
+                        } catch (IOException ex) {
+                            LOGGER.warn("Could not write to ByteArrayOutputStream.", ex);
+                        }
                     }
+                } else {
+                    throw new IllegalArgumentException("List contains non MessageActions");
                 }
-            } else {
-                throw new IllegalArgumentException("List contains non MessageActions");
             }
         }
         return stream.toByteArray();

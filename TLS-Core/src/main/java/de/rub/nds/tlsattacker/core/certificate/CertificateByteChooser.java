@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -41,7 +42,12 @@ public class CertificateByteChooser {
     }
 
     private static byte[] chooseCertificateType(CipherSuite selectedSuite, byte[] rsaCert, byte[] ecCert, byte[] dsaCert) {
-        switch (AlgorithmResolver.getKeyExchangeAlgorithm(selectedSuite)) {
+        KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(selectedSuite);
+        if (keyExchangeAlgorithm == null) {
+            LOGGER.warn("KeyExchangeAlgorithm in Ciphersuite is not specified. Choosing RSA...");
+            keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA;
+        }
+        switch (keyExchangeAlgorithm) {
             case ECDHE_ECDSA:
             case ECDH_ECDSA:
             case ECMQV_ECDSA:
