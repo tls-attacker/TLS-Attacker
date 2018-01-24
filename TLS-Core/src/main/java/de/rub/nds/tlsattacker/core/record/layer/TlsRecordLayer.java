@@ -12,7 +12,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.parser.special.CleanRecordByteSeperator;
+import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;

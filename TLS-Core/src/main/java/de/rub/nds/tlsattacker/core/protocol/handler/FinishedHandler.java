@@ -19,9 +19,9 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -38,18 +38,18 @@ public class FinishedHandler extends HandshakeMessageHandler<FinishedMessage> {
     }
 
     @Override
-    public FinishedMessageParser getParser(byte[] message, int pointer) {
-        return new FinishedMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+    public FinishedParser getParser(byte[] message, int pointer) {
+        return new FinishedParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
-    public FinishedMessagePreparator getPreparator(FinishedMessage message) {
-        return new FinishedMessagePreparator(tlsContext.getChooser(), message);
+    public FinishedPreparator getPreparator(FinishedMessage message) {
+        return new FinishedPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public FinishedMessageSerializer getSerializer(FinishedMessage message) {
-        return new FinishedMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public FinishedSerializer getSerializer(FinishedMessage message) {
+        return new FinishedSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

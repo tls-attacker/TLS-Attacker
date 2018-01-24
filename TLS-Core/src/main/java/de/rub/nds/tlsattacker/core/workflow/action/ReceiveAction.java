@@ -14,7 +14,6 @@ import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -33,7 +32,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -59,7 +57,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -83,7 +80,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
             @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),

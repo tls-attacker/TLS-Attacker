@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -99,7 +99,7 @@ public class RSAClientKeyExchangePreparatorTest {
                         .hexStringToByteArray("00027a30820276308201dfa003020102020438918374300d06092a864886f70d01010b0500306e3110300e06035504061307556e6b6e6f776e3110300e06035504081307556e6b6e6f776e3110300e06035504071307556e6b6e6f776e3110300e060355040a1307556e6b6e6f776e3110300e060355040b1307556e6b6e6f776e3112301006035504031309616e6f6e796d6f7573301e170d3135303830343133353731375a170d3235303830313133353731375a306e3110300e06035504061307556e6b6e6f776e3110300e06035504081307556e6b6e6f776e3110300e06035504071307556e6b6e6f776e3110300e060355040a1307556e6b6e6f776e3110300e060355040b1307556e6b6e6f776e3112301006035504031309616e6f6e796d6f757330819f300d06092a864886f70d010101050003818d00308189028181008a4ee023df569ce17c504cbb828f16bae5040ccef4b59ef96733dfe34693530d4062f9b4873c72f933607f8ceea01ad2215dab44eaac207f45de5835a8db4e21b35d5e2757f652eaaa25d71a60c37725cddf877427cc9e60e240d0429e708bc4b6017726734b2c03f404d5fea407d91bbe4e86a0ebc685e8078f8657b5830ab30203010001a321301f301d0603551d0e04160414611782c41da8bd62a49ce58580194baa5d8c764f300d06092a864886f70d01010b0500038181005f9708702b8adb185b2db0d05845af5df1f7d13e7a94647a8653187e7a55753f5c19772a994f53136ab04cdad266683bf65a1b78fca418899e44c0e8f75add9df5b432e92a6a0668b16d6278a67c78f8ea30ca587e1dc314d8312d41808284e22df19c7f4bb3086e74b42c9473df8b82449643a4e2fbb05cf8b1b41acec44fe9"));
         certmessage.setCertificatesListLength(637);
         Security.addProvider(new BouncyCastleProvider());
-        CertificateHandler handler = new CertificateHandler(context);
+        CertificateMessageHandler handler = new CertificateMessageHandler(context);
         handler.adjustTLSContext(certmessage);
 
         Certificate cert = parseCertificate(certmessage.getCertificatesListLength().getValue(), certmessage

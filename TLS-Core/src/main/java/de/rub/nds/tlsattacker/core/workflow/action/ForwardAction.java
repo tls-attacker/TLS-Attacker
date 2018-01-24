@@ -16,7 +16,6 @@ import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -43,7 +42,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMes
 import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RetransmitMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
@@ -86,7 +84,6 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -108,7 +105,6 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
             @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
             @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
@@ -138,7 +134,6 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
     @HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = ArbitraryMessage.class, name = "ArbitraryMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -153,17 +148,30 @@ public class ForwardAction extends MessageAction implements ReceivingAction, Sen
             @XmlElement(type = ServerHelloDoneMessage.class, name = "ServerHelloDone"),
             @XmlElement(type = ServerHelloMessage.class, name = "ServerHello"),
             @XmlElement(type = AlertMessage.class, name = "Alert"),
-            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
+            @XmlElement(type = NewSessionTicketMessage.class, name = "NewSessionTicket"),
             @XmlElement(type = ApplicationMessage.class, name = "Application"),
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
             @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
             @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
-            @XmlElement(type = RetransmitMessage.class, name = "RetransmitMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),
             @XmlElement(type = HeartbeatMessage.class, name = "Heartbeat"),
+            @XmlElement(type = SupplementalDataMessage.class, name = "SupplementalDataMessage"),
             @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensionMessage"),
+            @XmlElement(type = HttpsRequestMessage.class, name = "HttpsRequest"),
+            @XmlElement(type = HttpsResponseMessage.class, name = "HttpsResponse"),
+            @XmlElement(type = PskClientKeyExchangeMessage.class, name = "PskClientKeyExchange"),
+            @XmlElement(type = PskDhClientKeyExchangeMessage.class, name = "PskDhClientKeyExchange"),
+            @XmlElement(type = PskDheServerKeyExchangeMessage.class, name = "PskDheServerKeyExchange"),
+            @XmlElement(type = PskEcDhClientKeyExchangeMessage.class, name = "PskEcDhClientKeyExchange"),
+            @XmlElement(type = PskEcDheServerKeyExchangeMessage.class, name = "PskEcDheServerKeyExchange"),
+            @XmlElement(type = PskRsaClientKeyExchangeMessage.class, name = "PskRsaClientKeyExchange"),
+            @XmlElement(type = PskServerKeyExchangeMessage.class, name = "PskServerKeyExchange"),
+            @XmlElement(type = SrpServerKeyExchangeMessage.class, name = "SrpServerKeyExchange"),
+            @XmlElement(type = SrpClientKeyExchangeMessage.class, name = "SrpClientKeyExchange"),
+            @XmlElement(type = EndOfEarlyDataMessage.class, name = "EndOfEarlyData"),
+            @XmlElement(type = EncryptedExtensionsMessage.class, name = "EncryptedExtensions"),
             @XmlElement(type = HelloRetryRequestMessage.class, name = "HelloRetryRequest") })
     protected List<ProtocolMessage> sendMessages;
 

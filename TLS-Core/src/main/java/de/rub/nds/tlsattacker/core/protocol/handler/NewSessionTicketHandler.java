@@ -17,10 +17,10 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -36,17 +36,17 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        return new NewSessionTicketMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new NewSessionTicketParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public NewSessionTicketMessagePreparator getPreparator(NewSessionTicketMessage message) {
-        return new NewSessionTicketMessagePreparator(tlsContext.getChooser(), message);
+    public NewSessionTicketPreparator getPreparator(NewSessionTicketMessage message) {
+        return new NewSessionTicketPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public NewSessionTicketMessageSerializer getSerializer(NewSessionTicketMessage message) {
-        return new NewSessionTicketMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public NewSessionTicketSerializer getSerializer(NewSessionTicketMessage message) {
+        return new NewSessionTicketSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

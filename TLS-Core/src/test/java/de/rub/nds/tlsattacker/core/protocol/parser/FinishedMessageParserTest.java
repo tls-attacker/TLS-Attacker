@@ -90,11 +90,11 @@ public class FinishedMessageParserTest {
     }
 
     /**
-     * Test of parse method, of class FinishedMessageParser.
+     * Test of parse method, of class FinishedParser.
      */
     @Test
     public void testParse() {
-        FinishedMessageParser parser = new FinishedMessageParser(start, message, version);
+        FinishedParser parser = new FinishedParser(start, message, version);
         FinishedMessage msg = parser.parse();
         assertArrayEquals(expectedPart, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

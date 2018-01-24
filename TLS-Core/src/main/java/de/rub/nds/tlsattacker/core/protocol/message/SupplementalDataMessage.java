@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupplementalData.SupplementalDataEntry;
-import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.LinkedList;
@@ -74,8 +74,8 @@ public class SupplementalDataMessage extends HandshakeMessage {
     }
 
     @Override
-    public SupplementalDataMessageHandler getHandler(TlsContext context) {
-        return new SupplementalDataMessageHandler(context);
+    public SupplementalDataHandler getHandler(TlsContext context) {
+        return new SupplementalDataHandler(context);
     }
 
     @Override

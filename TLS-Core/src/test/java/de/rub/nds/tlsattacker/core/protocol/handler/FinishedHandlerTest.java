@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.FinishedPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.FinishedSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -38,7 +38,7 @@ public class FinishedHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof FinishedMessageParser);
+        assertTrue(handler.getParser(new byte[1], 0) instanceof FinishedParser);
     }
 
     /**
@@ -46,7 +46,7 @@ public class FinishedHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new FinishedMessage()) instanceof FinishedMessagePreparator);
+        assertTrue(handler.getPreparator(new FinishedMessage()) instanceof FinishedPreparator);
     }
 
     /**
@@ -54,7 +54,7 @@ public class FinishedHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new FinishedMessage()) instanceof FinishedMessageSerializer);
+        assertTrue(handler.getSerializer(new FinishedMessage()) instanceof FinishedSerializer);
     }
 
     /**

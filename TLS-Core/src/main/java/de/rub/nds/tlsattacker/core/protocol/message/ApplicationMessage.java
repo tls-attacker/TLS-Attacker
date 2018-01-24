@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
@@ -86,7 +86,7 @@ public class ApplicationMessage extends ProtocolMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new ApplicationHandler(context);
+        return new ApplicationMessageHandler(context);
     }
 
     @Override

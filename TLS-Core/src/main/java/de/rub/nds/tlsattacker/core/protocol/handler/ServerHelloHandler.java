@@ -28,8 +28,8 @@ import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandle
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -48,13 +48,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     @Override
-    public ServerHelloMessagePreparator getPreparator(ServerHelloMessage message) {
-        return new ServerHelloMessagePreparator(tlsContext.getChooser(), message);
+    public ServerHelloPreparator getPreparator(ServerHelloMessage message) {
+        return new ServerHelloPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public ServerHelloMessageSerializer getSerializer(ServerHelloMessage message) {
-        return new ServerHelloMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ServerHelloSerializer getSerializer(ServerHelloMessage message) {
+        return new ServerHelloSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

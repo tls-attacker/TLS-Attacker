@@ -17,8 +17,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -48,7 +48,7 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerHelloMessage()) instanceof ServerHelloMessagePreparator);
+        assertTrue(handler.getPreparator(new ServerHelloMessage()) instanceof ServerHelloPreparator);
     }
 
     /**
@@ -56,7 +56,7 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerHelloMessage()) instanceof ServerHelloMessageSerializer);
+        assertTrue(handler.getSerializer(new ServerHelloMessage()) instanceof ServerHelloSerializer);
     }
 
     /**

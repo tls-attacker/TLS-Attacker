@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.parser.special.CleanRecordByteSeperator;
+import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;

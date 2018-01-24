@@ -8,13 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
+import de.rub.nds.tlsattacker.core.protocol.preparator.cert.CertificatePairPreparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificatePairSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.cert.CertificatePairSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;

@@ -17,10 +17,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -189,6 +189,6 @@ public class CertificateMessage extends HandshakeMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new CertificateHandler(context);
+        return new CertificateMessageHandler(context);
     }
 }

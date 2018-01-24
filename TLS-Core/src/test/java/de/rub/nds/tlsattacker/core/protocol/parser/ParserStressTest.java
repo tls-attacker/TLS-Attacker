@@ -52,9 +52,9 @@ public class ParserStressTest {
             case 2:
                 return new CertificateMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 3:
-                return new CertificateRequestMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new CertificateRequestParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 4:
-                return new CertificateVerifyMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new CertificateVerifyParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 5:
                 return new ChangeCipherSpecParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 6:
@@ -68,7 +68,7 @@ public class ParserStressTest {
             case 10:
                 return new ECDHEServerKeyExchangeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 11:
-                return new FinishedMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new FinishedParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 12:
                 return new HeartbeatMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 13:
@@ -82,9 +82,9 @@ public class ParserStressTest {
             case 17:
                 return new ServerHelloParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 18:
-                return new UnknownHandshakeMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 19:
-                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new UnknownParser(start, bytesToParse, ProtocolVersion.TLS12);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }
