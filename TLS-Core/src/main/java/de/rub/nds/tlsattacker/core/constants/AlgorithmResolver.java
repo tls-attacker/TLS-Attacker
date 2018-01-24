@@ -8,17 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.AES;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.CAMELLIA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES40;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DESede;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.FORTEZZA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.IDEA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.NULL;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC2;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC4;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.SEED;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -349,8 +338,9 @@ public class AlgorithmResolver {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);
             return result;
         } else {
-            throw new UnsupportedOperationException("The HKDF algorithm for cipher suite " + cipherSuite
-                    + " is not supported yet");
+            LOGGER.warn("The HKDF algorithm for cipher suite " + cipherSuite
+                    + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
+            return HKDFAlgorithm.TLS_HKDF_SHA256;
         }
     }
 
