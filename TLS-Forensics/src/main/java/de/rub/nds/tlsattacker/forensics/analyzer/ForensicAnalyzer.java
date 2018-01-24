@@ -88,6 +88,7 @@ public class ForensicAnalyzer {
                 sending = false;
             }
             byte[] joinedRecordBytes = joinRecordBytes(joinedActions);
+
             context.setTransportHandler(new StreamTransportHandler(1, ConnectionEndType.CLIENT,
                     new ByteArrayInputStream(joinedRecordBytes), new ByteArrayOutputStream()));
             context.getTransportHandler().initialize();
@@ -103,6 +104,9 @@ public class ForensicAnalyzer {
                 context.setConnection(new OutboundConnection());
             }
             tracePosition += joinedActions.size();
+            if (joinedRecordBytes.length == 0) {
+                continue;
+            }
             context.setReversePrepareAfterParse(sending);
             MessageActionResult parsedMessageResult = helper.receiveMessages(context);
             if (sending) {
