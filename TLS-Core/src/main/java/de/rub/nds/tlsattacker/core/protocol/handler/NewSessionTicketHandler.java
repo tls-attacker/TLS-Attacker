@@ -68,8 +68,11 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         } else {
             LOGGER.warn("No TicketAge specified in SessionTicket");
         }
-        if (message.getTicket().getIdentity() == null) {
+        if (message.getTicket().getIdentity() != null) {
             pskSet.setPreSharedKeyIdentity(message.getTicket().getIdentity().getValue());
+        } else {
+            LOGGER.warn("No Identity in ticket. Using new byte[] instead");
+            pskSet.setPreSharedKeyIdentity(new byte[0]);
         }
         pskSet.setTicketAge(getTicketAge());
         pskSet.setPreSharedKey(derivePsk(message));
