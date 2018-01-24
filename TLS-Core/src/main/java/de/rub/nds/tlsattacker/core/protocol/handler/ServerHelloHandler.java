@@ -39,8 +39,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.Mac;
 
 public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessage> {
@@ -154,6 +152,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void setServerRecordCipher() {
+        tlsContext.setTls13SoftDecryption(true);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());

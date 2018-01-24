@@ -513,6 +513,14 @@ public class TlsContext {
      */
     private boolean reversePrepareAfterParse = false;
 
+    /**
+     * When running tls 1.3 as a server, when we activate decryption of client
+     * messages we need to set this flag to true. When this flag is active the
+     * server will try to parse the next record it receives as an unencrypted
+     * one, if its protocolmessage type is alert
+     */
+    private boolean tls13SoftDecryption = false;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -566,6 +574,14 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public boolean isTls13SoftDecryption() {
+        return tls13SoftDecryption;
+    }
+
+    public void setTls13SoftDecryption(boolean tls13SoftDecryption) {
+        this.tls13SoftDecryption = tls13SoftDecryption;
     }
 
     public boolean isReversePrepareAfterParse() {

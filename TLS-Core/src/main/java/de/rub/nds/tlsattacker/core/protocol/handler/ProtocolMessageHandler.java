@@ -70,6 +70,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             preparator.prepare();
             preparator.afterPrepare();
         }
+
+        try {
+            adjustTLSContext(message);
+        } catch (AdjustmentException E) {
+            LOGGER.warn("Could not adjust TLSContext");
+            LOGGER.debug(E);
+        }
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);
@@ -77,12 +84,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             if (((HandshakeMessage) message).getIncludeInDigest()) {
                 tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
             }
-        }
-        try {
-            adjustTLSContext(message);
-        } catch (AdjustmentException E) {
-            LOGGER.warn("Could not adjust TLSContext");
-            LOGGER.debug(E);
         }
         return message.getCompleteResultingMessage().getValue();
     }
