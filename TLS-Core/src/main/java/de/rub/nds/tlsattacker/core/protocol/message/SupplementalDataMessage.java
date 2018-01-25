@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupplementalData.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
@@ -34,9 +35,13 @@ public class SupplementalDataMessage extends HandshakeMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray supplementalDataBytes;
 
-    public SupplementalDataMessage(LinkedList<SupplementalDataEntry> entries) {
+    public SupplementalDataMessage(Config config, LinkedList<SupplementalDataEntry> entries) {
         super(HandshakeMessageType.SUPPLEMENTAL_DATA);
         this.entries = new LinkedList<>(entries);
+    }
+
+    public SupplementalDataMessage(Config config) {
+        this();
     }
 
     public SupplementalDataMessage() {

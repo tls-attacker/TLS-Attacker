@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 
 public class SSL2ClientHelloParser extends ProtocolMessageParser {
 
-    public SSL2ClientHelloParser(byte[] message, int pointer, ProtocolVersion version) {
+    public SSL2ClientHelloParser(int pointer, byte[] message, ProtocolVersion version) {
         super(pointer, message, version);
     }
 

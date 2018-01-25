@@ -30,7 +30,7 @@ public class ApplicationMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray data;
 
-    public ApplicationMessage(byte[] dataConfig) {
+    public ApplicationMessage(Config tlsConfig, byte[] dataConfig) {
         super();
         this.dataConfig = dataConfig;
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;

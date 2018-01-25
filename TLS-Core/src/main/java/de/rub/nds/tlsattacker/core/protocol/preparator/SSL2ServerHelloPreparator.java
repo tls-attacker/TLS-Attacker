@@ -15,7 +15,7 @@ public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator {
 
     private final SSL2ServerHelloMessage message;
 
-    public SSL2ServerHelloPreparator(SSL2ServerHelloMessage message, Chooser chooser) {
+    public SSL2ServerHelloPreparator(Chooser chooser, SSL2ServerHelloMessage message) {
         super(chooser, message);
         this.message = message;
     }
