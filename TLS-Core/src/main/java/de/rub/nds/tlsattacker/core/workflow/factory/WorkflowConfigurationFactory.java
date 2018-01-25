@@ -61,6 +61,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
@@ -113,6 +114,8 @@ public class WorkflowConfigurationFactory {
                 return createFullZeroRttWorkflow();
             case FALSE_START:
                 return createFalseStartWorkflow();
+            case STARTTLS:
+                return createStarttlsWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -640,5 +643,14 @@ public class WorkflowConfigurationFactory {
         if (cs.isSrp()) {
             messages.add(new SrpServerKeyExchangeMessage(config));
         }
+    }
+
+    private WorkflowTrace createStarttlsWorkflow() {
+        WorkflowTrace trace = new WorkflowTrace();
+        SendAsciiAction action = new SendAsciiAction("STARTTLS");
+
+        trace.addTlsAction(action);
+
+        return trace;
     }
 }
