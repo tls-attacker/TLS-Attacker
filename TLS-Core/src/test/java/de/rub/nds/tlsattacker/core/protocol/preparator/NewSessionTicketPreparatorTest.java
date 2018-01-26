@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -53,7 +54,7 @@ public class NewSessionTicketPreparatorTest {
      */
     @Test
     public void testPrepare() throws CryptoException {
-        context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
+        context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
         context.setSelectedCompressionMethod(CompressionMethod.NULL);
         context.setMasterSecret(ArrayConverter
@@ -70,7 +71,7 @@ public class NewSessionTicketPreparatorTest {
         assertArrayEquals(
                 message.getTicket().getEncryptedState().getValue(),
                 ArrayConverter
-                        .hexStringToByteArray("804cd7dedba2be6634ecd0754181608e7ead4e6b76d8d55656e476b22af4dfa66e86b6ee5adb24b31318761a64662dd0efbc13fc2d19b6a5df5f9db7d1ee3a10"));
+                        .hexStringToByteArray("23403433756E7E6C0777047BECA5B4A1FC987804A39B420BE56DA996D6F9C233CC6C97FC2F5A3EE3A193A2ACE6F320E6AA3E98B66B4A3C51AA4056D7EF5898F8"));
 
         // Revert encryption to check the correct encryption
         // Correct value was assembled by hand because I found no testdata
@@ -80,7 +81,7 @@ public class NewSessionTicketPreparatorTest {
         assertArrayEquals(
                 decrypted,
                 ArrayConverter
-                        .hexStringToByteArray("0304009c0053657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b0009111119"));
+                        .hexStringToByteArray("0303009c0053657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b53657373696f6e5469636b65744d532b0009111119"));
 
         // Smaller Tests to be complete
         assertTrue(message.getTicketLifetimeHint().getValue() == 3600);
@@ -93,7 +94,7 @@ public class NewSessionTicketPreparatorTest {
         // Correct value was assembled by hand and calculated by
         // https://www.liavaag.org/English/SHA-Generator/HMAC/
         assertArrayEquals(message.getTicket().getMAC().getValue(),
-                ArrayConverter.hexStringToByteArray("4d99650c43e222d4f10c984451f33c0f2bc5b439e92a21646cc2ff711c347ad6"));
+                ArrayConverter.hexStringToByteArray("C12AC5FD8690B8E61F647F86630271F16C9A6281663014C2873EE4934A6C9C3B"));
 
         byte[] macinput = ArrayConverter.concatenate(message.getTicket().getKeyName().getValue(), message.getTicket()
                 .getIV().getValue());

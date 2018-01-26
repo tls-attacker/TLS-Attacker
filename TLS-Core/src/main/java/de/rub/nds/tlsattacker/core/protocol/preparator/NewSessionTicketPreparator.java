@@ -25,8 +25,6 @@ import de.rub.nds.tlsattacker.core.state.serializer.StatePlaintextSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.util.StaticTicketCrypto;
 import de.rub.nds.tlsattacker.util.TimeHelper;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSessionTicketMessage> {
 
@@ -49,7 +47,6 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
 
     private void prepareTicket(NewSessionTicketMessage msg) {
         Config cfg = chooser.getConfig();
-
         msg.prepareTicket();
         SessionTicket newticket = msg.getTicket();
         newticket.setKeyName(cfg.getSessionTicketKeyName());
@@ -99,8 +96,7 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
     protected void prepareHandshakeMessageContents() {
         LOGGER.debug("Preparing NewSessionTicketMessage");
         prepareTicketLifetimeHint(msg);
-        if (chooser.getSelectedProtocolVersion().isTLS13()
-                && chooser.getContext().getActiveServerKeySetType() == Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS) {
+        if (chooser.getSelectedProtocolVersion().isTLS13()) {
             prepareTicketTls13(msg);
         } else {
             prepareTicket(msg);
@@ -147,6 +143,8 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
         prepareTicketAgeAdd(msg);
         prepareNonce(msg);
         prepareIdentity(msg);
+        prepareExtensions();
+        prepareExtensionLength();
     }
 
     private void prepareTicketAgeAdd(NewSessionTicketMessage msg) {

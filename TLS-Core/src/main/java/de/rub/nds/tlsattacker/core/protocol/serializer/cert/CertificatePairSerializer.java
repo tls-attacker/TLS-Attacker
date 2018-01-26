@@ -10,15 +10,18 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.cert;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 public class CertificatePairSerializer extends Serializer<CertificatePair> {
 
     private final CertificatePair pair;
+    private final ProtocolVersion version;
 
-    public CertificatePairSerializer(CertificatePair pair) {
+    public CertificatePairSerializer(CertificatePair pair, ProtocolVersion version) {
         this.pair = pair;
+        this.version = version;
     }
 
     @Override
@@ -26,9 +29,11 @@ public class CertificatePairSerializer extends Serializer<CertificatePair> {
         LOGGER.debug("Serializing CertificatePair");
         writeCertificateLength(pair);
         writeCertificate(pair);
-        if (pair.getExtensions() != null && pair.getExtensions().getOriginalValue() != null) {
+        if (version.isTLS13()) {
             writeExtensionsLength(pair);
-            writeExtensions(pair);
+            if (pair.getExtensions() != null && pair.getExtensions().getValue() != null) {
+                writeExtensions(pair);
+            }
         }
         return getAlreadySerialized();
     }

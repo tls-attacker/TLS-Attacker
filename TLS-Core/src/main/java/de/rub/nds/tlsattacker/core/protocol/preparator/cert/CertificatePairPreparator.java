@@ -38,6 +38,8 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         if (pair.getExtensionsConfig() != null) {
             prepareExtensions(pair);
             prepareExtensionLength(pair);
+        } else {
+            pair.setExtensionsLength(0);
         }
     }
 
