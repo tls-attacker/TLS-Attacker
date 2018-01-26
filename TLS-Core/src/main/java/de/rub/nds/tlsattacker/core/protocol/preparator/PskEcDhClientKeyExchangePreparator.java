@@ -37,15 +37,14 @@ public class PskEcDhClientKeyExchangePreparator extends
     }
 
     @Override
-    protected void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
-        super.computePremasterSecret(publicKey, privateKey);
-        byte[] ecdhValue = msg.getComputations().getPremasterSecret().getValue();
+    protected byte[] computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
+        byte[] premasterSecret = super.computePremasterSecret(publicKey, privateKey);
         outputStream = new ByteArrayOutputStream();
         try {
-            outputStream.write(ArrayConverter.intToBytes(ecdhValue.length, HandshakeByteLength.PSK_LENGTH));
-            LOGGER.debug("PremasterSecret: dhValue Length: " + ecdhValue.length);
-            outputStream.write(ecdhValue);
-            LOGGER.debug("PremasterSecret: dhValue" + ecdhValue);
+            outputStream.write(ArrayConverter.intToBytes(premasterSecret.length, HandshakeByteLength.PSK_LENGTH));
+            LOGGER.debug("PremasterSecret: dhValue Length: " + premasterSecret.length);
+            outputStream.write(premasterSecret);
+            LOGGER.debug("PremasterSecret: dhValue" + premasterSecret);
             outputStream.write(ArrayConverter.intToBytes(chooser.getConfig().getDefaultPSKKey().length,
                     HandshakeByteLength.PSK_LENGTH));
             outputStream.write(chooser.getConfig().getDefaultPSKKey());
@@ -55,6 +54,6 @@ public class PskEcDhClientKeyExchangePreparator extends
         }
         byte[] tempPremasterSecret = outputStream.toByteArray();
         LOGGER.debug("PSK PremasterSecret: " + tempPremasterSecret);
-        msg.getComputations().setPremasterSecret(tempPremasterSecret);
+        return tempPremasterSecret;
     }
 }

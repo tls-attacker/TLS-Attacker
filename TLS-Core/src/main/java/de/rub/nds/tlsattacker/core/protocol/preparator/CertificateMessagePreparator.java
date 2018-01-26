@@ -45,7 +45,7 @@ public class CertificateMessagePreparator extends HandshakeMessagePreparator<Cer
         for (CertificatePair pair : msg.getCertificatesList()) {
             CertificatePairPreparator preparator = new CertificatePairPreparator(chooser, pair);
             preparator.prepare();
-            CertificatePairSerializer serializer = new CertificatePairSerializer(pair);
+            CertificatePairSerializer serializer = new CertificatePairSerializer(pair, chooser.getSelectedProtocolVersion());
             try {
                 stream.write(serializer.serialize());
             } catch (IOException ex) {

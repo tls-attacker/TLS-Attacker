@@ -37,16 +37,24 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     public NewSessionTicketMessage() {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
+        ticket = new SessionTicket();
     }
 
     public NewSessionTicketMessage(boolean includeInDigest) {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
         IS_INCLUDE_IN_DIGEST_DEFAULT = includeInDigest;
+        ticket = new SessionTicket();
+    }
+
+    public NewSessionTicketMessage(Config tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
+        ticket = new SessionTicket();
     }
 
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
         super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
         IS_INCLUDE_IN_DIGEST_DEFAULT = includeInDigest;
+        ticket = new SessionTicket();
     }
 
     public ModifiableLong getTicketLifetimeHint() {

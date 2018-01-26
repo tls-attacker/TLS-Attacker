@@ -58,8 +58,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         }
     }
 
-    protected void computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
-        premasterSecret = TlsECCUtils.calculateECDHBasicAgreement(publicKey, privateKey);
+    protected byte[] computePremasterSecret(ECPublicKeyParameters publicKey, ECPrivateKeyParameters privateKey) {
+        return TlsECCUtils.calculateECDHBasicAgreement(publicKey, privateKey);
     }
 
     protected void prepareEcPointFormat(T msg) {
@@ -117,8 +117,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         LOGGER.debug("PrivateKey used:" + chooser.getServerEcPrivateKey());
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getPublicKey().getX(),
                 msg.getComputations().getPublicKey().getY());
-        computePremasterSecret(new ECPublicKeyParameters(publicKey, ecParams), new ECPrivateKeyParameters(msg
-                .getComputations().getPrivateKey().getValue(), ecParams));
+        premasterSecret = computePremasterSecret(new ECPublicKeyParameters(publicKey, ecParams),
+                new ECPrivateKeyParameters(msg.getComputations().getPrivateKey().getValue(), ecParams));
         preparePremasterSecret(msg);
     }
 

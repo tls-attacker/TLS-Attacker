@@ -20,8 +20,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Set;
+import java.util.logging.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import org.reflections.Reflections;
@@ -47,64 +49,96 @@ public class CyclicParserSerializerTest {
             }
             String testName = someParserClass.getSimpleName().replace("Parser", "");
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Testing:" + testName);
-            // Trying to find equivalent preparator, message and serializer
-            try {
-                Class<? extends ProtocolMessage> protocolMessageClass = getProtocolMessage(testName);
-                try {
-                    message = (ProtocolMessage) getConstructor(protocolMessageClass, 1).newInstance(
-                            Config.createConfig());
-                } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
-                    ex.printStackTrace();
-                    fail("Could not create message instance for " + testName);
-                }
-                Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
-                try {
-                    preparator = (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
-                            new TlsContext().getChooser(), message);
-                } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
-                    ex.printStackTrace();
-                    fail("Could not create preparator instance for " + testName);
-                }
-                // Preparing message
-                try {
-                    preparator.prepare();
-                } catch (UnsupportedOperationException E) {
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Preparator for " + testName + " is unsupported yet");
+            for (ProtocolVersion version : ProtocolVersion.values()) {
+                if (version.isDTLS()) {
                     continue;
                 }
-                Class<? extends ProtocolMessageSerializer> serializerClass = getSerializer(testName);
+                // Trying to find equivalent preparator, message and serializer
                 try {
-                    serializer = (ProtocolMessageSerializer) getConstructor(serializerClass, 2).newInstance(message,
-                            ProtocolVersion.TLS12);
-                } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
+                    Class<? extends ProtocolMessage> protocolMessageClass = getProtocolMessage(testName);
+                    try {
+                        Constructor tempConstructor = getMessageConstructor(protocolMessageClass);
+                        if (tempConstructor != null) {
+                            message = (ProtocolMessage) getMessageConstructor(protocolMessageClass).newInstance(
+                                    Config.createConfig());
+                        } else {
+                            fail("Could not find Constructor for " + testName);
+                        }
+                    } catch (SecurityException | InstantiationException | IllegalAccessException
+                            | IllegalArgumentException | InvocationTargetException ex) {
+                        ex.printStackTrace();
+                        fail("Could not create message instance for " + testName);
+                    }
+                    Class<? extends ProtocolMessagePreparator> preparatorClass = getPreparator(testName);
+                    try {
+                        TlsContext context = new TlsContext();
+                        context.setSelectedProtocolVersion(version);
+                        context.getConfig().setHighestProtocolVersion(version);
+                        context.getConfig().setDefaultHighestClientProtocolVersion(version);
+                        preparator = (ProtocolMessagePreparator) getConstructor(preparatorClass, 2).newInstance(
+                                context.getChooser(), message);
+                    } catch (SecurityException | InstantiationException | IllegalAccessException
+                            | IllegalArgumentException | InvocationTargetException ex) {
+                        ex.printStackTrace();
+                        fail("Could not create preparator instance for " + testName);
+                    }
+                    // Preparing message
+                    try {
+                        preparator.prepare();
+                    } catch (UnsupportedOperationException E) {
+                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Preparator for " + testName + " is unsupported yet");
+                        continue;
+                    }
+                    Class<? extends ProtocolMessageSerializer> serializerClass = getSerializer(testName);
+                    try {
+                        serializer = (ProtocolMessageSerializer) getConstructor(serializerClass, 2).newInstance(
+                                message, version);
+                    } catch (SecurityException | InstantiationException | IllegalAccessException
+                            | IllegalArgumentException | InvocationTargetException ex) {
+                        ex.printStackTrace();
+                        fail("Could not create serializer instance for " + testName);
+                    }
+                    byte[] serializedMessage = serializer.serialize();
+                    try {
+                        parser = (ProtocolMessageParser) getConstructor(someParserClass, 3).newInstance(0,
+                                serializedMessage, version);
+                    } catch (SecurityException | InstantiationException | IllegalAccessException
+                            | IllegalArgumentException | InvocationTargetException ex) {
+                        ex.printStackTrace();
+                        fail("Could not create parser instance for " + testName);
+                    }
+                    try {
+                        message = parser.parse();
+                    } catch (UnsupportedOperationException E) {
+                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "##########" + testName + " parsing is unsupported!");
+                        continue;
+                    }
+                    try {
+                        serializer = (ProtocolMessageSerializer) getConstructor(serializerClass, 2).newInstance(
+                                message, version);
+                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                            | InvocationTargetException ex) {
+                        ex.printStackTrace();
+                        fail("Could not create serializer instance for " + testName);
+                    }
+                    Assert.assertArrayEquals(testName + " failed", serializedMessage, serializer.serialize());
+                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "......." + testName + " - " + version.name()
+                            + " works as expected!");
+                } catch (Exception ex) {
                     ex.printStackTrace();
-                    fail("Could not create serializer instance for " + testName);
+                    fail("Could not execute " + testName + " - " + version.name());
                 }
-                byte[] serializedMessage = serializer.serialize();
-                try {
-                    parser = (ProtocolMessageParser) getConstructor(someParserClass, 3).newInstance(0,
-                            serializedMessage, ProtocolVersion.TLS12);
-                } catch (SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException
-                        | InvocationTargetException ex) {
-                    ex.printStackTrace();
-                    fail("Could not create parser instance for " + testName);
-                }
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "......." + testName + " works as expected!");
-            } catch (ClassNotFoundException ex) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Could not execute " + testName, ex);
-                ex.printStackTrace();
+                /*
+                 * try { parser =
+                 * someParserClass.getConstructor().newInstance(); } catch
+                 * (NoSuchMethodException | SecurityException |
+                 * InstantiationException | IllegalAccessException |
+                 * IllegalArgumentException | InvocationTargetException ex) {
+                 * LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                 * "Could not create instance for:" +
+                 * someParserClass.getName()); }
+                 */
             }
-            /*
-             * try { parser = someParserClass.getConstructor().newInstance(); }
-             * catch (NoSuchMethodException | SecurityException |
-             * InstantiationException | IllegalAccessException |
-             * IllegalArgumentException | InvocationTargetException ex) {
-             * LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-             * "Could not create instance for:" + someParserClass.getName()); }
-             */
         }
     }
 
@@ -149,12 +183,25 @@ public class CyclicParserSerializerTest {
         }
     }
 
+    private Constructor getMessageConstructor(Class someClass) {
+        for (Constructor c : someClass.getConstructors()) {
+            if (c.getParameterCount() == 1) {
+                if (c.getParameterTypes()[0].equals(Config.class)) {
+                    return c;
+                }
+            }
+        }
+        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
+        return null;
+    }
+
     private Constructor getConstructor(Class someClass, int numberOfArguemnts) {
         for (Constructor c : someClass.getConstructors()) {
             if (c.getParameterCount() == numberOfArguemnts) {
                 return c;
             }
         }
+        LOGGER.warn("Could not find Constructor: " + someClass.getSimpleName());
         return null;
     }
 }

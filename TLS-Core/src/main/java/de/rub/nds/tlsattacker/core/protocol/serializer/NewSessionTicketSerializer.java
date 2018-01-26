@@ -16,15 +16,14 @@ import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import static de.rub.nds.tlsattacker.core.protocol.serializer.Serializer.LOGGER;
 
 public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSessionTicketMessage> {
+
     private final NewSessionTicketMessage msg;
 
     /**
      * Constructor for the NewSessionTicketMessageSerializer
      *
-     * @param message
-     *            Message that should be serialized
-     * @param version
-     *            Version of the Protocol
+     * @param message Message that should be serialized
+     * @param version Version of the Protocol
      */
     public NewSessionTicketSerializer(NewSessionTicketMessage message, ProtocolVersion version) {
         super(message, version);
@@ -35,7 +34,7 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing NewSessionTicketMessage");
         writeLifetimeHint(msg);
-        if (msg.getTicket().getIdentity() != null) {
+        if (version.isTLS13()) {
             // TLS 1.3
             writeTicketAgeAdd(msg);
             writeTicketNonceLength(msg);
