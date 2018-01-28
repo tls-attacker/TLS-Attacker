@@ -61,17 +61,11 @@ public class ReceiveMessageHelper {
             boolean shouldContinue = true;
             do {
                 receivedBytes = receiveByteArray(context);
-                if (receivedBytes.length != 0) {
-                    List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-                    List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
-                    for (List<AbstractRecord> recordGroup : recordGroups) {
-                        messages.addAll(processRecordGroup(recordGroup, context));
-                    }
-                    if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
-                        shouldContinue = shouldContinue(expectedMessages, messages, context);
-
-                    }
-                    realRecords.addAll(tempRecords);
+                MessageActionResult tempMessageActionResult = handleReceivedBytes(receivedBytes, context);
+                messages.addAll(tempMessageActionResult.getMessageList());
+                realRecords.addAll(tempMessageActionResult.getRecordList());
+                if (context.getConfig().isQuickReceive() && !expectedMessages.isEmpty()) {
+                    shouldContinue = shouldContinue(expectedMessages, messages, context);
                 }
             } while (receivedBytes.length != 0 && shouldContinue);
 
@@ -81,6 +75,20 @@ public class ReceiveMessageHelper {
             context.setReceivedTransportHandlerException(true);
         }
         return new MessageActionResult(realRecords, messages);
+    }
+
+    public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
+        List<ProtocolMessage> messages = new LinkedList<>();
+        List<AbstractRecord> records = new LinkedList<AbstractRecord>();
+        if (receivedBytes.length != 0) {
+            List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
+            List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
+            for (List<AbstractRecord> recordGroup : recordGroups) {
+                messages.addAll(processRecordGroup(recordGroup, context));
+            }
+            records.addAll(tempRecords);
+        }
+        return new MessageActionResult(records, messages);
     }
 
     public List<AbstractRecord> receiveRecords(TlsContext context) {
