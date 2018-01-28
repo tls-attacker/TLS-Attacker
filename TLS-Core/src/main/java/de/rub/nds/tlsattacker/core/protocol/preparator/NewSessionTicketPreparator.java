@@ -109,7 +109,7 @@ public class NewSessionTicketPreparator extends HandshakeMessagePreparator<NewSe
      * static function in the StatePlaintext class for better testing/debugging
      *
      * @return A struct with Stateinformation defined in
-     * https://tools.ietf.org/html/rfc5077#section-4
+     *         https://tools.ietf.org/html/rfc5077#section-4
      */
     private StatePlaintext generateStatePlaintext() {
         StatePlaintext plainstate = new StatePlaintext();

@@ -22,8 +22,10 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
     /**
      * Constructor for the NewSessionTicketMessageSerializer
      *
-     * @param message Message that should be serialized
-     * @param version Version of the Protocol
+     * @param message
+     *            Message that should be serialized
+     * @param version
+     *            Version of the Protocol
      */
     public NewSessionTicketSerializer(NewSessionTicketMessage message, ProtocolVersion version) {
         super(message, version);
