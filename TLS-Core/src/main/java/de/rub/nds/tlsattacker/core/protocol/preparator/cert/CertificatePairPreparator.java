@@ -22,14 +22,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class CertificatePairPreparator extends Preparator<CertificatePair> {
-
+    
     private final CertificatePair pair;
-
+    
     public CertificatePairPreparator(Chooser chooser, CertificatePair pair) {
         super(chooser, pair);
         this.pair = pair;
     }
-
+    
     @Override
     public void prepare() {
         LOGGER.debug("Preparing CertificatePair");
@@ -42,17 +42,17 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
             pair.setExtensionsLength(0);
         }
     }
-
+    
     private void prepareCertificate(CertificatePair pair) {
         pair.setCertificate(pair.getCertificateConfig());
         LOGGER.debug("Certificate: " + ArrayConverter.bytesToHexString(pair.getCertificate().getValue()));
     }
-
+    
     private void prepareCertificateLength(CertificatePair pair) {
         pair.setCertificateLength(pair.getCertificate().getValue().length);
         LOGGER.debug("CertificateLength: " + pair.getCertificateLength().getValue());
     }
-
+    
     private void prepareExtensions(CertificatePair pair) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (pair.getExtensionsConfig() != null) {
@@ -74,10 +74,10 @@ public class CertificatePairPreparator extends Preparator<CertificatePair> {
         }
         LOGGER.debug("ExtensionBytes: " + ArrayConverter.bytesToHexString(pair.getExtensions().getValue()));
     }
-
+    
     private void prepareExtensionLength(CertificatePair pair) {
         pair.setExtensionsLength(pair.getExtensions().getValue().length);
         LOGGER.debug("ExtensionLength: " + pair.getExtensionsLength().getValue());
     }
-
+    
 }
