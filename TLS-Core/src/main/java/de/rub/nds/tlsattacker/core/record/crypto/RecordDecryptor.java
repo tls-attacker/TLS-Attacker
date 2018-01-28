@@ -195,7 +195,12 @@ public class RecordDecryptor extends Decryptor {
         byte[] unpadded = parseUnpaddedTLS13(record.getComputations().getPlainRecordBytes().getValue());
         byte contentMessageType = parseContentMessageType(unpadded);
         LOGGER.debug("Parsed ContentMessageType:" + contentMessageType);
-        record.setContentMessageType(ProtocolMessageType.getContentType(contentMessageType));
+        ProtocolMessageType contentType = ProtocolMessageType.getContentType(contentMessageType);
+        if (contentType == null) {
+            LOGGER.warn("Parsed unknown TLS 1.3 ProtocolMessage type. Using Unknown instead");
+            contentType = ProtocolMessageType.UNKNOWN;
+        }
+        record.setContentMessageType(contentType);
         LOGGER.debug("ContentMessageType:" + record.getContentMessageType());
         byte[] unpaddedAndWithoutType = Arrays.copyOf(unpadded, unpadded.length - 1);
         record.getComputations().setUnpaddedRecordBytes(unpaddedAndWithoutType);
@@ -289,7 +294,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private void checkForEndOfEarlyData(byte[] unpaddedBytes) throws CryptoException {
-        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
+        byte[] endOfEarlyData = new byte[]{5, 0, 0, 0};
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
             adjustClientCipherAfterEarly();
         }

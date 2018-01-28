@@ -334,6 +334,7 @@ public class ReceiveMessageHelper {
             } else {
                 ProtocolMessageType tempType = ProtocolMessageType.getContentType(record.getContentMessageType()
                         .getValue());
+
                 if (tempType != type) {
                     LOGGER.error("Mixed Subgroup detected");
                 }
