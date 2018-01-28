@@ -88,10 +88,10 @@ public class ForensicAnalyzer {
                 sending = false;
             }
             byte[] joinedRecordBytes = joinRecordBytes(joinedActions);
-
-            context.setTransportHandler(new StreamTransportHandler(1, ConnectionEndType.CLIENT,
-                    new ByteArrayInputStream(joinedRecordBytes), new ByteArrayOutputStream()));
-            context.getTransportHandler().initialize();
+            tracePosition += joinedActions.size();
+            if (joinedRecordBytes.length == 0) {
+                continue;
+            }
             ReceiveMessageHelper helper = new ReceiveMessageHelper();
             if (sending) {
                 context.setTalkingConnectionEndType(connectionEndType);
@@ -103,12 +103,9 @@ public class ForensicAnalyzer {
             } else {
                 context.setConnection(new OutboundConnection());
             }
-            tracePosition += joinedActions.size();
-            if (joinedRecordBytes.length == 0) {
-                continue;
-            }
+
             context.setReversePrepareAfterParse(sending);
-            MessageActionResult parsedMessageResult = helper.receiveMessages(context);
+            MessageActionResult parsedMessageResult = helper.handleReceivedBytes(joinedRecordBytes, context);
             if (sending) {
                 SendAction reconstructedAction = new SendAction(parsedMessageResult.getMessageList());
                 reconstructedAction.setRecords(parsedMessageResult.getRecordList());
