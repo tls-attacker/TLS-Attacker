@@ -206,7 +206,7 @@ public class ReceiveMessageHelper {
                             && context.getConfig().isHttpsParsingEnabled()) {
                         try {
                             result = tryHandleAsHttpsMessage(cleanProtocolMessageBytes, dataPointer, context);
-                        } catch (ParserException | AdjustmentException E) {
+                        } catch (ParserException | AdjustmentException | UnsupportedOperationException E) {
                             result = tryHandleAsCorrectMessage(cleanProtocolMessageBytes, dataPointer, typeFromRecord,
                                     context);
                         }
@@ -218,7 +218,7 @@ public class ReceiveMessageHelper {
                 } else {
                     result = tryHandleAsSslMessage(cleanProtocolMessageBytes, dataPointer, context);
                 }
-            } catch (ParserException | AdjustmentException exCorrectMsg) {
+            } catch (ParserException | AdjustmentException | UnsupportedOperationException exCorrectMsg) {
                 LOGGER.warn("Could not parse Message as a CorrectMessage");
                 LOGGER.debug(exCorrectMsg);
                 try {
@@ -229,19 +229,19 @@ public class ReceiveMessageHelper {
                     } else {
                         try {
                             result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
-                        } catch (ParserException | AdjustmentException exUnknownHMsg) {
+                        } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
                             LOGGER.warn("Could not parse Message as UnknownMessage");
                             LOGGER.debug(exUnknownHMsg);
                             break;
                         }
                     }
-                } catch (ParserException exUnknownHandshakeMsg) {
+                } catch (ParserException | UnsupportedOperationException exUnknownHandshakeMsg) {
                     LOGGER.warn("Could not parse Message as UnknownHandshakeMessage");
                     LOGGER.debug(exUnknownHandshakeMsg);
 
                     try {
                         result = tryHandleAsUnknownMessage(cleanProtocolMessageBytes, dataPointer, context);
-                    } catch (ParserException | AdjustmentException exUnknownHMsg) {
+                    } catch (ParserException | AdjustmentException | UnsupportedOperationException exUnknownHMsg) {
                         LOGGER.warn("Could not parse Message as UnknownMessage");
                         LOGGER.debug(exUnknownHMsg);
                         break;

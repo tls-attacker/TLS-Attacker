@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +23,7 @@ public class ExtensionParserFactory {
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
             HandshakeMessageType handshakeMessageType) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
-            throw new PreparationException("Could not retrieve Parser for ExtensionBytes");
+            throw new ParserException("Could not retrieve Parser for ExtensionBytes. Not Enought bytes left for an ExtensionType");
         }
         byte[] typeBytes = new byte[2];
         typeBytes[0] = extensionBytes[pointer];
