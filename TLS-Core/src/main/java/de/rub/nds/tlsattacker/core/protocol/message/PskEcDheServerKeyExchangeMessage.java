@@ -63,17 +63,26 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nPskEcDheServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ");
-        sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
+        if (this.curveType != null && this.curveType.getValue() != null) {
+            sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
+        } else {
+            sb.append("null");
+        }
         sb.append("\n  Named Curve: ");
-        if (namedCurve != null) {
+        if (namedCurve != null && namedCurve.getValue() != null) {
             sb.append(NamedCurve.getNamedCurve(this.namedCurve.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+        if (getPublicKey() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+        } else {
+            sb.append("null");
+        }
         return sb.toString();
     }
 

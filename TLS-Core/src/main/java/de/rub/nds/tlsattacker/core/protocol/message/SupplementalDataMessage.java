@@ -85,14 +85,26 @@ public class SupplementalDataMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\n  Supplemental Data Length: ").append(supplementalDataLength.getValue());
-        for (SupplementalDataEntry entry : entries) {
-            sb.append("\n  Supplemental Data Type: ").append(entry.getSupplementalDataType().getValue());
-            sb.append("\n  Supplemental Data Length: ").append(entry.getSupplementalDataLength().getValue());
-            sb.append("\n  Supplemental Data : ").append(
-                    ArrayConverter.bytesToHexString(entry.getSupplementalData().getValue()));
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nSupplementalDataMessage:");
+        sb.append("\n  Supplemental Data Length: ");
+        if (supplementalDataLength != null && supplementalDataLength.getValue() != null) {
+            sb.append(supplementalDataLength.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  SupplementalDataEntries:\n");
+        if (!entries.isEmpty()) {
+            for (SupplementalDataEntry entry : entries) {
+                sb.append("\n   Supplemental Data Type: ").append(entry.getSupplementalDataType().getValue());
+                sb.append("\n   Supplemental Data Length: ").append(entry.getSupplementalDataLength().getValue());
+                sb.append("\n   Supplemental Data : ").append(
+                        ArrayConverter.bytesToHexString(entry.getSupplementalData().getValue()));
+            }
+        } else {
+            sb.append("null");
+        }
+
         return sb.toString();
     }
 

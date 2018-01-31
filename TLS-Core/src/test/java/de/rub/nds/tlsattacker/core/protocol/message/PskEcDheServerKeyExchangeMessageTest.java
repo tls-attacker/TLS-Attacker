@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,13 +15,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ApplicationMessageTest {
+/**
+ *
+ * @author Pierre Tilhaus
+ */
+public class PskEcDheServerKeyExchangeMessageTest {
 
-    ApplicationMessage message;
+    PskEcDheServerKeyExchangeMessage message;
 
     @Before
     public void setUp() {
-        message = new ApplicationMessage();
+        message = new PskEcDheServerKeyExchangeMessage();
     }
 
     @After
@@ -30,25 +33,17 @@ public class ApplicationMessageTest {
     }
 
     /**
-     * Test of toString method, of class ApplicationMessage.
+     * Test of toString method, of class PskEcDheServerKeyExchangeMessage.
      */
     @Test
     public void testToString() {
-
         StringBuilder sb = new StringBuilder();
-        sb.append("\nApplicationMessage:");
-        sb.append("\n  Data: ").append("null");
+        sb.append("\nPskEcDheServerKeyExchangeMessage:");
+        sb.append("\n  Curve Type: ").append("null");
+        sb.append("\n  Named Curve: ").append("null");
+        sb.append("\n  Public Key: ").append("null");
 
-        assertEquals(sb.toString(), message.toString());
-
-        byte[] data = { 123 };
-        message.setData(data);
-
-        sb.setLength(0);
-        sb.append("\nApplicationMessage:");
-        sb.append("\n  Data: ").append(ArrayConverter.bytesToHexString(data));
-
-        assertEquals(sb.toString(), message.toString());
+        assertEquals(message.toString(), sb.toString());
     }
 
 }

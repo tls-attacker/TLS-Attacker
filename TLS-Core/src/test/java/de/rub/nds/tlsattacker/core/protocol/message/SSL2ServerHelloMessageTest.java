@@ -15,12 +15,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class CertificateRequestMessageTest {
-    CertificateRequestMessage message;
+/**
+ *
+ * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
+ */
+public class SSL2ServerHelloMessageTest {
+
+    SSL2ServerHelloMessage message;
 
     @Before
     public void setUp() {
-        message = new CertificateRequestMessage();
+        message = new SSL2ServerHelloMessage();
     }
 
     @After
@@ -28,17 +33,19 @@ public class CertificateRequestMessageTest {
     }
 
     /**
-     * Test of toString method, of class CertificateRequestMessage.
+     * Test of toString method, of class SSL2ServerHelloMessage.
      */
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nCertificateRequestMessage:");
-        sb.append("\n  Certificate Types Count: ").append("null");
-        sb.append("\n  Certificate Types: ").append("null");
-        sb.append("\n  Signature Hash Algorithms Length: ").append("null");
-        sb.append("\n  Signature Hash Algorithms: ").append("null");
-        sb.append("\n  Distinguished Names Length: ").append("null");
+        sb.append("SSL2ServerHelloMessage:");
+        sb.append("\n  Protocol Version: ").append("null");
+        sb.append("\n  Type: ").append("null");
+        sb.append("\n  Supported CipherSuites: ").append("null");
+        sb.append("\n  SessionIdHit: ").append("null");
+        sb.append("\n  Certificate: ").append("null");
+        sb.append("\n  SessionID: ").append("null");
+
         assertEquals(message.toString(), sb.toString());
     }
 

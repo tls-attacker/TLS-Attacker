@@ -15,12 +15,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class CertificateRequestMessageTest {
-    CertificateRequestMessage message;
+/**
+ *
+ * @author Pierre Tilhaus <pierre.tilhaus@rub.de>
+ */
+public class SrpServerKeyExchangeMessageTest {
+
+    SrpServerKeyExchangeMessage message;
 
     @Before
     public void setUp() {
-        message = new CertificateRequestMessage();
+        message = new SrpServerKeyExchangeMessage();
     }
 
     @After
@@ -28,18 +33,18 @@ public class CertificateRequestMessageTest {
     }
 
     /**
-     * Test of toString method, of class CertificateRequestMessage.
+     * Test of toString method, of class SrpServerKeyExchangeMessage.
      */
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nCertificateRequestMessage:");
-        sb.append("\n  Certificate Types Count: ").append("null");
-        sb.append("\n  Certificate Types: ").append("null");
-        sb.append("\n  Signature Hash Algorithms Length: ").append("null");
-        sb.append("\n  Signature Hash Algorithms: ").append("null");
-        sb.append("\n  Distinguished Names Length: ").append("null");
+        sb.append("\nSrpServerKeyExchangeMessage:");
+        sb.append("\n  Modulus p: ").append("null");
+        sb.append("\n  Generator g: ").append("null");
+        sb.append("\n  Public Key: ").append("null");
+        sb.append("\n  Signature and Hash Algorithm: ").append("null");
+        sb.append("\n  Signature: ").append("null");
+
         assertEquals(message.toString(), sb.toString());
     }
-
 }

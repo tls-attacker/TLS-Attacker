@@ -114,21 +114,22 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nDHEServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
-        if (modulus != null) {
+        if (modulus != null && modulus.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
-        if (generator != null) {
+        if (generator != null && generator.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        if (getPublicKey() != null) {
+        if (getPublicKey() != null && getPublicKey().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
@@ -136,11 +137,13 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getSignatureAndHashAlgorithm() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null && this.getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+        } else {
+            sb.append("null");
         }
         sb.append("\n  Signature: ");
-        if (this.getSignature() != null) {
+        if (this.getSignature() != null && this.getSignature().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");

@@ -15,12 +15,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class CertificateRequestMessageTest {
-    CertificateRequestMessage message;
+/**
+ *
+ * @author Pierre Tilhaus
+ */
+public class ECDHEServerKeyExchangeMessageTest {
+
+    ECDHEServerKeyExchangeMessage message;
 
     @Before
     public void setUp() {
-        message = new CertificateRequestMessage();
+        message = new ECDHEServerKeyExchangeMessage();
     }
 
     @After
@@ -28,18 +33,18 @@ public class CertificateRequestMessageTest {
     }
 
     /**
-     * Test of toString method, of class CertificateRequestMessage.
+     * Test of toString method, of class ECDHEServerKeyExchangeMessage.
      */
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nCertificateRequestMessage:");
-        sb.append("\n  Certificate Types Count: ").append("null");
-        sb.append("\n  Certificate Types: ").append("null");
-        sb.append("\n  Signature Hash Algorithms Length: ").append("null");
-        sb.append("\n  Signature Hash Algorithms: ").append("null");
-        sb.append("\n  Distinguished Names Length: ").append("null");
+        sb.append("\nECDHEServerKeyExchangeMessage:");
+        sb.append("\n  Curve Type: ").append("null");
+        sb.append("\n  Named Curve: ").append("null");
+        sb.append("\n  Public Key: ").append("null");
+        sb.append("\n  Signature and Hash Algorithm: ").append("null");
+        sb.append("\n  Signature: ").append("null");
+
         assertEquals(message.toString(), sb.toString());
     }
-
 }

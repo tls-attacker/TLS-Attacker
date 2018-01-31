@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,13 +15,16 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ApplicationMessageTest {
-
-    ApplicationMessage message;
+/**
+ *
+ * @author Pierre Tilhaus
+ */
+public class ChangeCipherSpecMessageTest {
+    ChangeCipherSpecMessage message;
 
     @Before
     public void setUp() {
-        message = new ApplicationMessage();
+        message = new ChangeCipherSpecMessage();
     }
 
     @After
@@ -30,25 +32,14 @@ public class ApplicationMessageTest {
     }
 
     /**
-     * Test of toString method, of class ApplicationMessage.
+     * Test of toString method, of class ChangeCipherSpecMessage.
      */
     @Test
     public void testToString() {
-
         StringBuilder sb = new StringBuilder();
-        sb.append("\nApplicationMessage:");
-        sb.append("\n  Data: ").append("null");
-
-        assertEquals(sb.toString(), message.toString());
-
-        byte[] data = { 123 };
-        message.setData(data);
-
-        sb.setLength(0);
-        sb.append("\nApplicationMessage:");
-        sb.append("\n  Data: ").append(ArrayConverter.bytesToHexString(data));
+        sb.append("\nChangeCipherSpecMessage:");
+        sb.append("\n  CCS ProtocolType: ").append("null");
 
         assertEquals(sb.toString(), message.toString());
     }
-
 }

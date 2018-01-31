@@ -93,21 +93,20 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\nNewSessionTicket message:\n  TicketLifeTimeHint: ");
-        if (ticketLifetimeHint != null) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\nNewSessionTicketMessage:");
+        sb.append("\n  TicketLifeTimeHint: ");
+        if (ticketLifetimeHint != null && ticketLifetimeHint.getValue() != null) {
             sb.append(ticketLifetimeHint.getValue());
         } else {
             sb.append("null");
         }
-
         sb.append("\n  TicketLength: ");
-        if (ticketLength != null) {
+        if (ticketLength != null && ticketLength.getValue() != null) {
             sb.append(ticketLength.getValue());
         } else {
             sb.append("null");
         }
-
         sb.append("\n  Ticket: ");
         if (ticket != null) {
             sb.append(ticket.toString());
