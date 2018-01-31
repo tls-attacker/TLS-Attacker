@@ -28,8 +28,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.stream.StreamTransportHandler;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -134,7 +132,12 @@ public class ForensicAnalyzer {
                     List<AbstractRecord> records = msgAction.getRecords();
                     for (AbstractRecord record : records) {
                         try {
-                            stream.write(record.getCompleteRecordBytes().getValue());
+                            if (record.getCompleteRecordBytes() != null
+                                    && record.getCompleteRecordBytes().getValue() != null) {
+                                stream.write(record.getCompleteRecordBytes().getValue());
+                            } else {
+                                LOGGER.warn("Something went terribly wrong. The record does not contain complete record bytes");
+                            }
                         } catch (IOException ex) {
                             LOGGER.warn("Could not write to ByteArrayOutputStream.", ex);
                         }

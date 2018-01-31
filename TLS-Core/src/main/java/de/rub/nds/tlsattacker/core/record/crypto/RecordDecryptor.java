@@ -114,6 +114,9 @@ public class RecordDecryptor extends Decryptor {
     private Boolean isPaddingValid(Record record) {
         ModifiableByteArray padding = record.getComputations().getPadding();
         if (padding != null && padding.getValue() != null && padding.getValue().length > 0) {
+            if (context.getChooser().getSelectedProtocolVersion().isSSL()) {
+                return true;
+            }
             for (int i = 0; i < padding.getValue().length; i++) {
                 if (padding.getValue()[i] != padding.getValue().length - 1) {
                     LOGGER.debug("Padding is invalid");
@@ -294,7 +297,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private void checkForEndOfEarlyData(byte[] unpaddedBytes) throws CryptoException {
-        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
+        byte[] endOfEarlyData = new byte[]{5, 0, 0, 0};
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
             adjustClientCipherAfterEarly();
         }

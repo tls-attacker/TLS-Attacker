@@ -45,6 +45,10 @@ public class PSKPremasterComputations extends KeyExchangeComputations {
 
     @Override
     public void setSecretsInConfig(Config config) {
-        config.setDefaultPSKKey(psk.getValue());
+        if (psk != null && psk.getValue() != null) {
+            config.setDefaultPSKKey(psk.getValue());
+        } else {
+            LOGGER.warn("Could not adjust PSK to config. PSK is null");
+        }
     }
 }

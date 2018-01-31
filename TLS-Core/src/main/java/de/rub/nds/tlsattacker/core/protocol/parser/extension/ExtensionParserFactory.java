@@ -23,7 +23,8 @@ public class ExtensionParserFactory {
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
             HandshakeMessageType handshakeMessageType) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
-            throw new ParserException("Could not retrieve Parser for ExtensionBytes. Not Enought bytes left for an ExtensionType");
+            throw new ParserException(
+                    "Could not retrieve Parser for ExtensionBytes. Not Enought bytes left for an ExtensionType");
         }
         byte[] typeBytes = new byte[2];
         typeBytes[0] = extensionBytes[pointer];
