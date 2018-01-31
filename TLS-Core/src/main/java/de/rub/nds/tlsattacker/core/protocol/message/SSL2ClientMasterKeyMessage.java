@@ -8,6 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import javax.xml.bind.annotation.XmlElement;
+
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
@@ -19,10 +22,12 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 public class SSL2ClientMasterKeyMessage extends SSL2ClientMessage {
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherKind;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -42,6 +47,10 @@ public class SSL2ClientMasterKeyMessage extends SSL2ClientMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     private ModifiableByteArray keyArgData;
+
+    @HoldsModifiableVariable
+    @XmlElement
+    private RSAClientComputations computations;
 
     public SSL2ClientMasterKeyMessage() {
         super();
@@ -143,6 +152,16 @@ public class SSL2ClientMasterKeyMessage extends SSL2ClientMessage {
 
     public void setKeyArgData(byte[] keyArgData) {
         this.keyArgData = ModifiableVariableFactory.safelySetValue(this.keyArgData, keyArgData);
+    }
+
+    public void prepareComputations() {
+        if (computations == null) {
+            computations = new RSAClientComputations();
+        }
+    }
+
+    public RSAClientComputations getComputations() {
+        return this.computations;
     }
 
     @Override
