@@ -56,6 +56,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -85,7 +86,13 @@ public class Config implements Serializable {
     }
 
     public static Config createConfig(InputStream stream) {
-        return ConfigIO.read(stream);
+        Config config = ConfigIO.read(stream);
+        try {
+            stream.close();
+        } catch (IOException ex) {
+            LOGGER.warn("Could not close resource Stream!", ex);
+        }
+        return config;
     }
 
     /**
@@ -273,7 +280,7 @@ public class Config implements Serializable {
     /**
      * Default ALPN announced protocols
      */
-    private String[] alpnAnnouncedProtocols = new String[] { "h2" };
+    private String[] alpnAnnouncedProtocols = new String[]{"h2"};
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionId = new byte[0];
@@ -294,7 +301,7 @@ public class Config implements Serializable {
      * Default SRTP extension master key identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[] {};
+    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[]{};
 
     /**
      * Default user mapping extension hint type
@@ -700,7 +707,7 @@ public class Config implements Serializable {
      * How much padding bytes should be send by default
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultPaddingExtensionBytes = new byte[] { 0, 0, 0, 0, 0, 0 };
+    private byte[] defaultPaddingExtensionBytes = new byte[]{0, 0, 0, 0, 0, 0};
 
     private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
 
@@ -970,9 +977,9 @@ public class Config implements Serializable {
      * ClientAuthtication Type, not fully implemented yet
      */
     private ClientAuthenticationType clientAuthenticationType = ClientAuthenticationType.ANONYMOUS;
-    private NamedCurve[] defaultEcdheNamedCurves = new NamedCurve[] { NamedCurve.SECP192R1 };
+    private NamedCurve[] defaultEcdheNamedCurves = new NamedCurve[]{NamedCurve.SECP192R1};
 
-    private ECPointFormat[] defaultEcPointFormats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
+    private ECPointFormat[] defaultEcPointFormats = new ECPointFormat[]{ECPointFormat.UNCOMPRESSED};
 
     private Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -2758,8 +2765,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param earlyData
-     *            the earlyData to set
+     * @param earlyData the earlyData to set
      */
     public void setEarlyData(byte[] earlyData) {
         this.earlyData = earlyData;
@@ -2773,8 +2779,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param PskSets
-     *            the PskSets to set
+     * @param PskSets the PskSets to set
      */
     public void setPskSets(List<PskSet> PskSets) {
         this.PskSets = PskSets;
@@ -2788,8 +2793,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param psk
-     *            the psk to set
+     * @param psk the psk to set
      */
     public void setPsk(byte[] psk) {
         this.psk = psk;
@@ -2803,8 +2807,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param defaultSessionTicketAgeAdd
-     *            the defaultSessionTicketAgeAdd to set
+     * @param defaultSessionTicketAgeAdd the defaultSessionTicketAgeAdd to set
      */
     public void setDefaultSessionTicketAgeAdd(byte[] defaultSessionTicketAgeAdd) {
         this.defaultSessionTicketAgeAdd = defaultSessionTicketAgeAdd;
@@ -2818,8 +2821,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param defaultSessionTicketNonce
-     *            the defaultSessionTicketNonce to set
+     * @param defaultSessionTicketNonce the defaultSessionTicketNonce to set
      */
     public void setDefaultSessionTicketNonce(byte[] defaultSessionTicketNonce) {
         this.defaultSessionTicketNonce = defaultSessionTicketNonce;
@@ -2833,8 +2835,8 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param defaultSessionTicketIdentity
-     *            the defaultSessionTicketIdentity to set
+     * @param defaultSessionTicketIdentity the defaultSessionTicketIdentity to
+     * set
      */
     public void setDefaultSessionTicketIdentity(byte[] defaultSessionTicketIdentity) {
         this.defaultSessionTicketIdentity = defaultSessionTicketIdentity;
@@ -2848,8 +2850,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param clientEarlyTrafficSecret
-     *            the clientEarlyTrafficSecret to set
+     * @param clientEarlyTrafficSecret the clientEarlyTrafficSecret to set
      */
     public void setClientEarlyTrafficSecret(byte[] clientEarlyTrafficSecret) {
         this.clientEarlyTrafficSecret = clientEarlyTrafficSecret;
@@ -2863,8 +2864,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param earlySecret
-     *            the earlySecret to set
+     * @param earlySecret the earlySecret to set
      */
     public void setEarlySecret(byte[] earlySecret) {
         this.earlySecret = earlySecret;
@@ -2878,8 +2878,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param earlyDataCipherSuite
-     *            the earlyDataCipherSuite to set
+     * @param earlyDataCipherSuite the earlyDataCipherSuite to set
      */
     public void setEarlyDataCipherSuite(CipherSuite earlyDataCipherSuite) {
         this.earlyDataCipherSuite = earlyDataCipherSuite;
@@ -2893,8 +2892,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param earlyDataPsk
-     *            the earlyDataPsk to set
+     * @param earlyDataPsk the earlyDataPsk to set
      */
     public void setEarlyDataPsk(byte[] earlyDataPsk) {
         this.earlyDataPsk = earlyDataPsk;
@@ -2908,8 +2906,7 @@ public class Config implements Serializable {
     }
 
     /**
-     * @param usePsk
-     *            the usePsk to set
+     * @param usePsk the usePsk to set
      */
     public void setUsePsk(Boolean usePsk) {
         this.usePsk = usePsk;
