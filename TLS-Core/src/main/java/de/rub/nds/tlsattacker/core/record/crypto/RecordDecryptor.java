@@ -297,7 +297,7 @@ public class RecordDecryptor extends Decryptor {
     }
 
     private void checkForEndOfEarlyData(byte[] unpaddedBytes) throws CryptoException {
-        byte[] endOfEarlyData = new byte[]{5, 0, 0, 0};
+        byte[] endOfEarlyData = new byte[] { 5, 0, 0, 0 };
         if (Arrays.equals(unpaddedBytes, endOfEarlyData)) {
             adjustClientCipherAfterEarly();
         }

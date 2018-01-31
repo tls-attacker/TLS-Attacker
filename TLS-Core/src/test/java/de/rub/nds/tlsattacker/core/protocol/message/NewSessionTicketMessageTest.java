@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.tlsattacker.core.state.SessionTicket;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,7 +42,10 @@ public class NewSessionTicketMessageTest {
         sb.append("\nNewSessionTicketMessage:");
         sb.append("\n  TicketLifeTimeHint: ").append("null");
         sb.append("\n  TicketLength: ").append("null");
-        sb.append("\n  Ticket: ").append("null");
+        sb.append("\n  Ticket: ").append(new SessionTicket().toString());
+        System.out.println(message.toString());
+        System.out.println();
+        System.out.println(sb.toString());
 
         assertEquals(message.toString(), sb.toString());
     }
