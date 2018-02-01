@@ -9,7 +9,7 @@
     <defaultServerConnection>
         <alias>server</alias>
         <port>443</port>
-    </defaultServerConnection>    
+    </defaultServerConnection>
     <clientAuthentication>false</clientAuthentication>
     <supportedSignatureAndHashAlgorithms>
         <hashAlgorithm>SHA512</hashAlgorithm>
@@ -472,4 +472,5 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <filtersKeepUserSettings>true</filtersKeepUserSettings>
     <defaultServerApplicationTrafficSecret></defaultServerApplicationTrafficSecret>
     <defaultClientApplicationTrafficSecret></defaultClientApplicationTrafficSecret>
+    <defaultStarttlsCommand>STARTTLS</defaultStarttlsCommand>
 </config>

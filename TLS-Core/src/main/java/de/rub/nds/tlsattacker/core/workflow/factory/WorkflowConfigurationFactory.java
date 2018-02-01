@@ -647,8 +647,7 @@ public class WorkflowConfigurationFactory {
 
     private WorkflowTrace createStarttlsWorkflow() {
         WorkflowTrace trace = new WorkflowTrace();
-        SendAsciiAction action = new SendAsciiAction("STARTTLS");
-
+        SendAsciiAction action = new SendAsciiAction(config.getDefaultStarttlsCommand().name());
         trace.addTlsAction(action);
 
         return trace;
