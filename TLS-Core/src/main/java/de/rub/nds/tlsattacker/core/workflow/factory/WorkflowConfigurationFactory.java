@@ -153,11 +153,19 @@ public class WorkflowConfigurationFactory {
      */
     private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
+
         if (config.isStarttls()) {
-            SendAsciiAction sendAsciiAction = new SendAsciiAction(config.getDefaultStarttlsCommand().name());
-            workflowTrace.addTlsAction(sendAsciiAction);
-            ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
-            workflowTrace.addTlsAction(receiveAsciiAction);
+            if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+                SendAsciiAction sendAsciiAction = new SendAsciiAction(config.getDefaultStarttlsRequest().name());
+                workflowTrace.addTlsAction(sendAsciiAction);
+                ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                workflowTrace.addTlsAction(receiveAsciiAction);
+            } else {
+                ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                workflowTrace.addTlsAction(receiveAsciiAction);
+                SendAsciiAction sendAsciiAction = new SendAsciiAction(config.getDefaultStarttlsResponse().getResponse());
+                workflowTrace.addTlsAction(sendAsciiAction);
+            }
         }
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
