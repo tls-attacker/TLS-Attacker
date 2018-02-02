@@ -939,6 +939,8 @@ public class Config implements Serializable {
     private Boolean useAllProvidedRecords = false;
 
     private Boolean httpsParsingEnabled = false;
+    
+    private Boolean starttls = false;
 
     /**
      * Default StarttlsCommand.
@@ -2964,5 +2966,13 @@ public class Config implements Serializable {
 
     public void setDefaultStarttlsCommand(StarttlsCommand defaultStarttlsCommand) {
         this.defaultStarttlsCommand = defaultStarttlsCommand;
+    }
+
+    public Boolean isStarttls() {
+        return starttls;
+    }
+
+    public void setStarttls(Boolean starttls) {
+        this.starttls = starttls;
     }
 }

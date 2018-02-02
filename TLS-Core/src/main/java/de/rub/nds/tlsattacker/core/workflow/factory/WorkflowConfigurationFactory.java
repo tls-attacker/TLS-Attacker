@@ -59,6 +59,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
@@ -114,8 +115,6 @@ public class WorkflowConfigurationFactory {
                 return createFullZeroRttWorkflow();
             case FALSE_START:
                 return createFalseStartWorkflow();
-            case STARTTLS:
-                return createStarttlsWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -154,7 +153,12 @@ public class WorkflowConfigurationFactory {
      */
     private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
-
+        if (config.isStarttls()) {
+            SendAsciiAction sendAsciiAction = new SendAsciiAction(config.getDefaultStarttlsCommand().name());
+            workflowTrace.addTlsAction(sendAsciiAction);
+            ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+            workflowTrace.addTlsAction(receiveAsciiAction);
+        }
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
@@ -643,13 +647,5 @@ public class WorkflowConfigurationFactory {
         if (cs.isSrp()) {
             messages.add(new SrpServerKeyExchangeMessage(config));
         }
-    }
-
-    private WorkflowTrace createStarttlsWorkflow() {
-        WorkflowTrace trace = new WorkflowTrace();
-        SendAsciiAction action = new SendAsciiAction(config.getDefaultStarttlsCommand().name());
-        trace.addTlsAction(action);
-
-        return trace;
     }
 }
