@@ -18,6 +18,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
@@ -53,7 +54,7 @@ public class SSL2ClientMasterKeyMessage extends SSL2ClientMessage {
     private RSAClientComputations computations;
 
     public SSL2ClientMasterKeyMessage() {
-        super();
+        super(HandshakeMessageType.SSL2_CLIENT_MASTER_KEY);
     }
 
     public SSL2ClientMasterKeyMessage(Config config) {

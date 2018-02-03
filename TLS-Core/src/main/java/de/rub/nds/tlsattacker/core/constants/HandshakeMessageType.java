@@ -19,6 +19,7 @@ public enum HandshakeMessageType {
     UNKNOWN((byte) 255),
     HELLO_REQUEST((byte) 0),
     CLIENT_HELLO((byte) 1),
+    SSL2_CLIENT_HELLO((byte) 1),
     SERVER_HELLO((byte) 2),
     SSL2_CLIENT_MASTER_KEY((byte) 2),
     HELLO_VERIFY_REQUEST((byte) 3),

@@ -13,10 +13,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
-public abstract class SSL2ClientMessage extends ProtocolMessage {
+public abstract class SSL2ClientMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger messageLength;
@@ -24,9 +25,8 @@ public abstract class SSL2ClientMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     private ModifiableByte type;
 
-    public SSL2ClientMessage() {
-        super();
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+    public SSL2ClientMessage(HandshakeMessageType handshakeMessageType) {
+        super(handshakeMessageType);
     }
 
     public ModifiableInteger getMessageLength() {
