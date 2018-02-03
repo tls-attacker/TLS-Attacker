@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -275,7 +276,14 @@ public class ReceiveMessageHelper {
     }
 
     private ParserResult tryHandleAsSslMessage(byte[] cleanProtocolMessageBytes, int dataPointer, TlsContext context) {
-        ProtocolMessageHandler pmh = new SSL2ServerHelloHandler(context);
+    	// TODO: SSL2 ServerVerify messages have their message type encrypted -
+    	// it's up to the client to know what to expect next. Is this good enough?
+    	ProtocolMessageHandler pmh;
+    	if (HandshakeMessageType.getMessageType(cleanProtocolMessageBytes[2]) == HandshakeMessageType.SSL2_SERVER_HELLO) {
+    		pmh = new SSL2ServerHelloHandler(context);
+    	} else {
+    		pmh = new SSL2ServerVerifyHandler(context);
+    	}
         return pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
     }
 

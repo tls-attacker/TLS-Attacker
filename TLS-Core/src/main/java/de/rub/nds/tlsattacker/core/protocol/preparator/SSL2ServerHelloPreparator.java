@@ -9,9 +9,10 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator {
+public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator<SSL2ServerHelloMessage> {
 
     private final SSL2ServerHelloMessage message;
 
@@ -24,4 +25,8 @@ public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator {
     protected void prepareProtocolMessageContents() {
         throw new UnsupportedOperationException("Not supported Yet");
     }
+    
+    public void prepareAfterParse() {
+    }
+       
 }

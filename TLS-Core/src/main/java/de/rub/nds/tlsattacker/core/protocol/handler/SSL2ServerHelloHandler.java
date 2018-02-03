@@ -76,6 +76,12 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
             LOGGER.error("Setting non-server certificate for SSL2 - we currently don't support that.");
             return;
         }
+        
+        byte[] serverRandom = message.getSessionId().getValue();
+        if (serverRandom != null) {
+        	tlsContext.setServerRandom(serverRandom);
+        }
+        
         Certificate cert = parseCertificate(message.getCertificateLength().getValue(), message.getCertificate()
                 .getValue());
         LOGGER.debug("Setting ServerCertificate in Context");

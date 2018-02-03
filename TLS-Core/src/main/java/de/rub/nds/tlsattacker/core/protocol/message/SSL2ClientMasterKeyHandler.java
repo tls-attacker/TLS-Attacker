@@ -42,8 +42,8 @@ public class SSL2ClientMasterKeyHandler extends ProtocolMessageHandler<SSL2Clien
 
     @Override
     public void adjustTLSContext(SSL2ClientMasterKeyMessage message) {
-        // we do not adjust anything since we dont support the complete ssl2
-        // handshake anyways
+        byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
+        tlsContext.setPreMasterSecret(premasterSecret);
     }
 
 }
