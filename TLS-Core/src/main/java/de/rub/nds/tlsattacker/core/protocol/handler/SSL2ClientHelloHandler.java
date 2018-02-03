@@ -37,7 +37,7 @@ public class SSL2ClientHelloHandler extends ProtocolMessageHandler<SSL2ClientHel
 
     @Override
     public void adjustTLSContext(SSL2ClientHelloMessage message) {
-    	tlsContext.setClientRandom(message.getChallenge().getValue());
+        tlsContext.setClientRandom(message.getChallenge().getValue());
     }
 
 }

@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestHandler;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HandshakeMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ParserResult;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayOutputStream;
@@ -276,15 +278,16 @@ public class ReceiveMessageHelper {
     }
 
     private ParserResult tryHandleAsSslMessage(byte[] cleanProtocolMessageBytes, int dataPointer, TlsContext context) {
-    	// TODO: SSL2 ServerVerify messages have their message type encrypted -
-    	// it's up to the client to know what to expect next. Is this good enough?
-    	ProtocolMessageHandler pmh;
-    	if (HandshakeMessageType.getMessageType(cleanProtocolMessageBytes[2]) == HandshakeMessageType.SSL2_SERVER_HELLO) {
-    		pmh = new SSL2ServerHelloHandler(context);
-    	} else {
-    		pmh = new SSL2ServerVerifyHandler(context);
-    	}
-        return pmh.parseMessage(cleanProtocolMessageBytes, dataPointer);
+        // TODO: SSL2 ServerVerify messages have their message type encrypted -
+        // it's up to the client to know what to expect next. Is this good
+        // enough?
+        HandshakeMessageHandler<? extends SSL2HandshakeMessage> handler;
+        if (HandshakeMessageType.getMessageType(cleanProtocolMessageBytes[2]) == HandshakeMessageType.SSL2_SERVER_HELLO) {
+            handler = new SSL2ServerHelloHandler(context);
+        } else {
+            handler = new SSL2ServerVerifyHandler(context);
+        }
+        return handler.parseMessage(cleanProtocolMessageBytes, dataPointer);
     }
 
     private ParserResult tryHandleAsUnknownHandshakeMessage(byte[] protocolMessageBytes, int pointer,

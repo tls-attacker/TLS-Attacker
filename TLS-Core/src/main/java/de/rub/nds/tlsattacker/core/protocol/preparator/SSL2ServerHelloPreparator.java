@@ -25,8 +25,8 @@ public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator<SSL2Ser
     protected void prepareProtocolMessageContents() {
         throw new UnsupportedOperationException("Not supported Yet");
     }
-    
+
     public void prepareAfterParse() {
     }
-       
+
 }

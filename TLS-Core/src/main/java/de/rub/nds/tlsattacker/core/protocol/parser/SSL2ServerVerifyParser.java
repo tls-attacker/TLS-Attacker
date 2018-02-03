@@ -1,3 +1,11 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,9 +29,9 @@ public class SSL2ServerVerifyParser extends SSL2HandshakeMessageParser<SSL2Serve
         return message;
     }
 
-	private void parseEncryptedPart(SSL2ServerVerifyMessage message) {
+    private void parseEncryptedPart(SSL2ServerVerifyMessage message) {
         message.setEncryptedPart(parseByteArrayField(message.getMessageLength().getValue()));
         LOGGER.debug("Encrypted Part: " + ArrayConverter.bytesToHexString(message.getEncryptedPart().getValue()));
-	}
+    }
 
 }
