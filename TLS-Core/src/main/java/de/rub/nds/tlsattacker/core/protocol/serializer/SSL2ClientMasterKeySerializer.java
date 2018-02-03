@@ -71,10 +71,8 @@ public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer {
     }
 
     // TODO: Consider de-duplicating vs. SSL2ClientHelloSerializer.
-    // TODO: Consider treating the weird length encoding as serializing, not
-    // preparing.
     private void writeMessageLength(SSL2ClientMasterKeyMessage msg) {
-        appendInt(msg.getMessageLength().getValue(), SSL2ByteLength.LENGTH);
+        appendInt(msg.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
         LOGGER.debug("MessageLength: " + msg.getMessageLength().getValue());
     }
 

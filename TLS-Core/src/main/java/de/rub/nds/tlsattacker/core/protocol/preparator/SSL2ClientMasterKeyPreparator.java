@@ -90,7 +90,7 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     private void prepareMessageLength(SSL2ClientMasterKeyMessage message, int length) {
-        message.setMessageLength(length ^ 0x8000);
+        message.setMessageLength(length);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 

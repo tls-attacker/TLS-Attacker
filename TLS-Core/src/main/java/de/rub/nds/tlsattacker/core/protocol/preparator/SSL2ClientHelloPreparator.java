@@ -89,7 +89,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
     }
 
     private void prepareMessageLength(SSL2ClientHelloMessage message, int length) {
-        message.setMessageLength(length ^ 0x8000);
+        message.setMessageLength(length);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 
