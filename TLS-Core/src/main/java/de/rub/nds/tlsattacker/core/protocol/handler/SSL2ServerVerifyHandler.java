@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
+import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerVerifyPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -61,7 +62,7 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
 
     private byte[] getMD5Output() {
         MD5Digest md5 = new MD5Digest();
-        byte[] clearKey = new byte[11];
+        byte[] clearKey = new byte[SSL2ClientMasterKeyPreparator.EXPORT_RC4_NUM_OF_CLEAR_KEY_BYTES];
         md5Update(md5, clearKey);
         md5Update(md5, tlsContext.getPreMasterSecret());
         md5.update((byte) '0');

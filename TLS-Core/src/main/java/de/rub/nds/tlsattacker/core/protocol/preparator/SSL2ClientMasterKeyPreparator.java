@@ -18,7 +18,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL2ClientMasterKeyMessage> {
 
-    private static final int EXPORT_KEY_LENGTH_BYTES = 5;
+    public static final int EXPORT_RC4_NUM_OF_SECRET_KEY_BYTES = 5;
+    public static final int EXPORT_RC4_NUM_OF_CLEAR_KEY_BYTES = 11;
 
     private final SSL2ClientMasterKeyMessage message;
 
@@ -73,8 +74,8 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     private void prepareClearKey(SSL2ClientMasterKeyMessage message) {
-        // by default we currently supply 11 null bytes
-        message.setClearKeyData(new byte[11]);
+        // by default we currently supply null bytes as the clear key portion
+        message.setClearKeyData(new byte[EXPORT_RC4_NUM_OF_CLEAR_KEY_BYTES]);
         LOGGER.debug("ClearKey: " + ArrayConverter.bytesToHexString(message.getClearKeyData().getValue()));
     }
 
@@ -94,7 +95,7 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     private byte[] generatePremasterSecret() {
-        byte[] tempPremasterSecret = new byte[EXPORT_KEY_LENGTH_BYTES];
+        byte[] tempPremasterSecret = new byte[EXPORT_RC4_NUM_OF_SECRET_KEY_BYTES];
         chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
         return tempPremasterSecret;
     }
@@ -130,9 +131,9 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
         int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
         // the number of random bytes in the pkcs1 message
 
-        int unpaddedLength = EXPORT_KEY_LENGTH_BYTES; // Currently we only
-                                                      // support 40-bit export
-                                                      // RC4
+        int unpaddedLength = EXPORT_RC4_NUM_OF_SECRET_KEY_BYTES;
+        // Currently we only support 40-bit export RC4
+
         int randomByteLength = keyByteLength - unpaddedLength - 3;
         padding = new byte[randomByteLength];
         chooser.getContext().getRandom().nextBytes(padding);
