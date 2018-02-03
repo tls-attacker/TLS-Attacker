@@ -23,13 +23,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SSL2ServerHelloMessage extends HandshakeMessage {
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger messageLength;
-
-    @ModifiableVariableProperty
-    private ModifiableByte type;
+public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty
     private ModifiableByte sessionIdHit;
@@ -75,30 +69,6 @@ public class SSL2ServerHelloMessage extends HandshakeMessage {
     @Override
     public SSL2ServerHelloHandler getHandler(TlsContext context) {
         return new SSL2ServerHelloHandler(context);
-    }
-
-    public ModifiableInteger getMessageLength() {
-        return messageLength;
-    }
-
-    public void setMessageLength(ModifiableInteger messageLength) {
-        this.messageLength = messageLength;
-    }
-
-    public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
-    }
-
-    public ModifiableByte getType() {
-        return type;
-    }
-
-    public void setType(ModifiableByte type) {
-        this.type = type;
-    }
-
-    public void setType(byte type) {
-        this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
     public ModifiableByte getSessionIdHit() {

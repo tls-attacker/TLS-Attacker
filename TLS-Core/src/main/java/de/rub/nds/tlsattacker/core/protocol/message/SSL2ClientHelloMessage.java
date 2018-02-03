@@ -24,7 +24,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class SSL2ClientHelloMessage extends SSL2ClientMessage {
+public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;

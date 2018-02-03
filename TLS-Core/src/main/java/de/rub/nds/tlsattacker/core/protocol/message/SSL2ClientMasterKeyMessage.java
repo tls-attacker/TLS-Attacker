@@ -26,7 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class SSL2ClientMasterKeyMessage extends SSL2ClientMessage {
+public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray cipherKind;

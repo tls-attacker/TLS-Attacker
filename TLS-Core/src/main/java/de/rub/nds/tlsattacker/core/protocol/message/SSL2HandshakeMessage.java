@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 
-public abstract class SSL2ClientMessage extends HandshakeMessage {
+public abstract class SSL2HandshakeMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger messageLength;
@@ -25,7 +25,7 @@ public abstract class SSL2ClientMessage extends HandshakeMessage {
     @ModifiableVariableProperty
     private ModifiableByte type;
 
-    public SSL2ClientMessage(HandshakeMessageType handshakeMessageType) {
+    public SSL2HandshakeMessage(HandshakeMessageType handshakeMessageType) {
         super(handshakeMessageType);
     }
 

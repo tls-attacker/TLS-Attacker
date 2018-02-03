@@ -12,11 +12,10 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerVerifyHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-public class SSL2ServerVerifyMessage extends HandshakeMessage {
+public class SSL2ServerVerifyMessage extends SSL2HandshakeMessage {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger messageLength;
-	
+	// TODO, nit: The type byte is encrypted for ServerVerify messages.
+
     @ModifiableVariableProperty
     private ModifiableByteArray encryptedPart;
 	
@@ -39,18 +38,6 @@ public class SSL2ServerVerifyMessage extends HandshakeMessage {
 		return new SSL2ServerVerifyHandler(context);
 	}
 
-    public ModifiableInteger getMessageLength() {
-        return messageLength;
-    }
-
-    public void setMessageLength(ModifiableInteger messageLength) {
-        this.messageLength = messageLength;
-    }
-
-    public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
-    }
-	
     public ModifiableByteArray getEncryptedPart() {
         return encryptedPart;
     }
