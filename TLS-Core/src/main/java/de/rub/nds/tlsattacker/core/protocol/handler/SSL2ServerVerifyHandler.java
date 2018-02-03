@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
+import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.engines.RC4Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -41,67 +42,43 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
 		return new SSL2ServerVerifyPreparator(message, tlsContext.getChooser());
 	}
 
-	private byte[] MD5(byte[] input) {
-		// TODO: Replace with BouncyCastle MD5
-		MessageDigest digest;
-		try {
-			digest = MessageDigest.getInstance("MD5");
-			return digest.digest(input);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	private static void md5Update(MD5Digest md5, byte[] bytes) {
+		md5.update(bytes, 0, bytes.length);
 	}
 	
     @Override
     public void adjustTLSContext(SSL2ServerVerifyMessage message) {
-    	byte[] md5Input = generateMD5Input();
-    	byte[] md5Output = MD5(md5Input);
+    	byte[] md5Output = getMD5Output();
+    	
     	RC4Engine rc4 = new RC4Engine();
     	rc4.init(false, new KeyParameter(md5Output));
     	byte[] encrypted = message.getEncryptedPart().getValue();
     	int len = encrypted.length;
 		byte[] decrypted = new byte[len];
     	rc4.processBytes(encrypted, 0, len, decrypted, 0);
-    	LOGGER.debug("Decrypted Challenge: " + ArrayConverter.bytesToHexString(decrypted));
-    	byte[] challenge = tlsContext.getClientRandom();
-    	LOGGER.debug("Original Challenge: " + ArrayConverter.bytesToHexString(challenge));
-    	byte[] test = Arrays.copyOfRange(decrypted, len - 16, len);
-		if (Arrays.equals(test, challenge)) {
+    	
+    	if (Arrays.equals(Arrays.copyOfRange(decrypted, len - 16, len), tlsContext.getClientRandom())) {
     		LOGGER.debug("Hurray! DROWN detected!");
     		// TODO: Where do we store this information? On the tlsContext?
     	}
     }
 
-	private byte[] generateMD5Input() {
-//    	MD5.new(CLEAR_KEY + cls.SECRET_KEY + '0' + CHALLENGE + connection_id).digest(
-		// TODO: Use a proper method for copying between byte arrays.
-		byte[] md5Input = new byte[16 * 3 + 1];
-
-    	byte[] preMasterSecret = tlsContext.getPreMasterSecret();
-    	for (int i = 0; i < 5; i++) {
-			md5Input[11 + i] = preMasterSecret[i];
-    	}
-    	
-    	md5Input[16] = '0';
-    	
-    	byte[] challenge = tlsContext.getClientRandom();
-    	for (int i = 0; i < 16; i++) {
-			md5Input[17 + i] = challenge[i];
-    	}
-    	
-    	byte[] connectionId = tlsContext.getServerRandom();
-    	for (int i = 0; i < 16; i++) {
-    		md5Input[33 + i] = connectionId[i];
-    	}
-    	LOGGER.debug("MD5 Input: " + ArrayConverter.bytesToHexString(md5Input));
-    	return md5Input;
+	private byte[] getMD5Output() {
+		MD5Digest md5 = new MD5Digest();
+		byte[] clearKey = new byte[11];
+		md5Update(md5, clearKey);
+		md5Update(md5, tlsContext.getPreMasterSecret());
+		md5.update((byte)'0');
+		md5Update(md5, tlsContext.getClientRandom());
+		md5Update(md5, tlsContext.getServerRandom());
+    	byte[] md5Output = new byte[md5.getDigestSize()];
+    	md5.doFinal(md5Output, 0);
+		return md5Output;
 	}
 
 	@Override
 	public ProtocolMessageSerializer getSerializer(SSL2ServerVerifyMessage message) {
-		// TODO Auto-generated method stub
+		// We currently don't send ServerVerify messages, only receive them.
 		return null;
 	}
 	

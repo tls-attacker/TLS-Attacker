@@ -26,7 +26,7 @@ public class SSL2ClientMasterKeyHandler extends ProtocolMessageHandler<SSL2Clien
 
     @Override
     public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        // TODO
+        // We currently don't receive ClientMasterKey messages, only send them.
         return null;
     }
 
