@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 
 public abstract class SSL2HandshakeMessageParser<T extends SSL2HandshakeMessage> extends ProtocolMessageParser<T> {
 

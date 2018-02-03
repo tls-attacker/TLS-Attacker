@@ -15,17 +15,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientMasterKeyHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.RSAClientComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
+@SuppressWarnings("serial")
 public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
@@ -67,7 +64,7 @@ public class SSL2ClientMasterKeyMessage extends SSL2HandshakeMessage {
     }
 
     @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
+    public SSL2ClientMasterKeyHandler getHandler(TlsContext context) {
         return new SSL2ClientMasterKeyHandler(context);
     }
 

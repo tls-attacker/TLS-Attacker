@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.bouncycastle.crypto.tls.Certificate;
@@ -17,14 +16,9 @@ import org.bouncycastle.crypto.tls.Certificate;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.SSL2ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ProtocolMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ServerHelloPreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.util.CertificateUtils;
@@ -37,17 +31,17 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
     }
 
     @Override
-    public ProtocolMessageParser getParser(byte[] message, int pointer) {
+    public SSL2ServerHelloParser getParser(byte[] message, int pointer) {
         return new SSL2ServerHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public ProtocolMessagePreparator getPreparator(SSL2ServerHelloMessage message) {
+    public SSL2ServerHelloPreparator getPreparator(SSL2ServerHelloMessage message) {
         return new SSL2ServerHelloPreparator(message, tlsContext.getChooser());
     }
 
     @Override
-    public ProtocolMessageSerializer getSerializer(SSL2ServerHelloMessage message) {
+    public SSL2ServerHelloSerializer getSerializer(SSL2ServerHelloMessage message) {
         return new SSL2ServerHelloSerializer(message, tlsContext);
     }
 

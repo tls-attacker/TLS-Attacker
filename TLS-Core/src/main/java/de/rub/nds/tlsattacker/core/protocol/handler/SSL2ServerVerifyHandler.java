@@ -73,7 +73,7 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
     }
 
     @Override
-    public ProtocolMessageSerializer getSerializer(SSL2ServerVerifyMessage message) {
+    public ProtocolMessageSerializer<SSL2ServerVerifyMessage> getSerializer(SSL2ServerVerifyMessage message) {
         // We currently don't send ServerVerify messages, only receive them.
         return null;
     }

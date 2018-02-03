@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 
+@SuppressWarnings("serial")
 public abstract class SSL2HandshakeMessage extends HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)

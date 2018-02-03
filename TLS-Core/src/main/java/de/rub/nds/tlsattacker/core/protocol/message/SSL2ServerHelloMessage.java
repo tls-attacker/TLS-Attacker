@@ -22,6 +22,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
+@SuppressWarnings("serial")
 @XmlRootElement
 public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
 
