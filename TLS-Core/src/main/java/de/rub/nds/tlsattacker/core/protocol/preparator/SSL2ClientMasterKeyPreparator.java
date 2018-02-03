@@ -41,32 +41,6 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
 
     @Override
     protected void prepareProtocolMessageContents() {
-        // private ModifiableByteArray cipherKind;
-        //
-        // @ModifiableVariableProperty(type =
-        // ModifiableVariableProperty.Type.LENGTH)
-        // private ModifiableInteger clearKeyLength;
-        //
-        // @ModifiableVariableProperty(type =
-        // ModifiableVariableProperty.Type.LENGTH)
-        // private ModifiableInteger encryptedKeyLength;
-        //
-        // @ModifiableVariableProperty(type =
-        // ModifiableVariableProperty.Type.LENGTH)
-        // private ModifiableInteger keyArgLength;
-        //
-        // @ModifiableVariableProperty(type =
-        // ModifiableVariableProperty.Type.KEY_MATERIAL)
-        // private ModifiableByteArray clearKeyData;
-        //
-        // @ModifiableVariableProperty(type =
-        // ModifiableVariableProperty.Type.KEY_MATERIAL)
-        // private ModifiableByteArray encryptedKeyData;
-        //
-        // @ModifiableVariableProperty(type =
-        // ModifiableVariableProperty.Type.KEY_MATERIAL)
-        // private ModifiableByteArray keyArgData;
-
         LOGGER.debug("Prepare SSL2ClientMasterKey");
         prepareType(message);
         prepareCipherKind(message);
@@ -89,7 +63,6 @@ public class SSL2ClientMasterKeyPreparator extends ProtocolMessagePreparator<SSL
     }
 
     private void prepareKeyArgLength(SSL2ClientMasterKeyMessage message2) {
-        // TODO
         message.setKeyArgLength(0);
         LOGGER.debug("KeyArgLength: " + message.getKeyArgLength().getValue());
     }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
@@ -40,15 +41,15 @@ public class SSL2ClientMasterKeySerializer extends ProtocolMessageSerializer {
     }
 
     private void writeEncryptedKeyData(SSL2ClientMasterKeyMessage msg) {
-        byte[] encryptedKeyDataValue = msg.getEncryptedKeyData().getValue();
-        appendBytes(encryptedKeyDataValue);
-        // TODO logger.
+        byte[] encryptedKeyData = msg.getEncryptedKeyData().getValue();
+        appendBytes(encryptedKeyData);
+        LOGGER.debug("EncryptedKey: " + ArrayConverter.bytesToHexString(encryptedKeyData));
     }
 
     private void writeClearKeyData(SSL2ClientMasterKeyMessage msg) {
-        byte[] clearKeyDataValue = msg.getClearKeyData().getValue();
-        appendBytes(clearKeyDataValue);
-        // TODO logger.
+        byte[] clearKeyData = msg.getClearKeyData().getValue();
+        appendBytes(clearKeyData);
+        LOGGER.debug("ClearKey: " + ArrayConverter.bytesToHexString(clearKeyData));
     }
 
     private void writeEncryptedKeyLength(SSL2ClientMasterKeyMessage msg) {
