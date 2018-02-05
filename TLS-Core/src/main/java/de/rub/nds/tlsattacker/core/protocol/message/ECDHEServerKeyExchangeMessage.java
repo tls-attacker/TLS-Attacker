@@ -32,7 +32,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     protected ModifiableByte curveType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByteArray namedCurve;
+    protected ModifiableByteArray namedGroup;
 
     protected ECDHEServerComputations computations;
 
@@ -44,7 +44,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
-    public ModifiableByte getCurveType() {
+    public ModifiableByte getGroupType() {
         return curveType;
     }
 
@@ -56,16 +56,16 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         this.curveType = ModifiableVariableFactory.safelySetValue(this.curveType, curveType);
     }
 
-    public ModifiableByteArray getNamedCurve() {
-        return namedCurve;
+    public ModifiableByteArray getNamedGroup() {
+        return namedGroup;
     }
 
-    public void setNamedCurve(ModifiableByteArray namedCurve) {
-        this.namedCurve = namedCurve;
+    public void setNamedGroup(ModifiableByteArray namedGroup) {
+        this.namedGroup = namedGroup;
     }
 
-    public void setNamedCurve(byte[] namedCurve) {
-        this.namedCurve = ModifiableVariableFactory.safelySetValue(this.namedCurve, namedCurve);
+    public void setNamedGroup(byte[] namedGroup) {
+        this.namedGroup = ModifiableVariableFactory.safelySetValue(this.namedGroup, namedGroup);
     }
 
     @Override
@@ -73,9 +73,9 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Curve Type: ");
         sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
-        sb.append("\n  Named Curve: ");
-        if (namedCurve != null) {
-            sb.append(NamedGroup.getNamedCurve(this.namedCurve.getValue()));
+        sb.append("\n  Named Group: ");
+        if (namedGroup != null) {
+            sb.append(NamedGroup.getNamedGroup(this.namedGroup.getValue()));
         } else {
             sb.append("null");
         }

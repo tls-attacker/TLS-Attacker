@@ -32,16 +32,16 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing EllipticCurvesExtensionMessage");
-        prepareEllipticCurves(msg);
-        prepareSupportedCurvesLength(msg);
+        prepareSupportedGroups(msg);
+        prepareSupportedGroupsLength(msg);
     }
 
-    private void prepareEllipticCurves(EllipticCurvesExtensionMessage msg) {
-        msg.setSupportedCurves(createEllipticCurveArray());
-        LOGGER.debug("SupportedCurves: " + ArrayConverter.bytesToHexString(msg.getSupportedCurves().getValue()));
+    private void prepareSupportedGroups(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedGroups(createNamedGroupsArray());
+        LOGGER.debug("SupportedGroups: " + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
     }
 
-    private byte[] createEllipticCurveArray() {
+    private byte[] createNamedGroupsArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         List<NamedGroup> namedGroups;
         if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
@@ -49,18 +49,18 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
         } else {
             namedGroups = chooser.getConfig().getDefaultServerNamedGroups();
         }
-        for (NamedGroup curve : namedGroups) {
+        for (NamedGroup group : namedGroups) {
             try {
-                stream.write(curve.getValue());
+                stream.write(group.getValue());
             } catch (IOException ex) {
-                throw new PreparationException("Could not write NamedCurve to byte[]", ex);
+                throw new PreparationException("Could not write NamedGroup to byte[]", ex);
             }
         }
         return stream.toByteArray();
     }
 
-    private void prepareSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
-        msg.setSupportedCurvesLength(msg.getSupportedCurves().getValue().length);
-        LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
+    private void prepareSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedGroupsLength(msg.getSupportedGroups().getValue().length);
+        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
     }
 }

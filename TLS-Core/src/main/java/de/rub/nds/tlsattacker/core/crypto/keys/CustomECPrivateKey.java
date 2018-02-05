@@ -22,11 +22,11 @@ public class CustomECPrivateKey implements ECPrivateKey {
 
     private final BigInteger privatekey;
 
-    private final NamedGroup curve;
+    private final NamedGroup group;
 
-    public CustomECPrivateKey(BigInteger privatekey, NamedGroup curve) {
+    public CustomECPrivateKey(BigInteger privatekey, NamedGroup group) {
         this.privatekey = privatekey;
-        this.curve = curve;
+        this.group = group;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class CustomECPrivateKey implements ECPrivateKey {
     public ECParameterSpec getParams() {
         try {
             AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
-            parameters.init(new ECGenParameterSpec(curve.getJavaName()));
+            parameters.init(new ECGenParameterSpec(group.getJavaName()));
             ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
             return ecParameters;
         } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {

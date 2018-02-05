@@ -253,7 +253,6 @@ EF F1 F9 EF D0 EF
     <serverAuthzExtensionDataFormat>SAML_ASSERTION_URL</serverAuthzExtensionDataFormat>
     <clientCertificateTypeExtensionMessageState>true</clientCertificateTypeExtensionMessageState>
     <cachedInfoExtensionIsClientState>true</cachedInfoExtensionIsClientState>
-    <configOutput>out.cfg</configOutput>
     <workflowTraceType>HANDSHAKE</workflowTraceType>
     <serverSendsApplicationData>false</serverSendsApplicationData>
     <addECPointFormatExtension>true</addECPointFormatExtension>

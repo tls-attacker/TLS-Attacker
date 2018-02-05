@@ -110,13 +110,13 @@ public class TokenbindingMessagePreparator extends ProtocolMessagePreparator<Tok
     }
 
     private ECDomainParameters generateEcParameters() {
-        NamedGroup[] curves = new NamedGroup[] { NamedGroup.SECP256R1 };
+        NamedGroup[] groups = new NamedGroup[] { NamedGroup.SECP256R1 };
         ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
                 new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
-            ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
+            ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
         }

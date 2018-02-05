@@ -45,14 +45,14 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        NamedGroup usedCurve = chooser.getSelectedNamedGroup();
+        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
         CustomECPoint serverPublicKey = chooser.getServerEcPublicKey();
         BigInteger privateKey = chooser.getClientEcPrivateKey();
         // Set everything in computations and reload
         msg.getComputations().setClientPrivateKey(privateKey);
         msg.getComputations().setServerPublicKeyX(serverPublicKey.getX());
         msg.getComputations().setServerPublicKeyY(serverPublicKey.getY());
-        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         serverPublicKey = new CustomECPoint(msg.getComputations().getServerPublicKeyX().getValue(), msg
                 .getComputations().getServerPublicKeyY().getValue());
         privateKey = msg.getComputations().getClientPrivateKey().getValue();
@@ -88,9 +88,9 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         prepareClientRandom(msg);
     }
 
-    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedCurve) {
+    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
-                namedCurve.getValue()));
+                namedGroup.getValue()));
         try {
             return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { chooser.getSelectedNamedGroup() },
                     new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);

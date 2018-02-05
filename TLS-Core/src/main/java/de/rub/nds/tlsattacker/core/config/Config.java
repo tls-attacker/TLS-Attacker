@@ -146,12 +146,12 @@ public class Config implements Serializable {
     private List<CipherSuite> defaultServerSupportedCiphersuites;
 
     /**
-     * Default clientSupportedNamed Curves
+     * Default clientSupportedNamed groups
      */
     private List<NamedGroup> defaultClientNamedGroups;
 
     /**
-     * Default clientSupportedNamed Curves
+     * Default clientSupportedNamed groups
      */
     private List<NamedGroup> defaultServerNamedGroups;
 
@@ -1740,8 +1740,8 @@ public class Config implements Serializable {
         this.defaultClientNamedGroups = defaultClientNamedGroups;
     }
 
-    public final void setDefaultClientNamedGroups(NamedGroup... defaultClientNamedCurves) {
-        this.defaultClientNamedGroups = new ArrayList(Arrays.asList(defaultClientNamedCurves));
+    public final void setDefaultClientNamedGroups(NamedGroup... defaultClientNamedGroups) {
+        this.defaultClientNamedGroups = new ArrayList(Arrays.asList(defaultClientNamedGroups));
     }
 
     public List<NamedGroup> getDefaultServerNamedGroups() {

@@ -24,8 +24,8 @@ public class ECCUtilsBCWrapper {
      * Reads ECC domain parameters from an inputstream, based on given named
      * curves and point formats. It uses the BC functionality.
      *
-     * @param namedCurves
-     *            The Array of namedCurves
+     * @param namedGroups
+     *            The Array of namedGroups
      * @param pointFormats
      *            The Array of ECPointFormats
      * @param input
@@ -34,9 +34,9 @@ public class ECCUtilsBCWrapper {
      * @throws IOException
      *             If something goes wrong while reading from the Stream
      */
-    public static ECDomainParameters readECParameters(NamedGroup[] namedCurves, ECPointFormat[] pointFormats,
+    public static ECDomainParameters readECParameters(NamedGroup[] namedGroups, ECPointFormat[] pointFormats,
             InputStream input) throws IOException {
-        int[] nc = convertNamedCurves(namedCurves);
+        int[] nc = convertNamedCurves(namedGroups);
         short[] pf = convertPointFormats(pointFormats);
         return TlsECCUtils.readECParameters(nc, pf, input);
     }
@@ -91,17 +91,17 @@ public class ECCUtilsBCWrapper {
     /**
      * Converts named curves into BC style notation
      *
-     * @param namedCurves
+     * @param namedGroups
      *            The NamedCurves to convert
      * @return int[] of the NamedCurves in BC Style
      */
-    public static int[] convertNamedCurves(NamedGroup[] namedCurves) {
-        if (namedCurves == null || namedCurves.length == 0) {
+    public static int[] convertNamedCurves(NamedGroup[] namedGroups) {
+        if (namedGroups == null || namedGroups.length == 0) {
             return new int[0];
         }
-        int[] nc = new int[namedCurves.length];
-        for (int i = 0; i < namedCurves.length; i++) {
-            nc[i] = namedCurves[i].getIntValue();
+        int[] nc = new int[namedGroups.length];
+        for (int i = 0; i < namedGroups.length; i++) {
+            nc[i] = namedGroups[i].getIntValue();
         }
         return nc;
     }

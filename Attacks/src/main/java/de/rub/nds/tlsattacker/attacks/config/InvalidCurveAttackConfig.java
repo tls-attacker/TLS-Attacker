@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.tlsattacker.attacks.ec.ICEAttacker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.BigIntegerConverter;
-import de.rub.nds.tlsattacker.core.config.converters.NamedCurveConverter;
+import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -31,7 +31,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "invalid_curve";
 
-    @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedCurveConverter.class)
+    @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedGroupConverter.class)
     private NamedGroup namedCurve = NamedGroup.SECP256R1;
 
     @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")

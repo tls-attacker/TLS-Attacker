@@ -24,7 +24,7 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
     // List of available curves negotiated between server and client (or a
     // server enforced list)
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray namedCurveList;
+    private ModifiableByteArray namedGroupList;
 
     // TODO: serverRandom might be better placed in KeyExchangeComputations.
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
@@ -60,16 +60,16 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
         this.ecPointFormatList = ModifiableVariableFactory.safelySetValue(this.ecPointFormatList, formats);
     }
 
-    public ModifiableByteArray getNamedCurveList() {
-        return this.namedCurveList;
+    public ModifiableByteArray getNamedGroupList() {
+        return this.namedGroupList;
     }
 
-    public void setNamedCurveList(ModifiableByteArray curves) {
-        this.namedCurveList = curves;
+    public void setNamedGroupList(ModifiableByteArray groups) {
+        this.namedGroupList = groups;
     }
 
-    public void setNamedCurveList(byte[] curves) {
-        this.namedCurveList = ModifiableVariableFactory.safelySetValue(this.namedCurveList, curves);
+    public void setNamedGroupList(byte[] groups) {
+        this.namedGroupList = ModifiableVariableFactory.safelySetValue(this.namedGroupList, groups);
     }
 
     public ModifiableByteArray getServerRandom() {

@@ -54,7 +54,7 @@ public class ListDelegate extends Delegate {
             case filters:
                 list = StringUtils.join(EnumSet.allOf(FilterType.class), '\n');
                 break;
-            case curves:
+            case groups:
                 list = StringUtils.join(EnumSet.allOf(NamedGroup.class), '\n');
                 break;
             case sign_hash_algos:

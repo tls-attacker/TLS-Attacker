@@ -124,13 +124,13 @@ public enum NamedGroup {
 
     private static Integer valueToInt(byte[] value) {
         if (value.length < 2) {
-            LOGGER.warn("Could not convert NamedCurve. Returning null");
+            LOGGER.warn("Could not convert NamedGroup. Returning null");
             return null;
         }
         return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
-    public static NamedGroup getNamedCurve(byte[] value) {
+    public static NamedGroup getNamedGroup(byte[] value) {
         return MAP.get(valueToInt(value));
     }
 
@@ -151,19 +151,19 @@ public enum NamedGroup {
         return valueToInt(value);
     }
 
-    public static byte[] namedCurvesToByteArray(List<NamedGroup> curves) throws IOException {
-        if (curves == null || curves.isEmpty()) {
+    public static byte[] namedGroupsToByteArray(List<NamedGroup> groups) throws IOException {
+        if (groups == null || groups.isEmpty()) {
             return new byte[0];
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(bytes);
-        os.writeObject(curves.toArray(new NamedGroup[curves.size()]));
+        os.writeObject(groups.toArray(new NamedGroup[groups.size()]));
 
         return bytes.toByteArray();
     }
 
-    public static NamedGroup[] namedCurvesFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
+    public static NamedGroup[] namedGroupsFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return new NamedGroup[0];
         }
@@ -175,8 +175,8 @@ public enum NamedGroup {
 
         ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
         ObjectInputStream is = new ObjectInputStream(in);
-        NamedGroup[] curves = (NamedGroup[]) is.readObject();
-        return curves;
+        NamedGroup[] groups = (NamedGroup[]) is.readObject();
+        return groups;
     }
 
     public boolean isStandardCurve() {

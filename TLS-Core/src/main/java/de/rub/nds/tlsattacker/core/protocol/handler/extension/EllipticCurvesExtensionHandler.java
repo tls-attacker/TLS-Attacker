@@ -36,22 +36,22 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
 
     @Override
     public void adjustTLSExtensionContext(EllipticCurvesExtensionMessage message) {
-        byte[] curveBytes = message.getSupportedCurves().getValue();
-        if (curveBytes.length % NamedGroup.LENGTH != 0) {
-            throw new AdjustmentException("Could not create resonable NamedCurves from CurveBytes");
+        byte[] groupBytes = message.getSupportedGroups().getValue();
+        if (groupBytes.length % NamedGroup.LENGTH != 0) {
+            throw new AdjustmentException("Could not create resonable NamedGroups from groupBytes");
         }
-        List<NamedGroup> curveList = new LinkedList<>();
-        for (int i = 0; i < curveBytes.length; i += NamedGroup.LENGTH) {
-            byte[] curve = Arrays.copyOfRange(curveBytes, i, i + NamedGroup.LENGTH);
-            NamedGroup namedCurve = NamedGroup.getNamedCurve(curve);
-            if (namedCurve == null) {
-                LOGGER.warn("Unknown EllipticCruve:" + ArrayConverter.bytesToHexString(curve));
+        List<NamedGroup> groupList = new LinkedList<>();
+        for (int i = 0; i < groupBytes.length; i += NamedGroup.LENGTH) {
+            byte[] group = Arrays.copyOfRange(groupBytes, i, i + NamedGroup.LENGTH);
+            NamedGroup namedGroup = NamedGroup.getNamedGroup(group);
+            if (namedGroup == null) {
+                LOGGER.warn("Unknown EllipticCruve:" + ArrayConverter.bytesToHexString(group));
             } else {
-                curveList.add(namedCurve);
+                groupList.add(namedGroup);
             }
         }
 
-        context.setClientNamedGroupsList(curveList);
+        context.setClientNamedGroupsList(groupList);
     }
 
     @Override

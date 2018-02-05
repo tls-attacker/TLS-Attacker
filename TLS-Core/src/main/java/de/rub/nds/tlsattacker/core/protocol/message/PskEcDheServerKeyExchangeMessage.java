@@ -66,9 +66,9 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
         StringBuilder sb = new StringBuilder(super.toString());
         sb.append("\n  Curve Type: ");
         sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
-        sb.append("\n  Named Curve: ");
-        if (namedCurve != null) {
-            sb.append(NamedGroup.getNamedCurve(this.namedCurve.getValue()));
+        sb.append("\n  Named Group: ");
+        if (namedGroup != null) {
+            sb.append(NamedGroup.getNamedGroup(this.namedGroup.getValue()));
         } else {
             sb.append("null");
         }

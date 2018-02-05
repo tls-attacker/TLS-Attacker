@@ -35,7 +35,7 @@ public class EllipticCurvesExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
-        msg.setSupportedCurves(new byte[] { 0, 1, 0, 2 });
+        msg.setSupportedGroups(new byte[] { 0, 1, 0, 2 });
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientNamedGroupsList().size() == 2);
         assertTrue(context.getClientNamedGroupsList().get(0) == NamedGroup.SECT163K1);
@@ -45,7 +45,7 @@ public class EllipticCurvesExtensionHandlerTest {
     @Test
     public void testAdjustTLSContextUnknownCurve() {
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
-        msg.setSupportedCurves(new byte[] { (byte) 0xFF, (byte) 0xEE });
+        msg.setSupportedGroups(new byte[] { (byte) 0xFF, (byte) 0xEE });
         handler.adjustTLSContext(msg);
         assertTrue(context.getClientNamedGroupsList().isEmpty());
     }

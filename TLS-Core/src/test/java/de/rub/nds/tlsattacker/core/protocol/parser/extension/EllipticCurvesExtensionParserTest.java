@@ -64,8 +64,8 @@ public class EllipticCurvesExtensionParserTest {
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());
-        assertArrayEquals(msg.getSupportedCurves().getValue(), curves);
-        assertTrue(curvesLength == msg.getSupportedCurvesLength().getValue());
+        assertArrayEquals(msg.getSupportedGroups().getValue(), curves);
+        assertTrue(curvesLength == msg.getSupportedGroupsLength().getValue());
     }
 
 }

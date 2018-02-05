@@ -68,10 +68,10 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     protected void setEcDhParams() {
         msg.prepareComputations();
-        generateNamedCurveList(msg);
+        generateNamedGroupList(msg);
         generatePointFormatList(msg);
         prepareCurveType(msg);
-        prepareNamedCurve(msg);
+        prepareNamedGroup(msg);
 
         ECDomainParameters ecParams = generateEcParameters(msg);
         AsymmetricCipherKeyPair keyPair = TlsECCUtils.generateECKeyPair(chooser.getContext().getBadSecureRandom(),
@@ -87,9 +87,9 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             throw new PreparationException("Message computations not initialized");
         }
 
-        if (msg.getComputations().getNamedCurveList() == null
-                || msg.getComputations().getNamedCurveList().getValue() == null) {
-            throw new PreparationException("No curves specified in message computations");
+        if (msg.getComputations().getNamedGroupList() == null
+                || msg.getComputations().getNamedGroupList().getValue() == null) {
+            throw new PreparationException("No groups specified in message computations");
         }
 
         if (msg.getComputations().getEcPointFormatList() == null
@@ -97,12 +97,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             throw new PreparationException("No or empty point formats specified in message computations");
         }
 
-        NamedGroup[] curves;
+        NamedGroup[] groups;
         try {
-            curves = NamedGroup.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
+            groups = NamedGroup.namedGroupsFromByteArray(msg.getComputations().getNamedGroupList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.warn("Couldn't read list of named curves from computations.", ex);
-            curves = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
+            LOGGER.warn("Couldn't read list of named groups from computations.", ex);
+            groups = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
         }
         ECPointFormat[] formats;
         try {
@@ -113,16 +113,16 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         }
 
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { msg.getCurveType().getValue() }, msg.getNamedCurve().getValue()));
+                new byte[] { msg.getGroupType().getValue() }, msg.getNamedGroup().getValue()));
 
         ECDomainParameters ecParams;
         try {
-            ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
+            ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
         } catch (IOException ex) {
             is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                    new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, curves[0].getValue()));
+                    new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, groups[0].getValue()));
             try {
-                ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
+                ecParams = ECCUtilsBCWrapper.readECParameters(groups, formats, is);
             } catch (IOException | IndexOutOfBoundsException ex1) {
                 throw new PreparationException("Failed to generate EC domain parameters", ex);
             }
@@ -163,34 +163,34 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         }
     }
 
-    protected void generateNamedCurveList(T msg) {
-        List<NamedGroup> sharedCurves = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
+    protected void generateNamedGroupList(T msg) {
+        List<NamedGroup> sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
 
-        if (sharedCurves.isEmpty()) {
-            throw new PreparationException("Don't know which elliptic curves are supported by the "
-                    + "server. Check if namedCurves is set in config.");
+        if (sharedGroups.isEmpty()) {
+            throw new PreparationException("Don't know which groups are supported by the "
+                    + "server. Check if named groups is set in config.");
         }
 
-        List<NamedGroup> unsupportedCurves = new ArrayList<>();
+        List<NamedGroup> unsupportedGroups = new ArrayList<>();
         if (!chooser.getConfig().isEnforceSettings()) {
 
-            List<NamedGroup> clientCurves = chooser.getClientSupportedNamedGroups();
-            for (NamedGroup c : sharedCurves) {
-                if (!clientCurves.contains(c)) {
-                    unsupportedCurves.add(c);
+            List<NamedGroup> clientGroups = chooser.getClientSupportedNamedGroups();
+            for (NamedGroup c : sharedGroups) {
+                if (!clientGroups.contains(c)) {
+                    unsupportedGroups.add(c);
                 }
             }
 
-            sharedCurves.removeAll(unsupportedCurves);
-            if (sharedCurves.isEmpty()) {
-                sharedCurves = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
+            sharedGroups.removeAll(unsupportedGroups);
+            if (sharedGroups.isEmpty()) {
+                sharedGroups = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
             }
         }
 
         try {
-            msg.getComputations().setNamedCurveList(NamedGroup.namedCurvesToByteArray(sharedCurves));
+            msg.getComputations().setNamedGroupList(NamedGroup.namedGroupsToByteArray(sharedGroups));
         } catch (IOException ex) {
-            throw new PreparationException("Couldn't set named curves in computations", ex);
+            throw new PreparationException("Couldn't set named groups in computations", ex);
         }
     }
 
@@ -204,9 +204,9 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             case NAMED_CURVE:
                 ecParams.write(curveType.getValue());
                 try {
-                    ecParams.write(msg.getNamedCurve().getValue());
+                    ecParams.write(msg.getNamedGroup().getValue());
                 } catch (IOException ex) {
-                    throw new PreparationException("Failed to add namedCurve to ECDHEServerKeyExchange signature.", ex);
+                    throw new PreparationException("Failed to add named group to ECDHEServerKeyExchange signature.", ex);
                 }
         }
 
@@ -280,15 +280,15 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         msg.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
     }
 
-    protected void prepareNamedCurve(T msg) {
-        NamedGroup[] curves;
+    protected void prepareNamedGroup(T msg) {
+        NamedGroup[] groups;
         try {
-            curves = NamedGroup.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
+            groups = NamedGroup.namedGroupsFromByteArray(msg.getComputations().getNamedGroupList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
-            LOGGER.warn("Could not get named Curves from ByteArray");
-            curves = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
+            LOGGER.warn("Could not get named groups from ByteArray");
+            groups = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
         }
-        msg.setNamedCurve(curves[0].getValue());
+        msg.setNamedGroup(groups[0].getValue());
     }
 
     protected void preparePrivateKey(T msg) {

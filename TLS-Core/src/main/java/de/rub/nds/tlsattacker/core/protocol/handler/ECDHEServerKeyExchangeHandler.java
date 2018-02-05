@@ -54,10 +54,10 @@ public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessa
     }
 
     protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
-        tlsContext.setSelectedGroup(NamedGroup.getNamedCurve(message.getNamedCurve().getValue()));
+        tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         // TODO avoid BC tool
-        byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getCurveType().getValue() }, message
-                .getNamedCurve().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
+        byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getGroupType().getValue() }, message
+                .getNamedGroup().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
                 message.getPublicKey().getValue());
         InputStream is = new ByteArrayInputStream(ecParams);
         ECPublicKeyParameters publicKeyParameters = null;

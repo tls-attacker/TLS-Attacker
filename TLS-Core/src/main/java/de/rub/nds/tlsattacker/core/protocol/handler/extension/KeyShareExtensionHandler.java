@@ -51,7 +51,7 @@ public class KeyShareExtensionHandler extends ExtensionHandler<KeyShareExtension
     public void adjustTLSExtensionContext(KeyShareExtensionMessage message) {
         List<KeyShareStoreEntry> ksEntryList = new LinkedList<>();
         for (KeyShareEntry pair : message.getKeyShareList()) {
-            NamedGroup type = NamedGroup.getNamedCurve(pair.getGroup().getValue());
+            NamedGroup type = NamedGroup.getNamedGroup(pair.getGroup().getValue());
             if (type != null) {
                 if (pair.getPublicKey() != null && pair.getPublicKey().getValue() != null) {
                     ksEntryList.add(new KeyShareStoreEntry(type, pair.getPublicKey().getValue()));

@@ -16,10 +16,10 @@ import org.bouncycastle.math.ec.ECCurve;
 public class CurveNameRetriever {
 
     public static NamedGroup getNamedCuveFromECCurve(ECCurve unknownCurve) {
-        for (NamedGroup curve : NamedGroup.values()) {
-            ECNamedCurveParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec(curve.name());
+        for (NamedGroup group : NamedGroup.values()) {
+            ECNamedCurveParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec(group.name());
             if (parameterSpec.getCurve().equals(unknownCurve)) {
-                return curve;
+                return group;
             }
         }
         return null;

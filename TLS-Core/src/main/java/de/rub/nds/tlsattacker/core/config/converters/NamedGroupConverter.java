@@ -14,10 +14,10 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.Arrays;
 
 /**
- * Converts a string named curve to a NamedGroup type (for command line
+ * Converts a string named group to a NamedGroup type (for command line
  * purposes).
  */
-public class NamedCurveConverter implements IStringConverter<NamedGroup> {
+public class NamedGroupConverter implements IStringConverter<NamedGroup> {
 
     @Override
     public NamedGroup convert(String value) {
@@ -25,7 +25,7 @@ public class NamedCurveConverter implements IStringConverter<NamedGroup> {
         try {
             return NamedGroup.valueOf(value);
         } catch (IllegalArgumentException e) {
-            throw new ParameterException("Value " + value + " cannot be converted to a NamedCurve. "
+            throw new ParameterException("Value " + value + " cannot be converted to a NamedGroup. "
                     + "Available values are: " + Arrays.toString(NamedGroup.values()));
         }
     }
