@@ -66,35 +66,25 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
 
     @Override
     public void adjustTLSContext(SSL2ServerHelloMessage message) {
-        if (tlsContext.getTalkingConnectionEndType() != ConnectionEndType.SERVER) {
-            LOGGER.error("Setting non-server certificate for SSL2 - we currently don't support that.");
-            return;
-        }
-
         byte[] serverRandom = message.getSessionId().getValue();
         if (serverRandom != null) {
             tlsContext.setServerRandom(serverRandom);
         }
-
         Certificate cert = parseCertificate(message.getCertificateLength().getValue(), message.getCertificate()
                 .getValue());
         LOGGER.debug("Setting ServerCertificate in Context");
         tlsContext.setServerCertificate(cert);
-        if (cert == null) {
-            LOGGER.error("Got a null certificate.");
-            return;
-        }
-        if (!CertificateUtils.hasRSAParameters(cert)) {
-            LOGGER.error("Got a non-RSA certificate for SSL2, this shouldn't happen.");
-            return;
-        }
-        LOGGER.debug("Adjusting RSA PublicKey");
-        try {
-            tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
-            tlsContext.setServerRSAPrivateKey(tlsContext.getConfig().getDefaultServerRSAPrivateKey());
-            tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
-        } catch (IOException e) {
-            throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", e);
+
+        if (cert == null || !CertificateUtils.hasRSAParameters(cert)) {
+            LOGGER.error("Cannot parse Certificate from SSL2ServerHello");
+        } else {
+            LOGGER.debug("Adjusting RSA PublicKey");
+            try {
+                tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
+                tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
+            } catch (IOException e) {
+                throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", e);
+            }
         }
     }
 }

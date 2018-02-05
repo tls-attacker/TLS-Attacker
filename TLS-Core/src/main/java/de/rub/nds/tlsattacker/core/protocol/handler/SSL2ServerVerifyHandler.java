@@ -39,38 +39,8 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
         return new SSL2ServerVerifyPreparator(message, tlsContext.getChooser());
     }
 
-    private static void md5Update(MD5Digest md5, byte[] bytes) {
-        md5.update(bytes, 0, bytes.length);
-    }
-
     @Override
     public void adjustTLSContext(SSL2ServerVerifyMessage message) {
-        byte[] md5Output = getMD5Output();
-
-        RC4Engine rc4 = new RC4Engine();
-        rc4.init(false, new KeyParameter(md5Output));
-        byte[] encrypted = message.getEncryptedPart().getValue();
-        int len = encrypted.length;
-        byte[] decrypted = new byte[len];
-        rc4.processBytes(encrypted, 0, len, decrypted, 0);
-
-        if (Arrays.equals(Arrays.copyOfRange(decrypted, len - 16, len), tlsContext.getClientRandom())) {
-            LOGGER.debug("Hurray! DROWN detected!");
-            // TODO: Where do we store this information? On the tlsContext?
-        }
-    }
-
-    private byte[] getMD5Output() {
-        MD5Digest md5 = new MD5Digest();
-        byte[] clearKey = new byte[SSL2ClientMasterKeyPreparator.EXPORT_RC4_NUM_OF_CLEAR_KEY_BYTES];
-        md5Update(md5, clearKey);
-        md5Update(md5, tlsContext.getPreMasterSecret());
-        md5.update((byte) '0');
-        md5Update(md5, tlsContext.getClientRandom());
-        md5Update(md5, tlsContext.getServerRandom());
-        byte[] md5Output = new byte[md5.getDigestSize()];
-        md5.doFinal(md5Output, 0);
-        return md5Output;
     }
 
     @Override
