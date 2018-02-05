@@ -21,20 +21,18 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
 public class InvalidCurveAttackConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "invalid_curve";
 
     @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedCurveConverter.class)
-    private NamedCurve namedCurve = NamedCurve.SECP256R1;
+    private NamedGroup namedCurve = NamedGroup.SECP256R1;
 
     @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
     private int additionalEquations = 3;
@@ -119,11 +117,11 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         this.publicPointBaseY = publicPointBaseY;
     }
 
-    public NamedCurve getNamedCurve() {
+    public NamedGroup getNamedCurve() {
         return namedCurve;
     }
 
-    public void setNamedCurve(NamedCurve namedCurve) {
+    public void setNamedCurve(NamedGroup namedCurve) {
         this.namedCurve = namedCurve;
     }
 
@@ -207,9 +205,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
         config.setDefaultClientSupportedCiphersuites(cipherSuites);
-        List<NamedCurve> namedCurves = new LinkedList<>();
+        List<NamedGroup> namedCurves = new LinkedList<>();
         namedCurves.add(namedCurve);
-        config.setNamedCurves(namedCurves);
+        config.setDefaultClientNamedGroups(namedCurves);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         return config;
     }

@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
@@ -34,7 +35,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExte
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
@@ -123,7 +123,12 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new SupportedVersionsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
-            addExtension(new KeyShareExtensionMessage(tlsConfig));
+            if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
+                    && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
+                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE_OLD, tlsConfig));
+            } else {
+                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE, tlsConfig));
+            }
         }
         if (tlsConfig.isAddEarlyDataExtension()) {
             addExtension(new EarlyDataExtensionMessage());

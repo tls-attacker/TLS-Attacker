@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -62,7 +62,7 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server ECDH-parameters
-        context.setSelectedCurve(NamedCurve.SECP192R1);
+        context.setSelectedGroup(NamedGroup.SECP192R1);
         context.setServerEcPublicKey(new CustomECPoint(new BigInteger(
                 "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
                 "4390496211885670837594012513791855863576256216444143941964")));

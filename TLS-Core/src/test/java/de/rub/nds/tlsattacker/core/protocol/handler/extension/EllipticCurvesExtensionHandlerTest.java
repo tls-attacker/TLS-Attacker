@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
@@ -37,9 +37,9 @@ public class EllipticCurvesExtensionHandlerTest {
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         msg.setSupportedCurves(new byte[] { 0, 1, 0, 2 });
         handler.adjustTLSContext(msg);
-        assertTrue(context.getClientNamedCurvesList().size() == 2);
-        assertTrue(context.getClientNamedCurvesList().get(0) == NamedCurve.SECT163K1);
-        assertTrue(context.getClientNamedCurvesList().get(1) == NamedCurve.SECT163R1);
+        assertTrue(context.getClientNamedGroupsList().size() == 2);
+        assertTrue(context.getClientNamedGroupsList().get(0) == NamedGroup.SECT163K1);
+        assertTrue(context.getClientNamedGroupsList().get(1) == NamedGroup.SECT163R1);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class EllipticCurvesExtensionHandlerTest {
         EllipticCurvesExtensionMessage msg = new EllipticCurvesExtensionMessage();
         msg.setSupportedCurves(new byte[] { (byte) 0xFF, (byte) 0xEE });
         handler.adjustTLSContext(msg);
-        assertTrue(context.getClientNamedCurvesList().isEmpty());
+        assertTrue(context.getClientNamedGroupsList().isEmpty());
     }
 
     /**

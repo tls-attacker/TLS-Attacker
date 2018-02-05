@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExtensionParser;
@@ -23,9 +23,9 @@ import java.util.List;
 /**
  * This handler processes the EllipticCurves extensions, as defined in
  * https://tools.ietf.org/search/rfc4492#section-5.1.1
- * 
+ *
  * But in TLS 1.3 this extensions renamed to SupportedGroups.
- * 
+ *
  * See: https://tools.ietf.org/html/draft-ietf-tls-tls13-21#section-4.2.6
  */
 public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCurvesExtensionMessage> {
@@ -37,13 +37,13 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
     @Override
     public void adjustTLSExtensionContext(EllipticCurvesExtensionMessage message) {
         byte[] curveBytes = message.getSupportedCurves().getValue();
-        if (curveBytes.length % NamedCurve.LENGTH != 0) {
+        if (curveBytes.length % NamedGroup.LENGTH != 0) {
             throw new AdjustmentException("Could not create resonable NamedCurves from CurveBytes");
         }
-        List<NamedCurve> curveList = new LinkedList<>();
-        for (int i = 0; i < curveBytes.length; i += NamedCurve.LENGTH) {
-            byte[] curve = Arrays.copyOfRange(curveBytes, i, i + NamedCurve.LENGTH);
-            NamedCurve namedCurve = NamedCurve.getNamedCurve(curve);
+        List<NamedGroup> curveList = new LinkedList<>();
+        for (int i = 0; i < curveBytes.length; i += NamedGroup.LENGTH) {
+            byte[] curve = Arrays.copyOfRange(curveBytes, i, i + NamedGroup.LENGTH);
+            NamedGroup namedCurve = NamedGroup.getNamedCurve(curve);
             if (namedCurve == null) {
                 LOGGER.warn("Unknown EllipticCruve:" + ArrayConverter.bytesToHexString(curve));
             } else {
@@ -51,7 +51,7 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
             }
         }
 
-        context.setClientNamedCurvesList(curveList);
+        context.setClientNamedGroupsList(curveList);
     }
 
     @Override

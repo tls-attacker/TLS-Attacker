@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 
@@ -80,7 +80,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      *            Message to write in
      */
     private void parseNamedCurve(ECDHEServerKeyExchangeMessage msg) {
-        msg.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
+        msg.setNamedCurve(parseByteArrayField(NamedGroup.LENGTH));
         LOGGER.debug("NamedCurve: " + ArrayConverter.bytesToHexString(msg.getNamedCurve().getValue()));
     }
 

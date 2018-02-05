@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.ListDelegateConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ListDelegateType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -55,7 +55,7 @@ public class ListDelegate extends Delegate {
                 list = StringUtils.join(EnumSet.allOf(FilterType.class), '\n');
                 break;
             case curves:
-                list = StringUtils.join(EnumSet.allOf(NamedCurve.class), '\n');
+                list = StringUtils.join(EnumSet.allOf(NamedGroup.class), '\n');
                 break;
             case sign_hash_algos:
                 list = StringUtils.join(SignatureAndHashAlgorithm.values(), '\n');

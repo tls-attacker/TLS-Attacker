@@ -10,15 +10,16 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.exceptions.ParserException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
 
 public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMessage> {
 
-    private List<KeySharePair> pairList;
+    private List<KeyShareEntry> entryList;
 
     public KeyShareExtensionParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -40,10 +41,10 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
             parseKeyShareListBytes(msg);
         }
         int position = 0;
-        pairList = new LinkedList<>();
+        entryList = new LinkedList<>();
         while (position < msg.getKeyShareListLength().getValue()) {
-            KeySharePairParser parser = new KeySharePairParser(position, msg.getKeyShareListBytes().getValue());
-            pairList.add(parser.parse());
+            KeyShareEntryParser parser = new KeyShareEntryParser(position, msg.getKeyShareListBytes().getValue());
+            entryList.add(parser.parse());
             if (position == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing KeySharePairs");
             }
@@ -54,7 +55,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
 
     @Override
     protected KeyShareExtensionMessage createExtensionMessage() {
-        return new KeyShareExtensionMessage();
+        return new KeyShareExtensionMessage(ExtensionType.KEY_SHARE);
     }
 
     /**
@@ -89,6 +90,6 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      *            Message to write in
      */
     private void parseKeyShareList(KeyShareExtensionMessage msg) {
-        msg.setKeyShareList(pairList);
+        msg.setKeyShareList(entryList);
     }
 }

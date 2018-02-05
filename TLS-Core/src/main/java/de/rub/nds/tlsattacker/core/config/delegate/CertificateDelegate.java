@@ -136,7 +136,7 @@ public class CertificateDelegate extends Delegate {
     }
 
     private void applyECParameters(Config config, ECPublicKeyParameters ecParameters, BigInteger privateKey) {
-        config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
+        config.setDefaultSelectedNamedGroup(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
                 .getCurve()));
         config.setDefaultEcCertificateCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
                 .getCurve()));

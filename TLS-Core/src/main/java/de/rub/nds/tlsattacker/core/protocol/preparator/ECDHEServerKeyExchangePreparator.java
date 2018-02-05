@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
@@ -97,19 +97,19 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             throw new PreparationException("No or empty point formats specified in message computations");
         }
 
-        NamedCurve[] curves;
+        NamedGroup[] curves;
         try {
-            curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
+            curves = NamedGroup.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
             LOGGER.warn("Couldn't read list of named curves from computations.", ex);
-            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
+            curves = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
         }
         ECPointFormat[] formats;
         try {
             formats = ECPointFormat.pointFormatsFromByteArray(msg.getComputations().getEcPointFormatList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
             LOGGER.warn("Couldn't read list of EC point formats from computations", ex);
-            formats = chooser.getConfig().getDefaultEcPointFormats();
+            formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }; // TODO
         }
 
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
@@ -164,18 +164,18 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     }
 
     protected void generateNamedCurveList(T msg) {
-        List<NamedCurve> sharedCurves = new ArrayList<>(chooser.getConfig().getNamedCurves());
+        List<NamedGroup> sharedCurves = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
 
         if (sharedCurves.isEmpty()) {
             throw new PreparationException("Don't know which elliptic curves are supported by the "
                     + "server. Check if namedCurves is set in config.");
         }
 
-        List<NamedCurve> unsupportedCurves = new ArrayList<>();
+        List<NamedGroup> unsupportedCurves = new ArrayList<>();
         if (!chooser.getConfig().isEnforceSettings()) {
 
-            List<NamedCurve> clientCurves = chooser.getClientSupportedNamedCurves();
-            for (NamedCurve c : sharedCurves) {
+            List<NamedGroup> clientCurves = chooser.getClientSupportedNamedGroups();
+            for (NamedGroup c : sharedCurves) {
                 if (!clientCurves.contains(c)) {
                     unsupportedCurves.add(c);
                 }
@@ -183,12 +183,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
             sharedCurves.removeAll(unsupportedCurves);
             if (sharedCurves.isEmpty()) {
-                sharedCurves = new ArrayList<>(chooser.getConfig().getNamedCurves());
+                sharedCurves = new ArrayList<>(chooser.getConfig().getDefaultClientNamedGroups());
             }
         }
 
         try {
-            msg.getComputations().setNamedCurveList(NamedCurve.namedCurvesToByteArray(sharedCurves));
+            msg.getComputations().setNamedCurveList(NamedGroup.namedCurvesToByteArray(sharedCurves));
         } catch (IOException ex) {
             throw new PreparationException("Couldn't set named curves in computations", ex);
         }
@@ -268,7 +268,6 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         } catch (IOException ex) {
             throw new PreparationException("Could not serialize EC public key", ex);
         }
-
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
 
@@ -282,12 +281,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
     }
 
     protected void prepareNamedCurve(T msg) {
-        NamedCurve[] curves;
+        NamedGroup[] curves;
         try {
-            curves = NamedCurve.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
+            curves = NamedGroup.namedCurvesFromByteArray(msg.getComputations().getNamedCurveList().getValue());
         } catch (IOException | ClassNotFoundException ex) {
             LOGGER.warn("Could not get named Curves from ByteArray");
-            curves = chooser.getConfig().getDefaultEcdheNamedCurves();
+            curves = new NamedGroup[] { chooser.getConfig().getDefaultSelectedNamedGroup() };
         }
         msg.setNamedCurve(curves[0].getValue());
     }

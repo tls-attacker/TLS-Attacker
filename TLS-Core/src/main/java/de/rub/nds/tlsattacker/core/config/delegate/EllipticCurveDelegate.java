@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.NamedCurveConverter;
 import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class EllipticCurveDelegate extends Delegate {
     @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma", converter = PointFormatConverter.class)
     private List<ECPointFormat> pointFormats = null;
     @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma", converter = NamedCurveConverter.class)
-    private List<NamedCurve> namedCurves = null;
+    private List<NamedGroup> namedCurves = null;
 
     public EllipticCurveDelegate() {
     }
@@ -38,21 +38,22 @@ public class EllipticCurveDelegate extends Delegate {
         this.pointFormats = pointFormats;
     }
 
-    public List<NamedCurve> getNamedCurves() {
+    public List<NamedGroup> getNamedCurves() {
         if (namedCurves == null) {
             return null;
         }
         return Collections.unmodifiableList(namedCurves);
     }
 
-    public void setNamedCurves(List<NamedCurve> namedCurves) {
+    public void setNamedCurves(List<NamedGroup> namedCurves) {
         this.namedCurves = namedCurves;
     }
 
     @Override
     public void applyDelegate(Config config) {
         if (namedCurves != null) {
-            config.setNamedCurves(namedCurves);
+            config.setDefaultClientNamedGroups(namedCurves);
+            config.setDefaultServerNamedGroups(namedCurves);
         }
         if (pointFormats != null) {
             config.setDefaultServerSupportedPointFormats(pointFormats);

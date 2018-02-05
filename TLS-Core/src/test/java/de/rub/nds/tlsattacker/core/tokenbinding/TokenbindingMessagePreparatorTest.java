@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -139,10 +139,10 @@ public class TokenbindingMessagePreparatorTest {
     }
 
     private ECDomainParameters generateEcParameters() {
-        NamedCurve[] curves = new NamedCurve[] { NamedCurve.SECP256R1 };
+        NamedGroup[] curves = new NamedGroup[] { NamedGroup.SECP256R1 };
         ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedCurve.SECP256R1.getValue()));
+                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);

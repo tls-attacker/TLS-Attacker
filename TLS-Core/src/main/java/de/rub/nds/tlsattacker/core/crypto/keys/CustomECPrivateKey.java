@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
@@ -22,9 +22,9 @@ public class CustomECPrivateKey implements ECPrivateKey {
 
     private final BigInteger privatekey;
 
-    private final NamedCurve curve;
+    private final NamedGroup curve;
 
-    public CustomECPrivateKey(BigInteger privatekey, NamedCurve curve) {
+    public CustomECPrivateKey(BigInteger privatekey, NamedGroup curve) {
         this.privatekey = privatekey;
         this.curve = curve;
     }

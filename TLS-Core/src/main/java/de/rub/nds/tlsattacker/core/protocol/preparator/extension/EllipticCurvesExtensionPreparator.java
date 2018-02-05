@@ -9,13 +9,15 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<EllipticCurvesExtensionMessage> {
 
@@ -41,7 +43,13 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
 
     private byte[] createEllipticCurveArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (NamedCurve curve : chooser.getConfig().getNamedCurves()) {
+        List<NamedGroup> namedGroups;
+        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            namedGroups = chooser.getConfig().getDefaultClientNamedGroups();
+        } else {
+            namedGroups = chooser.getConfig().getDefaultServerNamedGroups();
+        }
+        for (NamedGroup curve : namedGroups) {
             try {
                 stream.write(curve.getValue());
             } catch (IOException ex) {

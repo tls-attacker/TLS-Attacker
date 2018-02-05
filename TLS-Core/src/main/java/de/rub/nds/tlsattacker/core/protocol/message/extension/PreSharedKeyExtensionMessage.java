@@ -41,12 +41,14 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public PreSharedKeyExtensionMessage() {
         super(ExtensionType.PRE_SHARED_KEY);
+        identities = new LinkedList<>();
     }
 
     public PreSharedKeyExtensionMessage(Config config) {
         super(ExtensionType.PRE_SHARED_KEY);
-        if (config.getPskSets().size() > 0) {
-            copyPskSets(config.getPskSets());
+        identities = new LinkedList<>();
+        if (config.getDefaultPskSets().size() > 0) {
+            copyPskSets(config.getDefaultPskSets());
         }
     }
 

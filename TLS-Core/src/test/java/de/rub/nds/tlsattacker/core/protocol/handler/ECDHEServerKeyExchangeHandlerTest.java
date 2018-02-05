@@ -10,7 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHEServerKeyExchangePreparator;
@@ -69,7 +69,7 @@ public class ECDHEServerKeyExchangeHandlerTest {
     public void testAdjustTLSContext() {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
-        message.setNamedCurve(NamedCurve.SECP256R1.getValue());
+        message.setNamedCurve(NamedGroup.SECP256R1.getValue());
         message.setPublicKey(ArrayConverter
                 .hexStringToByteArray("04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
         message.setPublicKeyLength(65);
@@ -86,7 +86,7 @@ public class ECDHEServerKeyExchangeHandlerTest {
     public void testAdjustTLSContextWithoutComputations() {
         ECDHEServerKeyExchangeMessage message = new ECDHEServerKeyExchangeMessage();
         message.setCurveType(EllipticCurveType.NAMED_CURVE.getValue());
-        message.setNamedCurve(NamedCurve.SECP256R1.getValue());
+        message.setNamedCurve(NamedGroup.SECP256R1.getValue());
         message.setPublicKey(ArrayConverter
                 .hexStringToByteArray("04f660a88e9dae015684be56c25610f9c62cf120cb075eea60c560e5e6dd5d10ef6e391d7213a298985470dc2268949317ce24940d474a0c8386ab13b312ffc104"));
         message.setPublicKeyLength(65);

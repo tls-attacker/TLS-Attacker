@@ -8,15 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 import org.bouncycastle.math.ec.ECCurve;
 
 public class CurveNameRetriever {
 
-    public static NamedCurve getNamedCuveFromECCurve(ECCurve unknownCurve) {
-        for (NamedCurve curve : NamedCurve.values()) {
+    public static NamedGroup getNamedCuveFromECCurve(ECCurve unknownCurve) {
+        for (NamedGroup curve : NamedGroup.values()) {
             ECNamedCurveParameterSpec parameterSpec = ECNamedCurveTable.getParameterSpec(curve.name());
             if (parameterSpec.getCurve().equals(unknownCurve)) {
                 return curve;

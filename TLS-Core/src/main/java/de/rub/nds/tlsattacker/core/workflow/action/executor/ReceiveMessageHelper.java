@@ -183,7 +183,13 @@ public class ReceiveMessageHelper {
 
     public List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
         byte[] cleanProtocolMessageBytes = getCleanBytes(records);
-        return handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(records), context);
+        // Due to TLS 1.3 Encrypted Type it might be necessary to to look for
+        // new groups here
+        List<ProtocolMessage> messages = new LinkedList<>();
+        for (List<AbstractRecord> subgroup : getRecordGroups(records)) {
+            messages.addAll((handleCleanBytes(cleanProtocolMessageBytes, getProtocolMessageType(subgroup), context)));
+        }
+        return messages;
     }
 
     private List<ProtocolMessage> handleCleanBytes(byte[] cleanProtocolMessageBytes,

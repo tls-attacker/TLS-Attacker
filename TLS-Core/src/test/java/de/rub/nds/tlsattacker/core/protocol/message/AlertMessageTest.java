@@ -23,7 +23,7 @@ public class AlertMessageTest {
 
     @Test
     public void testToString() {
-        byte testBytes = 120;
+        byte testBytes = (byte) 199;
         StringBuilder sb = new StringBuilder();
         sb.append("AlertMessage:").append("\nALERT message:\n  Level: ").append(testBytes).append("\n  Description: ")
                 .append(testBytes);

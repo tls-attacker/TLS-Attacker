@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
@@ -45,7 +45,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     @Override
     public void prepareHandshakeMessageContents() {
         msg.prepareComputations();
-        NamedCurve usedCurve = chooser.getSelectedCurve();
+        NamedGroup usedCurve = chooser.getSelectedNamedGroup();
         CustomECPoint serverPublicKey = chooser.getServerEcPublicKey();
         BigInteger privateKey = chooser.getClientEcPrivateKey();
         // Set everything in computations and reload
@@ -88,11 +88,11 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         prepareClientRandom(msg);
     }
 
-    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
+    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedCurve) {
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
                 namedCurve.getValue()));
         try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedCurve[] { chooser.getSelectedCurve() },
+            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { chooser.getSelectedNamedGroup() },
                     new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
@@ -155,7 +155,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
             short[] pointFormats = ECCUtilsBCWrapper.convertPointFormats(formatArray);
             ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats,
-                    getDomainParameters(chooser.getEcCurveType(), chooser.getSelectedCurve()), msg.getPublicKey()
+                    getDomainParameters(chooser.getEcCurveType(), chooser.getSelectedNamedGroup()), msg.getPublicKey()
                             .getValue());
             CustomECPoint customClientKey = new CustomECPoint(clientPublicKey.getQ().getRawXCoord().toBigInteger(),
                     clientPublicKey.getQ().getRawYCoord().toBigInteger());

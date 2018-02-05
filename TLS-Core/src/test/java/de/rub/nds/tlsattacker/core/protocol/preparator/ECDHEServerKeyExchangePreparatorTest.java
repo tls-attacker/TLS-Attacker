@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -82,7 +82,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         assertArrayEquals(tlsContext.getServerRandom(), msg.getComputations().getServerRandom().getValue());
 
         assertEquals(EllipticCurveType.NAMED_CURVE, EllipticCurveType.getCurveType(msg.getCurveType().getValue()));
-        assertArrayEquals(NamedCurve.SECP384R1.getValue(), msg.getNamedCurve().getValue());
+        assertArrayEquals(NamedGroup.SECP384R1.getValue(), msg.getNamedCurve().getValue());
 
         String serializedPubKeyExcpected = "0453E2F98C7D459354029E08404C690D857F921CE4A6AA71C2F114D04D24E033E08CFB5C9B84FA81DB3FB5CA35639AE69BDDC3E657ACD0532EF9C100F0863D9A3145BABBFDD727491991FBDD377C4EEBAE2D5ADDF3C8152824C9B4442E628A8CF3";
         assertEquals(serializedPubKeyExcpected, ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
@@ -115,14 +115,14 @@ public class ECDHEServerKeyExchangePreparatorTest {
         tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(clientRandom));
         tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(serverRandom));
 
-        List<NamedCurve> clientCurves = new ArrayList<>();
-        clientCurves.add(NamedCurve.SECP384R1);
-        List<NamedCurve> serverCurves = new ArrayList<>();
-        serverCurves.add(NamedCurve.BRAINPOOLP256R1);
-        serverCurves.add(NamedCurve.SECP384R1);
-        serverCurves.add(NamedCurve.SECP256R1);
-        tlsContext.setClientNamedCurvesList(clientCurves);
-        config.setNamedCurves(serverCurves);
+        List<NamedGroup> clientCurves = new ArrayList<>();
+        clientCurves.add(NamedGroup.SECP384R1);
+        List<NamedGroup> serverCurves = new ArrayList<>();
+        serverCurves.add(NamedGroup.BRAINPOOLP256R1);
+        serverCurves.add(NamedGroup.SECP384R1);
+        serverCurves.add(NamedGroup.SECP256R1);
+        tlsContext.setClientNamedGroupsList(clientCurves);
+        config.setDefaultServerNamedGroups(serverCurves);
         config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA512));
         List<ECPointFormat> clientFormats = new ArrayList<>();

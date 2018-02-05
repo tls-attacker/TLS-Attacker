@@ -12,10 +12,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
@@ -23,6 +24,7 @@ import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -70,7 +72,6 @@ public class ServerHelloHandlerTest {
     /**
      * Test of adjustTLSContext method, of class ServerHelloHandler.
      */
-
     @Test
     public void testAdjustTLSContext() {
         ServerHelloMessage message = new ServerHelloMessage();
@@ -92,6 +93,9 @@ public class ServerHelloHandlerTest {
     @Test
     public void testAdjustTLSContextTls13() {
         ServerHelloMessage message = new ServerHelloMessage();
+        context.getConfig().setKeySharePrivate(
+                new BigInteger(ArrayConverter
+                        .hexStringToByteArray("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
         message.setUnixTime(new byte[] { 0, 1, 2 });
         message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
@@ -99,7 +103,7 @@ public class ServerHelloHandlerTest {
         message.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue());
         message.setSessionId(new byte[] { 6, 6, 6 });
         message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
-        context.setServerKSEntry(new KSEntry(NamedCurve.ECDH_X25519, ArrayConverter
+        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
                 .hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c")));
         context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
