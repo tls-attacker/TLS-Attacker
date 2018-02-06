@@ -256,8 +256,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
                 if (error != EqualityError.NONE) {
                     LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                            EqualityErrorTranslator.translation(error, fingerprint, list.get(i)));
                     return error;
                 }
             }
