@@ -81,6 +81,6 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
 
     @Override
     public String toCompactString() {
-        return "PSK_DH_CLIENT_KEY_EXCHANGE";
+        return "PSK_ECDH_CLIENT_KEY_EXCHANGE";
     }
 }
