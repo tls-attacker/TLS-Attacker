@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsMessage;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -154,18 +156,8 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
-        if (config.isStarttls()) {
-            if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
-                SendAsciiAction sendAsciiAction = new SendAsciiAction(config.getDefaultStarttlsRequest().name());
-                workflowTrace.addTlsAction(sendAsciiAction);
-                ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
-                workflowTrace.addTlsAction(receiveAsciiAction);
-            } else {
-                ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
-                workflowTrace.addTlsAction(receiveAsciiAction);
-                SendAsciiAction sendAsciiAction = new SendAsciiAction(config.getDefaultStarttlsResponse().getResponse());
-                workflowTrace.addTlsAction(sendAsciiAction);
-            }
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            createStarttlsWorkflow(connection, config.getStarttlsType(), workflowTrace);
         }
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
@@ -655,5 +647,120 @@ public class WorkflowConfigurationFactory {
         if (cs.isSrp()) {
             messages.add(new SrpServerKeyExchangeMessage(config));
         }
+    }
+
+    private WorkflowTrace createStarttlsWorkflow(AliasedConnection connection, StarttlsType type,
+            WorkflowTrace workflowTrace) {
+        if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
+            switch (type) {
+                case FTP: {
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(StarttlsMessage.FTP_TLS.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction2 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction2);
+                    return workflowTrace;
+                }
+                case IMAP: {
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(
+                            StarttlsMessage.IMAP_C_CAP.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction2 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction2);
+                    SendAsciiAction sendAsciiAction2 = new SendAsciiAction(
+                            StarttlsMessage.IMAP_TLS.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction2);
+                    ReceiveAsciiAction receiveAsciiAction3 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction3);
+                    return workflowTrace;
+                }
+                case POP3: {
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(StarttlsMessage.POP3_TLS.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction2 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction2);
+                    return workflowTrace;
+                }
+                case SMTP: {
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(
+                            StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction2 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction2);
+                    SendAsciiAction sendAsciiAction2 = new SendAsciiAction(
+                            StarttlsMessage.SMTP_TLS.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction2);
+                    ReceiveAsciiAction receiveAsciiAction3 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction3);
+                    return workflowTrace;
+                }
+            }
+        } else {
+            switch (type) {
+                case FTP: {
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(
+                            StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction2 = new SendAsciiAction(
+                            StarttlsMessage.FTP_S_READY.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction2);
+                    return workflowTrace;
+                }
+                case IMAP: {
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(
+                            StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction2 = new SendAsciiAction(
+                            StarttlsMessage.IMAP_S_CAP.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction2);
+                    ReceiveAsciiAction receiveAsciiAction2 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction2);
+                    SendAsciiAction sendAsciiAction4 = new SendAsciiAction(
+                            StarttlsMessage.IMAP_S_READY.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction4);
+                    return workflowTrace;
+                }
+                case POP3: {
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(
+                            StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction2 = new SendAsciiAction(
+                            StarttlsMessage.POP3_S_READY.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction2);
+                    return workflowTrace;
+                }
+                case SMTP: {
+                    SendAsciiAction sendAsciiAction = new SendAsciiAction(
+                            StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction);
+                    ReceiveAsciiAction receiveAsciiAction = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction);
+                    SendAsciiAction sendAsciiAction2 = new SendAsciiAction(
+                            StarttlsMessage.SMTP_TLS.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction2);
+                    ReceiveAsciiAction receiveAsciiAction2 = new ReceiveAsciiAction();
+                    workflowTrace.addTlsAction(receiveAsciiAction2);
+                    SendAsciiAction sendAsciiAction3 = new SendAsciiAction(
+                            StarttlsMessage.SMTP_S_READY.getStarttlsMessage());
+                    workflowTrace.addTlsAction(sendAsciiAction3);
+                    return workflowTrace;
+                }
+            }
+            return workflowTrace;
+        }
+        return workflowTrace;
     }
 }

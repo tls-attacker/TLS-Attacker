@@ -33,8 +33,7 @@ import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
-import de.rub.nds.tlsattacker.core.constants.StarttlsRequest;
-import de.rub.nds.tlsattacker.core.constants.StarttlsResponse;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -941,16 +940,7 @@ public class Config implements Serializable {
 
     private Boolean httpsParsingEnabled = false;
 
-    private Boolean starttls = false;
-
-    /**
-     * Default StarttlsRequest.
-     */
-    private StarttlsRequest defaultStarttlsRequest = StarttlsRequest.STLS;
-    /**
-     * Default StarttlsResponse.
-     */
-    private StarttlsResponse defaultStarttlsResponse = StarttlsResponse.IMAP_ACAP_OK;
+    private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
@@ -1077,7 +1067,6 @@ public class Config implements Serializable {
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
         filtersKeepUserSettings = true;
-        defaultStarttlsRequest = StarttlsRequest.STARTTLS;
     }
 
     public long getSessionTicketLifetimeHint() {
@@ -2965,27 +2954,11 @@ public class Config implements Serializable {
         this.defaultClientDhModulus = defaultClientDhModulus;
     }
 
-    public StarttlsRequest getDefaultStarttlsRequest() {
-        return defaultStarttlsRequest;
+    public StarttlsType getStarttlsType() {
+        return starttlsType;
     }
 
-    public void setDefaultStarttlsRequest(StarttlsRequest defaultStarttlsRequest) {
-        this.defaultStarttlsRequest = defaultStarttlsRequest;
-    }
-
-    public StarttlsResponse getDefaultStarttlsResponse() {
-        return defaultStarttlsResponse;
-    }
-
-    public void setDefaultStarttlsResponse(StarttlsResponse defaultStarttlsResponse) {
-        this.defaultStarttlsResponse = defaultStarttlsResponse;
-    }
-
-    public Boolean isStarttls() {
-        return starttls;
-    }
-
-    public void setStarttls(Boolean starttls) {
-        this.starttls = starttls;
+    public void setStarttlsType(StarttlsType starttlsType) {
+        this.starttlsType = starttlsType;
     }
 }
