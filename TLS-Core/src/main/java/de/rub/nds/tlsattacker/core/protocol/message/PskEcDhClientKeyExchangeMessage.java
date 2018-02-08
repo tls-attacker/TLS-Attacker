@@ -39,7 +39,7 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskEcDhClientKeyExchangeMessage:");
+        sb.append("PskEcDhClientKeyExchangeMessage:");
         sb.append("\n  PSKIdentity Length: ");
         if (identityLength != null && identityLength.getValue() != null) {
             sb.append(identityLength.getValue());

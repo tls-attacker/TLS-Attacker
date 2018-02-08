@@ -37,7 +37,7 @@ public class NewSessionTicketMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nNewSessionTicketMessage:");
+        sb.append("NewSessionTicketMessage:");
         sb.append("\n  TicketLifeTimeHint: ").append("null");
         sb.append("\n  TicketLength: ").append("null");
         sb.append("\n  Ticket: ").append(new SessionTicket().toString());

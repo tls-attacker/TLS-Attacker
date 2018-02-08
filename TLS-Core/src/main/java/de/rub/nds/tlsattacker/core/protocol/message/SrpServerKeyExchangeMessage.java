@@ -154,7 +154,7 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nSrpServerKeyExchangeMessage:");
+        sb.append("SrpServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
         if (modulus != null && modulus.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));

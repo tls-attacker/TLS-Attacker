@@ -86,7 +86,7 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nHelloVerifyRequestMessage:");
+        sb.append("HelloVerifyRequestMessage:");
         sb.append("\n  ProtocolVersion: ");
         if (protocolVersion != null && protocolVersion.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));

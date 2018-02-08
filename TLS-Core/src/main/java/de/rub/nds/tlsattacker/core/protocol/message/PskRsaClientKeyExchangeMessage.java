@@ -43,7 +43,7 @@ public class PskRsaClientKeyExchangeMessage extends RSAClientKeyExchangeMessage 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskRsaClientKeyExchangeMessage:");
+        sb.append("PskRsaClientKeyExchangeMessage:");
         sb.append("\n  PSKIdentityLength: ");
         if (identityLength != null && identityLength.getValue() != null) {
             sb.append(identityLength.getValue());

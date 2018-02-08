@@ -72,7 +72,7 @@ public class ApplicationMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nApplicationMessage:");
+        sb.append("ApplicationMessage:");
         sb.append("\n  Data: ");
         if (data != null && data.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(data.getValue()));

@@ -35,7 +35,7 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nDHClientKeyExchangeMessage:");
+        sb.append("DHClientKeyExchangeMessage:");
         return sb.toString();
     }
 

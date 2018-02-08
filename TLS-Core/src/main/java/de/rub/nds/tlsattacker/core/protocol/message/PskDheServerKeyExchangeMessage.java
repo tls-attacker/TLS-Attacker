@@ -62,7 +62,7 @@ public class PskDheServerKeyExchangeMessage extends DHEServerKeyExchangeMessage 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskDheServerKeyExchangeMessage:");
+        sb.append("PskDheServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
         if (super.modulus != null && super.modulus.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));

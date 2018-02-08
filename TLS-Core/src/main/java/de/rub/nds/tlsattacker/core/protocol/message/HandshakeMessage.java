@@ -279,7 +279,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nHandshakeMessage:");
+        sb.append("HandshakeMessage:");
         sb.append("\n  Type: ");
         if (type != null && type.getValue() != null) {
             sb.append(type.getValue());

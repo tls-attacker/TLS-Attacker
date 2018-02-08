@@ -63,7 +63,7 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nHelloRetryRequestMessage:");
+        sb.append("HelloRetryRequestMessage:");
         sb.append("\n  Protocol Version: ");
         if (protocolVersion != null && protocolVersion.getValue() != null) {
             sb.append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()));

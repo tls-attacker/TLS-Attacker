@@ -36,7 +36,7 @@ public class ServerHelloMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nServerHelloMessage:");
+        sb.append("ServerHelloMessage:");
         sb.append("\n  Protocol Version: ").append("null");
         sb.append("\n  Server Unix Time: ").append("null");
         sb.append("\n  Server Random: ").append("null");

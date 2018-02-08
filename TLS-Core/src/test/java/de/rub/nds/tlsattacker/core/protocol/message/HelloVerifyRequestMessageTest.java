@@ -36,7 +36,7 @@ public class HelloVerifyRequestMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nHelloVerifyRequestMessage:");
+        sb.append("HelloVerifyRequestMessage:");
         sb.append("\n  ProtocolVersion: ").append("null");
         sb.append("\n  Cookie Length: ").append("null");
         sb.append("\n  Cookie: ").append("null");

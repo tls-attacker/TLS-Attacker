@@ -36,7 +36,7 @@ public class SrpServerKeyExchangeMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nSrpServerKeyExchangeMessage:");
+        sb.append("SrpServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ").append("null");
         sb.append("\n  Generator g: ").append("null");
         sb.append("\n  Public Key: ").append("null");

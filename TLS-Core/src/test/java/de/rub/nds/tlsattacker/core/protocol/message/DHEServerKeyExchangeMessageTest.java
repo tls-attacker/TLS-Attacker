@@ -36,7 +36,7 @@ public class DHEServerKeyExchangeMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nDHEServerKeyExchangeMessage:");
+        sb.append("DHEServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ").append("null");
         sb.append("\n  Generator g: ").append("null");
         sb.append("\n  Public Key: ").append("null");

@@ -34,7 +34,7 @@ public class ServerHelloDoneMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nServerHelloDoneMessage:");
+        sb.append("ServerHelloDoneMessage:");
         return sb.toString();
     }
 }

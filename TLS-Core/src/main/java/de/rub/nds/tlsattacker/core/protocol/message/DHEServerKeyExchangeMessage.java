@@ -115,7 +115,7 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nDHEServerKeyExchangeMessage:");
+        sb.append("DHEServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
         if (modulus != null && modulus.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));

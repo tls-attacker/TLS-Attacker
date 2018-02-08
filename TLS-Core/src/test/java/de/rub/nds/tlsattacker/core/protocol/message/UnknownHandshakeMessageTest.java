@@ -36,7 +36,7 @@ public class UnknownHandshakeMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nUnknownHandshakeMessage:");
+        sb.append("UnknownHandshakeMessage:");
         sb.append("\n  Data: ").append("null");
 
         assertEquals(message.toString(), sb.toString());

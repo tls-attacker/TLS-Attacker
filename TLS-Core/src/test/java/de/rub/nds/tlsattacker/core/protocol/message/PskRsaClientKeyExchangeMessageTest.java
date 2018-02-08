@@ -36,7 +36,7 @@ public class PskRsaClientKeyExchangeMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskRsaClientKeyExchangeMessage:");
+        sb.append("PskRsaClientKeyExchangeMessage:");
         sb.append("\n  PSKIdentityLength: ").append("null");
         sb.append("\n  PSKIdentity: ").append("null");
 

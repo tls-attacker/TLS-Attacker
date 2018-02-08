@@ -36,7 +36,7 @@ public class EncryptedExtensionsMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nEncryptedExtensionMessage:");
+        sb.append("EncryptedExtensionMessage:");
         sb.append("\n  Extensions: ").append("null");
 
         assertEquals(message.toString(), sb.toString());

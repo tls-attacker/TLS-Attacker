@@ -36,7 +36,7 @@ public class HelloRetryRequestMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nHelloRetryRequestMessage:");
+        sb.append("HelloRetryRequestMessage:");
         sb.append("\n  Protocol Version: ").append("null");
         sb.append("\n  Selected Cipher Suite: ").append("null");
         sb.append("\n  Extensions: ").append("null");

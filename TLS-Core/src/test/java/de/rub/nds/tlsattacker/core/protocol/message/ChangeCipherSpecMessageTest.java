@@ -35,7 +35,7 @@ public class ChangeCipherSpecMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nChangeCipherSpecMessage:");
+        sb.append("ChangeCipherSpecMessage:");
         sb.append("\n  CCS ProtocolType: ").append("null");
 
         assertEquals(sb.toString(), message.toString());

@@ -36,7 +36,7 @@ public class ClientHelloMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nClientHelloMessage:");
+        sb.append("ClientHelloMessage:");
         sb.append("\n  Protocol Version: ").append("null");
         sb.append("\n  Client Unix Time: ").append("null");
         sb.append("\n  Client Random: ").append("null");

@@ -31,7 +31,7 @@ public class CertificateRequestMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nCertificateRequestMessage:");
+        sb.append("CertificateRequestMessage:");
         sb.append("\n  Certificate Types Count: ").append("null");
         sb.append("\n  Certificate Types: ").append("null");
         sb.append("\n  Signature Hash Algorithms Length: ").append("null");

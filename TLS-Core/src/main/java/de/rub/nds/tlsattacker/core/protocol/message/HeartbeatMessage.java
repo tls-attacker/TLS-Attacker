@@ -99,7 +99,7 @@ public class HeartbeatMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nHeartbeatMessage:");
+        sb.append("HeartbeatMessage:");
         sb.append("\n  Type: ");
         if (heartbeatMessageType != null && heartbeatMessageType.getValue() != null) {
             sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));

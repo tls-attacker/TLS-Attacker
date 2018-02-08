@@ -27,7 +27,7 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nEncryptedExtensionMessage:");
+        sb.append("EncryptedExtensionMessage:");
         sb.append("\n  Extensions: ");
         if (getExtensions() == null) {
             sb.append("null");

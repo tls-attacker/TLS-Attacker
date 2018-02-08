@@ -33,7 +33,7 @@ public class CertificateMessageTest {
     public void testToString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\nCertificateMessage:");
+        sb.append("CertificateMessage:");
         sb.append("\n  Certificates Length: ").append("null");
         sb.append("\n  Certificate:\n").append("null");
         assertEquals(sb.toString(), message.toString());
@@ -42,7 +42,7 @@ public class CertificateMessageTest {
         byte[] testArray = { 120 };
 
         sb.setLength(0);
-        sb.append("\nCertificateMessage:");
+        sb.append("CertificateMessage:");
         sb.append("\n  Certificates Length: ").append(testBytes);
         sb.append("\n  Certificate:\n").append(ArrayConverter.bytesToHexString(testArray));
 

@@ -36,7 +36,7 @@ public class HeartbeatMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nHeartbeatMessage:");
+        sb.append("HeartbeatMessage:");
         sb.append("\n  Type: ").append("null");
         sb.append("\n  Payload Length: ").append("null");
         sb.append("\n  Payload: ").append("null");

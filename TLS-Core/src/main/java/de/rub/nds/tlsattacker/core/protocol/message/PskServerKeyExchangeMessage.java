@@ -75,7 +75,7 @@ public class PskServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskServerKeyExchangeMessage:");
+        sb.append("PskServerKeyExchangeMessage:");
         sb.append("\n  IdentityHintLength: ");
         if (identityHintLength != null && identityHintLength.getValue() != null) {
             sb.append(identityHintLength.getValue());

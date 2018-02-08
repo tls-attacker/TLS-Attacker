@@ -86,7 +86,7 @@ public class SupplementalDataMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nSupplementalDataMessage:");
+        sb.append("SupplementalDataMessage:");
         sb.append("\n  Supplemental Data Length: ");
         if (supplementalDataLength != null && supplementalDataLength.getValue() != null) {
             sb.append(supplementalDataLength.getValue());

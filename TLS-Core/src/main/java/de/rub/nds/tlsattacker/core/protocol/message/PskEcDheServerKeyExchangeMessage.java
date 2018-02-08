@@ -64,7 +64,7 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskEcDheServerKeyExchangeMessage:");
+        sb.append("PskEcDheServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ");
         if (this.curveType != null && this.curveType.getValue() != null) {
             sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));

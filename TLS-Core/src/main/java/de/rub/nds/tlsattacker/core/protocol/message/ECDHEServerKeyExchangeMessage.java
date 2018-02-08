@@ -71,7 +71,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nECDHEServerKeyExchangeMessage:");
+        sb.append("ECDHEServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ");
         if (curveType != null && curveType.getValue() != null) {
             sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));

@@ -36,7 +36,7 @@ public class FinishedMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nFinishedMessage:");
+        sb.append("FinishedMessage:");
         sb.append("\n  Verify Data: ").append("null");
 
         assertEquals(message.toString(), sb.toString());

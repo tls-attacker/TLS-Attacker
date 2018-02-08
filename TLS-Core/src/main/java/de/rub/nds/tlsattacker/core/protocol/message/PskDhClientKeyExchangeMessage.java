@@ -39,7 +39,7 @@ public class PskDhClientKeyExchangeMessage extends DHClientKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskDhClientKeyExchangeMessage:");
+        sb.append("PskDhClientKeyExchangeMessage:");
         sb.append("\n  PSKIdentity Length: ");
         if (identityLength != null && identityLength.getValue() != null) {
             sb.append(identityLength.getValue());

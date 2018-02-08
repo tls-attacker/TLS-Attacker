@@ -91,7 +91,7 @@ public class AlertMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nAlertMessage:");
+        sb.append("AlertMessage:");
         sb.append("\n  Level: ");
         if (level != null) {
             if (AlertLevel.getAlertLevel(level.getValue()) == AlertLevel.UNDEFINED) {
@@ -118,7 +118,7 @@ public class AlertMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nAlertMessage:");
+        sb.append("AlertMessage:");
         sb.append("\n  Level: ");
         if (level != null && level.getValue() != null) {
             sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());

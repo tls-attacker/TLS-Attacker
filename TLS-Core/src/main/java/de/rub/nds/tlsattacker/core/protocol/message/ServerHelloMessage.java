@@ -191,7 +191,7 @@ public class ServerHelloMessage extends HelloMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nServerHelloMessage:");
+        sb.append("ServerHelloMessage:");
         sb.append("\n  Protocol Version: ");
         if (getProtocolVersion() != null) {
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));

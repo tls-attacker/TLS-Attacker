@@ -34,7 +34,7 @@ public class ApplicationMessageTest {
     public void testToString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("\nApplicationMessage:");
+        sb.append("ApplicationMessage:");
         sb.append("\n  Data: ").append("null");
 
         assertEquals(sb.toString(), message.toString());
@@ -43,7 +43,7 @@ public class ApplicationMessageTest {
         message.setData(data);
 
         sb.setLength(0);
-        sb.append("\nApplicationMessage:");
+        sb.append("ApplicationMessage:");
         sb.append("\n  Data: ").append(ArrayConverter.bytesToHexString(data));
 
         assertEquals(sb.toString(), message.toString());

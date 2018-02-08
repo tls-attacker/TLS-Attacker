@@ -36,7 +36,7 @@ public class UnknownMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nUnknownMessage:");
+        sb.append("UnknownMessage:");
         sb.append("\n  Data: ").append("null");
 
         assertEquals(message.toString(), sb.toString());

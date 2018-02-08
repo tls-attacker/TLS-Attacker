@@ -63,7 +63,7 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nUnknownHandshakeMessage:");
+        sb.append("UnknownHandshakeMessage:");
         sb.append("\n  Data: ");
         if (data != null && data.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(data.getValue()));

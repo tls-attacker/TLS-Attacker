@@ -36,7 +36,7 @@ public class PskDheServerKeyExchangeMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nPskDheServerKeyExchangeMessage:");
+        sb.append("PskDheServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ").append("null");
         sb.append("\n  Generator g: ").append("null");
         sb.append("\n  Public Key: ").append("null");

@@ -24,7 +24,7 @@ public class AlertMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nAlertMessage:");
+        sb.append("AlertMessage:");
         sb.append("\n  Level: ").append("null");
         sb.append("\n  Description: ").append("null");
 
@@ -35,7 +35,7 @@ public class AlertMessageTest {
         message.setLevel(testBytes);
 
         sb.setLength(0);
-        sb.append("\nAlertMessage:");
+        sb.append("AlertMessage:");
         sb.append("\n  Level: ").append(testBytes);
         sb.append("\n  Description: ").append(testBytes);
 

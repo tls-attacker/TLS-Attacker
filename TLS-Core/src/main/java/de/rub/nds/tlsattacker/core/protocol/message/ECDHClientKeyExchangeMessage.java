@@ -92,7 +92,7 @@ public class ECDHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nECDHClientKeyExchangeMessage:");
+        sb.append("ECDHClientKeyExchangeMessage:");
         return sb.toString();
     }
 

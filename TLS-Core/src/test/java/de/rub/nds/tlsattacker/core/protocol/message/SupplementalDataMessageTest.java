@@ -36,7 +36,7 @@ public class SupplementalDataMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nSupplementalDataMessage:");
+        sb.append("SupplementalDataMessage:");
         sb.append("\n  Supplemental Data Length: ").append("null");
         sb.append("\n  SupplementalDataEntries:\n").append("null");
 

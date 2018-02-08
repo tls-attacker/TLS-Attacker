@@ -36,7 +36,7 @@ public class ECDHEServerKeyExchangeMessageTest {
     @Test
     public void testToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nECDHEServerKeyExchangeMessage:");
+        sb.append("ECDHEServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ").append("null");
         sb.append("\n  Named Curve: ").append("null");
         sb.append("\n  Public Key: ").append("null");
