@@ -81,7 +81,8 @@ public class RecordAEADCipher extends RecordCipher {
                 return encryptTLS12(request);
             }
         } catch (CryptoException E) {
-            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.", E);
+            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.");
+            LOGGER.debug(E);
             return new EncryptionResult(request.getPlainText());
         }
     }
@@ -97,7 +98,8 @@ public class RecordAEADCipher extends RecordCipher {
             }
             return new DecryptionResult(null, decrypted, null);
         } catch (CryptoException E) {
-            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", E);
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
+            LOGGER.debug(E);
             return new DecryptionResult(null, decryptionRequest.getCipherText(), null);
         }
     }
