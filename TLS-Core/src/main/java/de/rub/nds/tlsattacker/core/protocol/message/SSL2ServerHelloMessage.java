@@ -15,20 +15,16 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ServerHelloHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
+@SuppressWarnings("serial")
 @XmlRootElement
-public class SSL2ServerHelloMessage extends ProtocolMessage {
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger messageLength;
-
-    @ModifiableVariableProperty
-    private ModifiableByte type;
+public class SSL2ServerHelloMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty
     private ModifiableByte sessionIdHit;
@@ -58,12 +54,12 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     private ModifiableByteArray sessionId;
 
     public SSL2ServerHelloMessage() {
+        super(HandshakeMessageType.SSL2_SERVER_HELLO);
         this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
     }
 
     public SSL2ServerHelloMessage(Config config) {
-        super();
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        this();
     }
 
     @Override
@@ -74,30 +70,6 @@ public class SSL2ServerHelloMessage extends ProtocolMessage {
     @Override
     public SSL2ServerHelloHandler getHandler(TlsContext context) {
         return new SSL2ServerHelloHandler(context);
-    }
-
-    public ModifiableInteger getMessageLength() {
-        return messageLength;
-    }
-
-    public void setMessageLength(ModifiableInteger messageLength) {
-        this.messageLength = messageLength;
-    }
-
-    public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
-    }
-
-    public ModifiableByte getType() {
-        return type;
-    }
-
-    public void setType(ModifiableByte type) {
-        this.type = type;
-    }
-
-    public void setType(byte type) {
-        this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
     public ModifiableByte getSessionIdHit() {
