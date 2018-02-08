@@ -131,7 +131,7 @@ public class CertificateRequestMessage extends HandshakeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nCertificateRequestMessage:");
+        sb.append("CertificateRequestMessage:");
         sb.append("\n  Certificate Types Count: ");
         if (clientCertificateTypesCount != null && clientCertificateTypesCount.getValue() != null) {
             sb.append(clientCertificateTypesCount.getValue());
