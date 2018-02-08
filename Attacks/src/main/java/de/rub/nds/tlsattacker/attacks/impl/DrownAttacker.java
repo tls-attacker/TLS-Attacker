@@ -21,9 +21,11 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.SSL2CipherSuite;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientMasterKeyPreparator;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -39,6 +41,8 @@ import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.Arrays;
+import java.util.List;
+
 import org.bouncycastle.crypto.digests.MD5Digest;
 import org.bouncycastle.crypto.engines.RC4Engine;
 import org.bouncycastle.crypto.params.KeyParameter;
@@ -64,8 +68,9 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
             case NONE:
                 return false;
             case SSL2:
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Server is vulnerable to DROWN since it supports SSL2");
-                return true;
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Server supports SSL2, but not any weak ciphersuites, "
+                        + "so is not vulnerable to DROWN");
+                return false;
             case UNKNOWN:
                 LOGGER.warn("Could not execute Workflow - something went wrong. Check the Debug output to be certain");
                 return null;
@@ -89,26 +94,41 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
             LOGGER.debug(ex);
             return DrownVulnerabilityType.UNKNOWN;
         }
-        if (WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SSL2_SERVER_HELLO, trace)) {
-            // The Server is definetly vulnerable
-            SSL2ServerVerifyMessage message = (SSL2ServerVerifyMessage) WorkflowTraceUtil.getFirstReceivedMessage(
-                    HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
-            if (message != null && checkAdvancedDrown(message, state.getTlsContext())) {
-                return DrownVulnerabilityType.FULL;
-            }
-            return DrownVulnerabilityType.SSL2;
-        } else {
+
+        if (!WorkflowTraceUtil.didReceiveMessage(HandshakeMessageType.SSL2_SERVER_HELLO, trace)) {
             return DrownVulnerabilityType.NONE;
         }
+
+        SSL2ServerHelloMessage serverHello = (SSL2ServerHelloMessage) WorkflowTraceUtil.getFirstReceivedMessage(
+                HandshakeMessageType.SSL2_SERVER_HELLO, trace);
+        List<SSL2CipherSuite> serverCipherSuites = SSL2CipherSuite.getCiphersuites(serverHello.getCipherSuites()
+                .getValue());
+        for (SSL2CipherSuite cipherSuite : serverCipherSuites) {
+            if (cipherSuite.isWeak()) {
+                LOGGER.debug("Declaring host as vulnerable based on weak ciphersuite in ServerHello.");
+                return DrownVulnerabilityType.FULL;
+            }
+        }
+        SSL2ServerVerifyMessage message = (SSL2ServerVerifyMessage) WorkflowTraceUtil.getFirstReceivedMessage(
+                HandshakeMessageType.SSL2_SERVER_VERIFY, trace);
+        if (message != null && checkServerVerifyMessage(message, state.getTlsContext())) {
+            LOGGER.debug("Declaring host as vulnerable based on ServerVerify.");
+            return DrownVulnerabilityType.FULL;
+        }
+        return DrownVulnerabilityType.SSL2;
     }
 
-    private boolean checkAdvancedDrown(SSL2ServerVerifyMessage message, TlsContext context) {
+    private boolean checkServerVerifyMessage(SSL2ServerVerifyMessage message, TlsContext context) {
         byte[] md5Output = getMD5Output(context);
 
         RC4Engine rc4 = new RC4Engine();
         rc4.init(false, new KeyParameter(md5Output));
         byte[] encrypted = message.getEncryptedPart().getValue();
         int len = encrypted.length;
+        if (len < 16) {
+            return false;
+        }
+
         byte[] decrypted = new byte[len];
         rc4.processBytes(encrypted, 0, len, decrypted, 0);
 
