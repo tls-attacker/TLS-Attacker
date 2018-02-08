@@ -34,8 +34,7 @@ public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePrepa
     }
 
     @Override
-    protected byte[] generatePremasterSecret() {
-        byte[] premasterSecret = super.generatePremasterSecret();
+    protected byte[] manipulatePremasterSecret(byte[] premasterSecret) {
         outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ArrayConverter.intToBytes(HandshakeByteLength.PREMASTER_SECRET,

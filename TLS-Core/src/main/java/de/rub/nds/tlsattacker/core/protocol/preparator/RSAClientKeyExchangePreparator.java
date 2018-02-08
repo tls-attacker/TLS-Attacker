@@ -117,7 +117,6 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
         int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
         if (clientMode && (msg.getPublicKey() == null || msg.getPublicKey().getValue() == null)) {
             int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;
-
             padding = new byte[randomByteLength];
             chooser.getContext().getRandom().nextBytes(padding);
             ArrayConverter.makeArrayNonZero(padding);
@@ -138,7 +137,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             encrypted = ArrayConverter.bigIntegerToByteArray(biEncrypted,
                     chooser.getServerRsaModulus().bitLength() / 8, true);
             prepareSerializedPublicKey(msg);
-
+            premasterSecret = manipulatePremasterSecret(premasterSecret);
+            preparePremasterSecret(msg);
         } else {
             LOGGER.debug("Decrypting premasterSecret");
             int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 1;
@@ -148,11 +148,16 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
             if (randomByteLength < paddedPremasterSecret.length) {
                 premasterSecret = Arrays.copyOfRange(paddedPremasterSecret, randomByteLength,
                         paddedPremasterSecret.length);
+                premasterSecret = manipulatePremasterSecret(premasterSecret);
+                preparePremasterSecret(msg);
             } else {
                 LOGGER.warn("RandomByteLength too short! Using empty premasterSecret!");
                 premasterSecret = new byte[0];
             }
         }
-        preparePremasterSecret(msg);
+    }
+
+    protected byte[] manipulatePremasterSecret(byte[] premasterSecret) {
+        return premasterSecret; // Nothing to do here
     }
 }
