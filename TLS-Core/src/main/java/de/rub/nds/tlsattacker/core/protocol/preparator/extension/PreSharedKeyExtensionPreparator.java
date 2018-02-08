@@ -173,7 +173,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
                     chooser.getContext().setEarlyDataPsk(psk);
                 }
             } catch (NoSuchAlgorithmException | InvalidKeyException | CryptoException ex) {
-                throw new WorkflowExecutionException("Could not calculate Binders", ex);
+                throw new PreparationException("Could not calculate Binders", ex);
             }
         }
     }
