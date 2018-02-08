@@ -30,6 +30,7 @@ public class PseudoRandomFunctionTest {
      * 
      * @param mockedTlsContext
      * @param mockedParameters
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testComputeForTls12(@Mocked final TlsContext mockedTlsContext,
@@ -77,6 +78,7 @@ public class PseudoRandomFunctionTest {
 
     /**
      * Test of compute method, of class PseudoRandomFunction.
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testComputeForTls11() throws CryptoException {

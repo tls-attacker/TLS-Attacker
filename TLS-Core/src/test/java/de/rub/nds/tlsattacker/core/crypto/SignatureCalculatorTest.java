@@ -29,6 +29,7 @@ public class SignatureCalculatorTest {
 
     /**
      * Test of generateRSASignature method, of class SignatureCalculator.
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testGenerateRSASignature() throws CryptoException {

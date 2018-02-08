@@ -51,6 +51,7 @@ public class RecordAEADCipherTest {
      * Test of the encrypt method, of class RecordAEADCipher.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testEncrypt() throws NoSuchAlgorithmException, CryptoException {
@@ -69,6 +70,7 @@ public class RecordAEADCipherTest {
      * Test of the decrypt method, of class RecordAEADCipher.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testDecrypt() throws NoSuchAlgorithmException, CryptoException {

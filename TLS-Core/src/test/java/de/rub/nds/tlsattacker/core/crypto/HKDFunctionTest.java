@@ -29,6 +29,7 @@ public class HKDFunctionTest {
     /**
      * Test of extract and expand method, of class HKDFunction. Test cases from:
      * https://tools.ietf.org/html/rfc5869#appendix-A
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testExtractAndExpand() throws CryptoException {
@@ -78,6 +79,7 @@ public class HKDFunctionTest {
 
     /**
      * Test of extract method, of class HKDFunction
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testExtractNoSalt() throws CryptoException {
@@ -94,6 +96,7 @@ public class HKDFunctionTest {
 
     /**
      * Test of extract method, of class HKDFunction
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testExtractWithSalt() throws CryptoException {
@@ -111,6 +114,7 @@ public class HKDFunctionTest {
 
     /**
      * Test of deriveSecret method, of class HKDFunction
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testDeriveSecret() throws CryptoException {
@@ -129,6 +133,7 @@ public class HKDFunctionTest {
 
     /**
      * Test of expandLabel method, of class HKDFunction
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testExpandLabel() throws CryptoException {

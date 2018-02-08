@@ -110,8 +110,6 @@ public final class RecordBlockCipher extends RecordCipher {
      * @param request
      *            The RequestedEncryption operation
      * @return The EncryptionResult
-     * @throws CryptoException
-     *             If something goes wrong during Encryption
      */
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {

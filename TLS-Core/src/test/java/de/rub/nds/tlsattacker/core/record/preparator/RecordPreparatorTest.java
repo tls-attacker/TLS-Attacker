@@ -49,6 +49,7 @@ public class RecordPreparatorTest {
      * Test of the prepare method for TLS 1.3, of class RecordPreparator.
      * 
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testPrepare() throws NoSuchAlgorithmException, CryptoException {

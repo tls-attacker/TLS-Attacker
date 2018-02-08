@@ -77,6 +77,7 @@ public class WorkflowTraceNormalizerTestGoodInput {
 
     /**
      * Run each test with a file from TEST_VECTOR_DIR as parameter.
+     * @return 
      */
     @Parameters
     public static Collection<Object[]> data() {

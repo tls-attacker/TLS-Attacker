@@ -112,6 +112,7 @@ public class RecordBlockCipherTest {
      * Test of calculateMac method, of class RecordBlockCipher.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testCalculateMac() throws NoSuchAlgorithmException, CryptoException {
@@ -137,6 +138,7 @@ public class RecordBlockCipherTest {
      * Test of encrypt method, of class RecordBlockCipher, for TLS10.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testEncryptTls10() throws NoSuchAlgorithmException, CryptoException {
@@ -171,6 +173,7 @@ public class RecordBlockCipherTest {
      * Test of encrypt method, of class RecordBlockCipher, for TLS12.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testEncryptTls12() throws NoSuchAlgorithmException, CryptoException {
@@ -207,6 +210,7 @@ public class RecordBlockCipherTest {
      * Test of decrypt method, of class RecordBlockCipher, for TLS10.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testDecrypt10() throws NoSuchAlgorithmException, CryptoException {
@@ -233,6 +237,7 @@ public class RecordBlockCipherTest {
      * Test of decrypt method, of class RecordBlockCipher, for TLS12.
      *
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testDecrypt12() throws NoSuchAlgorithmException, CryptoException {

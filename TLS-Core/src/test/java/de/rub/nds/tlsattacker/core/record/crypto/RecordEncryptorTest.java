@@ -60,6 +60,7 @@ public class RecordEncryptorTest {
      * Test of the encrypt method for TLS 1.3, of class RecordEncryptor.
      * 
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testEncryptTLS13() throws NoSuchAlgorithmException, CryptoException {

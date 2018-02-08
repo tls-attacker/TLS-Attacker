@@ -52,6 +52,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testEncDecAES_128_CBC() throws CryptoException {
@@ -87,6 +88,7 @@ public class StaticTicketCryptoTest {
      * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
      * that the key has the correct length. Testvector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testGenerateHMAC_SHA256() throws CryptoException {
@@ -103,6 +105,7 @@ public class StaticTicketCryptoTest {
      * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
      * that the key has the correct length. Testvector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testVerifyHMAC_SHA256() throws CryptoException {
@@ -118,6 +121,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testGenVrfyHMAC_SHA256() throws CryptoException {
