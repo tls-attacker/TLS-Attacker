@@ -72,8 +72,8 @@ public enum SSL2CipherSuite {
     }
 
     public boolean isWeak() {
-        if (value == SSL_CK_DES_64_CBC_WITH_MD5.value || value == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5.value
-                || value == SSL_CK_RC4_128_EXPORT40_WITH_MD5.value) {
+        if (this == SSL_CK_DES_64_CBC_WITH_MD5 || this == SSL_CK_RC2_128_CBC_EXPORT40_WITH_MD5
+                || this == SSL_CK_RC4_128_EXPORT40_WITH_MD5) {
             return true;
         }
         return false;
