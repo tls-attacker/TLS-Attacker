@@ -53,7 +53,7 @@ public enum HandshakeMessageType {
     static {
         MAP = new HashMap<>();
         for (HandshakeMessageType cm : HandshakeMessageType.values()) {
-            if (cm == UNKNOWN) {
+            if (cm == UNKNOWN || cm.name().contains("SSL2")) {
                 continue;
             }
             MAP.put((byte) cm.value, cm);
