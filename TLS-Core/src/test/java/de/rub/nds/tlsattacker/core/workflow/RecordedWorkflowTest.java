@@ -38,8 +38,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.junit.After;
-import org.junit.Before;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *

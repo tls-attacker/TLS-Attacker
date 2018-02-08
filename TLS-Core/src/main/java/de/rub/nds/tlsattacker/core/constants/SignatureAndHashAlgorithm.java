@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.core.constants;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;

@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.cert;
 
 import de.rub.nds.tlsattacker.core.protocol.parser.cert.CertificatePairParser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 
 //Dont know if needed all

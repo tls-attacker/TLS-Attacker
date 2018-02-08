@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;

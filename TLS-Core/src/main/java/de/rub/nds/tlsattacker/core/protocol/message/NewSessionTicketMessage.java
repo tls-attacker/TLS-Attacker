@@ -18,10 +18,10 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class NewSessionTicketMessage extends HandshakeMessage {

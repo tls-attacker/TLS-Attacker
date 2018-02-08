@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 
 public enum CipherSuite {
 

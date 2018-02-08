@@ -16,8 +16,8 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class StaticTicketCryptoTest {
     private static final Logger LOGGER = LogManager.getLogger(StaticTicketCryptoTest.class);
@@ -52,6 +52,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
+     * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
@@ -88,6 +89,7 @@ public class StaticTicketCryptoTest {
      * Test of generateHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
      * that the key has the correct length. Testvector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
+     * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
@@ -105,6 +107,7 @@ public class StaticTicketCryptoTest {
      * Test of verifyHMAC_SHA256 method, of class StaticTicketCrypto. Assuming
      * that the key has the correct length. Testvector from
      * https://tools.ietf.org/html/rfc4231#section-4.2
+     * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
@@ -121,6 +124,7 @@ public class StaticTicketCryptoTest {
 
     /**
      * Test of random, wrong and used data.
+     * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test

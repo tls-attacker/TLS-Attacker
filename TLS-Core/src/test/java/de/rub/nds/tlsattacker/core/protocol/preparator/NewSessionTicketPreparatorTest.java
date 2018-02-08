@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -51,6 +50,7 @@ public class NewSessionTicketPreparatorTest {
     /**
      * Test of prepareProtocolMessageContents method, of class
      * NewSessionTicketPreparator.
+     * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test

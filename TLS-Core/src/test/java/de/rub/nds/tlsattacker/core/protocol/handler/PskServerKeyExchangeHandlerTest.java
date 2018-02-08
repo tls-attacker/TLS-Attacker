@@ -8,13 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.PskServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.PskServerKeyExchangePreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.PskServerKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;

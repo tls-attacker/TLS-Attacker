@@ -15,7 +15,6 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
-import java.util.Arrays;
 
 public class PskRsaClientKeyExchangePreparator extends RSAClientKeyExchangePreparator<PskRsaClientKeyExchangeMessage> {
 

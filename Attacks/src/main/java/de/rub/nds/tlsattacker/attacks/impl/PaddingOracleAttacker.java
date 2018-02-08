@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested

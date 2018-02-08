@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.https.header.preparator;
 
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.https.header.TokenBindingHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.tokenbinding.TokenBindingMessageSerializer;

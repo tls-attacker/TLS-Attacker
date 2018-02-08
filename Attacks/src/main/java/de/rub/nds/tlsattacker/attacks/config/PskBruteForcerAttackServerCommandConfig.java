@@ -22,13 +22,10 @@ import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import java.util.LinkedList;
 import java.util.List;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Scanner;
 
 public class PskBruteForcerAttackServerCommandConfig extends AttackConfig {
 
