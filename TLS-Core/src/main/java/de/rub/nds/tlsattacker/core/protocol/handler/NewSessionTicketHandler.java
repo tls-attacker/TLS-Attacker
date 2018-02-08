@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -35,7 +34,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
     }
 
     @Override
-    public ProtocolMessageParser getParser(byte[] message, int pointer) {
+    public NewSessionTicketParser getParser(byte[] message, int pointer) {
         return new NewSessionTicketParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
