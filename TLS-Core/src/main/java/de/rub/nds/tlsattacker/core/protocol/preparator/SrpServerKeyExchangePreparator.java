@@ -78,14 +78,18 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         BigInteger publickey;
         BigInteger k = calculateSRP6Multiplier(modulus, generator);
         BigInteger x = calculateX(salt, identity, password);
-        BigInteger v = generator.modPow(x, modulus.abs());
-        BigInteger helpValue1 = generator.modPow(privateKey, modulus.abs());
-        BigInteger helpValue2 = k.multiply(v);
-        helpValue2.mod(modulus.abs());
-        helpValue1 = helpValue2.add(helpValue1);
-        publickey = helpValue1.mod(modulus.abs());
-        LOGGER.debug(ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(helpValue1)));
-        LOGGER.debug(ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(publickey)));
+        BigInteger v = generator.modPow(x, modulus);
+
+        BigInteger helpValue1 = k.multiply(v);
+        BigInteger helpValue2 = helpValue1.mod(modulus);
+        helpValue1 = generator.modPow(privateKey, modulus);
+        BigInteger helpValue3 = helpValue1.add(helpValue2);
+        helpValue1 = helpValue3.mod(modulus);
+
+        publickey = helpValue1;
+
+        LOGGER.debug("Server-Public-Key: "
+                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(publickey)));
         return publickey;
     }
 
@@ -98,8 +102,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         LOGGER.debug("HashInput for hashInput2: " + ArrayConverter.bytesToHexString(hashInput2));
         byte[] hashOutput2 = SHAsum(hashInput2);
         LOGGER.debug("Hashvalue for hashInput2: " + ArrayConverter.bytesToHexString(hashOutput2));
-        BigInteger output = new BigInteger(1, hashOutput2);
-        return output;
+        return new BigInteger(1, hashOutput2);
     }
 
     private BigInteger calculateSRP6Multiplier(BigInteger modulus, BigInteger generator) {
@@ -108,8 +111,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         byte[] hashInput = ArrayConverter.concatenate(ArrayConverter.bigIntegerToByteArray(modulus), paddedGenerator);
         LOGGER.debug("HashInput SRP6Multi: " + ArrayConverter.bytesToHexString(hashInput));
         byte[] hashOutput = SHAsum(hashInput);
-        srp6Multiplier = new BigInteger(1, hashOutput);
-        return srp6Multiplier;
+        return new BigInteger(1, hashOutput);
     }
 
     public byte[] SHAsum(byte[] toHash) {
@@ -120,8 +122,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
             ex.printStackTrace();
         }
         dig.update(toHash);
-        byte[] hashword = dig.digest();
-        return hashword;
+        return dig.digest();
     }
 
     private byte[] calculatePadding(BigInteger modulus, BigInteger topad) {
@@ -137,8 +138,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
             paddingByteLength = 0;
         }
         padding = new byte[paddingByteLength];
-        byte[] output = ArrayConverter.concatenate(padding, paddingArray);
-        return output;
+        return ArrayConverter.concatenate(padding, paddingArray);
     }
 
     private byte[] generateToBeSigned() {

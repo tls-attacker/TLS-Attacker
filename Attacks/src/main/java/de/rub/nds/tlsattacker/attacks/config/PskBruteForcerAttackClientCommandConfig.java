@@ -10,58 +10,58 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import com.beust.jcommander.Parameter;
+import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderType;
 import de.rub.nds.tlsattacker.attacks.config.delegate.AttackDelegate;
+import de.rub.nds.tlsattacker.attacks.exception.WordlistNotFoundException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ServerDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import java.util.LinkedList;
-import java.util.List;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 
 public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
+
     public static final String ATTACK_COMMAND = "pskbruteforcerclient";
 
     @ParametersDelegate
     private ServerDelegate serverDelegate;
     @ParametersDelegate
-    private HostnameExtensionDelegate hostnameExtensionDelegate;
+    private AttackDelegate attackDelegate;
     @ParametersDelegate
     private CiphersuiteDelegate ciphersuiteDelegate;
-    @ParametersDelegate
-    private ProtocolVersionDelegate protocolVersionDelegate;
-    @ParametersDelegate
-    private AttackDelegate attackDelegate;
-    @Parameter(names = "-usePskTable", description = "Enables the use of the PskTable")
-    private boolean usePskTable = false;
+    @Parameter(names = "-guessProviderType", description = "Chooses how the BruteForcer will choose the keys to guess")
+    private GuessProviderType guessProviderType = GuessProviderType.INCREMENTING;
+    @Parameter(names = "-guessProviderInputFile", description = "Set the path to an input file which can be used in the guess provider eg. a path to a wordlist")
+    private String guessProviderInputFile = null;
 
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-        if (ciphersuiteDelegate.getCipherSuites() == null) {
-            List<CipherSuite> cipherSuites = new LinkedList<>();
-            cipherSuites.add(CipherSuite.TLS_PSK_WITH_AES_128_CBC_SHA);
-            config.setDefaultClientSupportedCiphersuites(cipherSuites);
-        }
         config.setQuickReceive(true);
         config.setEarlyStop(true);
+
         return config;
     }
 
     public PskBruteForcerAttackClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         serverDelegate = new ServerDelegate();
-        hostnameExtensionDelegate = new HostnameExtensionDelegate();
-        ciphersuiteDelegate = new CiphersuiteDelegate();
-        protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
+        ciphersuiteDelegate = new CiphersuiteDelegate();
         addDelegate(serverDelegate);
-        addDelegate(hostnameExtensionDelegate);
-        addDelegate(ciphersuiteDelegate);
-        addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
+        addDelegate(ciphersuiteDelegate);
+
+        if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
+        }
     }
 
     @Override
@@ -69,7 +69,33 @@ public class PskBruteForcerAttackClientCommandConfig extends AttackConfig {
         return attackDelegate.isExecuteAttack();
     }
 
-    public boolean getUsePskTable() {
-        return usePskTable;
+    public String getGuessProviderInputFile() {
+        return guessProviderInputFile;
+    }
+
+    public InputStream getGuessProviderInputStream() {
+        if (this.guessProviderInputFile == null) {
+            if (guessProviderType == GuessProviderType.WORDLIST) {
+                return (PskBruteForcerAttackClientCommandConfig.class.getClassLoader()
+                        .getResourceAsStream("psk_common_passwords.txt"));
+            } else {
+                return System.in;
+            }
+        } else {
+            File file = new File(getGuessProviderInputFile());
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException ex) {
+                throw new WordlistNotFoundException("Wordlist not found: " + file.getAbsolutePath(), ex);
+            }
+        }
+    }
+
+    public GuessProviderType getGuessProviderType() {
+        return guessProviderType;
+    }
+
+    public void setGuessProviderType(GuessProviderType guessProviderType) {
+        this.guessProviderType = guessProviderType;
     }
 }

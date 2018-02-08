@@ -37,7 +37,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         super(tlsContext);
     }
 
-    protected void adjustPremasterSecret(ClientKeyExchangeMessage message) {
+    public void adjustPremasterSecret(ClientKeyExchangeMessage message) {
         if (message.getComputations().getPremasterSecret() != null) {
             byte[] premasterSecret = message.getComputations().getPremasterSecret().getValue();
             tlsContext.setPreMasterSecret(premasterSecret);
@@ -75,7 +75,7 @@ public abstract class ClientKeyExchangeHandler<Message extends ClientKeyExchange
         }
     }
 
-    protected void adjustMasterSecret(ClientKeyExchangeMessage message) {
+    public void adjustMasterSecret(ClientKeyExchangeMessage message) {
         byte[] masterSecret;
         try {
             masterSecret = calculateMasterSecret(message);
