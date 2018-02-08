@@ -33,6 +33,17 @@ public class MessageActionFactory {
         return action;
     }
 
+    public static MessageAction createAsciiAction(AliasedConnection connection, ConnectionEndType sendingConnectionEnd,
+            String message) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAsciiAction(message);
+        } else {
+            action = new ReceiveAsciiAction();
+        }
+        return action;
+    }
+
     private MessageActionFactory() {
     }
 }
