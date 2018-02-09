@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.exceptions;
 /**
  * Crypto exception
  */
-public class CryptoException extends RuntimeException {
+public class CryptoException extends Exception {
 
     public CryptoException() {
         super();

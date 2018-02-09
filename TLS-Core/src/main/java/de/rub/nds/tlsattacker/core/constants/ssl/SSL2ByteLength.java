@@ -32,6 +32,12 @@ public class SSL2ByteLength {
 
     public static final int CERTIFICATE_LENGTH = 2;
 
+    public static final int CIPHERKIND_LENGTH = 3;
+
+    public static final int CLEAR_KEY_LENGTH = 2;
+
+    public static final int ENCRYPTED_KEY_LENGTH = 2;
+
     private SSL2ByteLength() {
     }
 }

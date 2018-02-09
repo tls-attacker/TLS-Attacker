@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRetryRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRetryRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.preparator.HelloRetryRequestPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HelloRetryRequestSerializer;
@@ -53,8 +54,12 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
         adjustSelectedCiphersuite(message);
         if (message.getExtensions() != null) {
             for (ExtensionMessage extension : message.getExtensions()) {
+                HandshakeMessageType handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
+                if (extension instanceof KeyShareExtensionMessage) {
+                    handshakeMessageType = HandshakeMessageType.CLIENT_HELLO;
+                }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
-                        extension.getExtensionTypeConstant(), HandshakeMessageType.HELLO_RETRY_REQUEST);
+                        extension.getExtensionTypeConstant(), handshakeMessageType);
                 handler.adjustTLSContext(extension);
             }
         }
@@ -74,7 +79,11 @@ public class HelloRetryRequestHandler extends HandshakeMessageHandler<HelloRetry
     private void adjustSelectedCiphersuite(HelloRetryRequestMessage message) {
         CipherSuite suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         tlsContext.setSelectedCipherSuite(suite);
-        LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+        if (suite != null) {
+            LOGGER.debug("Set SelectedCipherSuite in Context to " + suite.name());
+        } else {
+            LOGGER.warn("Could not determine selected CipherSuite. Not Adjusting Context");
+        }
     }
 
 }

@@ -8,14 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import javax.crypto.Cipher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,10 +27,6 @@ public abstract class RecordCipher {
 
     protected static final Logger LOGGER = LogManager.getLogger(RecordCipher.class.getName());
 
-    /**
-     * additional authenticated data
-     */
-    protected byte[] additionalAuthenticatedData;
     /**
      * cipher for decryption
      */
@@ -61,7 +60,7 @@ public abstract class RecordCipher {
 
     public abstract EncryptionResult encrypt(EncryptionRequest encryptionRequest);
 
-    public abstract byte[] decrypt(byte[] data);
+    public abstract DecryptionResult decrypt(DecryptionRequest decryptionRequest);
 
     public abstract boolean isUsingPadding();
 
@@ -73,7 +72,7 @@ public abstract class RecordCipher {
         return 0;
     }
 
-    public byte[] calculateMac(byte[] data) {
+    public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
         return new byte[0];
     }
 
@@ -87,14 +86,6 @@ public abstract class RecordCipher {
 
     public int calculatePaddingLength(int dataLength) {
         return 0;
-    }
-
-    public void setAdditionalAuthenticatedData(byte[] additionalAuthenticatedData) {
-        this.additionalAuthenticatedData = additionalAuthenticatedData;
-    }
-
-    public byte[] getAdditionalAuthenticatedData() {
-        return additionalAuthenticatedData;
     }
 
     public final KeySet getKeySet() {

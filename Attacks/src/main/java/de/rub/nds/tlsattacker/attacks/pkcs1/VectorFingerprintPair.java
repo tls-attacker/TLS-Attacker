@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.attacks.pkcs1;
 
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
+import java.util.Objects;
 
 public class VectorFingerprintPair {
 
@@ -41,4 +42,34 @@ public class VectorFingerprintPair {
     public String toString() {
         return "PKCS#1 Vector: " + vector.getDescription() + " Fingerprint=" + fingerprint.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 67 * hash + Objects.hashCode(this.fingerprint);
+        hash = 67 * hash + Objects.hashCode(this.vector);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final VectorFingerprintPair other = (VectorFingerprintPair) obj;
+        if (!Objects.equals(this.fingerprint, other.fingerprint)) {
+            return false;
+        }
+        if (!Objects.equals(this.vector, other.vector)) {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.attacks.config.AttackConfig;
 import de.rub.nds.tlsattacker.attacks.connectivity.ConnectivityChecker;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,6 +52,8 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
             if (!canConnect()) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
                 return null;
+            } else {
+                LOGGER.debug("Can connect to server. Running vulnerability scan");
             }
         }
         return isVulnerable();

@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordBlockCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
@@ -38,7 +39,7 @@ public class ChangeCipherSuiteActionTest {
     @Before
     public void setUp() throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
             InvalidKeyException, InvalidAlgorithmParameterException, InvalidAlgorithmParameterException,
-            InvalidAlgorithmParameterException, InvalidAlgorithmParameterException {
+            InvalidAlgorithmParameterException, InvalidAlgorithmParameterException, CryptoException {
         Config config = Config.createConfig();
         action = new ChangeCipherSuiteAction(CipherSuite.TLS_DHE_DSS_WITH_AES_128_CBC_SHA256);
         WorkflowTrace trace = new WorkflowTrace();

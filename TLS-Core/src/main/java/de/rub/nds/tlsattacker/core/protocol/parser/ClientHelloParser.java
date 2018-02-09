@@ -14,16 +14,16 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 
-public class ClientHelloParser extends HelloParser<ClientHelloMessage> {
+public class ClientHelloParser extends HelloMessageParser<ClientHelloMessage> {
 
     /**
      * Constructor for the Parser class
      *
      * @param pointer
-     *            Position in the array where the HelloParser is supposed to
-     *            start parsing
+     *            Position in the array where the HelloMessageParser is supposed
+     *            to start parsing
      * @param array
-     *            The byte[] which the HelloParser is supposed to parse
+     *            The byte[] which the HelloMessageParser is supposed to parse
      * @param version
      *            Version of the Protocol
      */

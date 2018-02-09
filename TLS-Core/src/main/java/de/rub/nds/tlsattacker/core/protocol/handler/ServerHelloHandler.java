@@ -21,14 +21,15 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve25519;
+import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import static de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler.LOGGER;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -47,13 +48,13 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     @Override
-    public ServerHelloMessagePreparator getPreparator(ServerHelloMessage message) {
-        return new ServerHelloMessagePreparator(tlsContext.getChooser(), message);
+    public ServerHelloPreparator getPreparator(ServerHelloMessage message) {
+        return new ServerHelloPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public ServerHelloMessageSerializer getSerializer(ServerHelloMessage message) {
-        return new ServerHelloMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public ServerHelloSerializer getSerializer(ServerHelloMessage message) {
+        return new ServerHelloSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -103,13 +104,17 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedCompression(ServerHelloMessage message) {
-        CompressionMethod method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod()
-                .getValue());
-        if (method != null) {
-            tlsContext.setSelectedCompressionMethod(method);
-            LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+        if (message.getSelectedCompressionMethod() != null) {
+            CompressionMethod method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod()
+                    .getValue());
+            if (method != null) {
+                tlsContext.setSelectedCompressionMethod(method);
+                LOGGER.debug("Set SelectedCompressionMethod in Context to " + method.name());
+            } else {
+                LOGGER.warn("Unknown CompressionAlgorithm, did not adjust Context");
+            }
         } else {
-            LOGGER.warn("Unknown CompressionAlgorithm, did not adjust Context");
+            LOGGER.warn("Not adjusting CompressionMethod - Method is null!");
         }
     }
 
@@ -147,6 +152,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void setServerRecordCipher() {
+        tlsContext.setTls13SoftDecryption(true);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS);
         LOGGER.debug("Setting cipher for server to use handshake secrets");
         KeySet serverKeySet = getKeySet(tlsContext, tlsContext.getActiveServerKeySetType());
@@ -168,7 +174,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             LOGGER.debug("Generating new KeySet");
             return KeySetGenerator.generateKeySet(context, tlsContext.getChooser().getSelectedProtocolVersion(),
                     keySetType);
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
             throw new UnsupportedOperationException("The specified Algorithm is not supported", ex);
         }
     }
@@ -228,8 +234,8 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             tlsContext.setServerHandshakeTrafficSecret(serverHandshakeTrafficSecret);
             LOGGER.debug("Set serverHandshakeTrafficSecret in Context to "
                     + ArrayConverter.bytesToHexString(serverHandshakeTrafficSecret));
-        } catch (NoSuchAlgorithmException ex) {
-            throw new CryptoException(ex);
+        } catch (CryptoException | NoSuchAlgorithmException ex) {
+            throw new AdjustmentException(ex);
         }
     }
 

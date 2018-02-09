@@ -29,8 +29,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Executes a poodle attack. It logs an error in case the tested server is
@@ -60,7 +58,8 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         padding.setModification(modifier);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         Record r = new Record();
-        r.setPadding(padding);
+        r.prepareComputations();
+        r.getComputations().setPadding(padding);
         SendAction sendAction = new SendAction(applicationMessage);
         List<AbstractRecord> recordList = new LinkedList<>();
         recordList.add(r);

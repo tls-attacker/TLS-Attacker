@@ -82,13 +82,19 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Send Action:\n");
+        StringBuilder sb;
+        if (isExecuted()) {
+            sb = new StringBuilder("Send Action:\n");
+        } else {
+            sb = new StringBuilder("Send Action: (not executed)\n");
+        }
         sb.append("\tMessages:");
         if (messages != null) {
             for (ProtocolMessage message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
+            sb.append("\n");
         } else {
             sb.append("null (no messages set)");
         }

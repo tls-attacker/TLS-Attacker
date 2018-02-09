@@ -23,8 +23,8 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
     }
 
     @Override
-    public TokenbindingMessagePreparator getPreparator(TokenBindingMessage message) {
-        return new TokenbindingMessagePreparator(tlsContext.getChooser(), message);
+    public TokenBindingMessagePreparator getPreparator(TokenBindingMessage message) {
+        return new TokenBindingMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override

@@ -49,9 +49,10 @@ public abstract class RecordCryptoUnit {
      * @return The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Record record, ProtocolVersion protocolVersion) {
-        byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getSequenceNumber().getValue().longValue());
+        byte[] seqNumber = ArrayConverter.longToUint64Bytes(record.getComputations().getSequenceNumber().getValue()
+                .longValue());
         byte[] contentType = { record.getContentType().getValue() };
-        int length = record.getNonMetaDataMaced().getValue().length;
+        int length = record.getComputations().getNonMetaDataMaced().getValue().length;
         byte[] byteLength = ArrayConverter.intToBytes(length, RecordByteLength.RECORD_LENGTH);
         byte[] version;
         if (!protocolVersion.isSSL()) {
