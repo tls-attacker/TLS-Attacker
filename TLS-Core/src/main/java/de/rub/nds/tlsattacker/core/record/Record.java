@@ -134,6 +134,8 @@ public class Record extends AbstractRecord {
 
     @Override
     public void prepareComputations() {
-        this.computations = new RecordCryptoComputations();
+        if (computations == null) {
+            this.computations = new RecordCryptoComputations();
+        }
     }
 }
