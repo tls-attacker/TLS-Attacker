@@ -129,6 +129,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         List<Record> records = new LinkedList<>();
 
         Record r = new Record();
+        r.prepareComputations();
         ModifiableByteArray padding = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
         padding.setModification(modifier);
@@ -142,6 +143,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         List<Record> records = new LinkedList<>();
 
         Record r = new Record();
+        r.prepareComputations();
         ModifiableByteArray mac = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1, 1, 1 }, 0);
         mac.setModification(modifier);
