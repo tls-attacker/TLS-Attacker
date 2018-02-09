@@ -58,6 +58,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
         padding.setModification(modifier);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         Record r = new Record();
+        r.prepareComputations();
         r.getComputations().setPadding(padding);
         SendAction sendAction = new SendAction(applicationMessage);
         List<AbstractRecord> recordList = new LinkedList<>();
