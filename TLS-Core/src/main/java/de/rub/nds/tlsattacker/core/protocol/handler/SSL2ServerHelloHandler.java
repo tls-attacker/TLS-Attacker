@@ -37,7 +37,7 @@ public class SSL2ServerHelloHandler extends HandshakeMessageHandler<SSL2ServerHe
 
     @Override
     public SSL2ServerHelloPreparator getPreparator(SSL2ServerHelloMessage message) {
-        return new SSL2ServerHelloPreparator(message, tlsContext.getChooser());
+        return new SSL2ServerHelloPreparator(tlsContext.getChooser(), message);
     }
 
     @Override

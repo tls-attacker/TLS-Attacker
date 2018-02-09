@@ -86,11 +86,26 @@ public class CertificateVerifyMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder(super.toString());
-        builder.append("  \nSignatureAndHashAlgorithm:").append(
-                ArrayConverter.bytesToHexString(signatureHashAlgorithm.getValue()));
-        builder.append("  \nSignature Length:").append(signatureLength.getValue());
-        builder.append("  \nSignature:").append(ArrayConverter.bytesToHexString(signature.getValue()));
+        StringBuilder builder = new StringBuilder();
+        builder.append("CertificateVerifyMessage:");
+        builder.append("\n  SignatureAndHashAlgorithm: ");
+        if (signatureHashAlgorithm != null && signatureHashAlgorithm.getValue() != null) {
+            builder.append(ArrayConverter.bytesToHexString(signatureHashAlgorithm.getValue()));
+        } else {
+            builder.append("null");
+        }
+        builder.append("\n  Signature Length: ");
+        if (signatureLength != null && signatureLength.getValue() != null) {
+            builder.append(signatureLength.getValue());
+        } else {
+            builder.append("null");
+        }
+        builder.append("\n  Signature: ");
+        if (signature != null && signature.getValue() != null) {
+            builder.append(ArrayConverter.bytesToHexString(signature.getValue()));
+        } else {
+            builder.append("null");
+        }
         return builder.toString();
     }
 

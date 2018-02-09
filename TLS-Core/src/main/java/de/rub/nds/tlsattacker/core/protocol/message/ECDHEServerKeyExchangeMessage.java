@@ -70,25 +70,36 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("ECDHEServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ");
-        sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
+        if (curveType != null && curveType.getValue() != null) {
+            sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
+        } else {
+            sb.append("null");
+        }
         sb.append("\n  Named Curve: ");
-        if (namedCurve != null) {
+        if (namedCurve != null && namedCurve.getValue() != null) {
             sb.append(NamedCurve.getNamedCurve(this.namedCurve.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+        if (getPublicKey() != null && getPublicKey().getValue() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+        } else {
+            sb.append("null");
+        }
         sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getSignatureAndHashAlgorithm() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null && getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+        } else {
+            sb.append("null");
         }
         sb.append("\n  Signature: ");
-        if (getSignature() != null) {
+        if (getSignature() != null && getSignature().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignature().getValue()));
         } else {
             sb.append("null");

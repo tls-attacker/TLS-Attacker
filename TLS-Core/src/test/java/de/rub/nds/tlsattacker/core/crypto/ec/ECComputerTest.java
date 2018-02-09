@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
-import static org.junit.Assert.assertTrue;
 import java.math.BigInteger;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 

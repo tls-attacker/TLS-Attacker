@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.ApplicationMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ public class ApplicationMessage extends ProtocolMessage {
     @ModifiableVariableProperty
     private ModifiableByteArray data;
 
-    public ApplicationMessage(byte[] dataConfig) {
+    public ApplicationMessage(Config tlsConfig, byte[] dataConfig) {
         super();
         this.dataConfig = dataConfig;
         this.protocolMessageType = ProtocolMessageType.APPLICATION_DATA;
@@ -72,9 +72,12 @@ public class ApplicationMessage extends ProtocolMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(toCompactString());
+        sb.append("ApplicationMessage:");
+        sb.append("\n  Data: ");
         if (data != null && data.getValue() != null) {
-            sb.append("\n  Data:").append(ArrayConverter.bytesToHexString(data.getValue()));
+            sb.append(ArrayConverter.bytesToHexString(data.getValue()));
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }
@@ -86,7 +89,7 @@ public class ApplicationMessage extends ProtocolMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new ApplicationHandler(context);
+        return new ApplicationMessageHandler(context);
     }
 
     @Override

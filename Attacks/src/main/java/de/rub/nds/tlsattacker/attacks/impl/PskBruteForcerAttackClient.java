@@ -14,41 +14,41 @@ import de.rub.nds.tlsattacker.attacks.bruteforce.GuessProviderFactory;
 import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
 import static de.rub.nds.tlsattacker.attacks.impl.Attacker.LOGGER;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import de.rub.nds.tlsattacker.core.state.State;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
-import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
-import java.security.NoSuchAlgorithmException;
-import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
-import java.util.Arrays;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
-import de.rub.nds.tlsattacker.core.util.LogLevel;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.record.Record;
+import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipherFactory;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
+import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
+import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -220,7 +220,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         ClientKeyExchangeMessage clientKeyExchangeMessage = (ClientKeyExchangeMessage) WorkflowTraceUtil
                 .getFirstReceivedMessage(HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         ClientKeyExchangeHandler handler = (ClientKeyExchangeHandler) clientKeyExchangeMessage.getHandler(tlsContext);
-        handler.getPreparator(clientKeyExchangeMessage).prepareAfterParse();
+        handler.getPreparator(clientKeyExchangeMessage).prepareAfterParse(false);
         tlsContext.setPreMasterSecret(clientKeyExchangeMessage.getComputations().getPremasterSecret().getValue());
         handler.adjustPremasterSecret(clientKeyExchangeMessage);
         handler.adjustMasterSecret(clientKeyExchangeMessage);
@@ -235,8 +235,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         RecordCipher recordCipher = RecordCipherFactory.getRecordCipher(state.getTlsContext(), keySet);
         RecordDecryptor dec = new RecordDecryptor(recordCipher, state.getTlsContext());
         dec.decrypt(encryptedRecord);
-        byte[] receivedVrfyData = Arrays.copyOfRange(encryptedRecord.getPlainRecordBytes().getValue(), 0,
-                controlValue.length);
+        byte[] receivedVrfyData = Arrays.copyOfRange(
+                encryptedRecord.getComputations().getPlainRecordBytes().getValue(), 0, controlValue.length);
         LOGGER.debug("Received Data " + ArrayConverter.bytesToHexString(receivedVrfyData));
         LOGGER.debug("Control Data " + ArrayConverter.bytesToHexString(controlValue));
         if (Arrays.equals(receivedVrfyData, controlValue)) {
@@ -247,7 +247,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
         }
     }
 
-    private byte[] computeControlValue(WorkflowTrace trace, TlsContext tlsContext) {
+    private byte[] computeControlValue(WorkflowTrace trace, TlsContext tlsContext) throws CryptoException {
         tlsContext.getDigest().reset();
         for (MessageAction messageAction : trace.getMessageActions()) {
             for (ProtocolMessage message : messageAction.getMessages()) {

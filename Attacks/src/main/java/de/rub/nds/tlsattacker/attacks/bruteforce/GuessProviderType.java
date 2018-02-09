@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.bruteforce;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public enum GuessProviderType {
     INCREMENTING,
     WORDLIST

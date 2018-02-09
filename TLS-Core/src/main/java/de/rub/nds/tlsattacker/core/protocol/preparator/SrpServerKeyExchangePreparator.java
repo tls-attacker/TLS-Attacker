@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -62,7 +63,12 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
         prepareSignatureAndHashAlgorithm(msg);
         prepareClientRandom(msg);
         prepareServerRandom(msg);
-        signature = generateSignature(selectedSignatureHashAlgo);
+        signature = new byte[0];
+        try {
+            signature = generateSignature(selectedSignatureHashAlgo);
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not generate Signature! Using empty one instead!", E);
+        }
         prepareSignature(msg);
         prepareSignatureLength(msg);
     }
@@ -127,6 +133,10 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
             return paddingArray;
         }
         int paddingByteLength = modulusByteLength - paddingArray.length;
+        if (paddingByteLength < 0) {
+            LOGGER.warn("Padding ByteLength negative, Using Zero instead");
+            paddingByteLength = 0;
+        }
         padding = new byte[paddingByteLength];
         return ArrayConverter.concatenate(padding, paddingArray);
     }
@@ -144,7 +154,7 @@ public class SrpServerKeyExchangePreparator extends ServerKeyExchangePreparator<
 
     }
 
-    private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) {
+    private byte[] generateSignature(SignatureAndHashAlgorithm algorithm) throws CryptoException {
         return SignatureCalculator.generateSignature(algorithm, chooser, generateToBeSigned());
     }
 

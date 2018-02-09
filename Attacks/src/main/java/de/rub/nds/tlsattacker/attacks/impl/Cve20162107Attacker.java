@@ -139,10 +139,11 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255 };
         Record r = new Record();
+        r.prepareComputations();
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
         plainData.setModification(modifier);
-        r.setPlainRecordBytes(plainData);
+        r.getComputations().setPlainRecordBytes(plainData);
         return r;
     }
 

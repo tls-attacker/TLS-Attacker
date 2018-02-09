@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -57,7 +56,7 @@ public class CustomECPrivateKey implements ECPrivateKey {
             ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
             return ecParameters;
         } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
-            throw new CryptoException("Could not generate ECParameterSpec", ex);
+            throw new UnsupportedOperationException("Could not generate ECParameterSpec", ex);
         }
     }
 

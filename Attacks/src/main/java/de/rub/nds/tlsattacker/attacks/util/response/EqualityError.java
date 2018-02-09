@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.util.response;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public enum EqualityError {
     NONE,
     SOCKET_EXCEPTION,

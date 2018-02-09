@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
 public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator<SSL2ServerHelloMessage> {
 
-    public SSL2ServerHelloPreparator(SSL2ServerHelloMessage message, Chooser chooser) {
+    public SSL2ServerHelloPreparator(Chooser chooser, SSL2ServerHelloMessage message) {
         super(chooser, message);
     }
 

@@ -9,12 +9,11 @@
 package de.rub.nds.tlsattacker.core.config.filter;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RemoveDefaultValues implements ConfigDisplayFilter {
 

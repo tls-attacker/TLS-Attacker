@@ -216,7 +216,7 @@ public class WorkflowTraceUtil {
         return false;
     }
 
-    private static List<AbstractRecord> getAllReceivedRecords(WorkflowTrace trace) {
+    public static List<AbstractRecord> getAllReceivedRecords(WorkflowTrace trace) {
         List<AbstractRecord> receivedRecords = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
             receivedRecords.addAll(action.getReceivedRecords());

@@ -69,6 +69,7 @@
         <module>TLS-Server</module>
         <module>TLS-Mitm</module>
         <module>Attacks</module>
+        <module>TLS-Forensics</module>
         <module>TraceTool</module>
     </modules>
     <dependencies>
@@ -136,6 +137,11 @@
             <groupId>de.rub.nds</groupId>
             <artifactId>ModifiableVariable</artifactId>
             <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.10</version>
         </dependency>
     </dependencies>
     <build>
@@ -303,6 +309,9 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -370,7 +379,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>2.10.4</version>
+                <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                </configuration>
             </plugin>
         </plugins>
     </reporting>

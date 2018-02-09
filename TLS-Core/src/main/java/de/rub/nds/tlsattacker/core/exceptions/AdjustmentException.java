@@ -21,4 +21,11 @@ public class AdjustmentException extends RuntimeException {
         super(message, cause);
     }
 
+    public AdjustmentException(Throwable cause) {
+        super(cause);
+    }
+
+    public AdjustmentException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

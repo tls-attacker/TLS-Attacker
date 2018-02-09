@@ -36,7 +36,7 @@ public class SSL2ServerVerifyHandler extends HandshakeMessageHandler<SSL2ServerV
 
     @Override
     public ProtocolMessagePreparator<SSL2ServerVerifyMessage> getPreparator(SSL2ServerVerifyMessage message) {
-        return new SSL2ServerVerifyPreparator(message, tlsContext.getChooser());
+        return new SSL2ServerVerifyPreparator(tlsContext.getChooser(), message);
     }
 
     @Override

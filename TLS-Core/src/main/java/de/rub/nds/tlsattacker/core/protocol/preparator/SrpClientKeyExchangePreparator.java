@@ -216,19 +216,17 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
     }
 
     @Override
-    public void prepareAfterParse() {
-        BigInteger privateKey = chooser.getSRPServerPrivateKey();
-        LOGGER.debug("Server Privat Key"
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(privateKey)));
-        BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
-        LOGGER.debug("ClientPublicKey"
-                + ArrayConverter.bytesToHexString(ArrayConverter.bigIntegerToByteArray(clientPublic)));
-        msg.prepareComputations();
-        premasterSecret = calculatePremasterSecretServer(chooser.getSRPModulus(), chooser.getSRPGenerator(),
-                privateKey, chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPServerSalt(),
-                chooser.getSRPIdentity(), chooser.getSRPPassword());
-        preparePremasterSecret(msg);
-        prepareClientRandom(msg);
+    public void prepareAfterParse(boolean clientMode) {
+        if (!clientMode) {
+            BigInteger privateKey = chooser.getSRPServerPrivateKey();
+            BigInteger clientPublic = new BigInteger(1, msg.getPublicKey().getValue());
+            msg.prepareComputations();
+            premasterSecret = calculatePremasterSecretServer(chooser.getSRPModulus(), chooser.getSRPGenerator(),
+                    privateKey, chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPServerSalt(),
+                    chooser.getSRPIdentity(), chooser.getSRPPassword());
+            preparePremasterSecret(msg);
+            prepareClientRandom(msg);
+        }
     }
 
     private void setComputationPrivateKey(SrpClientKeyExchangeMessage msg) {

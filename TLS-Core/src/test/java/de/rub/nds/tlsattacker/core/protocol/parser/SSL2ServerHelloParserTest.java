@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-import static de.rub.nds.tlsattacker.core.protocol.parser.Parser.LOGGER;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;

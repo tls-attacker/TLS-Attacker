@@ -33,6 +33,7 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
             LOGGER.debug("Parsed the srtp mki " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
         } else {
             LOGGER.debug("Parsed no srtp mki");
+            msg.setSrtpMki(new byte[0]);
         }
 
     }

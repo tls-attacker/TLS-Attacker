@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +21,8 @@ public class RecordCipherFactory {
     private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);
 
     public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
-        if (context.getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
-            LOGGER.warn("Cipher not implemented. Using Null Cipher instead");
+        if (context.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
+            LOGGER.warn("Cipher " + cipherSuite.name() + " not implemented. Using Null Cipher instead");
             return new RecordNullCipher(context);
         } else {
             CipherType type = AlgorithmResolver.getCipherType(cipherSuite);

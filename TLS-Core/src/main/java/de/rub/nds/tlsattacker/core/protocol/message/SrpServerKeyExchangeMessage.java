@@ -17,8 +17,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.SrpServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.SRPServerComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
@@ -153,31 +153,34 @@ public class SrpServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("SrpServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
-        if (modulus != null) {
+        if (modulus != null && modulus.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
-        if (generator != null) {
+        if (generator != null && generator.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        if (getPublicKey() != null) {
+        if (getPublicKey() != null && getPublicKey().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature and Hash Algorithm: ");
-        if (this.getSignatureAndHashAlgorithm() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null && getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+        } else {
+            sb.append("null");
         }
         sb.append("\n  Signature: ");
-        if (this.getSignature() != null) {
+        if (this.getSignature() != null && getSignature().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");

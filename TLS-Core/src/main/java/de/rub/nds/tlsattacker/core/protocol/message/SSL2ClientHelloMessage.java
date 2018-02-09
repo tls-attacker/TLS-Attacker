@@ -145,20 +145,37 @@ public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("SSL2ClientHelloMessage:");
+        sb.append("\n  Protocol Version: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            sb.append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Type: ");
+        if (getType() != null && getType().getValue() != null) {
+            sb.append(getType().getValue());
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Supported CipherSuites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append("\n Supported CipherSuites: ").append(
-                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Challange: ");
         if (getChallenge() != null && getChallenge().getValue() != null) {
-            sb.append("\n Challange: ").append(ArrayConverter.bytesToHexString(getChallenge().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getChallenge().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  SessionID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append("\n SessionID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }

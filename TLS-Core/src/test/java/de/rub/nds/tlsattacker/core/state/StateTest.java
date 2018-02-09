@@ -134,10 +134,10 @@ public class StateTest {
         TlsContext origCtx = state.getTlsContext();
         TlsContext newCtx = new TlsContext();
         newCtx.setConnection(origCtx.getConnection());
-        origCtx.setSelectedCipherSuite(CipherSuite.TLS_UNKNOWN_CIPHER);
+        origCtx.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
-        assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_UNKNOWN_CIPHER));
+        assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
         state.replaceTlsContext(newCtx);
         assertNotSame(state.getTlsContext(), origCtx);
         assertThat(state.getTlsContext().getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));
@@ -154,10 +154,10 @@ public class StateTest {
         TlsContext origCtx1 = state.getTlsContext(conAlias1);
         TlsContext newCtx = new TlsContext();
         newCtx.setConnection(origCtx1.getConnection());
-        origCtx1.setSelectedCipherSuite(CipherSuite.TLS_UNKNOWN_CIPHER);
+        origCtx1.setSelectedCipherSuite(CipherSuite.TLS_FALLBACK_SCSV);
         newCtx.setSelectedCipherSuite(CipherSuite.TLS_AES_128_CCM_SHA256);
 
-        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_UNKNOWN_CIPHER));
+        assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_FALLBACK_SCSV));
         state.replaceTlsContext(newCtx);
         assertNotSame(state.getTlsContext(conAlias1), origCtx1);
         assertThat(state.getTlsContext(conAlias1).getSelectedCipherSuite(), equalTo(CipherSuite.TLS_AES_128_CCM_SHA256));

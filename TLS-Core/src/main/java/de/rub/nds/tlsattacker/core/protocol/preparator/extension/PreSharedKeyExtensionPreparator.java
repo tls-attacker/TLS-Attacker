@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
@@ -171,9 +172,8 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
                 {
                     chooser.getContext().setEarlyDataPsk(psk);
                 }
-            } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
-                LOGGER.error("Error in binder calculation");
-                throw new WorkflowExecutionException(ex.toString());
+            } catch (NoSuchAlgorithmException | InvalidKeyException | CryptoException ex) {
+                throw new PreparationException("Could not calculate Binders", ex);
             }
         }
     }

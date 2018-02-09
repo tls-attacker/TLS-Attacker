@@ -8,16 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDhClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 @XmlRootElement
 public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessage {
@@ -39,13 +39,18 @@ public class PskEcDhClientKeyExchangeMessage extends ECDHClientKeyExchangeMessag
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        if (identityLength != null) {
-            sb.append("\nPSKIdentity Length:");
+        sb.append("PskEcDhClientKeyExchangeMessage:");
+        sb.append("\n  PSKIdentity Length: ");
+        if (identityLength != null && identityLength.getValue() != null) {
             sb.append(identityLength.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  PSKIdentity: ");
         if (identity != null) {
-            sb.append("\nPSKIdentity:");
             sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }
