@@ -8,13 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
-import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
-
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator<SSL2ServerHelloMessage> {
+public class SSL2ServerVerifyPreparator extends ProtocolMessagePreparator<SSL2ServerVerifyMessage> {
 
-    public SSL2ServerHelloPreparator(Chooser chooser, SSL2ServerHelloMessage message) {
+    public SSL2ServerVerifyPreparator(Chooser chooser, SSL2ServerVerifyMessage message) {
         super(chooser, message);
     }
 

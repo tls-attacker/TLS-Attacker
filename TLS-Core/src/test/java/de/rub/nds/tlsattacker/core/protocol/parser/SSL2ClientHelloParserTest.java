@@ -31,8 +31,8 @@ public class SSL2ClientHelloParserTest {
                 .asList(new Object[][] { {
                         ArrayConverter
                                 .hexStringToByteArray("802b0100020012000000100100800700c0030080060040020080040080bc4c7de14f6fc8bff4428f159fb24f2b"),
-                        ProtocolVersion.SSL2, 0x802B, HandshakeMessageType.CLIENT_HELLO,
-                        ProtocolVersion.SSL2.getValue(), 18/* 0x0012 */, 0, 16/* 0x0010 */,
+                        ProtocolVersion.SSL2, 43, HandshakeMessageType.CLIENT_HELLO, ProtocolVersion.SSL2.getValue(),
+                        18/* 0x0012 */, 0, 16/* 0x0010 */,
                         ArrayConverter.hexStringToByteArray("0100800700c0030080060040020080040080"), new byte[0],
                         ArrayConverter.hexStringToByteArray("bc4c7de14f6fc8bff4428f159fb24f2b") } });
     }

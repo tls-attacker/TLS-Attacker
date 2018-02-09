@@ -52,6 +52,8 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
             if (!canConnect()) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
                 return null;
+            } else {
+                LOGGER.debug("Can connect to server. Running vulnerability scan");
             }
         }
         return isVulnerable();

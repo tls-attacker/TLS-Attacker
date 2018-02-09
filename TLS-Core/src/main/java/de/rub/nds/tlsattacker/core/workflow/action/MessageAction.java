@@ -40,7 +40,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessa
 import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientMasterKeyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
@@ -86,6 +88,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = ChangeCipherSpecMessage.class, name = "ChangeCipherSpec"),
             @XmlElement(type = SSL2ClientHelloMessage.class, name = "SSL2ClientHello"),
             @XmlElement(type = SSL2ServerHelloMessage.class, name = "SSL2ServerHello"),
+            @XmlElement(type = SSL2ClientMasterKeyMessage.class, name = "SSL2ClientMasterKey"),
+            @XmlElement(type = SSL2ServerVerifyMessage.class, name = "SSL2ServerVerify"),
             @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             @XmlElement(type = UnknownHandshakeMessage.class, name = "UnknownHandshakeMessage"),
             @XmlElement(type = HelloRequestMessage.class, name = "HelloRequest"),

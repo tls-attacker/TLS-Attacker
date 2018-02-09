@@ -9,27 +9,22 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.SSL2ClientHelloHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
+@SuppressWarnings("serial")
 @XmlRootElement
-public class SSL2ClientHelloMessage extends ProtocolMessage {
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger messageLength;
-
-    @ModifiableVariableProperty
-    private ModifiableByte type;
+public class SSL2ClientHelloMessage extends SSL2HandshakeMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray protocolVersion;
@@ -52,46 +47,16 @@ public class SSL2ClientHelloMessage extends ProtocolMessage {
     private ModifiableByteArray challenge;
 
     public SSL2ClientHelloMessage() {
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        super(HandshakeMessageType.SSL2_CLIENT_HELLO);
     }
 
     public SSL2ClientHelloMessage(Config config) {
-        super();
-        this.protocolMessageType = ProtocolMessageType.HANDSHAKE;
+        this();
     }
 
     @Override
     public String toCompactString() {
         return "SSL2 ClientHello Message";
-    }
-
-    @Override
-    public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new SSL2ClientHelloHandler(context);
-    }
-
-    public ModifiableInteger getMessageLength() {
-        return messageLength;
-    }
-
-    public void setMessageLength(ModifiableInteger messageLength) {
-        this.messageLength = messageLength;
-    }
-
-    public void setMessageLength(Integer messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
-    }
-
-    public ModifiableByte getType() {
-        return type;
-    }
-
-    public void setType(ModifiableByte type) {
-        this.type = type;
-    }
-
-    public void setType(byte type) {
-        this.type = ModifiableVariableFactory.safelySetValue(this.type, type);
     }
 
     public ModifiableByteArray getProtocolVersion() {
@@ -213,5 +178,10 @@ public class SSL2ClientHelloMessage extends ProtocolMessage {
             sb.append("null");
         }
         return sb.toString();
+    }
+
+    @Override
+    public SSL2ClientHelloHandler getHandler(TlsContext context) {
+        return new SSL2ClientHelloHandler(context);
     }
 }
