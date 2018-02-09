@@ -26,8 +26,6 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
 public class InvalidCurveAttackConfig extends AttackConfig {
 
@@ -49,7 +47,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     private int curveFieldSize = 32;
 
     @Parameter(names = "-protocol_flows", description = "Number of Protocol flows")
-    private int protocolFlows = 5;
+    private int protocolFlows = 15;
 
     // These are for scanning only
     @Parameter(names = "-premaster_secret", description = "Premaster Secret String (use 0x at the beginning for a hex value)", hidden = true, converter = BigIntegerConverter.class)
@@ -93,14 +91,6 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
-        if (delegate.getLogLevel() != Level.ALL && delegate.getLogLevel() != Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.ERROR);
-        }
-
-        if (delegate.getLogLevel() == Level.TRACE) {
-            Configurator.setAllLevels("de.rub.nds.tlsattacker.core", Level.TRACE);
-        }
-
     }
 
     public BigInteger getPremasterSecret() {

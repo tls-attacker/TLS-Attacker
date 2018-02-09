@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -71,6 +70,13 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             preparator.prepare();
             preparator.afterPrepare();
         }
+
+        try {
+            adjustTLSContext(message);
+        } catch (AdjustmentException E) {
+            LOGGER.warn("Could not adjust TLSContext");
+            LOGGER.debug(E);
+        }
         Serializer serializer = getSerializer(message);
         byte[] completeMessage = serializer.serialize();
         message.setCompleteResultingMessage(completeMessage);
@@ -78,12 +84,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             if (((HandshakeMessage) message).getIncludeInDigest()) {
                 tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
             }
-        }
-        try {
-            adjustTLSContext(message);
-        } catch (AdjustmentException E) {
-            LOGGER.warn("Could not adjust TLSContext");
-            LOGGER.debug(E);
         }
         return message.getCompleteResultingMessage().getValue();
     }
@@ -141,7 +141,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
 
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);
-        prep.prepareAfterParse();
+        prep.prepareAfterParse(tlsContext.isReversePrepareAfterParse());
     }
 
     @Override

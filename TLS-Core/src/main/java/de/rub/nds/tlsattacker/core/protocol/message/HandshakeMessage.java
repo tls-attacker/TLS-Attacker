@@ -161,7 +161,11 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         if (this.extensions == null) {
             extensions = new LinkedList<>();
         }
-        this.extensions.add(extension);
+        if (extension != null) {
+            this.extensions.add(extension);
+        } else {
+            LOGGER.error("Cannot add null Extension");
+        }
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
@@ -274,21 +278,37 @@ public abstract class HandshakeMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("HandshakeMessage:");
+        sb.append("\n  Type: ");
         if (type != null && type.getValue() != null) {
-            sb.append("\n  Type: ").append(type.getValue());
+            sb.append(type.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Length: ");
         if (length != null && length.getValue() != null) {
-            sb.append("\n  Length: ").append(length.getValue());
+            sb.append(length.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  message_seq: ");
         if (messageSeq != null && messageSeq.getValue() != null) {
-            sb.append("\n  message_seq: ").append(messageSeq.getValue());
+            sb.append(messageSeq.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  fragment_offset: ");
         if (fragmentOffset != null && fragmentOffset.getValue() != null) {
-            sb.append("\n  fragment_offset: ").append(fragmentOffset.getValue());
+            sb.append(fragmentOffset.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  fragment_length: ");
         if (fragmentLength != null && fragmentLength.getValue() != null) {
-            sb.append("\n  fragment_length: ").append(fragmentLength.getValue());
+            sb.append(fragmentLength.getValue());
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }
@@ -303,7 +323,9 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (getExtensions() != null) {
             for (ExtensionMessage em : getExtensions()) {
-                holders.add(em);
+                if (em != null) {
+                    holders.addAll(em.getAllModifiableVariableHolders());
+                }
             }
         }
         return holders;

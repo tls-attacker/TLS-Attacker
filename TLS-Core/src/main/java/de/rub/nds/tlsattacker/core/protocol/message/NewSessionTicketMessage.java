@@ -18,10 +18,10 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.NewSessionTicketHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
-import javax.xml.bind.annotation.XmlRootElement;
 import de.rub.nds.tlsattacker.core.state.SessionTicket;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class NewSessionTicketMessage extends HandshakeMessage {
@@ -37,16 +37,24 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     public NewSessionTicketMessage() {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
+        ticket = new SessionTicket();
     }
 
     public NewSessionTicketMessage(boolean includeInDigest) {
         super(HandshakeMessageType.NEW_SESSION_TICKET);
         IS_INCLUDE_IN_DIGEST_DEFAULT = includeInDigest;
+        ticket = new SessionTicket();
+    }
+
+    public NewSessionTicketMessage(Config tlsConfig) {
+        super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
+        ticket = new SessionTicket();
     }
 
     public NewSessionTicketMessage(Config tlsConfig, boolean includeInDigest) {
         super(tlsConfig, HandshakeMessageType.NEW_SESSION_TICKET);
         IS_INCLUDE_IN_DIGEST_DEFAULT = includeInDigest;
+        ticket = new SessionTicket();
     }
 
     public ModifiableLong getTicketLifetimeHint() {
@@ -85,21 +93,20 @@ public class NewSessionTicketMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\nNewSessionTicket message:\n  TicketLifeTimeHint: ");
-        if (ticketLifetimeHint != null) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("NewSessionTicketMessage:");
+        sb.append("\n  TicketLifeTimeHint: ");
+        if (ticketLifetimeHint != null && ticketLifetimeHint.getValue() != null) {
             sb.append(ticketLifetimeHint.getValue());
         } else {
             sb.append("null");
         }
-
         sb.append("\n  TicketLength: ");
-        if (ticketLength != null) {
+        if (ticketLength != null && ticketLength.getValue() != null) {
             sb.append(ticketLength.getValue());
         } else {
             sb.append("null");
         }
-
         sb.append("\n  Ticket: ");
         if (ticket != null) {
             sb.append(ticket.toString());

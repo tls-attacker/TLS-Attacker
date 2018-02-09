@@ -34,7 +34,6 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExte
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
@@ -131,9 +130,6 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
             addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
         }
-        if (tlsConfig.isAddPreSharedKeyExtension()) {
-            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
-        }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
         }
@@ -200,6 +196,10 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddCertificateStatusRequestV2Extension()) {
             addExtension(new CertificateStatusRequestV2ExtensionMessage());
         }
+        if (tlsConfig.isAddPreSharedKeyExtension()) {
+            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
+        }
+        // In TLS 1.3, the PSK ext has to be the last ClientHello extension
     }
 
     public ModifiableInteger getCompressionLength() {
@@ -276,33 +276,51 @@ public class ClientHelloMessage extends HelloMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("ClientHelloMessage:");
+        sb.append("\n  Protocol Version: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            sb.append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Client Unix Time: ");
         if (getUnixTime() != null && getUnixTime().getValue() != null) {
-            sb.append("\n  Client Unix Time: ");
             sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Client Random: ");
         if (getRandom() != null && getRandom().getValue() != null) {
-            sb.append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Session ID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Supported Cipher Suites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append("\n  Supported Cipher Suites: ").append(
-                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Supported Compression Methods: ");
         if (getCompressions() != null && getCompressions().getValue() != null) {
-            sb.append("\n  Supported Compression Methods: ")
-                    .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
+            sb.append(ArrayConverter.bytesToHexString(getCompressions().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Extensions: ");
         if (getExtensions() != null) {
             for (ExtensionMessage extension : getExtensions()) {
                 sb.append(extension.toString()).append("\n");
             }
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }

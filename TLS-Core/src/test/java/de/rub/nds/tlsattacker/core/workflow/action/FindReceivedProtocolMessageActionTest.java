@@ -74,6 +74,8 @@ public class FindReceivedProtocolMessageActionTest {
 
     /**
      * Test of execute method, of class FindReceivedProtocolMessageAction.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     @Category(IntegrationTests.class)

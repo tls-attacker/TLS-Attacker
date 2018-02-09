@@ -37,7 +37,7 @@ import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateDelegate extends Delegate {
 
-    @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate. In case TLS Client is used, the client sends ClientCertificate in the TLS handshake. Use keyword empty to enforce an empty ClientCertificate message.")
+    @Parameter(names = "-keystore", description = "Java Key Store (JKS) file to use as a certificate")
     private String keystore = null;
 
     @Parameter(names = "-password", description = "Java Key Store (JKS) file password")
@@ -127,14 +127,18 @@ public class CertificateDelegate extends Delegate {
     }
 
     private void applyDHParameters(Config config, DHPublicKeyParameters dhParameters) {
-        config.setDefaultDhModulus(dhParameters.getParameters().getP());
-        config.setDefaultDhGenerator(dhParameters.getParameters().getG());
+        config.setDefaultServerDhModulus(dhParameters.getParameters().getP());
+        config.setDefaultServerDhGenerator(dhParameters.getParameters().getG());
+        config.setDefaultClientDhModulus(dhParameters.getParameters().getP());
+        config.setDefaultClientDhGenerator(dhParameters.getParameters().getG());
         config.setDefaultClientDhPublicKey(dhParameters.getY());
         config.setDefaultServerDhPublicKey(dhParameters.getY());
     }
 
     private void applyECParameters(Config config, ECPublicKeyParameters ecParameters, BigInteger privateKey) {
         config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
+                .getCurve()));
+        config.setDefaultEcCertificateCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
                 .getCurve()));
         CustomECPoint publicKey = new CustomECPoint(ecParameters.getQ().getRawXCoord().toBigInteger(), ecParameters
                 .getQ().getRawYCoord().toBigInteger());
@@ -145,7 +149,8 @@ public class CertificateDelegate extends Delegate {
     }
 
     private void applyRSAParameters(Config config, BigInteger modulus, BigInteger publicKey, BigInteger privateKey) {
-        config.setDefaultRSAModulus(modulus);
+        config.setDefaultServerRSAModulus(modulus);
+        config.setDefaultClientRSAModulus(modulus);
         config.setDefaultClientRSAPublicKey(publicKey);
         config.setDefaultServerRSAPublicKey(publicKey);
         config.setDefaultClientRSAPrivateKey(privateKey);

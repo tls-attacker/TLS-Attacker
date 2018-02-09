@@ -8,17 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.AES;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.CAMELLIA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES40;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DESede;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.FORTEZZA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.IDEA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.NULL;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC2;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC4;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.SEED;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -158,9 +147,8 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECDH_ECNRA;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a KeyExchangeAlgorithm");
         }
         throw new UnsupportedOperationException("The key exchange algorithm in " + cipherSuite.toString()
@@ -171,7 +159,7 @@ public class AlgorithmResolver {
      * Depending on the provided cipher suite, the server needs to be
      * initialized with proper public key(s). Depending on the cipher suite,
      * there are possibly more than one cipher suites needed.
-     * 
+     *
      * This function returns a list of public key algorithms needed when running
      * a server with a cipher suite.
      *
@@ -251,9 +239,9 @@ public class AlgorithmResolver {
             return CipherAlgorithm.ChaCha20Poly1305;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name() + " does not specify a Cipher");
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
+                    + " does not specify a Cipher");
         }
         throw new UnsupportedOperationException("The cipher algorithm in " + cipherSuite + " is not supported yet.");
     }
@@ -265,33 +253,7 @@ public class AlgorithmResolver {
      * @return The BulkCipherAlgorithm of the Cipher
      */
     public static BulkCipherAlgorithm getBulkCipherAlgorithm(CipherSuite cipherSuite) {
-        String cipher = cipherSuite.toString().toUpperCase();
-        if (cipher.contains("3DES_EDE")) {
-            return DESede;
-        } else if (cipher.contains("AES")) {
-            return AES;
-        } else if (cipher.contains("RC4")) {
-            return RC4;
-        } else if (cipher.contains("RC2")) {
-            return RC2; // Tode add export rc2
-        } else if (cipher.contains("WITH_NULL")) {
-            return NULL;
-        } else if (cipher.contains("IDEA")) {
-            return IDEA;
-        } else if (cipher.contains("DES40")) {
-            return DES40;
-        } else if (cipher.contains("DES")) {
-            return DES;
-        } else if (cipher.contains("WITH_FORTEZZA")) {
-            return FORTEZZA;
-        } else if (cipher.contains("CAMELLIA")) {
-            return CAMELLIA;
-        } else if (cipher.contains("SEED")) {
-            return SEED;
-        } else if (cipher.contains("ARIA")) {
-            return SEED;
-        }
-        throw new UnsupportedOperationException("The cipher algorithm from " + cipherSuite + " is not supported yet.");
+        return BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
     }
 
     /**
@@ -311,9 +273,8 @@ public class AlgorithmResolver {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a CipherType");
         }
         throw new UnsupportedOperationException("Cipher suite " + cipherSuite + " is not supported yet.");
@@ -352,9 +313,8 @@ public class AlgorithmResolver {
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
-            throw new IllegalArgumentException("The CipherSuite:" + cipherSuite.name()
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
+            throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a MAC-Algorithm");
         }
         if (result != null) {
@@ -378,8 +338,9 @@ public class AlgorithmResolver {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);
             return result;
         } else {
-            throw new UnsupportedOperationException("The HKDF algorithm for cipher suite " + cipherSuite
-                    + " is not supported yet");
+            LOGGER.warn("The HKDF algorithm for cipher suite " + cipherSuite
+                    + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
+            return HKDFAlgorithm.TLS_HKDF_SHA256;
         }
     }
 

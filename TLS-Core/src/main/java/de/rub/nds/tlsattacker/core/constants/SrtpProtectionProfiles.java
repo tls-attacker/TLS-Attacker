@@ -8,10 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * RFC5764
@@ -25,6 +28,8 @@ public enum SrtpProtectionProfiles {
     private final byte[] srtpProtectionProfiles;
     private static final Map<Integer, SrtpProtectionProfiles> MAP;
 
+    public static Logger LOGGER = LogManager.getLogger(SrtpProtectionProfiles.class);
+
     private SrtpProtectionProfiles(byte[] value) {
         this.srtpProtectionProfiles = value;
     }
@@ -32,7 +37,7 @@ public enum SrtpProtectionProfiles {
     static {
         MAP = new HashMap<>();
         for (SrtpProtectionProfiles c : SrtpProtectionProfiles.values()) {
-            MAP.put(valueToInt(c.srtpProtectionProfiles), c);
+            MAP.put(ArrayConverter.bytesToInt(c.srtpProtectionProfiles), c);
         }
     }
 
@@ -41,21 +46,21 @@ public enum SrtpProtectionProfiles {
     }
 
     public static SrtpProtectionProfiles getProfileByType(byte[] value) {
-        return MAP.get(valueToInt(value));
+        return MAP.get(ArrayConverter.bytesToInt(value));
     }
 
     public static List<SrtpProtectionProfiles> getProfilesAsArrayList(byte[] value) {
-        List<SrtpProtectionProfiles> profileList = new ArrayList<>(value.length / 2);
+        List<SrtpProtectionProfiles> profileList = new ArrayList<>();
 
         for (int i = 0; i < value.length; i += 2) {
-            profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[] { value[i], value[i + 1] }));
+            if (value.length > i) {
+                profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[] { value[i], value[i + 1] }));
+            } else {
+                LOGGER.warn("value cannot be converted into an SrtpProtectionProfile - not enough bytes left");
+            }
         }
 
         return profileList;
-    }
-
-    private static int valueToInt(byte[] value) {
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
     public byte getMinor() {

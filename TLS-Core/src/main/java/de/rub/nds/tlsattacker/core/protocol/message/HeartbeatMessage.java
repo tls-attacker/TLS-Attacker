@@ -17,7 +17,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.HeartbeatMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -98,25 +98,28 @@ public class HeartbeatMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("HeartbeatMessage:");
+        sb.append("\n  Type: ");
         if (heartbeatMessageType != null && heartbeatMessageType.getValue() != null) {
-            sb.append("\nHeartbeat message:\n  Type: ");
             sb.append(HeartbeatMessageType.getHeartbeatMessageType(heartbeatMessageType.getValue()));
+        } else {
+            sb.append("null");
         }
         sb.append("\n  Payload Length: ");
-        if (payloadLength != null) {
+        if (payloadLength != null && payloadLength.getValue() != null) {
             sb.append(payloadLength.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  Payload: ");
-        if (payload != null) {
+        if (payload != null && payload.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(payload.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Padding: ");
-        if (padding != null) {
+        if (padding != null && padding.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(padding.getValue()));
         } else {
             sb.append("null");
@@ -131,6 +134,6 @@ public class HeartbeatMessage extends ProtocolMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new HeartbeatHandler(context);
+        return new HeartbeatMessageHandler(context);
     }
 }

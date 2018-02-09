@@ -43,11 +43,11 @@ public class PrintSecretsAction extends ConnectionBoundAction {
             sb.append("\n  ServerRsaPublicKey (chooser): ");
             sb.append(ctx.getChooser().getServerRSAPublicKey());
         }
-        if (ctx.getChooser().getRsaModulus() == null) {
+        if (ctx.getChooser().getServerRsaModulus() == null) {
             sb.append("\n  ServerRsaModulus(chooser): null");
         } else {
             sb.append("\n  ServerRsaModulus (chooser): ");
-            sb.append(toIndentedString(ArrayConverter.bigIntegerToByteArray(ctx.getChooser().getRsaModulus())));
+            sb.append(toIndentedString(ArrayConverter.bigIntegerToByteArray(ctx.getChooser().getServerRsaModulus())));
         }
 
         sb.append("\n\n  (Handshake) ");

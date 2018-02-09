@@ -25,8 +25,8 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -47,7 +47,6 @@ import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayer;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
-import static de.rub.nds.tlsattacker.core.state.State.LOGGER;
 import de.rub.nds.tlsattacker.core.state.http.HttpContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.core.workflow.chooser.ChooserFactory;
@@ -300,9 +299,13 @@ public class TlsContext {
      */
     private List<AuthzDataFormat> serverAuthzDataFormatList;
 
-    private BigInteger dhGenerator;
+    private BigInteger serverDhGenerator;
 
-    private BigInteger dhModulus;
+    private BigInteger serverDhModulus;
+
+    private BigInteger clientDhGenerator;
+
+    private BigInteger clientDhModulus;
 
     private BigInteger serverDhPrivateKey;
 
@@ -346,6 +349,8 @@ public class TlsContext {
 
     private NamedCurve selectedCurve;
 
+    private NamedCurve ecCertificateCurve;
+
     private CustomECPoint clientEcPublicKey;
 
     private CustomECPoint serverEcPublicKey;
@@ -354,7 +359,9 @@ public class TlsContext {
 
     private BigInteger clientEcPrivateKey;
 
-    private BigInteger rsaModulus;
+    private BigInteger clientRsaModulus;
+
+    private BigInteger serverRsaModulus;
 
     private BigInteger serverRSAPublicKey;
 
@@ -499,6 +506,21 @@ public class TlsContext {
      */
     private String httpsCookieValue = null;
 
+    private boolean receivedTransportHandlerException = false;
+
+    /**
+     * Experimental flag for forensics and reparsing
+     */
+    private boolean reversePrepareAfterParse = false;
+
+    /**
+     * When running tls 1.3 as a server, when we activate decryption of client
+     * messages we need to set this flag to true. When this flag is active the
+     * server will try to parse the next record it receives as an unencrypted
+     * one, if its protocolmessage type is alert
+     */
+    private boolean tls13SoftDecryption = false;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -516,7 +538,7 @@ public class TlsContext {
         RunningModeType mode = config.getDefaulRunningMode();
         if (null == mode) {
             throw new ConfigurationException("Cannot create connection, running mode not set");
-        } else
+        } else {
             switch (mode) {
                 case CLIENT:
                     init(config, config.getDefaultClientConnection());
@@ -528,6 +550,7 @@ public class TlsContext {
                     throw new ConfigurationException("Cannot create connection for unknown running mode " + "'" + mode
                             + "'");
             }
+        }
     }
 
     public TlsContext(Config config, AliasedConnection connection) {
@@ -551,6 +574,22 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public boolean isTls13SoftDecryption() {
+        return tls13SoftDecryption;
+    }
+
+    public void setTls13SoftDecryption(boolean tls13SoftDecryption) {
+        this.tls13SoftDecryption = tls13SoftDecryption;
+    }
+
+    public boolean isReversePrepareAfterParse() {
+        return reversePrepareAfterParse;
+    }
+
+    public void setReversePrepareAfterParse(boolean reversePrepareAfterParse) {
+        this.reversePrepareAfterParse = reversePrepareAfterParse;
     }
 
     public LinkedList<ProtocolMessage> getMessageBuffer() {
@@ -646,12 +685,20 @@ public class TlsContext {
         this.clientSupportedProtocolVersions = new ArrayList(Arrays.asList(clientSupportedProtocolVersions));
     }
 
-    public BigInteger getRsaModulus() {
-        return rsaModulus;
+    public BigInteger getClientRsaModulus() {
+        return clientRsaModulus;
     }
 
-    public void setRsaModulus(BigInteger rsaModulus) {
-        this.rsaModulus = rsaModulus;
+    public void setClientRsaModulus(BigInteger clientRsaModulus) {
+        this.clientRsaModulus = clientRsaModulus;
+    }
+
+    public BigInteger getServerRsaModulus() {
+        return serverRsaModulus;
+    }
+
+    public void setServerRsaModulus(BigInteger serverRsaModulus) {
+        this.serverRsaModulus = serverRsaModulus;
     }
 
     public BigInteger getServerRSAPublicKey() {
@@ -838,20 +885,20 @@ public class TlsContext {
         this.srpIdentity = srpIdentity;
     }
 
-    public BigInteger getDhGenerator() {
-        return dhGenerator;
+    public BigInteger getServerDhGenerator() {
+        return serverDhGenerator;
     }
 
-    public void setDhGenerator(BigInteger dhGenerator) {
-        this.dhGenerator = dhGenerator;
+    public void setServerDhGenerator(BigInteger dhGenerator) {
+        this.serverDhGenerator = dhGenerator;
     }
 
-    public BigInteger getDhModulus() {
-        return dhModulus;
+    public BigInteger getServerDhModulus() {
+        return serverDhModulus;
     }
 
-    public void setDhModulus(BigInteger dhModulus) {
-        this.dhModulus = dhModulus;
+    public void setServerDhModulus(BigInteger serverDhModulus) {
+        this.serverDhModulus = serverDhModulus;
     }
 
     public BigInteger getServerDhPublicKey() {
@@ -1594,7 +1641,7 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as client proposed extension.
-     * 
+     *
      * @param ext
      *            The ExtensionType that is proposed
      */
@@ -1615,12 +1662,16 @@ public class TlsContext {
 
     /**
      * Mark the given TLS extension type as server negotiated extension.
-     * 
+     *
      * @param ext
      *            The ExtensionType to add
      */
     public void addNegotiatedExtension(ExtensionType ext) {
         negotiatedExtensionSet.add(ext);
+    }
+
+    public EnumSet<ExtensionType> getNegotiatedExtensionSet() {
+        return negotiatedExtensionSet;
     }
 
     public boolean isUseExtendedMasterSecret() {
@@ -1894,4 +1945,35 @@ public class TlsContext {
         this.earlyDataPsk = earlyDataPsk;
     }
 
+    public boolean isReceivedTransportHandlerException() {
+        return receivedTransportHandlerException;
+    }
+
+    public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
+        this.receivedTransportHandlerException = receivedTransportHandlerException;
+    }
+
+    public NamedCurve getEcCertificateCurve() {
+        return ecCertificateCurve;
+    }
+
+    public void setEcCertificateCurve(NamedCurve ecCertificateCurve) {
+        this.ecCertificateCurve = ecCertificateCurve;
+    }
+
+    public BigInteger getClientDhGenerator() {
+        return clientDhGenerator;
+    }
+
+    public void setClientDhGenerator(BigInteger clientDhGenerator) {
+        this.clientDhGenerator = clientDhGenerator;
+    }
+
+    public BigInteger getClientDhModulus() {
+        return clientDhModulus;
+    }
+
+    public void setClientDhModulus(BigInteger clientDhModulus) {
+        this.clientDhModulus = clientDhModulus;
+    }
 }

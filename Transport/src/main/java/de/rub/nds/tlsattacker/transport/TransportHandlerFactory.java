@@ -24,7 +24,6 @@ public class TransportHandlerFactory {
     public static TransportHandler createTransportHandler(Connection con) {
         ConnectionEndType localConEndType = con.getLocalConnectionEndType();
         Long timeout = new Long(con.getTimeout());
-
         switch (con.getTransportHandlerType()) {
             case TCP:
                 if (localConEndType == ConnectionEndType.CLIENT) {

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
@@ -20,12 +21,13 @@ import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandCo
 import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.TokenBindingMitmCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.DrownAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
@@ -35,7 +37,6 @@ import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
 import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
 import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
 import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.TokenBindingMitm;
 import de.rub.nds.tlsattacker.attacks.impl.TooManyAlgorithmsAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
@@ -49,7 +50,7 @@ public class Main {
     private static Logger LOGGER = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
-        GeneralDelegate generalDelegate = new GeneralDelegate();
+        GeneralDelegate generalDelegate = new GeneralAttackDelegate();
         JCommander jc = new JCommander(generalDelegate);
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
@@ -89,8 +90,12 @@ public class Main {
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
         TooManyAlgorithmsAttackConfig tooManyAlgorithms = new TooManyAlgorithmsAttackConfig(generalDelegate);
         jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyAlgorithms);
-        TokenBindingMitmCommandConfig tokenBindingMitm = new TokenBindingMitmCommandConfig(generalDelegate);
-        jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND, tokenBindingMitm);
+        DrownCommandConfig drownConfig = new DrownCommandConfig(generalDelegate);
+        jc.addCommand(DrownCommandConfig.COMMAND, drownConfig);
+        // TokenBindingMitmCommandConfig tokenBindingMitm = new
+        // TokenBindingMitmCommandConfig(generalDelegate);
+        // jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND,
+        // tokenBindingMitm);
         jc.parse(args);
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
@@ -148,9 +153,12 @@ public class Main {
             case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
                 attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest);
                 break;
-            case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
-                attacker = new TokenBindingMitm(tokenBindingMitm);
+            case DrownCommandConfig.COMMAND:
+                attacker = new DrownAttacker(drownConfig);
                 break;
+            // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
+            // attacker = new TokenBindingMitm(tokenBindingMitm);
+            // break;
             default:
                 throw new ConfigurationException("Command not found");
         }
@@ -162,10 +170,10 @@ public class Main {
         } else {
 
             if (attacker.getConfig().isExecuteAttack()) {
-                attacker.executeAttack();
+                attacker.attack();
             } else {
                 try {
-                    Boolean result = attacker.isVulnerable();
+                    Boolean result = attacker.checkVulnerability();
                     LOGGER.info("Vulnerable:" + (result == null ? "Uncertain" : result.toString()));
                 } catch (UnsupportedOperationException E) {
                     LOGGER.info("The selected attacker is currently not implemented");

@@ -23,6 +23,7 @@ public class BlobRecordParser extends AbstractRecordParser<BlobRecord> {
         LOGGER.debug("Parsing BlobRecord");
         BlobRecord record = new BlobRecord();
         parseProtocolMessageBytes(record);
+        record.setCompleteRecordBytes(getAlreadyParsed());
         return record;
     }
 

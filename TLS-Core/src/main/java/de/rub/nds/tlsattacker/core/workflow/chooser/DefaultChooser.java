@@ -295,7 +295,7 @@ public class DefaultChooser extends Chooser {
         if (context.getSessionTicketTLS() != null) {
             return context.getSessionTicketTLS();
         } else {
-            return config.getTLSSessionTicket();
+            return config.getTlsSessionTicket();
         }
     }
 
@@ -327,20 +327,38 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDhModulus() {
-        if (context.getDhModulus() != null) {
-            return context.getDhModulus();
+    public BigInteger getServerDhModulus() {
+        if (context.getServerDhModulus() != null) {
+            return context.getServerDhModulus();
         } else {
-            return config.getDefaultDhModulus();
+            return config.getDefaultServerDhModulus();
         }
     }
 
     @Override
-    public BigInteger getDhGenerator() {
-        if (context.getDhGenerator() != null) {
-            return context.getDhGenerator();
+    public BigInteger getServerDhGenerator() {
+        if (context.getServerDhGenerator() != null) {
+            return context.getServerDhGenerator();
         } else {
-            return config.getDefaultDhGenerator();
+            return config.getDefaultServerDhGenerator();
+        }
+    }
+
+    @Override
+    public BigInteger getClientDhModulus() {
+        if (context.getClientDhModulus() != null) {
+            return context.getClientDhModulus();
+        } else {
+            return config.getDefaultClientDhModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getClientDhGenerator() {
+        if (context.getClientDhGenerator() != null) {
+            return context.getClientDhGenerator();
+        } else {
+            return config.getDefaultClientDhGenerator();
         }
     }
 
@@ -543,6 +561,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
+    public NamedCurve getEcCertificateCurve() {
+        if (context.getSelectedCurve() != null) {
+            return context.getEcCertificateCurve();
+        } else {
+            return config.getDefaultEcCertificateCurve();
+        }
+    }
+
+    @Override
     public CustomECPoint getClientEcPublicKey() {
         if (context.getClientEcPublicKey() != null) {
             return context.getClientEcPublicKey();
@@ -567,11 +594,20 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getRsaModulus() {
-        if (context.getRsaModulus() != null) {
-            return context.getRsaModulus();
+    public BigInteger getServerRsaModulus() {
+        if (context.getServerRsaModulus() != null) {
+            return context.getServerRsaModulus();
         } else {
-            return config.getDefaultRSAModulus();
+            return config.getDefaultServerRSAModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getClientRsaModulus() {
+        if (context.getClientRsaModulus() != null) {
+            return context.getClientRsaModulus();
+        } else {
+            return config.getDefaultClientRSAModulus();
         }
     }
 

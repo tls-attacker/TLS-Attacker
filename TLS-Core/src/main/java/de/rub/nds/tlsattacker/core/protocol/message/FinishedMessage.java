@@ -47,10 +47,13 @@ public class FinishedMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("FinishedMessage:");
         sb.append("\n  Verify Data: ");
         if (verifyData != null && verifyData.getOriginalValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(verifyData.getValue()));
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }

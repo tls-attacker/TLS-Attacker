@@ -12,7 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -67,13 +68,13 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
-    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
+    public EncryptionResult encrypt(EncryptionRequest request) {
         return new EncryptionResult(encryptCipher.update(request.getPlainText()));
     }
 
     @Override
-    public byte[] decrypt(byte[] data) {
-        return decryptCipher.update(data);
+    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
+        return new DecryptionResult(null, decryptCipher.update(decryptionRequest.getCipherText()), null);
     }
 
     @Override
@@ -82,17 +83,24 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
-    public byte[] calculateMac(byte[] data) {
-        writeMac.update(data);
-        LOGGER.debug("The MAC was caluculated over the following data: {}", ArrayConverter.bytesToHexString(data));
-        byte[] result = writeMac.doFinal();
-        LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
+    public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
+        LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
+        byte[] result;
+        if (connectionEndType == context.getChooser().getConnectionEndType()) {
+            writeMac.update(data);
+            result = writeMac.doFinal();
+
+        } else {
+            readMac.update(data);
+            result = readMac.doFinal();
+        }
+        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
     }
 
     @Override
     public byte[] calculatePadding(int paddingLength) {
-        return new byte[] {};
+        return new byte[0];
     }
 
     @Override

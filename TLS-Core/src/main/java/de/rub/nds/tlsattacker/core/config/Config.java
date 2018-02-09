@@ -49,7 +49,6 @@ import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -85,29 +84,13 @@ public class Config implements Serializable {
     }
 
     public static Config createConfig(InputStream stream) {
-        return ConfigIO.read(stream);
-    }
-
-    public static Config createEmptyConfig() {
-        Config c = new Config();
-        for (Field field : c.getClass().getDeclaredFields()) {
-            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()) {
-                field.setAccessible(true);
-                try {
-                    field.set(c, null);
-                } catch (IllegalAccessException e) {
-                    LOGGER.warn("Could not set field in Config!", e);
-                }
-            }
+        Config config = ConfigIO.read(stream);
+        try {
+            stream.close();
+        } catch (IOException ex) {
+            LOGGER.warn("Could not close resource Stream!", ex);
         }
-        return c;
-    }
-
-    public static Config mergeWithDefaultValues(Config c) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ConfigIO.write(c, byteArrayOutputStream);
-        c = ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
-        return c;
+        return config;
     }
 
     /**
@@ -242,7 +225,7 @@ public class Config implements Serializable {
      * ticket since we initiate a new connection.
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] TLSSessionTicket = new byte[0];
+    private byte[] tlsSessionTicket = new byte[0];
 
     /**
      * Renegotiation info for the RenegotiationInfo extension for the Client.
@@ -481,7 +464,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with RenegotiationInfo extension
      */
-    private Boolean addRenegotiationInfoExtension = false;
+    private Boolean addRenegotiationInfoExtension = true;
 
     /**
      * If we generate ClientHello with TokenBinding extension.
@@ -631,7 +614,7 @@ public class Config implements Serializable {
     /**
      * Do we use a psk for our secrets?
      */
-    private boolean usePsk = false;
+    private Boolean usePsk = false;
 
     /**
      * Early data to be sent.
@@ -666,22 +649,27 @@ public class Config implements Serializable {
 
     private Boolean doDTLSRetransmits = false;
 
-    private BigInteger defaultDhGenerator = new BigInteger("2");
+    private BigInteger defaultServerDhGenerator = new BigInteger("2");
 
-    private BigInteger defaultDhModulus = new BigInteger(
-            "15458150092069033378601573800816703249401189342134115050806105600042321586262936062413786779796157671421516779431947968642017250021834283152850968840396649272235097918348324");
+    private BigInteger defaultServerDhModulus = new BigInteger(
+            "5809605995369958062791915965639201402176612226902900533702900882779736177890990861472094774477339581147373410185646378328043729800750470098210924487866935059164371588168047540943981644516632755067501626434556398193186628990071248660819361205119793693985433297036118232914410171876807536457391277857011849897410207519105333355801121109356897459426271845471397952675959440793493071628394122780510124618488232602464649876850458861245784240929258426287699705312584509625419513463605155428017165714465363094021609290561084025893662561222573202082865797821865270991145082200656978177192827024538990239969175546190770645685893438011714430426409338676314743571154537142031573004276428701433036381801705308659830751190352946025482059931306571004727362479688415574702596946457770284148435989129632853918392117997472632693078113129886487399347796982772784615865232621289656944284216824611318709764535152507354116344703769998514148343807");
+
+    private BigInteger defaultClientDhGenerator = new BigInteger("2");
+
+    private BigInteger defaultClientDhModulus = new BigInteger(
+            "5809605995369958062791915965639201402176612226902900533702900882779736177890990861472094774477339581147373410185646378328043729800750470098210924487866935059164371588168047540943981644516632755067501626434556398193186628990071248660819361205119793693985433297036118232914410171876807536457391277857011849897410207519105333355801121109356897459426271845471397952675959440793493071628394122780510124618488232602464649876850458861245784240929258426287699705312584509625419513463605155428017165714465363094021609290561084025893662561222573202082865797821865270991145082200656978177192827024538990239969175546190770645685893438011714430426409338676314743571154537142031573004276428701433036381801705308659830751190352946025482059931306571004727362479688415574702596946457770284148435989129632853918392117997472632693078113129886487399347796982772784615865232621289656944284216824611318709764535152507354116344703769998514148343807");
 
     private BigInteger defaultServerDhPrivateKey = new BigInteger(
-            "1234567891234567889123546712839632542648746452354265471");
+            "30757838539894352412510553993926388250692636687493810307136098911018166940950");
 
     private BigInteger defaultClientDhPrivateKey = new BigInteger(
-            "1234567891234567889123546712839632542648746452354265471");
+            "30757838539894352412510553993926388250692636687493810307136098911018166940950");
 
     private BigInteger defaultServerDhPublicKey = new BigInteger(
-            "14480301636124364131011109953533209419584138262785800536726427889263750026424833537662211230987987661789535497502943331312908532241011314347509704298395798883527739408059572");
+            "2043613254509771843465057207078304133427100053346630496863115304729422431506842297554370188431622336168084226893060531474609378481237396107127063278624858982135545329954888129900714249447398611399069380214077491792199889131147659097337451088584054931352640316306698530468089459265836208766829761530786550035554546801263324790398605318443686766315312672983302101280548433287949333943437948214799189911192606949101858307621640886413682299273130735853556255008467704876737231663242842259426239401780891543201358635180397430055997246351872086043137262555233050955216238105392009330462604912891943865361186717249962097299588875409587651544594728203293910128024102640696503192096755401014128136916889018704050784334709496695214785225237421325503031115105974843553040027247097092511319153606298406218024502785451855415341620633845851737579504653807158340552365430158715166515645118698024341396560621615465703434564793715203380646117");
 
     private BigInteger defaultClientDhPublicKey = new BigInteger(
-            "14480301636124364131011109953533209419584138262785800536726427889263750026424833537662211230987987661789535497502943331312908532241011314347509704298395798883527739408059572");
+            "2043613254509771843465057207078304133427100053346630496863115304729422431506842297554370188431622336168084226893060531474609378481237396107127063278624858982135545329954888129900714249447398611399069380214077491792199889131147659097337451088584054931352640316306698530468089459265836208766829761530786550035554546801263324790398605318443686766315312672983302101280548433287949333943437948214799189911192606949101858307621640886413682299273130735853556255008467704876737231663242842259426239401780891543201358635180397430055997246351872086043137262555233050955216238105392009330462604912891943865361186717249962097299588875409587651544594728203293910128024102640696503192096755401014128136916889018704050784334709496695214785225237421325503031115105974843553040027247097092511319153606298406218024502785451855415341620633845851737579504653807158340552365430158715166515645118698024341396560621615465703434564793715203380646117");
 
     private BigInteger defaultServerDsaPrivateKey;
 
@@ -835,6 +823,8 @@ public class Config implements Serializable {
 
     private NamedCurve defaultSelectedCurve = NamedCurve.SECP192R1;
 
+    private NamedCurve defaultEcCertificateCurve = NamedCurve.SECP192R1;
+
     private CustomECPoint defaultClientEcPublicKey;
 
     private CustomECPoint defaultServerEcPublicKey;
@@ -845,7 +835,12 @@ public class Config implements Serializable {
     private BigInteger defaultClientEcPrivateKey = new BigInteger(
             "191991257030464195512760799659436374116556484140110877679395918219072292938297573720808302564562486757422301181089761");
 
-    private BigInteger defaultRSAModulus = new BigInteger(
+    private BigInteger defaultServerRSAModulus = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("00c8820d6c3ce84c8430f6835abfc7d7a912e1664f44578751f376501a8c68476c3072d919c5d39bd0dbe080e71db83bd4ab2f2f9bde3dffb0080f510a5f6929c196551f2b3c369be051054c877573195558fd282035934dc86edab8d4b1b7f555e5b2fee7275384a756ef86cb86793b5d1333f0973203cb96966766e655cd2cccae1940e4494b8e9fb5279593b75afd0b378243e51a88f6eb88def522a8cd5c6c082286a04269a2879760fcba45005d7f2672dd228809d47274f0fe0ea5531c2bd95366c05bf69edc0f3c3189866edca0c57adcca93250ae78d9eaca0393a95ff9952fc47fb7679dd3803e6a7a6fa771861e3d99e4b551a4084668b111b7eef7d"));// TODO
+
+    private BigInteger defaultClientRSAModulus = new BigInteger(
             1,
             ArrayConverter
                     .hexStringToByteArray("00c8820d6c3ce84c8430f6835abfc7d7a912e1664f44578751f376501a8c68476c3072d919c5d39bd0dbe080e71db83bd4ab2f2f9bde3dffb0080f510a5f6929c196551f2b3c369be051054c877573195558fd282035934dc86edab8d4b1b7f555e5b2fee7275384a756ef86cb86793b5d1333f0973203cb96966766e655cd2cccae1940e4494b8e9fb5279593b75afd0b378243e51a88f6eb88def522a8cd5c6c082286a04269a2879760fcba45005d7f2672dd228809d47274f0fe0ea5531c2bd95366c05bf69edc0f3c3189866edca0c57adcca93250ae78d9eaca0393a95ff9952fc47fb7679dd3803e6a7a6fa771861e3d99e4b551a4084668b111b7eef7d"));// TODO
@@ -941,20 +936,20 @@ public class Config implements Serializable {
     private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
             "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
-    private boolean useRandomUnixTime = true;
+    private Boolean useRandomUnixTime = true;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private boolean useAllProvidedRecords = false;
+    private Boolean useAllProvidedRecords = false;
 
-    private boolean httpsParsingEnabled = false;
+    private Boolean httpsParsingEnabled = false;
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
      * Extension defined in RFC5077, followed by additional TLS 1.3 draft 21
      * NewSessionTicket parameters.
      */
-    private long sessionTicketLifetimeHint = 0;
+    private Long sessionTicketLifetimeHint = 0l;
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] sessionTicketKeyAES = ArrayConverter.hexStringToByteArray("536563757265535469636b65744b6579"); // SecureSTicketKey
@@ -980,6 +975,9 @@ public class Config implements Serializable {
      * ClientAuthtication Type, not fully implemented yet
      */
     private ClientAuthenticationType clientAuthenticationType = ClientAuthenticationType.ANONYMOUS;
+    private NamedCurve[] defaultEcdheNamedCurves = new NamedCurve[] { NamedCurve.SECP192R1 };
+
+    private ECPointFormat[] defaultEcPointFormats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
 
     private Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
@@ -1071,6 +1069,9 @@ public class Config implements Serializable {
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
         filtersKeepUserSettings = true;
+        pskKeyExchangeModes = new LinkedList<>();
+        pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
+        pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
     }
 
     public long getSessionTicketLifetimeHint() {
@@ -1113,27 +1114,43 @@ public class Config implements Serializable {
         this.clientAuthenticationType = clientAuthenticationType;
     }
 
-    public boolean isHttpsParsingEnabled() {
+    public ECPointFormat[] getDefaultEcPointFormats() {
+        return defaultEcPointFormats;
+    }
+
+    public void setDefaultEcPointFormats(ECPointFormat[] defaultEcPointFormats) {
+        this.defaultEcPointFormats = defaultEcPointFormats;
+    }
+
+    public NamedCurve[] getDefaultEcdheNamedCurves() {
+        return defaultEcdheNamedCurves;
+    }
+
+    public void setDefaultEcdheNamedCurves(NamedCurve[] defaultEcdheNamedCurves) {
+        this.defaultEcdheNamedCurves = defaultEcdheNamedCurves;
+    }
+
+    public Boolean isHttpsParsingEnabled() {
         return httpsParsingEnabled;
     }
 
-    public void setHttpsParsingEnabled(boolean httpsParsingEnabled) {
+    public void setHttpsParsingEnabled(Boolean httpsParsingEnabled) {
         this.httpsParsingEnabled = httpsParsingEnabled;
     }
 
-    public boolean isUseRandomUnixTime() {
+    public Boolean isUseRandomUnixTime() {
         return useRandomUnixTime;
     }
 
-    public void setUseRandomUnixTime(boolean useRandomUnixTime) {
+    public void setUseRandomUnixTime(Boolean useRandomUnixTime) {
         this.useRandomUnixTime = useRandomUnixTime;
     }
 
-    public boolean isUseAllProvidedRecords() {
+    public Boolean isUseAllProvidedRecords() {
         return useAllProvidedRecords;
     }
 
-    public void setUseAllProvidedRecords(boolean useAllProvidedRecords) {
+    public void setUseAllProvidedRecords(Boolean useAllProvidedRecords) {
         this.useAllProvidedRecords = useAllProvidedRecords;
     }
 
@@ -1153,11 +1170,11 @@ public class Config implements Serializable {
         this.chooserType = chooserType;
     }
 
-    public boolean isEarlyStop() {
+    public Boolean isEarlyStop() {
         return earlyStop;
     }
 
-    public void setEarlyStop(boolean earlyStop) {
+    public void setEarlyStop(Boolean earlyStop) {
         this.earlyStop = earlyStop;
     }
 
@@ -1265,27 +1282,27 @@ public class Config implements Serializable {
         this.defaultCertificateRequestContext = defaultCertificateRequestContext;
     }
 
-    public boolean isWorkflowExecutorShouldOpen() {
+    public Boolean isWorkflowExecutorShouldOpen() {
         return workflowExecutorShouldOpen;
     }
 
-    public void setWorkflowExecutorShouldOpen(boolean workflowExecutorShouldOpen) {
+    public void setWorkflowExecutorShouldOpen(Boolean workflowExecutorShouldOpen) {
         this.workflowExecutorShouldOpen = workflowExecutorShouldOpen;
     }
 
-    public boolean isWorkflowExecutorShouldClose() {
+    public Boolean isWorkflowExecutorShouldClose() {
         return workflowExecutorShouldClose;
     }
 
-    public void setWorkflowExecutorShouldClose(boolean workflowExecutorShouldClose) {
+    public void setWorkflowExecutorShouldClose(Boolean workflowExecutorShouldClose) {
         this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
-    public boolean isStopRecievingAfterFatal() {
+    public Boolean isStopRecievingAfterFatal() {
         return stopRecievingAfterFatal;
     }
 
-    public void setStopRecievingAfterFatal(boolean stopRecievingAfterFatal) {
+    public void setStopRecievingAfterFatal(Boolean stopRecievingAfterFatal) {
         this.stopRecievingAfterFatal = stopRecievingAfterFatal;
     }
 
@@ -1433,15 +1450,16 @@ public class Config implements Serializable {
         this.defaultServerRSAPrivateKey = defaultServerRSAPrivateKey;
     }
 
-    public BigInteger getDefaultRSAModulus() {
-        return defaultRSAModulus;
+    public BigInteger getDefaultServerRSAModulus() {
+        return defaultServerRSAModulus;
     }
 
-    public void setDefaultRSAModulus(BigInteger defaultRSAModulus) {
-        if (defaultRSAModulus.signum() == 1) {
-            this.defaultRSAModulus = defaultRSAModulus;
+    public void setDefaultServerRSAModulus(BigInteger defaultServerRSAModulus) {
+        if (defaultServerRSAModulus.signum() == 1) {
+            this.defaultServerRSAModulus = defaultServerRSAModulus;
         } else {
-            throw new IllegalArgumentException("Modulus cannot be negative or zero" + defaultRSAModulus.toString());
+            throw new IllegalArgumentException("Modulus cannot be negative or zero"
+                    + defaultServerRSAModulus.toString());
         }
     }
 
@@ -1648,8 +1666,8 @@ public class Config implements Serializable {
 
     public void setDefaultServerSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... defaultServerSupportedSignatureAndHashAlgorithms) {
-        this.defaultServerSupportedSignatureAndHashAlgorithms = Arrays
-                .asList(defaultServerSupportedSignatureAndHashAlgorithms);
+        this.defaultServerSupportedSignatureAndHashAlgorithms = new ArrayList(
+                Arrays.asList(defaultServerSupportedSignatureAndHashAlgorithms));
     }
 
     public List<CipherSuite> getDefaultServerSupportedCiphersuites() {
@@ -1783,19 +1801,19 @@ public class Config implements Serializable {
         this.defaultSelectedCipherSuite = defaultSelectedCipherSuite;
     }
 
-    public boolean isQuickReceive() {
+    public Boolean isQuickReceive() {
         return quickReceive;
     }
 
-    public void setQuickReceive(boolean quickReceive) {
+    public void setQuickReceive(Boolean quickReceive) {
         this.quickReceive = quickReceive;
     }
 
-    public boolean isResetWorkflowtracesBeforeSaving() {
+    public Boolean isResetWorkflowtracesBeforeSaving() {
         return resetWorkflowtracesBeforeSaving;
     }
 
-    public void setResetWorkflowtracesBeforeSaving(boolean resetWorkflowtracesBeforeSaving) {
+    public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
         this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
     }
 
@@ -1807,27 +1825,27 @@ public class Config implements Serializable {
         this.recordLayerType = recordLayerType;
     }
 
-    public boolean isFlushOnMessageTypeChange() {
+    public Boolean isFlushOnMessageTypeChange() {
         return flushOnMessageTypeChange;
     }
 
-    public void setFlushOnMessageTypeChange(boolean flushOnMessageTypeChange) {
+    public void setFlushOnMessageTypeChange(Boolean flushOnMessageTypeChange) {
         this.flushOnMessageTypeChange = flushOnMessageTypeChange;
     }
 
-    public boolean isCreateRecordsDynamically() {
+    public Boolean isCreateRecordsDynamically() {
         return createRecordsDynamically;
     }
 
-    public void setCreateRecordsDynamically(boolean createRecordsDynamically) {
+    public void setCreateRecordsDynamically(Boolean createRecordsDynamically) {
         this.createRecordsDynamically = createRecordsDynamically;
     }
 
-    public boolean isCreateIndividualRecords() {
+    public Boolean isCreateIndividualRecords() {
         return createIndividualRecords;
     }
 
-    public void setCreateIndividualRecords(boolean createIndividualRecords) {
+    public void setCreateIndividualRecords(Boolean createIndividualRecords) {
         this.createIndividualRecords = createIndividualRecords;
     }
 
@@ -1874,27 +1892,27 @@ public class Config implements Serializable {
         this.heartbeatPaddingLength = heartbeatPaddingLength;
     }
 
-    public boolean isAddPaddingExtension() {
+    public Boolean isAddPaddingExtension() {
         return addPaddingExtension;
     }
 
-    public void setAddPaddingExtension(boolean addPaddingExtension) {
+    public void setAddPaddingExtension(Boolean addPaddingExtension) {
         this.addPaddingExtension = addPaddingExtension;
     }
 
-    public boolean isAddExtendedMasterSecretExtension() {
+    public Boolean isAddExtendedMasterSecretExtension() {
         return addExtendedMasterSecretExtension;
     }
 
-    public void setAddExtendedMasterSecretExtension(boolean addExtendedMasterSecretExtension) {
+    public void setAddExtendedMasterSecretExtension(Boolean addExtendedMasterSecretExtension) {
         this.addExtendedMasterSecretExtension = addExtendedMasterSecretExtension;
     }
 
-    public boolean isAddSessionTicketTLSExtension() {
+    public Boolean isAddSessionTicketTLSExtension() {
         return addSessionTicketTLSExtension;
     }
 
-    public void setAddSessionTicketTLSExtension(boolean addSessionTicketTLSExtension) {
+    public void setAddSessionTicketTLSExtension(Boolean addSessionTicketTLSExtension) {
         this.addSessionTicketTLSExtension = addSessionTicketTLSExtension;
     }
 
@@ -1918,11 +1936,11 @@ public class Config implements Serializable {
         this.clientCertificateTypes = new ArrayList(Arrays.asList(clientCertificateTypes));
     }
 
-    public boolean isWaitOnlyForExpectedDTLS() {
+    public Boolean isWaitOnlyForExpectedDTLS() {
         return waitOnlyForExpectedDTLS;
     }
 
-    public void setWaitOnlyForExpectedDTLS(boolean waitOnlyForExpectedDTLS) {
+    public void setWaitOnlyForExpectedDTLS(Boolean waitOnlyForExpectedDTLS) {
         this.waitOnlyForExpectedDTLS = waitOnlyForExpectedDTLS;
     }
 
@@ -1930,11 +1948,11 @@ public class Config implements Serializable {
         return defaultApplicationMessageData;
     }
 
-    public boolean isDoDTLSRetransmits() {
+    public Boolean isDoDTLSRetransmits() {
         return doDTLSRetransmits;
     }
 
-    public void setDoDTLSRetransmits(boolean doDTLSRetransmits) {
+    public void setDoDTLSRetransmits(Boolean doDTLSRetransmits) {
         this.doDTLSRetransmits = doDTLSRetransmits;
     }
 
@@ -1942,31 +1960,32 @@ public class Config implements Serializable {
         this.defaultApplicationMessageData = defaultApplicationMessageData;
     }
 
-    public boolean isEnforceSettings() {
+    public Boolean isEnforceSettings() {
         return enforceSettings;
     }
 
-    public void setEnforceSettings(boolean enforceSettings) {
+    public void setEnforceSettings(Boolean enforceSettings) {
         this.enforceSettings = enforceSettings;
     }
 
-    public BigInteger getDefaultDhGenerator() {
-        return defaultDhGenerator;
+    public BigInteger getDefaultServerDhGenerator() {
+        return defaultServerDhGenerator;
     }
 
-    public void setDefaultDhGenerator(BigInteger defaultDhGenerator) {
-        this.defaultDhGenerator = defaultDhGenerator;
+    public void setDefaultServerDhGenerator(BigInteger defaultServerDhGenerator) {
+        this.defaultServerDhGenerator = defaultServerDhGenerator;
     }
 
-    public BigInteger getDefaultDhModulus() {
-        return defaultDhModulus;
+    public BigInteger getDefaultServerDhModulus() {
+        return defaultServerDhModulus;
     }
 
-    public void setDefaultDhModulus(BigInteger defaultDhModulus) {
-        if (defaultDhModulus.signum() == 1) {
-            this.defaultDhModulus = defaultDhModulus;
+    public void setDefaultServerDhModulus(BigInteger defaultServerDhModulus) {
+        if (defaultServerDhModulus.signum() == 1) {
+            this.defaultServerDhModulus = defaultServerDhModulus;
         } else {
-            throw new IllegalArgumentException("Modulus cannot be negative or zero:" + defaultDhModulus.toString());
+            throw new IllegalArgumentException("Modulus cannot be negative or zero:"
+                    + defaultServerDhModulus.toString());
         }
     }
 
@@ -1994,19 +2013,19 @@ public class Config implements Serializable {
         this.highestProtocolVersion = highestProtocolVersion;
     }
 
-    public boolean isUpdateTimestamps() {
+    public Boolean isUpdateTimestamps() {
         return updateTimestamps;
     }
 
-    public void setUpdateTimestamps(boolean updateTimestamps) {
+    public void setUpdateTimestamps(Boolean updateTimestamps) {
         this.updateTimestamps = updateTimestamps;
     }
 
-    public boolean isServerSendsApplicationData() {
+    public Boolean isServerSendsApplicationData() {
         return serverSendsApplicationData;
     }
 
-    public void setServerSendsApplicationData(boolean serverSendsApplicationData) {
+    public void setServerSendsApplicationData(Boolean serverSendsApplicationData) {
         this.serverSendsApplicationData = serverSendsApplicationData;
     }
 
@@ -2042,11 +2061,11 @@ public class Config implements Serializable {
         this.workflowInput = workflowInput;
     }
 
-    public boolean isSniHostnameFatal() {
+    public Boolean isSniHostnameFatal() {
         return sniHostnameFatal;
     }
 
-    public void setSniHostnameFatal(boolean sniHostnameFatal) {
+    public void setSniHostnameFatal(Boolean sniHostnameFatal) {
         this.sniHostnameFatal = sniHostnameFatal;
     }
 
@@ -2074,11 +2093,11 @@ public class Config implements Serializable {
         this.keyShareType = keyShareType;
     }
 
-    public boolean isDynamicWorkflow() {
+    public Boolean isDynamicWorkflow() {
         throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
-    public void setDynamicWorkflow(boolean dynamicWorkflow) {
+    public void setDynamicWorkflow(Boolean dynamicWorkflow) {
         throw new UnsupportedOperationException("DynamicWorkflow is currently not supported.");
     }
 
@@ -2091,13 +2110,14 @@ public class Config implements Serializable {
     }
 
     public final void setDefaultClientSupportedCiphersuites(CipherSuite... defaultClientSupportedCiphersuites) {
+        this.defaultClientSupportedCiphersuites = new ArrayList(Arrays.asList(defaultClientSupportedCiphersuites));
     }
 
     public Boolean isClientAuthentication() {
         return clientAuthentication;
     }
 
-    public void setClientAuthentication(boolean clientAuthentication) {
+    public void setClientAuthentication(Boolean clientAuthentication) {
         this.clientAuthentication = clientAuthentication;
     }
 
@@ -2147,91 +2167,91 @@ public class Config implements Serializable {
         this.heartbeatMode = heartbeatMode;
     }
 
-    public boolean isAddECPointFormatExtension() {
+    public Boolean isAddECPointFormatExtension() {
         return addECPointFormatExtension;
     }
 
-    public void setAddECPointFormatExtension(boolean addECPointFormatExtension) {
+    public void setAddECPointFormatExtension(Boolean addECPointFormatExtension) {
         this.addECPointFormatExtension = addECPointFormatExtension;
     }
 
-    public boolean isAddEllipticCurveExtension() {
+    public Boolean isAddEllipticCurveExtension() {
         return addEllipticCurveExtension;
     }
 
-    public void setAddEllipticCurveExtension(boolean addEllipticCurveExtension) {
+    public void setAddEllipticCurveExtension(Boolean addEllipticCurveExtension) {
         this.addEllipticCurveExtension = addEllipticCurveExtension;
     }
 
-    public boolean isAddHeartbeatExtension() {
+    public Boolean isAddHeartbeatExtension() {
         return addHeartbeatExtension;
     }
 
-    public void setAddHeartbeatExtension(boolean addHeartbeatExtension) {
+    public void setAddHeartbeatExtension(Boolean addHeartbeatExtension) {
         this.addHeartbeatExtension = addHeartbeatExtension;
     }
 
-    public boolean isAddMaxFragmentLengthExtenstion() {
+    public Boolean isAddMaxFragmentLengthExtenstion() {
         return addMaxFragmentLengthExtenstion;
     }
 
-    public void setAddMaxFragmentLengthExtenstion(boolean addMaxFragmentLengthExtenstion) {
+    public void setAddMaxFragmentLengthExtenstion(Boolean addMaxFragmentLengthExtenstion) {
         this.addMaxFragmentLengthExtenstion = addMaxFragmentLengthExtenstion;
     }
 
-    public boolean isAddServerNameIndicationExtension() {
+    public Boolean isAddServerNameIndicationExtension() {
         return addServerNameIndicationExtension;
     }
 
-    public void setAddServerNameIndicationExtension(boolean addServerNameIndicationExtension) {
+    public void setAddServerNameIndicationExtension(Boolean addServerNameIndicationExtension) {
         this.addServerNameIndicationExtension = addServerNameIndicationExtension;
     }
 
-    public boolean isAddSignatureAndHashAlgrorithmsExtension() {
+    public Boolean isAddSignatureAndHashAlgrorithmsExtension() {
         return addSignatureAndHashAlgrorithmsExtension;
     }
 
-    public void setAddSignatureAndHashAlgrorithmsExtension(boolean addSignatureAndHashAlgrorithmsExtension) {
+    public void setAddSignatureAndHashAlgrorithmsExtension(Boolean addSignatureAndHashAlgrorithmsExtension) {
         this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
     }
 
-    public boolean isAddSupportedVersionsExtension() {
+    public Boolean isAddSupportedVersionsExtension() {
         return addSupportedVersionsExtension;
     }
 
-    public void setAddSupportedVersionsExtension(boolean addSupportedVersionsExtension) {
+    public void setAddSupportedVersionsExtension(Boolean addSupportedVersionsExtension) {
         this.addSupportedVersionsExtension = addSupportedVersionsExtension;
     }
 
-    public boolean isAddKeyShareExtension() {
+    public Boolean isAddKeyShareExtension() {
         return addKeyShareExtension;
     }
 
-    public void setAddKeyShareExtension(boolean addKeyShareExtension) {
+    public void setAddKeyShareExtension(Boolean addKeyShareExtension) {
         this.addKeyShareExtension = addKeyShareExtension;
     }
 
-    public boolean isAddEarlyDataExtension() {
+    public Boolean isAddEarlyDataExtension() {
         return addEarlyDataExtension;
     }
 
-    public void setAddEarlyDataExtension(boolean addEarlyDataExtension) {
+    public void setAddEarlyDataExtension(Boolean addEarlyDataExtension) {
         this.addEarlyDataExtension = addEarlyDataExtension;
     }
 
-    public boolean isAddPSKKeyExchangeModesExtension() {
+    public Boolean isAddPSKKeyExchangeModesExtension() {
         return addPSKKeyExchangeModesExtension;
     }
 
-    public void setAddPSKKeyExchangeModesExtension(boolean addPSKKeyExchangeModesExtension) {
+    public void setAddPSKKeyExchangeModesExtension(Boolean addPSKKeyExchangeModesExtension) {
         this.addPSKKeyExchangeModesExtension = addPSKKeyExchangeModesExtension;
     }
 
-    public boolean isAddPreSharedKeyExtension() {
+    public Boolean isAddPreSharedKeyExtension() {
         return addPreSharedKeyExtension;
     }
 
-    public void setAddPreSharedKeyExtension(boolean addPreSharedKeyExtension) {
+    public void setAddPreSharedKeyExtension(Boolean addPreSharedKeyExtension) {
         this.addPreSharedKeyExtension = addPreSharedKeyExtension;
     }
 
@@ -2243,19 +2263,19 @@ public class Config implements Serializable {
         return pskKeyExchangeModes;
     }
 
-    public int getDefaultDTLSCookieLength() {
+    public Integer getDefaultDTLSCookieLength() {
         return defaultDTLSCookieLength;
     }
 
-    public void setDefaultDTLSCookieLength(int defaultDTLSCookieLength) {
+    public void setDefaultDTLSCookieLength(Integer defaultDTLSCookieLength) {
         this.defaultDTLSCookieLength = defaultDTLSCookieLength;
     }
 
-    public int getPaddingLength() {
+    public Integer getPaddingLength() {
         return paddingLength;
     }
 
-    public void setPaddingLength(int paddingLength) {
+    public void setPaddingLength(Integer paddingLength) {
         this.paddingLength = paddingLength;
     }
 
@@ -2267,12 +2287,12 @@ public class Config implements Serializable {
         this.keySharePrivate = keySharePrivate;
     }
 
-    public byte[] getTLSSessionTicket() {
-        return TLSSessionTicket;
+    public byte[] getTlsSessionTicket() {
+        return tlsSessionTicket;
     }
 
-    public void setTLSSessionTicket(byte[] TLSSessionTicket) {
-        this.TLSSessionTicket = TLSSessionTicket;
+    public void setTlsSessionTicket(byte[] tlsSessionTicket) {
+        this.tlsSessionTicket = tlsSessionTicket;
     }
 
     public byte[] getDefaultSignedCertificateTimestamp() {
@@ -2283,11 +2303,11 @@ public class Config implements Serializable {
         this.defaultSignedCertificateTimestamp = defaultSignedCertificateTimestamp;
     }
 
-    public boolean isAddSignedCertificateTimestampExtension() {
+    public Boolean isAddSignedCertificateTimestampExtension() {
         return addSignedCertificateTimestampExtension;
     }
 
-    public void setAddSignedCertificateTimestampExtension(boolean addSignedCertificateTimestampExtension) {
+    public void setAddSignedCertificateTimestampExtension(Boolean addSignedCertificateTimestampExtension) {
         this.addSignedCertificateTimestampExtension = addSignedCertificateTimestampExtension;
     }
 
@@ -2299,11 +2319,11 @@ public class Config implements Serializable {
         this.defaultClientRenegotiationInfo = defaultClientRenegotiationInfo;
     }
 
-    public boolean isAddRenegotiationInfoExtension() {
+    public Boolean isAddRenegotiationInfoExtension() {
         return addRenegotiationInfoExtension;
     }
 
-    public void setAddRenegotiationInfoExtension(boolean addRenegotiationInfoExtension) {
+    public void setAddRenegotiationInfoExtension(Boolean addRenegotiationInfoExtension) {
         this.addRenegotiationInfoExtension = addRenegotiationInfoExtension;
     }
 
@@ -2327,11 +2347,11 @@ public class Config implements Serializable {
         this.defaultTokenBindingKeyParameters = new ArrayList(Arrays.asList(defaultTokenBindingKeyParameters));
     }
 
-    public boolean isAddTokenBindingExtension() {
+    public Boolean isAddTokenBindingExtension() {
         return addTokenBindingExtension;
     }
 
-    public void setAddTokenBindingExtension(boolean addTokenBindingExtension) {
+    public void setAddTokenBindingExtension(Boolean addTokenBindingExtension) {
         this.addTokenBindingExtension = addTokenBindingExtension;
     }
 
@@ -2464,11 +2484,11 @@ public class Config implements Serializable {
         this.clientAuthzExtensionDataFormat = clientAuthzExtensionDataFormat;
     }
 
-    public boolean isCertificateTypeExtensionMessageState() {
+    public Boolean isCertificateTypeExtensionMessageState() {
         return certificateTypeExtensionMessageState;
     }
 
-    public void setCertificateTypeExtensionMessageState(boolean certificateTypeExtensionMessageState) {
+    public void setCertificateTypeExtensionMessageState(Boolean certificateTypeExtensionMessageState) {
         this.certificateTypeExtensionMessageState = certificateTypeExtensionMessageState;
     }
 
@@ -2488,19 +2508,19 @@ public class Config implements Serializable {
         this.trustedCaIndicationExtensionAuthorties = trustedCaIndicationExtensionAuthorties;
     }
 
-    public boolean isClientCertificateTypeExtensionMessageState() {
+    public Boolean isClientCertificateTypeExtensionMessageState() {
         return clientCertificateTypeExtensionMessageState;
     }
 
-    public void setClientCertificateTypeExtensionMessageState(boolean clientCertificateTypeExtensionMessageState) {
+    public void setClientCertificateTypeExtensionMessageState(Boolean clientCertificateTypeExtensionMessageState) {
         this.clientCertificateTypeExtensionMessageState = clientCertificateTypeExtensionMessageState;
     }
 
-    public boolean isCachedInfoExtensionIsClientState() {
+    public Boolean isCachedInfoExtensionIsClientState() {
         return cachedInfoExtensionIsClientState;
     }
 
-    public void setCachedInfoExtensionIsClientState(boolean cachedInfoExtensionIsClientState) {
+    public void setCachedInfoExtensionIsClientState(Boolean cachedInfoExtensionIsClientState) {
         this.cachedInfoExtensionIsClientState = cachedInfoExtensionIsClientState;
     }
 
@@ -2520,131 +2540,131 @@ public class Config implements Serializable {
         this.statusRequestV2RequestList = statusRequestV2RequestList;
     }
 
-    public boolean isAddCertificateStatusRequestExtension() {
+    public Boolean isAddCertificateStatusRequestExtension() {
         return addCertificateStatusRequestExtension;
     }
 
-    public void setAddCertificateStatusRequestExtension(boolean addCertificateStatusRequestExtension) {
+    public void setAddCertificateStatusRequestExtension(Boolean addCertificateStatusRequestExtension) {
         this.addCertificateStatusRequestExtension = addCertificateStatusRequestExtension;
     }
 
-    public boolean isAddAlpnExtension() {
+    public Boolean isAddAlpnExtension() {
         return addAlpnExtension;
     }
 
-    public void setAddAlpnExtension(boolean addAlpnExtension) {
+    public void setAddAlpnExtension(Boolean addAlpnExtension) {
         this.addAlpnExtension = addAlpnExtension;
     }
 
-    public boolean isAddSRPExtension() {
+    public Boolean isAddSRPExtension() {
         return addSRPExtension;
     }
 
-    public void setAddSRPExtension(boolean addSRPExtension) {
+    public void setAddSRPExtension(Boolean addSRPExtension) {
         this.addSRPExtension = addSRPExtension;
     }
 
-    public boolean isAddSRTPExtension() {
+    public Boolean isAddSRTPExtension() {
         return addSRTPExtension;
     }
 
-    public void setAddSRTPExtension(boolean addSRTPExtension) {
+    public void setAddSRTPExtension(Boolean addSRTPExtension) {
         this.addSRTPExtension = addSRTPExtension;
     }
 
-    public boolean isAddTruncatedHmacExtension() {
+    public Boolean isAddTruncatedHmacExtension() {
         return addTruncatedHmacExtension;
     }
 
-    public void setAddTruncatedHmacExtension(boolean addTruncatedHmacExtension) {
+    public void setAddTruncatedHmacExtension(Boolean addTruncatedHmacExtension) {
         this.addTruncatedHmacExtension = addTruncatedHmacExtension;
     }
 
-    public boolean isAddUserMappingExtension() {
+    public Boolean isAddUserMappingExtension() {
         return addUserMappingExtension;
     }
 
-    public void setAddUserMappingExtension(boolean addUserMappingExtension) {
+    public void setAddUserMappingExtension(Boolean addUserMappingExtension) {
         this.addUserMappingExtension = addUserMappingExtension;
     }
 
-    public boolean isAddCertificateTypeExtension() {
+    public Boolean isAddCertificateTypeExtension() {
         return addCertificateTypeExtension;
     }
 
-    public void setAddCertificateTypeExtension(boolean addCertificateTypeExtension) {
+    public void setAddCertificateTypeExtension(Boolean addCertificateTypeExtension) {
         this.addCertificateTypeExtension = addCertificateTypeExtension;
     }
 
-    public boolean isAddClientAuthzExtension() {
+    public Boolean isAddClientAuthzExtension() {
         return addClientAuthzExtension;
     }
 
-    public void setAddClientAuthzExtension(boolean addClientAuthzExtension) {
+    public void setAddClientAuthzExtension(Boolean addClientAuthzExtension) {
         this.addClientAuthzExtension = addClientAuthzExtension;
     }
 
-    public boolean isAddServerAuthzExtension() {
+    public Boolean isAddServerAuthzExtension() {
         return addServerAuthzExtension;
     }
 
-    public void setAddServerAuthzExtension(boolean addServerAuthzExtension) {
+    public void setAddServerAuthzExtension(Boolean addServerAuthzExtension) {
         this.addServerAuthzExtension = addServerAuthzExtension;
     }
 
-    public boolean isAddClientCertificateTypeExtension() {
+    public Boolean isAddClientCertificateTypeExtension() {
         return addClientCertificateTypeExtension;
     }
 
-    public void setAddClientCertificateTypeExtension(boolean addClientCertificateTypeExtension) {
+    public void setAddClientCertificateTypeExtension(Boolean addClientCertificateTypeExtension) {
         this.addClientCertificateTypeExtension = addClientCertificateTypeExtension;
     }
 
-    public boolean isAddServerCertificateTypeExtension() {
+    public Boolean isAddServerCertificateTypeExtension() {
         return addServerCertificateTypeExtension;
     }
 
-    public void setAddServerCertificateTypeExtension(boolean addServerCertificateTypeExtension) {
+    public void setAddServerCertificateTypeExtension(Boolean addServerCertificateTypeExtension) {
         this.addServerCertificateTypeExtension = addServerCertificateTypeExtension;
     }
 
-    public boolean isAddEncryptThenMacExtension() {
+    public Boolean isAddEncryptThenMacExtension() {
         return addEncryptThenMacExtension;
     }
 
-    public void setAddEncryptThenMacExtension(boolean addEncryptThenMacExtension) {
+    public void setAddEncryptThenMacExtension(Boolean addEncryptThenMacExtension) {
         this.addEncryptThenMacExtension = addEncryptThenMacExtension;
     }
 
-    public boolean isAddCachedInfoExtension() {
+    public Boolean isAddCachedInfoExtension() {
         return addCachedInfoExtension;
     }
 
-    public void setAddCachedInfoExtension(boolean addCachedInfoExtension) {
+    public void setAddCachedInfoExtension(Boolean addCachedInfoExtension) {
         this.addCachedInfoExtension = addCachedInfoExtension;
     }
 
-    public boolean isAddClientCertificateUrlExtension() {
+    public Boolean isAddClientCertificateUrlExtension() {
         return addClientCertificateUrlExtension;
     }
 
-    public void setAddClientCertificateUrlExtension(boolean addClientCertificateUrlExtension) {
+    public void setAddClientCertificateUrlExtension(Boolean addClientCertificateUrlExtension) {
         this.addClientCertificateUrlExtension = addClientCertificateUrlExtension;
     }
 
-    public boolean isAddTrustedCaIndicationExtension() {
+    public Boolean isAddTrustedCaIndicationExtension() {
         return addTrustedCaIndicationExtension;
     }
 
-    public void setAddTrustedCaIndicationExtension(boolean addTrustedCaIndicationExtension) {
+    public void setAddTrustedCaIndicationExtension(Boolean addTrustedCaIndicationExtension) {
         this.addTrustedCaIndicationExtension = addTrustedCaIndicationExtension;
     }
 
-    public boolean isAddCertificateStatusRequestV2Extension() {
+    public Boolean isAddCertificateStatusRequestV2Extension() {
         return addCertificateStatusRequestV2Extension;
     }
 
-    public void setAddCertificateStatusRequestV2Extension(boolean addCertificateStatusRequestV2Extension) {
+    public void setAddCertificateStatusRequestV2Extension(Boolean addCertificateStatusRequestV2Extension) {
         this.addCertificateStatusRequestV2Extension = addCertificateStatusRequestV2Extension;
     }
 
@@ -2687,11 +2707,11 @@ public class Config implements Serializable {
         this.defaultRunningMode = defaulRunningMode;
     }
 
-    public boolean isStopActionsAfterFatal() {
+    public Boolean isStopActionsAfterFatal() {
         return stopActionsAfterFatal;
     }
 
-    public void setStopActionsAfterFatal(boolean stopActionsAfterFatal) {
+    public void setStopActionsAfterFatal(Boolean stopActionsAfterFatal) {
         this.stopActionsAfterFatal = stopActionsAfterFatal;
     }
 
@@ -2888,7 +2908,7 @@ public class Config implements Serializable {
     /**
      * @return the usePsk
      */
-    public boolean isUsePsk() {
+    public Boolean isUsePsk() {
         return usePsk;
     }
 
@@ -2896,7 +2916,7 @@ public class Config implements Serializable {
      * @param usePsk
      *            the usePsk to set
      */
-    public void setUsePsk(boolean usePsk) {
+    public void setUsePsk(Boolean usePsk) {
         this.usePsk = usePsk;
     }
 
@@ -2906,5 +2926,37 @@ public class Config implements Serializable {
 
     public void setAlpnAnnouncedProtocols(String[] alpnAnnouncedProtocols) {
         this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
+    }
+
+    public NamedCurve getDefaultEcCertificateCurve() {
+        return defaultEcCertificateCurve;
+    }
+
+    public void setDefaultEcCertificateCurve(NamedCurve defaultEcCertificateCurve) {
+        this.defaultEcCertificateCurve = defaultEcCertificateCurve;
+    }
+
+    public BigInteger getDefaultClientRSAModulus() {
+        return defaultClientRSAModulus;
+    }
+
+    public void setDefaultClientRSAModulus(BigInteger defaultClientRSAModulus) {
+        this.defaultClientRSAModulus = defaultClientRSAModulus;
+    }
+
+    public BigInteger getDefaultClientDhGenerator() {
+        return defaultClientDhGenerator;
+    }
+
+    public void setDefaultClientDhGenerator(BigInteger defaultClientDhGenerator) {
+        this.defaultClientDhGenerator = defaultClientDhGenerator;
+    }
+
+    public BigInteger getDefaultClientDhModulus() {
+        return defaultClientDhModulus;
+    }
+
+    public void setDefaultClientDhModulus(BigInteger defaultClientDhModulus) {
+        this.defaultClientDhModulus = defaultClientDhModulus;
     }
 }

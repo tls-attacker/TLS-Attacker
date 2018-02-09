@@ -75,18 +75,19 @@ public class RealDirectMessageECOracle extends ECOracle {
         // modify public point base X coordinate
         ModifiableBigInteger x = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         x.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getX()));
-        message.setPublicKeyBaseX(x);
+        message.getComputations().setComputedPublicKeyX(x);
 
         // modify public point base Y coordinate
         ModifiableBigInteger y = ModifiableVariableFactory.createBigIntegerModifiableVariable();
         y.setModification(BigIntegerModificationFactory.explicitValue(ecPoint.getY()));
-        message.setPublicKeyBaseY(y);
+        message.getComputations().setComputedPublicKeyY(y);
 
         // set explicit premaster secret value (X value of the resulting point
         // coordinate)
         ModifiableByteArray pms = ModifiableVariableFactory.createByteArrayModifiableVariable();
         byte[] explicitePMS = BigIntegers.asUnsignedByteArray(curve.getKeyBits() / 8, secret);
         pms.setModification(ByteArrayModificationFactory.explicitValue(explicitePMS));
+        message.prepareComputations();
         message.getComputations().setPremasterSecret(pms);
 
         if (numberOfQueries % 100 == 0) {
@@ -153,8 +154,8 @@ public class RealDirectMessageECOracle extends ECOracle {
                 HandshakeMessageType.CLIENT_KEY_EXCHANGE, trace);
         // TODO Those values can be retrieved from the context
         // get public point base X and Y coordinates
-        BigInteger x = message.getPublicKeyBaseX().getValue();
-        BigInteger y = message.getPublicKeyBaseY().getValue();
+        BigInteger x = message.getComputations().getComputedPublicKeyX().getValue();
+        BigInteger y = message.getComputations().getComputedPublicKeyY().getValue();
         checkPoint = new Point(x, y);
         checkPMS = message.getComputations().getPremasterSecret().getValue();
     }

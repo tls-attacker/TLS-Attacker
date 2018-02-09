@@ -6,6 +6,7 @@
                 <extensions>
                     <ECPointFormat/>
                     <EllipticCurves/>
+                    <RenegotiationInfoExtension/>
                 </extensions>
             </ClientHello>
         </messages>

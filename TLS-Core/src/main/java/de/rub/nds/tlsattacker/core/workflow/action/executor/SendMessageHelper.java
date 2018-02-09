@@ -49,7 +49,7 @@ public class SendMessageHelper {
             if (message.getProtocolMessageType() != lastType && lastMessage != null
                     && context.getConfig().isFlushOnMessageTypeChange()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
-                lastMessage.getHandler(context).adjustTlsContextAfterSerialize(message);
+                lastMessage.getHandler(context).adjustTlsContextAfterSerialize(lastMessage);
                 lastMessage = null;
             }
             lastMessage = message;

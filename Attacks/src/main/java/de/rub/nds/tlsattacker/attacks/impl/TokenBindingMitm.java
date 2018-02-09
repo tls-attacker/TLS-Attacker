@@ -20,15 +20,11 @@ import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction
 import de.rub.nds.tlsattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(SimpleMitmProxy.class);
-
     public TokenBindingMitm(TokenBindingMitmCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override

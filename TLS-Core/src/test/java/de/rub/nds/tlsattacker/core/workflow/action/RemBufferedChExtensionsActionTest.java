@@ -67,6 +67,7 @@ public class RemBufferedChExtensionsActionTest {
         config.setAddEllipticCurveExtension(true);
         config.setAddEncryptThenMacExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
+        config.setAddRenegotiationInfoExtension(false);
 
         action = new RemBufferedChExtensionsAction();
         trace = new WorkflowTrace();

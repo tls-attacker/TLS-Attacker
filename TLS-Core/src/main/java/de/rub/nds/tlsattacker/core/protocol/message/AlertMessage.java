@@ -92,7 +92,7 @@ public class AlertMessage extends ProtocolMessage {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("AlertMessage:");
-        sb.append("\nALERT message:\n  Level: ");
+        sb.append("\n  Level: ");
         if (level != null) {
             if (AlertLevel.getAlertLevel(level.getValue()) == AlertLevel.UNDEFINED) {
                 sb.append(level.getValue());
@@ -119,13 +119,13 @@ public class AlertMessage extends ProtocolMessage {
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
         sb.append("AlertMessage:");
-        sb.append("ALERT (");
+        sb.append("\n  Level: ");
         if (level != null && level.getValue() != null) {
             sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());
         } else {
             sb.append("null");
         }
-        sb.append(", ");
+        sb.append("\n  Description: ");
         if (description != null && description.getValue() != null) {
             AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
             if (desc != null) {
@@ -136,7 +136,6 @@ public class AlertMessage extends ProtocolMessage {
         } else {
             sb.append("null");
         }
-        sb.append(")");
         return sb.toString();
     }
 

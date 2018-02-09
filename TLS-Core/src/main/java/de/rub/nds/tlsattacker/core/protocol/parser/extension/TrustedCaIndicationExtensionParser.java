@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.trustedauthority.TrustedAuthority;
 import java.util.LinkedList;
@@ -29,10 +30,13 @@ public class TrustedCaIndicationExtensionParser extends ExtensionParser<TrustedC
         int position = 0;
 
         while (position < msg.getTrustedAuthoritiesLength().getValue()) {
-            TrustedAuthorityParser taParser = new TrustedAuthorityParser(position, msg.getTrustedAuthoritiesBytes()
+            TrustedAuthorityParser parser = new TrustedAuthorityParser(position, msg.getTrustedAuthoritiesBytes()
                     .getValue());
-            trustedAuthoritiesList.add(taParser.parse());
-            position = taParser.getPointer();
+            trustedAuthoritiesList.add(parser.parse());
+            if (position == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing TrustedAuthorities");
+            }
+            position = parser.getPointer();
         }
         msg.setTrustedAuthorities(trustedAuthoritiesList);
     }

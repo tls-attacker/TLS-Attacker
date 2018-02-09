@@ -152,7 +152,7 @@ public class WorkflowTraceUtil {
         return returnedMessages;
     }
 
-    private static List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {
+    public static List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {
         List<HandshakeMessage> returnedMessages = new LinkedList<>();
         for (ProtocolMessage protocolMessage : messages) {
             if (protocolMessage.isHandshakeMessage()) {
@@ -216,11 +216,21 @@ public class WorkflowTraceUtil {
         return false;
     }
 
-    private static List<AbstractRecord> getAllReceivedRecords(WorkflowTrace trace) {
+    public static List<AbstractRecord> getAllReceivedRecords(WorkflowTrace trace) {
         List<AbstractRecord> receivedRecords = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
             receivedRecords.addAll(action.getReceivedRecords());
         }
         return receivedRecords;
+    }
+
+    public static List<AbstractRecord> getAllSendRecords(WorkflowTrace trace) {
+        List<AbstractRecord> sendRecords = new LinkedList<>();
+        for (SendingAction action : trace.getSendingActions()) {
+            if (action.getSendRecords() != null) {
+                sendRecords.addAll(action.getSendRecords());
+            }
+        }
+        return sendRecords;
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <Send>
+        <messages>
+            <SSL2ClientHello/>
+        </messages>
+        <records>
+            <BlobRecord/>
+        </records>
+    </Send>
+    <Receive>
+        <records>
+            <BlobRecord/>
+        </records>
+        <expectedMessages>
+            <SSL2ServerHello/>
+        </expectedMessages>
+    </Receive>
+    <Send>
+        <messages>
+            <SSL2ClientMasterKey/>
+        </messages>
+        <records>
+            <BlobRecord/>
+        </records>
+    </Send>
+    <Receive>
+        <records>
+            <BlobRecord/>
+        </records>
+        <expectedMessages>
+            <SSL2ServerVerify/>
+        </expectedMessages>
+    </Receive>
+</workflowTrace>
+

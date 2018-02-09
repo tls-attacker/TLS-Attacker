@@ -47,7 +47,8 @@ public class EarlyCCSCommandConfig extends AttackConfig {
 
     @Override
     public Config createConfig() {
-        return super.createConfig();
+        Config config = super.createConfig();
+        return config;
     }
 
 }

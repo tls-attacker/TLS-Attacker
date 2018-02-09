@@ -13,7 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 
-public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer {
+public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer<SSL2ClientHelloMessage> {
 
     private final SSL2ClientHelloMessage msg;
 
@@ -41,7 +41,7 @@ public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer {
      * Writes the MessageLength of the SSL2ClientHello into the final byte[]
      */
     private void writeMessageLength(SSL2ClientHelloMessage msg) {
-        appendInt(msg.getMessageLength().getValue(), SSL2ByteLength.LENGTH);
+        appendInt(msg.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
         LOGGER.debug("MessageLength: " + msg.getMessageLength().getValue());
     }
 

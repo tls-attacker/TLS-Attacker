@@ -32,7 +32,7 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().updateEncryptionCipher();
         LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
-        LOGGER.info("Resettin ActiveKeySets");
+        LOGGER.info("Resetting ActiveKeySets");
         tlsContext.setActiveClientKeySetType(Tls13KeySetType.NONE);
         tlsContext.setActiveServerKeySetType(Tls13KeySetType.NONE);
         tlsContext.setReadSequenceNumber(0);
