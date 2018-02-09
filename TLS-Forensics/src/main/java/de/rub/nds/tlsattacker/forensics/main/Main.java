@@ -39,10 +39,6 @@ import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class Main {
 
     protected static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger(Main.class.getName());

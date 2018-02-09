@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.exception;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class PaddingOracleUnstableException extends RuntimeException {
 
     public PaddingOracleUnstableException(String string) {

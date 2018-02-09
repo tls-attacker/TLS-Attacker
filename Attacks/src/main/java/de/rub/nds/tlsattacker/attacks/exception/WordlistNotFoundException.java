@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.attacks.exception;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class WordlistNotFoundException extends RuntimeException {
 
     public WordlistNotFoundException() {

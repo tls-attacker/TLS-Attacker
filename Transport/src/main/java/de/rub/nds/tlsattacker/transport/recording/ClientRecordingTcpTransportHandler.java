@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.io.IOException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ClientRecordingTcpTransportHandler extends ClientTcpTransportHandler {
 
     private final Recording recording;

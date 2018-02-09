@@ -15,10 +15,6 @@ package de.rub.nds.tlsattacker.forensics.config;
 
 import com.beust.jcommander.Parameter;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class TlsForensicsConfig {
 
     public static final String COMMAND = "analyze";

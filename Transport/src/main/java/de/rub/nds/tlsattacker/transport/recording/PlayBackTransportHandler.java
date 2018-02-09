@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class PlayBackTransportHandler extends TransportHandler {
 
     private final List<RecordedLine> linesToSend;

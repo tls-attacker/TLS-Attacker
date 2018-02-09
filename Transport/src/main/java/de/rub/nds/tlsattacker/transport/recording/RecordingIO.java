@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.transport.recording;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class RecordingIO {
     // TODO
 }

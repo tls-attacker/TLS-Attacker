@@ -40,7 +40,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 /**
  * This class tries to reconstruct WorkflowTraces
  *
- * @author Robert Merget - robert.merget@rub.de
  */
 public class ForensicAnalyzer {
 

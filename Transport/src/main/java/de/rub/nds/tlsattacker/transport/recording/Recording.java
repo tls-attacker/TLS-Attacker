@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.transport.recording;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class Recording {
 
     private final List<RecordedLine> receivedLines;

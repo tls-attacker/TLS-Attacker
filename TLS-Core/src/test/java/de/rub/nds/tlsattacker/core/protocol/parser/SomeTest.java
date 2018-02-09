@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class SomeTest {
 
     public void test() {

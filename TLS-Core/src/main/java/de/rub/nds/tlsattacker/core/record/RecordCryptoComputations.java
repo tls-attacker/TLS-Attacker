@@ -14,10 +14,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import java.math.BigInteger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class RecordCryptoComputations {
 
     private ModifiableByteArray cipherKey;

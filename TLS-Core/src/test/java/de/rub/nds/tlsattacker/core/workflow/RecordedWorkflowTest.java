@@ -41,10 +41,6 @@ import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class RecordedWorkflowTest {
 
     private ClientRecordingTcpTransportHandler transportHandler;
