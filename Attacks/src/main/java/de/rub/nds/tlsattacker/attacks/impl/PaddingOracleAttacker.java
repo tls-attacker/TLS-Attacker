@@ -117,6 +117,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private Record createRecordWithPlainData(byte[] plain) {
         Record r = new Record(tlsConfig);
+        r.prepareComputations();
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
         plainData.setModification(modifier);
