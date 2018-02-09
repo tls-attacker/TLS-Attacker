@@ -290,7 +290,7 @@ public class ReceiveMessageHelper {
         // it's up to the client to know what to expect next. Is this good
         // enough?
         HandshakeMessageHandler<? extends SSL2HandshakeMessage> handler;
-        if (HandshakeMessageType.getMessageType(cleanProtocolMessageBytes[2]) == HandshakeMessageType.SSL2_SERVER_HELLO) {
+        if (cleanProtocolMessageBytes[2] == HandshakeMessageType.SSL2_SERVER_HELLO.getValue()) {
             handler = new SSL2ServerHelloHandler(context);
         } else {
             handler = new SSL2ServerVerifyHandler(context);
