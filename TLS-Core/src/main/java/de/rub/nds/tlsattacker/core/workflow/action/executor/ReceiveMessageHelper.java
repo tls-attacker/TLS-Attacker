@@ -103,8 +103,7 @@ public class ReceiveMessageHelper {
                 receivedBytes = receiveByteArray(context);
                 if (receivedBytes.length != 0) {
                     List<AbstractRecord> tempRecords = parseRecords(receivedBytes, context);
-                    // List<List<AbstractRecord>> recordGroups =
-                    // getRecordGroups(tempRecords);
+                    List<List<AbstractRecord>> recordGroups = getRecordGroups(tempRecords);
                     realRecords.addAll(tempRecords);
                 }
             } while (receivedBytes.length != 0);
@@ -195,7 +194,7 @@ public class ReceiveMessageHelper {
 
     public List<ProtocolMessage> parseMessages(List<AbstractRecord> records, TlsContext context) {
         byte[] cleanProtocolMessageBytes = getCleanBytes(records);
-        // Due to TLS 1.3 Encrypted Type it might be necessary to to look for
+        // Due to TLS 1.3 Encrypted Type it might be necessary to look for
         // new groups here
         List<ProtocolMessage> messages = new LinkedList<>();
         for (List<AbstractRecord> subgroup : getRecordGroups(records)) {

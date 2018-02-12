@@ -17,7 +17,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKBinder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PSKIdentity;
@@ -33,7 +32,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
 import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -66,18 +64,17 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     }
 
     private void prepareLists() {
-        if (msg.getIdentities() == null) {
-            msg.setIdentities(new LinkedList<PSKIdentity>());
+        if (msg.getIdentities() != null) {
+            for (PSKIdentity pskIdentity : msg.getIdentities()) {
+                new PSKIdentityPreparator(chooser, pskIdentity).prepare();
+            }
         }
-        if (msg.getBinders() == null) {
-            msg.setBinders(new LinkedList<PSKBinder>());
+        if (msg.getBinders() != null) {
+            for (PSKBinder pskBinder : msg.getBinders()) {
+                new PSKBinderPreparator(chooser, pskBinder).prepare();
+            }
         }
-        for (PSKIdentity pskIdentity : msg.getIdentities()) {
-            new PSKIdentityPreparator(chooser, pskIdentity).prepare();
-        }
-        for (PSKBinder pskBinder : msg.getBinders()) {
-            new PSKBinderPreparator(chooser, pskBinder).prepare();
-        }
+
     }
 
     private void prepareSelectedIdentity() {
@@ -149,6 +146,7 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
 
     private void calculateBinders(byte[] relevantBytes, PreSharedKeyExtensionMessage msg) {
         List<PskSet> pskSets = chooser.getPskSets();
+        LOGGER.debug("Calculating Binders");
         for (int x = 0; x < msg.getBinders().size(); x++) {
             try {
                 HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(pskSets.get(x).getCipherSuite());
