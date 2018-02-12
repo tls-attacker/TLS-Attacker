@@ -15,7 +15,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 public class KeyShareEntryParser extends Parser<KeyShareEntry> {
 
-    private KeyShareEntry pair;
+    private KeyShareEntry entry;
 
     public KeyShareEntryParser(int startposition, byte[] array) {
         super(startposition, array);
@@ -24,13 +24,13 @@ public class KeyShareEntryParser extends Parser<KeyShareEntry> {
     @Override
     public KeyShareEntry parse() {
         LOGGER.debug("Parsing KeyShareEntry");
-        pair = new KeyShareEntry();
-        parseKeyShareType(pair);
+        entry = new KeyShareEntry();
+        parseKeyShareType(entry);
         if (getBytesLeft() > 0) {
-            parseKeyShareLength(pair);
-            parseKeyShare(pair);
+            parseKeyShareLength(entry);
+            parseKeyShare(entry);
         }
-        return pair;
+        return entry;
     }
 
     /**
