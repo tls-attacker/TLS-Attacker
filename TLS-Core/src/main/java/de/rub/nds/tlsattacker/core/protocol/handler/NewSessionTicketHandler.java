@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
+import java.util.List;
 import javax.crypto.Mac;
 
 public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
@@ -57,6 +58,10 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     private void adjustPskSets(NewSessionTicketMessage message) {
         LOGGER.debug("Adjusting PSK-Sets");
+        List<PskSet> pskSets = tlsContext.getPskSets();
+        if (pskSets == null) {
+            pskSets = new LinkedList<>();
+        }
         PskSet pskSet = new PskSet();
         pskSet.setCipherSuite(tlsContext.getChooser().getSelectedCipherSuite());
         if (message.getTicket().getTicketAgeAdd() != null) {
@@ -73,8 +78,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         pskSet.setTicketAge(getTicketAge());
         pskSet.setPreSharedKey(derivePsk(message));
         LOGGER.debug("Adding PSK Set");
-        tlsContext.getChooser().getPskSets().add(pskSet);
-
+        pskSets.add(pskSet);
+        tlsContext.setPskSets(pskSets);
+        
     }
 
     private String getTicketAge() {
@@ -94,7 +100,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
                     tlsContext.getMasterSecret(), HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest()
-                            .getRawBytes());
+                    .getRawBytes());
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
             byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumptionMasterSecret, HKDFunction.RESUMPTION, message
                     .getTicket().getTicketNonce().getValue(), macLength);
