@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
@@ -48,9 +49,10 @@ public class RecordPreparatorTest {
      * Test of the prepare method for TLS 1.3, of class RecordPreparator.
      * 
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testPrepare() throws NoSuchAlgorithmException {
+    public void testPrepare() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.getConfig().setPaddingLength(0);
@@ -68,7 +70,7 @@ public class RecordPreparatorTest {
         assertTrue(ProtocolMessageType.getContentType(record.getContentType().getValue()) == ProtocolMessageType.APPLICATION_DATA);
         assertTrue(ProtocolMessageType.getContentType(record.getContentMessageType().getValue()) == ProtocolMessageType.HANDSHAKE);
         assertArrayEquals(record.getProtocolVersion().getValue(), ProtocolVersion.TLS10.getValue());
-        assertTrue(record.getPaddingLength().getValue() == 0);
+        assertTrue(record.getComputations().getPaddingLength().getValue() == 0);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("1BB3293A919E0D66F145AE830488E8D89BE5EC16688229"), record
                 .getProtocolMessageBytes().getValue());
     }

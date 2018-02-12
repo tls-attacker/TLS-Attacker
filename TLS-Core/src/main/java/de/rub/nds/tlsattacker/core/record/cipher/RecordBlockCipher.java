@@ -12,7 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
-import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -87,11 +88,18 @@ public final class RecordBlockCipher extends RecordCipher {
     }
 
     @Override
-    public byte[] calculateMac(byte[] data) {
-        writeMac.update(data);
+    public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
         LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
-        byte[] result = writeMac.doFinal();
-        LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
+        byte[] result;
+        if (connectionEndType == context.getChooser().getConnectionEndType()) {
+            writeMac.update(data);
+            result = writeMac.doFinal();
+
+        } else {
+            readMac.update(data);
+            result = readMac.doFinal();
+        }
+        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
     }
 
@@ -101,11 +109,9 @@ public final class RecordBlockCipher extends RecordCipher {
      * @param request
      *            The RequestedEncryption operation
      * @return The EncryptionResult
-     * @throws CryptoException
-     *             If something goes wrong during Encryption
      */
     @Override
-    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
+    public EncryptionResult encrypt(EncryptionRequest request) {
         try {
             byte[] ciphertext;
             encryptIv = new IvParameterSpec(request.getInitialisationVector());
@@ -121,7 +127,8 @@ public final class RecordBlockCipher extends RecordCipher {
             return new EncryptionResult(encryptIv.getIV(), ciphertext, useExplicitIv);
 
         } catch (InvalidKeyException | InvalidAlgorithmParameterException ex) {
-            throw new CryptoException(ex);
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning unencrypted data.", ex);
+            return new EncryptionResult(request.getPlainText());
         }
     }
 
@@ -133,40 +140,46 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes a ciphertext and decrypts it
      *
-     * @param data
-     *            correctly padded data
+     * @param decryptionRequest
      * @return The raw decrypted Bytes
-     * @throws CryptoException
-     *             If something goes wrong during decryption
      */
     @Override
-    public byte[] decrypt(byte[] data) throws CryptoException {
+    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
         try {
             byte[] plaintext;
+            byte[] usedIv;
+            if (decryptionRequest.getCipherText().length % decryptCipher.getBlockSize() != 0) {
+                LOGGER.warn("Ciphertext is not a multiple of the Blocksize. Not Decrypting");
+                return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv);
+            }
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             if (useExplicitIv) {
-                decryptIv = new IvParameterSpec(Arrays.copyOf(data, decryptCipher.getBlockSize()));
+                decryptIv = new IvParameterSpec(Arrays.copyOf(decryptionRequest.getCipherText(),
+                        decryptCipher.getBlockSize()));
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
 
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
                         bulkCipherAlg.getJavaName()), decryptIv);
-                plaintext = decryptCipher.doFinal(Arrays.copyOfRange(data, decryptCipher.getBlockSize(), data.length));
+                plaintext = decryptCipher.doFinal(Arrays.copyOfRange(decryptionRequest.getCipherText(),
+                        decryptCipher.getBlockSize(), decryptionRequest.getCipherText().length));
+                usedIv = decryptIv.getIV();
             } else {
                 decryptIv = new IvParameterSpec(getDecryptionIV());
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv.getIV()));
 
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(getKeySet().getReadKey(localConEndType),
                         bulkCipherAlg.getJavaName()), decryptIv);
-                plaintext = decryptCipher.doFinal(data);
-
+                plaintext = decryptCipher.doFinal(decryptionRequest.getCipherText());
+                usedIv = decryptIv.getIV();
                 // Set next IV
-                setNextDecryptIv(data);
+                setNextDecryptIv(decryptionRequest.getCipherText());
             }
 
-            return plaintext;
+            return new DecryptionResult(usedIv, plaintext, useExplicitIv);
         } catch (BadPaddingException | IllegalBlockSizeException | InvalidAlgorithmParameterException
                 | InvalidKeyException | UnsupportedOperationException ex) {
-            throw new CryptoException(ex);
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.", ex);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), useExplicitIv);
         }
     }
 

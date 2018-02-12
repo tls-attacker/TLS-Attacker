@@ -36,6 +36,7 @@ public class ActionTestUtils {
      * but sets the logger automatically.
      * <p>
      * 
+     * @param <T>
      * @param actionClass
      *            the Class to test
      * @see this.marshalingEmptyActionYieldsMinimalOutput(Class<T>, Logger)
@@ -62,6 +63,7 @@ public class ActionTestUtils {
      * normalize/filter/serialize procedure. <b>Should be invoked by tests in
      * Category(SlowTests.class) only</b>
      * 
+     * @param <T>
      * @param actionClass
      *            the Class to test
      * @param logger
@@ -111,6 +113,7 @@ public class ActionTestUtils {
      * Logger), but sets the logger automatically.
      * <p>
      * 
+     * @param <T>
      * @param actionClass
      *            the Class to test
      * @see this.marshalingAndUnmarshalingEmptyObjectYieldsEqualObject(Class<T>,
@@ -129,6 +132,7 @@ public class ActionTestUtils {
      * <p>
      * Calling this method is expensive. <b>Should be invoked by tests in
      * 
+     * @param <T>
      * @Category(SlowTests.class) only</b>
      *                            <p>
      * 
@@ -166,6 +170,7 @@ public class ActionTestUtils {
      * Logger), but sets the logger automatically.
      * <p>
      * 
+     * @param <T>
      * @param action
      *            an instance of the TlsAction class under test, filled with
      *            custom values
@@ -189,6 +194,7 @@ public class ActionTestUtils {
      * Category(SlowTests.class) only</b>
      * <p>
      * 
+     * @param <T>
      * @param action
      *            an instance of the TlsAction class under test, filled with
      *            custom values

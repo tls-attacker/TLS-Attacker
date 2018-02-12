@@ -28,6 +28,8 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
  */
 public class BlobRecord extends AbstractRecord {
 
+    private RecordCryptoComputations computations;
+
     public BlobRecord() {
     }
 
@@ -53,6 +55,19 @@ public class BlobRecord extends AbstractRecord {
     @Override
     public void adjustContext(TlsContext context) {
         // do nothing
+    }
+
+    public RecordCryptoComputations getComputations() {
+        return computations;
+    }
+
+    public void setComputations(RecordCryptoComputations computations) {
+        this.computations = computations;
+    }
+
+    @Override
+    public void prepareComputations() {
+        computations = new RecordCryptoComputations();
     }
 
 }

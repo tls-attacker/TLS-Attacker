@@ -10,9 +10,8 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import java.math.BigInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 
 public class ECDHEServerComputations extends KeyExchangeComputations {
 
@@ -30,22 +29,7 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
     protected ModifiableByteArray serverRandom;
 
-    @ModifiableVariableProperty
-    protected ModifiableBigInteger privateKey;
-
     public ECDHEServerComputations() {
-    }
-
-    public ModifiableBigInteger getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(ModifiableBigInteger privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
     public ModifiableByteArray getEcPointFormatList() {
@@ -84,4 +68,8 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
         this.serverRandom = ModifiableVariableFactory.safelySetValue(this.serverRandom, random);
     }
 
+    @Override
+    public void setSecretsInConfig(Config config) {
+        config.setDefaultServerEcPrivateKey(getPrivateKey().getValue());
+    }
 }

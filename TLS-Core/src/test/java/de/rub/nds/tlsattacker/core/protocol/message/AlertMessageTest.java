@@ -8,9 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.message;
 
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class AlertMessageTest {
 
@@ -25,11 +25,20 @@ public class AlertMessageTest {
     public void testToString() {
         byte testBytes = (byte) 199;
         StringBuilder sb = new StringBuilder();
-        sb.append("AlertMessage:").append("\nALERT message:\n  Level: ").append(testBytes).append("\n  Description: ")
-                .append(testBytes);
+        sb.append("AlertMessage:");
+        sb.append("\n  Level: ").append("null");
+        sb.append("\n  Description: ").append("null");
+
+        assertEquals(sb.toString(), message.toString());
 
         message.setDescription(testBytes);
         message.setLevel(testBytes);
+
+        sb.setLength(0);
+        sb.append("AlertMessage:");
+        sb.append("\n  Level: ").append(testBytes);
+        sb.append("\n  Description: ").append(testBytes);
+
         assertEquals(sb.toString(), message.toString());
     }
 

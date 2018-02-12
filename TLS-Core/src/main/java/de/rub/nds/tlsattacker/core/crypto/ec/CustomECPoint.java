@@ -98,4 +98,9 @@ public class CustomECPoint implements Serializable {
         System.arraycopy(value, 0, signedValue, 1, value.length);
         return new BigInteger(signedValue);
     }
+
+    @Override
+    public String toString() {
+        return "CustomECPoint{" + "x=" + x + ", y=" + y + '}';
+    }
 }

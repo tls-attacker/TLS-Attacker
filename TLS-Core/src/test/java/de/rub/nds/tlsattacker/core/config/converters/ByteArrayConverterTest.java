@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.ParameterException;
+import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertArrayEquals;
 
 public class ByteArrayConverterTest {
     private ByteArrayConverter converter;

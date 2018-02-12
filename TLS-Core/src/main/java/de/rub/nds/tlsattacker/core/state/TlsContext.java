@@ -25,8 +25,8 @@ import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
@@ -511,6 +511,19 @@ public class TlsContext {
 
     private boolean receivedTransportHandlerException = false;
 
+    /**
+     * Experimental flag for forensics and reparsing
+     */
+    private boolean reversePrepareAfterParse = false;
+
+    /**
+     * When running tls 1.3 as a server, when we activate decryption of client
+     * messages we need to set this flag to true. When this flag is active the
+     * server will try to parse the next record it receives as an unencrypted
+     * one, if its protocolmessage type is alert
+     */
+    private boolean tls13SoftDecryption = false;
+
     public TlsContext() {
         this(Config.createConfig());
         httpContext = new HttpContext();
@@ -564,6 +577,22 @@ public class TlsContext {
             chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
         }
         return chooser;
+    }
+
+    public boolean isTls13SoftDecryption() {
+        return tls13SoftDecryption;
+    }
+
+    public void setTls13SoftDecryption(boolean tls13SoftDecryption) {
+        this.tls13SoftDecryption = tls13SoftDecryption;
+    }
+
+    public boolean isReversePrepareAfterParse() {
+        return reversePrepareAfterParse;
+    }
+
+    public void setReversePrepareAfterParse(boolean reversePrepareAfterParse) {
+        this.reversePrepareAfterParse = reversePrepareAfterParse;
     }
 
     public LinkedList<ProtocolMessage> getMessageBuffer() {

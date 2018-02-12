@@ -11,15 +11,16 @@ package de.rub.nds.tlsattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
-import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.protocol.handler.PskEcDheServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.bouncycastle.crypto.tls.NamedCurve;
 
 @XmlRootElement
 public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMessage {
@@ -63,17 +64,26 @@ public class PskEcDheServerKeyExchangeMessage extends ECDHEServerKeyExchangeMess
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("PskEcDheServerKeyExchangeMessage:");
         sb.append("\n  Curve Type: ");
-        sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
+        if (this.curveType != null && this.curveType.getValue() != null) {
+            sb.append(EllipticCurveType.getCurveType(this.curveType.getValue()));
+        } else {
+            sb.append("null");
+        }
         sb.append("\n  Named Group: ");
-        if (namedGroup != null) {
+        if (namedGroup != null && namedGroup.getValue() != null) {
             sb.append(NamedGroup.getNamedGroup(this.namedGroup.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+        if (getPublicKey() != null) {
+            sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue()));
+        } else {
+            sb.append("null");
+        }
         return sb.toString();
     }
 

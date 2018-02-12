@@ -18,8 +18,6 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ClientTcpTransportHandler extends TransportHandler {
 
@@ -73,6 +71,7 @@ public class ClientTcpTransportHandler extends TransportHandler {
      * TransportHandler will get messed up and an Exception will be thrown.
      *
      * @return The current SocketState
+     * @throws de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException
      */
     public SocketState getSocketState() throws InvalidTransportHandlerStateException {
         try {

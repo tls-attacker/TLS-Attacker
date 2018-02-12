@@ -105,7 +105,7 @@ public class ServerHelloParserTest {
     }
 
     /**
-     * Test of parse method, of class ServerHelloMessageParser.
+     * Test of parse method, of class ServerHelloParser.
      */
     @Test
     public void verify() {

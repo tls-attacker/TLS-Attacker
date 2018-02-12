@@ -48,10 +48,13 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("ChangeCipherSpecMessage:");
+        sb.append("\n  CCS ProtocolType: ");
         if (ccsProtocolType != null && ccsProtocolType.getValue() != null) {
-            sb.append("\n   CCS ProtocolType:");
             sb.append(String.format("%02X ", ccsProtocolType.getValue()));
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }

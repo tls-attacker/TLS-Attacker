@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
@@ -59,8 +59,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
                 context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
             }
         }
-        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
-                && message.getIdentities() != null && message.getIdentities().size() > 0) {
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER && message.getIdentities() != null
+                && message.getIdentities().size() > 0) {
             selectPsk(message);
             if (context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 selectEarlyDataPsk(message);

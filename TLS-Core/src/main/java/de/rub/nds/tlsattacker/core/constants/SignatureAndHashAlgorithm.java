@@ -10,16 +10,19 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Construction of a hash and signature algorithm. Very confusing, consists of
  * two bytes, the first is hash algorithm: {HashAlgorithm, SignatureAlgorithm}
  */
 public class SignatureAndHashAlgorithm implements Serializable {
+
+    protected static final Logger LOGGER = LogManager.getLogger(SignatureAndHashAlgorithm.class.getName());
 
     public static SignatureAndHashAlgorithm getSignatureAndHashAlgorithm(byte[] value) {
         return new SignatureAndHashAlgorithm(value);
@@ -66,6 +69,16 @@ public class SignatureAndHashAlgorithm implements Serializable {
         } else {
             hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[0]);
             signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[1]);
+        }
+        if (hashAlgorithm == null) {
+            LOGGER.warn("Could not parse " + ArrayConverter.bytesToHexString(value)
+                    + " into a HashAlgorithm. Using NONE");
+            hashAlgorithm = HashAlgorithm.NONE;
+        }
+        if (signatureAlgorithm == null) {
+            LOGGER.warn("Could not parse " + ArrayConverter.bytesToHexString(value)
+                    + " into a SignatureAlgorithm. Using ANONYMOUS");
+            signatureAlgorithm = SignatureAlgorithm.ANONYMOUS;
         }
     }
 

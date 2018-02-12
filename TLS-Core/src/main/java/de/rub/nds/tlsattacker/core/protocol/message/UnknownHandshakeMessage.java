@@ -15,7 +15,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeMessageHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.UnknownHandshakeHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -57,13 +57,19 @@ public class UnknownHandshakeMessage extends HandshakeMessage {
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new UnknownHandshakeMessageHandler(context);
+        return new UnknownHandshakeHandler(context);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("   \nData:").append(ArrayConverter.bytesToHexString(data.getValue()));
+        StringBuilder sb = new StringBuilder();
+        sb.append("UnknownHandshakeMessage:");
+        sb.append("\n  Data: ");
+        if (data != null && data.getValue() != null) {
+            sb.append(ArrayConverter.bytesToHexString(data.getValue()));
+        } else {
+            sb.append("null");
+        }
         return sb.toString();
     }
 

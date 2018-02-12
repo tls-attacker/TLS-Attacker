@@ -9,12 +9,12 @@
 package de.rub.nds.tlsattacker.core.workflow.action;
 
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ArbitraryMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
+import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,7 +67,7 @@ public class MessageActionFactoryTest {
     @Test
     public void testCreateActionMultiple() {
         List<ProtocolMessage> messages = new LinkedList<>();
-        messages.add(new ArbitraryMessage());
+        messages.add(new ChangeCipherSpecMessage());
         messages.add(new AlertMessage(config));
         MessageAction action = MessageActionFactory.createAction(clientConnection, ConnectionEndType.CLIENT, messages);
         assertEquals(action.getClass(), SendAction.class);

@@ -8,17 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.AES;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.CAMELLIA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DES40;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.DESede;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.FORTEZZA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.IDEA;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.NULL;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC2;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.RC4;
-import static de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm.SEED;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
@@ -158,8 +147,7 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.ECDH_ECNRA;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a KeyExchangeAlgorithm");
         }
@@ -171,7 +159,7 @@ public class AlgorithmResolver {
      * Depending on the provided cipher suite, the server needs to be
      * initialized with proper public key(s). Depending on the cipher suite,
      * there are possibly more than one cipher suites needed.
-     * 
+     *
      * This function returns a list of public key algorithms needed when running
      * a server with a cipher suite.
      *
@@ -251,8 +239,7 @@ public class AlgorithmResolver {
             return CipherAlgorithm.ChaCha20Poly1305;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a Cipher");
         }
@@ -286,8 +273,7 @@ public class AlgorithmResolver {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a CipherType");
         }
@@ -327,8 +313,7 @@ public class AlgorithmResolver {
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV
-                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV
-                || cipherSuite == CipherSuite.TLS_UNKNOWN_CIPHER) {
+                || cipherSuite == CipherSuite.TLS_EMPTY_RENEGOTIATION_INFO_SCSV) {
             throw new UnsupportedOperationException("The CipherSuite:" + cipherSuite.name()
                     + " does not specify a MAC-Algorithm");
         }
@@ -353,8 +338,9 @@ public class AlgorithmResolver {
             LOGGER.debug("Using the following HKDF Algorithm: {}", result);
             return result;
         } else {
-            throw new UnsupportedOperationException("The HKDF algorithm for cipher suite " + cipherSuite
-                    + " is not supported yet");
+            LOGGER.warn("The HKDF algorithm for cipher suite " + cipherSuite
+                    + " is not supported yet or is undefined. Using \"TLS_HKDF_SHA256\"");
+            return HKDFAlgorithm.TLS_HKDF_SHA256;
         }
     }
 

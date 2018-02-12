@@ -65,15 +65,26 @@ public class HelloRetryRequestMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\n  Protocol Version: ").append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()))
-                .append("\n  Selected Cipher Suite: ")
-                .append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue())).append("\n  Extensions: ");
+        StringBuilder sb = new StringBuilder();
+        sb.append("HelloRetryRequestMessage:");
+        sb.append("\n  Protocol Version: ");
+        if (protocolVersion != null && protocolVersion.getValue() != null) {
+            sb.append(ProtocolVersion.getProtocolVersion(protocolVersion.getValue()));
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Selected Cipher Suite: ");
+        if (selectedCipherSuite != null && selectedCipherSuite.getValue() != null) {
+            sb.append(CipherSuite.getCipherSuite(selectedCipherSuite.getValue())).append("\n  Extensions: ");
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Extensions: ");
         if (getExtensions() == null) {
             sb.append("null");
         } else {
             for (ExtensionMessage e : getExtensions()) {
-                sb.append(e.toString());
+                sb.append("\n  ").append(e.toString());
             }
         }
         return sb.toString();

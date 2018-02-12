@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.security.spec.ECParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Rule;
 import org.junit.Test;

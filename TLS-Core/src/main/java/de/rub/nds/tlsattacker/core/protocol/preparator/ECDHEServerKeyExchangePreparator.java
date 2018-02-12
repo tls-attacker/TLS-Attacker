@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.SignatureCalculator;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import static de.rub.nds.tlsattacker.core.protocol.preparator.Preparator.LOGGER;
@@ -51,8 +52,12 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         SignatureAndHashAlgorithm signHashAlgo;
         signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
-
-        byte[] signature = generateSignature(msg, signHashAlgo);
+        byte[] signature = new byte[0];
+        try {
+            signature = generateSignature(msg, signHashAlgo);
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not generate Signature! Using empty one instead!", E);
+        }
         prepareSignature(msg, signature);
         prepareSignatureLength(msg);
     }
@@ -222,7 +227,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
 
     }
 
-    protected byte[] generateSignature(T msg, SignatureAndHashAlgorithm algorithm) {
+    protected byte[] generateSignature(T msg, SignatureAndHashAlgorithm algorithm) throws CryptoException {
         return SignatureCalculator.generateSignature(algorithm, chooser, generateSignatureContents(msg));
     }
 

@@ -10,14 +10,15 @@ package de.rub.nds.tlsattacker.attacks;
 
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
@@ -25,14 +26,15 @@ import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
-import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
 import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.DrownAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
 import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
 import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.TooManyAlgorithmsAttacker;
@@ -88,6 +90,8 @@ public class Main {
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
         TooManyAlgorithmsAttackConfig tooManyAlgorithms = new TooManyAlgorithmsAttackConfig(generalDelegate);
         jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyAlgorithms);
+        DrownCommandConfig drownConfig = new DrownCommandConfig(generalDelegate);
+        jc.addCommand(DrownCommandConfig.COMMAND, drownConfig);
         // TokenBindingMitmCommandConfig tokenBindingMitm = new
         // TokenBindingMitmCommandConfig(generalDelegate);
         // jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND,
@@ -149,7 +153,9 @@ public class Main {
             case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
                 attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest);
                 break;
-
+            case DrownCommandConfig.COMMAND:
+                attacker = new DrownAttacker(drownConfig);
+                break;
             // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
             // attacker = new TokenBindingMitm(tokenBindingMitm);
             // break;

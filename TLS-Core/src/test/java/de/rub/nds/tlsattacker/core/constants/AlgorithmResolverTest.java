@@ -50,22 +50,22 @@ public class AlgorithmResolverTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetPRFUnsupportedProtocolVersionSSL2() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetPRFUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetDigestUnsupportedProtocolVersionSSL2() {
-        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL2, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetDigestUnsupportedProtocolVersionSSL3() {
-        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.SSL3, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     /**
@@ -140,7 +140,7 @@ public class AlgorithmResolverTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableKeyExchangeUnknown() {
-        AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -219,7 +219,7 @@ public class AlgorithmResolverTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherUnknown() {
-        AlgorithmResolver.getCipher(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getCipher(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -246,7 +246,7 @@ public class AlgorithmResolverTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableCipherTypeUnknown() {
-        AlgorithmResolver.getCipherType(CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getCipherType(CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -314,7 +314,7 @@ public class AlgorithmResolverTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void testUnresolvableMACUnknown() {
-        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_UNKNOWN_CIPHER);
+        AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_FALLBACK_SCSV);
     }
 
     @Test(expected = UnsupportedOperationException.class)

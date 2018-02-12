@@ -282,33 +282,51 @@ public class ClientHelloMessage extends HelloMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("ClientHelloMessage:");
+        sb.append("\n  Protocol Version: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            sb.append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Client Unix Time: ");
         if (getUnixTime() != null && getUnixTime().getValue() != null) {
-            sb.append("\n  Client Unix Time: ");
             sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Client Random: ");
         if (getRandom() != null && getRandom().getValue() != null) {
-            sb.append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Session ID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Supported Cipher Suites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append("\n  Supported Cipher Suites: ").append(
-                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Supported Compression Methods: ");
         if (getCompressions() != null && getCompressions().getValue() != null) {
-            sb.append("\n  Supported Compression Methods: ")
-                    .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
+            sb.append(ArrayConverter.bytesToHexString(getCompressions().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Extensions: ");
         if (getExtensions() != null) {
             for (ExtensionMessage extension : getExtensions()) {
                 sb.append(extension.toString()).append("\n");
             }
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }

@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.tlsattacker.core.config.filter.ConfigDisplayFilter;
-
 import java.io.*;
 import javax.xml.bind.JAXB;
 

@@ -9,9 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -32,7 +30,14 @@ public class CertificateRequestMessageTest {
      */
     @Test
     public void testToString() {
-        // TODO
+        StringBuilder sb = new StringBuilder();
+        sb.append("CertificateRequestMessage:");
+        sb.append("\n  Certificate Types Count: ").append("null");
+        sb.append("\n  Certificate Types: ").append("null");
+        sb.append("\n  Signature Hash Algorithms Length: ").append("null");
+        sb.append("\n  Signature Hash Algorithms: ").append("null");
+        sb.append("\n  Distinguished Names Length: ").append("null");
+        assertEquals(message.toString(), sb.toString());
     }
 
 }

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Bleichenbacher;
+import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherVulnerabilityMap;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.tlsattacker.attacks.pkcs1.BleichenbacherWorkflowType;
 import de.rub.nds.tlsattacker.attacks.pkcs1.Pkcs1Vector;
@@ -99,12 +100,45 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             return null;
         }
         printBleichenbacherVectormap(bleichenbacherVectorMap);
+        EqualityError error = getEqualityError(bleichenbacherVectorMap);
+        if (error == EqualityError.SOCKET_EXCEPTION || error == EqualityError.SOCKET_STATE) {
+            LOGGER.debug("Found a Socket related side channel. Rescanning to confirm.");
+            // Socket Equality Errors can be caused by problems on on the
+            // network. In this case we do a rescan
+            // and check if we find the exact same answer behaviour (twice)
+            List<VectorFingerprintPair> secondBleichenbacherVectorMap = getBleichenbacherMap(bbWorkflowType,
+                    pkcs1Vectors);
+            EqualityError error2 = getEqualityError(secondBleichenbacherVectorMap);
+            BleichenbacherVulnerabilityMap mapOne = new BleichenbacherVulnerabilityMap(bleichenbacherVectorMap, error);
+            BleichenbacherVulnerabilityMap mapTwo = new BleichenbacherVulnerabilityMap(secondBleichenbacherVectorMap,
+                    error2);
+            if (mapOne.looksIdentical(mapTwo)) {
+                List<VectorFingerprintPair> thirdBleichenbacherVectorMap = getBleichenbacherMap(bbWorkflowType,
+                        pkcs1Vectors);
+                EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
+                BleichenbacherVulnerabilityMap mapThree = new BleichenbacherVulnerabilityMap(
+                        secondBleichenbacherVectorMap, error2);
+                if (!mapTwo.looksIdentical(mapThree)) {
+                    LOGGER.debug("The third scan prove this vulnerability to be non existent");
+                    error = EqualityError.NONE;
+                }
+            } else {
+                LOGGER.debug("The second scan prove this vulnerability to be non existent");
+                error = EqualityError.NONE;
+            }
+        }
+        if (error != EqualityError.NONE) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found a vulnerability with " + bbWorkflowType.getDescription());
+        }
+        return error;
+    }
+
+    public EqualityError getEqualityError(List<VectorFingerprintPair> bleichenbacherVectorMap) {
         ResponseFingerprint fingerprint = bleichenbacherVectorMap.get(0).getFingerprint();
         for (VectorFingerprintPair pair : bleichenbacherVectorMap) {
             EqualityError error = FingerPrintChecker.checkEquality(fingerprint, pair.getFingerprint(), false);
             if (error != EqualityError.NONE) {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found a difference in responses in the {}.",
-                        bbWorkflowType.getDescription());
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an EqualityError!");
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                         EqualityErrorTranslator.translation(error, fingerprint, pair.getFingerprint()));
                 return error;

@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.transport.exception;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class InvalidTransportHandlerStateException extends Exception {
 
     public InvalidTransportHandlerStateException() {

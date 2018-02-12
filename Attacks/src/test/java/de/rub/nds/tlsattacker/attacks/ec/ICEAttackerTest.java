@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.ec;
 
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECOracle;
 import de.rub.nds.tlsattacker.attacks.ec.oracles.TestECSunOracle;
+import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.util.tests.SlowTests;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +33,7 @@ public class ICEAttackerTest {
     @Test()
     @Category(SlowTests.class)
     public void testAttack() {
+        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Starting ICEAttacker test... this may take some time");
         TestECOracle oracle = new TestECOracle("secp256r1");
         ICEAttacker attacker = new ICEAttacker(oracle);
         attacker.attack();

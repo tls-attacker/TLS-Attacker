@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.security.Security;
@@ -28,9 +29,11 @@ public class SignatureCalculatorTest {
 
     /**
      * Test of generateRSASignature method, of class SignatureCalculator.
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testGenerateRSASignature() {
+    public void testGenerateRSASignature() throws CryptoException {
         SignatureAndHashAlgorithm sigAndHash = new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1);
         TlsContext ctx = new TlsContext();
         Chooser chooser = ctx.getChooser();
