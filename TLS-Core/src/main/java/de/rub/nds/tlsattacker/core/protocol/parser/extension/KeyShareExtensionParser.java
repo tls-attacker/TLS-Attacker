@@ -61,7 +61,8 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * Reads the next bytes as the keySahreListLength of the Extension and
      * writes them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseKeySahreListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
@@ -72,7 +73,8 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * Reads the next bytes as the keyShareListBytes of the Extension and writes
      * them in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
@@ -83,7 +85,8 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * Reads the next bytes as the keyShareList of the Extension and writes them
      * in the message
      *
-     * @param msg Message to write in
+     * @param msg
+     *            Message to write in
      */
     private void parseKeyShareList(KeyShareExtensionMessage msg) {
         msg.setKeyShareList(entryList);

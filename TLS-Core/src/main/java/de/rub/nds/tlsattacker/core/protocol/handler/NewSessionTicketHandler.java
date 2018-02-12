@@ -80,7 +80,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         LOGGER.debug("Adding PSK Set");
         pskSets.add(pskSet);
         tlsContext.setPskSets(pskSets);
-        
+
     }
 
     private String getTicketAge() {
@@ -100,7 +100,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             int macLength = Mac.getInstance(hkdfAlgortihm.getMacAlgorithm().getJavaName()).getMacLength();
             byte[] resumptionMasterSecret = HKDFunction.deriveSecret(hkdfAlgortihm, digestAlgo.getJavaName(),
                     tlsContext.getMasterSecret(), HKDFunction.RESUMPTION_MASTER_SECRET, tlsContext.getDigest()
-                    .getRawBytes());
+                            .getRawBytes());
             LOGGER.debug("Derived ResumptionMasterSecret: " + ArrayConverter.bytesToHexString(resumptionMasterSecret));
             byte[] psk = HKDFunction.expandLabel(hkdfAlgortihm, resumptionMasterSecret, HKDFunction.RESUMPTION, message
                     .getTicket().getTicketNonce().getValue(), macLength);

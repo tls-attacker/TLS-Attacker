@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.extension.ExtensionHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
@@ -47,12 +48,14 @@ public class EncryptedExtensionsHandler extends HandshakeMessageHandler<Encrypte
     @Override
     public void adjustTLSContext(EncryptedExtensionsMessage message) {
         if (message.getExtensions() != null) {
+            LOGGER.debug("Adjusting for EncryptedExtensions:");
             for (ExtensionMessage extension : message.getExtensions()) {
+                LOGGER.debug("Adjusting " + message.toCompactString());
                 HandshakeMessageType handshakeMessageType = HandshakeMessageType.ENCRYPTED_EXTENSIONS;
                 if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                                                                        // fix
-                                                                        // design
-                                                                        // flawv
+                    // fix
+                    // design
+                    // flawv
                     handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                 }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
