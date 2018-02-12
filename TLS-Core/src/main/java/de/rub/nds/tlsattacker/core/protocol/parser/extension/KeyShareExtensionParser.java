@@ -29,12 +29,11 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
     public void parseExtensionMessageContent(KeyShareExtensionMessage msg) {
         LOGGER.debug("Parsing KeyShareExtensionMessage");
         parseKeySahreListLength(msg);
+        LOGGER.debug("Parsing KeyShareExtensionMessage");
         if (msg.getKeyShareListLength().getValue() + ExtensionByteLength.KEY_SHARE_LIST_LENGTH == msg
                 .getExtensionLength().getValue()) {
-            LOGGER.debug("Parsing client KeyShareExtensionMessage");
             parseKeyShareListBytes(msg);
         } else {
-            LOGGER.debug("Parsing client KeyShareExtensionMessage");
             msg.setKeyShareListLength(msg.getExtensionLength().getValue());
             LOGGER.debug("KeyShareListLength: " + msg.getExtensionLength().getValue());
             setPointer(getPointer() - ExtensionByteLength.KEY_SHARE_LIST_LENGTH);
@@ -62,8 +61,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * Reads the next bytes as the keySahreListLength of the Extension and
      * writes them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseKeySahreListLength(KeyShareExtensionMessage msg) {
         msg.setKeyShareListLength(parseIntField(ExtensionByteLength.KEY_SHARE_LIST_LENGTH));
@@ -74,8 +72,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * Reads the next bytes as the keyShareListBytes of the Extension and writes
      * them in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseKeyShareListBytes(KeyShareExtensionMessage msg) {
         msg.setKeyShareListBytes(parseByteArrayField(msg.getKeyShareListLength().getValue()));
@@ -86,8 +83,7 @@ public class KeyShareExtensionParser extends ExtensionParser<KeyShareExtensionMe
      * Reads the next bytes as the keyShareList of the Extension and writes them
      * in the message
      *
-     * @param msg
-     *            Message to write in
+     * @param msg Message to write in
      */
     private void parseKeyShareList(KeyShareExtensionMessage msg) {
         msg.setKeyShareList(entryList);
