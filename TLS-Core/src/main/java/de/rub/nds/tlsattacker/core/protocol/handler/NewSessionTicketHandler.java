@@ -57,9 +57,6 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     private void adjustPskSets(NewSessionTicketMessage message) {
         LOGGER.debug("Adjusting PSK-Sets");
-        if (tlsContext.getChooser().getPskSets() == null) {
-            tlsContext.setPskSets(new LinkedList<PskSet>());
-        }
         PskSet pskSet = new PskSet();
         pskSet.setCipherSuite(tlsContext.getChooser().getSelectedCipherSuite());
         if (message.getTicket().getTicketAgeAdd() != null) {
@@ -75,6 +72,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         }
         pskSet.setTicketAge(getTicketAge());
         pskSet.setPreSharedKey(derivePsk(message));
+        LOGGER.debug("Adding PSK Set");
         tlsContext.getChooser().getPskSets().add(pskSet);
 
     }

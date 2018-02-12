@@ -33,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
 import java.util.List;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -65,6 +66,12 @@ public class PreSharedKeyExtensionPreparator extends ExtensionPreparator<PreShar
     }
 
     private void prepareLists() {
+        if (msg.getIdentities() == null) {
+            msg.setIdentities(new LinkedList<PSKIdentity>());
+        }
+        if (msg.getBinders() == null) {
+            msg.setBinders(new LinkedList<PSKBinder>());
+        }
         for (PSKIdentity pskIdentity : msg.getIdentities()) {
             new PSKIdentityPreparator(chooser, pskIdentity).prepare();
         }
