@@ -47,22 +47,23 @@ public class RecordEncryptor extends Encryptor {
         record.getComputations().setMac(new byte[0]);
         byte[] cleanBytes = record.getCleanProtocolMessageBytes().getValue();
 
-        if (!isEncryptThenMac(cipherSuite)) {
-            LOGGER.trace("EncryptThenMac is not active");
-            record.getComputations().setNonMetaDataMaced(cleanBytes);
-            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
-                    .getSelectedProtocolVersion());
-            record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
-            if (cipherSuite.isUsingMac()) {
-                byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
-                        .getAuthenticatedMetaData().getValue(), record.getComputations().getNonMetaDataMaced()
-                        .getValue()), context.getChooser().getConnectionEndType());
-                setMac(record, mac);
-            }
+        record.getComputations().setNonMetaDataMaced(cleanBytes);
+        byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
+                .getSelectedProtocolVersion());
+        record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
+        if (!isEncryptThenMac(cipherSuite) && cipherSuite.isUsingMac()) {
+            LOGGER.debug("EncryptThenMac Extension is not active");
+
+            byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
+                    .getAuthenticatedMetaData().getValue(), record.getComputations().getNonMetaDataMaced().getValue()),
+                    context.getChooser().getConnectionEndType());
+            setMac(record, mac);
         }
+
         setUnpaddedRecordBytes(record, cleanBytes);
 
         byte[] padding;
+
         if (context.getChooser().getSelectedProtocolVersion().isTLS13()
                 || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
             padding = recordCipher.calculatePadding(record.getComputations().getPaddingLength().getValue());
@@ -90,7 +91,7 @@ public class RecordEncryptor extends Encryptor {
         if (isEncryptThenMac(cipherSuite)) {
             LOGGER.debug("EncryptThenMac Extension active");
             record.getComputations().setNonMetaDataMaced(encrypted);
-            byte[] additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
+            additionalAuthenticatedData = collectAdditionalAuthenticatedData(record, context.getChooser()
                     .getSelectedProtocolVersion());
             record.getComputations().setAuthenticatedMetaData(additionalAuthenticatedData);
             byte[] mac = recordCipher.calculateMac(ArrayConverter.concatenate(record.getComputations()
