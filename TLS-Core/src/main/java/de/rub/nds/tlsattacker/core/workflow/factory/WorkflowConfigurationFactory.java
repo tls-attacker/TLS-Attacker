@@ -689,7 +689,13 @@ public class WorkflowConfigurationFactory {
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
                         StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage()));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
-                        StarttlsMessage.SMTP_TLS.getStarttlsMessage()));
+                        StarttlsMessage.SMTP_S_OK.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_MIME.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_STARTTLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_DSN.getStarttlsMessage()));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
                         StarttlsMessage.SMTP_TLS.getStarttlsMessage()));
                 workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,

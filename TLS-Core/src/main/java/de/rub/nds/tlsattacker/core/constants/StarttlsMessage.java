@@ -20,10 +20,14 @@ public enum StarttlsMessage {
     POP3_S_CONNECTED("SERVICE READY\r\n"),
     POP3_TLS("STLS\r\n"),
     POP3_S_READY("+OK Begin TLS negotiation\r\n"),
-    SMTP_S_CONNECTED("SERVICE READY\r\n"),
-    SMTP_C_CONNECTED("EHLO mail.example.com\r\n"),
+    SMTP_S_CONNECTED("220 mail.example.com SMTP service ready\r\n"),
+    SMTP_C_CONNECTED("EHLO mail.example.org\r\n"),
+    SMTP_S_OK("250-mail.example.org offers a warm hug of welcome\r\n"),
+    SMTP_S_OK_MIME("250-8BITMIME\r\n"),
+    SMTP_S_OK_STARTTLS("250-STARTTLS\r\n"),
+    SMTP_S_OK_DSN("250 DSN\r\n"),
     SMTP_TLS("STARTTLS\r\n"),
-    SMTP_S_READY("220 GO AHEAD");
+    SMTP_S_READY("220 GO AHEAD\r\n");
 
     private final String starttlsMessage;
 
