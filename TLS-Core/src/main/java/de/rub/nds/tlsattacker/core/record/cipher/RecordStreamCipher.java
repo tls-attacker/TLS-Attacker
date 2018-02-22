@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.NullCipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -46,19 +47,27 @@ public class RecordStreamCipher extends RecordCipher {
     private void initCipherAndMac() throws UnsupportedOperationException {
         try {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
+            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+            String javaName = cipherAlg.getJavaName();
+            if (javaName == "NullCipher") {
+                // TODO: Cipher.getInstance doesn't work here, since it doesn't
+                // support NullCipher.
+                encryptCipher = new NullCipher();
+                decryptCipher = new NullCipher();
+            } else {
+                encryptCipher = Cipher.getInstance(javaName);
+                decryptCipher = Cipher.getInstance(javaName);
+                SecretKey encryptKey = new SecretKeySpec(getKeySet().getWriteKey(localConEndType),
+                        bulkCipherAlg.getJavaName());
+                SecretKey decryptKey = new SecretKeySpec(getKeySet().getReadKey(localConEndType),
+                        bulkCipherAlg.getJavaName());
+                encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
+                decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
+            }
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
                     cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
-            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-            SecretKey encryptKey = new SecretKeySpec(getKeySet().getWriteKey(localConEndType),
-                    bulkCipherAlg.getJavaName());
-            SecretKey decryptKey = new SecretKeySpec(getKeySet().getReadKey(localConEndType),
-                    bulkCipherAlg.getJavaName());
-            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
-            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
             readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
             writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException ex) {

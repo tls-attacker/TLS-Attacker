@@ -13,7 +13,7 @@ package de.rub.nds.tlsattacker.core.constants;
  */
 public enum CipherAlgorithm {
 
-    NULL(0, 0, 0, ""),
+    NULL(0, 0, 0, "NullCipher"),
     RC2_128(16, 8, 0, "RC2/CBC/NoPadding"),
     RC4_128(16, 0, 0, "RC4"),
     DES_CBC(8, 8, 0, "DES/CBC/NoPadding"),
