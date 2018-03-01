@@ -80,4 +80,18 @@ public class MessageActionFactoryTest {
         assertTrue(action.messages.size() == 2);
     }
 
+    /**
+     * Test of createAsciiAction method, of class MessageActionFactory.
+     */
+    @Test
+    public void testCreateAsciiAction() {
+        MessageAction action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.CLIENT, "");
+        assertEquals(action.getClass(), SendAsciiAction.class);
+        action = MessageActionFactory.createAsciiAction(clientConnection, ConnectionEndType.SERVER, "");
+        assertEquals(action.getClass(), ReceiveAsciiAction.class);
+        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.CLIENT, "");
+        assertEquals(action.getClass(), ReceiveAsciiAction.class);
+        action = MessageActionFactory.createAsciiAction(serverConnection, ConnectionEndType.SERVER, "");
+        assertEquals(action.getClass(), SendAsciiAction.class);
+    }
 }
