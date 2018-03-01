@@ -342,16 +342,44 @@ public class WorkflowConfigurationFactoryTest {
         Assert.assertEquals(HeartbeatMessage.class, ((ReceiveAction) messageAction5).getExpectedMessages().get(0)
                 .getClass());
     }
-    
+
     /**
-     * Test of addStartTlsAction method, of class
-     * WorkflowConfigurationFactory.
+     * Test of addStartTlsAction method, of class WorkflowConfigurationFactory.
      */
     @Test
     public void testAddStartTlsAction() {
-        config.setStarttlsType(StarttlsType.SMTP);
+        config.setStarttlsType(StarttlsType.FTP);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
         WorkflowTrace workflowTrace = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
+
+        Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(0).getClass());
+        Assert.assertEquals(SendAsciiAction.class, workflowTrace.getMessageActions().get(1).getClass());
+        Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(2).getClass());
+
+        config.setStarttlsType(StarttlsType.IMAP);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        workflowTrace = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
+
+        Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(0).getClass());
+        Assert.assertEquals(SendAsciiAction.class, workflowTrace.getMessageActions().get(1).getClass());
+        Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(2).getClass());
+        Assert.assertEquals(SendAsciiAction.class, workflowTrace.getMessageActions().get(3).getClass());
+        Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(4).getClass());
+
+        config.setStarttlsType(StarttlsType.POP3);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        workflowTrace = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
+
+        Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(0).getClass());
+        Assert.assertEquals(SendAsciiAction.class, workflowTrace.getMessageActions().get(1).getClass());
+        Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(2).getClass());
+
+        config.setStarttlsType(StarttlsType.SMTP);
+        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+        workflowTrace = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
 
         Assert.assertEquals(ReceiveAsciiAction.class, workflowTrace.getMessageActions().get(0).getClass());
