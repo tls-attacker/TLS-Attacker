@@ -8,10 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
@@ -85,6 +87,29 @@ public class WorkflowTraceUtil {
         }
     }
 
+    public static ExtensionMessage getFirstSendExtension(ExtensionType type, WorkflowTrace trace) {
+        List<ExtensionMessage> extensionList = getAllSendExtensions(trace);
+        extensionList = filterExtensionList(extensionList, type);
+        if (extensionList.isEmpty()) {
+            return null;
+        } else {
+            return extensionList.get(0);
+        }
+    }
+
+    public static List<HandshakeMessage> getAllSendHandshakeMessages(WorkflowTrace trace) {
+        return filterHandshakeMessagesFromList(getAllSendMessages(trace));
+    }
+
+    public static List<ExtensionMessage> getAllSendExtensions(WorkflowTrace trace) {
+        List<HandshakeMessage> handshakeMessageList = getAllSendHandshakeMessages(trace);
+        List<ExtensionMessage> extensionList = new LinkedList<>();
+        for (HandshakeMessage message : handshakeMessageList) {
+            extensionList.addAll(message.getExtensions());
+        }
+        return extensionList;
+    }
+
     public static HandshakeMessage getFirstSendMessage(HandshakeMessageType type, WorkflowTrace trace) {
         List<ProtocolMessage> messageList = getAllSendMessages(trace);
         List<HandshakeMessage> handshakeMessageList = filterHandshakeMessagesFromList(messageList);
@@ -150,6 +175,16 @@ public class WorkflowTraceUtil {
             }
         }
         return returnedMessages;
+    }
+
+    private static List<ExtensionMessage> filterExtensionList(List<ExtensionMessage> extensions, ExtensionType type) {
+        List<ExtensionMessage> resultList = new LinkedList<>();
+        for (ExtensionMessage extension : extensions) {
+            if (extension.getExtensionTypeConstant() == type) {
+                resultList.add(extension);
+            }
+        }
+        return resultList;
     }
 
     public static List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {

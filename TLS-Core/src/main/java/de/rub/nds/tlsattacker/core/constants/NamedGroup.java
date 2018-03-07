@@ -13,11 +13,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -101,6 +106,9 @@ public enum NamedGroup {
     private String javaName;
 
     private static final Map<Integer, NamedGroup> MAP;
+
+    private static Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
+            FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
 
     private NamedGroup(byte[] value, String javaName) {
         this.value = value;
@@ -221,5 +229,9 @@ public enum NamedGroup {
         list.add(SECT571R1);
         list.add(ECDH_X25519);
         return list;
+    }
+
+    public boolean isTls13() {
+        return tls13Groups.contains(this);
     }
 }
