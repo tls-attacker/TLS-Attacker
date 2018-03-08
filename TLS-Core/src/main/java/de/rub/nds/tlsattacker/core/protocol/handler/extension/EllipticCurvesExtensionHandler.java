@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.EllipticCurvesExten
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.EllipticCurvesExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,8 +51,11 @@ public class EllipticCurvesExtensionHandler extends ExtensionHandler<EllipticCur
                 groupList.add(namedGroup);
             }
         }
-
-        context.setClientNamedGroupsList(groupList);
+        if (context.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            context.setClientNamedGroupsList(groupList);
+        } else {
+            context.setServerNamedGroupsList(groupList);
+        }
     }
 
     @Override
