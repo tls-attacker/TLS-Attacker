@@ -41,10 +41,14 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public PreSharedKeyExtensionMessage() {
         super(ExtensionType.PRE_SHARED_KEY);
+        identities = new LinkedList<>();
+        binders = new LinkedList<>();
     }
 
     public PreSharedKeyExtensionMessage(Config config) {
         super(ExtensionType.PRE_SHARED_KEY);
+        identities = new LinkedList<>();
+        binders = new LinkedList<>();
         if (config.getDefaultPskSets().size() > 0) {
             copyPskSets(config.getDefaultPskSets());
         }
@@ -167,7 +171,7 @@ public class PreSharedKeyExtensionMessage extends ExtensionMessage {
 
     public void getEntries(Chooser chooser) {
         // use PskSets from context if no psk sets were given in config before
-        if (identities == null && binders == null && chooser.getPskSets().size() > 0) {
+        if (chooser.getPskSets().size() > 0) {
             copyPskSets(chooser.getPskSets());
         }
     }
