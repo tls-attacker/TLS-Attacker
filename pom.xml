@@ -143,6 +143,12 @@
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
         </dependency>
+        <dependency>
+            <groupId>de.rub.nds.tlsdockerlib</groupId>
+            <optional>true</optional>
+            <artifactId>TLS-Docker-Library</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
