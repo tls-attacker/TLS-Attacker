@@ -390,12 +390,34 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createClientRenegotiationWorkflow() {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow(conEnd);
-        trace.addTlsAction(new RenegotiationAction());
-        WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
+        WorkflowTrace renegotiationTrace = createRenegotiationWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
         }
         return trace;
+    }
+
+    private WorkflowTrace createRenegotiationWorkflow(AliasedConnection connection) {
+        WorkflowTrace workflowTrace = new WorkflowTrace();
+
+        workflowTrace.addTlsAction(new RenegotiationAction());
+
+        List<ProtocolMessage> messages = new LinkedList<>();
+        messages.add(new ClientHelloMessage(config));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
+
+        messages = new LinkedList<>();
+        messages.add(new ServerHelloMessage(config));
+        messages.add(new ChangeCipherSpecMessage(config));
+        messages.add(new FinishedMessage(config));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
+
+        messages = new LinkedList<>();
+        messages.add(new ChangeCipherSpecMessage(config));
+        messages.add(new FinishedMessage(config));
+        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
+
+        return workflowTrace;
     }
 
     private WorkflowTrace createServerRenegotiationWorkflow() {
