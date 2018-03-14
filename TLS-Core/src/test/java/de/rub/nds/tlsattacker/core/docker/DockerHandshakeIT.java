@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.docker;
 
 import de.rub.nds.tls.subject.TlsServer;
-import de.rub.nds.tls.subject.TlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
 import de.rub.nds.tlsattacker.core.config.Config;
@@ -22,8 +21,6 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import java.security.Security;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.Assert;
@@ -44,7 +41,7 @@ public class DockerHandshakeIT {
 
     @After
     public void tearDown() {
-        //    System.out.println(server.getServerLogs());
+        // System.out.println(server.getServerLogs());
         server.kill();
     }
 
