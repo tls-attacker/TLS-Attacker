@@ -62,8 +62,8 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        if (!KeyExchangeAlgorithm.isEC(AlgorithmResolver.getKeyExchangeAlgorithm(config.createConfig()
-                .getDefaultSelectedCipherSuite()))) {
+        if (!AlgorithmResolver.getKeyExchangeAlgorithm(config.createConfig()
+                .getDefaultSelectedCipherSuite()).isEC()) {
             LOGGER.info("The CipherSuite that should be tested is not an Ec one:"
                     + config.createConfig().getDefaultSelectedCipherSuite().name());
             return null;

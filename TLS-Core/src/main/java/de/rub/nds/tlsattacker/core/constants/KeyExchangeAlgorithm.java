@@ -38,7 +38,7 @@ public enum KeyExchangeAlgorithm {
     ECDH_ECNRA,
     CECPQ1_ECDSA;
 
-    public static boolean isEC(KeyExchangeAlgorithm algorithm) {
-        return algorithm.name().contains("EC");
+    public boolean isEC() {
+        return this.name().contains("EC");
     }
 }
