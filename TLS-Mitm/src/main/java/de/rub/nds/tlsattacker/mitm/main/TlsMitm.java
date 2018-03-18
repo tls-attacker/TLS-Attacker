@@ -84,5 +84,4 @@ public class TlsMitm implements Runnable {
                 config.getWorkflowExecutorType(), state);
         workflowExecutor.executeWorkflow();
     }
-
 }

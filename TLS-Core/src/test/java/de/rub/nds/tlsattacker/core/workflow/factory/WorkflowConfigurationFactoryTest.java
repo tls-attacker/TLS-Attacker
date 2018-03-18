@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -24,6 +25,7 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
+import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class WorkflowConfigurationFactoryTest {
 
@@ -338,6 +341,33 @@ public class WorkflowConfigurationFactoryTest {
         Assert.assertEquals(ReceiveAction.class, messageAction5.getClass());
         Assert.assertEquals(HeartbeatMessage.class, ((ReceiveAction) messageAction5).getExpectedMessages().get(0)
                 .getClass());
+    }
+
+    // @Category(IntegrationTests.class)
+    @Test
+    public void testNoExceptions() {
+        for (CipherSuite suite : CipherSuite.getImplemented()) {
+            for (ProtocolVersion version : ProtocolVersion.values()) {
+                for (WorkflowTraceType type : WorkflowTraceType.values()) {
+                    try {
+                        config.setDefaultSelectedCipherSuite(suite);
+                        config.setSupportedVersions(version);
+                        config.setHighestProtocolVersion(version);
+                        config.setDefaultServerSupportedCiphersuites(suite);
+                        config.setDefaultClientSupportedCiphersuites(suite);
+                        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+                        config.setDefaulRunningMode(RunningModeType.CLIENT);
+                        workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.CLIENT);
+                        config.setDefaulRunningMode(RunningModeType.SERVER);
+                        workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.SERVER);
+                        config.setDefaulRunningMode(RunningModeType.MITM);
+                        workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.MITM);
+                    } catch (ConfigurationException E) {
+                        // Those are ok
+                    }
+                }
+            }
+        }
     }
 
 }
