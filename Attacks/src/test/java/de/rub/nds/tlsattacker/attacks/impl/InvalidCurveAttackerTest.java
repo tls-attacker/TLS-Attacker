@@ -28,7 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(DockerTests.class)
+//@Category(DockerTests.class)
 public class InvalidCurveAttackerTest {
     private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
@@ -59,14 +59,14 @@ public class InvalidCurveAttackerTest {
 
     @Test
     public void testIsVulnerableFalse() {
-        System.out.println("Starting InvalidCurveAttacker tests vs Openssl 1.1.0f (expected false)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.1.0f");
+        System.out.println("Starting InvalidCurveAttacker tests vs BouncyCastle 1.52 (expected false)");
+        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.BOUNCYCASTLE, "1.52");
         server = serverManager.getTlsServer();
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
         InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
-        assertFalse(attacker.isVulnerable());
+        assertTrue(attacker.isVulnerable() == Boolean.FALSE);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class InvalidCurveAttackerTest {
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
         InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
-        assertTrue(attacker.isVulnerable());
+        assertTrue(attacker.isVulnerable() == Boolean.TRUE);
     }
 
     @Test

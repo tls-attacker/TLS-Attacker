@@ -76,7 +76,8 @@ public class Tls13HandshakeTests {
         config.setDefaultClientSupportedCiphersuites(CipherSuite.TLS_AES_128_GCM_SHA256);
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
-        config.setSupportedVersions(ProtocolVersion.TLS13_DRAFT22,ProtocolVersion.TLS13_DRAFT21, ProtocolVersion.TLS13_DRAFT20);
+        config.setSupportedVersions(ProtocolVersion.TLS13_DRAFT22, ProtocolVersion.TLS13_DRAFT21,
+                ProtocolVersion.TLS13_DRAFT20);
         config.getDefaultClientConnection().setHostname(server.host);
         config.getDefaultClientConnection().setPort(server.port);
         config.setSupportedSignatureAndHashAlgorithms(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
