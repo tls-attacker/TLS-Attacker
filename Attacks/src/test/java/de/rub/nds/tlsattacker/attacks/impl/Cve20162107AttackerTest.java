@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
+import de.rub.nds.tlsattacker.util.tests.DockerTests;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
@@ -25,11 +26,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.experimental.categories.Category;
 
 /**
  *
  * @author robert
  */
+@Category(DockerTests.class)
 public class Cve20162107AttackerTest {
 
     private DockerSpotifyTlsServerManager serverManager;

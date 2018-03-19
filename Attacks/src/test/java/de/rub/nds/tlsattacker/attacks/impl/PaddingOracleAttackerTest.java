@@ -12,12 +12,11 @@ import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
 import de.rub.nds.tls.subject.docker.DockerTlsServerType;
-import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
+import de.rub.nds.tlsattacker.util.tests.DockerTests;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
@@ -27,7 +26,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(DockerTests.class)
 public class PaddingOracleAttackerTest {
     private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
@@ -71,7 +72,7 @@ public class PaddingOracleAttackerTest {
     @Test
     public void testIsVulnerableTrue() {
         System.out.println("Starting PaddingOracle tests vs Openssl 1.0.1f (expected true)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.50");
+        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.1f");
         server = serverManager.getTlsServer();
         PaddingOracleCommandConfig config = new PaddingOracleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
