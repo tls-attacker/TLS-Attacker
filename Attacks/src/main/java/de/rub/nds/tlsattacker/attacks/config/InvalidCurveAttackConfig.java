@@ -32,7 +32,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     public static final String ATTACK_COMMAND = "invalid_curve";
 
     @Parameter(names = "-named_curve", description = "Named curve to be used", converter = NamedGroupConverter.class)
-    private NamedGroup namedCurve = NamedGroup.SECP256R1;
+    private NamedGroup namedGroup = NamedGroup.SECP256R1;
 
     @Parameter(names = "-additional_equations", description = "Additional equations used when attacking Oracle JSSE server (needed because of a faulty JSSE implementation).")
     private int additionalEquations = 3;
@@ -117,12 +117,12 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         this.publicPointBaseY = publicPointBaseY;
     }
 
-    public NamedGroup getNamedCurve() {
-        return namedCurve;
+    public NamedGroup getNamedGroup() {
+        return namedGroup;
     }
 
-    public void setNamedCurve(NamedGroup namedCurve) {
-        this.namedCurve = namedCurve;
+    public void setNamedCurve(NamedGroup namedGroup) {
+        this.namedGroup = namedGroup;
     }
 
     public int getCurveFieldSize() {
@@ -206,7 +206,7 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setAddEllipticCurveExtension(true);
         config.setDefaultClientSupportedCiphersuites(cipherSuites);
         List<NamedGroup> namedCurves = new LinkedList<>();
-        namedCurves.add(namedCurve);
+        namedCurves.add(namedGroup);
         config.setDefaultClientNamedGroups(namedCurves);
         config.setWorkflowTraceType(WorkflowTraceType.HANDSHAKE);
         return config;
