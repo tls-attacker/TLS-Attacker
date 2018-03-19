@@ -74,16 +74,19 @@ public class TlsPoodleAttackerTest {
         assertFalse(attacker.isVulnerable());
     }
 
-//    @Test
-//    public void testIsVulnerableTrue() {
-//        System.out.println("Starting TLS-Poodle tests vs Openssl 1.0.2g (expected true)");
-//        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.2g");
-//        server = serverManager.getTlsServer();
-//        TLSPoodleCommandConfig config = new TLSPoodleCommandConfig(new GeneralAttackDelegate());
-//        ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-//        delegate.setHost(server.host + ":" + server.port);
-//        TLSPoodleAttacker attacker = new TLSPoodleAttacker(config);
-//        assertTrue(attacker.isVulnerable());
-//    }
+    // @Test
+    // public void testIsVulnerableTrue() {
+    // System.out.println("Starting TLS-Poodle tests vs Openssl 1.0.2g (expected true)");
+    // serverManager =
+    // DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.2g");
+    // server = serverManager.getTlsServer();
+    // TLSPoodleCommandConfig config = new TLSPoodleCommandConfig(new
+    // GeneralAttackDelegate());
+    // ClientDelegate delegate = (ClientDelegate)
+    // config.getDelegate(ClientDelegate.class);
+    // delegate.setHost(server.host + ":" + server.port);
+    // TLSPoodleAttacker attacker = new TLSPoodleAttacker(config);
+    // assertTrue(attacker.isVulnerable());
+    // }
 
 }
