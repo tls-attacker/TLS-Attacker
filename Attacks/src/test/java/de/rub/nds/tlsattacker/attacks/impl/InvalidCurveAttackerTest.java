@@ -21,14 +21,13 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-//@Category(DockerTests.class)
+@Category(DockerTests.class)
 public class InvalidCurveAttackerTest {
     private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;

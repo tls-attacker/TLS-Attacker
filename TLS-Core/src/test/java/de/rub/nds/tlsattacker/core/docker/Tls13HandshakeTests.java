@@ -13,10 +13,9 @@ import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
 import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -82,8 +81,7 @@ public class Tls13HandshakeTests {
         config.getDefaultClientConnection().setPort(server.port);
         config.setSupportedSignatureAndHashAlgorithms(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA256));
-        config.setNamedCurves(NamedCurve.ECDH_X25519);
-        config.setKeyShareType(NamedCurve.ECDH_X25519);
+        config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(false);
         config.setAddSignatureAndHashAlgrorithmsExtension(true);
