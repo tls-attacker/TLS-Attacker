@@ -26,19 +26,71 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import de.rub.nds.tlsattacker.util.tests.DockerTests;
 import java.security.Security;
+import java.util.Arrays;
+import java.util.Collection;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 @Category(DockerTests.class)
+@RunWith(Parameterized.class)
 public class Tls13HandshakeTests {
 
-    public Tls13HandshakeTests() {
+    private NamedGroup namedGroup;
+
+    private SignatureAndHashAlgorithm signAlgorithm;
+
+    private CipherSuite suite;
+
+    private ProtocolVersion tls13Version;
+
+    private DockerTlsServerType serverType;
+
+    private String version;
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                { NamedGroup.ECDH_X25519,
+                        new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
+                        "1.1.1-pre2" },
+                { NamedGroup.ECDH_X25519,
+                        new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+                        CipherSuite.TLS_AES_256_GCM_SHA384, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
+                        "1.1.1-pre2" },
+                { NamedGroup.SECP192R1,
+                        new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
+                        "1.1.1-pre2" },
+                { NamedGroup.SECP256R1,
+                        new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
+                        "1.1.1-pre2" },
+                { NamedGroup.SECP384R1,
+                        new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
+                        "1.1.1-pre2" },
+                { NamedGroup.SECP521R1,
+                        new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
+                        "1.1.1-pre2" } });
+    }
+
+    public Tls13HandshakeTests(NamedGroup namedGroup, SignatureAndHashAlgorithm signAlgorithm, CipherSuite suite,
+            ProtocolVersion tls13Version, DockerTlsServerType serverType, String version) {
+        this.namedGroup = namedGroup;
+        this.signAlgorithm = signAlgorithm;
+        this.suite = suite;
+        this.tls13Version = tls13Version;
+        this.serverType = serverType;
+        this.version = version;
     }
 
     private DockerSpotifyTlsServerManager serverManager;
@@ -54,12 +106,6 @@ public class Tls13HandshakeTests {
     public static void tearDownClass() {
     }
 
-    @Before
-    public void setUp() {
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.1.1-pre2");
-        server = serverManager.getTlsServer();
-    }
-
     @After
     public void tearDown() {
         if (server != null) {
@@ -69,22 +115,21 @@ public class Tls13HandshakeTests {
 
     @Test
     public void testTls13() {
+        serverManager = DockerTlsServerManagerFactory.get(serverType, version);
+        server = serverManager.getTlsServer();
         Config config = Config.createConfig();
 
         config.setWorkflowTraceType(WorkflowTraceType.FULL);
-        config.setDefaultClientSupportedCiphersuites(CipherSuite.TLS_AES_128_GCM_SHA256);
-        config.setDefaultSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
-        config.setHighestProtocolVersion(ProtocolVersion.TLS13);
-        config.setSupportedVersions(ProtocolVersion.TLS13_DRAFT26, ProtocolVersion.TLS13_DRAFT25,
-                ProtocolVersion.TLS13_DRAFT24, ProtocolVersion.TLS13_DRAFT23, ProtocolVersion.TLS13_DRAFT22,
-                ProtocolVersion.TLS13_DRAFT21, ProtocolVersion.TLS13_DRAFT20);
+        config.setDefaultClientSupportedCiphersuites(suite);
+        config.setDefaultSelectedCipherSuite(suite);
+        config.setHighestProtocolVersion(tls13Version);
+        config.setSupportedVersions(tls13Version);
         config.getDefaultClientConnection().setHostname(server.host);
         config.getDefaultClientConnection().setPort(server.port);
-        config.setSupportedSignatureAndHashAlgorithms(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS,
-                HashAlgorithm.SHA256));
-        config.setDefaultClientNamedGroups(NamedGroup.ECDH_X25519);
-        config.setDefaultServerNamedGroups(NamedGroup.ECDH_X25519);
-        config.setDefaultSelectedNamedGroup(NamedGroup.ECDH_X25519);
+        config.setSupportedSignatureAndHashAlgorithms(signAlgorithm);
+        config.setDefaultClientNamedGroups(namedGroup);
+        config.setDefaultServerNamedGroups(namedGroup);
+        config.setDefaultSelectedNamedGroup(namedGroup);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(true);
         config.setAddSignatureAndHashAlgrorithmsExtension(true);
@@ -109,4 +154,10 @@ public class Tls13HandshakeTests {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Tls13HandshakeTests{" + "namedGroup=" + namedGroup + ", signAlgorithm=" + signAlgorithm + ", suite="
+                + suite + ", tls13Version=" + tls13Version + ", serverType=" + serverType + ", version=" + version
+                + '}';
+    }
 }
