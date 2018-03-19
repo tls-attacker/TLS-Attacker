@@ -69,8 +69,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
             return null;
         }
         ECComputer computer = new ECComputer();
-        CurveFactory.getNamedCurve(config.getNamedCurve().getJavaName());
-        Curve curve = CurveFactory.getNamedCurve(config.getNamedCurve().getJavaName());
+        Curve curve = CurveFactory.getNamedCurve(config.getNamedGroup().getJavaName());
         computer.setCurve(curve);
         Point point = new Point(config.getPublicPointBaseX(), config.getPublicPointBaseY());
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {
