@@ -184,6 +184,9 @@ public class WorkflowConfigurationFactory {
         messages.add(new ServerHelloMessage(config));
 
         if (config.getHighestProtocolVersion().isTLS13()) {
+            if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
+                messages.add(new ChangeCipherSpecMessage());
+            }
             messages.add(new EncryptedExtensionsMessage(config));
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);

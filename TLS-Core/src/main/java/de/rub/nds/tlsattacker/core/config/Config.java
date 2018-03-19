@@ -962,6 +962,12 @@ public class Config implements Serializable {
      */
     private ClientAuthenticationType clientAuthenticationType = ClientAuthenticationType.ANONYMOUS;
 
+    /**
+     * If we should add ccs message to automatically generated handshakes (tls
+     * 1.3 only)
+     */
+    private Boolean tls13BackwardsCompatibilityMode = true;
+
     Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443);
@@ -1061,6 +1067,14 @@ public class Config implements Serializable {
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
         defaultPskSets = new LinkedList<>();
+    }
+
+    public Boolean getTls13BackwardsCompatibilityMode() {
+        return tls13BackwardsCompatibilityMode;
+    }
+
+    public void setTls13BackwardsCompatibilityMode(Boolean tls13BackwardsCompatibilityMode) {
+        this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
     }
 
     public long getSessionTicketLifetimeHint() {

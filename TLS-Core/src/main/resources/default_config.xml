@@ -912,4 +912,5 @@ D2 51 9E 16 4F BF 9F 07  A9 DD 05 3B CF C0 89 39
 B4 75 C7 A2 E7 6F 04 EF  2A 06 CC 96 72 BD 40 34
 </defaultSessionTicketIdentity>
     <clientAuthenticationType>ANONYMOUS</clientAuthenticationType>
+    <tls13BackwardsCompatibilityMode>true</tls13BackwardsCompatibilityMode>
 </config>
