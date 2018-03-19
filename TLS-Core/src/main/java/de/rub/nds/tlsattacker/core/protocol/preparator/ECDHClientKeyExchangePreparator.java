@@ -131,7 +131,6 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getComputedPublicKeyX().getValue(),
                 msg.getComputations().getComputedPublicKeyY().getValue());
-        assert (publicKey.isValid());
         try {
             serializedPoint = ECCUtilsBCWrapper.serializeECPoint(formatArray, publicKey);
         } catch (IOException ex) {
