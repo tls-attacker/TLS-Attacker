@@ -10,23 +10,23 @@ package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.Arrays;
 
 /**
- * Converts a string named curve to a NamedCurve type (for command line
+ * Converts a string named group to a NamedGroup type (for command line
  * purposes).
  */
-public class NamedCurveConverter implements IStringConverter<NamedCurve> {
+public class NamedGroupConverter implements IStringConverter<NamedGroup> {
 
     @Override
-    public NamedCurve convert(String value) {
+    public NamedGroup convert(String value) {
 
         try {
-            return NamedCurve.valueOf(value);
+            return NamedGroup.valueOf(value);
         } catch (IllegalArgumentException e) {
-            throw new ParameterException("Value " + value + " cannot be converted to a NamedCurve. "
-                    + "Available values are: " + Arrays.toString(NamedCurve.values()));
+            throw new ParameterException("Value " + value + " cannot be converted to a NamedGroup. "
+                    + "Available values are: " + Arrays.toString(NamedGroup.values()));
         }
     }
 }

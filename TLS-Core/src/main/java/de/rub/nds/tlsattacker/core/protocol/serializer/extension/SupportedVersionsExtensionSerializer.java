@@ -24,8 +24,12 @@ public class SupportedVersionsExtensionSerializer extends ExtensionSerializer<Su
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing SupportedVersionsExtensionMessage");
-        writeSupportedVersionsLength(msg);
-        writeSupportedVersions(msg);
+        if (msg.getSupportedVersionsLength() == null || msg.getSupportedVersions().getValue() == null) {
+            writeSupportedVersions(msg);
+        } else {
+            writeSupportedVersionsLength(msg);
+            writeSupportedVersions(msg);
+        }
         return getAlreadySerialized();
     }
 

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SupportedVersionsExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -31,7 +32,9 @@ public class SupportedVersionsExtensionPreparator extends ExtensionPreparator<Su
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing SupportedVersionsExtensionMessage");
         prepareProtocolVersions(msg);
-        prepareProtocolVersionsLength(msg);
+        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            prepareProtocolVersionsLength(msg);
+        }
     }
 
     private void prepareProtocolVersions(SupportedVersionsExtensionMessage msg) {

@@ -13,15 +13,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public enum NamedCurve {
+public enum NamedGroup {
 
     SECT163K1(new byte[] { (byte) 0, (byte) 1 }, "sect163k1"),
     SECT163R1(new byte[] { (byte) 0, (byte) 2 }, "sect163r1"),
@@ -49,28 +54,28 @@ public enum NamedCurve {
     SECP384R1(new byte[] { (byte) 0, (byte) 24 }, "secp384r1"),
     SECP521R1(new byte[] { (byte) 0, (byte) 25 }, "secp521r1"),
     BRAINPOOLP256R1(new byte[] { (byte) 0, (byte) 26 }, "brainpoolp256r1"), // incorrect
-                                                                            // java
-                                                                            // name
+    // java
+    // name
     BRAINPOOLP384R1(new byte[] { (byte) 0, (byte) 27 }, "brainpoolp384r1"), // incorrect
-                                                                            // java
-                                                                            // name
+    // java
+    // name
     BRAINPOOLP512R1(new byte[] { (byte) 0, (byte) 28 }, "brainpoolp512r1"), // incorrect
-                                                                            // java
-                                                                            // name
+    // java
+    // name
     ECDH_X25519(new byte[] { (byte) 0, (byte) 29 }, "ecdh_X25519"), // incorrect
-                                                                    // java name
+    // java name
     ECDH_X448(new byte[] { (byte) 0, (byte) 30 }, "ecdh_X448"), // incorrect
-                                                                // java name
+    // java name
     FFDHE2048(new byte[] { (byte) 1, (byte) 0 }, "FFDHE2048"), // incorrect java
-                                                               // name
+    // name
     FFDHE3072(new byte[] { (byte) 1, (byte) 1 }, "FFDHE3072"), // incorrect java
-                                                               // name
+    // name
     FFDHE4096(new byte[] { (byte) 1, (byte) 2 }, "FFDHE4096"), // incorrect java
-                                                               // name
+    // name
     FFDHE6144(new byte[] { (byte) 1, (byte) 3 }, "FFDHE6144"), // incorrect java
-                                                               // name
+    // name
     FFDHE8192(new byte[] { (byte) 1, (byte) 4 }, "FFDHE8192"), // incorrect java
-                                                               // name
+    // name
     // TODO Grease logic implementation, because the tests fail if the lines
     // aren't commented
     // GREASE constants
@@ -92,7 +97,7 @@ public enum NamedCurve {
     // GREASE_15(new byte[] { (byte) 0xFA, (byte) 0xFA }),
     NONE(new byte[] { (byte) 0, (byte) 0 }, "");
 
-    protected static final Logger LOGGER = LogManager.getLogger(NamedCurve.class.getName());
+    protected static final Logger LOGGER = LogManager.getLogger(NamedGroup.class.getName());
 
     public static final int LENGTH = 2;
 
@@ -100,16 +105,19 @@ public enum NamedCurve {
 
     private String javaName;
 
-    private static final Map<Integer, NamedCurve> MAP;
+    private static final Map<Integer, NamedGroup> MAP;
 
-    private NamedCurve(byte[] value, String javaName) {
+    private static Set<NamedGroup> tls13Groups = new HashSet<>(Arrays.asList(ECDH_X25519, ECDH_X448, FFDHE2048,
+            FFDHE3072, FFDHE4096, FFDHE6144, FFDHE8192, SECP256R1, SECP384R1, SECP521R1));
+
+    private NamedGroup(byte[] value, String javaName) {
         this.value = value;
         this.javaName = javaName;
     }
 
     static {
         MAP = new HashMap<>();
-        for (NamedCurve c : NamedCurve.values()) {
+        for (NamedGroup c : NamedGroup.values()) {
             MAP.put(valueToInt(c.value), c);
         }
     }
@@ -124,13 +132,13 @@ public enum NamedCurve {
 
     private static Integer valueToInt(byte[] value) {
         if (value.length < 2) {
-            LOGGER.warn("Could not convert NamedCurve. Returning null");
+            LOGGER.warn("Could not convert NamedGroup. Returning null");
             return null;
         }
         return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
-    public static NamedCurve getNamedCurve(byte[] value) {
+    public static NamedGroup getNamedGroup(byte[] value) {
         return MAP.get(valueToInt(value));
     }
 
@@ -138,11 +146,11 @@ public enum NamedCurve {
         return value;
     }
 
-    public static NamedCurve getRandom(Random random) {
-        NamedCurve c = null;
+    public static NamedGroup getRandom(Random random) {
+        NamedGroup c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (NamedCurve) o[random.nextInt(o.length)];
+            c = (NamedGroup) o[random.nextInt(o.length)];
         }
         return c;
     }
@@ -151,37 +159,49 @@ public enum NamedCurve {
         return valueToInt(value);
     }
 
-    public static byte[] namedCurvesToByteArray(List<NamedCurve> curves) throws IOException {
-        if (curves == null || curves.isEmpty()) {
+    public static byte[] namedGroupsToByteArray(List<NamedGroup> groups) throws IOException {
+        if (groups == null || groups.isEmpty()) {
             return new byte[0];
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(bytes);
-        os.writeObject(curves.toArray(new NamedCurve[curves.size()]));
+        os.writeObject(groups.toArray(new NamedGroup[groups.size()]));
 
         return bytes.toByteArray();
     }
 
-    public static NamedCurve[] namedCurvesFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
+    public static NamedGroup[] namedGroupsFromByteArray(byte[] sourceBytes) throws IOException, ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
-            return new NamedCurve[0];
+            return new NamedGroup[0];
         }
 
-        if (sourceBytes.length % NamedCurve.LENGTH != 0) {
+        if (sourceBytes.length % NamedGroup.LENGTH != 0) {
             throw new IllegalArgumentException("Failed to convert byte array. "
                     + "Source array size is not a multiple of destination type size.");
         }
 
         ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
         ObjectInputStream is = new ObjectInputStream(in);
-        NamedCurve[] curves = (NamedCurve[]) is.readObject();
-
-        return curves;
+        NamedGroup[] groups = (NamedGroup[]) is.readObject();
+        return groups;
     }
 
-    public static List<NamedCurve> getImplemented() {
-        List<NamedCurve> list = new LinkedList<>();
+    public boolean isStandardCurve() {
+        return this.isCurve() && this != ECDH_X25519 && this != ECDH_X448;
+
+    }
+
+    public boolean isCurve() {
+        return this.name().toLowerCase().contains("ec") || this.name().toLowerCase().contains("brainpool");
+    }
+
+    public boolean isDhGroup() {
+        return this.name().toLowerCase().contains("dhe");
+    }
+
+    public static List<NamedGroup> getImplemented() {
+        List<NamedGroup> list = new LinkedList<>();
         list.add(SECP160K1);
         list.add(SECP160R1);
         list.add(SECP160R2);
@@ -207,7 +227,11 @@ public enum NamedCurve {
         list.add(SECT409R1);
         list.add(SECT571K1);
         list.add(SECT571R1);
-
+        list.add(ECDH_X25519);
         return list;
+    }
+
+    public boolean isTls13() {
+        return tls13Groups.contains(this);
     }
 }

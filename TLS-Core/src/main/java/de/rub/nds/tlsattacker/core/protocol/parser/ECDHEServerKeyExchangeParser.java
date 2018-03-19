@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 
@@ -40,7 +40,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
     protected void parseHandshakeMessageContent(ECDHEServerKeyExchangeMessage msg) {
         LOGGER.debug("Parsing ECDHEServerKeyExchangeMessage");
         parseCurveType(msg);
-        parseNamedCurve(msg);
+        parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
@@ -52,7 +52,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
 
     protected void parseEcDheParams(T msg) {
         parseCurveType(msg);
-        parseNamedCurve(msg);
+        parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
     }
@@ -70,7 +70,7 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      */
     private void parseCurveType(ECDHEServerKeyExchangeMessage msg) {
         msg.setCurveType(parseByteField(HandshakeByteLength.ELLIPTIC_CURVE));
-        LOGGER.debug("CurveType: " + msg.getCurveType().getValue());
+        LOGGER.debug("CurveType: " + msg.getGroupType().getValue());
     }
 
     /**
@@ -79,9 +79,9 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      * @param msg
      *            Message to write in
      */
-    private void parseNamedCurve(ECDHEServerKeyExchangeMessage msg) {
-        msg.setNamedCurve(parseByteArrayField(NamedCurve.LENGTH));
-        LOGGER.debug("NamedCurve: " + ArrayConverter.bytesToHexString(msg.getNamedCurve().getValue()));
+    private void parseNamedGroup(ECDHEServerKeyExchangeMessage msg) {
+        msg.setNamedGroup(parseByteArrayField(NamedGroup.LENGTH));
+        LOGGER.debug("NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
     }
 
     /**

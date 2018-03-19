@@ -164,8 +164,12 @@ public class TlsRecordLayer extends RecordLayer {
                         LOGGER.warn("Received Alert record while soft Decryption is active. Setting RecordCipher back to null");
                         setRecordCipher(new RecordNullCipher(tlsContext));
                         updateDecryptionCipher();
+                    } else if (((Record) record).getContentMessageType() == ProtocolMessageType.CHANGE_CIPHER_SPEC) {
+                        LOGGER.debug("Received CCS in TLS 1.3 compatibility mode");
+                        record.setCleanProtocolMessageBytes(record.getProtocolMessageBytes().getValue());
+                        return;
                     } else {
-                        LOGGER.debug("Deactivating soft decryption sicne we received a non alert record");
+                        LOGGER.debug("Deactivating soft decryption since we received a non alert record");
                         tlsContext.setTls13SoftDecryption(false);
                     }
                 }

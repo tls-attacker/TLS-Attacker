@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.ECDHEServerKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
@@ -32,7 +32,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
     protected ModifiableByte curveType;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    protected ModifiableByteArray namedCurve;
+    protected ModifiableByteArray namedGroup;
 
     protected ECDHEServerComputations computations;
 
@@ -44,7 +44,7 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         super(tlsConfig, HandshakeMessageType.SERVER_KEY_EXCHANGE);
     }
 
-    public ModifiableByte getCurveType() {
+    public ModifiableByte getGroupType() {
         return curveType;
     }
 
@@ -56,16 +56,16 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         this.curveType = ModifiableVariableFactory.safelySetValue(this.curveType, curveType);
     }
 
-    public ModifiableByteArray getNamedCurve() {
-        return namedCurve;
+    public ModifiableByteArray getNamedGroup() {
+        return namedGroup;
     }
 
-    public void setNamedCurve(ModifiableByteArray namedCurve) {
-        this.namedCurve = namedCurve;
+    public void setNamedGroup(ModifiableByteArray namedGroup) {
+        this.namedGroup = namedGroup;
     }
 
-    public void setNamedCurve(byte[] namedCurve) {
-        this.namedCurve = ModifiableVariableFactory.safelySetValue(this.namedCurve, namedCurve);
+    public void setNamedGroup(byte[] namedGroup) {
+        this.namedGroup = ModifiableVariableFactory.safelySetValue(this.namedGroup, namedGroup);
     }
 
     @Override
@@ -79,8 +79,8 @@ public class ECDHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
             sb.append("null");
         }
         sb.append("\n  Named Curve: ");
-        if (namedCurve != null && namedCurve.getValue() != null) {
-            sb.append(NamedCurve.getNamedCurve(this.namedCurve.getValue()));
+        if (namedGroup != null && namedGroup.getValue() != null) {
+            sb.append(NamedGroup.getNamedGroup(this.namedGroup.getValue()));
         } else {
             sb.append("null");
         }

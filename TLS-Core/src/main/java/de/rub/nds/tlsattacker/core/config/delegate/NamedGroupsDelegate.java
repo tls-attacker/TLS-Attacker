@@ -10,21 +10,21 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.converters.NamedCurveConverter;
+import de.rub.nds.tlsattacker.core.config.converters.NamedGroupConverter;
 import de.rub.nds.tlsattacker.core.config.converters.PointFormatConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.Collections;
 import java.util.List;
 
-public class EllipticCurveDelegate extends Delegate {
+public class NamedGroupsDelegate extends Delegate {
 
     @Parameter(names = "-point_formats", description = "Sets the elliptic curve point formats, divided by a comma", converter = PointFormatConverter.class)
     private List<ECPointFormat> pointFormats = null;
-    @Parameter(names = "-named_curve", description = "Named curves to be used, divided by a comma", converter = NamedCurveConverter.class)
-    private List<NamedCurve> namedCurves = null;
+    @Parameter(names = "-named_group", description = "Named groups to be used, divided by a comma", converter = NamedGroupConverter.class)
+    private List<NamedGroup> namedGroups = null;
 
-    public EllipticCurveDelegate() {
+    public NamedGroupsDelegate() {
     }
 
     public List<ECPointFormat> getPointFormats() {
@@ -38,21 +38,22 @@ public class EllipticCurveDelegate extends Delegate {
         this.pointFormats = pointFormats;
     }
 
-    public List<NamedCurve> getNamedCurves() {
-        if (namedCurves == null) {
+    public List<NamedGroup> getNamedGroups() {
+        if (namedGroups == null) {
             return null;
         }
-        return Collections.unmodifiableList(namedCurves);
+        return Collections.unmodifiableList(namedGroups);
     }
 
-    public void setNamedCurves(List<NamedCurve> namedCurves) {
-        this.namedCurves = namedCurves;
+    public void setNamedGroups(List<NamedGroup> namedGroups) {
+        this.namedGroups = namedGroups;
     }
 
     @Override
     public void applyDelegate(Config config) {
-        if (namedCurves != null) {
-            config.setNamedCurves(namedCurves);
+        if (namedGroups != null) {
+            config.setDefaultClientNamedGroups(namedGroups);
+            config.setDefaultServerNamedGroups(namedGroups);
         }
         if (pointFormats != null) {
             config.setDefaultServerSupportedPointFormats(pointFormats);

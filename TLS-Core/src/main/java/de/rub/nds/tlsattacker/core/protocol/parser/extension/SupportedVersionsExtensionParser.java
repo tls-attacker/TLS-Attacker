@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 
 public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedVersionsExtensionMessage> {
@@ -21,8 +22,14 @@ public class SupportedVersionsExtensionParser extends ExtensionParser<SupportedV
     @Override
     public void parseExtensionMessageContent(SupportedVersionsExtensionMessage msg) {
         LOGGER.debug("Parsing SupportedVersionsExtensionMessage");
-        parseSupportedVersionLength(msg);
-        parseSupportedVersion(msg);
+        if (msg.getExtensionLength().getValue() == HandshakeByteLength.VERSION) {
+            // This looks like a ServerProtocolVersionExtension
+            msg.setSupportedVersions(parseByteArrayField(HandshakeByteLength.VERSION));
+        } else {
+            // This looks like a ClientProtocoLVersionExtension
+            parseSupportedVersionLength(msg);
+            parseSupportedVersion(msg);
+        }
     }
 
     @Override

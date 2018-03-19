@@ -90,7 +90,7 @@ public class ServerCertificateDelegate extends Delegate {
                         applyECParameters(config, ecParameters);
                         config.setDefaultServerEcPrivateKey(CertificateUtils.ecPrivateKeyFromPrivateKey(key).getS());
                         config.setDefaultEcCertificate(stream.toByteArray());
-                        LOGGER.debug("Loaded EC certificate data:\nmodulus: " + config.getDefaultSelectedCurve()
+                        LOGGER.debug("Loaded EC certificate data:\ngroup: " + config.getDefaultSelectedNamedGroup()
                                 + "\npubkey: " + config.getDefaultServerEcPublicKey() + "\nprivkey: "
                                 + config.getDefaultServerEcPrivateKey());
                     } else if (CertificateUtils.hasRSAParameters(cert)) {
@@ -116,7 +116,7 @@ public class ServerCertificateDelegate extends Delegate {
     }
 
     private void applyECParameters(Config config, ECPublicKeyParameters ecParameters) {
-        config.setDefaultSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
+        config.setDefaultSelectedNamedGroup(CurveNameRetriever.getNamedCuveFromECCurve(ecParameters.getParameters()
                 .getCurve()));
         CustomECPoint publicKey = new CustomECPoint(ecParameters.getQ().getRawXCoord().toBigInteger(), ecParameters
                 .getQ().getRawYCoord().toBigInteger());

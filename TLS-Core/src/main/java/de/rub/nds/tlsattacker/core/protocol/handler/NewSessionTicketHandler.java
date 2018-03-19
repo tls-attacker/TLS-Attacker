@@ -25,6 +25,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
+import java.util.List;
 import javax.crypto.Mac;
 
 public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
@@ -57,8 +58,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     private void adjustPskSets(NewSessionTicketMessage message) {
         LOGGER.debug("Adjusting PSK-Sets");
-        if (tlsContext.getChooser().getPskSets() == null) {
-            tlsContext.setPskSets(new LinkedList<PskSet>());
+        List<PskSet> pskSets = tlsContext.getPskSets();
+        if (pskSets == null) {
+            pskSets = new LinkedList<>();
         }
         PskSet pskSet = new PskSet();
         pskSet.setCipherSuite(tlsContext.getChooser().getSelectedCipherSuite());
@@ -75,7 +77,9 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
         }
         pskSet.setTicketAge(getTicketAge());
         pskSet.setPreSharedKey(derivePsk(message));
-        tlsContext.getChooser().getPskSets().add(pskSet);
+        LOGGER.debug("Adding PSK Set");
+        pskSets.add(pskSet);
+        tlsContext.setPskSets(pskSets);
 
     }
 

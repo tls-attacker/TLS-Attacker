@@ -11,7 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -47,11 +47,11 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         prepareEcdhParams();
     }
 
-    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedCurve namedCurve) {
+    protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
-                namedCurve.getValue()));
+                namedGroup.getValue()));
         try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedCurve[] { chooser.getSelectedCurve() },
+            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { chooser.getSelectedNamedGroup() },
                     new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
@@ -101,10 +101,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
         prepareClientRandom(msg);
-        NamedCurve usedCurve = chooser.getSelectedCurve();
-        LOGGER.debug("Used Curve: " + usedCurve.name());
+        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        LOGGER.debug("Used Group: " + usedGroup.name());
         setComputationPrivateKey(msg, clientMode);
-        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         if (clientMode) {
             ECPoint clientPublicKey = ecParams.getG().multiply(msg.getComputations().getPrivateKey().getValue());
             clientPublicKey = clientPublicKey.normalize();
@@ -127,8 +127,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
         ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
 
-        NamedCurve usedCurve = chooser.getSelectedCurve();
-        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+        NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+        ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getComputedPublicKeyX().getValue(),
                 msg.getComputations().getComputedPublicKeyY().getValue());
         assert (publicKey.isValid());
@@ -160,8 +160,8 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
             serializedPoint = msg.getPublicKey().getValue();
             List<ECPointFormat> pointFormatList = chooser.getServerSupportedPointFormats();
             ECPointFormat[] formatArray = pointFormatList.toArray(new ECPointFormat[pointFormatList.size()]);
-            NamedCurve usedCurve = chooser.getSelectedCurve();
-            ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedCurve);
+            NamedGroup usedGroup = chooser.getSelectedNamedGroup();
+            ECDomainParameters ecParams = getDomainParameters(chooser.getEcCurveType(), usedGroup);
             short[] pointFormats = ECCUtilsBCWrapper.convertPointFormats(formatArray);
             try {
                 ECPublicKeyParameters clientPublicKey = TlsECCUtils.deserializeECPublicKey(pointFormats, ecParams,

@@ -51,8 +51,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     @Override
     public void executeAttack() {
         Config tlsConfig = config.createConfig();
-        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getNamedCurves().get(0));
-        Curve curve = CurveFactory.getNamedCurve(tlsConfig.getNamedCurves().get(0).name());
+        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultClientNamedGroups()
+                .get(0));
+        Curve curve = CurveFactory.getNamedCurve(tlsConfig.getDefaultClientNamedGroups().get(0).name());
         RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
         ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
         attacker.attack();

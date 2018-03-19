@@ -22,7 +22,7 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
@@ -37,7 +37,8 @@ import de.rub.nds.tlsattacker.core.crypto.MessageDigestCollector;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -347,9 +348,9 @@ public class TlsContext {
 
     private byte[] pskIdentityHint;
 
-    private NamedCurve selectedCurve;
+    private NamedGroup selectedGroup;
 
-    private NamedCurve ecCertificateCurve;
+    private NamedGroup ecCertificateCurve;
 
     private CustomECPoint clientEcPublicKey;
 
@@ -371,7 +372,9 @@ public class TlsContext {
 
     private BigInteger clientRSAPrivateKey;
 
-    private List<NamedCurve> clientNamedCurvesList;
+    private List<NamedGroup> clientNamedGroupsList;
+
+    private List<NamedGroup> serverNamedGroupsList;
 
     private List<ECPointFormat> clientPointFormatsList;
 
@@ -387,9 +390,9 @@ public class TlsContext {
 
     private List<SNIEntry> clientSNIEntryList;
 
-    private List<KSEntry> clientKeyShareEntryList;
+    private List<KeyShareStoreEntry> clientKeyShareStoreEntryList;
 
-    private KSEntry serverKSEntry;
+    private KeyShareStoreEntry serverKeyShareStoreEntry;
 
     /**
      * the currently used type of keySet by the client
@@ -733,12 +736,12 @@ public class TlsContext {
         this.clientEcPrivateKey = clientEcPrivateKey;
     }
 
-    public NamedCurve getSelectedCurve() {
-        return selectedCurve;
+    public NamedGroup getSelectedGroup() {
+        return selectedGroup;
     }
 
-    public void setSelectedCurve(NamedCurve selectedCurve) {
-        this.selectedCurve = selectedCurve;
+    public void setSelectedGroup(NamedGroup selectedCurve) {
+        this.selectedGroup = selectedCurve;
     }
 
     public CustomECPoint getClientEcPublicKey() {
@@ -941,16 +944,28 @@ public class TlsContext {
         this.selectedSignatureAndHashAlgorithm = selectedSignatureAndHashAlgorithm;
     }
 
-    public List<NamedCurve> getClientNamedCurvesList() {
-        return clientNamedCurvesList;
+    public List<NamedGroup> getClientNamedGroupsList() {
+        return clientNamedGroupsList;
     }
 
-    public void setClientNamedCurvesList(List<NamedCurve> clientNamedCurvesList) {
-        this.clientNamedCurvesList = clientNamedCurvesList;
+    public void setClientNamedGroupsList(List<NamedGroup> clientNamedGroupsList) {
+        this.clientNamedGroupsList = clientNamedGroupsList;
     }
 
-    public void setClientNamedCurvesList(NamedCurve... clientNamedCurvesList) {
-        this.clientNamedCurvesList = new ArrayList(Arrays.asList(clientNamedCurvesList));
+    public void setClientNamedGroupsList(NamedGroup... clientNamedCurvesList) {
+        this.clientNamedGroupsList = new ArrayList(Arrays.asList(clientNamedGroupsList));
+    }
+
+    public List<NamedGroup> getServerNamedGroupsList() {
+        return serverNamedGroupsList;
+    }
+
+    public void setServerNamedGroupsList(List<NamedGroup> serverNamedGroupsList) {
+        this.serverNamedGroupsList = serverNamedGroupsList;
+    }
+
+    public void setServerNamedGroupsList(NamedGroup... serverNamedGroupsList) {
+        this.serverNamedGroupsList = new ArrayList(Arrays.asList(serverNamedGroupsList));
     }
 
     public List<ECPointFormat> getServerPointFormatsList() {
@@ -1319,24 +1334,24 @@ public class TlsContext {
         this.handshakeSecret = handshakeSecret;
     }
 
-    public List<KSEntry> getClientKeyShareEntryList() {
-        return clientKeyShareEntryList;
+    public List<KeyShareStoreEntry> getClientKeyShareStoreEntryList() {
+        return clientKeyShareStoreEntryList;
     }
 
-    public void setClientKeyShareEntryList(List<KSEntry> clientKeyShareEntryList) {
-        this.clientKeyShareEntryList = clientKeyShareEntryList;
+    public void setClientKeyShareStoreEntryList(List<KeyShareStoreEntry> clientKeyShareStoreEntryList) {
+        this.clientKeyShareStoreEntryList = clientKeyShareStoreEntryList;
     }
 
-    public void setClientKSEntryList(KSEntry... clientKSEntryList) {
-        this.clientKeyShareEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
+    public void setClientKSEntryList(KeyShareEntry... clientKSEntryList) {
+        this.clientKeyShareStoreEntryList = new ArrayList(Arrays.asList(clientKSEntryList));
     }
 
-    public KSEntry getServerKSEntry() {
-        return serverKSEntry;
+    public KeyShareStoreEntry getServerKeyShareStoreEntry() {
+        return serverKeyShareStoreEntry;
     }
 
-    public void setServerKSEntry(KSEntry serverKSEntry) {
-        this.serverKSEntry = serverKSEntry;
+    public void setServerKeyShareStoreEntry(KeyShareStoreEntry serverKeyShareStoreEntry) {
+        this.serverKeyShareStoreEntry = serverKeyShareStoreEntry;
     }
 
     public byte[] getSessionTicketTLS() {
@@ -1953,11 +1968,11 @@ public class TlsContext {
         this.receivedTransportHandlerException = receivedTransportHandlerException;
     }
 
-    public NamedCurve getEcCertificateCurve() {
+    public NamedGroup getEcCertificateCurve() {
         return ecCertificateCurve;
     }
 
-    public void setEcCertificateCurve(NamedCurve ecCertificateCurve) {
+    public void setEcCertificateCurve(NamedGroup ecCertificateCurve) {
         this.ecCertificateCurve = ecCertificateCurve;
     }
 
