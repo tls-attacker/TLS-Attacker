@@ -171,7 +171,8 @@ public class CyclicParserSerializerTest {
                     try {
                         Constructor tempConstructor = getDefaultMessageConstructor(protocolMessageClass);
                         if (tempConstructor != null) {
-                            message = (ProtocolMessage) getDefaultMessageConstructor(protocolMessageClass).newInstance();
+                            message = (ProtocolMessage) getDefaultMessageConstructor(protocolMessageClass)
+                                    .newInstance();
                         } else {
                             fail("Could not find Constructor for " + testName);
                         }
