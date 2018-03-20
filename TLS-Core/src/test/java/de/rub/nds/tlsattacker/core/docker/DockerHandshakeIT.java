@@ -522,10 +522,10 @@ public class DockerHandshakeIT {
     }
 
     @BeforeClass
-    public static void setUp() {
-        System.out.println("Trying to initialize DockerTests");
+    public static void beforeClass() {
         UnlimitedStrengthEnabler.enable();
         Security.addProvider(new BouncyCastleProvider());
+        System.out.println("Trying to initialize DockerTests");
         DockerSpotifyTlsServerManager serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL,
                 "1.1.0f");
         server = serverManager.getTlsServer();
