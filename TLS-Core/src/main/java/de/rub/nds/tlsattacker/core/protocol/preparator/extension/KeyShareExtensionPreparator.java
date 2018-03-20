@@ -33,14 +33,16 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
         stream = new ByteArrayOutputStream();
-        for (KeyShareEntry entry : msg.getKeyShareList()) {
-            KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
-            preparator.prepare();
-            KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from KeySharePair", ex);
+        if (msg.getKeyShareList() != null) {
+            for (KeyShareEntry entry : msg.getKeyShareList()) {
+                KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
+                preparator.prepare();
+                KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
+                try {
+                    stream.write(serializer.serialize());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write byte[] from KeySharePair", ex);
+                }
             }
         }
         prepareKeyShareListBytes(msg);
