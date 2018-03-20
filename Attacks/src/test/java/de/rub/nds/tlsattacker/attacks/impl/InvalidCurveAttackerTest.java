@@ -24,6 +24,7 @@ import org.junit.AfterClass;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -57,9 +58,10 @@ public class InvalidCurveAttackerTest {
     }
 
     @Test
+    @Ignore
     public void testIsVulnerableFalse() {
         System.out.println("Starting InvalidCurveAttacker tests vs BouncyCastle 1.52 (expected false)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.BOUNCYCASTLE, "1.52");
+        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.BOUNCYCASTLE, "1.54");
         server = serverManager.getTlsServer();
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
@@ -69,6 +71,7 @@ public class InvalidCurveAttackerTest {
     }
 
     @Test
+    @Ignore
     public void testIsVulnerableTrue() {
         System.out.println("Starting InvalidCurveAttacker tests vs BouncyCastle 1.50 (expected true)");
         serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.BOUNCYCASTLE, "1.50");
