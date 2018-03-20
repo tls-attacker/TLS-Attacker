@@ -36,6 +36,7 @@ public class SendAsciiAction extends MessageAction {
         }
 
         try {
+            LOGGER.info("Sending ASCII message: " + asciiString);
             tlsContext.getTransportHandler().sendData(asciiString.getBytes());
             setExecuted(true);
         } catch (IOException E) {

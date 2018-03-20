@@ -16,6 +16,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
@@ -35,6 +36,8 @@ public class HeartbleedCommandConfig extends AttackConfig {
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     public HeartbleedCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -42,10 +45,12 @@ public class HeartbleedCommandConfig extends AttackConfig {
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     public Integer getPayloadLength() {

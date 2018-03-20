@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import java.util.Arrays;
 
 public class ReceiveAsciiAction extends MessageAction {
 
@@ -28,6 +29,7 @@ public class ReceiveAsciiAction extends MessageAction {
         }
 
         try {
+            LOGGER.info("Receiving ASCII message...");
             setExecuted(true);
             tlsContext.getTransportHandler().fetchData();
         } catch (IOException E) {

@@ -20,6 +20,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.NamedCurve;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
@@ -81,6 +82,9 @@ public class InvalidCurveAttackConfig extends AttackConfig {
     @ParametersDelegate
     private AttackDelegate attackDelegate;
 
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
+
     public InvalidCurveAttackConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -88,11 +92,13 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     public BigInteger getPremasterSecret() {
