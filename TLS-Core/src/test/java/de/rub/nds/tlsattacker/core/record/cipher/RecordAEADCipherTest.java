@@ -104,7 +104,7 @@ public class RecordAEADCipherTest {
                 .getClientWriteKey());
         assertArrayEquals(ArrayConverter.hexStringToByteArray("7DD498D9EA924142CD3BF45CD8A1B4B9"), cipher.getKeySet()
                 .getServerWriteKey());
-        assertNull(cipher.getKeySet().getClientWriteMacSecret());
-        assertNull(cipher.getKeySet().getServerWriteMacSecret());
+        assertArrayEquals(new byte[0], cipher.getKeySet().getClientWriteMacSecret());
+        assertArrayEquals(new byte[0], cipher.getKeySet().getServerWriteMacSecret());
     }
 }

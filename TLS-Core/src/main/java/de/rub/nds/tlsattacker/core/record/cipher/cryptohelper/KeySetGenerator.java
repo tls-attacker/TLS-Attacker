@@ -85,6 +85,8 @@ public class KeySetGenerator {
         keySet.setServerWriteIv(HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
                 RecordAEADCipher.GCM_IV_LENGTH));
         LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(keySet.getServerWriteIv()));
+        keySet.setServerWriteMacSecret(new byte[0]);
+        keySet.setClientWriteMacSecret(new byte[0]);
         return keySet;
     }
 
