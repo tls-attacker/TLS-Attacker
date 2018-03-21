@@ -21,20 +21,25 @@ public class RecordCipherFactory {
     private static final Logger LOGGER = LogManager.getLogger(RecordCipherFactory.class);
 
     public static RecordCipher getRecordCipher(TlsContext context, KeySet keySet, CipherSuite cipherSuite) {
-        if (context.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
-            LOGGER.warn("Cipher " + cipherSuite.name() + " not implemented. Using Null Cipher instead");
-            return new RecordNullCipher(context);
-        } else {
-            CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
-            switch (type) {
-                case AEAD:
-                    return new RecordAEADCipher(context, keySet);
-                case BLOCK:
-                    return new RecordBlockCipher(context, keySet);
-                case STREAM:
-                    return new RecordStreamCipher(context, keySet);
+        try {
+            if (context.getChooser().getSelectedCipherSuite() == null || !cipherSuite.isImplemented()) {
+                LOGGER.warn("Cipher " + cipherSuite.name() + " not implemented. Using Null Cipher instead");
+                return new RecordNullCipher(context);
+            } else {
+                CipherType type = AlgorithmResolver.getCipherType(cipherSuite);
+                switch (type) {
+                    case AEAD:
+                        return new RecordAEADCipher(context, keySet);
+                    case BLOCK:
+                        return new RecordBlockCipher(context, keySet);
+                    case STREAM:
+                        return new RecordStreamCipher(context, keySet);
+                }
+                LOGGER.warn("UnknownCipherType:" + type.name());
+                return new RecordNullCipher(context);
             }
-            LOGGER.warn("UnknownCipherType:" + type.name());
+        } catch (Exception E) {
+            LOGGER.warn("Could not create RecordCipher from the current Context! Creating null Cipher");
             return new RecordNullCipher(context);
         }
     }
