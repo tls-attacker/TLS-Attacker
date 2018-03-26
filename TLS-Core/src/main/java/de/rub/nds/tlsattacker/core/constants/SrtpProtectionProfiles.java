@@ -20,10 +20,10 @@ import org.apache.logging.log4j.Logger;
  * RFC5764
  */
 public enum SrtpProtectionProfiles {
-    SRTP_AES128_CM_HMAC_SHA1_80(new byte[] { 0x00, 0x01 }),
-    SRTP_AES128_CM_HMAC_SHA1_32(new byte[] { 0x00, 0x02 }),
-    SRTP_NULL_HMAC_SHA1_80(new byte[] { 0x00, 0x05 }),
-    SRTP_NULL_HMAC_SHA1_32(new byte[] { 0x00, 0x06 });
+    SRTP_AES128_CM_HMAC_SHA1_80(new byte[]{0x00, 0x01}),
+    SRTP_AES128_CM_HMAC_SHA1_32(new byte[]{0x00, 0x02}),
+    SRTP_NULL_HMAC_SHA1_80(new byte[]{0x00, 0x05}),
+    SRTP_NULL_HMAC_SHA1_32(new byte[]{0x00, 0x06});
 
     private final byte[] srtpProtectionProfiles;
     private static final Map<Integer, SrtpProtectionProfiles> MAP;
@@ -53,8 +53,8 @@ public enum SrtpProtectionProfiles {
         List<SrtpProtectionProfiles> profileList = new ArrayList<>();
 
         for (int i = 0; i < value.length; i += 2) {
-            if (value.length > i) {
-                profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[] { value[i], value[i + 1] }));
+            if (i + 1 < value.length) {
+                profileList.add(SrtpProtectionProfiles.getProfileByType(new byte[]{value[i], value[i + 1]}));
             } else {
                 LOGGER.warn("value cannot be converted into an SrtpProtectionProfile - not enough bytes left");
             }
