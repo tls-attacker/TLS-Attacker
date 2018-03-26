@@ -19,6 +19,7 @@ import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 import org.bouncycastle.crypto.params.ECDomainParameters;
@@ -48,11 +49,11 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     protected ECDomainParameters getDomainParameters(EllipticCurveType curveType, NamedGroup namedGroup) {
-        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
+        InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[]{curveType.getValue()},
                 namedGroup.getValue()));
         try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { chooser.getSelectedNamedGroup() },
-                    new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
+            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[]{chooser.getSelectedNamedGroup()},
+                    new ECPointFormat[]{ECPointFormat.UNCOMPRESSED}, stream);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
         }
@@ -73,7 +74,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
     }
 
     protected void prepareSerializedPublicKey(T msg) {
-        msg.setPublicKey(ArrayConverter.concatenate(new byte[] { msg.getEcPointFormat().getValue() }, msg
+        msg.setPublicKey(ArrayConverter.concatenate(new byte[]{msg.getEcPointFormat().getValue()}, msg
                 .getEcPointEncoded().getValue()));
         LOGGER.debug("SerializedPublicKey: " + ArrayConverter.bytesToHexString(msg.getPublicKey().getValue()));
     }
@@ -108,8 +109,14 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         if (clientMode) {
             ECPoint clientPublicKey = ecParams.getG().multiply(msg.getComputations().getPrivateKey().getValue());
             clientPublicKey = clientPublicKey.normalize();
-            msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
-            msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
+            if (clientPublicKey.getRawXCoord() != null && clientPublicKey.getRawYCoord() != null) {
+                msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
+                msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
+            } else {
+                //TODO Logger.warn
+                msg.getComputations().setComputedPublicKeyX(BigInteger.ZERO);
+                msg.getComputations().setComputedPublicKeyY(BigInteger.ZERO);
+            }
         }
         setComputationPublicKey(msg, clientMode);
 
