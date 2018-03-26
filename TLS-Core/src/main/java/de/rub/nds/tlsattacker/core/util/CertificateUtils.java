@@ -38,8 +38,7 @@ public class CertificateUtils {
     /**
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
-     * @param cert
-     *            The Certificate from which the PublicKey should be extracted
+     * @param cert The Certificate from which the PublicKey should be extracted
      * @return The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {
@@ -94,6 +93,9 @@ public class CertificateUtils {
             return false;
         }
         SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
+        if (keyInfo == null) {
+            return false;
+        }
         return keyInfo.getAlgorithm().getAlgorithm().equals(X9ObjectIdentifiers.id_ecPublicKey);
     }
 
@@ -107,6 +109,9 @@ public class CertificateUtils {
 
     public static DHPublicKeyParameters extractDHPublicKeyParameters(Certificate cert) throws IOException {
         if (hasDHParameters(cert)) {
+            if (cert.isEmpty()) {
+                return null;
+            }
             SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
             return (DHPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
         } else {
@@ -116,7 +121,13 @@ public class CertificateUtils {
 
     public static ECPublicKeyParameters extractECPublicKeyParameters(Certificate cert) throws IOException {
         if (hasECParameters(cert)) {
+            if (cert.isEmpty()) {
+                return null;
+            }
             SubjectPublicKeyInfo keyInfo = cert.getCertificateAt(0).getSubjectPublicKeyInfo();
+            if (keyInfo == null) {
+                return null;
+            }
             return (ECPublicKeyParameters) PublicKeyFactory.createKey(keyInfo);
         } else {
             return null;
@@ -125,6 +136,9 @@ public class CertificateUtils {
 
     public static BigInteger extractRSAModulus(Certificate cert) throws IOException {
         if (hasRSAParameters(cert)) {
+            if (cert.isEmpty()) {
+                return null;
+            }
             RSAPublicKey rsaPubKey = (RSAPublicKey) parsePublicKey(cert);
             return rsaPubKey.getModulus();
         } else {
