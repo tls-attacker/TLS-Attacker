@@ -8,26 +8,27 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import static org.junit.Assert.assertEquals;
+
+import java.security.Security;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
 import de.rub.nds.tls.subject.docker.DockerTlsServerType;
-import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import de.rub.nds.tlsattacker.util.tests.DockerTests;
-import java.security.Security;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 @Category(DockerTests.class)
 public class TlsPoodleAttackerTest {
@@ -59,34 +60,25 @@ public class TlsPoodleAttackerTest {
     }
 
     @Test
-    public void testExecuteAttack() {
+    public void testIsVulnerableFalse() {
+        testServer(DockerTlsServerType.OPENSSL, "1.1.0f", false);
     }
 
-    @Test
-    public void testIsVulnerableFalse() {
-        System.out.println("Starting TLS-Poodle tests vs Openssl 1.1.0f (expected false)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.1.0f");
+    private void testServer(DockerTlsServerType dockerTlsServerType, String version, boolean expectResult) {
+        System.out.println("Starting TLS-Poodle tests vs " + dockerTlsServerType.getName() + " " + version
+                + " (expected " + new Boolean(expectResult).toString() + ")");
+        serverManager = DockerTlsServerManagerFactory.get(dockerTlsServerType, version);
         server = serverManager.getTlsServer();
         TLSPoodleCommandConfig config = new TLSPoodleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
         TLSPoodleAttacker attacker = new TLSPoodleAttacker(config);
-        assertFalse(attacker.isVulnerable());
+        assertEquals(attacker.isVulnerable(), expectResult);
     }
 
-    // @Test
-    // public void testIsVulnerableTrue() {
-    // System.out.println("Starting TLS-Poodle tests vs Openssl 1.0.2g (expected true)");
-    // serverManager =
-    // DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.2g");
-    // server = serverManager.getTlsServer();
-    // TLSPoodleCommandConfig config = new TLSPoodleCommandConfig(new
-    // GeneralAttackDelegate());
-    // ClientDelegate delegate = (ClientDelegate)
-    // config.getDelegate(ClientDelegate.class);
-    // delegate.setHost(server.host + ":" + server.port);
-    // TLSPoodleAttacker attacker = new TLSPoodleAttacker(config);
-    // assertTrue(attacker.isVulnerable());
-    // }
+    @Test
+    public void testIsVulnerableTrue() {
+        testServer(DockerTlsServerType.DAMN_VULNERABLE_OPENSSL, "1.0", true);
+    }
 
 }
