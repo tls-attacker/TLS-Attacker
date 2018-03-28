@@ -618,7 +618,6 @@ public enum CipherSuite {
 
     public static List<CipherSuite> getImplemented() {
         List<CipherSuite> list = new LinkedList<>();
-        list.add(TLS_NULL_WITH_NULL_NULL);
         list.add(TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_RSA_WITH_AES_128_CBC_SHA);
         list.add(TLS_RSA_WITH_NULL_MD5);
