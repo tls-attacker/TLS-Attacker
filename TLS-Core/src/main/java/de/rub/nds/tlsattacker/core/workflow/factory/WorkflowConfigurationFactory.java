@@ -95,8 +95,10 @@ public class WorkflowConfigurationFactory {
                 return createShortHelloWorkflow();
             case SSL2_HELLO:
                 return createSsl2HelloWorkflow();
-            case CLIENT_RENEGOTIATION:
+            case CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION:
                 return createClientRenegotiationWorkflow();
+            case CLIENT_RENEGOTIATION:
+                return createClientRenegotiationWithResumptionWorkflow();
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
             case HTTPS:
@@ -387,37 +389,26 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private WorkflowTrace createClientRenegotiationWorkflow() {
+    private WorkflowTrace createClientRenegotiationWithResumptionWorkflow() {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow(conEnd);
-        WorkflowTrace renegotiationTrace = createRenegotiationWorkflow(conEnd);
+        trace.addTlsAction(new RenegotiationAction());
+        WorkflowTrace renegotiationTrace = createResumptionWorkflow();
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
         }
         return trace;
     }
 
-    private WorkflowTrace createRenegotiationWorkflow(AliasedConnection connection) {
-        WorkflowTrace workflowTrace = new WorkflowTrace();
-
-        workflowTrace.addTlsAction(new RenegotiationAction());
-
-        List<ProtocolMessage> messages = new LinkedList<>();
-        messages.add(new ClientHelloMessage(config));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
-
-        messages = new LinkedList<>();
-        messages.add(new ServerHelloMessage(config));
-        messages.add(new ChangeCipherSpecMessage(config));
-        messages.add(new FinishedMessage(config));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
-
-        messages = new LinkedList<>();
-        messages.add(new ChangeCipherSpecMessage(config));
-        messages.add(new FinishedMessage(config));
-        workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, messages));
-
-        return workflowTrace;
+    private WorkflowTrace createClientRenegotiationWorkflow() {
+        AliasedConnection conEnd = getConnection();
+        WorkflowTrace trace = createHandshakeWorkflow(conEnd);
+        trace.addTlsAction(new RenegotiationAction());
+        WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
+        return trace;
     }
 
     private WorkflowTrace createServerRenegotiationWorkflow() {
