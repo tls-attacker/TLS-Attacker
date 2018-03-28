@@ -131,15 +131,14 @@ public class KeySetGenerator {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             boolean useExplicitIv = protocolVersion.usesExplicitIv();
             int keySize = cipherAlg.getKeySize();
-            Cipher cipher = Cipher.getInstance(cipherAlg.getJavaName());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
             Mac mac = Mac.getInstance(macAlg.getJavaName());
             int secretSetSize = 2 * keySize + 2 * mac.getMacLength();
             if (!useExplicitIv) {
-                secretSetSize += (2 * cipher.getBlockSize());
+                secretSetSize += (2 * cipherAlg.getBlocksize());
             }
             return secretSetSize;
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+        } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not calculate SecretSetSize", ex);
         }
     }

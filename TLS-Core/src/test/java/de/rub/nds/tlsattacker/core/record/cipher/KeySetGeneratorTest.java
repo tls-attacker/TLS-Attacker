@@ -51,7 +51,8 @@ public class KeySetGeneratorTest {
                     context.setSelectedProtocolVersion(version);
                     assertNotNull(KeySetGenerator.generateKeySet(context));
                 } catch (NoSuchAlgorithmException | CryptoException ex) {
-                    fail(ex.toString());
+                    ex.printStackTrace();
+                    fail();
                 }
             }
         }
