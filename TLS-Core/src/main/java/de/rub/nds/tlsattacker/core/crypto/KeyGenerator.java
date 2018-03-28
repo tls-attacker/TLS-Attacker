@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -22,13 +23,16 @@ import javax.crypto.interfaces.DHPrivateKey;
 public class KeyGenerator {
 
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {
+        BigInteger modulus;
+        BigInteger key;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomRSAPrivateKey(chooser.getClientRsaModulus(), chooser.getConfig()
-                    .getDefaultClientRSAPrivateKey());
+            modulus = chooser.getClientRsaModulus();
+            key = chooser.getConfig().getDefaultClientRSAPrivateKey();
         } else {
-            return new CustomRSAPrivateKey(chooser.getServerRsaModulus(), chooser.getConfig()
-                    .getDefaultServerRSAPrivateKey());
+            modulus = chooser.getServerRsaModulus();
+            key = chooser.getConfig().getDefaultServerRSAPrivateKey();
         }
+        return new CustomRSAPrivateKey(modulus, key);
     }
 
     public static ECPrivateKey getECPrivateKey(Chooser chooser) {
