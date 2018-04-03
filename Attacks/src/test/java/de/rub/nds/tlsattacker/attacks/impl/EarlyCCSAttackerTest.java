@@ -8,11 +8,11 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
 import de.rub.nds.tls.subject.docker.DockerTlsServerType;
-import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -61,8 +61,8 @@ public class EarlyCCSAttackerTest {
     @Test
     public void testIsVulnerableFalse() {
         System.out.println("Starting CVE-20162107 tests vs Openssl 1.0.1h (expected false)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.1h");
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        server = factory.get(TlsImplementationType.OPENSSL, "1.0.1h");
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
@@ -73,8 +73,8 @@ public class EarlyCCSAttackerTest {
     @Test
     public void testIsVulnerableTrue() {
         System.out.println("Starting CVE-20162107 tests vs Openssl 1.0.1g (expected true)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.1g");
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        server = factory.get(TlsImplementationType.OPENSSL, "1.0.1g");
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);

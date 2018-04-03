@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.docker;
 
+import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
@@ -50,7 +51,7 @@ public class Tls13HandshakeTests {
 
     private ProtocolVersion tls13Version;
 
-    private DockerTlsServerType serverType;
+    private TlsImplementationType serverType;
 
     private String version;
 
@@ -59,28 +60,28 @@ public class Tls13HandshakeTests {
         return Arrays.asList(new Object[][] {
                 { NamedGroup.ECDH_X25519,
                         new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
-                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
-                        "1.1.1-pre2" },
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23,
+                        TlsImplementationType.OPENSSL, "1.1.1-pre2" },
                 { NamedGroup.ECDH_X25519,
                         new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
-                        CipherSuite.TLS_AES_256_GCM_SHA384, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
-                        "1.1.1-pre2" },
+                        CipherSuite.TLS_AES_256_GCM_SHA384, ProtocolVersion.TLS13_DRAFT23,
+                        TlsImplementationType.OPENSSL, "1.1.1-pre2" },
                 { NamedGroup.SECP256R1,
                         new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
-                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
-                        "1.1.1-pre2" },
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23,
+                        TlsImplementationType.OPENSSL, "1.1.1-pre2" },
                 { NamedGroup.SECP384R1,
                         new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
-                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
-                        "1.1.1-pre2" },
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23,
+                        TlsImplementationType.OPENSSL, "1.1.1-pre2" },
                 { NamedGroup.SECP521R1,
                         new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA_PSS, HashAlgorithm.SHA256),
-                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23, DockerTlsServerType.OPENSSL,
-                        "1.1.1-pre2" } });
+                        CipherSuite.TLS_AES_128_GCM_SHA256, ProtocolVersion.TLS13_DRAFT23,
+                        TlsImplementationType.OPENSSL, "1.1.1-pre2" } });
     }
 
     public Tls13HandshakeTests(NamedGroup namedGroup, SignatureAndHashAlgorithm signAlgorithm, CipherSuite suite,
-            ProtocolVersion tls13Version, DockerTlsServerType serverType, String version) {
+            ProtocolVersion tls13Version, TlsImplementationType serverType, String version) {
         this.namedGroup = namedGroup;
         this.signAlgorithm = signAlgorithm;
         this.suite = suite;
@@ -111,8 +112,9 @@ public class Tls13HandshakeTests {
 
     @Test
     public void testTls13() {
-        serverManager = DockerTlsServerManagerFactory.get(serverType, version);
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        server = factory.get(serverType, version);
+
         Config config = Config.createConfig();
 
         config.setWorkflowTraceType(WorkflowTraceType.FULL);

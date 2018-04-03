@@ -8,10 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.docker;
 
+import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
-import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
@@ -526,9 +525,9 @@ public class DockerHandshakeIT {
         System.out.println("Trying to initialize DockerTests");
         UnlimitedStrengthEnabler.enable();
         Security.addProvider(new BouncyCastleProvider());
-        DockerSpotifyTlsServerManager serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL,
-                "1.1.0f");
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
+
         System.out.println("Started the Docker server at:" + server.host + ":" + server.port);
     }
 

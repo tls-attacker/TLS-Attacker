@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
@@ -35,7 +36,6 @@ import org.junit.experimental.categories.Category;
 @Category(DockerTests.class)
 public class BleichenbacherAttackerTest {
 
-    private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
 
     public BleichenbacherAttackerTest() {
@@ -65,8 +65,8 @@ public class BleichenbacherAttackerTest {
     @Test
     public void testIsVulnerableFalse() {
         System.out.println("Starting BleichenbacherAttack tests vs Openssl 1.1.0f (expected false)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.1.0f");
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
         BleichenbacherCommandConfig config = new BleichenbacherCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
@@ -77,8 +77,9 @@ public class BleichenbacherAttackerTest {
     @Test
     public void testIsVulnerableTrue() {
         System.out.println("Starting BleichenbacherAttack tests vs WOLFSSL 3.12.1 (expected true)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.WOLFSSL, " 3.12.1");
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        factory.get(TlsImplementationType.WOLFSSL, "3.12.1");
+        server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
         BleichenbacherCommandConfig config = new BleichenbacherCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);

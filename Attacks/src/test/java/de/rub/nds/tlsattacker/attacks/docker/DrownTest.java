@@ -8,10 +8,10 @@
  */
 package de.rub.nds.tlsattacker.attacks.docker;
 
+import de.rub.nds.tls.subject.TlsImplementationType;
 import static org.junit.Assert.assertEquals;
 
 import java.security.Security;
-import java.util.List;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
@@ -32,10 +32,10 @@ import de.rub.nds.tlsattacker.util.tests.SlowTests;
 @Category(DockerTests.class)
 public class DrownTest {
 
-    private static final String[] PARAMETERS_NO_CIPHERSUITES = { "-no_ssl3", "-cipher", "AES" };
-    private static final String[] PARAMETERS_DES_IN_CIPHERSUITES = { "-ssl2", "-cipher", "DES" };
-    private static final String[] PARAMETERS_DES3_IN_CIPHERSUITES = { "-ssl2", "-cipher", "3DES" };
-    private static final String[] PARAMETERS_NO_SSL2 = { "-no_ssl2" };
+    private static final String PARAMETERS_NO_CIPHERSUITES = "-no_ssl3 -cipher AES";
+    private static final String PARAMETERS_DES_IN_CIPHERSUITES = "-ssl2 -cipher DES";
+    private static final String PARAMETERS_DES3_IN_CIPHERSUITES = "-ssl2 -cipher 3DES";
+    private static final String PARAMETERS_NO_SSL2 = "-no_ssl2";
 
     private static final String VERSION_WITHOUT_CIPHERSUITE_SELECTION_BUG = "1.0.2f";
     private static final String VERSION_WITH_CIPHERSUITE_SELECTION_BUG = "1.0.2e";
@@ -43,51 +43,45 @@ public class DrownTest {
     private static TlsServer server;
     private static DockerSpotifyTlsServerManager serverManager;
 
-    private static void getOpenSSLServer(String version, String[] parameters) {
+    private static void getOpenSSLServer(String version, String parameters) {
         try {
             System.out.println("Trying to initialize DrownTest");
             UnlimitedStrengthEnabler.enable();
             Security.addProvider(new BouncyCastleProvider());
-            serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, version);
-            serverManager.appendStartParameter(parameters);
-            server = serverManager.getTlsServer();
+            DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+            server = factory.get(TlsImplementationType.OPENSSL, version, parameters);
             System.out.println("Started the Docker server at:" + server.host + ":" + server.port);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Category(SlowTests.class)
     @Test
     public void testServerWithoutCiphersuitesDoesntAcceptRC4() {
         testOpenSSLVersion(VERSION_WITHOUT_CIPHERSUITE_SELECTION_BUG, false, PARAMETERS_NO_CIPHERSUITES);
     }
 
-    @Category(SlowTests.class)
     @Test
     public void testServerWithoutCiphersuitesAcceptsRC4() {
         testOpenSSLVersion(VERSION_WITH_CIPHERSUITE_SELECTION_BUG, true, PARAMETERS_NO_CIPHERSUITES);
     }
 
-    @Category(SlowTests.class)
     @Test
     public void testServerWithDesInCiphersuites() {
         testOpenSSLVersion(VERSION_WITHOUT_CIPHERSUITE_SELECTION_BUG, true, PARAMETERS_DES_IN_CIPHERSUITES);
     }
 
-    @Category(SlowTests.class)
     @Test
     public void testServerWithDes3InCiphersuitesDoesntAcceptRC4() {
         testOpenSSLVersion(VERSION_WITHOUT_CIPHERSUITE_SELECTION_BUG, false, PARAMETERS_DES3_IN_CIPHERSUITES);
     }
 
-    @Category(SlowTests.class)
     @Test
     public void testTLSServer() {
         testOpenSSLVersion(VERSION_WITHOUT_CIPHERSUITE_SELECTION_BUG, false, PARAMETERS_NO_SSL2);
     }
 
-    private void testOpenSSLVersion(String version, Boolean shouldBeVulnerable, String[] parameters) {
+    private void testOpenSSLVersion(String version, Boolean shouldBeVulnerable, String parameters) {
         getOpenSSLServer(version, parameters);
         DrownCommandConfig config = new DrownCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);

@@ -41,6 +41,9 @@
     </supportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
@@ -252,6 +255,9 @@
     <defaultClientSupportedCiphersuites>TLS_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384</defaultClientSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA</defaultServerSupportedCiphersuites>

@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
+import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
@@ -30,6 +31,7 @@ import org.junit.experimental.categories.Category;
 
 @Category(DockerTests.class)
 public class InvalidCurveAttackerTest {
+
     private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
 
@@ -61,8 +63,8 @@ public class InvalidCurveAttackerTest {
     @Ignore
     public void testIsVulnerableFalse() {
         System.out.println("Starting InvalidCurveAttacker tests vs BouncyCastle 1.52 (expected false)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.BOUNCYCASTLE, "1.54");
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        server = factory.get(TlsImplementationType.BOUNCYCASTLE, "1.54");
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
@@ -74,8 +76,8 @@ public class InvalidCurveAttackerTest {
     @Ignore
     public void testIsVulnerableTrue() {
         System.out.println("Starting InvalidCurveAttacker tests vs BouncyCastle 1.50 (expected true)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.BOUNCYCASTLE, "1.50");
-        server = serverManager.getTlsServer();
+        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
+        server = factory.get(TlsImplementationType.BOUNCYCASTLE, "1.50");
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
