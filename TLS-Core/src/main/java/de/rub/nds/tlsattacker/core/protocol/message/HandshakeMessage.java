@@ -278,6 +278,10 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.includeInDigest = ModifiableVariableFactory.safelySetValue(this.includeInDigest, includeInDigest);
     }
 
+    public ModifiableBoolean getIncludeInDigestModifiableBoolean() {
+        return this.includeInDigest;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

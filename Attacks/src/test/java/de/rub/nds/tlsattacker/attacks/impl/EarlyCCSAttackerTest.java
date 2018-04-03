@@ -62,11 +62,14 @@ public class EarlyCCSAttackerTest {
     public void testAll() {
         testVersion("1.0.1h", false);
         testVersion("1.0.1g", true);
-        testVersion("1.0.0a", true);
+
+        testVersion("1.0.0m", false);
+        testVersion("1.0.0l", true);
     }
 
     public void testVersion(String version, boolean expectVulnerable) {
-        System.out.println("Starting CVE-20162107 tests vs Openssl " + version + " (expected false)");
+        System.out
+                .println("Starting CVE-20162107 tests vs Openssl " + version + " (expected " + expectVulnerable + ")");
         serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, version);
         server = serverManager.getTlsServer();
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
