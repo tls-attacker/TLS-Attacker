@@ -88,6 +88,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Not vulnerable (probably), No Finished message found");
             return false;
         } else {
+        	// TODO: Consider waiting for an alert
             LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Vulnerable (definitely), Finished message found");
             return true;
         }

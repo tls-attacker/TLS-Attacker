@@ -59,27 +59,22 @@ public class EarlyCCSAttackerTest {
     }
 
     @Test
-    public void testIsVulnerableFalse() {
-        System.out.println("Starting CVE-20162107 tests vs Openssl 1.0.1h (expected false)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.1h");
-        server = serverManager.getTlsServer();
-        EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
-        ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
-        EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
-        assertFalse(attacker.isVulnerable());
+    public void testAll() {
+        testVersion("1.0.1h", false);
+        testVersion("1.0.1g", true);
+        testVersion("1.0.0a", true);
     }
 
-    @Test
-    public void testIsVulnerableTrue() {
-        System.out.println("Starting CVE-20162107 tests vs Openssl 1.0.1g (expected true)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, "1.0.1g");
+    public void testVersion(String version, boolean expectVulnerable) {
+        System.out.println("Starting CVE-20162107 tests vs Openssl " + version + " (expected false)");
+        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.OPENSSL, version);
         server = serverManager.getTlsServer();
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
         EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
-        assertTrue(attacker.isVulnerable());
+        assertEquals(attacker.isVulnerable(), expectVulnerable);
+        server.kill();
     }
 
 }
