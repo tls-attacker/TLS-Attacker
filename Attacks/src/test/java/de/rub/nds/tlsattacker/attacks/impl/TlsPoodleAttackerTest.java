@@ -32,7 +32,7 @@ import de.rub.nds.tlsattacker.util.tests.DockerTests;
 
 @Category(DockerTests.class)
 public class TlsPoodleAttackerTest {
-    private DockerSpotifyTlsServerManager serverManager;
+    
     private TlsServer server = null;
 
     public TlsPoodleAttackerTest() {
@@ -66,7 +66,7 @@ public class TlsPoodleAttackerTest {
 
     private void testServer(TlsImplementationType type, String version, boolean expectResult) {
         System.out.println("Starting TLS-Poodle tests vs " + type.name() + " " + version + " (expected "
-                + new Boolean(expectResult).toString() + ")");
+                + Boolean.toString(expectResult) + ")");
         DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
         server = factory.get(type, version);
         TLSPoodleCommandConfig config = new TLSPoodleCommandConfig(new GeneralAttackDelegate());
@@ -78,7 +78,7 @@ public class TlsPoodleAttackerTest {
 
     @Test
     public void testIsVulnerableTrue() {
-        testServer(TlsImplementationType.DAMN_VULNERABLE_OPENSSL, "1.0", true);
+        testServer(TlsImplementationType.DAMNVULNERABLEOPENSSL, "1.0", true);
     }
 
 }
