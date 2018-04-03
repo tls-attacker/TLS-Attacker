@@ -65,6 +65,9 @@ public class EarlyCCSAttackerTest {
 
         testVersion("1.0.0m", false);
         testVersion("1.0.0l", true);
+
+        testVersion("0.9.8za", false);
+        testVersion("0.9.8y", true);
     }
 
     public void testVersion(String version, boolean expectVulnerable) {
