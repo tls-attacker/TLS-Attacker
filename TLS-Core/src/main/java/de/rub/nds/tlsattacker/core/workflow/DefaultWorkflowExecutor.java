@@ -64,7 +64,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 break;
             }
             if ((state.getConfig().getStopActionsAfterIOException() && isReceivedFatalAlert())) {
-                LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                LOGGER.trace("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
 
