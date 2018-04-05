@@ -81,7 +81,8 @@ public class InvalidCurveAttackerTest {
     @Test
     public void testIsVulnerableTrue() throws Exception {
         System.out.println("Starting InvalidCurveAttacker tests vs JSSE with BouncyCastle 1.50 (expected true)");
-        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.JSSE_WITH_BC, "openjdk:7u151-jre-slim-bc-1-50");
+        serverManager = DockerTlsServerManagerFactory.get(DockerTlsServerType.JSSE_WITH_BC,
+                "openjdk:7u151-jre-slim-bc-1-50");
         server = serverManager.getTlsServer();
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         config.setEphemeral(true);

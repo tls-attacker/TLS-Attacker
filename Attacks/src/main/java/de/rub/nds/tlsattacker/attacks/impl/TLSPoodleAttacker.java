@@ -52,9 +52,16 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
 
         ModifiableByteArray padding = new ModifiableByteArray();
-        // we xor just the first byte in the padding
-        // if the padding was {0x02, 0x02, 0x02}, it becomes {0x03, 0x02, 0x02}
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
+        // https://mta.openssl.org/pipermail/openssl-announce/2018-March/000119.html
+        // Some implementations only test the least significant bit of each
+        // byte.
+        // https://yngve.vivaldi.net/2015/07/14/there-are-more-poodles-in-the-forest/
+        // 4800 servers test the last byte of the padding, but not the first.
+        // 240 servers (which is much lower) check the first byte, but not the
+        // last byte.
+        // Therefore, we flip just the most significant bit of the first byte in
+        // the padding.
+        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { (byte) 0x80 }, 0);
         padding.setModification(modifier);
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         Record r = new Record();

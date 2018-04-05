@@ -75,7 +75,9 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
         } catch (IOException ex) {
             LOGGER.info("Could not deserialize EC point (it is possible that some of your modifications made "
                     + "the EC point invalid)");
-            LOGGER.debug("EC point that was attempted to be deserialized: " + ArrayConverter.bytesToHexString(serializedPoint), ex);
+            LOGGER.debug(
+                    "EC point that was attempted to be deserialized: "
+                            + ArrayConverter.bytesToHexString(serializedPoint), ex);
         }
     }
 
