@@ -635,6 +635,8 @@ public class Config implements Serializable {
      */
     private Boolean earlyStop = false;
 
+    private Boolean stopActionsAfterIOException = true;
+
     private Boolean doDTLSRetransmits = false;
 
     private BigInteger defaultServerDhGenerator = new BigInteger("2");
@@ -1067,6 +1069,14 @@ public class Config implements Serializable {
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
         defaultPskSets = new LinkedList<>();
+    }
+
+    public Boolean getStopActionsAfterIOException() {
+        return stopActionsAfterIOException;
+    }
+
+    public void setStopActionsAfterIOException(Boolean stopActionsAfterIOException) {
+        this.stopActionsAfterIOException = stopActionsAfterIOException;
     }
 
     public Boolean getTls13BackwardsCompatibilityMode() {

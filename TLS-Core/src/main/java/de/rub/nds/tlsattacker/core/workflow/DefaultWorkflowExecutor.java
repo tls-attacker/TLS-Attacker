@@ -59,14 +59,17 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Clean shutdown of execution flow");
                 break;
             }
+            if ((state.getConfig().isStopActionsAfterFatal() && isIoException())) {
+                LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                break;
+            }
+            if ((state.getConfig().getStopActionsAfterIOException() && isReceivedFatalAlert())) {
+                LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
+                break;
+            }
 
             try {
-                if (!(state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
-                    action.execute(state);
-                } else {
-                    LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
-                    break;
-                }
+                action.execute(state);
             } catch (IOException | PreparationException ex) {
                 throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
             }
@@ -86,6 +89,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (state.getConfig().isResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
+
         state.storeTrace();
 
         if (config.getConfigOutput() != null) {
@@ -99,6 +103,15 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     private boolean isReceivedFatalAlert() {
         for (TlsContext ctx : state.getAllTlsContexts()) {
             if (ctx.isReceivedFatalAlert()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isIoException() {
+        for (TlsContext ctx : state.getAllTlsContexts()) {
+            if (ctx.isReceivedTransportHandlerException()) {
                 return true;
             }
         }
