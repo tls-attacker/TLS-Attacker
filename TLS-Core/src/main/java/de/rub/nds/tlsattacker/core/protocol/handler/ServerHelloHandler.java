@@ -78,7 +78,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
 
     private void adjustSelectedCiphersuite(ServerHelloMessage message) {
         CipherSuite suite = null;
-        if (message != null && message.getSelectedCipherSuite() != null) {
+        if (message.getSelectedCipherSuite() != null) {
             suite = CipherSuite.getCipherSuite(message.getSelectedCipherSuite().getValue());
         }
 
@@ -98,7 +98,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private void adjustSelectedCompression(ServerHelloMessage message) {
 
         CompressionMethod method = null;
-        if (message != null && message.getSelectedCompressionMethod() != null) {
+        if (message.getSelectedCompressionMethod() != null) {
             method = CompressionMethod.getCompressionMethod(message.getSelectedCompressionMethod().getValue());
         }
 
@@ -121,7 +121,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
         ProtocolVersion version = null;
 
-        if (message != null && message.getProtocolVersion() != null) {
+        if (message.getProtocolVersion() != null) {
             version = ProtocolVersion.getProtocolVersion(message.getProtocolVersion().getValue());
         }
 
