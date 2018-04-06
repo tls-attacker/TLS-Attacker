@@ -31,7 +31,7 @@ import org.junit.experimental.categories.Category;
  *
  * @author robert
  */
-//@Category(DockerTests.class)
+@Category(DockerTests.class)
 public class BleichenbacherAttackerTest {
 
     private TlsServer server = null;
