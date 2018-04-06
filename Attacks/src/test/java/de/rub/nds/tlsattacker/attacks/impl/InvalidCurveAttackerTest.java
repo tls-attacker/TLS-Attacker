@@ -64,8 +64,8 @@ public class InvalidCurveAttackerTest {
 
     @Test
     public void testIsVulnerableFalse() throws Exception {
-        System.out.println("Starting InvalidCurveAttacker tests vs BouncyCastle 1.58 (expected false)");
-        server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE_WITH_BC, "openjdk:7u151-jre-slim-bc-1-50");
+        System.out.println("Starting InvalidCurveAttacker tests vs JSSE (expected false)");
+        server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE, "openjdk:7u151-jre-slim-bc-1-50");
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         config.setEphemeral(true);
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
@@ -80,7 +80,7 @@ public class InvalidCurveAttackerTest {
     @Test
     public void testIsVulnerableTrue() throws Exception {
         System.out.println("Starting InvalidCurveAttacker tests vs JSSE with BouncyCastle 1.50 (expected true)");
-        server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE_WITH_BC, "openjdk:7u151-jre-slim-bc-1-50");
+        server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE, "openjdk:7u151-jre-slim-bc-1-50","BC");
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         config.setEphemeral(true);
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
