@@ -528,7 +528,7 @@ public class DockerHandshakeIT {
         DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
         server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
 
-        System.out.println("Started the Docker server at:" + server.host + ":" + server.port);
+        System.out.println("Started the Docker server at:" + server.getHost() + ":" + server.getPort());
     }
 
     @AfterClass
@@ -554,8 +554,8 @@ public class DockerHandshakeIT {
         config.setDefaultSelectedCipherSuite(suite);
         config.setHighestProtocolVersion(version);
         config.setSupportedVersions(version);
-        config.getDefaultClientConnection().setHostname(server.host);
-        config.getDefaultClientConnection().setPort(server.port);
+        config.getDefaultClientConnection().setHostname(server.getHost());
+        config.getDefaultClientConnection().setPort(server.getPort());
         State state = new State(config);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         try {

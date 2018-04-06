@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import de.rub.nds.tls.subject.TlsServer;
-import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
@@ -32,7 +31,7 @@ import de.rub.nds.tlsattacker.util.tests.DockerTests;
 
 @Category(DockerTests.class)
 public class TlsPoodleAttackerTest {
-    
+
     private TlsServer server = null;
 
     public TlsPoodleAttackerTest() {
@@ -71,7 +70,7 @@ public class TlsPoodleAttackerTest {
         server = factory.get(type, version);
         TLSPoodleCommandConfig config = new TLSPoodleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         TLSPoodleAttacker attacker = new TLSPoodleAttacker(config);
         assertEquals(attacker.isVulnerable(), expectResult);
     }

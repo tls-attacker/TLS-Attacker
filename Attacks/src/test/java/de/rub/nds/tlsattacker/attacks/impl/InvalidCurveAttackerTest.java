@@ -12,7 +12,6 @@ import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -67,7 +66,7 @@ public class InvalidCurveAttackerTest {
         server = factory.get(TlsImplementationType.BOUNCYCASTLE, "1.54");
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
         assertTrue(attacker.isVulnerable() == Boolean.FALSE);
     }
@@ -80,7 +79,7 @@ public class InvalidCurveAttackerTest {
         server = factory.get(TlsImplementationType.BOUNCYCASTLE, "1.50");
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
         assertTrue(attacker.isVulnerable() == Boolean.TRUE);
     }

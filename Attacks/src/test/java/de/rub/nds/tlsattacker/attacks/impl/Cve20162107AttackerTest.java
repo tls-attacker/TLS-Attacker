@@ -12,7 +12,6 @@ import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -73,7 +72,7 @@ public class Cve20162107AttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
         Cve20162107CommandConfig config = new Cve20162107CommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         Cve20162107Attacker attacker = new Cve20162107Attacker(config);
         assertFalse(attacker.isVulnerable());
     }
@@ -85,7 +84,7 @@ public class Cve20162107AttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.0.2g");
         Cve20162107CommandConfig config = new Cve20162107CommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         Cve20162107Attacker attacker = new Cve20162107Attacker(config);
         assertTrue(attacker.isVulnerable());
     }

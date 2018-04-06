@@ -20,14 +20,12 @@ import org.junit.experimental.categories.Category;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.attacks.config.DrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.DrownAttacker;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import de.rub.nds.tlsattacker.util.tests.DockerTests;
-import de.rub.nds.tlsattacker.util.tests.SlowTests;
 
 @Category(DockerTests.class)
 public class DrownTest {
@@ -50,7 +48,7 @@ public class DrownTest {
             Security.addProvider(new BouncyCastleProvider());
             DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
             server = factory.get(TlsImplementationType.OPENSSL, version, parameters);
-            System.out.println("Started the Docker server at:" + server.host + ":" + server.port);
+            System.out.println("Started the Docker server at:" + server.getHost() + ":" + server.getPort());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,7 +83,7 @@ public class DrownTest {
         getOpenSSLServer(version, parameters);
         DrownCommandConfig config = new DrownCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
 
         DrownAttacker attacker = new DrownAttacker(config);
         try {

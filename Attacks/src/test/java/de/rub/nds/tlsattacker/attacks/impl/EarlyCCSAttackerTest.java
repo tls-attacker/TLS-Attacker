@@ -12,7 +12,6 @@ import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -65,7 +64,7 @@ public class EarlyCCSAttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.0.1h");
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
         assertFalse(attacker.isVulnerable());
     }
@@ -77,7 +76,7 @@ public class EarlyCCSAttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.0.1g");
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
         assertTrue(attacker.isVulnerable());
     }

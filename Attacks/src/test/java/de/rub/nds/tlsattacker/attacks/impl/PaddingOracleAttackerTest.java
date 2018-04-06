@@ -12,7 +12,6 @@ import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -31,6 +30,7 @@ import org.junit.experimental.categories.Category;
 
 @Category(DockerTests.class)
 public class PaddingOracleAttackerTest {
+
     private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
 
@@ -65,7 +65,7 @@ public class PaddingOracleAttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
         PaddingOracleCommandConfig config = new PaddingOracleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         PaddingOracleAttacker attacker = new PaddingOracleAttacker(config);
         assertFalse(attacker.isVulnerable());
     }
@@ -77,7 +77,7 @@ public class PaddingOracleAttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.0.1f");
         PaddingOracleCommandConfig config = new PaddingOracleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         PaddingOracleAttacker attacker = new PaddingOracleAttacker(config);
         assertTrue(attacker.isVulnerable());
     }

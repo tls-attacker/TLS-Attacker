@@ -12,7 +12,6 @@ import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
@@ -122,8 +121,8 @@ public class Tls13HandshakeTests {
         config.setDefaultSelectedCipherSuite(suite);
         config.setHighestProtocolVersion(tls13Version);
         config.setSupportedVersions(tls13Version);
-        config.getDefaultClientConnection().setHostname(server.host);
-        config.getDefaultClientConnection().setPort(server.port);
+        config.getDefaultClientConnection().setHostname(server.getHost());
+        config.getDefaultClientConnection().setPort(server.getPort());
         config.setSupportedSignatureAndHashAlgorithms(signAlgorithm);
         config.setDefaultClientNamedGroups(namedGroup);
         config.setDefaultServerNamedGroups(namedGroup);

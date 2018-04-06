@@ -12,8 +12,6 @@ import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
 import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
-import de.rub.nds.tls.subject.docker.DockerTlsServerType;
-import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
@@ -67,7 +65,7 @@ public class PoodleAttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
         PoodleCommandConfig config = new PoodleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         PoodleAttacker attacker = new PoodleAttacker(config);
         assertFalse(attacker.isVulnerable());
     }
@@ -79,7 +77,7 @@ public class PoodleAttackerTest {
         server = factory.get(TlsImplementationType.OPENSSL, "1.0.1f");
         PoodleCommandConfig config = new PoodleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.host + ":" + server.port);
+        delegate.setHost(server.getHost() + ":" + server.getPort());
         PoodleAttacker attacker = new PoodleAttacker(config);
         assertTrue(attacker.isVulnerable());
     }
