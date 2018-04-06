@@ -73,8 +73,11 @@ public class ECDHClientKeyExchangeHandler extends ClientKeyExchangeHandler<ECDHC
                     clientPublicKey.getQ().getRawYCoord().toBigInteger()));
 
         } catch (IOException ex) {
-            throw new AdjustmentException("Could not deserialize EC Point: "
-                    + ArrayConverter.bytesToHexString(serializedPoint), ex);
+            LOGGER.info("Could not deserialize EC point (it is possible that some of your modifications made "
+                    + "the EC point invalid)");
+            LOGGER.debug(
+                    "EC point that was attempted to be deserialized: "
+                            + ArrayConverter.bytesToHexString(serializedPoint), ex);
         }
     }
 

@@ -31,7 +31,7 @@ import org.junit.experimental.categories.Category;
  *
  * @author robert
  */
-@Category(DockerTests.class)
+//@Category(DockerTests.class)
 public class BleichenbacherAttackerTest {
 
     private TlsServer server = null;
@@ -74,15 +74,14 @@ public class BleichenbacherAttackerTest {
 
     @Test
     public void testIsVulnerableTrue() {
-        System.out.println("Starting BleichenbacherAttack tests vs WOLFSSL 3.12.1 (expected true)");
+        System.out.println("Starting BleichenbacherAttack tests vs WOLFSSL 3.12.0 (expected true)");
         DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
-        factory.get(TlsImplementationType.WOLFSSL, "3.12.1");
-        server = factory.get(TlsImplementationType.OPENSSL, "1.1.0f");
+        server = factory.get(TlsImplementationType.WOLFSSL, "3.12.0-stable");
         BleichenbacherCommandConfig config = new BleichenbacherCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.getHost() + ":" + server.getPort());
         BleichenbacherAttacker attacker = new BleichenbacherAttacker(config);
-        assertTrue(attacker.isVulnerable());
+        assertTrue(attacker.isVulnerable() == Boolean.TRUE);
     }
 
     @Test
