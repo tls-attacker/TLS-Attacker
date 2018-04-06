@@ -111,11 +111,9 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
     }
 
     private void adjustSelectedSessionID(ServerHelloMessage message) {
-        if (message != null && message.getSessionId() != null) {
-            byte[] sessionID = message.getSessionId().getValue();
-            tlsContext.setServerSessionId(sessionID);
-            LOGGER.debug("Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID, false));
-        }
+        byte[] sessionID = message.getSessionId().getValue();
+        tlsContext.setServerSessionId(sessionID);
+        LOGGER.debug("Set SessionID in Context to " + ArrayConverter.bytesToHexString(sessionID, false));
     }
 
     private void adjustSelectedProtocolVersion(ServerHelloMessage message) {
