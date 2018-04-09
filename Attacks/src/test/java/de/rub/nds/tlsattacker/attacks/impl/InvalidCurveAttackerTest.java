@@ -30,7 +30,6 @@ import org.junit.experimental.categories.Category;
 @Category(DockerTests.class)
 public class InvalidCurveAttackerTest {
 
-    private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
 
     public InvalidCurveAttackerTest() {
@@ -61,7 +60,9 @@ public class InvalidCurveAttackerTest {
     public void testIsVulnerableFalse() throws Exception {
         System.out.println("Starting InvalidCurveAttacker tests vs JSSE (expected false)");
         server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE, "openjdk:7u151-jre-slim-bc-1-50");
-        Thread.currentThread().sleep(2000);//We are not sure why, but this server takes extra time to function correctly
+        Thread.currentThread().sleep(2000);// We are not sure why, but this
+                                           // server takes extra time to
+                                           // function correctly
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         config.setEphemeral(true);
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
@@ -76,7 +77,9 @@ public class InvalidCurveAttackerTest {
         System.out.println("Starting InvalidCurveAttacker tests vs JSSE with BouncyCastle 1.50 (expected true)");
         server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE, "openjdk:7u151-jre-slim-bc-1-50",
                 "BC");
-        Thread.currentThread().sleep(2000); //We are not sure why, but this server takes extra time to function correctly
+        Thread.currentThread().sleep(2000); // We are not sure why, but this
+                                            // server takes extra time to
+                                            // function correctly
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         config.setEphemeral(true);
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
