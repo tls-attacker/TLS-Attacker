@@ -58,27 +58,27 @@ public class EarlyCCSAttackerTest {
     }
 
     @Test
-    public void testIsVulnerableFalse() {
-        System.out.println("Starting CVE-20162107 tests vs Openssl 1.0.1h (expected false)");
-        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
-        server = factory.get(TlsImplementationType.OPENSSL, "1.0.1h");
-        EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
-        ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
-        delegate.setHost(server.getHost() + ":" + server.getPort());
-        EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
-        assertFalse(attacker.isVulnerable());
+    public void testAll() {
+        testVersion("1.0.1h", false);
+        testVersion("1.0.1g", true);
+
+        testVersion("1.0.0m", false);
+        testVersion("1.0.0l", true);
+
+        testVersion("0.9.8za", false);
+        testVersion("0.9.8y", true);
     }
 
-    @Test
-    public void testIsVulnerableTrue() {
-        System.out.println("Starting CVE-20162107 tests vs Openssl 1.0.1g (expected true)");
-        DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
-        server = factory.get(TlsImplementationType.OPENSSL, "1.0.1g");
+    public void testVersion(String version, boolean expectVulnerable) {
+        System.out.println("Starting Early-CCS tests vs Openssl " + version + " (expected " + expectVulnerable + ")");
+        server = new DockerTlsServerManagerFactory().get(TlsImplementationType.OPENSSL, version);
+
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.getHost() + ":" + server.getPort());
         EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
-        assertTrue(attacker.isVulnerable());
+        assertEquals(attacker.isVulnerable(), expectVulnerable);
+        server.kill();
     }
 
 }

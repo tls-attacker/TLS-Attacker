@@ -86,16 +86,18 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             byte[] handshakeMessageHash = chooser.getContext().getDigest()
                     .digest(chooser.getSelectedProtocolVersion(), chooser.getSelectedCipherSuite());
             LOGGER.debug("Using HandshakeMessage Hash:" + ArrayConverter.bytesToHexString(handshakeMessageHash));
+
+            String label;
             if (chooser.getConnectionEndType() == ConnectionEndType.SERVER) {
                 // TODO put this in seperate config option
-                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                        PseudoRandomFunction.SERVER_FINISHED_LABEL, handshakeMessageHash,
-                        HandshakeByteLength.VERIFY_DATA);
+                label = PseudoRandomFunction.SERVER_FINISHED_LABEL;
             } else {
-                return PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
-                        PseudoRandomFunction.CLIENT_FINISHED_LABEL, handshakeMessageHash,
-                        HandshakeByteLength.VERIFY_DATA);
+                label = PseudoRandomFunction.CLIENT_FINISHED_LABEL;
             }
+            byte[] res = PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
+                    HandshakeByteLength.VERIFY_DATA);
+            System.out.println("Result: " + ArrayConverter.bytesToHexString(res));
+            return res;
         }
     }
 
