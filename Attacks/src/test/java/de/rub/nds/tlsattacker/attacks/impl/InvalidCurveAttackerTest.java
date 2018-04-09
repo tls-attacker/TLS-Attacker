@@ -17,12 +17,7 @@ import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
 import de.rub.nds.tlsattacker.util.tests.DockerTests;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.security.Security;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -66,15 +61,14 @@ public class InvalidCurveAttackerTest {
     public void testIsVulnerableFalse() throws Exception {
         System.out.println("Starting InvalidCurveAttacker tests vs JSSE (expected false)");
         server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE, "openjdk:7u151-jre-slim-bc-1-50");
+        Thread.currentThread().sleep(2000);//We are not sure why, but this server takes extra time to function correctly
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         config.setEphemeral(true);
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.getHost() + ":" + server.getPort());
-        while (!isOnline(server.getHost(), server.getPort()))
-            ;
         InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
+        System.out.println(server.getServerLogs());
         assertTrue(attacker.isVulnerable() == Boolean.FALSE);
-        server.kill();
     }
 
     @Test
@@ -82,15 +76,13 @@ public class InvalidCurveAttackerTest {
         System.out.println("Starting InvalidCurveAttacker tests vs JSSE with BouncyCastle 1.50 (expected true)");
         server = new DockerTlsServerManagerFactory().get(TlsImplementationType.JSSE, "openjdk:7u151-jre-slim-bc-1-50",
                 "BC");
+        Thread.currentThread().sleep(2000); //We are not sure why, but this server takes extra time to function correctly
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         config.setEphemeral(true);
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.getHost() + ":" + server.getPort());
-        while (!isOnline(server.getHost(), server.getPort()))
-            ;
         InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
         assertTrue(attacker.isVulnerable() == Boolean.TRUE);
-        server.kill();
     }
 
     @Test
@@ -98,23 +90,4 @@ public class InvalidCurveAttackerTest {
 
     }
 
-    public static boolean isOnline(String address, int port) {
-        boolean b = true;
-        System.out.println("waiting");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(InvalidCurveAttackerTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            InetSocketAddress sa = new InetSocketAddress(address, port);
-            Socket ss = new Socket();
-            ss.connect(sa);
-            ss.close();
-        } catch (IOException e) {
-            b = false;
-            System.out.println(e.toString());
-        }
-        return b;
-    }
 }

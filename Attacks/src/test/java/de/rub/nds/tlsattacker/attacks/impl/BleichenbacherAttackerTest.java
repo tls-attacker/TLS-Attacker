@@ -74,9 +74,9 @@ public class BleichenbacherAttackerTest {
 
     @Test
     public void testIsVulnerableTrue() {
-        System.out.println("Starting BleichenbacherAttack tests vs WOLFSSL 3.12.0 (expected true)");
+        System.out.println("Starting BleichenbacherAttack tests vs Damn Vulnerable Openssl (expected true)");
         DockerTlsServerManagerFactory factory = new DockerTlsServerManagerFactory();
-        server = factory.get(TlsImplementationType.WOLFSSL, "3.12.0-stable");
+        server = factory.get(TlsImplementationType.DAMNVULNERABLEOPENSSL, "1.0");
         BleichenbacherCommandConfig config = new BleichenbacherCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.getHost() + ":" + server.getPort());
