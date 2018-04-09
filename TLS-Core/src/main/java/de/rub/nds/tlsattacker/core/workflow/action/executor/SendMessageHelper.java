@@ -63,6 +63,8 @@ public class SendMessageHelper {
             }
             if (message.isGoingToBeSent()) {
                 messageBytesCollector.appendProtocolMessageBytes(protocolMessageBytes);
+            } else {
+                LOGGER.debug("Not adding message bytes for " + message.toCompactString() + " - goingToBeSent is false!");
             }
             if (context.getConfig().isCreateIndividualRecords()) {
                 recordPosition = flushBytesToRecords(messageBytesCollector, lastType, records, recordPosition, context);
