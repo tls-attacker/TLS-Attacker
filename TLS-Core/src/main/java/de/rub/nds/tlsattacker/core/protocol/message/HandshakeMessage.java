@@ -274,6 +274,10 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         return handshakeMessageType;
     }
 
+    public void setIncludeInDigest(ModifiableBoolean includeInDigest) {
+        this.includeInDigest = includeInDigest;
+    }
+
     public void setIncludeInDigest(boolean includeInDigest) {
         this.includeInDigest = ModifiableVariableFactory.safelySetValue(this.includeInDigest, includeInDigest);
     }
