@@ -24,6 +24,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -560,53 +561,49 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+    public ClientKeyExchangeMessage createClientKeyExchangeMessage(KeyExchangeAlgorithm algorithm) {
         if (algorithm != null) {
-
             switch (algorithm) {
                 case RSA:
-                    messages.add(new RSAClientKeyExchangeMessage(config));
-                    break;
+                    return new RSAClientKeyExchangeMessage(config);
                 case ECDHE_ECDSA:
                 case ECDH_ECDSA:
                 case ECDH_RSA:
                 case ECDHE_RSA:
-                    messages.add(new ECDHClientKeyExchangeMessage(config));
-                    break;
+                    return new ECDHClientKeyExchangeMessage(config);
                 case DHE_DSS:
                 case DHE_RSA:
                 case DH_ANON:
                 case DH_DSS:
                 case DH_RSA:
-                    messages.add(new DHClientKeyExchangeMessage(config));
-                    break;
+                    return new DHClientKeyExchangeMessage(config);
                 case PSK:
-                    messages.add(new PskClientKeyExchangeMessage(config));
-                    break;
+                    return new PskClientKeyExchangeMessage(config);
                 case DHE_PSK:
-                    messages.add(new PskDhClientKeyExchangeMessage(config));
-                    break;
+                    return new PskDhClientKeyExchangeMessage(config);
                 case ECDHE_PSK:
-                    messages.add(new PskEcDhClientKeyExchangeMessage(config));
-                    break;
+                    return new PskEcDhClientKeyExchangeMessage(config);
                 case RSA_PSK:
-                    messages.add(new PskRsaClientKeyExchangeMessage(config));
-                    break;
+                    return new PskRsaClientKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
-                    messages.add(new SrpClientKeyExchangeMessage(config));
-                    break;
+                    return new SrpClientKeyExchangeMessage(config);
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
-                            + ", not adding ClientKeyExchange Message");
-                    break;
+                            + ", not creating ClientKeyExchange Message");
+
             }
         } else {
-            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not adding ClientKeyExchange Message");
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not creating ClientKeyExchange Message");
         }
+        return null;
+    }
+
+    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        messages.add(message);
     }
 
     private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {

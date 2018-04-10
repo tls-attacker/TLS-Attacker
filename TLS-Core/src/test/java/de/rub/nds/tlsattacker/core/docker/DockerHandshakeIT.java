@@ -49,7 +49,8 @@ public class DockerHandshakeIT {
         CipherSuite[] cipherSuites = { CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
                 CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA, CipherSuite.TLS_DHE_RSA_WITH_AES_128_CBC_SHA,
                 CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA, CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA };
+                CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA, CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
+                CipherSuite.TLS_RSA_WITH_AES_256_GCM_SHA384 };
         ProtocolVersion[] protocolVersions = { ProtocolVersion.TLS10, ProtocolVersion.TLS11, ProtocolVersion.TLS12 };
         WorkflowTraceType[] workflowTraceTypes = { WorkflowTraceType.HANDSHAKE, WorkflowTraceType.FULL_RESUMPTION };
 
@@ -59,6 +60,9 @@ public class DockerHandshakeIT {
                 for (CipherSuite cipherSuite : cipherSuites) {
                     for (ProtocolVersion protocolVersion : protocolVersions) {
                         for (WorkflowTraceType workflowTraceType : workflowTraceTypes) {
+                            if (protocolVersion != ProtocolVersion.TLS12 || cipherSuite.isGCM()) {
+                                continue;
+                            }
                             res.add(new Object[] { addEncryptThenMac, addExtendedMasterSecret, cipherSuite,
                                     protocolVersion, workflowTraceType });
                         }
