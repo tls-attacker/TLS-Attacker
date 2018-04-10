@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -20,6 +21,7 @@ import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -48,9 +50,9 @@ public class CertificateFetcherTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         TimeHelper.setProvider(new FixedTimeProvider(0));
-        KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024);
+        KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom(new Random(0), new byte[0]));
         KeyStore ks = null;
-        ks = KeyStoreGenerator.createKeyStore(k);
+        ks = KeyStoreGenerator.createKeyStore(k, new BadRandom(new Random(0), new byte[0]));
 
         expectedCertificate = ks.getCertificate(KeyStoreGenerator.ALIAS);
         expectedPublicKey = expectedCertificate.getPublicKey();
