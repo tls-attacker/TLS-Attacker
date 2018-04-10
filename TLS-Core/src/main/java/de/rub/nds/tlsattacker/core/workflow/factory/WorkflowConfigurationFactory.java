@@ -96,8 +96,10 @@ public class WorkflowConfigurationFactory {
                 return createShortHelloWorkflow();
             case SSL2_HELLO:
                 return createSsl2HelloWorkflow();
-            case CLIENT_RENEGOTIATION:
+            case CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION:
                 return createClientRenegotiationWorkflow();
+            case CLIENT_RENEGOTIATION:
+                return createClientRenegotiationWithResumptionWorkflow();
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
             case HTTPS:
@@ -388,6 +390,17 @@ public class WorkflowConfigurationFactory {
                 config), new FinishedMessage(config));
         trace.addTlsAction(action);
 
+        return trace;
+    }
+
+    private WorkflowTrace createClientRenegotiationWithResumptionWorkflow() {
+        AliasedConnection conEnd = getConnection();
+        WorkflowTrace trace = createHandshakeWorkflow(conEnd);
+        trace.addTlsAction(new RenegotiationAction());
+        WorkflowTrace renegotiationTrace = createResumptionWorkflow();
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
         return trace;
     }
 
