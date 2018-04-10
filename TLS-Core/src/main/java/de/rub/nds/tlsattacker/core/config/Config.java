@@ -404,7 +404,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
-    private Boolean addSignatureAndHashAlgrorithmsExtension = false;
+    private Boolean addSignatureAndHashAlgorithmsExtension = false;
 
     /**
      * If we generate ClientHello with the SupportedVersion extension
@@ -2179,11 +2179,11 @@ public class Config implements Serializable {
     }
 
     public Boolean isAddSignatureAndHashAlgrorithmsExtension() {
-        return addSignatureAndHashAlgrorithmsExtension;
+        return addSignatureAndHashAlgorithmsExtension;
     }
 
-    public void setAddSignatureAndHashAlgrorithmsExtension(Boolean addSignatureAndHashAlgrorithmsExtension) {
-        this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
+    public void setAddSignatureAndHashAlgorithmsExtension(Boolean addSignatureAndHashAlgorithmsExtension) {
+        this.addSignatureAndHashAlgorithmsExtension = addSignatureAndHashAlgorithmsExtension;
     }
 
     public Boolean isAddSupportedVersionsExtension() {

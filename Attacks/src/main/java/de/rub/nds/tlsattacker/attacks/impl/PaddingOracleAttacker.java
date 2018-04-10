@@ -61,7 +61,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     }
 
     public State executeTlsFlow(Record record) {
-        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
+        tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
         tlsConfig.setEarlyStop(true);
         tlsConfig.setStopActionsAfterFatal(true);
         tlsConfig.setQuickReceive(true);

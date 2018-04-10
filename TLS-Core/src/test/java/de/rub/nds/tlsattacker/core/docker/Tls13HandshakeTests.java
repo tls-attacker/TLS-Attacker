@@ -129,7 +129,7 @@ public class Tls13HandshakeTests {
         config.setDefaultSelectedNamedGroup(namedGroup);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setAddSupportedVersionsExtension(true);
         config.setAddKeyShareExtension(true);
         config.setUseRandomUnixTime(true);
