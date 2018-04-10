@@ -2666,7 +2666,7 @@ public class Config implements Serializable {
         this.defaultServerConnection = defaultServerConnection;
     }
 
-    public RunningModeType getDefaulRunningMode() {
+    public RunningModeType getDefaultRunningMode() {
         return defaultRunningMode;
     }
 

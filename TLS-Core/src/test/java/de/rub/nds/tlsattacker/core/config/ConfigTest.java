@@ -2802,7 +2802,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of getDefaulRunningMode method, of class Config.
+     * Test of getDefaultRunningMode method, of class Config.
      */
     @Test
     public void testGetDefaulRunningMode() {
