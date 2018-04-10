@@ -13,10 +13,6 @@ import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.serializer.HttpsHeaderSerializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.ProtocolMessageSerializer;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResponseMessage> {
 
     private HttpsResponseMessage message;
@@ -37,7 +33,6 @@ public class HttpsResponseSerializer extends ProtocolMessageSerializer<HttpsResp
         }
         builder.append("\r\n");
         builder.append(message.getResponseContent().getValue());
-        builder.append("\r\n");
         LOGGER.info(builder.toString());
         appendBytes(builder.toString().getBytes());
         return getAlreadySerialized();

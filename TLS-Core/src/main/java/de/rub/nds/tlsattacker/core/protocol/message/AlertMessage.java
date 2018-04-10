@@ -21,9 +21,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 @XmlRootElement
 public class AlertMessage extends ProtocolMessage {
 
@@ -93,16 +90,25 @@ public class AlertMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\nALERT message:\n  Level: ");
+        StringBuilder sb = new StringBuilder();
+        sb.append("AlertMessage:");
+        sb.append("\n  Level: ");
         if (level != null) {
-            sb.append(AlertLevel.getAlertLevel(level.getValue()));
+            if (AlertLevel.getAlertLevel(level.getValue()) == AlertLevel.UNDEFINED) {
+                sb.append(level.getValue());
+            } else {
+                sb.append(AlertLevel.getAlertLevel(level.getValue()));
+            }
         } else {
             sb.append("null");
         }
         sb.append("\n  Description: ");
         if (description != null) {
-            sb.append(AlertDescription.getAlertDescription(description.getValue()));
+            if (AlertDescription.getAlertDescription(description.getValue()) == null) {
+                sb.append(description.getValue());
+            } else {
+                sb.append(AlertDescription.getAlertDescription(description.getValue()));
+            }
         } else {
             sb.append("null");
         }
@@ -112,14 +118,14 @@ public class AlertMessage extends ProtocolMessage {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
-
-        sb.append("ALERT (");
+        sb.append("AlertMessage:");
+        sb.append("\n  Level: ");
         if (level != null && level.getValue() != null) {
             sb.append(AlertLevel.getAlertLevel(level.getValue()).toString());
         } else {
             sb.append("null");
         }
-        sb.append(", ");
+        sb.append("\n  Description: ");
         if (description != null && description.getValue() != null) {
             AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
             if (desc != null) {
@@ -130,7 +136,6 @@ public class AlertMessage extends ProtocolMessage {
         } else {
             sb.append("null");
         }
-        sb.append(")");
         return sb.toString();
     }
 

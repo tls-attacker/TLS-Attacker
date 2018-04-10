@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
-public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHClientKeyExchangeMessage> {
+public class ECDHClientKeyExchangeParser<T extends ECDHClientKeyExchangeMessage> extends ClientKeyExchangeParser<T> {
 
     /**
      * Constructor for the Parser class
@@ -42,9 +38,14 @@ public class ECDHClientKeyExchangeParser extends ClientKeyExchangeParser<ECDHCli
         parseSerializedPublicKey(msg);
     }
 
+    protected void parseEcDhParams(T msg) {
+        parseSerializedPublicKeyLength(msg);
+        parseSerializedPublicKey(msg);
+    }
+
     @Override
-    protected ECDHClientKeyExchangeMessage createHandshakeMessage() {
-        return new ECDHClientKeyExchangeMessage();
+    protected T createHandshakeMessage() {
+        return (T) new ECDHClientKeyExchangeMessage();
     }
 
     /**

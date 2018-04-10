@@ -15,9 +15,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class HRRKeyShareExtensionPreparatorTest {
 
     private HRRKeyShareExtensionPreparator preparator;
@@ -41,7 +38,8 @@ public class HRRKeyShareExtensionPreparatorTest {
     @Test
     public void testPrepare() {
         preparator.prepare();
-        assertArrayEquals(message.getSelectedGroup().getValue(), context.getConfig().getKeyShareType().getValue());
+        assertArrayEquals(message.getSelectedGroup().getValue(), context.getConfig().getDefaultSelectedNamedGroup()
+                .getValue());
     }
 
     @Test

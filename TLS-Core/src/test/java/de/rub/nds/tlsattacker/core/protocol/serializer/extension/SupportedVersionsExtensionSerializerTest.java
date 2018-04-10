@@ -17,9 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @RunWith(Parameterized.class)
 public class SupportedVersionsExtensionSerializerTest {
 
@@ -28,18 +25,14 @@ public class SupportedVersionsExtensionSerializerTest {
         return SupportedVersionsExtensionParserTest.generateData();
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private int versionListLength;
-    private byte[] versionList;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final int versionListLength;
+    private final byte[] versionList;
 
     public SupportedVersionsExtensionSerializerTest(byte[] extension, int start, byte[] completeExtension,
             ExtensionType type, int extensionLength, int versionListLength, byte[] versionList) {
-        this.extension = extension;
-        this.start = start;
         this.completeExtension = completeExtension;
         this.type = type;
         this.extensionLength = extensionLength;

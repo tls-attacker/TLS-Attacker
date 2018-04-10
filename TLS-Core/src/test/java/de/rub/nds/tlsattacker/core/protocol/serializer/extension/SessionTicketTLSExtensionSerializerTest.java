@@ -17,10 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 @RunWith(Parameterized.class)
 public class SessionTicketTLSExtensionSerializerTest {
     /**
@@ -37,7 +33,6 @@ public class SessionTicketTLSExtensionSerializerTest {
     private final int extensionLength;
     private final byte[] sessionTicket;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private SessionTicketTLSExtensionMessage message;
 
     /**
@@ -55,7 +50,6 @@ public class SessionTicketTLSExtensionSerializerTest {
         this.extensionLength = extensionLength;
         this.sessionTicket = sessionTicket;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
     }
 
     /**

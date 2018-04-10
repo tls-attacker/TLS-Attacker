@@ -18,13 +18,11 @@ import de.rub.nds.tlsattacker.core.unittest.helper.FakeTransportHandler;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Robert Merget - robert.merget@rub.de
- */
 public class TlsAttackerSocketTest {
 
     private TlsAttackerSocket socket;
@@ -39,7 +37,7 @@ public class TlsAttackerSocketTest {
     @Before
     public void setUp() {
         Config config = Config.createConfig();
-        State state = new State(config, new WorkflowTrace(config));
+        state = new State(config, new WorkflowTrace());
         context = state.getTlsContext();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         transportHandler = new FakeTransportHandler(ConnectionEndType.CLIENT);
@@ -51,6 +49,8 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of sendRawBytes method, of class TlsAttackerSocket.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testSendRawBytes() throws Exception {
@@ -60,6 +60,8 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of recieveRawBytes method, of class TlsAttackerSocket.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testReceiveRawBytes() throws Exception {
@@ -77,8 +79,10 @@ public class TlsAttackerSocketTest {
     public void testSend_String() throws IOException {
         socket.send("test");
         byte[] sentBytes = transportHandler.getSendByte();
-        assertArrayEquals(sentBytes,
-                ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 }, "test".getBytes()));
+        assertArrayEquals(
+                sentBytes,
+                ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
+                        "test".getBytes(Charset.forName("ASCII"))));
     }
 
     /**
@@ -93,6 +97,8 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveBytes method, of class TlsAttackerSocket.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testReceiveBytes() throws Exception {
@@ -103,11 +109,13 @@ public class TlsAttackerSocketTest {
 
     /**
      * Test of receiveString method, of class TlsAttackerSocket.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testReceiveString() throws Exception {
         transportHandler.setFetchableByte(ArrayConverter.concatenate(new byte[] { 0x17, 0x03, 0x03, 0x00, 0x04 },
-                "test".getBytes()));
+                "test".getBytes(Charset.forName("ASCII"))));
         String receivedString = socket.receiveString();
         assertEquals("test", receivedString);
     }

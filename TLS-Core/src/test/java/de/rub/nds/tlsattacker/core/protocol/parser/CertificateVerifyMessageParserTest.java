@@ -19,10 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class CertificateVerifyMessageParserTest {
 
@@ -63,11 +59,11 @@ public class CertificateVerifyMessageParserTest {
     }
 
     /**
-     * Test of parse method, of class CertificateVerifyMessageParser.
+     * Test of parse method, of class CertificateVerifyParser.
      */
     @Test
     public void testParse() {
-        CertificateVerifyMessageParser parser = new CertificateVerifyMessageParser(0, message, ProtocolVersion.TLS12);
+        CertificateVerifyParser parser = new CertificateVerifyParser(0, message, ProtocolVersion.TLS12);
         CertificateVerifyMessage certVerifyMessage = parser.parse();
         assertTrue(certVerifyMessage.getLength().getValue() == length);
         assertTrue(certVerifyMessage.getType().getValue() == type.getValue());

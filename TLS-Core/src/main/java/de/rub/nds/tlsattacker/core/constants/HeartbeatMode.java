@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum HeartbeatMode {
 
     PEER_ALLOWED_TO_SEND((byte) 1),
@@ -47,11 +44,11 @@ public enum HeartbeatMode {
         return new byte[] { value };
     }
 
-    public static HeartbeatMode getRandom() {
+    public static HeartbeatMode getRandom(Random random) {
         HeartbeatMode c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (HeartbeatMode) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (HeartbeatMode) o[random.nextInt(o.length)];
         }
         return c;
     }

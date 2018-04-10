@@ -9,13 +9,12 @@
 package de.rub.nds.tlsattacker.core.tokenbinding;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -30,25 +29,15 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.Base64;
-import java.util.Random;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
-import org.bouncycastle.asn1.ASN1Primitive;
-import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenbindingMessagePreparatorTest {
 
     private TlsContext context;
@@ -59,7 +48,7 @@ public class TokenbindingMessagePreparatorTest {
 
     private TokenBindingMessage message;
 
-    private TokenbindingMessagePreparator preparator;
+    private TokenBindingMessagePreparator preparator;
 
     @Before
     public void setUp() {
@@ -67,7 +56,7 @@ public class TokenbindingMessagePreparatorTest {
         context = new TlsContext(config);
         chooser = context.getChooser();
         message = new TokenBindingMessage();
-        preparator = new TokenbindingMessagePreparator(chooser, message);
+        preparator = new TokenBindingMessagePreparator(chooser, message);
         config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
                 HashAlgorithm.SHA256));
         context.setClientRandom(ArrayConverter
@@ -79,19 +68,22 @@ public class TokenbindingMessagePreparatorTest {
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         Security.addProvider(new BouncyCastleProvider());
-        RandomHelper.setRandom(new Random(0));
     }
 
     /**
      * Test of prepareProtocolMessageContents method, of class
-     * TokenbindingMessagePreparator.
+     * TokenBindingMessagePreparator.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testPrepareProtocolMessageContents() throws Exception {
         preparator.prepare();
-        Configurator.setRootLevel(Level.ALL);
         Serializer serializer = new TokenBindingMessageSerializer(message, ProtocolVersion.TLS12);
         byte[] serialize = serializer.serialize();
+        TokenBindingMessageParser selfParser = new TokenBindingMessageParser(0, serialize, ProtocolVersion.TLS12);
+        TokenBindingMessage selfParsed = selfParser.parse();
+        assertNotNull(selfParsed);
         String base64 = "AIkAAgBBQM9eQES_uxoyRn0DDoYLcWqvm6Oo3p0lI1s3fRjdIj6dw8wLDf0RWkxuyNAmgAQkUWxm8_JfwS8MziBYVuJ5ECcAQHF_HGcPiSv_X60y5Ql-AxoqaWzwqXvpStEBgY_IX8kT_qAHsb5h38ZuQoWOaZVgqlF1sa70B4GVXxmi2JkdJYcAAA";
         byte[] decode = Base64.getUrlDecoder().decode(base64);
         TokenBindingMessageParser parser = new TokenBindingMessageParser(0, decode, ProtocolVersion.TLS12);
@@ -138,10 +130,10 @@ public class TokenbindingMessagePreparatorTest {
     }
 
     private ECDomainParameters generateEcParameters() {
-        NamedCurve[] curves = new NamedCurve[] { NamedCurve.SECP256R1 };
+        NamedGroup[] curves = new NamedGroup[] { NamedGroup.SECP256R1 };
         ECPointFormat[] formats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
         InputStream is = new ByteArrayInputStream(ArrayConverter.concatenate(
-                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedCurve.SECP256R1.getValue()));
+                new byte[] { EllipticCurveType.NAMED_CURVE.getValue() }, NamedGroup.SECP256R1.getValue()));
         ECDomainParameters ecParams;
         try {
             ecParams = ECCUtilsBCWrapper.readECParameters(curves, formats, is);
@@ -150,30 +142,5 @@ public class TokenbindingMessagePreparatorTest {
         }
 
         return ecParams;
-    }
-
-    private void decodeASN1(byte[] value) throws Exception {
-        byte[] signature = value;
-        ASN1Primitive asn1 = toAsn1Primitive(signature);
-
-        if (asn1 instanceof ASN1Sequence) {
-            ASN1Sequence asn1Sequence = (ASN1Sequence) asn1;
-            ASN1Encodable[] asn1Encodables = asn1Sequence.toArray();
-            for (ASN1Encodable asn1Encodable : asn1Encodables) {
-                ASN1Primitive asn1Primitive = asn1Encodable.toASN1Primitive();
-                if (asn1Primitive instanceof ASN1Integer) {
-                    ASN1Integer asn1Integer = (ASN1Integer) asn1Primitive;
-                    BigInteger integer = asn1Integer.getValue();
-                    System.out.println(integer.toString());
-                }
-            }
-        }
-    }
-
-    private static ASN1Primitive toAsn1Primitive(byte[] data) throws Exception {
-        try (ByteArrayInputStream inStream = new ByteArrayInputStream(data);
-                ASN1InputStream asnInputStream = new ASN1InputStream(inStream);) {
-            return asnInputStream.readObject();
-        }
     }
 }

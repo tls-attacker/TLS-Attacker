@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 public class FakeTransportHandler extends TransportHandler {
     /**
      * Data that will be returned on a fetchData() call
@@ -58,6 +54,16 @@ public class FakeTransportHandler extends TransportHandler {
 
     @Override
     public void initialize() throws IOException {
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return false;
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

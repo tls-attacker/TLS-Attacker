@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurvesExtensionMessage> {
 
     public EllipticCurvesExtensionParser(int startposition, byte[] array) {
@@ -25,8 +21,8 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
     @Override
     public void parseExtensionMessageContent(EllipticCurvesExtensionMessage msg) {
         LOGGER.debug("Parsing EllipticCurvesExtensionMessage");
-        parseSupportedCurvesLength(msg);
-        parseSupportedCurves(msg);
+        parseSupportedGroupsLength(msg);
+        parseSupportedGroups(msg);
     }
 
     @Override
@@ -41,9 +37,9 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
      * @param msg
      *            Message to write in
      */
-    private void parseSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
-        msg.setSupportedCurvesLength(parseIntField(ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES));
-        LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
+    private void parseSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedGroupsLength(parseIntField(ExtensionByteLength.SUPPORTED_GROUPS));
+        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
     }
 
     /**
@@ -53,9 +49,9 @@ public class EllipticCurvesExtensionParser extends ExtensionParser<EllipticCurve
      * @param msg
      *            Message to write in
      */
-    private void parseSupportedCurves(EllipticCurvesExtensionMessage msg) {
-        msg.setSupportedCurves(parseByteArrayField(msg.getSupportedCurvesLength().getValue()));
-        LOGGER.debug("SupportedCurves: " + ArrayConverter.bytesToHexString(msg.getSupportedCurves().getValue()));
+    private void parseSupportedGroups(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedGroups(parseByteArrayField(msg.getSupportedGroupsLength().getValue()));
+        LOGGER.debug("SupportedGroups: " + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
     }
 
 }

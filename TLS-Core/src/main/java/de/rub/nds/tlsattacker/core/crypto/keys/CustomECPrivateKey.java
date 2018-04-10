@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
@@ -18,19 +18,15 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class CustomECPrivateKey implements ECPrivateKey {
 
-    private BigInteger privatekey;
+    private final BigInteger privatekey;
 
-    private NamedCurve curve;
+    private final NamedGroup group;
 
-    public CustomECPrivateKey(BigInteger privatekey, NamedCurve curve) {
+    public CustomECPrivateKey(BigInteger privatekey, NamedGroup group) {
         this.privatekey = privatekey;
-        this.curve = curve;
+        this.group = group;
     }
 
     @Override
@@ -57,11 +53,11 @@ public class CustomECPrivateKey implements ECPrivateKey {
     public ECParameterSpec getParams() {
         try {
             AlgorithmParameters parameters = AlgorithmParameters.getInstance("EC");
-            parameters.init(new ECGenParameterSpec(curve.getJavaName()));
+            parameters.init(new ECGenParameterSpec(group.getJavaName()));
             ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
             return ecParameters;
         } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
-            throw new CryptoException("Could not generate ECParameterSpec", ex);
+            throw new UnsupportedOperationException("Could not generate ECParameterSpec", ex);
         }
     }
 

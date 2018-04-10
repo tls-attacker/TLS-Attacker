@@ -18,10 +18,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Nurullah Erinola - nurullah.erinola@rub.de
- */
 public class CipherSuiteTest {
 
     protected static final Logger LOGGER = LogManager.getLogger(CipherSuiteTest.class.getName());
@@ -34,9 +30,8 @@ public class CipherSuiteTest {
     }
 
     /**
-     * Test of getCiphersuites method, of class CipherSuite.
-     * 
-     * size of Array % 2 == 0
+     * Test of getCiphersuites method, of class CipherSuite. size of Array % 2
+     * == 0
      */
     @Test
     public void testPrepare1() {
@@ -49,9 +44,8 @@ public class CipherSuiteTest {
     }
 
     /**
-     * Test of getCiphersuites method, of class CipherSuite.
-     * 
-     * size of Array % 2 != 0
+     * Test of getCiphersuites method, of class CipherSuite. size of Array % 2
+     * != 0
      */
     @Test(expected = UnknownCiphersuiteException.class)
     public void testPrepare2() {
@@ -67,7 +61,24 @@ public class CipherSuiteTest {
     public void testUnimplemented() {
         for (CipherSuite suite : CipherSuite.getNotImplemented()) {
             LOGGER.debug(suite.name());
+
         }
+        LOGGER.debug("Not implemented: " + CipherSuite.getNotImplemented().size());
+        LOGGER.debug("Implemented: " + CipherSuite.getImplemented().size());
     }
 
+    @Test
+    public void implementedListContainsNoDuplicates() {
+        for (CipherSuite suite : CipherSuite.getImplemented()) {
+            int counter = 0;
+            for (CipherSuite tempCipherSuite : CipherSuite.getImplemented()) {
+                if (suite == tempCipherSuite) {
+                    counter++;
+                }
+            }
+            if (counter != 1) {
+                fail("" + suite + " is a duplicate in the getImplemented Ciphersuite list");
+            }
+        }
+    }
 }

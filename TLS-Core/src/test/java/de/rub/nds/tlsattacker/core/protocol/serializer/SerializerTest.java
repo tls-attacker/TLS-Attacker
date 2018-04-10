@@ -12,10 +12,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SerializerTest {
 
     private SerializerImpl serializer;
@@ -79,7 +75,7 @@ public class SerializerTest {
         assertArrayEquals(result, new byte[] { 0, 1, 2, 3 });
     }
 
-    public class SerializerImpl extends Serializer {
+    public static class SerializerImpl extends Serializer {
 
         public SerializerImpl() {
             super();

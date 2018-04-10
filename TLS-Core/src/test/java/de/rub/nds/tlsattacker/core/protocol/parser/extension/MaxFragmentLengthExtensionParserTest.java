@@ -17,10 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class MaxFragmentLengthExtensionParserTest {
 
@@ -30,12 +26,12 @@ public class MaxFragmentLengthExtensionParserTest {
                                                 // maxfragmentlength extension
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private byte[] maxFragmentLength;
+    private final byte[] extension;
+    private final int start;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final byte[] maxFragmentLength;
 
     public MaxFragmentLengthExtensionParserTest(byte[] extension, int start, byte[] completeExtension,
             ExtensionType type, int extensionLength, byte[] maxFragmentLength) {

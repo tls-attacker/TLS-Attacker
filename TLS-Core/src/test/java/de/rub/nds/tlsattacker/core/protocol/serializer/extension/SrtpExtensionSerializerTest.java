@@ -18,17 +18,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 @RunWith(Parameterized.class)
 public class SrtpExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int srtpProtectionProfilesLength;
     private final byte[] srtpProtectionProfiles;
     private final int srtpMkiLength;
@@ -42,7 +37,6 @@ public class SrtpExtensionSerializerTest {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.srtpProtectionProfilesLength = srtpProtectionProfilesLength;
         this.srtpProtectionProfiles = srtpProtectionProfiles;
         this.srtpMkiLength = srtpMkiLength;

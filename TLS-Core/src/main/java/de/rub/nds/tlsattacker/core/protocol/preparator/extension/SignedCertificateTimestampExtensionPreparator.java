@@ -12,21 +12,11 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateT
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.SignedCertificateTimestampExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SignedCertificateTimestampExtensionPreparator extends
         ExtensionPreparator<SignedCertificateTimestampExtensionMessage> {
 
     private final SignedCertificateTimestampExtensionMessage message;
 
-    /**
-     * Constructor
-     * 
-     * @param chooser
-     * @param message
-     */
     public SignedCertificateTimestampExtensionPreparator(Chooser chooser,
             SignedCertificateTimestampExtensionMessage message, SignedCertificateTimestampExtensionSerializer serializer) {
         super(chooser, message, serializer);

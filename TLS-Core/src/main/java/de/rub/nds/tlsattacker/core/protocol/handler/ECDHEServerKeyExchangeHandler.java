@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.ECCUtilsBCWrapper;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
@@ -24,10 +24,7 @@ import java.io.InputStream;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsFatalAlert;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
-public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDHEServerKeyExchangeMessage> {
+public class ECDHEServerKeyExchangeHandler<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeHandler<T> {
 
     public ECDHEServerKeyExchangeHandler(TlsContext tlsContext) {
         super(tlsContext);
@@ -56,11 +53,11 @@ public class ECDHEServerKeyExchangeHandler extends ServerKeyExchangeHandler<ECDH
         }
     }
 
-    private void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
-        tlsContext.setSelectedCurve(NamedCurve.getNamedCurve(message.getNamedCurve().getValue()));
+    protected void adjustECParameter(ECDHEServerKeyExchangeMessage message) {
+        tlsContext.setSelectedGroup(NamedGroup.getNamedGroup(message.getNamedGroup().getValue()));
         // TODO avoid BC tool
-        byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getCurveType().getValue() }, message
-                .getNamedCurve().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
+        byte[] ecParams = ArrayConverter.concatenate(new byte[] { message.getGroupType().getValue() }, message
+                .getNamedGroup().getValue(), ArrayConverter.intToBytes(message.getPublicKeyLength().getValue(), 1),
                 message.getPublicKey().getValue());
         InputStream is = new ByteArrayInputStream(ecParams);
         ECPublicKeyParameters publicKeyParameters = null;

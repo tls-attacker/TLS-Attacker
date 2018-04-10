@@ -11,16 +11,14 @@ package de.rub.nds.tlsattacker.core.config.delegate;
 import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.ProtocolVersionConverter;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
+import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ProtocolVersionDelegate extends Delegate {
 
-    @Parameter(names = "-version", description = "Highest supported Protocolversion ", converter = ProtocolVersionConverter.class)
+    @Parameter(names = "-version", description = "Highest supported protocol version ", converter = ProtocolVersionConverter.class)
     private ProtocolVersion protocolVersion = null;
 
     public ProtocolVersionDelegate() {
@@ -36,14 +34,25 @@ public class ProtocolVersionDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        if (protocolVersion != null) {
-            config.setHighestProtocolVersion(protocolVersion);
+        if (protocolVersion == null) {
+            return;
         }
+
+        config.setHighestProtocolVersion(protocolVersion);
+
+        TransportHandlerType th = TransportHandlerType.TCP;
         if (config.getHighestProtocolVersion().isDTLS()) {
-            config.setDefaultTransportHandlerType(TransportHandlerType.UDP);
-        } else {
-            config.setDefaultTransportHandlerType(TransportHandlerType.TCP);
+            th = TransportHandlerType.UDP;
         }
+
+        if (config.getDefaultClientConnection() == null) {
+            config.setDefaultClientConnection(new OutboundConnection());
+        }
+        if (config.getDefaultServerConnection() == null) {
+            config.setDefaultServerConnection(new InboundConnection());
+        }
+        config.getDefaultClientConnection().setTransportHandlerType(th);
+        config.getDefaultServerConnection().setTransportHandlerType(th);
     }
 
 }

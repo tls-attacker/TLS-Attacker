@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum MaxFragmentLength {
 
     TWO_9((byte) 1),
@@ -49,11 +46,11 @@ public enum MaxFragmentLength {
         return new byte[] { value };
     }
 
-    public static MaxFragmentLength getRandom() {
+    public static MaxFragmentLength getRandom(Random random) {
         MaxFragmentLength c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (MaxFragmentLength) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (MaxFragmentLength) o[random.nextInt(o.length)];
         }
         return c;
     }

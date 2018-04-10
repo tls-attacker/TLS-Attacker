@@ -18,9 +18,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 @XmlRootElement
 public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
@@ -37,7 +34,8 @@ public class DHClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("DHClientKeyExchangeMessage:");
         return sb.toString();
     }
 

@@ -9,23 +9,21 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
+
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
-public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator {
+public class SSL2ServerHelloPreparator extends ProtocolMessagePreparator<SSL2ServerHelloMessage> {
 
-    private final SSL2ServerHelloMessage message;
-
-    public SSL2ServerHelloPreparator(SSL2ServerHelloMessage message, Chooser chooser) {
+    public SSL2ServerHelloPreparator(Chooser chooser, SSL2ServerHelloMessage message) {
         super(chooser, message);
-        this.message = message;
     }
 
     @Override
     protected void prepareProtocolMessageContents() {
         throw new UnsupportedOperationException("Not supported Yet");
     }
+
+    public void prepareAfterParse() {
+    }
+
 }

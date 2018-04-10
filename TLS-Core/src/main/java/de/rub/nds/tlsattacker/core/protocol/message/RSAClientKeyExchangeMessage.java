@@ -19,9 +19,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 @XmlRootElement
 public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
 
@@ -40,7 +37,7 @@ public class RSAClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nClient Key Exchange message:");
+        sb.append("RSAClientKeyExchangeMessage:");
         return sb.toString();
     }
 

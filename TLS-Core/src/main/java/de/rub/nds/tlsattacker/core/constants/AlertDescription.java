@@ -13,8 +13,6 @@ import java.util.Map;
 
 /**
  * TLS Alerts
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public enum AlertDescription {
 
@@ -43,11 +41,15 @@ public enum AlertDescription {
     INAPPROPRIATE_FALLBACK((byte) 86),
     USER_CANCELED((byte) 90),
     NO_RENEGOTIATION((byte) 100),
+    MISSING_EXTENSION((byte) 109),
     UNSUPPORTED_EXTENSION((byte) 110),
     CERTIFICATE_UNOBTAINABLE((byte) 111),
     UNRECOGNIZED_NAME((byte) 112),
     BAD_CERTIFICATE_STATUS_RESPONSE((byte) 113),
-    BAD_CERTIFICATE_HASH_VALUE((byte) 114);
+    BAD_CERTIFICATE_HASH_VALUE((byte) 114),
+    UNKNOWN_PSK_IDENTITY((byte) 115),
+    CERTIFICATE_REQUIRED((byte) 116),
+    NO_APPLICATION_PROTOCOL((byte) 120);
 
     private byte value;
 

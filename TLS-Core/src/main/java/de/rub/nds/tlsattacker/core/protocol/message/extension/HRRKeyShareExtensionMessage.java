@@ -13,13 +13,17 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class HRRKeyShareExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty
     private ModifiableByteArray selectedGroup;
+
+    public HRRKeyShareExtensionMessage(ExtensionType type) {
+        super(type);
+        if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
+            throw new IllegalArgumentException("Only KeyShare types are allowed here. Found: " + type);
+        }
+    }
 
     public HRRKeyShareExtensionMessage() {
         super(ExtensionType.KEY_SHARE);

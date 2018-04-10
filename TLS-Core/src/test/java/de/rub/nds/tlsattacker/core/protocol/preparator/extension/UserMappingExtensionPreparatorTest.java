@@ -18,16 +18,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class UserMappingExtensionPreparatorTest {
 
     private TlsContext context;
     private UserMappingExtensionPreparator preparator;
     private UserMappingExtensionMessage msg;
-    private final int extensionLength = 1;
+    private static final int EXTENSION_LENGTH = 1;
     private final UserMappingExtensionHintType hintType = UserMappingExtensionHintType.UPN_DOMAIN_HINT;
 
     @Before
@@ -45,7 +41,7 @@ public class UserMappingExtensionPreparatorTest {
         preparator.prepare();
 
         assertArrayEquals(ExtensionType.USER_MAPPING.getValue(), msg.getExtensionType().getValue());
-        assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
+        assertEquals(EXTENSION_LENGTH, (int) msg.getExtensionLength().getValue());
         assertEquals(hintType.getValue(), (byte) msg.getUserMappingType().getValue());
     }
 }

@@ -12,31 +12,27 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.ByteArrayConverter;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SessionResumptionDelegate extends Delegate {
 
-    @Parameter(names = "-session_id", description = "The sessionID to resume in hex", converter = ByteArrayConverter.class)
-    private byte[] sessionID = null;
+    @Parameter(names = "-session_id", description = "The session ID to resume in hex", converter = ByteArrayConverter.class)
+    private byte[] sessionId = null;
 
     public SessionResumptionDelegate() {
     }
 
-    public byte[] getSessionID() {
-        return sessionID;
+    public byte[] getSessionId() {
+        return sessionId;
     }
 
-    public void setSessionID(byte[] sessionID) {
-        this.sessionID = sessionID;
+    public void setSessionId(byte[] sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override
     public void applyDelegate(Config config) {
-        if (sessionID != null) {
-            config.setDefaultClientSessionId(sessionID);
-            config.setDefaultServerSessionId(sessionID);
+        if (sessionId != null) {
+            config.setDefaultClientSessionId(sessionId);
+            config.setDefaultServerSessionId(sessionId);
         }
     }
 }

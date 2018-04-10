@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class ClientHelloSerializerTest {
     @Parameterized.Parameters
@@ -29,34 +25,29 @@ public class ClientHelloSerializerTest {
         return ClientHelloParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
+    private final byte[] expectedPart;
 
-    private ProtocolVersion version;
-    private HandshakeMessageType type;
-    private int length;
-    private byte[] protocolVersion;
-    private byte[] unixtime;
-    private byte[] random;
-    private int sessionIdLength;
-    private byte[] sessionID;
-    private int cipherSuitesLength;
-    private byte[] cipherSuites;
-    private int compressionsLength;
-    private byte[] compressions;
-    private Integer extensionLength;
-    private byte[] extensionBytes;
-    private Byte cookieLength;
-    private byte[] cookie;
-    private int numberOfExtensions;
+    private final ProtocolVersion version;
+    private final HandshakeMessageType type;
+    private final int length;
+    private final byte[] protocolVersion;
+    private final byte[] unixtime;
+    private final byte[] random;
+    private final int sessionIdLength;
+    private final byte[] sessionID;
+    private final int cipherSuitesLength;
+    private final byte[] cipherSuites;
+    private final int compressionsLength;
+    private final byte[] compressions;
+    private final Integer extensionLength;
+    private final byte[] extensionBytes;
+    private final Byte cookieLength;
+    private final byte[] cookie;
 
     public ClientHelloSerializerTest(byte[] message, HandshakeMessageType type, int length, ProtocolVersion version,
             byte[] protocolVersion, byte[] unixtime, byte[] random, int sessionIdLength, byte[] sessionID,
             int cipherSuitesLength, byte[] cipherSuites, int compressionsLength, byte[] compressions,
             Integer extensionLength, byte[] extensionBytes, Byte cookieLength, byte[] cookie, int numberOfExtensions) {
-        this.message = message;
-        this.start = 0;
         this.expectedPart = message;
         this.type = type;
         this.length = length;
@@ -74,7 +65,6 @@ public class ClientHelloSerializerTest {
         this.extensionBytes = extensionBytes;
         this.cookieLength = cookieLength;
         this.cookie = cookie;
-        this.numberOfExtensions = numberOfExtensions;
     }
 
     /**

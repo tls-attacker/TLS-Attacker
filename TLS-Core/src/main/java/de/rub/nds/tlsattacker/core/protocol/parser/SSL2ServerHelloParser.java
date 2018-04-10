@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
-public class SSL2ServerHelloParser extends ProtocolMessageParser {
+public class SSL2ServerHelloParser extends SSL2HandshakeMessageParser<SSL2ServerHelloMessage> {
 
     public SSL2ServerHelloParser(byte[] message, int pointer, ProtocolVersion selectedProtocolVersion) {
         super(pointer, message, selectedProtocolVersion);
@@ -39,28 +35,6 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
         parseCipherSuites(message);
         parseSessionID(message);
         return message;
-    }
-
-    /**
-     * Reads the next bytes as the MessageLength and writes them in the message
-     *
-     * @param message
-     *            Message to write in
-     */
-    private void parseMessageLength(SSL2ServerHelloMessage message) {
-        message.setMessageLength(parseIntField(SSL2ByteLength.LENGTH));
-        LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
-    }
-
-    /**
-     * Reads the next bytes as the Type and writes them in the message
-     *
-     * @param message
-     *            Message to write in
-     */
-    private void parseType(SSL2ServerHelloMessage message) {
-        message.setType(parseByteField(SSL2ByteLength.MESSAGE_TYPE));
-        LOGGER.debug("Type: " + message.getType().getValue());
     }
 
     /**
@@ -131,7 +105,7 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
      */
     private void parseSessionIDLength(SSL2ServerHelloMessage message) {
         message.setSessionIDLength(parseIntField(SSL2ByteLength.SESSIONID_LENGTH));
-        LOGGER.debug("SessionIDLength: " + message.getSessionIDLength().getValue());
+        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
     }
 
     /**
@@ -163,7 +137,7 @@ public class SSL2ServerHelloParser extends ProtocolMessageParser {
      *            Message to write in
      */
     private void parseSessionID(SSL2ServerHelloMessage message) {
-        message.setSessionID(parseByteArrayField(message.getSessionIDLength().getValue()));
-        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionID().getValue()));
+        message.setSessionID(parseByteArrayField(message.getSessionIdLength().getValue()));
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
     }
 }

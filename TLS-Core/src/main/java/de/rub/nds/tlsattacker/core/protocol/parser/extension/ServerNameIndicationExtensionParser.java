@@ -10,15 +10,12 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerNameIndicationExtensionMessage;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerNameIndicationExtensionMessage> {
 
     private List<ServerNamePair> pairList;
@@ -29,16 +26,24 @@ public class ServerNameIndicationExtensionParser extends ExtensionParser<ServerN
 
     @Override
     public void parseExtensionMessageContent(ServerNameIndicationExtensionMessage msg) {
-        parseServerNameListLength(msg);
-        parseServerNameListBytes(msg);
-        int position = 0;
-        pairList = new LinkedList<>();
-        while (position < msg.getServerNameListLength().getValue()) {
-            ServerNamePairParser parser = new ServerNamePairParser(position, msg.getServerNameListBytes().getValue());
-            pairList.add(parser.parse());
-            position = parser.getPointer();
+        if (msg.getExtensionLength().getValue() > 0) {
+            parseServerNameListLength(msg);
+            parseServerNameListBytes(msg);
+            int position = 0;
+            pairList = new LinkedList<>();
+            while (position < msg.getServerNameListLength().getValue()) {
+                ServerNamePairParser parser = new ServerNamePairParser(position, msg.getServerNameListBytes()
+                        .getValue());
+                pairList.add(parser.parse());
+                if (position == parser.getPointer()) {
+                    throw new ParserException("Ran into infinite Loop while parsing ServerNamePair");
+                }
+                position = parser.getPointer();
+            }
+            parseServerNameList(msg);
+        } else {
+            LOGGER.debug("Received empty SNI Extension");
         }
-        parseServerNameList(msg);
     }
 
     @Override

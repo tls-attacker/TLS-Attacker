@@ -11,19 +11,15 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateRequestPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateRequestSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateRequestHandlerTest {
 
     private CertificateRequestHandler handler;
@@ -44,7 +40,7 @@ public class CertificateRequestHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof CertificateRequestMessageParser);
+        assertTrue(handler.getParser(new byte[1], 0) instanceof CertificateRequestParser);
     }
 
     /**
@@ -52,7 +48,7 @@ public class CertificateRequestHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new CertificateRequestMessage()) instanceof CertificateRequestMessagePreparator);
+        assertTrue(handler.getPreparator(new CertificateRequestMessage()) instanceof CertificateRequestPreparator);
     }
 
     /**
@@ -60,7 +56,7 @@ public class CertificateRequestHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new CertificateRequestMessage()) instanceof CertificateRequestMessageSerializer);
+        assertTrue(handler.getSerializer(new CertificateRequestMessage()) instanceof CertificateRequestSerializer);
     }
 
     /**

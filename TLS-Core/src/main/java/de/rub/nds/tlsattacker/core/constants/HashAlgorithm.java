@@ -8,13 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum HashAlgorithm {
 
     NONE((byte) 0, ""),
@@ -59,11 +56,11 @@ public enum HashAlgorithm {
         return javaName;
     }
 
-    public static HashAlgorithm getRandom() {
+    public static HashAlgorithm getRandom(Random random) {
         HashAlgorithm c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (HashAlgorithm) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (HashAlgorithm) o[random.nextInt(o.length)];
         }
         return c;
     }

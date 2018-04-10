@@ -18,9 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @RunWith(Parameterized.class)
 public class KeyShareExtensionSerializerTest {
 
@@ -54,7 +51,7 @@ public class KeyShareExtensionSerializerTest {
      */
     @Test
     public void testSerializeExtensionContent() {
-        KeyShareExtensionMessage msg = new KeyShareExtensionMessage();
+        KeyShareExtensionMessage msg = new KeyShareExtensionMessage(ExtensionType.KEY_SHARE);
         msg.setExtensionType(type.getValue());
         msg.setExtensionLength(extensionLength);
         msg.setKeyShareListBytes(keyShareList);

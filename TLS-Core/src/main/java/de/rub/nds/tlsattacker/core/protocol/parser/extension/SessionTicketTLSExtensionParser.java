@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import static de.rub.nds.modifiablevariable.util.ArrayConverter.bytesToHexString;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SessionTicketTLSExtensionParser extends ExtensionParser<SessionTicketTLSExtensionMessage> {
 
     /**

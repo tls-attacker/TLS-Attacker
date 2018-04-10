@@ -16,8 +16,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
 /**
  * This extension is defined in draft-ietf-tokbind-negotiation
- * 
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class TokenBindingExtensionMessage extends ExtensionMessage {
 

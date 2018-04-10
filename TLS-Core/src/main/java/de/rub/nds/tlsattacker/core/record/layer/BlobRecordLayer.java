@@ -10,11 +10,12 @@ package de.rub.nds.tlsattacker.core.record.layer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.parser.special.CleanRecordByteSeperator;
+import de.rub.nds.tlsattacker.core.protocol.parser.cert.CleanRecordByteSeperator;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordNullCipher;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.crypto.Decryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordDecryptor;
@@ -28,10 +29,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class BlobRecordLayer extends RecordLayer {
 
     private final TlsContext context;
@@ -42,7 +39,7 @@ public class BlobRecordLayer extends RecordLayer {
 
     public BlobRecordLayer(TlsContext context) {
         this.context = context;
-        cipher = new RecordNullCipher();
+        cipher = new RecordNullCipher(context);
         encryptor = new RecordEncryptor(cipher, context);
         decryptor = new RecordDecryptor(cipher, context);
     }
@@ -63,7 +60,7 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public void decryptRecord(AbstractRecord record) {
         byte[] data = record.getProtocolMessageBytes().getValue();
-        data = cipher.decrypt(data);
+        data = cipher.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText();
         record.setCleanProtocolMessageBytes(data);
     }
 
@@ -79,7 +76,9 @@ public class BlobRecordLayer extends RecordLayer {
             preparator.prepare();
             AbstractRecordSerializer serializer = record.getRecordSerializer();
             try {
-                stream.write(serializer.serialize());
+                byte[] recordBytes = serializer.serialize();
+                record.setCompleteRecordBytes(recordBytes);
+                stream.write(record.getCompleteRecordBytes().getValue());
             } catch (IOException ex) {
                 throw new PreparationException("Could not write Record bytes to ByteArrayStream", ex);
             }
@@ -105,6 +104,16 @@ public class BlobRecordLayer extends RecordLayer {
     @Override
     public AbstractRecord getFreshRecord() {
         return new BlobRecord(context.getConfig());
+    }
+
+    @Override
+    public RecordCipher getEncryptor() {
+        return encryptor.getRecordCipher();
+    }
+
+    @Override
+    public RecordCipher getDecryptor() {
+        return decryptor.getRecordCipher();
     }
 
 }

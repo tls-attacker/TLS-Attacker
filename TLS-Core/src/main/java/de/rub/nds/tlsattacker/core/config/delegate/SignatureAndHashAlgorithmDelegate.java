@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SignatureAndHashAlgorithmDelegate extends Delegate {
 
     @Parameter(names = "-signature_hash_algo", description = "Supported Signature and Hash Algorithms seperated by comma eg. RSA-SHA512,DSA-SHA512", converter = SignatureAndHashAlgorithmConverter.class)
@@ -41,7 +37,7 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         if (signatureAndHashAlgorithms != null) {
-            config.setAddSignatureAndHashAlgrorithmsExtension(true);
+            config.setAddSignatureAndHashAlgorithmsExtension(true);
             config.setSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
         }
     }

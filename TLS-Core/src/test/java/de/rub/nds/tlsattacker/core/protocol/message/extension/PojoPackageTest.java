@@ -14,14 +14,10 @@ import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SetterTester;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class PojoPackageTest {
 
     // The package to be tested
-    private final String packageName = "de.rub.nds.tlsattacker.core.protocol.message.extension";
+    private final static String packageName = "de.rub.nds.tlsattacker.core.protocol.message.extension";
 
     @Test
     public void validate() {

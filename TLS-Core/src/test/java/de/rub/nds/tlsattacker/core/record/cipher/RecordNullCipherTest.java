@@ -8,14 +8,14 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author Pierre Tilhaus
- */
 public class RecordNullCipherTest {
 
     private RecordNullCipher record;
@@ -23,7 +23,7 @@ public class RecordNullCipherTest {
 
     @Before
     public void setUp() {
-        record = new RecordNullCipher();
+        record = new RecordNullCipher(new TlsContext());
         data = new byte[] { 1, 2 };
     }
 
@@ -32,7 +32,8 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testEncrypt() {
-        assertArrayEquals(record.encrypt(data), data);
+        assertArrayEquals(record.encrypt(new EncryptionRequest(data, null, null)).getCompleteEncryptedCipherText(),
+                data);
     }
 
     /**
@@ -40,15 +41,15 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testDecrypt() {
-        assertArrayEquals(record.decrypt(data), data);
+        assertArrayEquals(record.decrypt(new DecryptionRequest(null, data)).getDecryptedCipherText(), data);
     }
 
     /**
      * Test of calculateMac method, of class RecordNullCipher.
      */
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testCalculateMac() {
-        record.calculateMac(data);
+        assertArrayEquals(record.calculateMac(data, ConnectionEndType.CLIENT), new byte[0]);
     }
 
     /**
@@ -72,7 +73,7 @@ public class RecordNullCipherTest {
      */
     @Test
     public void testGetPaddingLength() {
-        assertEquals(record.getPaddingLength(0), 0);
+        assertEquals(record.calculatePaddingLength(0), 0);
     }
 
 }

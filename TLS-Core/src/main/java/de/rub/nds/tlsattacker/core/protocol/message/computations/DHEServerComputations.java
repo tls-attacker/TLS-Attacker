@@ -12,19 +12,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.math.BigInteger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DHEServerComputations extends KeyExchangeComputations {
-
-    /**
-     * server's private key
-     */
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger privateKey;
 
     /**
      * dh modulus used for computations
@@ -42,18 +33,6 @@ public class DHEServerComputations extends KeyExchangeComputations {
     private ModifiableByteArray serverRandom;
 
     public DHEServerComputations() {
-    }
-
-    public ModifiableBigInteger getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(ModifiableBigInteger privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
     public ModifiableBigInteger getModulus() {
@@ -90,5 +69,10 @@ public class DHEServerComputations extends KeyExchangeComputations {
 
     public void setServerRandom(byte[] serverRandom) {
         this.serverRandom = ModifiableVariableFactory.safelySetValue(this.serverRandom, serverRandom);
+    }
+
+    @Override
+    public void setSecretsInConfig(Config config) {
+        config.setDefaultServerDhPrivateKey(getPrivateKey().getValue());
     }
 }

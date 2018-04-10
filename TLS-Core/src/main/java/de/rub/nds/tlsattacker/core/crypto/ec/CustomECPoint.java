@@ -8,15 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.ec;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Objects;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
-public class CustomECPoint {
+public class CustomECPoint implements Serializable {
 
     private BigInteger x;
 
@@ -100,5 +97,10 @@ public class CustomECPoint {
         byte[] signedValue = new byte[value.length + 1];
         System.arraycopy(value, 0, signedValue, 1, value.length);
         return new BigInteger(signedValue);
+    }
+
+    @Override
+    public String toString() {
+        return "CustomECPoint{" + "x=" + x + ", y=" + y + '}';
     }
 }

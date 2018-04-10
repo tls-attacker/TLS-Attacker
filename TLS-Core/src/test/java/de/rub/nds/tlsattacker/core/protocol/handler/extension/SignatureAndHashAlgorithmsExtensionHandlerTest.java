@@ -19,10 +19,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SignatureAndHashAlgorithmsExtensionHandlerTest {
 
     private SignatureAndHashAlgorithmsExtensionHandler handler;
@@ -46,14 +42,6 @@ public class SignatureAndHashAlgorithmsExtensionHandlerTest {
         assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().size() == 1);
         assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getHashAlgorithm() == HashAlgorithm.NONE);
         assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().get(0).getSignatureAlgorithm() == SignatureAlgorithm.ANONYMOUS);
-    }
-
-    @Test
-    public void testAdjustInvalidTLSContext() {
-        SignatureAndHashAlgorithmsExtensionMessage msg = new SignatureAndHashAlgorithmsExtensionMessage();
-        msg.setSignatureAndHashAlgorithms(new byte[] { 99, 99 });
-        handler.adjustTLSContext(msg);
-        assertTrue(context.getClientSupportedSignatureAndHashAlgorithms().isEmpty());
     }
 
     /**

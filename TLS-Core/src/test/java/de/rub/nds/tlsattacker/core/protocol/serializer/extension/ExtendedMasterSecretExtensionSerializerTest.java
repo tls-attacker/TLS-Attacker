@@ -17,10 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 @RunWith(Parameterized.class)
 public class ExtendedMasterSecretExtensionSerializerTest {
 
@@ -32,7 +28,6 @@ public class ExtendedMasterSecretExtensionSerializerTest {
     private final ExtensionType extensionType;
     private final int extensionLength;
     private final byte[] expectedBytes;
-    private final int startParsing;
     private ExtendedMasterSecretExtensionMessage message;
 
     public ExtendedMasterSecretExtensionSerializerTest(ExtensionType extensionType, int extensionLength,
@@ -40,7 +35,6 @@ public class ExtendedMasterSecretExtensionSerializerTest {
         this.extensionType = extensionType;
         this.extensionLength = extensionLength;
         this.expectedBytes = expectedBytes;
-        this.startParsing = startParsing;
     }
 
     @Test

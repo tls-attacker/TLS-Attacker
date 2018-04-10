@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBindingMessage> {
 
     public TokenBindingMessageHandler(TlsContext tlsContext) {
@@ -27,8 +23,8 @@ public class TokenBindingMessageHandler extends ProtocolMessageHandler<TokenBind
     }
 
     @Override
-    public TokenbindingMessagePreparator getPreparator(TokenBindingMessage message) {
-        return new TokenbindingMessagePreparator(tlsContext.getChooser(), message);
+    public TokenBindingMessagePreparator getPreparator(TokenBindingMessage message) {
+        return new TokenBindingMessagePreparator(tlsContext.getChooser(), message);
     }
 
     @Override

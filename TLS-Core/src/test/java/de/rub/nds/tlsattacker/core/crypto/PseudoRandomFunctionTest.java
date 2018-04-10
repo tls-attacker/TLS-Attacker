@@ -9,6 +9,7 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.util.Random;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -21,9 +22,6 @@ import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 @RunWith(JMockit.class)
 public class PseudoRandomFunctionTest {
 
@@ -32,10 +30,11 @@ public class PseudoRandomFunctionTest {
      * 
      * @param mockedTlsContext
      * @param mockedParameters
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
     public void testComputeForTls12(@Mocked final TlsContext mockedTlsContext,
-            @Mocked final SecurityParameters mockedParameters) {
+            @Mocked final SecurityParameters mockedParameters) throws CryptoException {
         // Record expectations if/as needed:
         new Expectations() {
             {
@@ -79,9 +78,11 @@ public class PseudoRandomFunctionTest {
 
     /**
      * Test of compute method, of class PseudoRandomFunction.
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testComputeForTls11() {
+    public void testComputeForTls11() throws CryptoException {
         byte[] secret = new byte[48];
         String label = "master secret";
         byte[] seed = new byte[60];

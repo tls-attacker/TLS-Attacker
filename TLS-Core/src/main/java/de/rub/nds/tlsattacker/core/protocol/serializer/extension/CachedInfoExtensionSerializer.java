@@ -11,10 +11,6 @@ package de.rub.nds.tlsattacker.core.protocol.serializer.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CachedInfoExtensionSerializer extends ExtensionSerializer<CachedInfoExtensionMessage> {
 
     private final CachedInfoExtensionMessage msg;

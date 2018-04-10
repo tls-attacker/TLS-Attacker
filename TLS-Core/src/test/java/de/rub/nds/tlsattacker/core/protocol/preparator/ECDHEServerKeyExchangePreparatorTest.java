@@ -11,19 +11,18 @@ package de.rub.nds.tlsattacker.core.protocol.preparator;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadFixedRandom;
 import de.rub.nds.modifiablevariable.util.BadRandom;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ServerConnectionEnd;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyStoreException;
@@ -41,8 +40,8 @@ import org.junit.Test;
 
 /**
  *
- * @author Robert Merget <robert.merget@rub.de>
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
+
+
  *
  */
 public class ECDHEServerKeyExchangePreparatorTest {
@@ -51,7 +50,6 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private BadRandom random;
     private ECDHEServerKeyExchangeMessage msg;
     private ECDHEServerKeyExchangePreparator preparator;
-    private ECDHEServerKeyExchangeMessage message;
 
     @Before
     public void setUp() throws Exception {
@@ -61,14 +59,14 @@ public class ECDHEServerKeyExchangePreparatorTest {
 
         loadTestVectorsToContext();
 
-        RandomHelper.setRandom(random);
+        tlsContext.setRandom(random);
         msg = new ECDHEServerKeyExchangeMessage();
         preparator = new ECDHEServerKeyExchangePreparator(tlsContext.getChooser(), msg);
     }
 
     @After
     public void cleanUp() {
-        RandomHelper.setRandom(null);
+        tlsContext.setRandom(null);
     }
 
     @Test
@@ -83,8 +81,8 @@ public class ECDHEServerKeyExchangePreparatorTest {
         assertArrayEquals(tlsContext.getClientRandom(), msg.getComputations().getClientRandom().getValue());
         assertArrayEquals(tlsContext.getServerRandom(), msg.getComputations().getServerRandom().getValue());
 
-        assertEquals(EllipticCurveType.NAMED_CURVE, EllipticCurveType.getCurveType(msg.getCurveType().getValue()));
-        assertArrayEquals(NamedCurve.SECP384R1.getValue(), msg.getNamedCurve().getValue());
+        assertEquals(EllipticCurveType.NAMED_CURVE, EllipticCurveType.getCurveType(msg.getGroupType().getValue()));
+        assertArrayEquals(NamedGroup.SECP384R1.getValue(), msg.getNamedGroup().getValue());
 
         String serializedPubKeyExcpected = "0453E2F98C7D459354029E08404C690D857F921CE4A6AA71C2F114D04D24E033E08CFB5C9B84FA81DB3FB5CA35639AE69BDDC3E657ACD0532EF9C100F0863D9A3145BABBFDD727491991FBDD377C4EEBAE2D5ADDF3C8152824C9B4442E628A8CF3";
         assertEquals(serializedPubKeyExcpected, ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
@@ -92,7 +90,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         assertArrayEquals(ArrayConverter.hexStringToByteArray("0601"), msg.getSignatureAndHashAlgorithm().getValue());
 
         String sigExpected = "543E5CC620CE4CD46062CADAB5DF7FF2A64D61D7D78C8D3D7BC1843406050FF54AA8D8BF60A1FF4CE77E499C0520CD2B697F01E1BCF19EF0E0E242B8FC374184A2C26DE227036C9E6852E3FEE3A4281B6B8CD43760D07B611A9FF45D0DD5EA81ABEF2F11173F58B6E088045A759E7D2AAAE6AF44A5CFDB1A7B3EA8C1DE229840";
-        assertEquals(new Integer(128), msg.getSignatureLength().getValue());
+        assertEquals(128, (int) msg.getSignatureLength().getValue());
         assertEquals(sigExpected, ArrayConverter.bytesToRawHexString(msg.getSignature().getValue()));
 
     }
@@ -100,10 +98,10 @@ public class ECDHEServerKeyExchangePreparatorTest {
     private void loadTestVectorsToContext() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException,
             CertificateException, KeyStoreException, UnrecoverableKeyException {
 
-        tlsContext.setConnectionEnd(new ServerConnectionEnd());
+        tlsContext.setConnection(new InboundConnection());
 
         Config config = tlsContext.getConfig();
-        config.setDefaultRSAModulus(new BigInteger(
+        config.setDefaultServerRSAModulus(new BigInteger(
                 "138176188281796802921728019830883835791466819775862616369528695291051113778191409365728255919237920070170415489798919694047238160141762618463534095589006064306561457254708835463402335256295540403269922932223802187003458396441731541262280889819064536522708759209693618435045828861540756050456047286072194938393"));
         config.setDefaultServerRSAPublicKey(new BigInteger("65537"));
         config.setDefaultServerRSAPrivateKey(new BigInteger(
@@ -117,14 +115,14 @@ public class ECDHEServerKeyExchangePreparatorTest {
         tlsContext.setClientRandom(ArrayConverter.hexStringToByteArray(clientRandom));
         tlsContext.setServerRandom(ArrayConverter.hexStringToByteArray(serverRandom));
 
-        List<NamedCurve> clientCurves = new ArrayList<>();
-        clientCurves.add(NamedCurve.SECP384R1);
-        List<NamedCurve> serverCurves = new ArrayList<>();
-        serverCurves.add(NamedCurve.BRAINPOOLP256R1);
-        serverCurves.add(NamedCurve.SECP384R1);
-        serverCurves.add(NamedCurve.SECP256R1);
-        tlsContext.setClientNamedCurvesList(clientCurves);
-        config.setNamedCurves(serverCurves);
+        List<NamedGroup> clientCurves = new ArrayList<>();
+        clientCurves.add(NamedGroup.SECP384R1);
+        List<NamedGroup> serverCurves = new ArrayList<>();
+        serverCurves.add(NamedGroup.BRAINPOOLP256R1);
+        serverCurves.add(NamedGroup.SECP384R1);
+        serverCurves.add(NamedGroup.SECP256R1);
+        tlsContext.setClientNamedGroupsList(clientCurves);
+        config.setDefaultServerNamedGroups(serverCurves);
         config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
                 HashAlgorithm.SHA512));
         List<ECPointFormat> clientFormats = new ArrayList<>();

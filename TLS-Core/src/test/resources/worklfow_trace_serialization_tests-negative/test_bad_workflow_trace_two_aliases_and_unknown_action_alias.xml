@@ -1,0 +1,29 @@
+# Even with this config
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+</config>
+
+# The following is a bad workflow trace input
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workflowTrace>
+    <OutboundConnection>
+        <alias>alias1</alias>
+        <port>443</port>
+        <hostname>99.99.99.99</hostname>
+    </OutboundConnection>
+    <InboundConnection>
+        <alias>alias2</alias>
+        <port>443</port>
+    </InboundConnection>        
+    <Receive>
+        <connectionAlias>UnknownAlias</connectionAlias>        
+        <messages>
+            <ClientHello>
+                <extensions>
+                    <ECPointFormat/>
+                    <EllipticCurves/>
+                </extensions>
+            </ClientHello>
+        </messages>
+    </Receive>
+</workflowTrace>

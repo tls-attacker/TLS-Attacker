@@ -10,42 +10,49 @@ package de.rub.nds.tlsattacker.core.constants;
 
 /**
  * Symmetric cipher algorithm and its mapping to Java names
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public enum CipherAlgorithm {
 
-    NULL(0, 0, 0, ""),
-    RC2_128(16, 8, 0, "RC2/CBC/NoPadding"),
-    RC4_128(16, 0, 0, "RC4"),
-    DES_CBC(8, 8, 0, "DES/CBC/NoPadding"),
-    DES_EDE_CBC(24, 8, 0, "DESede/CBC/NoPadding"),
-    AES_128_CBC(16, 16, 0, "AES/CBC/NoPadding"),
-    AES_256_CBC(32, 16, 0, "AES/CBC/NoPadding"),
-    AES_128_GCM(16, 4, 8, "AES/GCM/NoPadding"),
-    AES_256_GCM(32, 4, 8, "AES/GCM/NoPadding"),
-    CAMELLIA_128_CBC(16, 16, 0, "Camellia/CBC/NoPadding"),
-    CAMELLIA_256_CBC(32, 16, 0, "Camellia/CBC/NoPadding"),
-    CAMELLIA_128_GCM(16, 16, 8, "Camellia/CBC/NoPadding"), // not tested yet
-    CAMELLIA_256_GCM(32, 16, 8, "Camellia/CBC/NoPadding"), // not tested yet
-    IDEA_128(16, 16, 0, "IDEA/CBC/NoPadding"),
-    SEED_CBC(16, 16, 0, "SEED/CBC/NoPadding"), // TODO this is not verified
-    AES_128_CCM(16, 4, 8, "AES/CCM/NoPadding"),
-    AES_256_CCM(32, 4, 8, "AES/CCM/NoPadding"),
-    ChaCha20Poly1305(32, 12, 0, "ChaCha"),
-    DES40_CBC(8, 5, 0, "DES/CBC/NoPadding"), // currently uses des 56bit
-    ARIA_128_CBC(16, 16, 0, "ARIA/CBC/NoPadding"), // not tested yet
-    ARIA_256_CBC(32, 16, 0, "ARIA/CBC/NoPadding"), // not tested yet
-    ARIA_128_GCM(16, 16, 0, "ARIA/GCM/NoPadding"), // not tested yet
-    ARIA_256_GCM(16, 16, 0, "ARIA/GCM/NoPadding"), // not tested yet
-    GOST_28147(0, 0, 0, ""),
-    FORTEZZA_CBC(0, 0, 0, "");
+    NULL(0, 0, 0, 0),
+    RC2_128(16, 8, 0, 8, "RC2/CBC/NoPadding"),
+    RC4_128(16, 0, 0, 0, "RC4"),
+    DES_CBC(8, 8, 0, 8, "DES/CBC/NoPadding"),
+    DES_EDE_CBC(24, 8, 0, 8, "DESede/CBC/NoPadding"),
+    AES_128_CBC(16, 16, 0, 16, "AES/CBC/NoPadding"),
+    AES_256_CBC(32, 16, 0, 16, "AES/CBC/NoPadding"),
+    AES_128_GCM(16, 4, 8, 16, "AES/GCM/NoPadding"),
+    AES_256_GCM(32, 4, 8, 16, "AES/GCM/NoPadding"),
+    CAMELLIA_128_CBC(16, 16, 0, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA_256_CBC(32, 16, 0, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA_128_GCM(16, 16, 8, 16, "Camellia/CBC/NoPadding"), // not tested yet
+    CAMELLIA_256_GCM(32, 16, 8, 16, "Camellia/CBC/NoPadding"), // not tested yet
+    IDEA_128(16, 16, 0, 16, "IDEA/CBC/NoPadding"),
+    SEED_CBC(16, 16, 0, 16, "SEED/CBC/NoPadding"), // TODO this is not verified
+    AES_128_CCM(16, 4, 8, 16, "AES/CCM/NoPadding"),
+    AES_256_CCM(32, 4, 8, 16, "AES/CCM/NoPadding"),
+    ChaCha20Poly1305(32, 12, 0, 0),
+    DES40_CBC(8, 5, 0, 8, "DES/CBC/NoPadding"), // currently uses des 56bit
+    ARIA_128_CBC(16, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
+    ARIA_256_CBC(32, 16, 0, 16, "ARIA/CBC/NoPadding"), // not tested yet
+    ARIA_128_GCM(16, 16, 0, 16, "ARIA/GCM/NoPadding"), // not tested yet
+    ARIA_256_GCM(16, 16, 0, 16, "ARIA/GCM/NoPadding"), // not tested yet
+    GOST_28147(0, 0, 0, 0), // TODO
+    FORTEZZA_CBC(0, 0, 0, 0);// TODO
 
-    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, String javaName) {
+    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize, String javaName) {
         this.keySize = keySize;
         this.javaName = javaName;
         this.nonceBytesFromHandshake = nonceBytesFromHandshake;
         this.nonceBytesFromRecord = nonceBytesFromRecord;
+        this.blocksize = blocksize;
+    }
+
+    CipherAlgorithm(int keySize, int nonceBytesFromHandshake, int nonceBytesFromRecord, int blocksize) {
+        this.keySize = keySize;
+        this.javaName = null;
+        this.nonceBytesFromHandshake = nonceBytesFromHandshake;
+        this.nonceBytesFromRecord = nonceBytesFromRecord;
+        this.blocksize = blocksize;
     }
 
     /**
@@ -64,6 +71,8 @@ public enum CipherAlgorithm {
      * Number of bytes generated with each new record.
      */
     private final int nonceBytesFromRecord;
+
+    private final int blocksize;
 
     /**
      * java name mapping
@@ -84,5 +93,9 @@ public enum CipherAlgorithm {
 
     public int getNonceBytesFromRecord() {
         return nonceBytesFromRecord;
+    }
+
+    public int getBlocksize() {
+        return blocksize;
     }
 }

@@ -19,9 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @RunWith(Parameterized.class)
 public class KeyShareExtensionParserTest {
 
@@ -34,7 +31,7 @@ public class KeyShareExtensionParserTest {
                         0,
                         ArrayConverter
                                 .hexStringToByteArray("002800260024001D00202a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c"),
-                        ExtensionType.KEY_SHARE,
+                        ExtensionType.KEY_SHARE_OLD,
                         38,
                         36,
                         ArrayConverter

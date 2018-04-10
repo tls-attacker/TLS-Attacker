@@ -22,10 +22,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SignatureAndHashAlgorithmDelegateTest {
 
     private SignatureAndHashAlgorithmDelegate delegate;
@@ -87,7 +83,7 @@ public class SignatureAndHashAlgorithmDelegateTest {
         args[1] = "RSA-SHA512,DSA-SHA512";
         delegate.setSignatureAndHashAlgorithms(null);
         jcommander.parse(args);
-        config.setAddSignatureAndHashAlgrorithmsExtension(false);
+        config.setAddSignatureAndHashAlgorithmsExtension(false);
         assertFalse(config.isAddSignatureAndHashAlgrorithmsExtension());
         delegate.applyDelegate(config);
         assertTrue(config.isAddSignatureAndHashAlgrorithmsExtension());

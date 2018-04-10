@@ -15,14 +15,10 @@ import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class AcceptorCallableTest {
 
     private Thread t;
@@ -35,7 +31,7 @@ public class AcceptorCallableTest {
 
     @Before
     public void setUp() throws IOException {
-        socket = new ServerSocket(50004);
+        socket = new ServerSocket(0);
         callable = new AcceptorCallable(socket);
         task = new FutureTask<>(callable);
         t = new Thread(task);
@@ -48,12 +44,16 @@ public class AcceptorCallableTest {
 
     /**
      * Test of run method, of class AcceptorCallableTest.
+     * 
+     * @throws java.io.IOException
+     * @throws java.util.concurrent.ExecutionException
+     * @throws java.lang.InterruptedException
      */
     @Test
     public void testRun() throws IOException, InterruptedException, ExecutionException {
         t.start();
         Socket clientSocket = new Socket();
-        clientSocket.connect(new InetSocketAddress("localhost", 50004));
+        clientSocket.connect(new InetSocketAddress("localhost", socket.getLocalPort()));
         try {
             Thread.currentThread().sleep(10);
         } catch (InterruptedException ex) {

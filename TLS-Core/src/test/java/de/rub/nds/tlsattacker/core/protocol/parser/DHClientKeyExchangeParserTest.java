@@ -19,10 +19,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class DHClientKeyExchangeParserTest {
 
@@ -83,7 +79,8 @@ public class DHClientKeyExchangeParserTest {
      */
     @Test
     public void testParse() {
-        DHClientKeyExchangeParser parser = new DHClientKeyExchangeParser(0, message, version);
+        DHClientKeyExchangeParser<DHClientKeyExchangeMessage> parser = new DHClientKeyExchangeParser(0, message,
+                version);
         DHClientKeyExchangeMessage msg = parser.parse();
         assertArrayEquals(message, msg.getCompleteResultingMessage().getValue());
         assertTrue(msg.getLength().getValue() == length);

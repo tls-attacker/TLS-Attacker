@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.SSL2ClientHelloPreparator
 import de.rub.nds.tlsattacker.core.protocol.serializer.SSL2ClientHelloSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class SSL2ClientHelloHandler extends ProtocolMessageHandler<SSL2ClientHelloMessage> {
 
     public SSL2ClientHelloHandler(TlsContext context) {
@@ -26,7 +22,7 @@ public class SSL2ClientHelloHandler extends ProtocolMessageHandler<SSL2ClientHel
 
     @Override
     public SSL2ClientHelloParser getParser(byte[] message, int pointer) {
-        return new SSL2ClientHelloParser(message, pointer, tlsContext.getChooser().getSelectedProtocolVersion());
+        return new SSL2ClientHelloParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -41,8 +37,7 @@ public class SSL2ClientHelloHandler extends ProtocolMessageHandler<SSL2ClientHel
 
     @Override
     public void adjustTLSContext(SSL2ClientHelloMessage message) {
-        // we do not adjust anything since we dont support the complete ssl2
-        // handshake anyways
+        tlsContext.setClientRandom(message.getChallenge().getValue());
     }
 
 }

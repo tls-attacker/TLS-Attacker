@@ -8,11 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
-/**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 public enum WorkflowTraceType {
     FULL,
     HANDSHAKE,
@@ -20,9 +15,13 @@ public enum WorkflowTraceType {
     SHORT_HELLO,
     RESUMPTION,
     FULL_RESUMPTION,
+    CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION,
     CLIENT_RENEGOTIATION,
     SERVER_RENEGOTIATION,
     HTTPS,
     SSL2_HELLO,
-    SIMPLE_MITM_PROXY;
+    SIMPLE_MITM_PROXY,
+    ZERO_RTT,
+    FULL_ZERO_RTT,
+    FALSE_START;
 }

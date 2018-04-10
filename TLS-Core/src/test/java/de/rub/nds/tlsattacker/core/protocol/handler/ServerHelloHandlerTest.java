@@ -8,23 +8,28 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.preparator.ServerHelloPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.ServerHelloSerializer;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerFactory;
+import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.math.BigInteger;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ServerHelloHandlerTest {
 
     private ServerHelloHandler handler;
@@ -45,7 +50,7 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new ServerHelloMessage()) instanceof ServerHelloMessagePreparator);
+        assertTrue(handler.getPreparator(new ServerHelloMessage()) instanceof ServerHelloPreparator);
     }
 
     /**
@@ -53,7 +58,7 @@ public class ServerHelloHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new ServerHelloMessage()) instanceof ServerHelloMessageSerializer);
+        assertTrue(handler.getSerializer(new ServerHelloMessage()) instanceof ServerHelloSerializer);
     }
 
     /**
@@ -67,7 +72,6 @@ public class ServerHelloHandlerTest {
     /**
      * Test of adjustTLSContext method, of class ServerHelloHandler.
      */
-
     @Test
     public void testAdjustTLSContext() {
         ServerHelloMessage message = new ServerHelloMessage();
@@ -86,4 +90,32 @@ public class ServerHelloHandlerTest {
         assertArrayEquals(context.getSelectedProtocolVersion().getValue(), ProtocolVersion.TLS12.getValue());
     }
 
+    @Test
+    public void testAdjustTLSContextTls13() {
+        ServerHelloMessage message = new ServerHelloMessage();
+        context.getConfig().setKeySharePrivate(
+                new BigInteger(ArrayConverter
+                        .hexStringToByteArray("03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF")));
+        context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
+        message.setUnixTime(new byte[] { 0, 1, 2 });
+        message.setRandom(new byte[] { 0, 1, 2, 3, 4, 5 });
+        message.setSelectedCompressionMethod(CompressionMethod.DEFLATE.getValue());
+        message.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256.getByteValue());
+        message.setSessionId(new byte[] { 6, 6, 6 });
+        message.setProtocolVersion(ProtocolVersion.TLS13.getValue());
+        context.setServerKeyShareStoreEntry(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
+                .hexStringToByteArray("9c1b0a7421919a73cb57b3a0ad9d6805861a9c47e11df8639d25323b79ce201c")));
+        context.addNegotiatedExtension(ExtensionType.KEY_SHARE);
+        context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
+        handler.adjustTLSContext(message);
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("EA2F968FD0A381E4B041E6D8DDBF6DA93DE4CEAC862693D3026323E780DB9FC3"),
+                context.getHandshakeSecret());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("C56CAE0B1A64467A0E3A3337F8636965787C9A741B0DAB63E503076051BCA15C"),
+                context.getClientHandshakeTrafficSecret());
+        assertArrayEquals(
+                ArrayConverter.hexStringToByteArray("DBF731F5EE037C4494F24701FF074AD4048451C0E2803BC686AF1F2D18E861F5"),
+                context.getServerHandshakeTrafficSecret());
+    }
 }

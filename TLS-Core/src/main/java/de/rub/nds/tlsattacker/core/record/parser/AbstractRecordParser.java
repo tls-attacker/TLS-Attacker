@@ -12,16 +12,19 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
 /**
- *
- * @author Robert Merget <robert.merget@rub.de>
  * @param <AbstractRecord>
+ *            The Abstract record that should be parsed
  */
 public abstract class AbstractRecordParser<AbstractRecord> extends Parser<AbstractRecord> {
 
-    protected ProtocolVersion version;
+    protected final ProtocolVersion version;
 
     public AbstractRecordParser(int startposition, byte[] array, ProtocolVersion version) {
         super(startposition, array);
         this.version = version;
+    }
+
+    public ProtocolVersion getVersion() {
+        return version;
     }
 }

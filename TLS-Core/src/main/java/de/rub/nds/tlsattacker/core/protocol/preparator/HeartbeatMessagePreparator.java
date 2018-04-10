@@ -9,15 +9,10 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HeartbeatMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<HeartbeatMessage> {
 
     private final HeartbeatMessage msg;
@@ -29,14 +24,14 @@ public class HeartbeatMessagePreparator extends ProtocolMessagePreparator<Heartb
 
     private byte[] generatePayload() {
         byte[] payload = new byte[chooser.getConfig().getHeartbeatPayloadLength()];
-        RandomHelper.getRandom().nextBytes(payload);
+        chooser.getContext().getRandom().nextBytes(payload);
         return payload;
     }
 
     private byte[] generatePadding() {
         int paddingLength = chooser.getConfig().getHeartbeatPaddingLength();
         byte[] padding = new byte[paddingLength];
-        RandomHelper.getRandom().nextBytes(padding);
+        chooser.getContext().getRandom().nextBytes(padding);
         return padding;
     }
 

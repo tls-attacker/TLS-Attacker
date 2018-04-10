@@ -11,9 +11,8 @@ package de.rub.nds.tlsattacker.core.record.serializer;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
 /**
- *
- * @author Robert Merget <robert.merget@rub.de>
  * @param <AbstractRecord>
+ *            The AbstractRecord that should be serialized
  */
 public abstract class AbstractRecordSerializer<AbstractRecord> extends Serializer<AbstractRecord> {
 

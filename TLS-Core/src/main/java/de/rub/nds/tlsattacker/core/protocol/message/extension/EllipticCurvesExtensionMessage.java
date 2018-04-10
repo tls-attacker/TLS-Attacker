@@ -17,42 +17,40 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 /**
  * This extension is defined in RFC-ietf-tls-rfc4492bis-17 Also known as
  * "supported_groups" extension
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class EllipticCurvesExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger supportedCurvesLength;
+    private ModifiableInteger supportedGroupsLength;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
-    private ModifiableByteArray supportedCurves;
+    private ModifiableByteArray supportedGroups;
 
     public EllipticCurvesExtensionMessage() {
         super(ExtensionType.ELLIPTIC_CURVES);
     }
 
-    public ModifiableInteger getSupportedCurvesLength() {
-        return supportedCurvesLength;
+    public ModifiableInteger getSupportedGroupsLength() {
+        return supportedGroupsLength;
     }
 
-    public void setSupportedCurvesLength(int length) {
-        this.supportedCurvesLength = ModifiableVariableFactory.safelySetValue(supportedCurvesLength, length);
+    public void setSupportedGroupsLength(int length) {
+        this.supportedGroupsLength = ModifiableVariableFactory.safelySetValue(supportedGroupsLength, length);
     }
 
-    public ModifiableByteArray getSupportedCurves() {
-        return supportedCurves;
+    public ModifiableByteArray getSupportedGroups() {
+        return supportedGroups;
     }
 
-    public void setSupportedCurves(byte[] array) {
-        supportedCurves = ModifiableVariableFactory.safelySetValue(supportedCurves, array);
+    public void setSupportedGroups(byte[] array) {
+        supportedGroups = ModifiableVariableFactory.safelySetValue(supportedGroups, array);
     }
 
-    public void setSupportedCurvesLength(ModifiableInteger supportedCurvesLength) {
-        this.supportedCurvesLength = supportedCurvesLength;
+    public void setSupportedGroupsLength(ModifiableInteger supportedGroupsLength) {
+        this.supportedGroupsLength = supportedGroupsLength;
     }
 
-    public void setSupportedCurves(ModifiableByteArray supportedCurves) {
-        this.supportedCurves = supportedCurves;
+    public void setSupportedGroups(ModifiableByteArray supportedGroups) {
+        this.supportedGroups = supportedGroups;
     }
 }

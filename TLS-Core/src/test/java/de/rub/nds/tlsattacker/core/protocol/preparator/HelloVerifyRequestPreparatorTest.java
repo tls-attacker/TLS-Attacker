@@ -9,7 +9,6 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
@@ -19,10 +18,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HelloVerifyRequestPreparatorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(HelloVerifyRequestPreparatorTest.class);
@@ -44,7 +39,6 @@ public class HelloVerifyRequestPreparatorTest {
      */
     @Test
     public void testPrepare() {
-        RandomHelper.getRandom().setSeed(0);
         context.getConfig().setDefaultDTLSCookieLength(10);
         context.getConfig().setHighestProtocolVersion(ProtocolVersion.DTLS12);
         preparator.prepare();

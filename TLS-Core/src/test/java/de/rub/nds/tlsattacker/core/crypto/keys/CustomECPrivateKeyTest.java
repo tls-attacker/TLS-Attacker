@@ -8,11 +8,12 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.math.BigInteger;
+import java.security.spec.ECParameterSpec;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
@@ -21,15 +22,11 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 @RunWith(Parameterized.class)
 public class CustomECPrivateKeyTest {
 
     @Parameter(0)
-    public NamedCurve curve;
+    public NamedGroup curve;
 
     @Rule
     public ErrorCollector collector = new ErrorCollector();
@@ -37,8 +34,10 @@ public class CustomECPrivateKeyTest {
     @Parameters
     public static Iterable<Object[]> createParameters() {
         List<Object[]> testValues = new ArrayList<>();
-        for (NamedCurve curve : NamedCurve.getImplemented()) {
-            testValues.add(new Object[] { curve });
+        for (NamedGroup curve : NamedGroup.getImplemented()) {
+            if (curve.isStandardCurve()) {
+                testValues.add(new Object[] { curve });
+            }
         }
         return testValues;
     }
@@ -48,12 +47,9 @@ public class CustomECPrivateKeyTest {
      */
     @Test
     public void testGetParams() {
-        try {
-            CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
-            key.getParams();
-            System.out.println("Supported: " + curve.name());
-        } catch (Exception E) {
-            Assert.fail(curve.name() + " is not supported!");
-        }
+        CustomECPrivateKey key = new CustomECPrivateKey(BigInteger.TEN, curve);
+        ECParameterSpec params = key.getParams();
+        System.out.println("Supported: " + curve.name());
+        assertNotNull(params);
     }
 }

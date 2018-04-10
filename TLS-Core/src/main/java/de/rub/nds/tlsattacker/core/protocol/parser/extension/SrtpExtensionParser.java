@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
 
     public SrtpExtensionParser(int startposition, byte[] array) {
@@ -37,6 +33,7 @@ public class SrtpExtensionParser extends ExtensionParser<SrtpExtensionMessage> {
             LOGGER.debug("Parsed the srtp mki " + ArrayConverter.bytesToHexString(msg.getSrtpMki()));
         } else {
             LOGGER.debug("Parsed no srtp mki");
+            msg.setSrtpMki(new byte[0]);
         }
 
     }

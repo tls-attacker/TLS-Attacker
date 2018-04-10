@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class HelloRequestParserTest {
 
@@ -31,10 +27,10 @@ public class HelloRequestParserTest {
     }
 
     // TODO get a true message
-    private byte[] message;
+    private final byte[] message;
 
-    private HandshakeMessageType type;
-    private int length;
+    private final HandshakeMessageType type;
+    private final int length;
 
     public HelloRequestParserTest(byte[] message, int start, byte[] expectedPart, HandshakeMessageType type, int length) {
         this.message = message;

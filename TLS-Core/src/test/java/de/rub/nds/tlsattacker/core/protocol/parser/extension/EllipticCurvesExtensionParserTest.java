@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class EllipticCurvesExtensionParserTest {
 
@@ -38,13 +34,13 @@ public class EllipticCurvesExtensionParserTest {
                         ArrayConverter.hexStringToByteArray("00170019001c001b0018001a0016000e000d000b000c0009000a") } });
     }
 
-    private byte[] extension;
-    private int start;
-    private byte[] completeExtension;
-    private ExtensionType type;
-    private int extensionLength;
-    private int curvesLength;
-    private byte[] curves;
+    private final byte[] extension;
+    private final int start;
+    private final byte[] completeExtension;
+    private final ExtensionType type;
+    private final int extensionLength;
+    private final int curvesLength;
+    private final byte[] curves;
 
     public EllipticCurvesExtensionParserTest(byte[] extension, int start, byte[] completeExtension, ExtensionType type,
             int extensionLength, int curvesLength, byte[] curves) {
@@ -68,8 +64,8 @@ public class EllipticCurvesExtensionParserTest {
         assertArrayEquals(msg.getExtensionBytes().getValue(), completeExtension);
         assertArrayEquals(type.getValue(), msg.getExtensionType().getValue());
         assertTrue(extensionLength == msg.getExtensionLength().getValue());
-        assertArrayEquals(msg.getSupportedCurves().getValue(), curves);
-        assertTrue(curvesLength == msg.getSupportedCurvesLength().getValue());
+        assertArrayEquals(msg.getSupportedGroups().getValue(), curves);
+        assertTrue(curvesLength == msg.getSupportedGroupsLength().getValue());
     }
 
 }

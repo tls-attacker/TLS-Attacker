@@ -14,12 +14,7 @@ import de.rub.nds.tlsattacker.transport.udp.stream.UdpInputStream;
 import de.rub.nds.tlsattacker.transport.udp.stream.UdpOutputStream;
 import java.io.IOException;
 import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerUdpTransportHandler extends TransportHandler {
 
     private final int port;
@@ -43,6 +38,16 @@ public class ServerUdpTransportHandler extends TransportHandler {
         socket = new DatagramSocket();
         socket.setSoTimeout((int) getTimeout());
         setStreams(new UdpInputStream(socket), new UdpOutputStream(socket));
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        return socket.isClosed();
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        closeConnection();
     }
 
 }

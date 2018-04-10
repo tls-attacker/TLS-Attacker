@@ -17,10 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- * 
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class AlertParserTest {
 
@@ -30,11 +26,11 @@ public class AlertParserTest {
                 { new byte[] { 4, 3, 1, 2 }, 0, new byte[] { 4, 3 }, (byte) 4, (byte) 3 } });
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
-    private byte level;
-    private byte description;
+    private final byte[] message;
+    private final int start;
+    private final byte[] expectedPart;
+    private final byte level;
+    private final byte description;
 
     public AlertParserTest(byte[] message, int start, byte[] expectedPart, byte level, byte description) {
         this.message = message;
@@ -49,7 +45,7 @@ public class AlertParserTest {
      */
     @Test
     public void testParse() {
-        AlertParser parser = new AlertParser(0, message, ProtocolVersion.TLS12);
+        AlertParser parser = new AlertParser(start, message, ProtocolVersion.TLS12);
         AlertMessage alert = parser.parse();
         assertArrayEquals(expectedPart, alert.getCompleteResultingMessage().getValue());
         assertTrue(level == alert.getLevel().getValue());

@@ -10,17 +10,14 @@ package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeySharePairSerializer;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.KeyShareEntrySerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExtensionMessage> {
 
     private final KeyShareExtensionMessage msg;
@@ -36,14 +33,16 @@ public class KeyShareExtensionPreparator extends ExtensionPreparator<KeyShareExt
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing KeyShareExtensionMessage");
         stream = new ByteArrayOutputStream();
-        for (KeySharePair pair : msg.getKeyShareList()) {
-            KeySharePairPreparator preparator = new KeySharePairPreparator(chooser, pair);
-            preparator.prepare();
-            KeySharePairSerializer serializer = new KeySharePairSerializer(pair);
-            try {
-                stream.write(serializer.serialize());
-            } catch (IOException ex) {
-                throw new PreparationException("Could not write byte[] from KeySharePair", ex);
+        if (msg.getKeyShareList() != null) {
+            for (KeyShareEntry entry : msg.getKeyShareList()) {
+                KeyShareEntryPreparator preparator = new KeyShareEntryPreparator(chooser, entry);
+                preparator.prepare();
+                KeyShareEntrySerializer serializer = new KeyShareEntrySerializer(entry);
+                try {
+                    stream.write(serializer.serialize());
+                } catch (IOException ex) {
+                    throw new PreparationException("Could not write byte[] from KeySharePair", ex);
+                }
             }
         }
         prepareKeyShareListBytes(msg);

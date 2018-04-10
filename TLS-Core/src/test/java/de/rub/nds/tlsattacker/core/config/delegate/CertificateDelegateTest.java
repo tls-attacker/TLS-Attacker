@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.config.delegate;
 
 import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
+import de.rub.nds.modifiablevariable.util.BadRandom;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.util.KeyStoreGenerator;
@@ -23,26 +25,28 @@ import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.util.Random;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateDelegateTest {
 
     private CertificateDelegate delegate;
     private JCommander jcommander;
     private String args[];
+    private BadRandom random;
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
@@ -50,6 +54,7 @@ public class CertificateDelegateTest {
     public void setUp() {
         delegate = new CertificateDelegate();
         jcommander = new JCommander(delegate);
+        random = new BadRandom(new Random(0), null);
         Security.addProvider(new BouncyCastleProvider());
 
     }
@@ -121,12 +126,20 @@ public class CertificateDelegateTest {
 
     /**
      * Test of applyDelegate method, of class CertificateDelegate.
+     * 
+     * @throws org.bouncycastle.operator.OperatorCreationException
+     * @throws java.security.cert.CertificateException
+     * @throws java.security.SignatureException
+     * @throws java.io.IOException
+     * @throws java.security.NoSuchProviderException
+     * @throws java.security.InvalidKeyException
+     * @throws java.security.KeyStoreException
      */
     @Test
     public void testApplyDelegate() throws NoSuchAlgorithmException, CertificateException, IOException,
             InvalidKeyException, KeyStoreException, NoSuchProviderException, SignatureException,
             OperatorCreationException {
-        KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024));
+        KeyStore store = KeyStoreGenerator.createKeyStore(KeyStoreGenerator.createRSAKeyPair(1024, random), random);
         File keyStoreFile = folder.newFile("key.store");
         store.store(new FileOutputStream(keyStoreFile), "password".toCharArray());
         args = new String[6];
@@ -160,8 +173,10 @@ public class CertificateDelegateTest {
         assertTrue("Alias parameter gets not parsed correctly", delegate.getAlias().equals(args[3]));
         Config config = Config.createConfig();
         config.setDefaultRsaCertificate(null);
+
+        exception.expect(ParameterException.class);
+        exception.expectMessage("The following parameters are required for loading a keystore:");
         delegate.applyDelegate(config);
-        assertNull("Certificate should not get loaded if not specified", config.getDefaultRsaCertificate());
     }
 
     @Test(expected = ConfigurationException.class)

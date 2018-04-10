@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- A MITM trace to replay 0-RTT data
+
+Run server using:
+openssl s_server -key rsa1024key.pem -cert rsa1024cert.pem -tls1_3 -early_data
+
+Run client using:
+openssl s_client -connect 127.0.0.1:4433 -tls1_3 -early_data earlyDataFile -sess_out 0rtt.pem
+
+Stop the client, start TlsAttacker using this trace and run client again using:
+openssl s_client -connect 127.0.0.1:4432 -tls1_3 -early_data earlyDataFile -sess_in 0rtt.pem
+
+OpenSSL should accept and print the early data
+-->
+<workflowTrace>
+	<OutboundConnection>
+        <alias>mitm2server</alias>
+        <port>4433</port>
+        <hostname>localhost</hostname>
+        <timeout>100</timeout>
+    </OutboundConnection>
+    <InboundConnection>
+        <alias>client2mitm</alias>
+        <port>4432</port>
+        <timeout>100</timeout>
+    </InboundConnection>
+	<!-- Buffer incoming ClientHello and early data -->
+	<BufferedGenericReceive>
+		<connectionAlias>client2mitm</connectionAlias>
+		<messages/>
+		<records/>
+	</BufferedGenericReceive>
+	<!-- Copy buffers to send the messages to the server -->
+	<DeepCopyBuffers>
+		<from>client2mitm</from>
+		<to>mitm2server</to>
+	</DeepCopyBuffers>
+	<!-- Send ClientHello to server -->
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server</connectionAlias>
+	</PopAndSendRecord>
+	<!-- Send early data to server -->
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server</connectionAlias>
+	</PopAndSendRecord>
+	<!-- Forward server's responses to client -->
+	<ForwardRecords>
+		<receiveFromAlias>mitm2server</receiveFromAlias>
+		<forwardToAlias>client2mitm</forwardToAlias>
+	</ForwardRecords>
+	<!-- Forward client's EndOfEarlyData + Finished to Server -->
+	<ForwardRecords>
+		<receiveFromAlias>client2mitm</receiveFromAlias>
+		<forwardToAlias>mitm2server</forwardToAlias>
+	</ForwardRecords>
+	<!-- Reset connection to server -->
+	<ResetConnection>
+		<connectionAlias>mitm2server</connectionAlias>
+	</ResetConnection>
+	<!-- Copy buffers from client's context again -->
+	<CopyBuffers>
+		<from>client2mitm</from>
+		<to>mitm2server</to>
+	</CopyBuffers>
+	<!-- Execute the actual replay attack -->
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server</connectionAlias>
+	</PopAndSendRecord>
+	<PopAndSendRecord>
+		<connectionAlias>mitm2server</connectionAlias>
+	</PopAndSendRecord>
+</workflowTrace>

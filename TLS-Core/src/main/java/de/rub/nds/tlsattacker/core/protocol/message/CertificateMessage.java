@@ -17,10 +17,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.protocol.handler.CertificateHandler;
+import de.rub.nds.tlsattacker.core.protocol.handler.CertificateMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificateEntry;
-import de.rub.nds.tlsattacker.core.protocol.message.Cert.CertificatePair;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificateEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.cert.CertificatePair;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -29,10 +29,6 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.bouncycastle.crypto.tls.Certificate;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @XmlRootElement
 public class CertificateMessage extends HandshakeMessage {
 
@@ -78,6 +74,7 @@ public class CertificateMessage extends HandshakeMessage {
                 certificatesList.add(pair);
             }
         } catch (IOException ex) {
+            LOGGER.debug(ex);
             LOGGER.warn("Could not parse configured Certificate into a real Certificate. Just sending bytes as they are (with added Length field)");
             CertificatePair pair = new CertificatePair();
             pair.setCertificateConfig(CertificateByteChooser.chooseCertificateType(tlsConfig));
@@ -173,20 +170,25 @@ public class CertificateMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        if (certificatesListLength != null) {
-            sb.append("\n  Certificates Length: ");
+        StringBuilder sb = new StringBuilder();
+        sb.append("CertificateMessage:");
+        sb.append("\n  Certificates Length: ");
+        if (certificatesListLength != null && certificatesListLength.getValue() != null) {
             sb.append(certificatesListLength.getValue());
+        } else {
+            sb.append("null");
         }
-        if (certificatesListBytes != null) {
-            sb.append("\n  Certificate:\n");
+        sb.append("\n  Certificate:\n");
+        if (certificatesListBytes != null && certificatesListBytes.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(certificatesListBytes.getValue()));
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }
 
     @Override
     public ProtocolMessageHandler getHandler(TlsContext context) {
-        return new CertificateHandler(context);
+        return new CertificateMessageHandler(context);
     }
 }

@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
@@ -18,9 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 @RunWith(Parameterized.class)
 public class KeySharePairParserTest {
 
@@ -48,15 +45,15 @@ public class KeySharePairParserTest {
     }
 
     /**
-     * Test of parse method, of class KeySharePairParser.
+     * Test of parse method, of class KeyShareEntryParser.
      */
     @Test
     public void testParse() {
-        KeySharePairParser parser = new KeySharePairParser(0, keySharePairBytes);
-        KeySharePair pair = parser.parse();
-        assertArrayEquals(keyShare, pair.getKeyShare().getValue());
-        assertTrue(keyShareLength == pair.getKeyShareLength().getValue());
-        assertArrayEquals(keyShareType, pair.getKeyShareType().getValue());
+        KeyShareEntryParser parser = new KeyShareEntryParser(0, keySharePairBytes);
+        KeyShareEntry entry = parser.parse();
+        assertArrayEquals(keyShare, entry.getPublicKey().getValue());
+        assertTrue(keyShareLength == entry.getPublicKeyLength().getValue());
+        assertArrayEquals(keyShareType, entry.getGroup().getValue());
     }
 
 }

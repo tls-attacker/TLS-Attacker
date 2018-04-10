@@ -13,11 +13,8 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
 import de.rub.nds.tlsattacker.core.https.header.parser.HttpsHeaderParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
+import java.nio.charset.Charset;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessage> {
 
     public HttpsRequestParser(int pointer, byte[] array, ProtocolVersion version) {
@@ -41,9 +38,13 @@ public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessag
             HttpsHeaderParser parser = new HttpsHeaderParser(pointer, bytesLeft);
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
+            if (pointer == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing HttpsHeader");
+            }
             pointer = parser.getPointer();
+
         }
-        LOGGER.info(new String(getAlreadyParsed()));
+        LOGGER.info(new String(getAlreadyParsed(), Charset.forName("ASCII")));
         return message;
     }
 

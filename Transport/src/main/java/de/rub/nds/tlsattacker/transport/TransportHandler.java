@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.transport;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +15,6 @@ import java.io.OutputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public abstract class TransportHandler {
 
     protected static final Logger LOGGER = LogManager.getLogger(TransportHandler.class.getName());
@@ -39,6 +35,8 @@ public abstract class TransportHandler {
     }
 
     public abstract void closeConnection() throws IOException;
+
+    public abstract void closeClientConnection() throws IOException;
 
     public byte[] fetchData() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -71,6 +69,8 @@ public abstract class TransportHandler {
     public boolean isInitialized() {
         return initialized;
     }
+
+    public abstract boolean isClosed() throws IOException;
 
     public long getTimeout() {
         return timeout;

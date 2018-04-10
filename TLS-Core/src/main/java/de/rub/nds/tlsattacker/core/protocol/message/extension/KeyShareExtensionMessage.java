@@ -13,14 +13,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class KeyShareExtensionMessage extends ExtensionMessage {
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
@@ -30,11 +29,29 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
     private ModifiableByteArray keyShareListBytes;
 
     @HoldsModifiableVariable
-    private List<KeySharePair> keyShareList;
+    private List<KeyShareEntry> keyShareList;
 
     public KeyShareExtensionMessage() {
         super(ExtensionType.KEY_SHARE);
+    }
+
+    public KeyShareExtensionMessage(ExtensionType type) {
+        super(type);
+        if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
+            throw new IllegalArgumentException("Only KeyShare types are allowed here. Found: " + type);
+        }
         keyShareList = new LinkedList<>();
+    }
+
+    public KeyShareExtensionMessage(ExtensionType type, Config tlsConfig) {
+        super(type);
+        if (type != ExtensionType.KEY_SHARE && type != ExtensionType.KEY_SHARE_OLD) {
+            throw new IllegalArgumentException("Only KeyShare types are allowed here. Found: " + type);
+        }
+        keyShareList = new LinkedList<>();
+        KeyShareEntry keyShareEntry = new KeyShareEntry(tlsConfig.getDefaultSelectedNamedGroup(),
+                tlsConfig.getKeySharePrivate());
+        keyShareList.add(keyShareEntry);
     }
 
     public ModifiableInteger getKeyShareListLength() {
@@ -61,11 +78,11 @@ public class KeyShareExtensionMessage extends ExtensionMessage {
         this.keyShareListBytes = ModifiableVariableFactory.safelySetValue(keyShareListBytes, bytes);
     }
 
-    public List<KeySharePair> getKeyShareList() {
+    public List<KeyShareEntry> getKeyShareList() {
         return keyShareList;
     }
 
-    public void setKeyShareList(List<KeySharePair> keyShareList) {
+    public void setKeyShareList(List<KeyShareEntry> keyShareList) {
         this.keyShareList = keyShareList;
     }
 }

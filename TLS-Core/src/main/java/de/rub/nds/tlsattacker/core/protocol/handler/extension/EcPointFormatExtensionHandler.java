@@ -18,9 +18,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointFormatExtensionMessage> {
 
     public EcPointFormatExtensionHandler(TlsContext context) {
@@ -51,6 +48,7 @@ public class EcPointFormatExtensionHandler extends ExtensionHandler<ECPointForma
         return new ECPointFormatExtensionParser(pointer, message);
     }
 
+    @Override
     public ECPointFormatExtensionPreparator getPreparator(ECPointFormatExtensionMessage message) {
         return new ECPointFormatExtensionPreparator(context.getChooser(), message, getSerializer(message));
     }

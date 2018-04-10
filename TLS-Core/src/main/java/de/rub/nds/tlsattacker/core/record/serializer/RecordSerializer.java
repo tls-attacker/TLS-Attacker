@@ -12,10 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class RecordSerializer extends AbstractRecordSerializer<Record> {
 
     private final Record record;

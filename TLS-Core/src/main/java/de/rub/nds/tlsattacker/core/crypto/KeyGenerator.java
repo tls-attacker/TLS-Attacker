@@ -8,7 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
@@ -19,39 +19,39 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import javax.crypto.interfaces.DHPrivateKey;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class KeyGenerator {
 
     public static RSAPrivateKey getRSAPrivateKey(Chooser chooser) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomRSAPrivateKey(chooser.getRsaModulus(), chooser.getConfig().getDefaultClientRSAPrivateKey());
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            return new CustomRSAPrivateKey(chooser.getClientRsaModulus(), chooser.getConfig()
+                    .getDefaultClientRSAPrivateKey());
         } else {
-            return new CustomRSAPrivateKey(chooser.getRsaModulus(), chooser.getConfig().getDefaultServerRSAPrivateKey());
+            return new CustomRSAPrivateKey(chooser.getServerRsaModulus(), chooser.getConfig()
+                    .getDefaultServerRSAPrivateKey());
         }
     }
 
     public static ECPrivateKey getECPrivateKey(Chooser chooser) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getSelectedCurve());
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            return new CustomECPrivateKey(chooser.getClientEcPrivateKey(), chooser.getConfig()
+                    .getDefaultEcCertificateCurve());
         } else {
-            return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getSelectedCurve());
+            return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getConfig()
+                    .getDefaultEcCertificateCurve());
         }
     }
 
     public static ECPrivateKey getTokenBindingECPrivateKey(Chooser chooser) {
-        return new CustomECPrivateKey(chooser.getConfig().getDefaultTokenBindingEcPrivateKey(), NamedCurve.SECP256R1);
+        return new CustomECPrivateKey(chooser.getConfig().getDefaultTokenBindingEcPrivateKey(), NamedGroup.SECP256R1);
     }
 
     public static DHPrivateKey getDHPrivateKey(Chooser chooser) {
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-            return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getDhModulus(),
-                    chooser.getDhGenerator());
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            return new CustomDHPrivateKey(chooser.getDhClientPrivateKey(), chooser.getClientDhModulus(),
+                    chooser.getClientDhGenerator());
         } else {
-            return new CustomDHPrivateKey(chooser.getDhServerPrivateKey(), chooser.getDhModulus(),
-                    chooser.getDhGenerator());
+            return new CustomDHPrivateKey(chooser.getDhServerPrivateKey(), chooser.getServerDhModulus(),
+                    chooser.getServerDhGenerator());
         }
     }
 

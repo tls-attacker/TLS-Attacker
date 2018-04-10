@@ -12,10 +12,6 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.certificatestatusrequestitemv2.ResponderId;
 import de.rub.nds.tlsattacker.core.protocol.serializer.Serializer;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ResponderIdSerializer extends Serializer<ResponderId> {
 
     private final ResponderId id;

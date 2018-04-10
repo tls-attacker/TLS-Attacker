@@ -16,18 +16,20 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
@@ -35,10 +37,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public abstract class Chooser {
 
     protected static final Logger LOGGER = LogManager.getLogger(Chooser.class.getName());
@@ -64,7 +62,9 @@ public abstract class Chooser {
 
     public abstract SignatureAndHashAlgorithm getSelectedSigHashAlgorithm();
 
-    public abstract List<NamedCurve> getClientSupportedNamedCurves();
+    public abstract List<NamedGroup> getClientSupportedNamedGroups();
+
+    public abstract List<NamedGroup> getServerSupportedNamedGroups();
 
     public abstract List<ECPointFormat> getServerSupportedPointFormats();
 
@@ -126,9 +126,13 @@ public abstract class Chooser {
 
     public abstract List<TokenBindingKeyParameters> getTokenBindingKeyParameters();
 
-    public abstract BigInteger getDhModulus();
+    public abstract BigInteger getServerDhModulus();
 
-    public abstract BigInteger getDhGenerator();
+    public abstract BigInteger getServerDhGenerator();
+
+    public abstract BigInteger getClientDhModulus();
+
+    public abstract BigInteger getClientDhGenerator();
 
     public abstract BigInteger getDhServerPrivateKey();
 
@@ -138,11 +142,43 @@ public abstract class Chooser {
 
     public abstract BigInteger getDhClientPublicKey();
 
+    public abstract BigInteger getSRPModulus();
+
+    public abstract BigInteger getPSKModulus();
+
+    public abstract byte[] getPSKIdentity();
+
+    public abstract byte[] getPSKIdentityHint();
+
+    public abstract BigInteger getPSKServerPrivateKey();
+
+    public abstract BigInteger getPSKServerPublicKey();
+
+    public abstract BigInteger getPSKGenerator();
+
+    public abstract BigInteger getSRPGenerator();
+
+    public abstract BigInteger getSRPServerPrivateKey();
+
+    public abstract BigInteger getSRPServerPublicKey();
+
+    public abstract BigInteger getSRPClientPrivateKey();
+
+    public abstract BigInteger getSRPClientPublicKey();
+
+    public abstract byte[] getSRPServerSalt();
+
+    public abstract byte[] getSRPPassword();
+
+    public abstract byte[] getSRPIdentity();
+
     public abstract BigInteger getServerEcPrivateKey();
 
     public abstract BigInteger getClientEcPrivateKey();
 
-    public abstract NamedCurve getSelectedCurve();
+    public abstract NamedGroup getSelectedNamedGroup();
+
+    public abstract NamedGroup getEcCertificateCurve();
 
     public abstract CustomECPoint getClientEcPublicKey();
 
@@ -150,7 +186,9 @@ public abstract class Chooser {
 
     public abstract EllipticCurveType getEcCurveType();
 
-    public abstract BigInteger getRsaModulus();
+    public abstract BigInteger getClientRsaModulus();
+
+    public abstract BigInteger getServerRsaModulus();
 
     public abstract BigInteger getServerRSAPublicKey();
 
@@ -162,7 +200,9 @@ public abstract class Chooser {
 
     public abstract byte[] getClientHandshakeTrafficSecret();
 
-    public abstract KSEntry getServerKSEntry();
+    public abstract byte[] getClientApplicationTrafficSecret();
+
+    public abstract byte[] getServerApplicationTrafficSecret();
 
     public abstract RecordLayerType getRecordLayerType();
 
@@ -170,7 +210,9 @@ public abstract class Chooser {
 
     public abstract BigInteger getServerRSAPrivateKey();
 
-    public abstract ConnectionEnd getConnectionEnd();
+    public abstract Connection getConnection();
+
+    public abstract ConnectionEndType getConnectionEndType();
 
     public abstract ConnectionEndType getMyConnectionPeer();
 
@@ -179,4 +221,24 @@ public abstract class Chooser {
     public abstract boolean isClientAuthentication();
 
     public abstract byte[] getLastHandledApplicationMessageData();
+
+    public abstract String getHttpsCookieName();
+
+    public abstract String getHttpsCookieValue();
+
+    public abstract byte[] getPsk();
+
+    public abstract List<PskSet> getPskSets();
+
+    public abstract CipherSuite getEarlyDataCipherSuite();
+
+    public abstract byte[] getClientEarlyTrafficSecret();
+
+    public abstract byte[] getEarlySecret();
+
+    public abstract byte[] getEarlyDataPsk();
+
+    public abstract List<KeyShareStoreEntry> getClientKeyShares();
+
+    public abstract KeyShareStoreEntry getServerKeyShare();
 }

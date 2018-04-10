@@ -8,21 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.workflow.factory;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
@@ -35,11 +25,18 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
-/**
- * @author Robert Merget <robert.merget@rub.de>
- * @author Felix Kleine-Wilde <felix.kleine-wilde@rub.de>
- */
 public class WorkflowConfigurationFactoryTest {
 
     private Config config;
@@ -80,13 +77,14 @@ public class WorkflowConfigurationFactoryTest {
         for (int i = 0; i < left.getMessageActions().size(); i++) {
             final MessageAction leftMessageAction = left.getMessageActions().get(i);
             final MessageAction rightMessageAction = right.getMessageActions().get(i);
+
             if (left.getMessageActions().size() != right.getMessageActions().size()
                     || !left.getMessageActions().get(i).getClass().equals(right.getMessageActions().get(i).getClass())) {
                 return false;
             }
             for (int j = 0; j < leftMessageAction.getMessages().size(); j++) {
-                if (!leftMessageAction.getMessages().get(i).getClass()
-                        .equals(rightMessageAction.getMessages().get(i).getClass())) {
+                if (!leftMessageAction.getMessages().get(j).getClass()
+                        .equals(rightMessageAction.getMessages().get(j).getClass())) {
                     return false;
                 }
             }
@@ -100,8 +98,8 @@ public class WorkflowConfigurationFactoryTest {
                     return false;
                 }
                 for (int j = 0; j < leftReceiveAction.getMessages().size(); j++) {
-                    if (!leftReceiveAction.getExpectedMessages().get(i).getClass()
-                            .equals(rightReceiveAction.getExpectedMessages().get(i).getClass())) {
+                    if (!leftReceiveAction.getExpectedMessages().get(j).getClass()
+                            .equals(rightReceiveAction.getExpectedMessages().get(j).getClass())) {
                         return false;
                     }
                 }
@@ -115,10 +113,12 @@ public class WorkflowConfigurationFactoryTest {
      * WorkflowConfigurationFactory.
      */
     @Test
+    @Ignore
     public void testCreateWorkflowTrace() {
 
-        final WorkflowTrace hello0 = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO);
-        final WorkflowTrace hello1 = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO);
+        RunningModeType mode = RunningModeType.CLIENT;
+        final WorkflowTrace hello0 = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO, mode);
+        final WorkflowTrace hello1 = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO, mode);
 
         Assert.assertTrue(workflowTracesEqual(hello0, hello1));
 
@@ -126,9 +126,11 @@ public class WorkflowConfigurationFactoryTest {
 
         for (WorkflowTraceType workflowTraceType : WorkflowTraceType.values()) {
             if (workflowTraceType == WorkflowTraceType.SIMPLE_MITM_PROXY) {
-                continue;
+                mode = RunningModeType.MITM;
+            } else {
+                mode = RunningModeType.CLIENT;
             }
-            WorkflowTrace newTrace = workflowConfigurationFactory.createWorkflowTrace(workflowTraceType);
+            WorkflowTrace newTrace = workflowConfigurationFactory.createWorkflowTrace(workflowTraceType, mode);
             Assert.assertNotNull(newTrace.getMessageActions());
             Assert.assertFalse(newTrace.getMessageActions().isEmpty());
             for (MessageAction action : newTrace.getMessageActions()) {
@@ -169,7 +171,8 @@ public class WorkflowConfigurationFactoryTest {
         // least two TLS-Actions with exactly one message for the first
         // TLS-Action and at least one message for the last TLS-Action, which
         // would be the basic Client/Server-Hello:
-        helloWorkflow = workflowConfigurationFactory.createHelloWorkflow();
+        WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        helloWorkflow = factory.createWorkflowTrace(WorkflowTraceType.HELLO, RunningModeType.CLIENT);
 
         Assert.assertThat(helloWorkflow.getMessageActions().size(), Matchers.greaterThanOrEqualTo(2));
 
@@ -191,7 +194,8 @@ public class WorkflowConfigurationFactoryTest {
         config.setHighestProtocolVersion(ProtocolVersion.DTLS10);
         config.setClientAuthentication(false);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        helloWorkflow = workflowConfigurationFactory.createHelloWorkflow();
+        helloWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
 
         firstAction = helloWorkflow.getMessageActions().get(0);
         clientHelloMessage = (ClientHelloMessage) firstAction.getMessages().get(0);
@@ -218,7 +222,8 @@ public class WorkflowConfigurationFactoryTest {
         config.setClientAuthentication(true);
         config.setDefaultSelectedCipherSuite(CipherSuite.TLS_DHE_DSS_WITH_AES_256_GCM_SHA384);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        helloWorkflow = workflowConfigurationFactory.createHelloWorkflow();
+        helloWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HELLO,
+                RunningModeType.CLIENT);
 
         lastAction = (ReceiveAction) helloWorkflow.getLastMessageAction();
         Assert.assertNotNull(lastAction.getExpectedMessages().get(2));
@@ -240,7 +245,8 @@ public class WorkflowConfigurationFactoryTest {
         config.setHighestProtocolVersion(ProtocolVersion.TLS13);
         config.setClientAuthentication(false);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        handshakeWorkflow = workflowConfigurationFactory.createHandshakeWorkflow();
+        handshakeWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
 
         // Invariants
         Assert.assertThat(handshakeWorkflow.getMessageActions().size(), Matchers.greaterThanOrEqualTo(3));
@@ -255,7 +261,8 @@ public class WorkflowConfigurationFactoryTest {
         // if(config.isClientAuthentication())
         config.setClientAuthentication(true);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        handshakeWorkflow = workflowConfigurationFactory.createHandshakeWorkflow();
+        handshakeWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
 
         lastAction = handshakeWorkflow.getLastMessageAction();
 
@@ -267,7 +274,8 @@ public class WorkflowConfigurationFactoryTest {
         config.setHighestProtocolVersion(ProtocolVersion.DTLS10);
         config.setClientAuthentication(true);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        handshakeWorkflow = workflowConfigurationFactory.createHandshakeWorkflow();
+        handshakeWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.HANDSHAKE,
+                RunningModeType.CLIENT);
 
         Assert.assertThat(handshakeWorkflow.getMessageActions().size(), Matchers.greaterThanOrEqualTo(6));
 
@@ -301,7 +309,8 @@ public class WorkflowConfigurationFactoryTest {
         config.setServerSendsApplicationData(false);
         config.setAddHeartbeatExtension(false);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace fullWorkflow = workflowConfigurationFactory.createFullWorkflow();
+        WorkflowTrace fullWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.FULL,
+                RunningModeType.CLIENT);
 
         // Invariants
         Assert.assertThat(fullWorkflow.getMessageActions().size(), Matchers.greaterThanOrEqualTo(4));
@@ -314,7 +323,7 @@ public class WorkflowConfigurationFactoryTest {
         config.setServerSendsApplicationData(true);
         config.setAddHeartbeatExtension(true);
         workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
-        fullWorkflow = workflowConfigurationFactory.createFullWorkflow();
+        fullWorkflow = workflowConfigurationFactory.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
 
         Assert.assertThat(fullWorkflow.getMessageActions().size(), Matchers.greaterThanOrEqualTo(6));
 
@@ -330,6 +339,33 @@ public class WorkflowConfigurationFactoryTest {
         Assert.assertEquals(ReceiveAction.class, messageAction5.getClass());
         Assert.assertEquals(HeartbeatMessage.class, ((ReceiveAction) messageAction5).getExpectedMessages().get(0)
                 .getClass());
+    }
+
+    // @Category(IntegrationTests.class)
+    @Test
+    public void testNoExceptions() {
+        for (CipherSuite suite : CipherSuite.getImplemented()) {
+            for (ProtocolVersion version : ProtocolVersion.values()) {
+                for (WorkflowTraceType type : WorkflowTraceType.values()) {
+                    try {
+                        config.setDefaultSelectedCipherSuite(suite);
+                        config.setSupportedVersions(version);
+                        config.setHighestProtocolVersion(version);
+                        config.setDefaultServerSupportedCiphersuites(suite);
+                        config.setDefaultClientSupportedCiphersuites(suite);
+                        workflowConfigurationFactory = new WorkflowConfigurationFactory(config);
+                        config.setDefaulRunningMode(RunningModeType.CLIENT);
+                        workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.CLIENT);
+                        config.setDefaulRunningMode(RunningModeType.SERVER);
+                        workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.SERVER);
+                        config.setDefaulRunningMode(RunningModeType.MITM);
+                        workflowConfigurationFactory.createWorkflowTrace(type, RunningModeType.MITM);
+                    } catch (ConfigurationException E) {
+                        // Those are ok
+                    }
+                }
+            }
+        }
     }
 
 }

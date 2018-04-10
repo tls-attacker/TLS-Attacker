@@ -14,10 +14,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerTcpTransportHandler extends TransportHandler {
 
     private ServerSocket serverSocket;
@@ -27,6 +23,18 @@ public class ServerTcpTransportHandler extends TransportHandler {
     public ServerTcpTransportHandler(long timeout, int port) {
         super(timeout, ConnectionEndType.SERVER);
         this.port = port;
+    }
+
+    public ServerTcpTransportHandler(long timeout, ServerSocket serverSocket) throws IOException {
+        super(timeout, ConnectionEndType.SERVER);
+        this.port = serverSocket.getLocalPort();
+        this.serverSocket = serverSocket;
+    }
+
+    public void closeServerSocket() throws IOException {
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
     }
 
     @Override
@@ -50,4 +58,38 @@ public class ServerTcpTransportHandler extends TransportHandler {
         setStreams(socket.getInputStream(), socket.getOutputStream());
     }
 
+    @Override
+    public boolean isClosed() throws IOException {
+        if (isInitialized()) {
+            if (socket != null && (socket.isClosed() || socket.isInputShutdown())) {
+                if (serverSocket.isClosed()) {
+                    return true;
+                }
+            } else if (socket == null && serverSocket.isClosed()) {
+                return true;
+            }
+            return false;
+        } else {
+            throw new IOException("Transporthandler is not initalized!");
+        }
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        if (socket != null && !socket.isClosed()) {
+            socket.close();
+        }
+    }
+
+    public int getPort() {
+        if (serverSocket != null) {
+            return serverSocket.getLocalPort();
+        } else {
+            return port;
+        }
+    }
 }

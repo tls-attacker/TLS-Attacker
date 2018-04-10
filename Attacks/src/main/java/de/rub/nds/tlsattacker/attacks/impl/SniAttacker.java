@@ -9,21 +9,15 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.SniTestCommandConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Sends different server names in the SNI extension in the ClientHello
  * messages.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class SniAttacker extends Attacker<SniTestCommandConfig> {
 
-    private static final Logger LOGGER = LogManager.getLogger(SniAttacker.class);
-
     public SniAttacker(SniTestCommandConfig config) {
-        super(config, false);
+        super(config);
     }
 
     @Override

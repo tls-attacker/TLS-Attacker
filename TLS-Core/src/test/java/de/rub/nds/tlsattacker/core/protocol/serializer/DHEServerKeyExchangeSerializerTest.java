@@ -18,10 +18,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class DHEServerKeyExchangeSerializerTest {
 
@@ -30,28 +26,24 @@ public class DHEServerKeyExchangeSerializerTest {
         return DHEServerKeyExchangeParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
+    private final byte[] expectedPart;
 
-    private HandshakeMessageType type;
-    private int length;
-    private int pLength;
-    private byte[] p;
-    private int gLength;
-    private byte[] g;
-    private int serializedKeyLength;
-    private byte[] serializedKey;
-    private byte[] signatureAndHashAlgo;
-    private int sigLength;
-    private byte[] signature;
-    private ProtocolVersion version;
+    private final HandshakeMessageType type;
+    private final int length;
+    private final int pLength;
+    private final byte[] p;
+    private final int gLength;
+    private final byte[] g;
+    private final int serializedKeyLength;
+    private final byte[] serializedKey;
+    private final byte[] signatureAndHashAlgo;
+    private final int sigLength;
+    private final byte[] signature;
+    private final ProtocolVersion version;
 
     public DHEServerKeyExchangeSerializerTest(byte[] message, HandshakeMessageType type, int length, int pLength,
             byte[] p, int gLength, byte[] g, int serializedKeyLength, byte[] serializedKey,
             byte[] signatureAndHashAlgo, int sigLength, byte[] signature, ProtocolVersion version) {
-        this.message = message;
-        this.start = 0;
         this.expectedPart = message;
         this.type = type;
         this.length = length;

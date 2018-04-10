@@ -22,10 +22,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ECDHClientKeyExchangeHandlerTest {
 
     private ECDHClientKeyExchangeHandler handler;
@@ -72,27 +68,18 @@ public class ECDHClientKeyExchangeHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
-        message.prepareComputations();
+        ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
+        prep.prepare();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setRecordLayer(new TlsRecordLayer(context));
-        message.getComputations()
-                .setPremasterSecret(
-                        ArrayConverter
-                                .hexStringToByteArray("6df5c76b9e4488beb41b9b01f5256999a8980a8e4636e3afa43316cebc2c9829"));
-        message.getComputations()
-                .setClientRandom(
-                        ArrayConverter
-                                .hexStringToByteArray("217bb5c7d0072bd1ccbb014bf5730046e77333f6775fa2b0862b57cde886c035594d13478175ba43c46a37b48867a24a8109baddbc28f685e52af70d18ba4ceb"));
-
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
 
         handler.adjustTLSContext(message);
-        assertArrayEquals(
-                ArrayConverter.hexStringToByteArray("6df5c76b9e4488beb41b9b01f5256999a8980a8e4636e3afa43316cebc2c9829"),
+        assertArrayEquals(ArrayConverter.hexStringToByteArray("A3B5299147537E6696500AB8CD870DB3BA78303DE749DFBA"),
                 context.getPreMasterSecret());
         assertArrayEquals(
                 ArrayConverter
-                        .hexStringToByteArray("09DFD94B0DE26E2EE34201D79D1963C8C47C06162AD9BD5A7F116E4DC7C4F6E42D63088ED5BBDAE650E450A8B7295148"),
+                        .hexStringToByteArray("01F395D34D67E2DF13E19BC94F407D3FC97B440A55F65F7F807219672316C36F761384E8F468D1404E9C2C9083A3CD41"),
                 context.getMasterSecret());
     }
 }

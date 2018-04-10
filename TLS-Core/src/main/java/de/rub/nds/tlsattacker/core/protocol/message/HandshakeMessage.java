@@ -21,6 +21,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.AlpnExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.CachedInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateStatusRequestV2ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.CertificateTypeExtensionMessage;
@@ -28,6 +29,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
@@ -36,7 +38,9 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensi
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ServerAuthzExtensionMessage;
@@ -58,9 +62,6 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public abstract class HandshakeMessage extends ProtocolMessage {
 
     @XmlTransient
@@ -95,6 +96,7 @@ public abstract class HandshakeMessage extends ProtocolMessage {
     @XmlElementWrapper
     @XmlElements(value = {
             @XmlElement(type = ECPointFormatExtensionMessage.class, name = "ECPointFormat"),
+            @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "SupportedGroups"),
             @XmlElement(type = EllipticCurvesExtensionMessage.class, name = "EllipticCurves"),
             @XmlElement(type = ExtendedMasterSecretExtensionMessage.class, name = "ExtendedMasterSecretExtension"),
             @XmlElement(type = HeartbeatExtensionMessage.class, name = "HeartbeatExtension"),
@@ -123,7 +125,11 @@ public abstract class HandshakeMessage extends ProtocolMessage {
             @XmlElement(type = SrtpExtensionMessage.class, name = "SRTPExtension"),
             @XmlElement(type = TrustedCaIndicationExtensionMessage.class, name = "TrustedCaIndicationExtension"),
             @XmlElement(type = TruncatedHmacExtensionMessage.class, name = "TruncatedHmacExtension"),
-            @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension") })
+            @XmlElement(type = EarlyDataExtensionMessage.class, name = "EarlyDataExtension"),
+            @XmlElement(type = PSKKeyExchangeModesExtensionMessage.class, name = "PSKKeyExchangeModesExtension"),
+            @XmlElement(type = PreSharedKeyExtensionMessage.class, name = "PreSharedKeyExtension"),
+            @XmlElement(type = UnknownExtensionMessage.class, name = "UnknownExtension"),
+            @XmlElement(type = CachedInfoExtensionMessage.class, name = "CachedInfoExtension") })
     @HoldsModifiableVariable
     private List<ExtensionMessage> extensions;
 
@@ -145,19 +151,23 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         this.handshakeMessageType = handshakeMessageType;
     }
 
-    public List<ExtensionMessage> getExtensions() {
+    public final List<ExtensionMessage> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<ExtensionMessage> extensions) {
+    public final void setExtensions(List<ExtensionMessage> extensions) {
         this.extensions = extensions;
     }
 
-    public void addExtension(ExtensionMessage extension) {
+    public final void addExtension(ExtensionMessage extension) {
         if (this.extensions == null) {
             extensions = new LinkedList<>();
         }
-        this.extensions.add(extension);
+        if (extension != null) {
+            this.extensions.add(extension);
+        } else {
+            LOGGER.error("Cannot add null Extension");
+        }
     }
 
     public boolean containsExtension(ExtensionType extensionType) {
@@ -264,27 +274,51 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         return handshakeMessageType;
     }
 
+    public void setIncludeInDigest(ModifiableBoolean includeInDigest) {
+        this.includeInDigest = includeInDigest;
+    }
+
     public void setIncludeInDigest(boolean includeInDigest) {
         this.includeInDigest = ModifiableVariableFactory.safelySetValue(this.includeInDigest, includeInDigest);
     }
 
+    public ModifiableBoolean getIncludeInDigestModifiableBoolean() {
+        return this.includeInDigest;
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("HandshakeMessage:");
+        sb.append("\n  Type: ");
         if (type != null && type.getValue() != null) {
-            sb.append("\n  Type: ").append(type.getValue());
+            sb.append(type.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Length: ");
         if (length != null && length.getValue() != null) {
-            sb.append("\n  Length: ").append(length.getValue());
+            sb.append(length.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  message_seq: ");
         if (messageSeq != null && messageSeq.getValue() != null) {
-            sb.append("\n  message_seq: ").append(messageSeq.getValue());
+            sb.append(messageSeq.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  fragment_offset: ");
         if (fragmentOffset != null && fragmentOffset.getValue() != null) {
-            sb.append("\n  fragment_offset: ").append(fragmentOffset.getValue());
+            sb.append(fragmentOffset.getValue());
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  fragment_length: ");
         if (fragmentLength != null && fragmentLength.getValue() != null) {
-            sb.append("\n  fragment_length: ").append(fragmentLength.getValue());
+            sb.append(fragmentLength.getValue());
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }
@@ -299,7 +333,9 @@ public abstract class HandshakeMessage extends ProtocolMessage {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
         if (getExtensions() != null) {
             for (ExtensionMessage em : getExtensions()) {
-                holders.add(em);
+                if (em != null) {
+                    holders.addAll(em.getAllModifiableVariableHolders());
+                }
             }
         }
         return holders;

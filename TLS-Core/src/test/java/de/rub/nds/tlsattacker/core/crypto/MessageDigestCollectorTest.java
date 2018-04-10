@@ -21,10 +21,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * @author Juraj Somorovsky - juraj.somorovsky@rub.de
- * @author Robert Merget
- */
 public class MessageDigestCollectorTest {
 
     private static final Logger LOGGER = LogManager.getLogger(MessageDigestCollectorTest.class);
@@ -50,7 +46,7 @@ public class MessageDigestCollectorTest {
     @Test
     public void constructorTest() {
         LOGGER.info("testConstructors");
-        MessageDigestCollector d = new MessageDigestCollector();
+        new MessageDigestCollector();
     }
 
     @Before

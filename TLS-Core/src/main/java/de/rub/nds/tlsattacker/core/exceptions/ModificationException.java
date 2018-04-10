@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  * Thrown when problems by modification application appear.
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class ModificationException extends RuntimeException {
 

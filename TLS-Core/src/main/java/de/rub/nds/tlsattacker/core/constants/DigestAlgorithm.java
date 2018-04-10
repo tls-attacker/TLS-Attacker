@@ -8,11 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum DigestAlgorithm {
 
+    SSL_DIGEST(""),
     LEGACY(""),
     SHA256("SHA-256"),
     SHA384("SHA-384");

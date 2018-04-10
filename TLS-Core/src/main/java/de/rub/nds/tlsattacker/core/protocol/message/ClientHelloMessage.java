@@ -15,6 +15,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ClientHelloHandler;
@@ -28,15 +29,17 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientAuthzExtensi
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateTypeExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ClientCertificateUrlExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ECPointFormatExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EncryptThenMacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtendedMasterSecretExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.HeartbeatExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeySharePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.MaxFragmentLengthExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSKKeyExchangeModesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PaddingExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.RenegotiationInfoExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.ServerNamePair;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SRPExtensionMessage;
@@ -52,15 +55,10 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtens
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.nio.charset.Charset;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 // @XmlType(propOrder = {"compressionLength", "cipherSuiteLength"})
 @XmlRootElement
 public class ClientHelloMessage extends HelloMessage {
@@ -113,7 +111,7 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddServerNameIndicationExtension()) {
             ServerNameIndicationExtensionMessage extension = new ServerNameIndicationExtensionMessage();
             ServerNamePair pair = new ServerNamePair();
-            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes());
+            pair.setServerNameConfig(tlsConfig.getSniHostname().getBytes(Charset.forName("ASCII")));
             pair.setServerNameTypeConfig(tlsConfig.getSniType().getValue());
             extension.getServerNameList().add(pair);
             addExtension(extension);
@@ -125,12 +123,18 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new SupportedVersionsExtensionMessage());
         }
         if (tlsConfig.isAddKeyShareExtension()) {
-            KeyShareExtensionMessage extension = new KeyShareExtensionMessage();
-            KeySharePair pair = new KeySharePair();
-            pair.setKeyShareConfig(tlsConfig.getKeySharePublic());
-            pair.setKeyShareTypeConfig(tlsConfig.getKeyShareType().getValue());
-            extension.getKeyShareList().add(pair);
-            addExtension(extension);
+            if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
+                    && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
+                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE_OLD, tlsConfig));
+            } else {
+                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE, tlsConfig));
+            }
+        }
+        if (tlsConfig.isAddEarlyDataExtension()) {
+            addExtension(new EarlyDataExtensionMessage());
+        }
+        if (tlsConfig.isAddPSKKeyExchangeModesExtension()) {
+            addExtension(new PSKKeyExchangeModesExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
@@ -154,7 +158,7 @@ public class ClientHelloMessage extends HelloMessage {
             addExtension(new CertificateStatusRequestExtensionMessage());
         }
         if (tlsConfig.isAddAlpnExtension()) {
-            addExtension(new AlpnExtensionMessage());
+            addExtension(new AlpnExtensionMessage(tlsConfig));
         }
         if (tlsConfig.isAddSRPExtension()) {
             addExtension(new SRPExtensionMessage());
@@ -198,6 +202,10 @@ public class ClientHelloMessage extends HelloMessage {
         if (tlsConfig.isAddCertificateStatusRequestV2Extension()) {
             addExtension(new CertificateStatusRequestV2ExtensionMessage());
         }
+        if (tlsConfig.isAddPreSharedKeyExtension()) {
+            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
+        }
+        // In TLS 1.3, the PSK ext has to be the last ClientHello extension
     }
 
     public ModifiableInteger getCompressionLength() {
@@ -274,33 +282,51 @@ public class ClientHelloMessage extends HelloMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("ClientHelloMessage:");
+        sb.append("\n  Protocol Version: ");
         if (getProtocolVersion() != null && getProtocolVersion().getValue() != null) {
-            sb.append("\n  Protocol Version: ");
             sb.append(ProtocolVersion.getProtocolVersion(getProtocolVersion().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Client Unix Time: ");
         if (getUnixTime() != null && getUnixTime().getValue() != null) {
-            sb.append("\n  Client Unix Time: ");
             sb.append(new Date(ArrayConverter.bytesToLong(getUnixTime().getValue()) * 1000));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Client Random: ");
         if (getRandom() != null && getRandom().getValue() != null) {
-            sb.append("\n  Client Random: ").append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getRandom().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Session ID: ");
         if (getSessionId() != null && getSessionId().getValue() != null) {
-            sb.append("\n  Session ID: ").append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getSessionId().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Supported Cipher Suites: ");
         if (getCipherSuites() != null && getCipherSuites().getValue() != null) {
-            sb.append("\n  Supported Cipher Suites: ").append(
-                    ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+            sb.append(ArrayConverter.bytesToHexString(getCipherSuites().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Supported Compression Methods: ");
         if (getCompressions() != null && getCompressions().getValue() != null) {
-            sb.append("\n  Supported Compression Methods: ")
-                    .append(ArrayConverter.bytesToHexString(getCompressions().getValue())).append("\n  Extensions: ");
+            sb.append(ArrayConverter.bytesToHexString(getCompressions().getValue()));
+        } else {
+            sb.append("null");
         }
+        sb.append("\n  Extensions: ");
         if (getExtensions() != null) {
             for (ExtensionMessage extension : getExtensions()) {
                 sb.append(extension.toString()).append("\n");
             }
+        } else {
+            sb.append("null");
         }
         return sb.toString();
     }
@@ -309,4 +335,5 @@ public class ClientHelloMessage extends HelloMessage {
     public ProtocolMessageHandler getHandler(TlsContext context) {
         return new ClientHelloHandler(context);
     }
+
 }

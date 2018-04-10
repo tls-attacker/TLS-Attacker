@@ -17,17 +17,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 @RunWith(Parameterized.class)
 public class ServerAuthzExtensionSerializerTest {
 
     private final ExtensionType extensionType;
     private final byte[] expectedBytes;
     private final int extensionLength;
-    private final int startParsing;
     private final int authzFormatListLength;
     private final byte[] authzFormatList;
     private ServerAuthzExtensionMessage msg;
@@ -38,7 +33,6 @@ public class ServerAuthzExtensionSerializerTest {
         this.extensionType = extensionType;
         this.expectedBytes = expectedBytes;
         this.extensionLength = extensionLength;
-        this.startParsing = startParsing;
         this.authzFormatListLength = authzFormatListLength;
         this.authzFormatList = authzFormatList;
     }

@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public enum KeyExchangeAlgorithm {
 
     NULL,
@@ -40,4 +37,8 @@ public enum KeyExchangeAlgorithm {
     ECMQV_ECNRA,
     ECDH_ECNRA,
     CECPQ1_ECDSA;
+
+    public boolean isEC() {
+        return this.name().contains("EC");
+    }
 }

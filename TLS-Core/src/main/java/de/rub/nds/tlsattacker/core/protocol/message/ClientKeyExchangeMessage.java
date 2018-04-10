@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 
-/**
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
 
     /**
@@ -68,5 +64,4 @@ public abstract class ClientKeyExchangeMessage extends HandshakeMessage {
     public void setPublicKey(byte[] publicKey) {
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
-
 }

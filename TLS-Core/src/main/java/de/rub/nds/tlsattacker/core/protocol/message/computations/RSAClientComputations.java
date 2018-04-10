@@ -11,11 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class RSAClientComputations extends KeyExchangeComputations {
 
     @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.PKCS1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
@@ -50,5 +47,10 @@ public class RSAClientComputations extends KeyExchangeComputations {
 
     public void setPadding(byte[] padding) {
         this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+    }
+
+    @Override
+    public void setSecretsInConfig(Config config) {
+        LOGGER.debug("Nothing to do here, since the client has no private key");
     }
 }

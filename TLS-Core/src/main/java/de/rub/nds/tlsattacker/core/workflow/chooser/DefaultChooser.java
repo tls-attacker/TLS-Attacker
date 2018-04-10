@@ -16,27 +16,26 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEnd;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
+import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class DefaultChooser extends Chooser {
 
     DefaultChooser(TlsContext context, Config config) {
@@ -62,11 +61,20 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<NamedCurve> getClientSupportedNamedCurves() {
-        if (context.getClientNamedCurvesList() != null) {
-            return context.getClientNamedCurvesList();
+    public List<NamedGroup> getClientSupportedNamedGroups() {
+        if (context.getClientNamedGroupsList() != null) {
+            return context.getClientNamedGroupsList();
         } else {
-            return config.getDefaultClientNamedCurves();
+            return config.getDefaultClientNamedGroups();
+        }
+    }
+
+    @Override
+    public List<NamedGroup> getServerSupportedNamedGroups() {
+        if (context.getServerNamedGroupsList() != null) {
+            return context.getServerNamedGroupsList();
+        } else {
+            return config.getDefaultServerNamedGroups();
         }
     }
 
@@ -297,7 +305,7 @@ public class DefaultChooser extends Chooser {
         if (context.getSessionTicketTLS() != null) {
             return context.getSessionTicketTLS();
         } else {
-            return config.getTLSSessionTicket();
+            return config.getTlsSessionTicket();
         }
     }
 
@@ -329,20 +337,38 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getDhModulus() {
-        if (context.getDhModulus() != null) {
-            return context.getDhModulus();
+    public BigInteger getServerDhModulus() {
+        if (context.getServerDhModulus() != null) {
+            return context.getServerDhModulus();
         } else {
-            return config.getDefaultDhModulus();
+            return config.getDefaultServerDhModulus();
         }
     }
 
     @Override
-    public BigInteger getDhGenerator() {
-        if (context.getDhGenerator() != null) {
-            return context.getDhGenerator();
+    public BigInteger getServerDhGenerator() {
+        if (context.getServerDhGenerator() != null) {
+            return context.getServerDhGenerator();
         } else {
-            return config.getDefaultDhGenerator();
+            return config.getDefaultServerDhGenerator();
+        }
+    }
+
+    @Override
+    public BigInteger getClientDhModulus() {
+        if (context.getClientDhModulus() != null) {
+            return context.getClientDhModulus();
+        } else {
+            return config.getDefaultClientDhModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getClientDhGenerator() {
+        if (context.getClientDhGenerator() != null) {
+            return context.getClientDhGenerator();
+        } else {
+            return config.getDefaultClientDhGenerator();
         }
     }
 
@@ -352,6 +378,141 @@ public class DefaultChooser extends Chooser {
             return context.getServerDhPrivateKey();
         } else {
             return config.getDefaultServerDhPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPModulus() {
+        if (context.getSRPModulus() != null) {
+            return context.getSRPModulus();
+        } else {
+            return config.getDefaultSRPModulus();
+        }
+    }
+
+    @Override
+    public byte[] getPSKIdentity() {
+        if (context.getPSKIdentity() != null) {
+            return context.getPSKIdentity();
+        } else {
+            return config.getDefaultPSKIdentity();
+        }
+    }
+
+    @Override
+    public byte[] getPSKIdentityHint() {
+        if (context.getPSKIdentityHint() != null) {
+            return context.getPSKIdentityHint();
+        } else {
+            return config.getDefaultPSKIdentityHint();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKModulus() {
+        if (context.getPSKModulus() != null) {
+            return context.getPSKModulus();
+        } else {
+            return config.getDefaultPSKModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKServerPrivateKey() {
+        if (context.getServerPSKPrivateKey() != null) {
+            return context.getServerPSKPrivateKey();
+        } else {
+            return config.getDefaultPSKServerPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKServerPublicKey() {
+        if (context.getServerPSKPublicKey() != null) {
+            return context.getServerPSKPublicKey();
+        } else {
+            return config.getDefaultPSKServerPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getPSKGenerator() {
+        if (context.getPSKGenerator() != null) {
+            return context.getPSKGenerator();
+        } else {
+            return config.getDefaultPSKGenerator();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPGenerator() {
+        if (context.getSRPGenerator() != null) {
+            return context.getSRPGenerator();
+        } else {
+            return config.getDefaultSRPGenerator();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPServerPrivateKey() {
+        if (context.getServerSRPPrivateKey() != null) {
+            return context.getServerSRPPrivateKey();
+        } else {
+            return config.getDefaultSRPServerPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPServerPublicKey() {
+        if (context.getServerSRPPublicKey() != null) {
+            return context.getServerSRPPublicKey();
+        } else {
+            return config.getDefaultSRPServerPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPClientPrivateKey() {
+        if (context.getClientSRPPrivateKey() != null) {
+            return context.getClientSRPPrivateKey();
+        } else {
+            return config.getDefaultSRPClientPrivateKey();
+        }
+    }
+
+    @Override
+    public BigInteger getSRPClientPublicKey() {
+        if (context.getClientSRPPublicKey() != null) {
+            return context.getClientSRPPublicKey();
+        } else {
+            return config.getDefaultSRPClientPublicKey();
+        }
+    }
+
+    @Override
+    public byte[] getSRPPassword() {
+        if (context.getSRPPassword() != null) {
+            return context.getSRPPassword();
+        } else {
+            return config.getDefaultSRPPassword();
+        }
+    }
+
+    @Override
+    public byte[] getSRPIdentity() {
+        if (context.getSRPIdentity() != null) {
+            return context.getSRPIdentity();
+        } else {
+            return config.getDefaultSRPIdentity();
+        }
+    }
+
+    @Override
+    public byte[] getSRPServerSalt() {
+        if (context.getSRPServerSalt() != null) {
+            return context.getSRPServerSalt();
+        } else {
+            return config.getDefaultSRPServerSalt();
         }
     }
 
@@ -401,11 +562,20 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public NamedCurve getSelectedCurve() {
-        if (context.getSelectedCurve() != null) {
-            return context.getSelectedCurve();
+    public NamedGroup getSelectedNamedGroup() {
+        if (context.getSelectedGroup() != null) {
+            return context.getSelectedGroup();
         } else {
-            return config.getDefaultSelectedCurve();
+            return config.getDefaultSelectedNamedGroup();
+        }
+    }
+
+    @Override
+    public NamedGroup getEcCertificateCurve() {
+        if (context.getSelectedGroup() != null) {
+            return context.getEcCertificateCurve();
+        } else {
+            return config.getDefaultEcCertificateCurve();
         }
     }
 
@@ -434,11 +604,20 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public BigInteger getRsaModulus() {
-        if (context.getRsaModulus() != null) {
-            return context.getRsaModulus();
+    public BigInteger getServerRsaModulus() {
+        if (context.getServerRsaModulus() != null) {
+            return context.getServerRsaModulus();
         } else {
-            return config.getDefaultRSAModulus();
+            return config.getDefaultServerRSAModulus();
+        }
+    }
+
+    @Override
+    public BigInteger getClientRsaModulus() {
+        if (context.getClientRsaModulus() != null) {
+            return context.getClientRsaModulus();
+        } else {
+            return config.getDefaultClientRSAModulus();
         }
     }
 
@@ -488,11 +667,21 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public KSEntry getServerKSEntry() {
-        if (context.getServerKSEntry() != null) {
-            return context.getServerKSEntry();
+    public byte[] getClientApplicationTrafficSecret() {
+        if (context.getClientApplicationTrafficSecret() != null) {
+            return context.getClientApplicationTrafficSecret();
         } else {
-            return config.getDefaultServerKSEntry();
+            return config.getDefaultClientApplicationTrafficSecret();
+        }
+
+    }
+
+    @Override
+    public byte[] getServerApplicationTrafficSecret() {
+        if (context.getServerApplicationTrafficSecret() != null) {
+            return context.getServerApplicationTrafficSecret();
+        } else {
+            return config.getDefaultServerApplicationTrafficSecret();
         }
     }
 
@@ -524,17 +713,13 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public ConnectionEnd getConnectionEnd() {
-        if (context.getConnectionEnd() != null) {
-            return context.getConnectionEnd();
-        } else {
-            return config.getConnectionEnd();
-        }
+    public Connection getConnection() {
+        return context.getConnection();
     }
 
     @Override
     public ConnectionEndType getMyConnectionPeer() {
-        return getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? ConnectionEndType.SERVER
                 : ConnectionEndType.CLIENT;
     }
 
@@ -562,6 +747,103 @@ public class DefaultChooser extends Chooser {
             return context.getLastHandledApplicationMessageData();
         } else {
             return config.getDefaultApplicationMessageData().getBytes();
+        }
+    }
+
+    @Override
+    public byte[] getPsk() {
+        if (context.getPsk() != null) {
+            return context.getPsk();
+        } else {
+            return config.getPsk();
+        }
+    }
+
+    @Override
+    public String getHttpsCookieValue() {
+        String cookieVal = context.getHttpsCookieValue();
+        if (cookieVal != null && !cookieVal.isEmpty()) {
+            return cookieVal;
+        } else {
+            return config.getDefaultHttpsCookieValue();
+        }
+    }
+
+    @Override
+    public String getHttpsCookieName() {
+        String cookieName = context.getHttpsCookieName();
+        if (cookieName != null && !cookieName.isEmpty()) {
+            return cookieName;
+        } else {
+            return config.getDefaultHttpsCookieName();
+        }
+    }
+
+    @Override
+    public List<PskSet> getPskSets() {
+        if (context.getPskSets() != null) {
+            return context.getPskSets();
+        } else {
+            return config.getDefaultPskSets();
+        }
+    }
+
+    @Override
+    public CipherSuite getEarlyDataCipherSuite() {
+        if (context.getEarlyDataCipherSuite() != null) {
+            return context.getEarlyDataCipherSuite();
+        } else {
+            return config.getEarlyDataCipherSuite();
+        }
+    }
+
+    @Override
+    public byte[] getClientEarlyTrafficSecret() {
+        if (context.getClientEarlyTrafficSecret() != null) {
+            return context.getClientEarlyTrafficSecret();
+        } else {
+            return config.getClientEarlyTrafficSecret();
+        }
+    }
+
+    @Override
+    public byte[] getEarlySecret() {
+        if (context.getEarlySecret() != null) {
+            return context.getEarlySecret();
+        } else {
+            return config.getEarlySecret();
+        }
+    }
+
+    @Override
+    public byte[] getEarlyDataPsk() {
+        if (context.getEarlyDataPsk() != null) {
+            return context.getEarlyDataPsk();
+        } else {
+            return config.getEarlyDataPsk();
+        }
+    }
+
+    @Override
+    public ConnectionEndType getConnectionEndType() {
+        return getConnection().getLocalConnectionEndType();
+    }
+
+    @Override
+    public List<KeyShareStoreEntry> getClientKeyShares() {
+        if (context.getClientKeyShareStoreEntryList() != null) {
+            return context.getClientKeyShareStoreEntryList();
+        } else {
+            return config.getDefaultClientKeyShareEntries();
+        }
+    }
+
+    @Override
+    public KeyShareStoreEntry getServerKeyShare() {
+        if (context.getServerKeyShareStoreEntry() != null) {
+            return context.getServerKeyShareStoreEntry();
+        } else {
+            return config.getDefaultServerKeyShareEntry();
         }
     }
 }

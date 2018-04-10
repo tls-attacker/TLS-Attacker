@@ -9,18 +9,15 @@
 package de.rub.nds.tlsattacker.core.protocol;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public abstract class ModifiableVariableHolder implements Serializable {
 
     protected static final Logger LOGGER = LogManager.getLogger(ModifiableVariableHolder.class.getName());
@@ -28,7 +25,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Lists all the modifiable variables declared in the class
      * 
-     * @return
+     * @return List of all modifiableVariables declared in this class
      */
     public List<Field> getAllModifiableVariableFields() {
         return ReflectionHelper.getFieldsUpTo(this.getClass(), null, ModifiableVariable.class);
@@ -37,11 +34,13 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random field representing a modifiable variable from this class
      * 
-     * @return
+     * @param random
+     *            The RandomNumber generator that should be used
+     * @return A random ModifiableVariableField
      */
-    public Field getRandomModifiableVariableField() {
+    public Field getRandomModifiableVariableField(Random random) {
         List<Field> fields = getAllModifiableVariableFields();
-        int randomField = RandomHelper.getRandom().nextInt(fields.size());
+        int randomField = random.nextInt(fields.size());
         return fields.get(randomField);
     }
 
@@ -49,7 +48,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * Returns a list of all the modifiable variable holders in the object,
      * including this instance
      * 
-     * @return
+     * @return All ModifiableVariableHolders
      */
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
@@ -60,11 +59,13 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random modifiable variable holder
      * 
-     * @return
+     * @param random
+     *            The RandomNumberGenerator that should be used
+     * @return A Random ModifiableVariableHolder
      */
-    public ModifiableVariableHolder getRandomModifiableVariableHolder() {
+    public ModifiableVariableHolder getRandomModifiableVariableHolder(Random random) {
         List<ModifiableVariableHolder> holders = getAllModifiableVariableHolders();
-        int randomHolder = RandomHelper.getRandom().nextInt(holders.size());
+        int randomHolder = random.nextInt(holders.size());
         return holders.get(randomHolder);
     }
 }

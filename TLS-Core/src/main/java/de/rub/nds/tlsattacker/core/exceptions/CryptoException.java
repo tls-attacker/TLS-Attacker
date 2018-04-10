@@ -10,10 +10,8 @@ package de.rub.nds.tlsattacker.core.exceptions;
 
 /**
  * Crypto exception
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
-public class CryptoException extends RuntimeException {
+public class CryptoException extends Exception {
 
     public CryptoException() {
         super();

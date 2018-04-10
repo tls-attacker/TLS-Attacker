@@ -15,10 +15,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DynamicWorkflowDelegateTest {
 
     private DynamicWorkflowDelegate delegate;
@@ -34,7 +30,7 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of isDynamicWorkflow method, of class DynamicWorkflowDelegate.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testIsDynamicWorkflow() {
         args = new String[1];
         args[0] = "-dynamic_workflow";
@@ -46,7 +42,7 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of setDynamicWorkflow method, of class DynamicWorkflowDelegate.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testSetDynamicWorkflow() {
         assertTrue(delegate.isDynamicWorkflow() == null);
         delegate.setDynamicWorkflow(true);
@@ -56,7 +52,7 @@ public class DynamicWorkflowDelegateTest {
     /**
      * Test of applyDelegate method, of class DynamicWorkflowDelegate.
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testApplyDelegate() {
         Config config = Config.createConfig();
         config.setDynamicWorkflow(false);
@@ -67,7 +63,7 @@ public class DynamicWorkflowDelegateTest {
         assertTrue(config.isDynamicWorkflow());
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testNothingSetNothingChanges() {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();

@@ -8,8 +8,6 @@
  */
 package de.rub.nds.tlsattacker.transport.tcp;
 
-import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-
 import java.io.IOException;
 import java.net.Socket;
 

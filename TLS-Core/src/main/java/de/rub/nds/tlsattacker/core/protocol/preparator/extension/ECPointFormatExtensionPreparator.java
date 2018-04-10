@@ -17,10 +17,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPointFormatExtensionMessage> {
 
     private final ECPointFormatExtensionMessage msg;
@@ -46,7 +42,7 @@ public class ECPointFormatExtensionPreparator extends ExtensionPreparator<ECPoin
     private byte[] createPointFormatsByteArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         List<ECPointFormat> pointFormatList;
-        if (chooser.getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             pointFormatList = chooser.getClientSupportedPointFormats();
         } else {
             pointFormatList = chooser.getServerSupportedPointFormats();

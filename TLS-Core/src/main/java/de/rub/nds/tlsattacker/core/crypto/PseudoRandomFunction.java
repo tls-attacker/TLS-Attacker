@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -24,8 +25,6 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 /**
  * Pseudo random function computation for TLS 1.0 - 1.2 (for TLS 1.0, bouncy
  * castle TlsUtils are used)
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  */
 public class PseudoRandomFunction {
 
@@ -60,13 +59,20 @@ public class PseudoRandomFunction {
      * Computes PRF output of the provided size using the given mac algorithm
      *
      * @param prfAlgorithm
+     *            PRFAlogirhtm
      * @param secret
+     *            The Secret
      * @param label
+     *            The Label
      * @param seed
+     *            The Seed
      * @param size
-     * @return
+     *            The size
+     * @return the Prf output
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
-    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size) {
+    public static byte[] compute(PRFAlgorithm prfAlgorithm, byte[] secret, String label, byte[] seed, int size)
+            throws CryptoException {
 
         switch (prfAlgorithm) {
             case TLS_PRF_SHA256:
@@ -85,16 +91,22 @@ public class PseudoRandomFunction {
     /**
      * PRF computation for TLS 1.2
      *
+     * @param prfAlgorithm
+     *            PRFAlogirhtm
      * @param secret
+     *            The Secret
      * @param label
+     *            The Label
      * @param seed
+     *            The Seed
      * @param size
-     * @param macAlgorithm
-     * @return
+     *            The size
+     * @return the Prf output
      */
-    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm) {
+    private static byte[] computeTls12(byte[] secret, String label, byte[] seed, int size, String macAlgorithm)
+            throws CryptoException {
         try {
-            byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(), seed);
+            byte[] labelSeed = ArrayConverter.concatenate(label.getBytes(Charset.forName("ASCII")), seed);
             SecretKeySpec keySpec = null;
 
             if (secret == null || secret.length == 0) {
@@ -134,6 +146,9 @@ public class PseudoRandomFunction {
                 mac.update(ai);
                 mac.update(labelSeed);
                 buf2 = mac.doFinal();
+                if (buf2.length == 0) {
+                    throw new CryptoException("Could not Calc PRF output. Mac length is zero!");
+                }
                 out = ArrayConverter.concatenate(out, buf2);
             }
             return Arrays.copyOf(out, size);

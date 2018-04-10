@@ -17,10 +17,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class SessionResumptionDelegateTest {
 
     private SessionResumptionDelegate delegate;
@@ -34,19 +30,19 @@ public class SessionResumptionDelegateTest {
     }
 
     /**
-     * Test of getSessionID method, of class SessionResumptionDelegate.
+     * Test of getSessionId method, of class SessionResumptionDelegate.
      */
     @Test
     public void testGetSessionID() {
         args = new String[2];
         args[0] = "-session_id";
         args[1] = "00112233445566778899AABBCCDDEEFF";
-        delegate.setSessionID(null);
+        delegate.setSessionId(null);
         jcommander.parse(args);
         byte[] expected = { (byte) 0x00, (byte) 0x11, (byte) 0x22, (byte) 0x33, (byte) 0x44, (byte) 0x55, (byte) 0x66,
                 (byte) 0x77, (byte) 0x88, (byte) 0x99, (byte) 0xAA, (byte) 0xBB, (byte) 0xCC, (byte) 0xDD, (byte) 0xEE,
                 (byte) 0xFF };
-        assertArrayEquals(delegate.getSessionID(), expected);
+        assertArrayEquals(delegate.getSessionId(), expected);
     }
 
     @Test(expected = ParameterException.class)
@@ -65,8 +61,8 @@ public class SessionResumptionDelegateTest {
         byte[] expected = { (byte) 0x00, (byte) 0x11, (byte) 0x22, (byte) 0x33, (byte) 0x44, (byte) 0x55, (byte) 0x66,
                 (byte) 0x77, (byte) 0x88, (byte) 0x99, (byte) 0xAA, (byte) 0xBB, (byte) 0xCC, (byte) 0xDD, (byte) 0xEE,
                 (byte) 0xFF };
-        delegate.setSessionID(expected);
-        assertArrayEquals(delegate.getSessionID(), expected);
+        delegate.setSessionId(expected);
+        assertArrayEquals(delegate.getSessionId(), expected);
     }
 
     /**
@@ -78,7 +74,7 @@ public class SessionResumptionDelegateTest {
         args = new String[2];
         args[0] = "-session_id";
         args[1] = "00112233445566778899AABBCCDDEEFF";
-        delegate.setSessionID(null);
+        delegate.setSessionId(null);
         jcommander.parse(args);
         delegate.applyDelegate(config);
         byte[] expected = { (byte) 0x00, (byte) 0x11, (byte) 0x22, (byte) 0x33, (byte) 0x44, (byte) 0x55, (byte) 0x66,

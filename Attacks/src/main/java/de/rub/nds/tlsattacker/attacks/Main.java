@@ -11,28 +11,33 @@ package de.rub.nds.tlsattacker.attacks;
 import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.DrownCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.HeartbleedCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.InvalidCurveAttackConfig;
-import de.rub.nds.tlsattacker.attacks.config.Lucky13CommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.PoodleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackClientCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.PskBruteForcerAttackServerCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.SimpleMitmProxyCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.TLSPoodleCommandConfig;
-import de.rub.nds.tlsattacker.attacks.config.TokenBindingMitmCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.attacks.config.WinshockCommandConfig;
+import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.tlsattacker.attacks.impl.Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.BleichenbacherAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.Cve20162107Attacker;
+import de.rub.nds.tlsattacker.attacks.impl.DrownAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.EarlyCCSAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.HeartbleedAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.InvalidCurveAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.Lucky13Attacker;
 import de.rub.nds.tlsattacker.attacks.impl.PaddingOracleAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.PoodleAttacker;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackClient;
+import de.rub.nds.tlsattacker.attacks.impl.PskBruteForcerAttackServer;
 import de.rub.nds.tlsattacker.attacks.impl.SimpleMitmProxy;
 import de.rub.nds.tlsattacker.attacks.impl.TLSPoodleAttacker;
-import de.rub.nds.tlsattacker.attacks.impl.TokenBindingMitm;
+import de.rub.nds.tlsattacker.attacks.impl.TooManyAlgorithmsAttacker;
 import de.rub.nds.tlsattacker.attacks.impl.WinshockAttacker;
 import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
@@ -40,19 +45,23 @@ import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class Main {
 
     private static Logger LOGGER = LogManager.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
-        GeneralDelegate generalDelegate = new GeneralDelegate();
+        GeneralDelegate generalDelegate = new GeneralAttackDelegate();
         JCommander jc = new JCommander(generalDelegate);
         BleichenbacherCommandConfig bleichenbacherTest = new BleichenbacherCommandConfig(generalDelegate);
         jc.addCommand(BleichenbacherCommandConfig.ATTACK_COMMAND, bleichenbacherTest);
+
+        PskBruteForcerAttackServerCommandConfig pskBruteForcerAttackServerTest = new PskBruteForcerAttackServerCommandConfig(
+                generalDelegate);
+        jc.addCommand(PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackServerTest);
+
+        PskBruteForcerAttackClientCommandConfig pskBruteForcerAttackClientTest = new PskBruteForcerAttackClientCommandConfig(
+                generalDelegate);
+        jc.addCommand(PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND, pskBruteForcerAttackClientTest);
         // DtlsPaddingOracleAttackCommandConfig dtlsPaddingOracleAttackTest =
         // new DtlsPaddingOracleAttackCommandConfig(
         // generalDelegate);
@@ -62,8 +71,9 @@ public class Main {
         jc.addCommand(InvalidCurveAttackConfig.ATTACK_COMMAND, ellipticTest);
         HeartbleedCommandConfig heartbleed = new HeartbleedCommandConfig(generalDelegate);
         jc.addCommand(HeartbleedCommandConfig.ATTACK_COMMAND, heartbleed);
-        Lucky13CommandConfig lucky13 = new Lucky13CommandConfig(generalDelegate);
-        jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
+        // Lucky13CommandConfig lucky13 = new
+        // Lucky13CommandConfig(generalDelegate);
+        // jc.addCommand(Lucky13CommandConfig.ATTACK_COMMAND, lucky13);
         PaddingOracleCommandConfig paddingOracle = new PaddingOracleCommandConfig(generalDelegate);
         jc.addCommand(PaddingOracleCommandConfig.ATTACK_COMMAND, paddingOracle);
         TLSPoodleCommandConfig tlsPoodle = new TLSPoodleCommandConfig(generalDelegate);
@@ -78,8 +88,14 @@ public class Main {
         jc.addCommand(PoodleCommandConfig.ATTACK_COMMAND, poodle);
         SimpleMitmProxyCommandConfig simpleMitmProxy = new SimpleMitmProxyCommandConfig(generalDelegate);
         jc.addCommand(SimpleMitmProxyCommandConfig.ATTACK_COMMAND, simpleMitmProxy);
-        TokenBindingMitmCommandConfig tokenBindingMitm = new TokenBindingMitmCommandConfig(generalDelegate);
-        jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND, tokenBindingMitm);
+        TooManyAlgorithmsAttackConfig tooManyAlgorithms = new TooManyAlgorithmsAttackConfig(generalDelegate);
+        jc.addCommand(TooManyAlgorithmsAttackConfig.ATTACK_COMMAND, tooManyAlgorithms);
+        DrownCommandConfig drownConfig = new DrownCommandConfig(generalDelegate);
+        jc.addCommand(DrownCommandConfig.COMMAND, drownConfig);
+        // TokenBindingMitmCommandConfig tokenBindingMitm = new
+        // TokenBindingMitmCommandConfig(generalDelegate);
+        // jc.addCommand(TokenBindingMitmCommandConfig.ATTACK_COMMAND,
+        // tokenBindingMitm);
         jc.parse(args);
         if (generalDelegate.isHelp() || jc.getParsedCommand() == null) {
             if (jc.getParsedCommand() == null) {
@@ -100,9 +116,9 @@ public class Main {
             case HeartbleedCommandConfig.ATTACK_COMMAND:
                 attacker = new HeartbleedAttacker(heartbleed);
                 break;
-            case Lucky13CommandConfig.ATTACK_COMMAND:
-                attacker = new Lucky13Attacker(lucky13);
-                break;
+            // case Lucky13CommandConfig.ATTACK_COMMAND:
+            // attacker = new Lucky13Attacker(lucky13);
+            // break;
             case TLSPoodleCommandConfig.ATTACK_COMMAND:
                 attacker = new TLSPoodleAttacker(tlsPoodle);
                 break;
@@ -114,6 +130,9 @@ public class Main {
                 break;
             case WinshockCommandConfig.ATTACK_COMMAND:
                 attacker = new WinshockAttacker(winshock);
+                break;
+            case TooManyAlgorithmsAttackConfig.ATTACK_COMMAND:
+                attacker = new TooManyAlgorithmsAttacker(tooManyAlgorithms);
                 break;
             // case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
             // attacker = new
@@ -128,9 +147,18 @@ public class Main {
             case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
                 attacker = new SimpleMitmProxy(simpleMitmProxy);
                 break;
-            case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
-                attacker = new TokenBindingMitm(tokenBindingMitm);
+            case PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND:
+                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest);
                 break;
+            case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
+                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest);
+                break;
+            case DrownCommandConfig.COMMAND:
+                attacker = new DrownAttacker(drownConfig);
+                break;
+            // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
+            // attacker = new TokenBindingMitm(tokenBindingMitm);
+            // break;
             default:
                 throw new ConfigurationException("Command not found");
         }
@@ -142,10 +170,10 @@ public class Main {
         } else {
 
             if (attacker.getConfig().isExecuteAttack()) {
-                attacker.executeAttack();
+                attacker.attack();
             } else {
                 try {
-                    Boolean result = attacker.isVulnerable();
+                    Boolean result = attacker.checkVulnerability();
                     LOGGER.info("Vulnerable:" + (result == null ? "Uncertain" : result.toString()));
                 } catch (UnsupportedOperationException E) {
                     LOGGER.info("The selected attacker is currently not implemented");

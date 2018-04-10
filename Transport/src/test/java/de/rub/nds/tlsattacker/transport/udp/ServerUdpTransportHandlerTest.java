@@ -10,12 +10,7 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerUdpTransportHandlerTest {
 
     public ServerUdpTransportHandlerTest() {
@@ -34,6 +29,8 @@ public class ServerUdpTransportHandlerTest {
 
     /**
      * Test of initialize method, of class ServerUdpTransportHandler.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testInitialize() throws Exception {

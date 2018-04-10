@@ -18,14 +18,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SessionTicketTlsExtensionHandlerTest {
 
-    private final int extensionLength = 0;
-    private final byte[] sessionTicket = new byte[] { 0x00, 0x01, 0x02 };
+    private static final int EXTENSION_LENGTH = 0;
+    private static final byte[] SESSION_TICKET = new byte[] { 0x00, 0x01, 0x02 };
 
     private TlsContext context;
     private SessionTicketTlsExtensionHandler handler;
@@ -45,12 +41,12 @@ public class SessionTicketTlsExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         SessionTicketTLSExtensionMessage message = new SessionTicketTLSExtensionMessage();
-        message.setTicket(sessionTicket);
-        message.setExtensionLength(extensionLength);
+        message.setTicket(SESSION_TICKET);
+        message.setExtensionLength(EXTENSION_LENGTH);
 
         handler.adjustTLSContext(message);
 
-        assertArrayEquals(sessionTicket, context.getSessionTicketTLS());
+        assertArrayEquals(SESSION_TICKET, context.getSessionTicketTLS());
     }
 
     /**

@@ -11,14 +11,10 @@ package de.rub.nds.tlsattacker.core.protocol.parser.extension;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ExtensionParserFactory {
 
     private static final Logger LOGGER = LogManager.getLogger(ExtensionParserFactory.class.getName());
@@ -26,7 +22,8 @@ public class ExtensionParserFactory {
     public static ExtensionParser getExtensionParser(byte[] extensionBytes, int pointer,
             HandshakeMessageType handshakeMessageType) {
         if (extensionBytes.length - pointer < ExtensionByteLength.TYPE) {
-            throw new PreparationException("Could not retrieve Parser for ExtensionBytes");
+            throw new ParserException(
+                    "Could not retrieve Parser for ExtensionBytes. Not Enought bytes left for an ExtensionType");
         }
         byte[] typeBytes = new byte[2];
         typeBytes[0] = extensionBytes[pointer];
@@ -58,6 +55,7 @@ public class ExtensionParserFactory {
             case SUPPORTED_VERSIONS:
                 parser = new SupportedVersionsExtensionParser(pointer, extensionBytes);
                 break;
+            case KEY_SHARE_OLD: // Extension was moved
             case KEY_SHARE:
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType);
                 break;
@@ -85,6 +83,9 @@ public class ExtensionParserFactory {
             case CLIENT_CERTIFICATE_TYPE:
                 parser = new ClientCertificateTypeExtensionParser(pointer, extensionBytes);
                 break;
+            case EARLY_DATA:
+                parser = new EarlyDataExtensionParser(pointer, extensionBytes);
+                break;
             case ENCRYPT_THEN_MAC:
                 parser = new EncryptThenMacExtensionParser(pointer, extensionBytes);
                 break;
@@ -93,6 +94,12 @@ public class ExtensionParserFactory {
                 break;
             case PADDING:
                 parser = new PaddingExtensionParser(pointer, extensionBytes);
+                break;
+            case PRE_SHARED_KEY:
+                parser = new PreSharedKeyExtensionParser(pointer, extensionBytes);
+                break;
+            case PSK_KEY_EXCHANGE_MODES:
+                parser = new PSKKeyExchangeModesExtensionParser(pointer, extensionBytes);
                 break;
             case RENEGOTIATION_INFO:
                 parser = new RenegotiationInfoExtensionParser(pointer, extensionBytes);
@@ -141,7 +148,6 @@ public class ExtensionParserFactory {
             case HELLO_RETRY_REQUEST:
                 return new HRRKeyShareExtensionParser(pointer, extensionBytes);
             case CLIENT_HELLO:
-                return new KeyShareExtensionParser(pointer, extensionBytes);
             case SERVER_HELLO:
                 return new KeyShareExtensionParser(pointer, extensionBytes);
             default:

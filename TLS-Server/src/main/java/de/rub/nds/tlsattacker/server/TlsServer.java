@@ -16,16 +16,12 @@ import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class TlsServer {
 
     private static final Logger LOGGER = LogManager.getLogger(TlsServer.class.getName());
 
     // TODO rename method
-    public void startTlsServer(Config config) {
+    public void run(Config config) {
         State state = new State(config);
 
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(

@@ -17,13 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     private final int port;
@@ -45,10 +39,9 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
 
     @Override
     public void closeConnection() throws IOException {
-        if (serverSocket == null) {
-            throw new IOException("TransportHandler is not initialised!");
+        if (serverSocket != null) {
+            serverSocket.close();
         }
-        serverSocket.close();
         if (clientSocket != null) {
             clientSocket.close();
         }
@@ -90,11 +83,40 @@ public class ServerTCPNonBlockingTransportHandler extends TransportHandler {
                     setStreams(clientSocket.getInputStream(), clientSocket.getOutputStream());
                 }
             }
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
             LOGGER.warn("Could not retrieve clientSocket");
             LOGGER.debug(ex);
-        } catch (TimeoutException ex) {
-            Logger.getLogger(ServerTCPNonBlockingTransportHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public boolean isClosed() throws IOException {
+        if (isInitialized()) {
+            if (clientSocket != null && clientSocket.isClosed()) {
+                if (serverSocket.isClosed()) {
+                    return true;
+                } else if (clientSocket == null && serverSocket.isClosed()) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            throw new IOException("Transporthandler is not initalized!");
+        }
+    }
+
+    @Override
+    public void closeClientConnection() throws IOException {
+        if (clientSocket != null && !clientSocket.isClosed()) {
+            clientSocket.close();
+        }
+    }
+
+    public int getPort() {
+        if (serverSocket != null) {
+            return serverSocket.getLocalPort();
+        } else {
+            return port;
         }
     }
 }

@@ -12,19 +12,20 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.client.config.ClientCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.ConfigIO;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ListDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
+import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * A TLS-Client implementation that supports custom Workflows
- * 
- * @author Robert Merget - robert.merget@rub.de
  */
 public class TlsClient {
 
@@ -33,27 +34,30 @@ public class TlsClient {
     public static void main(String args[]) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
         JCommander commander = new JCommander(config);
-        Exception ex = null;
         try {
             commander.parse(args);
             if (config.getGeneralDelegate().isHelp()) {
                 commander.usage();
                 return;
             }
-            Config tlsConfig = null;
+            ListDelegate list = (ListDelegate) config.getDelegate(ListDelegate.class);
+            if (list.isSet()) {
+                list.plotListing();
+                return;
+            }
+
             try {
-                tlsConfig = config.createConfig();
+                Config tlsConfig = config.createConfig();
                 TlsClient client = new TlsClient();
                 client.startTlsClient(tlsConfig);
             } catch (ConfigurationException E) {
-                LOGGER.warn("Encountered a ConfigurationException aborting.");
+                LOGGER.error("Encountered a ConfigurationException aborting. See debug for more info.");
                 LOGGER.debug(E);
             }
         } catch (ParameterException E) {
-            LOGGER.warn("Could not parse provided parameters");
+            LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());
             LOGGER.debug(E);
             commander.usage();
-            ex = E;
         }
     }
 

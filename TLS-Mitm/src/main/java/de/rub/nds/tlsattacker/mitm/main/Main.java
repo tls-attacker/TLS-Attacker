@@ -9,50 +9,34 @@
 
 package de.rub.nds.tlsattacker.mitm.main;
 
-import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.mitm.config.MitmCommandConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 
-/**
- *
- * @author Lucas Hartmann <lucas.hartmann@rub.de>
- */
 public class Main {
 
-    private static final Logger LOGGER = LogManager.getLogger(Main.class);
+    // Loosely based on sysexits.h
+    public static final int EX_OK = 0;
+    public static final int EX_GENERAL = 1;
+    public static final int EX_USAGE = 64;
+    public static final int EX_SOFTWARE = 70;
+    public static final int EX_CONFIG = 78;
 
-    public static void main(String[] args) {
-
-        MitmCommandConfig config = new MitmCommandConfig(new GeneralDelegate());
-        JCommander commander = new JCommander(config);
-        Exception ex = null;
+    public static void main(String... args) {
         try {
-            commander.parse(args);
-            if (config.getGeneralDelegate().isHelp()) {
-                commander.usage();
-                return;
-            }
-            Config tlsConfig = null;
-            try {
-                LOGGER.debug("Creating and launching mitm.");
-                tlsConfig = config.createConfig();
-                TlsMitm mitm = new TlsMitm();
-                mitm.run(tlsConfig);
-            } catch (ConfigurationException E) {
-                LOGGER.info("Encountered a ConfigurationException aborting. " + "Try -debug for more details.");
-                LOGGER.debug(E);
-            }
-        } catch (ParameterException E) {
-            LOGGER.info("Could not parse provided parameters. " + "Try -debug for more details.");
-            LOGGER.debug(E);
-            commander.usage();
-            ex = E;
+            (new TlsMitm(args)).run();
+        } catch (ParameterException pe) {
+            System.exit(EX_USAGE);
+        } catch (WorkflowExecutionException wee) {
+            System.exit(EX_SOFTWARE);
+        } catch (ConfigurationException ce) {
+            System.exit(EX_CONFIG);
+        } catch (Exception e) {
+            System.out.println("Encountered an unknown exception. See debug for more info.");
+            System.out.println(e);
+            System.exit(EX_GENERAL);
         }
+        System.exit(EX_OK);
     }
 
 }

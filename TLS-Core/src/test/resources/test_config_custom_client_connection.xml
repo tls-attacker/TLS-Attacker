@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <defaultClientConnection>
+        <alias>testConnection</alias>
+        <port>8002</port>
+        <hostname>testHostname</hostname>
+    </defaultClientConnection>
+</config>

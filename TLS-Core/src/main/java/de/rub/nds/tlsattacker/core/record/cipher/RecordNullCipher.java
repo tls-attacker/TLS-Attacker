@@ -8,56 +8,63 @@
  */
 package de.rub.nds.tlsattacker.core.record.cipher;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+
 public class RecordNullCipher extends RecordCipher {
 
-    public RecordNullCipher() {
-        super(0, false, false);
+    public RecordNullCipher(TlsContext context) {
+        super(context, null);
     }
 
     /**
      * Null Cipher just passes the data through
      *
-     * @param data
-     * @return
+     * @param request
+     *            The EncryptionRequest
+     * @return The EncryptionResult
      */
     @Override
-    public byte[] encrypt(byte[] data) {
-        return data;
+    public EncryptionResult encrypt(EncryptionRequest request) {
+        return new EncryptionResult(request.getPlainText());
     }
 
     /**
      * Null Cipher just passes the data through
      *
-     * @param data
-     * @return
+     * @param decryptionRequest
+     * @return The raw decrypted Data
      */
     @Override
-    public byte[] decrypt(byte[] data) {
-        return data;
+    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
+        return new DecryptionResult(null, decryptionRequest.getCipherText(), null);
     }
 
     @Override
-    public byte[] calculateMac(byte[] data) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public boolean isUsingPadding() {
+        return false;
     }
 
     @Override
-    public int getMacLength() {
-        return 0;
+    public boolean isUsingMac() {
+        return false;
     }
 
     @Override
-    public byte[] calculatePadding(int paddingLength) {
+    public boolean isUsingTags() {
+        return false;
+    }
+
+    @Override
+    public byte[] getEncryptionIV() {
         return new byte[0];
     }
 
     @Override
-    public int getPaddingLength(int dataLength) {
-        return 0;
+    public byte[] getDecryptionIV() {
+        return new byte[0];
     }
-
 }

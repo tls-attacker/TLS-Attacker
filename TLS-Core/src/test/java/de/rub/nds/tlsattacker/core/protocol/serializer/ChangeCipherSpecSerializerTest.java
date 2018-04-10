@@ -17,10 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class ChangeCipherSpecSerializerTest {
 
@@ -29,16 +25,12 @@ public class ChangeCipherSpecSerializerTest {
         return ChangeCipherSpecParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
-    private ProtocolVersion version;
+    private final byte[] expectedPart;
+    private final ProtocolVersion version;
 
-    private byte ccsType;
+    private final byte ccsType;
 
     public ChangeCipherSpecSerializerTest(byte[] message, byte ccsType, ProtocolVersion version) {
-        this.message = message;
-        this.start = 0;
         this.expectedPart = message;
         this.ccsType = ccsType;
         this.version = version;

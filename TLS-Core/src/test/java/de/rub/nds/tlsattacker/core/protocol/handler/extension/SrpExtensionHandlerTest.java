@@ -18,14 +18,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class SrpExtensionHandlerTest {
 
-    private final byte[] srpIdentifier = new byte[] { 0x00, 0x01, 0x02, 0x03 };
-    private final int srpIdentifierLength = 4;
+    private static final byte[] SRP_IDENTIFIER = new byte[] { 0x00, 0x01, 0x02, 0x03 };
+    private static final int SRP_IDENTIFIER_LENGTH = 4;
     private SrpExtensionHandler handler;
     private TlsContext context;
 
@@ -38,12 +34,12 @@ public class SrpExtensionHandlerTest {
     @Test
     public void testAdjustTLSContext() {
         SRPExtensionMessage msg = new SRPExtensionMessage();
-        msg.setSrpIdentifier(srpIdentifier);
-        msg.setSrpIdentifierLength(srpIdentifierLength);
+        msg.setSrpIdentifier(SRP_IDENTIFIER);
+        msg.setSrpIdentifierLength(SRP_IDENTIFIER_LENGTH);
 
         handler.adjustTLSContext(msg);
 
-        assertArrayEquals(srpIdentifier, context.getSecureRemotePasswordExtensionIdentifier());
+        assertArrayEquals(SRP_IDENTIFIER, context.getSecureRemotePasswordExtensionIdentifier());
     }
 
     @Test

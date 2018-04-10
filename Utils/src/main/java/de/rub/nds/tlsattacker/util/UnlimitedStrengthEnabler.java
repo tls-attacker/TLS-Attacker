@@ -14,12 +14,9 @@ import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de> Removes JDK crypto
- *         restriction.
- *
- *         Partially taken from: https://github.com/jruby/jruby/blob/0
- *         c345e1b186bd457ebd96143c0816abe93b18fdf
- *         /core/src/main/java/org/jruby/util/SecurityHelper.java
+ * restriction. Partially taken from: https://github.com/jruby/jruby/blob/0
+ * c345e1b186bd457ebd96143c0816abe93b18fdf
+ * /core/src/main/java/org/jruby/util/SecurityHelper.java
  */
 public class UnlimitedStrengthEnabler {
 

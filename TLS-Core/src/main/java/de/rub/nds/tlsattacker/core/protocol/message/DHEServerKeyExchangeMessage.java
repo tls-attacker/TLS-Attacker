@@ -24,10 +24,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 @XmlRootElement
 public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
@@ -35,22 +31,22 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
      * DH modulus
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray modulus;
+    protected ModifiableByteArray modulus;
 
     /**
      * DH modulus Length
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger modulusLength;
+    protected ModifiableInteger modulusLength;
 
     /**
      * DH generator
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
-    private ModifiableByteArray generator;
+    protected ModifiableByteArray generator;
 
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableInteger generatorLength;
+    protected ModifiableInteger generatorLength;
 
     @HoldsModifiableVariable
     protected DHEServerComputations computations;
@@ -118,21 +114,22 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("DHEServerKeyExchangeMessage:");
         sb.append("\n  Modulus p: ");
-        if (modulus != null) {
+        if (modulus != null && modulus.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(modulus.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Generator g: ");
-        if (generator != null) {
+        if (generator != null && generator.getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(generator.getValue()));
         } else {
             sb.append("null");
         }
         sb.append("\n  Public Key: ");
-        if (getPublicKey() != null) {
+        if (getPublicKey() != null && getPublicKey().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getPublicKey().getValue(), false));
         } else {
             sb.append("null");
@@ -140,11 +137,13 @@ public class DHEServerKeyExchangeMessage extends ServerKeyExchangeMessage {
         sb.append("\n  Signature and Hash Algorithm: ");
         // signature and hash algorithms are provided only while working with
         // (D)TLS 1.2
-        if (this.getSignatureAndHashAlgorithm() != null) {
+        if (this.getSignatureAndHashAlgorithm() != null && this.getSignatureAndHashAlgorithm().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(getSignatureAndHashAlgorithm().getValue()));
+        } else {
+            sb.append("null");
         }
         sb.append("\n  Signature: ");
-        if (this.getSignature() != null) {
+        if (this.getSignature() != null && this.getSignature().getValue() != null) {
             sb.append(ArrayConverter.bytesToHexString(this.getSignature().getValue()));
         } else {
             sb.append("null");

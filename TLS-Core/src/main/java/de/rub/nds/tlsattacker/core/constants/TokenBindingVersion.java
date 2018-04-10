@@ -8,14 +8,11 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public enum TokenBindingVersion {
     DRAFT_1(new byte[] { (byte) 0, (byte) 1 }),
     DRAFT_2(new byte[] { (byte) 0, (byte) 2 }),
@@ -41,7 +38,7 @@ public enum TokenBindingVersion {
     static {
         MAP = new HashMap<>();
         for (TokenBindingVersion c : TokenBindingVersion.values()) {
-            MAP.put(valueToInt(c.tokenBindingVersion), c);
+            MAP.put(ArrayConverter.bytesToInt(c.tokenBindingVersion), c);
         }
     }
 
@@ -54,12 +51,8 @@ public enum TokenBindingVersion {
     }
 
     public static TokenBindingVersion getExtensionType(byte[] value) {
-        TokenBindingVersion type = MAP.get(valueToInt(value));
+        TokenBindingVersion type = MAP.get(ArrayConverter.bytesToInt(value));
         return type;
-    }
-
-    private static int valueToInt(byte[] value) {
-        return (value[0] & 0xff) << 8 | (value[1] & 0xff);
     }
 
     public byte getMajor() {
@@ -70,11 +63,11 @@ public enum TokenBindingVersion {
         return tokenBindingVersion[1];
     }
 
-    public static TokenBindingVersion getRandom() {
+    public static TokenBindingVersion getRandom(Random random) {
         TokenBindingVersion c = null;
         while (c == null) {
             Object[] o = MAP.values().toArray();
-            c = (TokenBindingVersion) o[RandomHelper.getRandom().nextInt(o.length)];
+            c = (TokenBindingVersion) o[random.nextInt(o.length)];
         }
         return c;
     }

@@ -22,10 +22,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
- */
 @XmlRootElement
 public class CertificateRequestMessage extends HandshakeMessage {
 
@@ -134,14 +130,16 @@ public class CertificateRequestMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        if (clientCertificateTypesCount != null) {
-            sb.append("\n  Certificate Types Count: ").append(clientCertificateTypesCount.getValue());
+        StringBuilder sb = new StringBuilder();
+        sb.append("CertificateRequestMessage:");
+        sb.append("\n  Certificate Types Count: ");
+        if (clientCertificateTypesCount != null && clientCertificateTypesCount.getValue() != null) {
+            sb.append(clientCertificateTypesCount.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  Certificate Types: ");
-        if (clientCertificateTypes != null) {
+        if (clientCertificateTypes != null && clientCertificateTypes.getValue() != null) {
             for (int i = 0; i < clientCertificateTypes.getValue().length; i++) {
                 sb.append(ClientCertificateType.getClientCertificateType(clientCertificateTypes.getValue()[i])).append(
                         ", ");
@@ -150,13 +148,13 @@ public class CertificateRequestMessage extends HandshakeMessage {
             sb.append("null");
         }
         sb.append("\n  Signature Hash Algorithms Length: ");
-        if (signatureHashAlgorithmsLength != null) {
+        if (signatureHashAlgorithmsLength != null && signatureHashAlgorithmsLength.getValue() != null) {
             sb.append(signatureHashAlgorithmsLength.getValue());
         } else {
             sb.append("null");
         }
         sb.append("\n  Signature Hash Algorithms: ");
-        if (signatureHashAlgorithms != null) {
+        if (signatureHashAlgorithms != null && signatureHashAlgorithms.getValue() != null) {
             for (int i = 0; i < signatureHashAlgorithms.getValue().length / 2; i += 2) {
                 sb.append(HashAlgorithm.getHashAlgorithm(signatureHashAlgorithms.getValue()[i])).append("-");
                 sb.append(SignatureAlgorithm.getSignatureAlgorithm(signatureHashAlgorithms.getValue()[i + 1])).append(
@@ -165,9 +163,11 @@ public class CertificateRequestMessage extends HandshakeMessage {
         } else {
             sb.append("null");
         }
-        if (distinguishedNamesLength != null) {
-            sb.append("\n  Distinguished Names Length: ");
+        sb.append("\n  Distinguished Names Length: ");
+        if (distinguishedNamesLength != null && distinguishedNamesLength.getValue() != null) {
             sb.append(distinguishedNamesLength.getValue());
+        } else {
+            sb.append("null");
         }
         // sb.append("\n  Distinguished Names: ").append(ArrayConverter.bytesToHexString(distinguishedNames.getValue()));
         return sb.toString();

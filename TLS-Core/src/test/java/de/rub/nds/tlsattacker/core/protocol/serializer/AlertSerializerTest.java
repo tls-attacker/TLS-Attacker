@@ -17,10 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class AlertSerializerTest {
 
@@ -29,15 +25,11 @@ public class AlertSerializerTest {
         return AlertParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
-    private byte[] expectedPart;
-    private byte level;
-    private byte description;
+    private final byte[] expectedPart;
+    private final byte level;
+    private final byte description;
 
     public AlertSerializerTest(byte[] message, int start, byte[] expectedPart, byte level, byte description) {
-        this.message = message;
-        this.start = start;
         this.expectedPart = expectedPart;
         this.level = level;
         this.description = description;

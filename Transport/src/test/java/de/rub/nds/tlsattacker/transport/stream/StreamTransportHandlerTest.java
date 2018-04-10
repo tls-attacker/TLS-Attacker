@@ -12,14 +12,10 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class StreamTransportHandlerTest {
 
     private StreamTransportHandler handler;
@@ -37,6 +33,8 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of closeConnection method, of class StreamTransportHandler.
+     * 
+     * @throws java.io.IOException
      */
     @Test(expected = IOException.class)
     public void testCloseConnection() throws IOException {
@@ -45,6 +43,8 @@ public class StreamTransportHandlerTest {
 
     /**
      * Test of initialize method, of class StreamTransportHandler.
+     * 
+     * @throws java.lang.Exception
      */
     @Test
     public void testInitialize() throws Exception {
@@ -76,5 +76,11 @@ public class StreamTransportHandlerTest {
         assertArrayEquals(new byte[] { 0, 1, 2, 3 }, outputStream.toByteArray());
         byte[] fetchData = handler.fetchData();
         assertArrayEquals(new byte[] { 4, 3, 2, 1 }, fetchData);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCloseClientconnection() throws IOException {
+        handler.initialize();
+        handler.closeClientConnection();
     }
 }

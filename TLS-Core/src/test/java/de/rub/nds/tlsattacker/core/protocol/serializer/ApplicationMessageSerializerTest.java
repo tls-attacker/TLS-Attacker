@@ -17,10 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class ApplicationMessageSerializerTest {
 
@@ -29,14 +25,10 @@ public class ApplicationMessageSerializerTest {
         return ApplicationMessageParserTest.generateData();
     }
 
-    private byte[] message;
-    private int start;
     private byte[] expectedPart;
     private byte[] data;
 
     public ApplicationMessageSerializerTest(byte[] message, int start, byte[] expectedPart, byte[] data) {
-        this.message = message;
-        this.start = start;
         this.expectedPart = expectedPart;
         this.data = data;
     }

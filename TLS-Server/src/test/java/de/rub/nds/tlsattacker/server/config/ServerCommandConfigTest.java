@@ -13,10 +13,6 @@ import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import org.junit.Test;
 
-/**
- * 
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class ServerCommandConfigTest {
 
     /**

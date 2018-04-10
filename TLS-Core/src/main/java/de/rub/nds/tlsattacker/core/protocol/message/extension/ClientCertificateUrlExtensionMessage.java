@@ -10,10 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.message.extension;
 
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ClientCertificateUrlExtensionMessage extends ExtensionMessage {
 
     public ClientCertificateUrlExtensionMessage() {

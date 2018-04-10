@@ -19,10 +19,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class CertificateStatusRequestV2ExtensionPreparatorTest {
 
     private final int listLength = 12;

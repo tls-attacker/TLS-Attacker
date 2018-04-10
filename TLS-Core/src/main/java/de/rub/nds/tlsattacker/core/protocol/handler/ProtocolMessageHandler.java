@@ -22,8 +22,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
  * @param <Message>
+ *            The ProtocolMessage that should be handled
  */
 public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> extends Handler<Message> {
 
@@ -35,8 +35,8 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
     protected final TlsContext tlsContext;
 
     /**
-     *
      * @param tlsContext
+     *            The Context which should be Adjusted with this Handler
      */
     public ProtocolMessageHandler(TlsContext tlsContext) {
         this.tlsContext = tlsContext;
@@ -47,21 +47,43 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * hooks.
      *
      * @param message
+     *            The Message that should be prepared
      * @return message in bytes
      */
     public byte[] prepareMessage(Message message) {
-        Preparator preparator = getPreparator(message);
-        preparator.prepare();
-        Serializer serializer = getSerializer(message);
-        byte[] completeMessage = serializer.serialize();
-        message.setCompleteResultingMessage(completeMessage);
-        if (message instanceof HandshakeMessage) {
-            if (((HandshakeMessage) message).getIncludeInDigest()) {
-                tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+        return prepareMessage(message, true);
+    }
+
+    /**
+     * Prepare message for sending. This method invokes before and after method
+     * hooks.
+     *
+     * @param message
+     *            The message that should be prepared
+     * @param withPrepare
+     *            if the prepare function should be called or only the rest
+     * @return message in bytes
+     */
+    public byte[] prepareMessage(Message message, boolean withPrepare) {
+        if (withPrepare) {
+            Preparator preparator = getPreparator(message);
+            preparator.prepare();
+            preparator.afterPrepare();
+            Serializer serializer = getSerializer(message);
+            byte[] completeMessage = serializer.serialize();
+            message.setCompleteResultingMessage(completeMessage);
+            if (message instanceof HandshakeMessage) {
+                if (((HandshakeMessage) message).getIncludeInDigest()) {
+                    tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+                }
             }
         }
         try {
-            adjustTLSContext(message);
+            if (message.getAdjustContext()) {
+                adjustTLSContext(message);
+            } else {
+                LOGGER.debug("Not adjusting TLSContext for " + message.toCompactString());
+            }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
@@ -75,8 +97,10 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * Chooser is adjusted as
      *
      * @param message
+     *            The byte[] messages which should be parsed
      * @param pointer
-     * @return
+     *            The pointer (startposition) into the message bytes
+     * @return The Parser result
      */
     public ParserResult parseMessage(byte[] message, int pointer) {
         Parser<Message> parser = getParser(message, pointer);
@@ -111,12 +135,16 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
      * ProtocolMessage
      *
      * @param message
+     *            The Message for which this context should be adjusted
      */
     public abstract void adjustTLSContext(Message message);
 
+    public void adjustTlsContextAfterSerialize(Message message) {
+    }
+
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);
-        prep.prepareAfterParse();
+        prep.prepareAfterParse(tlsContext.isReversePrepareAfterParse());
     }
 
     @Override

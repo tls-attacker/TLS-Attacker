@@ -12,22 +12,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.tlsattacker.core.config.Config;
 import java.math.BigInteger;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class DHClientComputations extends KeyExchangeComputations {
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger serverPublicKey;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger clientPublicKey;
-
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PRIVATE_KEY)
-    private ModifiableBigInteger privateKey;
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
+    private ModifiableBigInteger publicKey;
 
     /**
      * dh modulus used for computations
@@ -45,18 +36,6 @@ public class DHClientComputations extends KeyExchangeComputations {
     private ModifiableByteArray serverRandom;
 
     public DHClientComputations() {
-    }
-
-    public ModifiableBigInteger getPrivateKey() {
-        return privateKey;
-    }
-
-    public void setPrivateKey(ModifiableBigInteger privateKey) {
-        this.privateKey = privateKey;
-    }
-
-    public void setPrivateKey(BigInteger privateKey) {
-        this.privateKey = ModifiableVariableFactory.safelySetValue(this.privateKey, privateKey);
     }
 
     public ModifiableBigInteger getModulus() {
@@ -91,27 +70,20 @@ public class DHClientComputations extends KeyExchangeComputations {
         this.serverRandom = serverRandom;
     }
 
-    public ModifiableBigInteger getServerPublicKey() {
-        return serverPublicKey;
+    public ModifiableBigInteger getPublicKey() {
+        return publicKey;
     }
 
-    public void setServerPublicKey(ModifiableBigInteger serverPublicKey) {
-        this.serverPublicKey = serverPublicKey;
+    public void setPublicKey(ModifiableBigInteger publicKey) {
+        this.publicKey = publicKey;
     }
 
-    public void setServerPublicKey(BigInteger serverPublicKey) {
-        this.serverPublicKey = ModifiableVariableFactory.safelySetValue(this.serverPublicKey, serverPublicKey);
+    public void setPublicKey(BigInteger serverPublicKey) {
+        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, serverPublicKey);
     }
 
-    public ModifiableBigInteger getClientPublicKey() {
-        return clientPublicKey;
-    }
-
-    public void setClientPublicKey(ModifiableBigInteger clientPublicKey) {
-        this.clientPublicKey = clientPublicKey;
-    }
-
-    public void setClientPublicKey(BigInteger clientPublicKey) {
-        this.clientPublicKey = ModifiableVariableFactory.safelySetValue(this.clientPublicKey, clientPublicKey);
+    @Override
+    public void setSecretsInConfig(Config config) {
+        config.setDefaultClientDhPrivateKey(getPrivateKey().getValue());
     }
 }

@@ -14,10 +14,6 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.record.Record;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class RecordParser extends AbstractRecordParser<Record> {
 
     public RecordParser(int startposition, byte[] array, ProtocolVersion version) {
@@ -29,10 +25,16 @@ public class RecordParser extends AbstractRecordParser<Record> {
         LOGGER.debug("Parsing Record");
         Record record = new Record();
         parseContentType(record);
-        record.setContentMessageType(ProtocolMessageType.getContentType(record.getContentType().getValue()));
+        ProtocolMessageType protocolMessageType = ProtocolMessageType
+                .getContentType(record.getContentType().getValue());
+        if (protocolMessageType == null) {
+            protocolMessageType = ProtocolMessageType.UNKNOWN;
+        }
+        record.setContentMessageType(protocolMessageType);
         parseVersion(record);
         parseLength(record);
         parseProtocolMessageBytes(record);
+        record.setCompleteRecordBytes(getAlreadyParsed());
         return record;
     }
 

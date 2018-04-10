@@ -12,9 +12,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class SupportedVersionsExtensionSerializer extends ExtensionSerializer<SupportedVersionsExtensionMessage> {
 
     private final SupportedVersionsExtensionMessage msg;
@@ -27,8 +24,12 @@ public class SupportedVersionsExtensionSerializer extends ExtensionSerializer<Su
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing SupportedVersionsExtensionMessage");
-        writeSupportedVersionsLength(msg);
-        writeSupportedVersions(msg);
+        if (msg.getSupportedVersionsLength() == null || msg.getSupportedVersions().getValue() == null) {
+            writeSupportedVersions(msg);
+        } else {
+            writeSupportedVersionsLength(msg);
+            writeSupportedVersions(msg);
+        }
         return getAlreadySerialized();
     }
 

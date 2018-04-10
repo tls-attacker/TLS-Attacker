@@ -10,244 +10,181 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.BulkCipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
-import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
 
-/**
- * @author Robert Merget <robert.merget@rub.de>
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class RecordAEADCipher extends RecordCipher {
 
     /**
      * sequence Number length in byte
      */
     public static final int SEQUENCE_NUMBER_LENGTH = 8;
-
     /**
      * tag length in byte
      */
     public static final int GCM_TAG_LENGTH = 16;
-
     /**
      * iv length in byte
      */
     public static final int GCM_IV_LENGTH = 12;
 
-    /**
-     * cipher for encryption
-     */
-    private Cipher encryptCipher;
-
-    /**
-     * cipher for decryption
-     */
-    private Cipher decryptCipher;
-
-    /**
-     * sequence number used for the decryption
-     */
-    private long sequenceNumberDec = 0;
-
-    /**
-     * sequence number used for the encryption
-     */
-    private long sequenceNumberEnc = 0;
-
-    /**
-     * CipherAlgorithm algorithm (AES, ...)
-     */
-    private BulkCipherAlgorithm bulkCipherAlg;
-
-    /**
-     * client secret
-     */
-    private byte[] clientSecret;
-
-    /**
-     * server secret
-     */
-    private byte[] serverSecret;
-
-    /**
-     * client encryption key
-     */
-    private byte[] clientWriteKey;
-
-    /**
-     * server encryption key
-     */
-    private byte[] serverWriteKey;
-
-    /**
-     * client encryption IV
-     */
-    private byte[] clientWriteIv;
-
-    /**
-     * server encryption IV
-     */
-    private byte[] serverWriteIv;
-
-    private GCMParameterSpec encryptIV;
-
-    private GCMParameterSpec decryptIV;
-
-    private SecretKey encryptKey;
-
-    private SecretKey decryptKey;
-
-    private final TlsContext context;
-
-    public RecordAEADCipher(TlsContext context) {
-        super(0, true, false);
-        this.context = context;
-        init();
+    public RecordAEADCipher(TlsContext context, KeySet keySet) {
+        super(context, keySet);
+        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
+        encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg);
+        decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg);
     }
 
-    private void init() {
-        ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
-        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+    @Override
+    public EncryptionResult encrypt(EncryptionRequest request) {
         try {
-            bulkCipherAlg = BulkCipherAlgorithm.getBulkCipherAlgorithm(cipherSuite);
-            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            if (protocolVersion.isTLS13()) {
-                if (context.isUpdateKeys() == false) {
-                    clientSecret = context.getClientHandshakeTrafficSecret();
-                    serverSecret = context.getServerHandshakeTrafficSecret();
-                } else {
-                    context.setUpdateKeys(false);
-                    clientSecret = context.getClientApplicationTrafficSecret0();
-                    serverSecret = context.getServerApplicationTrafficSecret0();
-                }
-                HKDFAlgorithm hkdfAlgortihm = AlgorithmResolver.getHKDFAlgorithm(cipherSuite);
-                clientWriteKey = HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.KEY, new byte[] {},
-                        cipherAlg.getKeySize());
-                LOGGER.debug("Client write key: {}", ArrayConverter.bytesToHexString(clientWriteKey));
-                serverWriteKey = HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.KEY, new byte[] {},
-                        cipherAlg.getKeySize());
-                LOGGER.debug("Server write key: {}", ArrayConverter.bytesToHexString(serverWriteKey));
-                clientWriteIv = HKDFunction.expandLabel(hkdfAlgortihm, clientSecret, HKDFunction.IV, new byte[] {},
-                        GCM_IV_LENGTH);
-                LOGGER.debug("Client write IV: {}", ArrayConverter.bytesToHexString(clientWriteIv));
-                serverWriteIv = HKDFunction.expandLabel(hkdfAlgortihm, serverSecret, HKDFunction.IV, new byte[] {},
-                        GCM_IV_LENGTH);
-                LOGGER.debug("Server write IV: {}", ArrayConverter.bytesToHexString(serverWriteIv));
-                if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                    encryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-                    decryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
-                } else {
-                    decryptKey = new SecretKeySpec(clientWriteKey, bulkCipherAlg.getJavaName());
-                    encryptKey = new SecretKeySpec(serverWriteKey, bulkCipherAlg.getJavaName());
-                }
+            if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+                return encryptTLS13(request);
             } else {
-                throw new UnsupportedOperationException("Only supported for TLS 1.3");
+                return encryptTLS12(request);
             }
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize RecordAEADCipher", ex);
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.");
+            LOGGER.debug(E);
+            return new EncryptionResult(request.getPlainText());
         }
     }
 
     @Override
-    public byte[] encrypt(byte[] data) {
+    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
         try {
-            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberEnc, RecordByteLength.SEQUENCE_NUMBER);
-            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
-                    sequenceNumberByte);
-            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.CLIENT) {
-                byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
-                for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    newClientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);
-                }
-                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newClientWriteIv);
+            byte[] decrypted;
+            if (version.isTLS13() || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+                decrypted = decryptTLS13(decryptionRequest);
             } else {
-                byte[] newServerWriteIv = new byte[GCM_IV_LENGTH];
-                for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    newServerWriteIv[i] = (byte) (serverWriteIv[i] ^ nonce[i]);
-                }
-                encryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newServerWriteIv);
-
+                decrypted = decryptTLS12(decryptionRequest);
             }
-            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey, encryptIV);
-            sequenceNumberEnc++;
-            return encryptCipher.doFinal(data);
-        } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException
-                | InvalidAlgorithmParameterException ex) {
-            throw new CryptoException(ex);
+            return new DecryptionResult(null, decrypted, null);
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
+            LOGGER.debug(E);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), false);
+        }
+    }
+
+    private EncryptionResult encryptTLS13(EncryptionRequest request) throws CryptoException {
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+
+        byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getWriteSequenceNumber(),
+                RecordByteLength.SEQUENCE_NUMBER);
+        byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
+                sequenceNumberByte);
+        byte[] encryptIV = prepareAeadParameters(nonce, getEncryptionIV());
+        LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(encryptIV));
+        byte[] cipherText = encryptCipher.encrypt(getKeySet().getWriteKey(localConEndType), encryptIV,
+                GCM_TAG_LENGTH * 8, request.getPlainText());
+        return new EncryptionResult(encryptIV, cipherText, false);
+    }
+
+    private byte[] prepareAeadParameters(byte[] nonce, byte[] iv) {
+        byte[] param = new byte[GCM_IV_LENGTH];
+        for (int i = 0; i < GCM_IV_LENGTH; i++) {
+            param[i] = (byte) (iv[i] ^ nonce[i]);
+        }
+        return param;
+    }
+
+    private EncryptionResult encryptTLS12(EncryptionRequest request) throws CryptoException {
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+
+        byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), RecordByteLength.SEQUENCE_NUMBER);
+        byte[] iv = ArrayConverter.concatenate(
+                getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()), nonce);
+        LOGGER.debug("Encrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+        LOGGER.debug("Encrypting GCM with the following AAD: {}",
+                ArrayConverter.bytesToHexString(request.getAdditionalAuthenticatedData()));
+        byte[] ciphertext = encryptCipher.encrypt(getKeySet().getWriteKey(localConEndType), iv, GCM_TAG_LENGTH * 8,
+                request.getAdditionalAuthenticatedData(), request.getPlainText());
+        return new EncryptionResult(iv, ArrayConverter.concatenate(nonce, ciphertext), false);
+    }
+
+    private byte[] decryptTLS13(DecryptionRequest decryptionRequest) throws CryptoException {
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+        LOGGER.debug("Decrypting using SQN:" + context.getReadSequenceNumber());
+        byte[] sequenceNumberByte = ArrayConverter.longToBytes(context.getReadSequenceNumber(),
+                RecordByteLength.SEQUENCE_NUMBER);
+        byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
+                sequenceNumberByte);
+        byte[] decryptIV = prepareAeadParameters(nonce, getDecryptionIV());
+        LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(decryptIV));
+        LOGGER.debug("Decrypting the following GCM ciphertext: {}",
+                ArrayConverter.bytesToHexString(decryptionRequest.getCipherText()));
+        return decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIV, GCM_TAG_LENGTH * 8,
+                decryptionRequest.getCipherText());
+    }
+
+    private byte[] decryptTLS12(DecryptionRequest decryptionRequest) throws CryptoException {
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+        if (decryptionRequest.getCipherText().length < SEQUENCE_NUMBER_LENGTH) {
+            LOGGER.warn("Could not DecryptCipherText. Too short. Returning undecrypted Ciphertext");
+            return decryptionRequest.getCipherText();
+        }
+        byte[] nonce = Arrays.copyOf(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH);
+        byte[] data = Arrays.copyOfRange(decryptionRequest.getCipherText(), SEQUENCE_NUMBER_LENGTH,
+                decryptionRequest.getCipherText().length);
+        byte[] iv = ArrayConverter.concatenate(
+                getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()), nonce);
+        LOGGER.debug("Decrypting GCM with the following IV: {}", ArrayConverter.bytesToHexString(iv));
+        LOGGER.debug("Decrypting GCM with the following AAD: {}",
+                ArrayConverter.bytesToHexString(decryptionRequest.getAdditionalAuthenticatedData()));
+        LOGGER.debug("Decrypting the following GCM ciphertext: {}", ArrayConverter.bytesToHexString(data));
+        return decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), iv, GCM_TAG_LENGTH * 8,
+                decryptionRequest.getAdditionalAuthenticatedData(), data);
+    }
+
+    @Override
+    public boolean isUsingPadding() {
+        if (version.isTLS13() || context.getActiveKeySetTypeWrite() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS
+                || context.getActiveKeySetTypeRead() == Tls13KeySetType.EARLY_TRAFFIC_SECRETS) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     @Override
-    public byte[] decrypt(byte[] data) {
-        try {
-            byte[] sequenceNumberByte = ArrayConverter.longToBytes(sequenceNumberDec, RecordByteLength.SEQUENCE_NUMBER);
-            byte[] nonce = ArrayConverter.concatenate(new byte[GCM_IV_LENGTH - RecordByteLength.SEQUENCE_NUMBER],
-                    sequenceNumberByte);
-            if (context.getChooser().getConnectionEnd().getConnectionEndType() == ConnectionEndType.SERVER) {
-                byte[] newClientWriteIv = new byte[GCM_IV_LENGTH];
-                for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    newClientWriteIv[i] = (byte) (clientWriteIv[i] ^ nonce[i]);
-                }
-                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newClientWriteIv);
-            } else {
-                byte[] newServerWriteIv = new byte[GCM_IV_LENGTH];
-                for (int i = 0; i < GCM_IV_LENGTH; i++) {
-                    newServerWriteIv[i] = (byte) (serverWriteIv[i] ^ nonce[i]);
-                }
-                decryptIV = new GCMParameterSpec(GCM_TAG_LENGTH * 8, newServerWriteIv);
-            }
-            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey, decryptIV);
-            sequenceNumberDec++;
-            return decryptCipher.doFinal(data);
-        } catch (BadPaddingException | IllegalBlockSizeException | InvalidKeyException
-                | InvalidAlgorithmParameterException ex) {
-            throw new CryptoException(ex);
-        }
+    public boolean isUsingMac() {
+        return false;
     }
 
     @Override
-    public int getMacLength() {
-        return 0;
+    public boolean isUsingTags() {
+        return true;
     }
 
     @Override
-    public byte[] calculateMac(byte[] data) {
-        return new byte[] {};
+    public int getTagSize() {
+        return SEQUENCE_NUMBER_LENGTH + GCM_TAG_LENGTH;
     }
 
     @Override
-    public byte[] calculatePadding(int paddingLength) {
-        paddingLength = Math.abs(paddingLength);
-        byte[] padding = new byte[paddingLength];
-        for (int i = 0; i < paddingLength; i++) {
-            padding[i] = (byte) (0);
-        }
-        return padding;
+    public byte[] getEncryptionIV() {
+        byte[] nonce = ArrayConverter.longToBytes(context.getWriteSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
+        return ArrayConverter.concatenate(getKeySet().getWriteIv(context.getConnection().getLocalConnectionEndType()),
+                nonce);
     }
 
     @Override
-    public int getPaddingLength(int dataLength) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public byte[] getDecryptionIV() {
+        byte[] nonce = ArrayConverter.longToBytes(context.getReadSequenceNumber(), SEQUENCE_NUMBER_LENGTH);
+        return ArrayConverter.concatenate(getKeySet().getReadIv(context.getConnection().getLocalConnectionEndType()),
+                nonce);
     }
-
 }

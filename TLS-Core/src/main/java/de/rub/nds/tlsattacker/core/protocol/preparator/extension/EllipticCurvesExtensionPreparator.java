@@ -9,18 +9,16 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.PreparationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.EllipticCurvesExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.EllipticCurvesExtensionSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<EllipticCurvesExtensionMessage> {
 
     private final EllipticCurvesExtensionMessage msg;
@@ -34,29 +32,35 @@ public class EllipticCurvesExtensionPreparator extends ExtensionPreparator<Ellip
     @Override
     public void prepareExtensionContent() {
         LOGGER.debug("Preparing EllipticCurvesExtensionMessage");
-        prepareEllipticCurves(msg);
-        prepareSupportedCurvesLength(msg);
+        prepareSupportedGroups(msg);
+        prepareSupportedGroupsLength(msg);
     }
 
-    private void prepareEllipticCurves(EllipticCurvesExtensionMessage msg) {
-        msg.setSupportedCurves(createEllipticCurveArray());
-        LOGGER.debug("SupportedCurves: " + ArrayConverter.bytesToHexString(msg.getSupportedCurves().getValue()));
+    private void prepareSupportedGroups(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedGroups(createNamedGroupsArray());
+        LOGGER.debug("SupportedGroups: " + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
     }
 
-    private byte[] createEllipticCurveArray() {
+    private byte[] createNamedGroupsArray() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        for (NamedCurve curve : chooser.getConfig().getNamedCurves()) {
+        List<NamedGroup> namedGroups;
+        if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+            namedGroups = chooser.getConfig().getDefaultClientNamedGroups();
+        } else {
+            namedGroups = chooser.getConfig().getDefaultServerNamedGroups();
+        }
+        for (NamedGroup group : namedGroups) {
             try {
-                stream.write(curve.getValue());
+                stream.write(group.getValue());
             } catch (IOException ex) {
-                throw new PreparationException("Could not write NamedCurve to byte[]", ex);
+                throw new PreparationException("Could not write NamedGroup to byte[]", ex);
             }
         }
         return stream.toByteArray();
     }
 
-    private void prepareSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
-        msg.setSupportedCurvesLength(msg.getSupportedCurves().getValue().length);
-        LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
+    private void prepareSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
+        msg.setSupportedGroupsLength(msg.getSupportedGroups().getValue().length);
+        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
     }
 }

@@ -15,10 +15,6 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ServerCertifica
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ServerCertificateTypeExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
 public class ServerCertificateTypeExtensionHandler extends ExtensionHandler<ServerCertificateTypeExtensionMessage> {
 
     public ServerCertificateTypeExtensionHandler(TlsContext context) {

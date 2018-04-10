@@ -15,12 +15,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * RFC7924
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
  */
 public class CachedInfoExtensionMessage extends ExtensionMessage {
 
@@ -34,6 +33,7 @@ public class CachedInfoExtensionMessage extends ExtensionMessage {
 
     public CachedInfoExtensionMessage() {
         super(ExtensionType.CACHED_INFO);
+        cachedInfo = new LinkedList<>();
     }
 
     public ModifiableInteger getCachedInfoLength() {

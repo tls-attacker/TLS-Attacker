@@ -8,23 +8,16 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
-import static org.junit.Assert.assertArrayEquals;
-
-import java.util.Collection;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParserTest;
+import java.util.Collection;
+import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 @RunWith(Parameterized.class)
 public class HelloVerifyRequestSerializerTest {
 

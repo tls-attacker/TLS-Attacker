@@ -18,9 +18,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 @XmlRootElement
 public class ChangeCipherSpecMessage extends ProtocolMessage {
 
@@ -51,9 +48,14 @@ public class ChangeCipherSpecMessage extends ProtocolMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("\n   CCS ProtocolType:");
-        sb.append(String.format("%02X ", ccsProtocolType.getValue()));
+        StringBuilder sb = new StringBuilder();
+        sb.append("ChangeCipherSpecMessage:");
+        sb.append("\n  CCS ProtocolType: ");
+        if (ccsProtocolType != null && ccsProtocolType.getValue() != null) {
+            sb.append(String.format("%02X ", ccsProtocolType.getValue()));
+        } else {
+            sb.append("null");
+        }
         return sb.toString();
     }
 

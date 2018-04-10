@@ -14,12 +14,14 @@ import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.integer.IntegerAddModification;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.action.TLSAction;
+import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.StringReader;
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
@@ -30,13 +32,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class ClientHelloTest {
     private static final Logger LOGGER = LogManager.getLogger(ClientHelloTest.class);
 
@@ -60,7 +62,7 @@ public class ClientHelloTest {
         writer = new StringWriter();
         context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ClientHelloMessage.class,
                 ModificationFilter.class, IntegerAddModification.class, VariableModification.class,
-                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TLSAction.class);
+                ModifiableVariable.class, SendAction.class, ReceiveAction.class, TlsAction.class);
         m = context.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         m.setAdapter(new ByteArrayAdapter());
@@ -76,6 +78,11 @@ public class ClientHelloTest {
     public void tearDown() {
     }
 
+    /**
+     * TODO: refactor this test, proper test name, make code readable...
+     * 
+     * @throws JAXBException
+     */
     @Test
     public void simpleSerialization() throws JAXBException {
         ClientHelloMessage cl = new ClientHelloMessage(Config.createConfig());
@@ -86,6 +93,7 @@ public class ClientHelloTest {
             m.marshal(cl, writer);
         } catch (JAXBException E) {
             E.printStackTrace();
+            fail();
         }
         String xmlString = writer.toString();
         LOGGER.info(xmlString);
@@ -94,14 +102,37 @@ public class ClientHelloTest {
         writer.append("abcd");
         m.marshal(clu, writer);
         xmlString = writer.toString();
+        assertNotNull(xmlString);
     }
 
+    /**
+     * TODO: give test a proper name
+     * 
+     * @throws JAXBException
+     */
     @Test
     public void simpleSerialization2() throws Exception {
         WorkflowConfigurationFactory cf = new WorkflowConfigurationFactory(Config.createConfig());
-        WorkflowTrace trace = cf.createFullWorkflow();
+        WorkflowTrace trace = cf.createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.CLIENT);
         m.marshal(trace, writer);
         String xmlString = writer.toString();
+        assertNotNull(xmlString);
+    }
+
+    @Test
+    public void testToString() {
+        ClientHelloMessage message = new ClientHelloMessage();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("ClientHelloMessage:");
+        sb.append("\n  Protocol Version: ").append("null");
+        sb.append("\n  Client Unix Time: ").append("null");
+        sb.append("\n  Client Random: ").append("null");
+        sb.append("\n  Session ID: ").append("null");
+        sb.append("\n  Supported Cipher Suites: ").append("null");
+        sb.append("\n  Supported Compression Methods: ").append("null");
+        sb.append("\n  Extensions: ").append("null");
+        Assert.assertEquals(message.toString(), sb.toString());
     }
 
 }

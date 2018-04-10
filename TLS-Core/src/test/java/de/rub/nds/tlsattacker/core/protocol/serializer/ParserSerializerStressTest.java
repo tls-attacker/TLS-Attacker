@@ -35,15 +35,15 @@ import de.rub.nds.tlsattacker.core.protocol.message.UnknownMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.AlertParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ApplicationMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.CertificateMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateRequestParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ChangeCipherSpecParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ClientHelloParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.DHEServerKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ECDHEServerKeyExchangeParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.FinishedMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.FinishedParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.HeartbeatMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloRequestParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.HelloVerifyRequestParser;
@@ -51,28 +51,19 @@ import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.RSAClientKeyExchangeParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloDoneParser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ServerHelloParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.UnknownMessageParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownHandshakeParser;
+import de.rub.nds.tlsattacker.core.protocol.parser.UnknownParser;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class ParserSerializerStressTest {
 
     private static final Logger LOGGER = LogManager.getLogger(ParserSerializerStressTest.class);
-
-    @Before
-    public void setUp() {
-    }
 
     @Test
     @Category(IntegrationTests.class)
@@ -118,9 +109,9 @@ public class ParserSerializerStressTest {
             case 2:
                 return new CertificateMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 3:
-                return new CertificateRequestMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new CertificateRequestParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 4:
-                return new CertificateVerifyMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new CertificateVerifyParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 5:
                 return new ChangeCipherSpecParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 6:
@@ -134,7 +125,7 @@ public class ParserSerializerStressTest {
             case 10:
                 return new ECDHEServerKeyExchangeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 11:
-                return new FinishedMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new FinishedParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 12:
                 return new HeartbeatMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 13:
@@ -148,9 +139,9 @@ public class ParserSerializerStressTest {
             case 17:
                 return new ServerHelloParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 18:
-                return new UnknownHandshakeMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new UnknownHandshakeParser(start, bytesToParse, ProtocolVersion.TLS12);
             case 19:
-                return new UnknownMessageParser(start, bytesToParse, ProtocolVersion.TLS12);
+                return new UnknownParser(start, bytesToParse, ProtocolVersion.TLS12);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }
@@ -165,10 +156,9 @@ public class ParserSerializerStressTest {
             case 2:
                 return new CertificateMessageSerializer((CertificateMessage) message, ProtocolVersion.TLS12);
             case 3:
-                return new CertificateRequestMessageSerializer((CertificateRequestMessage) message,
-                        ProtocolVersion.TLS12);
+                return new CertificateRequestSerializer((CertificateRequestMessage) message, ProtocolVersion.TLS12);
             case 4:
-                return new CertificateVerifyMessageSerializer((CertificateVerifyMessage) message, ProtocolVersion.TLS12);
+                return new CertificateVerifySerializer((CertificateVerifyMessage) message, ProtocolVersion.TLS12);
             case 5:
                 return new ChangeCipherSpecSerializer((ChangeCipherSpecMessage) message, ProtocolVersion.TLS12);
             case 6:
@@ -184,7 +174,7 @@ public class ParserSerializerStressTest {
                 return new ECDHEServerKeyExchangeSerializer((ECDHEServerKeyExchangeMessage) message,
                         ProtocolVersion.TLS12);
             case 11:
-                return new FinishedMessageSerializer((FinishedMessage) message, ProtocolVersion.TLS12);
+                return new FinishedSerializer((FinishedMessage) message, ProtocolVersion.TLS12);
             case 12:
                 return new HeartbeatMessageSerializer((HeartbeatMessage) message, ProtocolVersion.TLS12);
             case 13:
@@ -196,11 +186,11 @@ public class ParserSerializerStressTest {
             case 16:
                 return new ServerHelloDoneSerializer((ServerHelloDoneMessage) message, ProtocolVersion.TLS12);
             case 17:
-                return new ServerHelloMessageSerializer((ServerHelloMessage) message, ProtocolVersion.TLS12);
+                return new ServerHelloSerializer((ServerHelloMessage) message, ProtocolVersion.TLS12);
             case 18:
-                return new UnknownHandshakeMessageSerializer((UnknownHandshakeMessage) message, ProtocolVersion.TLS12);
+                return new UnknownHandshakeSerializer((UnknownHandshakeMessage) message, ProtocolVersion.TLS12);
             case 19:
-                return new UnknownMessageSerializer((UnknownMessage) message, ProtocolVersion.TLS12);
+                return new UnknownSerializer((UnknownMessage) message, ProtocolVersion.TLS12);
             default:
                 throw new UnsupportedOperationException("Unsupported");
         }

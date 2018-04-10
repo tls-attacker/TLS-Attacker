@@ -11,11 +11,8 @@ package de.rub.nds.tlsattacker.core.protocol.message.computations;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.tlsattacker.core.config.Config;
 
-/**
- *
- * @author Florian Linsner - florian.linsner@rub.de
- */
 public class PSKPremasterComputations extends KeyExchangeComputations {
 
     private ModifiableByteArray premasterSecret;
@@ -44,5 +41,14 @@ public class PSKPremasterComputations extends KeyExchangeComputations {
     @Override
     public void setPremasterSecret(byte[] value) {
         this.premasterSecret = ModifiableVariableFactory.safelySetValue(this.premasterSecret, value);
+    }
+
+    @Override
+    public void setSecretsInConfig(Config config) {
+        if (psk != null && psk.getValue() != null) {
+            config.setDefaultPSKKey(psk.getValue());
+        } else {
+            LOGGER.warn("Could not adjust PSK to config. PSK is null");
+        }
     }
 }

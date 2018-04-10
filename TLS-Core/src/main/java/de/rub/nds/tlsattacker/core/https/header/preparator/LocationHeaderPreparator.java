@@ -12,13 +12,9 @@ import de.rub.nds.tlsattacker.core.https.header.LocationHeader;
 import de.rub.nds.tlsattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class LocationHeaderPreparator extends Preparator<LocationHeader> {
 
-    private LocationHeader header;
+    private final LocationHeader header;
 
     public LocationHeaderPreparator(Chooser chooser, LocationHeader header) {
         super(chooser, header);

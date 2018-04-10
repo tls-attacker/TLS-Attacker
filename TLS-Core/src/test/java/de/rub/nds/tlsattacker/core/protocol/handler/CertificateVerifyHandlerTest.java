@@ -9,19 +9,15 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifyMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class CertificateVerifyHandlerTest {
 
     private CertificateVerifyHandler handler;
@@ -42,7 +38,7 @@ public class CertificateVerifyHandlerTest {
      */
     @Test
     public void testGetParser() {
-        assertTrue(handler.getParser(new byte[1], 0) instanceof CertificateVerifyMessageParser);
+        assertTrue(handler.getParser(new byte[1], 0) instanceof CertificateVerifyParser);
     }
 
     /**
@@ -50,7 +46,7 @@ public class CertificateVerifyHandlerTest {
      */
     @Test
     public void testGetPreparator() {
-        assertTrue(handler.getPreparator(new CertificateVerifyMessage()) instanceof CertificateVerifyMessagePreparator);
+        assertTrue(handler.getPreparator(new CertificateVerifyMessage()) instanceof CertificateVerifyPreparator);
     }
 
     /**
@@ -58,7 +54,7 @@ public class CertificateVerifyHandlerTest {
      */
     @Test
     public void testGetSerializer() {
-        assertTrue(handler.getSerializer(new CertificateVerifyMessage()) instanceof CertificateVerifyMessageSerializer);
+        assertTrue(handler.getSerializer(new CertificateVerifyMessage()) instanceof CertificateVerifySerializer);
     }
 
     /**

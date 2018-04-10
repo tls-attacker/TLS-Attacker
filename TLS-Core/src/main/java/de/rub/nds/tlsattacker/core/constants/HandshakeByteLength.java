@@ -8,9 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- */
 public class HandshakeByteLength {
 
     /**
@@ -193,6 +190,31 @@ public class HandshakeByteLength {
     public static final int PSK_LENGTH = 2;
 
     public static final int PSK_ZERO = 0;
+
+    public static final int SRP_MODULUS_LENGTH = 2;
+
+    public static final int SRP_SALT_LENGTH = 1;
+
+    public static final int SRP_GENERATOR_LENGTH = 2;
+
+    public static final int SRP_PUBLICKEY_LENGTH = 2;
+    /**
+     * New Session Ticket
+     */
+    public static final int NEWSESSIONTICKET_TICKET_LENGTH = 2;
+
+    public static final int NEWSESSIONTICKET_LIFETIMEHINT_LENGTH = 4;
+
+    public static final int ENCRYPTED_STATE_LENGTH = 2;
+
+    public static final int TICKET_AGE_ADD_LENGTH = 4;
+
+    public static final int TICKET_NONCE_LENGTH = 1;
+
+    /**
+     * length of the ClientAuthenticationType in the TLS byte arrays
+     */
+    public static final int CLIENT_AUTHENTICATION_TYPE = 1;
 
     private HandshakeByteLength() {
     }

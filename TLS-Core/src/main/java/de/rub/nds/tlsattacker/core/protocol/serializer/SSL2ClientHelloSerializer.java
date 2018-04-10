@@ -13,11 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
-public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer {
+public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer<SSL2ClientHelloMessage> {
 
     private final SSL2ClientHelloMessage msg;
 
@@ -45,7 +41,7 @@ public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer {
      * Writes the MessageLength of the SSL2ClientHello into the final byte[]
      */
     private void writeMessageLength(SSL2ClientHelloMessage msg) {
-        appendInt(msg.getMessageLength().getValue(), SSL2ByteLength.LENGTH);
+        appendInt(msg.getMessageLength().getValue() ^ 0x8000, SSL2ByteLength.LENGTH);
         LOGGER.debug("MessageLength: " + msg.getMessageLength().getValue());
     }
 
@@ -78,8 +74,8 @@ public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer {
      * Writes the SessionIDLength of the SSL2ClientHello into the final byte[]
      */
     private void writeSessionIDLength(SSL2ClientHelloMessage msg) {
-        appendInt(msg.getSessionIDLength().getValue(), SSL2ByteLength.SESSIONID_LENGTH);
-        LOGGER.debug("SessionIDLength: " + msg.getSessionIDLength().getValue());
+        appendInt(msg.getSessionIdLength().getValue(), SSL2ByteLength.SESSIONID_LENGTH);
+        LOGGER.debug("SessionIDLength: " + msg.getSessionIdLength().getValue());
     }
 
     /**
@@ -102,8 +98,8 @@ public class SSL2ClientHelloSerializer extends ProtocolMessageSerializer {
      * Writes the SessionID of the SSL2ClientHello into the final byte[]
      */
     private void writeSessionID(SSL2ClientHelloMessage msg) {
-        appendBytes(msg.getSessionID().getValue());
-        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionID().getValue()));
+        appendBytes(msg.getSessionId().getValue());
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(msg.getSessionId().getValue()));
     }
 
     /**

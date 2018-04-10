@@ -9,17 +9,12 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ssl.SSL2ByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
-public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
+public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator<SSL2ClientHelloMessage> {
 
     private final SSL2ClientHelloMessage message;
 
@@ -36,7 +31,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
         // By Default we just set a fixed value with ssl2 ciphersuites
         prepareCipherSuites(message);
         byte[] challenge = new byte[16];
-        RandomHelper.getRandom().nextBytes(challenge);
+        chooser.getContext().getRandom().nextBytes(challenge);
         prepareChallenge(message, challenge);
         prepareSessionID(message);
         prepareSessionIDLength(message);
@@ -46,7 +41,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
                 + SSL2ByteLength.SESSIONID_LENGTH;
         length += message.getChallenge().getValue().length;
         length += message.getCipherSuites().getValue().length;
-        length += message.getSessionID().getValue().length;
+        length += message.getSessionId().getValue().length;
         length += message.getProtocolVersion().getValue().length;
         prepareMessageLength(message, length);
     }
@@ -73,12 +68,12 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
 
     private void prepareSessionID(SSL2ClientHelloMessage message) {
         message.setSessionID(chooser.getClientSessionId());
-        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionID().getValue()));
+        LOGGER.debug("SessionID: " + ArrayConverter.bytesToHexString(message.getSessionId().getValue()));
     }
 
     private void prepareSessionIDLength(SSL2ClientHelloMessage message) {
-        message.setSessionIDLength(message.getSessionID().getValue().length);
-        LOGGER.debug("SessionIDLength: " + message.getSessionIDLength().getValue());
+        message.setSessionIDLength(message.getSessionId().getValue().length);
+        LOGGER.debug("SessionIDLength: " + message.getSessionIdLength().getValue());
     }
 
     private void prepareChallengeLength(SSL2ClientHelloMessage message) {
@@ -92,7 +87,7 @@ public class SSL2ClientHelloPreparator extends ProtocolMessagePreparator {
     }
 
     private void prepareMessageLength(SSL2ClientHelloMessage message, int length) {
-        message.setMessageLength(length ^ 0x8000);
+        message.setMessageLength(length);
         LOGGER.debug("MessageLength: " + message.getMessageLength().getValue());
     }
 

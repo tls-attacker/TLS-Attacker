@@ -8,20 +8,23 @@
  */
 package de.rub.nds.tlsattacker.core.workflow;
 
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
+import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendingAction;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class WorkflowTraceUtil {
+
+    protected static final Logger LOGGER = LogManager.getLogger(WorkflowTraceUtil.class);
 
     public static ProtocolMessage getFirstReceivedMessage(ProtocolMessageType type, WorkflowTrace trace) {
         List<ProtocolMessage> messageList = getAllReceivedMessages(trace);
@@ -65,6 +68,15 @@ public class WorkflowTraceUtil {
         }
     }
 
+    public static AbstractRecord getLastReceivedRecord(WorkflowTrace trace) {
+        List<AbstractRecord> recordList = getAllReceivedRecords(trace);
+        if (recordList.isEmpty()) {
+            return null;
+        } else {
+            return recordList.get(recordList.size() - 1);
+        }
+    }
+
     public static ProtocolMessage getFirstSendMessage(ProtocolMessageType type, WorkflowTrace trace) {
         List<ProtocolMessage> messageList = getAllSendMessages(trace);
         messageList = filterMessageList(messageList, type);
@@ -73,6 +85,29 @@ public class WorkflowTraceUtil {
         } else {
             return messageList.get(0);
         }
+    }
+
+    public static ExtensionMessage getFirstSendExtension(ExtensionType type, WorkflowTrace trace) {
+        List<ExtensionMessage> extensionList = getAllSendExtensions(trace);
+        extensionList = filterExtensionList(extensionList, type);
+        if (extensionList.isEmpty()) {
+            return null;
+        } else {
+            return extensionList.get(0);
+        }
+    }
+
+    public static List<HandshakeMessage> getAllSendHandshakeMessages(WorkflowTrace trace) {
+        return filterHandshakeMessagesFromList(getAllSendMessages(trace));
+    }
+
+    public static List<ExtensionMessage> getAllSendExtensions(WorkflowTrace trace) {
+        List<HandshakeMessage> handshakeMessageList = getAllSendHandshakeMessages(trace);
+        List<ExtensionMessage> extensionList = new LinkedList<>();
+        for (HandshakeMessage message : handshakeMessageList) {
+            extensionList.addAll(message.getExtensions());
+        }
+        return extensionList;
     }
 
     public static HandshakeMessage getFirstSendMessage(HandshakeMessageType type, WorkflowTrace trace) {
@@ -142,7 +177,17 @@ public class WorkflowTraceUtil {
         return returnedMessages;
     }
 
-    private static List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {
+    private static List<ExtensionMessage> filterExtensionList(List<ExtensionMessage> extensions, ExtensionType type) {
+        List<ExtensionMessage> resultList = new LinkedList<>();
+        for (ExtensionMessage extension : extensions) {
+            if (extension.getExtensionTypeConstant() == type) {
+                resultList.add(extension);
+            }
+        }
+        return resultList;
+    }
+
+    public static List<HandshakeMessage> filterHandshakeMessagesFromList(List<ProtocolMessage> messages) {
         List<HandshakeMessage> returnedMessages = new LinkedList<>();
         for (ProtocolMessage protocolMessage : messages) {
             if (protocolMessage.isHandshakeMessage()) {
@@ -165,7 +210,9 @@ public class WorkflowTraceUtil {
     public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
-            receivedMessage.addAll(action.getReceivedMessages());
+            if (action.getReceivedMessages() != null) {
+                receivedMessage.addAll(action.getReceivedMessages());
+            }
         }
         return receivedMessage;
     }
@@ -201,6 +248,30 @@ public class WorkflowTraceUtil {
                 }
             }
         }
-        return null;
+        return false;
     }
+
+    public static List<AbstractRecord> getAllReceivedRecords(WorkflowTrace trace) {
+        List<AbstractRecord> receivedRecords = new LinkedList<>();
+        for (ReceivingAction action : trace.getReceivingActions()) {
+            receivedRecords.addAll(action.getReceivedRecords());
+        }
+        return receivedRecords;
+    }
+
+    public static List<AbstractRecord> getAllSendRecords(WorkflowTrace trace) {
+        List<AbstractRecord> sendRecords = new LinkedList<>();
+        for (SendingAction action : trace.getSendingActions()) {
+            if (action.getSendRecords() != null) {
+                sendRecords.addAll(action.getSendRecords());
+            }
+        }
+        return sendRecords;
+    }
+
+    public static SendingAction getLastSendingAction(WorkflowTrace trace) {
+        List<SendingAction> sendingActions = trace.getSendingActions();
+        return sendingActions.get(sendingActions.size() - 1);
+    }
+
 }

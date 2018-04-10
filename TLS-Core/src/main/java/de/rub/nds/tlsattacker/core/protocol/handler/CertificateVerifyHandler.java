@@ -9,9 +9,9 @@
 package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
-import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifyMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.CertificateVerifyParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.CertificateVerifyPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.CertificateVerifySerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
 /**
@@ -27,9 +27,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
  *
  * This structure is of course prepended with the handshake message length, as
  * obvious for every handshake message.
- *
- * @author Juraj Somorovsky <juraj.somorovsky@rub.de>
- * @author Philip Riese <philip.riese@rub.de>
  */
 public class CertificateVerifyHandler extends HandshakeMessageHandler<CertificateVerifyMessage> {
 
@@ -38,18 +35,18 @@ public class CertificateVerifyHandler extends HandshakeMessageHandler<Certificat
     }
 
     @Override
-    public CertificateVerifyMessageParser getParser(byte[] message, int pointer) {
-        return new CertificateVerifyMessageParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
+    public CertificateVerifyParser getParser(byte[] message, int pointer) {
+        return new CertificateVerifyParser(pointer, message, tlsContext.getChooser().getLastRecordVersion());
     }
 
     @Override
-    public CertificateVerifyMessagePreparator getPreparator(CertificateVerifyMessage message) {
-        return new CertificateVerifyMessagePreparator(tlsContext.getChooser(), message);
+    public CertificateVerifyPreparator getPreparator(CertificateVerifyMessage message) {
+        return new CertificateVerifyPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public CertificateVerifyMessageSerializer getSerializer(CertificateVerifyMessage message) {
-        return new CertificateVerifyMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public CertificateVerifySerializer getSerializer(CertificateVerifyMessage message) {
+        return new CertificateVerifySerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override

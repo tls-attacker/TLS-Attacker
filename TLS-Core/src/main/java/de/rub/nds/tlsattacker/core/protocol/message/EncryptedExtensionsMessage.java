@@ -14,9 +14,6 @@ import de.rub.nds.tlsattacker.core.protocol.handler.EncryptedExtensionsHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 
-/**
- * @author Nurullah Erinola <nurullah.erinola@rub.de>
- */
 public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     public EncryptedExtensionsMessage() {
@@ -29,7 +26,8 @@ public class EncryptedExtensionsMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+        StringBuilder sb = new StringBuilder();
+        sb.append("EncryptedExtensionMessage:");
         sb.append("\n  Extensions: ");
         if (getExtensions() == null) {
             sb.append("null");

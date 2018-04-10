@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.exceptions;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class AdjustmentException extends RuntimeException {
 
     public AdjustmentException() {
@@ -25,4 +21,11 @@ public class AdjustmentException extends RuntimeException {
         super(message, cause);
     }
 
+    public AdjustmentException(Throwable cause) {
+        super(cause);
+    }
+
+    public AdjustmentException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 }

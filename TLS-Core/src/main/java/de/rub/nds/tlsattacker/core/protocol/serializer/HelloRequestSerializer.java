@@ -11,13 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.serializer;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- */
 public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequestMessage> {
-
-    private final HelloRequestMessage message;
 
     /**
      * Constructor for the HelloRequestSerializer
@@ -29,7 +23,6 @@ public class HelloRequestSerializer extends HandshakeMessageSerializer<HelloRequ
      */
     public HelloRequestSerializer(HelloRequestMessage message, ProtocolVersion version) {
         super(message, version);
-        this.message = message;
     }
 
     @Override

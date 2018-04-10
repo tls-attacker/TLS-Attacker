@@ -9,9 +9,8 @@
 package de.rub.nds.tlsattacker.core.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -20,17 +19,11 @@ import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.Random;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- * @author Robert Merget - robert.merget@rub.de
- * @author Malena Ebert - malena-rub@ebert.li
- */
 public class ECDHClientKeyExchangePreparatorTest {
 
     private final static String RANDOM = "CAFEBABECAFE";
@@ -48,7 +41,6 @@ public class ECDHClientKeyExchangePreparatorTest {
         context = new TlsContext();
         message = new ECDHClientKeyExchangeMessage();
         preparator = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
-        RandomHelper.setRandom(new Random(0));
     }
 
     /**
@@ -68,15 +60,15 @@ public class ECDHClientKeyExchangePreparatorTest {
         context.setClientRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         context.setServerRandom(ArrayConverter.hexStringToByteArray(RANDOM));
         // set server ECDH-parameters
-        context.setSelectedCurve(NamedCurve.SECP192R1);
+        context.setSelectedGroup(NamedGroup.SECP192R1);
         context.setServerEcPublicKey(new CustomECPoint(new BigInteger(
                 "1336698681267683560144780033483217462176613397209956026562"), new BigInteger(
                 "4390496211885670837594012513791855863576256216444143941964")));
         context.getConfig().setDefaultClientEcPrivateKey(new BigInteger("3"));
 
         preparator.prepare();
-        assertNotNull(message.getPublicKeyBaseX());
-        assertNotNull(message.getPublicKeyBaseY());
+        assertNotNull(message.getComputations().getComputedPublicKeyX());
+        assertNotNull(message.getComputations().getComputedPublicKeyY());
         assertArrayEquals(PREMASTER_SECRET, message.getComputations().getPremasterSecret().getValue());
         assertNotNull(message.getPublicKeyLength().getValue());
         assertNotNull(message.getPublicKey());

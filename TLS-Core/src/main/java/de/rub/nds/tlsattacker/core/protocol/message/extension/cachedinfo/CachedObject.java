@@ -14,13 +14,8 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
-import java.io.Serializable;
 
-/**
- *
- * @author Matthias Terlinde <matthias.terlinde@rub.de>
- */
-public class CachedObject extends ModifiableVariableHolder implements Serializable {
+public class CachedObject extends ModifiableVariableHolder {
 
     @ModifiableVariableProperty
     private ModifiableByte cachedInformationType;
