@@ -11,8 +11,7 @@ package de.rub.nds.tlsattacker.attacks.impl;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.rub.nds.modifiablevariable.bool.BooleanExplicitValueModification;
-import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
+import de.rub.nds.tlsattacker.attacks.actions.EarlyCcsAction;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
@@ -20,10 +19,8 @@ import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -60,6 +57,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
     public Boolean isVulnerable(TargetVersion targetVersion) {
         Config tlsConfig = config.createConfig();
+        tlsConfig.setFiltersKeepUserSettings(false);
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
@@ -77,17 +75,11 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
         workflowTrace.addTlsAction(new ChangeMasterSecretAction(emptyMasterSecret));
         workflowTrace.addTlsAction(new ActivateEncryptionAction());
 
-        ClientKeyExchangeMessage rsaMessage = new RSAClientKeyExchangeMessage(tlsConfig);
-        rsaMessage.shouldAdjustRecordCipher = false;
-        if (targetVersion == TargetVersion.OPENSSL_1_0_0) {
-            dontIncludeInDigest(rsaMessage);
-        }
-        workflowTrace.addTlsAction(new SendAction(rsaMessage));
+        workflowTrace.addTlsAction(new EarlyCcsAction(targetVersion == TargetVersion.OPENSSL_1_0_0));
 
-        if (targetVersion == TargetVersion.OPENSSL_1_0_0) {
+        if (targetVersion != TargetVersion.OPENSSL_1_0_0) {
             workflowTrace.addTlsAction(new ChangeMasterSecretAction(emptyMasterSecret));
         }
-
         workflowTrace.addTlsAction(new SendAction(new FinishedMessage(tlsConfig)));
 
         messageList = new LinkedList<>();
@@ -112,11 +104,4 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
             return false;
         }
     }
-
-    private void dontIncludeInDigest(ClientKeyExchangeMessage rsaMessage) {
-        rsaMessage.setIncludeInDigest(false);
-        ModifiableBoolean includeInDigest = rsaMessage.getIncludeInDigestModifiableBoolean();
-        includeInDigest.setModification(new BooleanExplicitValueModification(false));
-    }
-
 }
