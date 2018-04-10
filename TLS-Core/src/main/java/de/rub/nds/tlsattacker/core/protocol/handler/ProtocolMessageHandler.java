@@ -74,7 +74,6 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             message.setCompleteResultingMessage(completeMessage);
             if (message instanceof HandshakeMessage) {
                 if (((HandshakeMessage) message).getIncludeInDigest()) {
-                    System.out.println("Adding to Digest " + message.toCompactString());
                     tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                 }
             }
