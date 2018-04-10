@@ -96,7 +96,6 @@ public class FinishedPreparator extends HandshakeMessagePreparator<FinishedMessa
             }
             byte[] res = PseudoRandomFunction.compute(prfAlgorithm, masterSecret, label, handshakeMessageHash,
                     HandshakeByteLength.VERIFY_DATA);
-            System.out.println("Result: " + ArrayConverter.bytesToHexString(res));
             return res;
         }
     }
