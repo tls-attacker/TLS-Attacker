@@ -74,12 +74,17 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             message.setCompleteResultingMessage(completeMessage);
             if (message instanceof HandshakeMessage) {
                 if (((HandshakeMessage) message).getIncludeInDigest()) {
+                    System.out.println("Adding to Digest " + message.toCompactString());
                     tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
                 }
             }
         }
         try {
-            adjustTLSContext(message);
+            if (message.getAdjustContext()) {
+                adjustTLSContext(message);
+            } else {
+                LOGGER.debug("Not adjusting TLSContext for " + message.toCompactString());
+            }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
