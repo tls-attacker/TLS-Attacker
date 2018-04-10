@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tls.subject.TlsImplementationType;
 import de.rub.nds.tls.subject.TlsServer;
-import de.rub.nds.tls.subject.docker.DockerSpotifyTlsServerManager;
 import de.rub.nds.tls.subject.docker.DockerTlsServerManagerFactory;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
 import de.rub.nds.tlsattacker.attacks.config.delegate.GeneralAttackDelegate;
@@ -33,7 +32,6 @@ public class EarlyCCSAttackerTest {
     public EarlyCCSAttackerTest() {
     }
 
-    private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
 
     @BeforeClass
@@ -77,7 +75,8 @@ public class EarlyCCSAttackerTest {
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.getHost() + ":" + server.getPort());
         EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
-        assertEquals(attacker.isVulnerable(), expectVulnerable);
+        boolean result = attacker.isVulnerable();
+        assertEquals(result, expectVulnerable);
         server.kill();
     }
 
