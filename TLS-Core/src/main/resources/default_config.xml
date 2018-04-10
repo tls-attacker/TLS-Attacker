@@ -578,7 +578,7 @@
     <addHeartbeatExtension>false</addHeartbeatExtension>
     <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
-    <addSignatureAndHashAlgrorithmsExtension>false</addSignatureAndHashAlgrorithmsExtension>
+    <addSignatureAndHashAlgorithmsExtension>false</addSignatureAndHashAlgorithmsExtension>
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
