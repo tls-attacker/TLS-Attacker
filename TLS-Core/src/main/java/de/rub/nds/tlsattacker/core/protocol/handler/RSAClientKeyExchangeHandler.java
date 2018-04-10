@@ -39,9 +39,7 @@ public class RSAClientKeyExchangeHandler extends ClientKeyExchangeHandler<RSACli
     public void adjustTLSContext(RSAClientKeyExchangeMessage message) {
         adjustPremasterSecret(message);
         adjustMasterSecret(message);
-        if (message.shouldAdjustRecordCipher) {
-            setRecordCipher();
-            spawnNewSession();
-        }
+        setRecordCipher();
+        spawnNewSession();
     }
 }
