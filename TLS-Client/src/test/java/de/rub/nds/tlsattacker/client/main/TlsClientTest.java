@@ -164,6 +164,9 @@ public class TlsClientTest {
     private void testProtocolCompatibility(List<String> serverList, Config config, PublicKeyAlgorithm algorithm) {
         LOGGER.info(config.getHighestProtocolVersion());
         for (CipherSuite cs : CipherSuite.getImplemented()) {
+            if (cs.name().toUpperCase().contains("NULL")) {
+                continue;
+            }
             Set<PublicKeyAlgorithm> requiredAlgorithms = AlgorithmResolver.getRequiredKeystoreAlgorithms(cs);
             requiredAlgorithms.remove(algorithm);
             final boolean serverSupportsCipherSuite = serverList.contains(cs.toString());

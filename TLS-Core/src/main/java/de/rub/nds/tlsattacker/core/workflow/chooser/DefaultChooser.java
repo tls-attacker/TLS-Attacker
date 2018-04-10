@@ -16,14 +16,15 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -60,11 +61,20 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<NamedCurve> getClientSupportedNamedCurves() {
-        if (context.getClientNamedCurvesList() != null) {
-            return context.getClientNamedCurvesList();
+    public List<NamedGroup> getClientSupportedNamedGroups() {
+        if (context.getClientNamedGroupsList() != null) {
+            return context.getClientNamedGroupsList();
         } else {
-            return config.getDefaultClientNamedCurves();
+            return config.getDefaultClientNamedGroups();
+        }
+    }
+
+    @Override
+    public List<NamedGroup> getServerSupportedNamedGroups() {
+        if (context.getServerNamedGroupsList() != null) {
+            return context.getServerNamedGroupsList();
+        } else {
+            return config.getDefaultServerNamedGroups();
         }
     }
 
@@ -552,17 +562,17 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public NamedCurve getSelectedCurve() {
-        if (context.getSelectedCurve() != null) {
-            return context.getSelectedCurve();
+    public NamedGroup getSelectedNamedGroup() {
+        if (context.getSelectedGroup() != null) {
+            return context.getSelectedGroup();
         } else {
-            return config.getDefaultSelectedCurve();
+            return config.getDefaultSelectedNamedGroup();
         }
     }
 
     @Override
-    public NamedCurve getEcCertificateCurve() {
-        if (context.getSelectedCurve() != null) {
+    public NamedGroup getEcCertificateCurve() {
+        if (context.getSelectedGroup() != null) {
             return context.getEcCertificateCurve();
         } else {
             return config.getDefaultEcCertificateCurve();
@@ -653,15 +663,6 @@ public class DefaultChooser extends Chooser {
             return context.getClientHandshakeTrafficSecret();
         } else {
             return config.getDefaultClientHandshakeTrafficSecret();
-        }
-    }
-
-    @Override
-    public KSEntry getServerKSEntry() {
-        if (context.getServerKSEntry() != null) {
-            return context.getServerKSEntry();
-        } else {
-            return config.getDefaultServerKSEntry();
         }
     }
 
@@ -759,16 +760,6 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<KSEntry> getClientKeyShareEntryList() {
-        if (context.getClientKeyShareEntryList() != null) {
-            return context.getClientKeyShareEntryList();
-        } else {
-            return new LinkedList<>(); // Todo, maybe add defaultClientKeyShare
-            // list to config
-        }
-    }
-
-    @Override
     public String getHttpsCookieValue() {
         String cookieVal = context.getHttpsCookieValue();
         if (cookieVal != null && !cookieVal.isEmpty()) {
@@ -793,7 +784,7 @@ public class DefaultChooser extends Chooser {
         if (context.getPskSets() != null) {
             return context.getPskSets();
         } else {
-            return config.getPskSets();
+            return config.getDefaultPskSets();
         }
     }
 
@@ -836,5 +827,23 @@ public class DefaultChooser extends Chooser {
     @Override
     public ConnectionEndType getConnectionEndType() {
         return getConnection().getLocalConnectionEndType();
+    }
+
+    @Override
+    public List<KeyShareStoreEntry> getClientKeyShares() {
+        if (context.getClientKeyShareStoreEntryList() != null) {
+            return context.getClientKeyShareStoreEntryList();
+        } else {
+            return config.getDefaultClientKeyShareEntries();
+        }
+    }
+
+    @Override
+    public KeyShareStoreEntry getServerKeyShare() {
+        if (context.getServerKeyShareStoreEntry() != null) {
+            return context.getServerKeyShareStoreEntry();
+        } else {
+            return config.getDefaultServerKeyShareEntry();
+        }
     }
 }

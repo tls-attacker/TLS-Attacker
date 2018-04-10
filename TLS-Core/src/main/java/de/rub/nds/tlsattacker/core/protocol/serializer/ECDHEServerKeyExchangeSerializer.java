@@ -35,7 +35,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing ECDHEServerKeyExchangeMessage");
         writeCurveType(msg);
-        writeNamedCurve(msg);
+        writeNamedGroup(msg);
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         if (isTLS12() || isDTLS12()) {
@@ -48,7 +48,7 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
 
     protected byte[] serializeEcDheParams() {
         writeCurveType(msg);
-        writeNamedCurve(msg);
+        writeNamedGroup(msg);
         writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         return getAlreadySerialized();
@@ -59,17 +59,17 @@ public class ECDHEServerKeyExchangeSerializer<T extends ECDHEServerKeyExchangeMe
      * byte[]
      */
     private void writeCurveType(T msg) {
-        appendByte(msg.getCurveType().getValue());
-        LOGGER.debug("CurveType: " + msg.getCurveType().getValue());
+        appendByte(msg.getGroupType().getValue());
+        LOGGER.debug("CurveType: " + msg.getGroupType().getValue());
     }
 
     /**
      * Writes the NamedCurve of the ECDHEServerKeyExchangeMessage into the final
      * byte[]
      */
-    private void writeNamedCurve(T msg) {
-        appendBytes(msg.getNamedCurve().getValue());
-        LOGGER.debug("NamedCurve: " + ArrayConverter.bytesToHexString(msg.getNamedCurve().getValue()));
+    private void writeNamedGroup(T msg) {
+        appendBytes(msg.getNamedGroup().getValue());
+        LOGGER.debug("NamedGroup: " + ArrayConverter.bytesToHexString(msg.getNamedGroup().getValue()));
     }
 
     /**

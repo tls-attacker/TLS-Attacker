@@ -30,6 +30,9 @@ public class ResetConnectionAction extends ConnectionBoundAction {
         tlsContext.getRecordLayer().setRecordCipher(new RecordNullCipher(tlsContext));
         tlsContext.getRecordLayer().updateDecryptionCipher();
         tlsContext.getRecordLayer().updateEncryptionCipher();
+        LOGGER.info("Resetting SecureRenegotaiton");
+        tlsContext.setLastClientVerifyData(new byte[0]);
+        tlsContext.setLastServerVerifyData(new byte[0]);
         LOGGER.info("Resetting MessageDigest");
         tlsContext.getDigest().reset();
         LOGGER.info("Resetting ActiveKeySets");

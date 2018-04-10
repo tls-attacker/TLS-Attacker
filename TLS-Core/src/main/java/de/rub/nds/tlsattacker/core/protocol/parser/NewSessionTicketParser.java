@@ -24,7 +24,6 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
     @Override
     protected void parseHandshakeMessageContent(NewSessionTicketMessage msg) {
         LOGGER.debug("Parsing NewSessionTicket");
-        // Only parsing TLS 1.3 NewSessionTicket!
         if (getVersion().isTLS13()) {
             parseLifetime(msg);
             parseAgeAdd(msg);
@@ -39,7 +38,9 @@ public class NewSessionTicketParser extends HandshakeMessageParser<NewSessionTic
                 }
             }
         } else {
-            throw new UnsupportedOperationException("Only TLS 1.3 NewSessionTicket Message supported");
+            parseLifetime(msg);
+            parseIdentityLength(msg);
+            parseIdentity(msg);
         }
     }
 

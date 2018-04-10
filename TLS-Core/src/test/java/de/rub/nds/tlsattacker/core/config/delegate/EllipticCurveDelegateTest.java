@@ -12,7 +12,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.util.LinkedList;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import static org.junit.Assert.*;
@@ -21,18 +21,18 @@ import org.junit.Test;
 
 public class EllipticCurveDelegateTest {
 
-    private EllipticCurveDelegate delegate;
+    private NamedGroupsDelegate delegate;
     private JCommander jcommander;
     private String[] args;
 
     @Before
     public void setUp() {
-        this.delegate = new EllipticCurveDelegate();
+        this.delegate = new NamedGroupsDelegate();
         this.jcommander = new JCommander(delegate);
     }
 
     /**
-     * Test of getPointFormats method, of class EllipticCurveDelegate.
+     * Test of getPointFormats method, of class NamedGroupsDelegate.
      */
     @Test
     public void testGetPointFormats() {
@@ -56,7 +56,7 @@ public class EllipticCurveDelegateTest {
     }
 
     /**
-     * Test of setPointFormats method, of class EllipticCurveDelegate.
+     * Test of setPointFormats method, of class NamedGroupsDelegate.
      */
     @Test
     public void testSetPointFormats() {
@@ -68,57 +68,59 @@ public class EllipticCurveDelegateTest {
     }
 
     /**
-     * Test of getNamedCurves method, of class EllipticCurveDelegate.
+     * Test of getNamedCurves method, of class NamedGroupsDelegate.
      */
     @Test
     public void testGetNamedCurves() {
         args = new String[2];
-        args[0] = "-named_curve";
+        args[0] = "-named_group";
         args[1] = "SECP192R1,SECP256R1";
         jcommander.parse(args);
-        assertTrue("SECP192R1 should get parsed correctly", delegate.getNamedCurves().contains(NamedCurve.SECP192R1));
-        assertTrue("SECP256R1 should get parsed correctly", delegate.getNamedCurves().contains(NamedCurve.SECP256R1));
+        assertTrue("SECP192R1 should get parsed correctly", delegate.getNamedGroups().contains(NamedGroup.SECP192R1));
+        assertTrue("SECP256R1 should get parsed correctly", delegate.getNamedGroups().contains(NamedGroup.SECP256R1));
     }
 
     @Test(expected = ParameterException.class)
     public void testInvalidCurves() {
         args = new String[2];
-        args[0] = "-named_curve";
+        args[0] = "-named_group";
         args[1] = "NOTACURVE"; // Not a correct
         // Curve
         jcommander.parse(args);
     }
 
     /**
-     * Test of setNamedCurves method, of class EllipticCurveDelegate.
+     * Test of setNamedCurves method, of class NamedGroupsDelegate.
      */
     @Test
     public void testSetNamedCurves() {
-        LinkedList<NamedCurve> supportedNamedCurves = new LinkedList<>();
-        supportedNamedCurves.add(NamedCurve.BRAINPOOLP384R1);
-        delegate.setNamedCurves(supportedNamedCurves);
-        assertTrue("NamedCurves setter is not working correctly", delegate.getNamedCurves()
+        LinkedList<NamedGroup> supportedNamedCurves = new LinkedList<>();
+        supportedNamedCurves.add(NamedGroup.BRAINPOOLP384R1);
+        delegate.setNamedGroups(supportedNamedCurves);
+        assertTrue("NamedCurves setter is not working correctly", delegate.getNamedGroups()
                 .equals(supportedNamedCurves));
     }
 
     /**
-     * Test of applyDelegate method, of class EllipticCurveDelegate.
+     * Test of applyDelegate method, of class NamedGroupsDelegate.
      */
     @Test
     public void testApplyDelegate() {
         args = new String[4];
-        args[0] = "-named_curve";
+        args[0] = "-named_group";
         args[1] = "SECP192R1,SECP256R1";
         args[2] = "-point_formats";
         args[3] = "ANSIX962_COMPRESSED_PRIME,UNCOMPRESSED";
         Config config = Config.createConfig();
-        config.setNamedCurves(new NamedCurve[0]);
+        config.setDefaultSelectedNamedGroup(NamedGroup.NONE);
         config.setDefaultClientSupportedPointFormats(new ECPointFormat[0]);
         config.setDefaultServerSupportedPointFormats(new ECPointFormat[0]);
         jcommander.parse(args);
         delegate.applyDelegate(config);
-        assertTrue("SECP192R1 should get parsed correctly", config.getNamedCurves().contains(NamedCurve.SECP192R1));
-        assertTrue("SECP256R1 should get parsed correctly", config.getNamedCurves().contains(NamedCurve.SECP192R1));
+        assertTrue("SECP192R1 should get parsed correctly",
+                config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1));
+        assertTrue("SECP256R1 should get parsed correctly",
+                config.getDefaultClientNamedGroups().contains(NamedGroup.SECP192R1));
         assertTrue("UNCOMPRESSED should get parsed correctly",
                 config.getDefaultClientSupportedPointFormats().contains(ECPointFormat.UNCOMPRESSED));
         assertTrue("ANSIX962_COMPRESSED_PRIME should get parsed correctly", config

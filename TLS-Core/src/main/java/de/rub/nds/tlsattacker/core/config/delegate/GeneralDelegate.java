@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -73,17 +74,15 @@ public class GeneralDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration ctxConfig = ctx.getConfiguration();
-        LoggerConfig loggerConfig = ctxConfig.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
         if (isDebug()) {
-            loggerConfig.setLevel(Level.DEBUG);
-        } else if (isQuiet()) {
-            loggerConfig.setLevel(Level.OFF);
-        } else if (getLogLevel() != null) {
-            loggerConfig.setLevel(getLogLevel());
+            logLevel = Level.DEBUG;
         }
-        ctx.updateLoggers();
+        Configurator.setRootLevel(getLogLevel());
+        if (getLogLevel() != Level.ALL && getLogLevel() != Level.TRACE) {
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.core.protocol.parser", Level.INFO);
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.core.protocol.serializer", Level.INFO);
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.core.record", Level.INFO);
+        }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
             LOGGER.debug("Provider {}, version, {}", p.getName(), p.getVersion());

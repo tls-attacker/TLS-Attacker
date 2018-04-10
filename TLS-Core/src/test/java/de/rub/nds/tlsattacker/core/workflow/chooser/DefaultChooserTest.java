@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
@@ -100,19 +100,19 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getClientSupportedNamedCurves method, of class DefaultChooser.
+     * Test of getClientSupportedNamedGroups method, of class DefaultChooser.
      */
     @Test
     public void testGetClientSupportedNamedCurves() {
-        List<NamedCurve> curveList = new LinkedList<>();
-        curveList.add(NamedCurve.BRAINPOOLP256R1);
-        curveList.add(NamedCurve.ECDH_X448);
-        curveList.add(NamedCurve.SECP160K1);
-        config.setDefaultClientNamedCurves(curveList);
-        assertTrue(config.getDefaultClientNamedCurves().size() == 3);
-        assertTrue(chooser.getClientSupportedNamedCurves().size() == 3);
-        context.setClientNamedCurvesList(new LinkedList<NamedCurve>());
-        assertTrue(chooser.getClientSupportedNamedCurves().size() == 0);
+        List<NamedGroup> curveList = new LinkedList<>();
+        curveList.add(NamedGroup.BRAINPOOLP256R1);
+        curveList.add(NamedGroup.ECDH_X448);
+        curveList.add(NamedGroup.SECP160K1);
+        config.setDefaultClientNamedGroups(curveList);
+        assertTrue(config.getDefaultClientNamedGroups().size() == 3);
+        assertTrue(chooser.getClientSupportedNamedGroups().size() == 3);
+        context.setClientNamedGroupsList(new LinkedList<NamedGroup>());
+        assertTrue(chooser.getClientSupportedNamedGroups().size() == 0);
 
     }
 
@@ -652,16 +652,16 @@ public class DefaultChooserTest {
     }
 
     /**
-     * Test of getSelectedCurve method, of class DefaultChooser.
+     * Test of getSelectedNamedGroup method, of class DefaultChooser.
      */
     @Test
     public void testGetSelectedCurve() {
-        context.setSelectedCurve(null);
-        config.setDefaultSelectedCurve(NamedCurve.FFDHE2048);
-        assertEquals(NamedCurve.FFDHE2048, config.getDefaultSelectedCurve());
-        assertEquals(NamedCurve.FFDHE2048, chooser.getSelectedCurve());
-        context.setSelectedCurve(NamedCurve.SECT163R1);
-        assertEquals(NamedCurve.SECT163R1, chooser.getSelectedCurve());
+        context.setSelectedGroup(null);
+        config.setDefaultSelectedNamedGroup(NamedGroup.FFDHE2048);
+        assertEquals(NamedGroup.FFDHE2048, config.getDefaultSelectedNamedGroup());
+        assertEquals(NamedGroup.FFDHE2048, chooser.getSelectedNamedGroup());
+        context.setSelectedGroup(NamedGroup.SECT163R1);
+        assertEquals(NamedGroup.SECT163R1, chooser.getSelectedNamedGroup());
     }
 
     /**

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.rub.nds.tlsattacker</groupId>
     <artifactId>TLS-Attacker</artifactId>
-    <version>2.4</version>
+    <version>2.5</version>
     <packaging>pom</packaging>
     <inceptionYear>2015</inceptionYear>
     <name>TLS-Attacker</name>
@@ -104,7 +104,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -207,7 +206,7 @@
                             <include>**/*.java</include>
                         </includes>
                         <!-- Integration tests and slow tests are started -->
-                        <groups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</groups>
+                        <groups>${includegroups}</groups>
                     </configuration>
                     <executions>
                         <execution>

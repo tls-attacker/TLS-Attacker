@@ -25,7 +25,7 @@ import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
@@ -38,7 +38,7 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.cachedinfo.CachedObject;
@@ -152,19 +152,14 @@ public class Config implements Serializable {
     private List<CipherSuite> defaultServerSupportedCiphersuites;
 
     /**
-     * If we are a dynamic workflow //TODO implement
+     * Default clientSupportedNamed groups
      */
-    private Boolean dynamicWorkflow = false;
+    private List<NamedGroup> defaultClientNamedGroups;
 
     /**
-     * Supported namedCurves by default
+     * Default clientSupportedNamed groups
      */
-    private List<NamedCurve> namedCurves;
-
-    /**
-     * Default clientSupportedNamed Curves
-     */
-    private List<NamedCurve> defaultClientNamedCurves;
+    private List<NamedGroup> defaultServerNamedGroups;
 
     /**
      * Supported ProtocolVersions by default
@@ -182,23 +177,16 @@ public class Config implements Serializable {
     private Integer paddingLength = 0;
 
     /**
-     * Public key for KeyShareExtension
-     */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] keySharePublic = ArrayConverter
-            .hexStringToByteArray("2a981db6cdd02a06c1763102c9e741365ac4e6f72b3176a6bd6a3523d3ec0f4c");
-
-    /**
      * Key type for KeyShareExtension
      */
-    private NamedCurve keyShareType = NamedCurve.ECDH_X25519;
+    private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP192R1;
 
-    /**
-     * Private key for KeyShareExtension
-     */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] keySharePrivate = ArrayConverter
-            .hexStringToByteArray("03bd8bca70c19f657e897e366dbe21a466e4924af6082dbdf573827bcdde5def");
+    private BigInteger defaultKeySharePrivateKey = new BigInteger(
+            "03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF", 16);
+
+    private List<KeyShareStoreEntry> defaultClientKeyShareEntries;
+
+    private KeyShareStoreEntry defaultServerKeyShareEntry;
 
     /**
      * Hostname in SNI Extension
@@ -416,7 +404,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
-    private Boolean addSignatureAndHashAlgrorithmsExtension = false;
+    private Boolean addSignatureAndHashAlgorithmsExtension = false;
 
     /**
      * If we generate ClientHello with the SupportedVersion extension
@@ -609,7 +597,7 @@ public class Config implements Serializable {
     /**
      * Contains all values related to TLS 1.3 PSKs.
      */
-    private List<PskSet> PskSets = new LinkedList<>();
+    private List<PskSet> defaultPskSets = new LinkedList<>();
 
     /**
      * Do we use a psk for our secrets?
@@ -821,9 +809,7 @@ public class Config implements Serializable {
 
     private Byte defaultAlertLevel = 0;
 
-    private NamedCurve defaultSelectedCurve = NamedCurve.SECP192R1;
-
-    private NamedCurve defaultEcCertificateCurve = NamedCurve.SECP192R1;
+    private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP192R1;
 
     private CustomECPoint defaultClientEcPublicKey;
 
@@ -911,16 +897,16 @@ public class Config implements Serializable {
     private byte[] defaultSRPPassword = "Password".getBytes(Charset.forName("UTF-8"));
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultClientHandshakeTrafficSecret = new byte[0];
+    private byte[] defaultClientHandshakeTrafficSecret = new byte[32];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerHandshakeTrafficSecret = new byte[0];
+    private byte[] defaultServerHandshakeTrafficSecret = new byte[32];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultClientApplicationTrafficSecret = new byte[0];
+    private byte[] defaultClientApplicationTrafficSecret = new byte[32];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerApplicationTrafficSecret = new byte[0];
+    private byte[] defaultServerApplicationTrafficSecret = new byte[32];
 
     private TokenBindingType defaultTokenBindingType = TokenBindingType.PROVIDED_TOKEN_BINDING;
 
@@ -975,11 +961,14 @@ public class Config implements Serializable {
      * ClientAuthtication Type, not fully implemented yet
      */
     private ClientAuthenticationType clientAuthenticationType = ClientAuthenticationType.ANONYMOUS;
-    private NamedCurve[] defaultEcdheNamedCurves = new NamedCurve[] { NamedCurve.SECP192R1 };
 
-    private ECPointFormat[] defaultEcPointFormats = new ECPointFormat[] { ECPointFormat.UNCOMPRESSED };
+    /**
+     * If we should add ccs message to automatically generated handshakes (tls
+     * 1.3 only)
+     */
+    private Boolean tls13BackwardsCompatibilityMode = true;
 
-    private Config() {
+    Config() {
         defaultClientConnection = new OutboundConnection("client", 443, "localhost");
         defaultServerConnection = new InboundConnection("server", 443);
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
@@ -1005,16 +994,16 @@ public class Config implements Serializable {
         defaultClientSupportedCiphersuites.addAll(CipherSuite.getImplemented());
         defaultServerSupportedCiphersuites = new LinkedList<>();
         defaultServerSupportedCiphersuites.addAll(CipherSuite.getImplemented());
-        namedCurves = new LinkedList<>();
-        namedCurves.add(NamedCurve.SECP192R1);
-        namedCurves.add(NamedCurve.SECP256R1);
-        namedCurves.add(NamedCurve.SECP384R1);
-        namedCurves.add(NamedCurve.SECP521R1);
-        defaultClientNamedCurves = new LinkedList<>();
-        defaultClientNamedCurves.add(NamedCurve.SECP192R1);
-        defaultClientNamedCurves.add(NamedCurve.SECP256R1);
-        defaultClientNamedCurves.add(NamedCurve.SECP384R1);
-        defaultClientNamedCurves.add(NamedCurve.SECP521R1);
+        defaultClientNamedGroups = new LinkedList<>();
+        defaultClientNamedGroups.add(NamedGroup.SECP192R1);
+        defaultClientNamedGroups.add(NamedGroup.SECP256R1);
+        defaultClientNamedGroups.add(NamedGroup.SECP384R1);
+        defaultClientNamedGroups.add(NamedGroup.SECP521R1);
+        defaultServerNamedGroups = new LinkedList<>();
+        defaultServerNamedGroups.add(NamedGroup.SECP192R1);
+        defaultServerNamedGroups.add(NamedGroup.SECP256R1);
+        defaultServerNamedGroups.add(NamedGroup.SECP384R1);
+        defaultServerNamedGroups.add(NamedGroup.SECP521R1);
         clientCertificateTypes = new LinkedList<>();
         clientCertificateTypes.add(ClientCertificateType.RSA_SIGN);
         supportedVersions = new LinkedList<>();
@@ -1069,9 +1058,23 @@ public class Config implements Serializable {
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
         filtersKeepUserSettings = true;
+        defaultClientKeyShareEntries = new LinkedList<>();
+        defaultClientKeyShareEntries.add(new KeyShareStoreEntry(NamedGroup.ECDH_X25519, ArrayConverter
+                .hexStringToByteArray("2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C")));
+        defaultServerKeyShareEntry = new KeyShareStoreEntry(NamedGroup.ECDH_X25519,
+                ArrayConverter.hexStringToByteArray("2A981DB6CDD02A06C1763102C9E741365AC4E6F72B3176A6BD6A3523D3EC0F4C"));
         pskKeyExchangeModes = new LinkedList<>();
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
+        defaultPskSets = new LinkedList<>();
+    }
+
+    public Boolean getTls13BackwardsCompatibilityMode() {
+        return tls13BackwardsCompatibilityMode;
+    }
+
+    public void setTls13BackwardsCompatibilityMode(Boolean tls13BackwardsCompatibilityMode) {
+        this.tls13BackwardsCompatibilityMode = tls13BackwardsCompatibilityMode;
     }
 
     public long getSessionTicketLifetimeHint() {
@@ -1112,22 +1115,6 @@ public class Config implements Serializable {
 
     public void setClientAuthenticationType(ClientAuthenticationType clientAuthenticationType) {
         this.clientAuthenticationType = clientAuthenticationType;
-    }
-
-    public ECPointFormat[] getDefaultEcPointFormats() {
-        return defaultEcPointFormats;
-    }
-
-    public void setDefaultEcPointFormats(ECPointFormat[] defaultEcPointFormats) {
-        this.defaultEcPointFormats = defaultEcPointFormats;
-    }
-
-    public NamedCurve[] getDefaultEcdheNamedCurves() {
-        return defaultEcdheNamedCurves;
-    }
-
-    public void setDefaultEcdheNamedCurves(NamedCurve[] defaultEcdheNamedCurves) {
-        this.defaultEcdheNamedCurves = defaultEcdheNamedCurves;
     }
 
     public Boolean isHttpsParsingEnabled() {
@@ -1264,14 +1251,6 @@ public class Config implements Serializable {
 
     public void setDefaultServerHandshakeTrafficSecret(byte[] defaultServerHandshakeTrafficSecret) {
         this.defaultServerHandshakeTrafficSecret = defaultServerHandshakeTrafficSecret;
-    }
-
-    public byte[] getKeySharePublic() {
-        return keySharePublic;
-    }
-
-    public void setKeySharePublic(byte[] keySharePublic) {
-        this.keySharePublic = keySharePublic;
     }
 
     public byte[] getDefaultCertificateRequestContext() {
@@ -1493,14 +1472,6 @@ public class Config implements Serializable {
 
     public void setDefaultClientEcPrivateKey(BigInteger defaultClientEcPrivateKey) {
         this.defaultClientEcPrivateKey = defaultClientEcPrivateKey;
-    }
-
-    public NamedCurve getDefaultSelectedCurve() {
-        return defaultSelectedCurve;
-    }
-
-    public void setDefaultSelectedCurve(NamedCurve defaultSelectedCurve) {
-        this.defaultSelectedCurve = defaultSelectedCurve;
     }
 
     public CustomECPoint getDefaultClientEcPublicKey() {
@@ -1781,16 +1752,28 @@ public class Config implements Serializable {
         this.defaultServerSupportedPointFormats = new ArrayList(Arrays.asList(defaultServerSupportedPointFormats));
     }
 
-    public List<NamedCurve> getDefaultClientNamedCurves() {
-        return defaultClientNamedCurves;
+    public List<NamedGroup> getDefaultClientNamedGroups() {
+        return defaultClientNamedGroups;
     }
 
-    public void setDefaultClientNamedCurves(List<NamedCurve> defaultClientNamedCurves) {
-        this.defaultClientNamedCurves = defaultClientNamedCurves;
+    public void setDefaultClientNamedGroups(List<NamedGroup> defaultClientNamedGroups) {
+        this.defaultClientNamedGroups = defaultClientNamedGroups;
     }
 
-    public final void setDefaultClientNamedCurves(NamedCurve... defaultClientNamedCurves) {
-        this.defaultClientNamedCurves = new ArrayList(Arrays.asList(defaultClientNamedCurves));
+    public final void setDefaultClientNamedGroups(NamedGroup... defaultClientNamedGroups) {
+        this.defaultClientNamedGroups = new ArrayList(Arrays.asList(defaultClientNamedGroups));
+    }
+
+    public List<NamedGroup> getDefaultServerNamedGroups() {
+        return defaultServerNamedGroups;
+    }
+
+    public void setDefaultServerNamedGroups(List<NamedGroup> defaultServerNamedGroups) {
+        this.defaultServerNamedGroups = defaultServerNamedGroups;
+    }
+
+    public final void setDefaultServerNamedGroups(NamedGroup... defaultServerNamedGroups) {
+        this.defaultServerNamedGroups = new ArrayList(Arrays.asList(defaultServerNamedGroups));
     }
 
     public CipherSuite getDefaultSelectedCipherSuite() {
@@ -2085,12 +2068,12 @@ public class Config implements Serializable {
         this.sniHostname = SniHostname;
     }
 
-    public NamedCurve getKeyShareType() {
-        return keyShareType;
+    public NamedGroup getDefaultSelectedNamedGroup() {
+        return defaultSelectedNamedGroup;
     }
 
-    public void setKeyShareType(NamedCurve keyShareType) {
-        this.keyShareType = keyShareType;
+    public void setDefaultSelectedNamedGroup(NamedGroup defaultSelectedNamedGroup) {
+        this.defaultSelectedNamedGroup = defaultSelectedNamedGroup;
     }
 
     public Boolean isDynamicWorkflow() {
@@ -2133,18 +2116,6 @@ public class Config implements Serializable {
     public final void setSupportedSignatureAndHashAlgorithms(
             SignatureAndHashAlgorithm... supportedSignatureAndHashAlgorithms) {
         this.supportedSignatureAndHashAlgorithms = new ArrayList(Arrays.asList(supportedSignatureAndHashAlgorithms));
-    }
-
-    public List<NamedCurve> getNamedCurves() {
-        return namedCurves;
-    }
-
-    public void setNamedCurves(List<NamedCurve> namedCurves) {
-        this.namedCurves = namedCurves;
-    }
-
-    public final void setNamedCurves(NamedCurve... namedCurves) {
-        this.namedCurves = new ArrayList(Arrays.asList(namedCurves));
     }
 
     public List<ProtocolVersion> getSupportedVersions() {
@@ -2208,11 +2179,11 @@ public class Config implements Serializable {
     }
 
     public Boolean isAddSignatureAndHashAlgrorithmsExtension() {
-        return addSignatureAndHashAlgrorithmsExtension;
+        return addSignatureAndHashAlgorithmsExtension;
     }
 
-    public void setAddSignatureAndHashAlgrorithmsExtension(Boolean addSignatureAndHashAlgrorithmsExtension) {
-        this.addSignatureAndHashAlgrorithmsExtension = addSignatureAndHashAlgrorithmsExtension;
+    public void setAddSignatureAndHashAlgorithmsExtension(Boolean addSignatureAndHashAlgorithmsExtension) {
+        this.addSignatureAndHashAlgorithmsExtension = addSignatureAndHashAlgorithmsExtension;
     }
 
     public Boolean isAddSupportedVersionsExtension() {
@@ -2279,12 +2250,12 @@ public class Config implements Serializable {
         this.paddingLength = paddingLength;
     }
 
-    public byte[] getKeySharePrivate() {
-        return keySharePrivate;
+    public BigInteger getKeySharePrivate() {
+        return defaultKeySharePrivateKey;
     }
 
-    public void setKeySharePrivate(byte[] keySharePrivate) {
-        this.keySharePrivate = keySharePrivate;
+    public void setKeySharePrivate(BigInteger defaultKeySharePrivateKey) {
+        this.defaultKeySharePrivateKey = defaultKeySharePrivateKey;
     }
 
     public byte[] getTlsSessionTicket() {
@@ -2377,10 +2348,6 @@ public class Config implements Serializable {
 
     public void setDefaultHttpsCookieValue(String defaultHttpsCookieValue) {
         this.defaultHttpsCookieValue = defaultHttpsCookieValue;
-    }
-
-    public KSEntry getDefaultServerKSEntry() {
-        return new KSEntry(keyShareType, keySharePublic);
     }
 
     public CertificateStatusRequestType getCertificateStatusRequestExtensionRequestType() {
@@ -2699,7 +2666,7 @@ public class Config implements Serializable {
         this.defaultServerConnection = defaultServerConnection;
     }
 
-    public RunningModeType getDefaulRunningMode() {
+    public RunningModeType getDefaultRunningMode() {
         return defaultRunningMode;
     }
 
@@ -2771,18 +2738,18 @@ public class Config implements Serializable {
     }
 
     /**
-     * @return the PskSets
+     * @return the defaultPskSets
      */
-    public List<PskSet> getPskSets() {
-        return PskSets;
+    public List<PskSet> getDefaultPskSets() {
+        return defaultPskSets;
     }
 
     /**
-     * @param PskSets
-     *            the PskSets to set
+     * @param defaultPskSets
+     *            the defaultPskSets to set
      */
-    public void setPskSets(List<PskSet> PskSets) {
-        this.PskSets = PskSets;
+    public void setDefaultPskSets(List<PskSet> defaultPskSets) {
+        this.defaultPskSets = defaultPskSets;
     }
 
     /**
@@ -2928,11 +2895,11 @@ public class Config implements Serializable {
         this.alpnAnnouncedProtocols = alpnAnnouncedProtocols;
     }
 
-    public NamedCurve getDefaultEcCertificateCurve() {
+    public NamedGroup getDefaultEcCertificateCurve() {
         return defaultEcCertificateCurve;
     }
 
-    public void setDefaultEcCertificateCurve(NamedCurve defaultEcCertificateCurve) {
+    public void setDefaultEcCertificateCurve(NamedGroup defaultEcCertificateCurve) {
         this.defaultEcCertificateCurve = defaultEcCertificateCurve;
     }
 
@@ -2958,5 +2925,29 @@ public class Config implements Serializable {
 
     public void setDefaultClientDhModulus(BigInteger defaultClientDhModulus) {
         this.defaultClientDhModulus = defaultClientDhModulus;
+    }
+
+    public BigInteger getDefaultKeySharePrivateKey() {
+        return defaultKeySharePrivateKey;
+    }
+
+    public void setDefaultKeySharePrivateKey(BigInteger defaultKeySharePrivateKey) {
+        this.defaultKeySharePrivateKey = defaultKeySharePrivateKey;
+    }
+
+    public List<KeyShareStoreEntry> getDefaultClientKeyShareEntries() {
+        return defaultClientKeyShareEntries;
+    }
+
+    public void setDefaultClientKeyShareEntries(List<KeyShareStoreEntry> defaultClientKeyShareEntries) {
+        this.defaultClientKeyShareEntries = defaultClientKeyShareEntries;
+    }
+
+    public KeyShareStoreEntry getDefaultServerKeyShareEntry() {
+        return defaultServerKeyShareEntry;
+    }
+
+    public void setDefaultServerKeyShareEntry(KeyShareStoreEntry defaultServerKeyShareEntry) {
+        this.defaultServerKeyShareEntry = defaultServerKeyShareEntry;
     }
 }

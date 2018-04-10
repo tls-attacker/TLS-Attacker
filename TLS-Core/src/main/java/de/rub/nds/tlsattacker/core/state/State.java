@@ -79,14 +79,14 @@ public class State {
 
     public State(Config config) {
         this.config = config;
-        runningMode = config.getDefaulRunningMode();
+        runningMode = config.getDefaultRunningMode();
         this.workflowTrace = loadWorkflowTrace();
         initState();
     }
 
     public State(Config config, WorkflowTrace workflowTrace) {
         this.config = config;
-        runningMode = config.getDefaulRunningMode();
+        runningMode = config.getDefaultRunningMode();
         this.workflowTrace = workflowTrace;
         initState();
     }

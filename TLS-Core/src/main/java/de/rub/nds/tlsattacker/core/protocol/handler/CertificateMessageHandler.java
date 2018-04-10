@@ -143,7 +143,7 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     .getParameters().getCurve()));
         } else {
             tlsContext.setServerEcPublicKey(publicKey);
-            tlsContext.setSelectedCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters
+            tlsContext.setSelectedGroup(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters
                     .getParameters().getCurve()));
         }
     }

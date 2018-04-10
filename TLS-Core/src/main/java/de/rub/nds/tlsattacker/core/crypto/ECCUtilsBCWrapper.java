@@ -9,9 +9,10 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.TlsECCUtils;
@@ -23,8 +24,8 @@ public class ECCUtilsBCWrapper {
      * Reads ECC domain parameters from an inputstream, based on given named
      * curves and point formats. It uses the BC functionality.
      *
-     * @param namedCurves
-     *            The Array of namedCurves
+     * @param namedGroups
+     *            The Array of namedGroups
      * @param pointFormats
      *            The Array of ECPointFormats
      * @param input
@@ -33,17 +34,24 @@ public class ECCUtilsBCWrapper {
      * @throws IOException
      *             If something goes wrong while reading from the Stream
      */
-    public static ECDomainParameters readECParameters(NamedCurve[] namedCurves, ECPointFormat[] pointFormats,
+    public static ECDomainParameters readECParameters(NamedGroup[] namedGroups, ECPointFormat[] pointFormats,
             InputStream input) throws IOException {
-        int[] nc = convertNamedCurves(namedCurves);
+        int[] nc = convertNamedCurves(namedGroups);
         short[] pf = convertPointFormats(pointFormats);
+        return TlsECCUtils.readECParameters(nc, pf, input);
+    }
+
+    public static ECDomainParameters readECParameters(NamedGroup namedGroup, ECPointFormat pointFormat,
+            InputStream input) throws IOException {
+        int[] nc = convertNamedCurves(new NamedGroup[] { namedGroup });
+        short[] pf = convertPointFormats(new ECPointFormat[] { pointFormat });
         return TlsECCUtils.readECParameters(nc, pf, input);
     }
 
     /**
      * Reads ECC domain parameters from an InputStream, all named formats and
      * point formats are allowed
-     * 
+     *
      * @param input
      *            The Inputstream to read from
      * @return ECDomainParameters
@@ -51,7 +59,7 @@ public class ECCUtilsBCWrapper {
      *             If something goes wrong while reading from the Stream
      */
     public static ECDomainParameters readECParameters(InputStream input) throws IOException {
-        NamedCurve[] namedCurves = NamedCurve.values();
+        NamedGroup[] namedCurves = NamedGroup.values();
         ECPointFormat[] poinFormats = ECPointFormat.values();
         return readECParameters(namedCurves, poinFormats, input);
     }
@@ -60,7 +68,7 @@ public class ECCUtilsBCWrapper {
      * Reads ECC domain parameters from an InputStream, all named formats and
      * point formats are allowed. Then, it also reads the public key provided in
      * the input stream.
-     * 
+     *
      * @param input
      *            The InputStream to read from
      * @return ECPublicKeyParameters
@@ -82,25 +90,25 @@ public class ECCUtilsBCWrapper {
 
     /**
      * Converts named curves into BC style notation
-     * 
-     * @param namedCurves
+     *
+     * @param namedGroups
      *            The NamedCurves to convert
      * @return int[] of the NamedCurves in BC Style
      */
-    public static int[] convertNamedCurves(NamedCurve[] namedCurves) {
-        if (namedCurves == null || namedCurves.length == 0) {
+    public static int[] convertNamedCurves(NamedGroup[] namedGroups) {
+        if (namedGroups == null || namedGroups.length == 0) {
             return new int[0];
         }
-        int[] nc = new int[namedCurves.length];
-        for (int i = 0; i < namedCurves.length; i++) {
-            nc[i] = namedCurves[i].getIntValue();
+        int[] nc = new int[namedGroups.length];
+        for (int i = 0; i < namedGroups.length; i++) {
+            nc[i] = namedGroups[i].getIntValue();
         }
         return nc;
     }
 
     /**
      * Converts point formats into BC style notation
-     * 
+     *
      * @param pointFormats
      *            The pointFormats to convert
      * @return The converted PointFormats
@@ -119,7 +127,7 @@ public class ECCUtilsBCWrapper {
     /**
      * Serializes an ec point and returns its encoded version, consisting of one
      * byte encoding information and ec coordinates
-     * 
+     *
      * @param ecPointFormats
      *            The EcPointFormats
      * @param point
@@ -131,6 +139,10 @@ public class ECCUtilsBCWrapper {
     public static byte[] serializeECPoint(ECPointFormat[] ecPointFormats, ECPoint point) throws IOException {
         short[] pf = convertPointFormats(ecPointFormats);
         return TlsECCUtils.serializeECPoint(pf, point);
+    }
+
+    public static byte[] serializeEcFieldElement(int fieldSize, BigInteger element) throws IOException {
+        return TlsECCUtils.serializeECFieldElement(fieldSize, element);
     }
 
     private ECCUtilsBCWrapper() {

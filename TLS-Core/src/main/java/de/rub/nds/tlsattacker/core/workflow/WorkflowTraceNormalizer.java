@@ -30,7 +30,7 @@ public class WorkflowTraceNormalizer {
     protected static final Logger LOGGER = LogManager.getLogger(WorkflowTraceNormalizer.class);
 
     public void normalize(WorkflowTrace trace, Config config) {
-        normalize(trace, config, config.getDefaulRunningMode());
+        normalize(trace, config, config.getDefaultRunningMode());
     }
 
     /**
