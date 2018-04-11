@@ -8,9 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.https;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,13 +22,9 @@ public class HttpsResponseSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() throws UnsupportedEncodingException {
-        byte [] msg = "HTTP/1.1 200 OK\r\nHost: rub.com\r\nContent-Type: text/html\r\n\r\ndata\r\n".getBytes("ASCII");
+        byte[] msg = "HTTP/1.1 200 OK\r\nHost: rub.com\r\nContent-Type: text/html\r\n\r\ndata\r\n".getBytes("ASCII");
 
-        return Arrays
-                .asList(new Object[][] { {
-                        msg,
-                        ProtocolVersion.TLS12,
-                        msg } });
+        return Arrays.asList(new Object[][] { { msg, ProtocolVersion.TLS12, msg } });
     }
 
     private final byte[] msg;

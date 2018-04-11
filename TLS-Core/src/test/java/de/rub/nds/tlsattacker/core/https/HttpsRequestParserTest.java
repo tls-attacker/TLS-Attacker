@@ -26,25 +26,26 @@ public class HttpsRequestParserTest {
     }
 
     /**
-     * Test of parseMessageContent method, of class HttpsRequestParser with an invalid request.
+     * Test of parseMessageContent method, of class HttpsRequestParser with an
+     * invalid request.
      */
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
-        HttpsRequestParser parser = new HttpsRequestParser(0, ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12);
+        HttpsRequestParser parser = new HttpsRequestParser(0,
+                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12);
         parser.parse();
     }
 
-
     /**
-     * Test of parseMessageContent method, of class HttpsRequestParser with an valid request.
+     * Test of parseMessageContent method, of class HttpsRequestParser with an
+     * valid request.
      */
     @Test
     public void testParseMessageContentSuccess() {
-        String message = "GET /index.html HTTP/1.1\n" +
-                        "User-Agent: Test\n" +
-                        "Host: www.rub.de\n\n";
+        String message = "GET /index.html HTTP/1.1\n" + "User-Agent: Test\n" + "Host: www.rub.de\n\n";
 
-        HttpsRequestParser parser = new HttpsRequestParser(0, message.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12);
+        HttpsRequestParser parser = new HttpsRequestParser(0, message.getBytes(Charset.forName("UTF-8")),
+                ProtocolVersion.TLS12);
         HttpsRequestMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getRequestType().getValue(), "GET");

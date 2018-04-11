@@ -18,7 +18,6 @@ import static org.junit.Assert.assertEquals;
 
 public class HttpsResponseParserTest {
 
-
     public HttpsResponseParserTest() {
     }
 
@@ -28,32 +27,28 @@ public class HttpsResponseParserTest {
     }
 
     /**
-     * Test of parseMessageContent method, of class HttpsResponseParser with an invalid response.
+     * Test of parseMessageContent method, of class HttpsResponseParser with an
+     * invalid response.
      */
     @Test(expected = ParserException.class)
     public void testParseMessageContentFailed() {
-        HttpsResponseParser parser = new HttpsResponseParser(0, ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"),
-                ProtocolVersion.TLS12);
+        HttpsResponseParser parser = new HttpsResponseParser(0,
+                ArrayConverter.hexStringToByteArray("AAAAAAAAAAAAAAAAAAAAAAAA"), ProtocolVersion.TLS12);
         parser.parse();
     }
 
-
     /**
-     * Test of parseMessageContent method, of class HttpsResponseParser with a valid response.
+     * Test of parseMessageContent method, of class HttpsResponseParser with a
+     * valid response.
      */
     @Test
     public void testParseMessageContentSuccess() {
-        String message = "HTTP/1.1 200 OK\n" +
-                        "Date: Mon, 27 Jul 2009 12:28:53 GMT\n" +
-                        "Server: Apache/2.2.14 (Win32)\n" +
-                        "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\n" +
-                        "Content-Length: 88\n" +
-                        "Content-Type: text/html\n" +
-                        "Connection: Closed\n" +
-                        "\n" +
-                        "test";
+        String message = "HTTP/1.1 200 OK\n" + "Date: Mon, 27 Jul 2009 12:28:53 GMT\n"
+                + "Server: Apache/2.2.14 (Win32)\n" + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\n"
+                + "Content-Length: 88\n" + "Content-Type: text/html\n" + "Connection: Closed\n" + "\n" + "test";
 
-        HttpsResponseParser parser = new HttpsResponseParser(0, message.getBytes(Charset.forName("UTF-8")), ProtocolVersion.TLS12);
+        HttpsResponseParser parser = new HttpsResponseParser(0, message.getBytes(Charset.forName("UTF-8")),
+                ProtocolVersion.TLS12);
         HttpsResponseMessage parsedMessage = parser.parse();
 
         assertEquals(parsedMessage.getResponseStatusCode().getValue(), "200 OK");
