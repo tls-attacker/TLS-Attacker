@@ -10,7 +10,6 @@
 package de.rub.nds.tlsattacker.transport.tcp.timing;
 
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 
 public class TimingServerTcpTransportHandler extends ServerTcpTransportHandler implements TimeableTransportHandler {

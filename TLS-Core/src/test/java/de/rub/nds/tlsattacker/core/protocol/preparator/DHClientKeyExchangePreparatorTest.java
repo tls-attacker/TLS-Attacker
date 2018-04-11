@@ -35,6 +35,10 @@ public class DHClientKeyExchangePreparatorTest {
     @Before
     public void setUp() {
         context = new TlsContext();
+        context.getConfig().setDefaultServerDhGenerator(new BigInteger(DH_G, 16));
+        context.getConfig().setDefaultServerDhModulus(new BigInteger(DH_M, 16));
+        context.getConfig().setDefaultClientDhPrivateKey(
+                new BigInteger("1234567891234567889123546712839632542648746452354265471"));
         message = new DHClientKeyExchangeMessage();
         preparator = new DHClientKeyExchangePreparator(context.getChooser(), message);
     }
@@ -72,5 +76,17 @@ public class DHClientKeyExchangePreparatorTest {
     @Test
     public void testNoContextPrepare() {
         preparator.prepare();
+    }
+
+    @Test
+    public void testPrepareAfterParse() {
+        // This method should only be called when we received the message before
+        message.setPublicKey(context.getChooser().getDhClientPublicKey().toByteArray());
+        preparator.prepareAfterParse(false);
+    }
+
+    @Test
+    public void testPrepareAfterParseReverseMode() {
+        preparator.prepareAfterParse(true);
     }
 }

@@ -15,12 +15,17 @@ import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -38,6 +43,7 @@ public class RecordDecryptorTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());
@@ -48,9 +54,10 @@ public class RecordDecryptorTest {
      * Test of the decrypt method for TLS 1.3, of class RecordDecryptor.
      * 
      * @throws java.security.NoSuchAlgorithmException
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testDecrypt() throws NoSuchAlgorithmException {
+    public void testDecrypt() throws NoSuchAlgorithmException, CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
         context.setClientHandshakeTrafficSecret(ArrayConverter

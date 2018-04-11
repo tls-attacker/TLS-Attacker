@@ -78,7 +78,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
 
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(tlsConfig);
         WorkflowTrace trace = factory.createWorkflowTrace(tlsConfig.getWorkflowTraceType(),
-                tlsConfig.getDefaulRunningMode());
+                tlsConfig.getDefaultRunningMode());
         // Client
         ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
         SendAction action = new SendAction(applicationMessage);
@@ -122,7 +122,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
         ModifiableByteArray plainData = new ModifiableByteArray();
         VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
         plainData.setModification(modifier);
-        r.setPlainRecordBytes(plainData);
+        r.getComputations().setPlainRecordBytes(plainData);
         return r;
     }
 

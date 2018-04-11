@@ -10,10 +10,10 @@ package de.rub.nds.tlsattacker.core.https.header.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.https.header.HttpsHeader;
-import org.junit.Test;
 import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 

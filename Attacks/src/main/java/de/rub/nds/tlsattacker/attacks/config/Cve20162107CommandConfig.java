@@ -19,7 +19,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

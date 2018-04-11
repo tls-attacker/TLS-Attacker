@@ -8,10 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public enum FiniteFieldGroups {
     FFDHE2048(new byte[] { 01, 00 }),
     FFDHE3072(new byte[] { 01, 01 }),

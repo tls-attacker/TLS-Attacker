@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.transport.udp;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ServerUdpTransportHandlerTest {
 

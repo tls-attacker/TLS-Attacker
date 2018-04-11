@@ -12,7 +12,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
@@ -20,10 +23,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.Cipher;
 import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class RecordStreamCipher extends RecordCipher {
@@ -45,35 +45,46 @@ public class RecordStreamCipher extends RecordCipher {
     private void initCipherAndMac() throws UnsupportedOperationException {
         try {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
+            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg);
+            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg);
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
                     cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
-            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-            SecretKey encryptKey = new SecretKeySpec(getKeySet().getWriteKey(localConEndType),
-                    bulkCipherAlg.getJavaName());
-            SecretKey decryptKey = new SecretKeySpec(getKeySet().getReadKey(localConEndType),
-                    bulkCipherAlg.getJavaName());
-            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
-            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
             readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
             writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
         }
 
     }
 
     @Override
-    public EncryptionResult encrypt(EncryptionRequest request) throws CryptoException {
-        return new EncryptionResult(encryptCipher.update(request.getPlainText()));
+    public EncryptionResult encrypt(EncryptionRequest request) {
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+        try {
+            return new EncryptionResult(encryptCipher.encrypt(getKeySet().getWriteKey(localConEndType),
+                    request.getPlainText()));
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.");
+            LOGGER.debug(E);
+            return new EncryptionResult(request.getPlainText());
+        }
     }
 
     @Override
-    public byte[] decrypt(byte[] data) {
-        return decryptCipher.update(data);
+    public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+
+        try {
+            return new DecryptionResult(null, decryptCipher.decrypt(getKeySet().getReadKey(localConEndType),
+                    decryptionRequest.getCipherText()), null);
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
+            LOGGER.debug(E);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), false);
+        }
     }
 
     @Override
@@ -82,11 +93,18 @@ public class RecordStreamCipher extends RecordCipher {
     }
 
     @Override
-    public byte[] calculateMac(byte[] data) {
-        writeMac.update(data);
-        LOGGER.debug("The MAC was caluculated over the following data: {}", ArrayConverter.bytesToHexString(data));
-        byte[] result = writeMac.doFinal();
-        LOGGER.debug("MAC result: {}", ArrayConverter.bytesToHexString(result));
+    public byte[] calculateMac(byte[] data, ConnectionEndType connectionEndType) {
+        LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
+        byte[] result;
+        if (connectionEndType == context.getChooser().getConnectionEndType()) {
+            writeMac.update(data);
+            result = writeMac.doFinal();
+
+        } else {
+            readMac.update(data);
+            result = readMac.doFinal();
+        }
+        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
     }
 

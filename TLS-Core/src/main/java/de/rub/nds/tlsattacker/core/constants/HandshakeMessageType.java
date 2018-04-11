@@ -19,10 +19,14 @@ public enum HandshakeMessageType {
     UNKNOWN((byte) 255),
     HELLO_REQUEST((byte) 0),
     CLIENT_HELLO((byte) 1),
+    SSL2_CLIENT_HELLO((byte) 1),
     SERVER_HELLO((byte) 2),
+    SSL2_CLIENT_MASTER_KEY((byte) 2),
     HELLO_VERIFY_REQUEST((byte) 3),
     NEW_SESSION_TICKET((byte) 4),
+    SSL2_SERVER_HELLO((byte) 4),
     END_OF_EARLY_DATA((byte) 5),
+    SSL2_SERVER_VERIFY((byte) 5),
     HELLO_RETRY_REQUEST((byte) 6),
     ENCRYPTED_EXTENSIONS((byte) 8),
     CERTIFICATE((byte) 11),
@@ -49,7 +53,7 @@ public enum HandshakeMessageType {
     static {
         MAP = new HashMap<>();
         for (HandshakeMessageType cm : HandshakeMessageType.values()) {
-            if (cm == UNKNOWN) {
+            if (cm == UNKNOWN || cm.name().contains("SSL2")) {
                 continue;
             }
             MAP.put((byte) cm.value, cm);

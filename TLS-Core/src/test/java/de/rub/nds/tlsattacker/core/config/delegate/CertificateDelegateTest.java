@@ -128,6 +128,7 @@ public class CertificateDelegateTest {
      * Test of applyDelegate method, of class CertificateDelegate.
      * 
      * @throws org.bouncycastle.operator.OperatorCreationException
+     * @throws java.security.cert.CertificateException
      * @throws java.security.SignatureException
      * @throws java.io.IOException
      * @throws java.security.NoSuchProviderException

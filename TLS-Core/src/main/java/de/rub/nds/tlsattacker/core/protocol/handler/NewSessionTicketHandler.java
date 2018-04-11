@@ -13,20 +13,19 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HKDFAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
-import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
-import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketMessagePreparator;
-import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketMessageSerializer;
+import de.rub.nds.tlsattacker.core.protocol.parser.NewSessionTicketParser;
+import de.rub.nds.tlsattacker.core.protocol.preparator.NewSessionTicketPreparator;
+import de.rub.nds.tlsattacker.core.protocol.serializer.NewSessionTicketSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 import javax.crypto.Mac;
 
 public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionTicketMessage> {
@@ -36,18 +35,18 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
     }
 
     @Override
-    public ProtocolMessageParser getParser(byte[] message, int pointer) {
-        return new NewSessionTicketMessageParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public NewSessionTicketParser getParser(byte[] message, int pointer) {
+        return new NewSessionTicketParser(pointer, message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
-    public NewSessionTicketMessagePreparator getPreparator(NewSessionTicketMessage message) {
-        return new NewSessionTicketMessagePreparator(tlsContext.getChooser(), message);
+    public NewSessionTicketPreparator getPreparator(NewSessionTicketMessage message) {
+        return new NewSessionTicketPreparator(tlsContext.getChooser(), message);
     }
 
     @Override
-    public NewSessionTicketMessageSerializer getSerializer(NewSessionTicketMessage message) {
-        return new NewSessionTicketMessageSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
+    public NewSessionTicketSerializer getSerializer(NewSessionTicketMessage message) {
+        return new NewSessionTicketSerializer(message, tlsContext.getChooser().getSelectedProtocolVersion());
     }
 
     @Override
@@ -59,16 +58,28 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
 
     private void adjustPskSets(NewSessionTicketMessage message) {
         LOGGER.debug("Adjusting PSK-Sets");
-        if (tlsContext.getChooser().getPskSets() == null) {
-            tlsContext.setPskSets(new LinkedList<PskSet>());
+        List<PskSet> pskSets = tlsContext.getPskSets();
+        if (pskSets == null) {
+            pskSets = new LinkedList<>();
         }
         PskSet pskSet = new PskSet();
         pskSet.setCipherSuite(tlsContext.getChooser().getSelectedCipherSuite());
-        pskSet.setTicketAgeAdd(message.getTicket().getTicketAgeAdd().getValue());
-        pskSet.setPreSharedKeyIdentity(message.getTicket().getIdentity().getValue());
+        if (message.getTicket().getTicketAgeAdd() != null) {
+            pskSet.setTicketAgeAdd(message.getTicket().getTicketAgeAdd().getValue());
+        } else {
+            LOGGER.warn("No TicketAge specified in SessionTicket");
+        }
+        if (message.getTicket().getIdentity() != null) {
+            pskSet.setPreSharedKeyIdentity(message.getTicket().getIdentity().getValue());
+        } else {
+            LOGGER.warn("No Identity in ticket. Using new byte[] instead");
+            pskSet.setPreSharedKeyIdentity(new byte[0]);
+        }
         pskSet.setTicketAge(getTicketAge());
         pskSet.setPreSharedKey(derivePsk(message));
-        tlsContext.getChooser().getPskSets().add(pskSet);
+        LOGGER.debug("Adding PSK Set");
+        pskSets.add(pskSet);
+        tlsContext.setPskSets(pskSets);
 
     }
 
@@ -96,7 +107,7 @@ public class NewSessionTicketHandler extends HandshakeMessageHandler<NewSessionT
             LOGGER.debug("Derived PSK: " + ArrayConverter.bytesToHexString(psk));
             return psk;
 
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (NoSuchAlgorithmException | CryptoException ex) {
             LOGGER.error("DigestAlgorithm for psk derivation unknown");
             throw new WorkflowExecutionException(ex.toString());
         }

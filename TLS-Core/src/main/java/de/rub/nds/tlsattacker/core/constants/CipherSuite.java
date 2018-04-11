@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.exceptions.UnknownCiphersuiteException;
 
 public enum CipherSuite {
 
@@ -410,8 +409,7 @@ public enum CipherSuite {
     TLS_CECPQ1_RSA_WITH_CHACHA20_POLY1305_SHA256(0x16B7),
     TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0x16B8),
     TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384(0x16B9),
-    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA),
-    TLS_UNKNOWN_CIPHER(0x9999);
+    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA);
     // TODO Grease logic implementation, because the tests fail if the lines
     // aren't commented
     // GREASE constants
@@ -488,9 +486,6 @@ public enum CipherSuite {
 
     public static CipherSuite getCipherSuite(int value) {
         CipherSuite cs = MAP.get(value);
-        if (cs == null) {
-            return TLS_UNKNOWN_CIPHER;
-        }
         return cs;
     }
 
@@ -518,6 +513,10 @@ public enum CipherSuite {
         } else {
             return false;
         }
+    }
+
+    public boolean isPsk() {
+        return this.name().contains("PSK");
     }
 
     public boolean isSrpSha() {
@@ -548,6 +547,19 @@ public enum CipherSuite {
     }
 
     public boolean isUsingMac() {
+        if (this.name().contains("NULL")) {
+            String cipher = this.toString();
+            if (cipher.endsWith("NULL")) {
+                return false;
+            }
+            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "CNT_INIT", "GOSTR3411" };
+            for (String hashFunction : hashFunctionNames) {
+                if (cipher.endsWith(hashFunction)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         return (this.name().contains("_CBC") || this.name().contains("RC4"));
     }
 
@@ -608,9 +620,22 @@ public enum CipherSuite {
         List<CipherSuite> list = new LinkedList<>();
         list.add(TLS_RSA_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_RSA_WITH_AES_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_NULL_MD5);
+        list.add(TLS_RSA_WITH_NULL_SHA);
         list.add(TLS_RSA_WITH_AES_128_CBC_SHA256);
         list.add(TLS_RSA_WITH_AES_256_CBC_SHA256);
         list.add(TLS_RSA_WITH_AES_256_CBC_SHA);
+        list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_RSA_WITH_IDEA_CBC_SHA);
+        list.add(TLS_RSA_WITH_DES_CBC_SHA);
+        list.add(TLS_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_RSA_WITH_RC4_128_MD5);
+        list.add(TLS_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_RSA_WITH_AES_128_CCM);
+        list.add(TLS_RSA_WITH_AES_256_CCM);
+        list.add(TLS_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_RSA_WITH_AES_256_GCM_SHA384);
         list.add(TLS_DH_DSS_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA);
@@ -638,47 +663,192 @@ public enum CipherSuite {
         list.add(TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256);
         list.add(TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384);
         list.add(TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_DH_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DH_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DH_DSS_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DHE_RSA_WITH_AES_256_GCM_SHA384);
         list.add(TLS_DHE_RSA_WITH_AES_128_CBC_SHA256);
         list.add(TLS_DHE_RSA_WITH_AES_256_CBC_SHA256);
         list.add(TLS_DHE_RSA_WITH_DES_CBC_SHA);
-        list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA);
-        list.add(TLS_RSA_WITH_CAMELLIA_256_CBC_SHA);
-        list.add(TLS_RSA_WITH_IDEA_CBC_SHA);
-        list.add(TLS_RSA_WITH_DES_CBC_SHA);
-        list.add(TLS_DHE_RSA_WITH_SEED_CBC_SHA);
-        list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA);
-        list.add(TLS_RSA_WITH_SEED_CBC_SHA);
-        list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA);
-        list.add(TLS_RSA_WITH_RC4_128_MD5);
-        list.add(TLS_RSA_WITH_RC4_128_SHA);
-        list.add(TLS_ECDHE_RSA_WITH_RC4_128_SHA);
-        list.add(TLS_DHE_DSS_WITH_RC4_128_SHA);
-        list.add(TLS_RSA_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_RSA_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_DHE_RSA_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_DHE_RSA_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_DH_RSA_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_DH_RSA_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_DHE_DSS_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_DHE_DSS_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_DH_DSS_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256);
-        list.add(TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384);
-        list.add(TLS_RSA_WITH_AES_128_CCM);
-        list.add(TLS_RSA_WITH_AES_256_CCM);
         list.add(TLS_DHE_RSA_WITH_AES_128_CCM);
         list.add(TLS_DHE_RSA_WITH_AES_256_CCM);
+        list.add(TLS_DHE_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_DHE_DSS_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DHE_DSS_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_DSS_WITH_RC4_128_SHA);
+        list.add(TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDHE_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384);
         list.add(TLS_ECDHE_ECDSA_WITH_AES_128_CCM);
         list.add(TLS_ECDHE_ECDSA_WITH_AES_256_CCM);
         list.add(TLS_AES_128_GCM_SHA256);
         list.add(TLS_AES_256_GCM_SHA384);
-
+        list.add(TLS_PSK_WITH_AES_128_CBC_SHA);
+        list.add(TLS_PSK_DHE_WITH_AES_128_CCM_8);
+        list.add(TLS_PSK_DHE_WITH_AES_256_CCM_8);
+        list.add(TLS_PSK_DHE_WITH_AES_256_CCM_80);
+        list.add(TLS_PSK_WITH_3DES_EDE_CBC_SHA);
+        list.add(TLS_PSK_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_PSK_WITH_AES_128_CCM);
+        list.add(TLS_PSK_WITH_AES_128_CCM_8);
+        list.add(TLS_PSK_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_PSK_WITH_AES_256_CBC_SHA);
+        list.add(TLS_PSK_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_PSK_WITH_AES_256_CCM);
+        list.add(TLS_PSK_WITH_AES_256_CCM_8);
+        list.add(TLS_PSK_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_PSK_WITH_RC4_128_SHA);
+        list.add(TLS_DHE_PSK_WITH_3DES_EDE_CBC_SHA);
+        list.add(TLS_DHE_PSK_WITH_AES_128_CBC_SHA);
+        list.add(TLS_DHE_PSK_WITH_AES_128_CCM);
+        list.add(TLS_DHE_PSK_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_DHE_PSK_WITH_AES_256_CBC_SHA);
+        list.add(TLS_DHE_PSK_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_DHE_PSK_WITH_AES_256_CCM);
+        list.add(TLS_DHE_PSK_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_PSK_WITH_RC4_128_SHA);
+        list.add(TLS_ECDHE_PSK_WITH_3DES_EDE_CBC_SHA);
+        list.add(TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA);
+        list.add(TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA);
+        list.add(TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_ECDHE_PSK_WITH_RC4_128_SHA);
+        list.add(TLS_DH_RSA_WITH_DES_CBC_SHA);
+        list.add(TLS_DH_RSA_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA);
+        list.add(UNOFFICIAL_TLS_ECDH_ECDSA_WITH_RC4_128_SHA);
+        list.add(UNOFFICIAL_TLS_ECDH_ECDSA_WITH_DES_CBC_SHA);
+        list.add(UNOFFICIAL_TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
+        list.add(TLS_DH_DSS_WITH_AES_256_CBC_SHA256);
+        list.add(TLS_DH_RSA_WITH_AES_256_CBC_SHA256);
+        list.add(TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA);
+        list.add(TLS_RSA_PSK_WITH_RC4_128_SHA);
+        list.add(TLS_RSA_PSK_WITH_3DES_EDE_CBC_SHA);
+        list.add(TLS_RSA_PSK_WITH_AES_128_CBC_SHA);
+        list.add(TLS_RSA_PSK_WITH_AES_256_CBC_SHA);
+        list.add(TLS_DH_RSA_WITH_SEED_CBC_SHA);
+        list.add(TLS_RSA_PSK_WITH_AES_128_GCM_SHA256);
+        list.add(TLS_RSA_PSK_WITH_AES_256_GCM_SHA384);
+        list.add(TLS_DHE_PSK_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_RSA_PSK_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_RSA_PSK_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_RSA_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_DH_RSA_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_RSA_WITH_CAMELLIA_256_CBC_SHA256);
+        list.add(TLS_DH_RSA_WITH_CAMELLIA_256_CBC_SHA256);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_RC4_128_SHA);
+        list.add(TLS_ECDHE_ECDSA_WITH_RC4_128_SHA);
+        list.add(TLS_ECDH_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
+        list.add(TLS_SRP_SHA_WITH_AES_256_CBC_SHA);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384);
+        list.add(TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA256);
+        list.add(TLS_RSA_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_RSA_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_ECDHE_ECDSA_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_ECDHE_RSA_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_ECDH_RSA_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_RSA_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_RSA_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_DHE_RSA_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_DHE_RSA_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_DH_RSA_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_DH_RSA_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_ECDHE_ECDSA_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_ECDHE_RSA_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_ECDH_RSA_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_PSK_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_PSK_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_DHE_PSK_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_DHE_PSK_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_RSA_PSK_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_RSA_PSK_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_PSK_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_PSK_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_DHE_PSK_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_DHE_PSK_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_RSA_PSK_WITH_ARIA_128_GCM_SHA256);
+        list.add(TLS_RSA_PSK_WITH_ARIA_256_GCM_SHA384);
+        list.add(TLS_ECDHE_PSK_WITH_ARIA_128_CBC_SHA256);
+        list.add(TLS_ECDHE_PSK_WITH_ARIA_256_CBC_SHA384);
+        list.add(TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_ECDHE_RSA_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_ECDH_RSA_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_RSA_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_RSA_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_DHE_RSA_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_DH_RSA_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_DH_RSA_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_ECDHE_ECDSA_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_ECDHE_ECDSA_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_ECDH_ECDSA_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_ECDHE_RSA_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_ECDHE_RSA_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_ECDH_RSA_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_ECDH_RSA_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_PSK_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_PSK_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_DHE_PSK_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_DHE_PSK_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_RSA_PSK_WITH_CAMELLIA_128_GCM_SHA256);
+        list.add(TLS_RSA_PSK_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_PSK_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_PSK_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_DHE_PSK_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_DHE_PSK_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_RSA_PSK_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_RSA_PSK_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_ECDHE_PSK_WITH_CAMELLIA_128_CBC_SHA256);
+        list.add(TLS_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384);
+        list.add(TLS_PSK_WITH_NULL_SHA);
+        list.add(TLS_DHE_PSK_WITH_NULL_SHA);
+        list.add(TLS_RSA_PSK_WITH_NULL_SHA);
+        list.add(TLS_RSA_WITH_NULL_SHA256);
+        list.add(UNOFFICIAL_TLS_ECDH_ECDSA_WITH_NULL_SHA);
+        list.add(TLS_PSK_WITH_NULL_SHA256);
+        list.add(TLS_PSK_WITH_NULL_SHA384);
+        list.add(TLS_DHE_PSK_WITH_NULL_SHA256);
+        list.add(TLS_DHE_PSK_WITH_NULL_SHA384);
+        list.add(TLS_RSA_PSK_WITH_NULL_SHA256);
+        list.add(TLS_RSA_PSK_WITH_NULL_SHA384);
+        list.add(TLS_ECDH_ECDSA_WITH_NULL_SHA);
+        list.add(TLS_ECDHE_ECDSA_WITH_NULL_SHA);
+        list.add(TLS_ECDH_RSA_WITH_NULL_SHA);
+        list.add(TLS_ECDHE_RSA_WITH_NULL_SHA);
+        list.add(TLS_ECDHE_PSK_WITH_NULL_SHA);
+        list.add(TLS_ECDHE_PSK_WITH_NULL_SHA256);
+        list.add(TLS_ECDHE_PSK_WITH_NULL_SHA384);
         return list;
     }
 

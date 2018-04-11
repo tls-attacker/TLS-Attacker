@@ -61,7 +61,24 @@ public class CipherSuiteTest {
     public void testUnimplemented() {
         for (CipherSuite suite : CipherSuite.getNotImplemented()) {
             LOGGER.debug(suite.name());
+
         }
+        LOGGER.debug("Not implemented: " + CipherSuite.getNotImplemented().size());
+        LOGGER.debug("Implemented: " + CipherSuite.getImplemented().size());
     }
 
+    @Test
+    public void implementedListContainsNoDuplicates() {
+        for (CipherSuite suite : CipherSuite.getImplemented()) {
+            int counter = 0;
+            for (CipherSuite tempCipherSuite : CipherSuite.getImplemented()) {
+                if (suite == tempCipherSuite) {
+                    counter++;
+                }
+            }
+            if (counter != 1) {
+                fail("" + suite + " is a duplicate in the getImplemented Ciphersuite list");
+            }
+        }
+    }
 }

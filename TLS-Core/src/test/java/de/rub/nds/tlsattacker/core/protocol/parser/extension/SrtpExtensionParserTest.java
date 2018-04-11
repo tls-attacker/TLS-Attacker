@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +52,7 @@ public class SrtpExtensionParserTest {
                 { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e0009000400010006020102"), 9, 0, 4,
                         ArrayConverter.hexStringToByteArray("00010006"), 2, new byte[] { 0x01, 0x02 } },
                 { ExtensionType.USE_SRTP, ArrayConverter.hexStringToByteArray("000e000900040001000600"), 9, 0, 4,
-                        ArrayConverter.hexStringToByteArray("00010006"), 0, null } });
+                        ArrayConverter.hexStringToByteArray("00010006"), 0, new byte[0] } });
     }
 
     @Before
@@ -67,17 +66,9 @@ public class SrtpExtensionParserTest {
 
         assertArrayEquals(extensionType.getValue(), msg.getExtensionType().getValue());
         assertEquals(extensionLength, (int) msg.getExtensionLength().getValue());
-
         assertArrayEquals(srtpProtectionProfiles, msg.getSrtpProtectionProfiles().getValue());
         assertEquals(srtpProtectionProfilesLength, (int) msg.getSrtpProtectionProfilesLength().getValue());
-
         assertEquals(srtpMkiLength, (int) msg.getSrtpMkiLength().getValue());
-
-        if (srtpMki != null) {
-            assertArrayEquals(srtpMki, msg.getSrtpMki().getValue());
-
-        } else {
-            assertNull(msg.getSrtpMki());
-        }
+        assertArrayEquals(srtpMki, msg.getSrtpMki().getValue());
     }
 }

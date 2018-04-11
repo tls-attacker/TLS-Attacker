@@ -16,7 +16,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
 /**
  * Parser class for ServerHelloMessages
  */
-public class ServerHelloParser extends HelloParser<ServerHelloMessage> {
+public class ServerHelloParser extends HelloMessageParser<ServerHelloMessage> {
 
     /**
      * Constructor for the ServerHelloMessageParser

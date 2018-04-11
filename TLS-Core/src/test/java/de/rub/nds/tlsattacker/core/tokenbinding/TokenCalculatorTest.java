@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.tokenbinding;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -38,9 +39,11 @@ public class TokenCalculatorTest {
 
     /**
      * Test of calculateEKM method, of class TokenCalculator.
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testCalculateEKM() {
+    public void testCalculateEKM() throws CryptoException {
         context.setMasterSecret(ArrayConverter
                 .hexStringToByteArray("6D7B3B37807AFB5BAFEB46A3BA1AD1BCE0CF31DA68D635EC9A8130CB9A0241C437DF4D988ED2D00D3AC5FECEB056C3C7"));
         context.setClientRandom(ArrayConverter
@@ -55,9 +58,11 @@ public class TokenCalculatorTest {
 
     /**
      * Test of calculateEKM method, of class TokenCalculator.
+     * 
+     * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test
-    public void testCalculateSSLEKM() {
+    public void testCalculateSSLEKM() throws CryptoException {
         context.setMasterSecret(ArrayConverter
                 .hexStringToByteArray("6D7B3B37807AFB5BAFEB46A3BA1AD1BCE0CF31DA68D635EC9A8130CB9A0241C437DF4D988ED2D00D3AC5FECEB056C3C7"));
         context.setClientRandom(ArrayConverter

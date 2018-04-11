@@ -11,18 +11,14 @@ package de.rub.nds.tlsattacker.core.record.cipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
-import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
-import de.rub.nds.tlsattacker.util.tests.IntegrationTests;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.experimental.categories.Category;
 
 public class KeySetGeneratorTest {
 
@@ -54,8 +50,9 @@ public class KeySetGeneratorTest {
                     context.setSelectedCipherSuite(suite);
                     context.setSelectedProtocolVersion(version);
                     assertNotNull(KeySetGenerator.generateKeySet(context));
-                } catch (NoSuchAlgorithmException ex) {
-                    fail(ex.toString());
+                } catch (NoSuchAlgorithmException | CryptoException ex) {
+                    ex.printStackTrace();
+                    fail();
                 }
             }
         }

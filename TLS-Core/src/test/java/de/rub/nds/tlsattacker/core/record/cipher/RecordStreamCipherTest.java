@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CipherType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.UnlimitedStrengthEnabler;
@@ -41,15 +42,14 @@ public class RecordStreamCipherTest {
     // TODO check why cipher.contains("WITH_NULL") in
     // AlgorithmResolver.getCipherType(suite) is always assocaited with STREAM
     @Test
-    public void testConstructors() throws NoSuchAlgorithmException {
+    public void testConstructors() throws NoSuchAlgorithmException, CryptoException {
         // This test just checks that the init() method will not break
         context.setClientRandom(new byte[] { 0 });
         context.setServerRandom(new byte[] { 0 });
         context.setMasterSecret(new byte[] { 0 });
         AliasedConnection[] connections = new AliasedConnection[] { new InboundConnection(), new OutboundConnection() };
         for (CipherSuite suite : CipherSuite.values()) {
-            if (!suite.equals(CipherSuite.TLS_UNKNOWN_CIPHER) && !suite.isSCSV() && !suite.name().contains("WITH_NULL")
-                    && !suite.name().contains("CHACHA20_POLY1305")
+            if (!suite.isSCSV() && !suite.name().contains("WITH_NULL") && !suite.name().contains("CHACHA20_POLY1305")
                     && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
                     && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
                     && !suite.name().contains("ARIA")) {

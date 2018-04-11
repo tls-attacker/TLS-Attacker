@@ -24,18 +24,18 @@ public class EllipticCurvesExtensionSerializer extends ExtensionSerializer<Ellip
     @Override
     public byte[] serializeExtensionContent() {
         LOGGER.debug("Serializing EllipticCurvesExtensionMessage");
-        writeSupportedCurvesLength(msg);
-        writeSupportedCurves(msg);
+        writeSupportedGroupsLength(msg);
+        writeSupportedGroups(msg);
         return getAlreadySerialized();
     }
 
-    private void writeSupportedCurvesLength(EllipticCurvesExtensionMessage msg) {
-        appendInt(msg.getSupportedCurvesLength().getValue(), ExtensionByteLength.SUPPORTED_ELLIPTIC_CURVES);
-        LOGGER.debug("SupportedCurvesLength: " + msg.getSupportedCurvesLength().getValue());
+    private void writeSupportedGroupsLength(EllipticCurvesExtensionMessage msg) {
+        appendInt(msg.getSupportedGroupsLength().getValue(), ExtensionByteLength.SUPPORTED_GROUPS);
+        LOGGER.debug("SupportedGroupsLength: " + msg.getSupportedGroupsLength().getValue());
     }
 
-    private void writeSupportedCurves(EllipticCurvesExtensionMessage msg) {
-        appendBytes(msg.getSupportedCurves().getValue());
-        LOGGER.debug("SupportedCurves: " + ArrayConverter.bytesToHexString(msg.getSupportedCurves().getValue()));
+    private void writeSupportedGroups(EllipticCurvesExtensionMessage msg) {
+        appendBytes(msg.getSupportedGroups().getValue());
+        LOGGER.debug("SupportedGroups: " + ArrayConverter.bytesToHexString(msg.getSupportedGroups().getValue()));
     }
 }

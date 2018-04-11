@@ -17,7 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.handler.factory.HandlerFactory;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.HRRKeyShareExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.HandshakeMessageSerializer;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -89,8 +89,12 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
+                HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
+                if (extensionMessage instanceof HRRKeyShareExtensionMessage) {
+                    handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
+                }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
-                        extensionMessage.getExtensionTypeConstant(), msg.getHandshakeMessageType());
+                        extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
                 handler.getPreparator(extensionMessage).prepare();
                 try {
                     stream.write(extensionMessage.getExtensionBytes().getValue());
@@ -107,8 +111,15 @@ public abstract class HandshakeMessagePreparator<T extends HandshakeMessage> ext
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (msg.getExtensions() != null) {
             for (ExtensionMessage extensionMessage : msg.getExtensions()) {
+                HandshakeMessageType handshakeMessageType = msg.getHandshakeMessageType();
+                if (extensionMessage instanceof HRRKeyShareExtensionMessage) { // TODO
+                                                                               // fix
+                                                                               // design
+                                                                               // flaw
+                    handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
+                }
                 ExtensionHandler handler = HandlerFactory.getExtensionHandler(chooser.getContext(),
-                        extensionMessage.getExtensionTypeConstant(), msg.getHandshakeMessageType());
+                        extensionMessage.getExtensionTypeConstant(), handshakeMessageType);
                 Preparator preparator = handler.getPreparator(extensionMessage);
                 if (handler instanceof PreSharedKeyExtensionHandler && msg instanceof ClientHelloMessage
                         && chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {

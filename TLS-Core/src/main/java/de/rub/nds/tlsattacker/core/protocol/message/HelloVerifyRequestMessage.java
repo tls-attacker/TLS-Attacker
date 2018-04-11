@@ -85,10 +85,26 @@ public class HelloVerifyRequestMessage extends HandshakeMessage {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
-        sb.append("   \nProtocolVersion").append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));
-        sb.append("   \nCookie Length:").append(cookieLength.getValue());
-        sb.append("   \nCookie:").append(ArrayConverter.bytesToHexString(cookie.getValue()));
+        StringBuilder sb = new StringBuilder();
+        sb.append("HelloVerifyRequestMessage:");
+        sb.append("\n  ProtocolVersion: ");
+        if (protocolVersion != null && protocolVersion.getValue() != null) {
+            sb.append(ArrayConverter.bytesToHexString(protocolVersion.getValue()));
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Cookie Length: ");
+        if (cookieLength != null && cookieLength.getValue() != null) {
+            sb.append(cookieLength.getValue());
+        } else {
+            sb.append("null");
+        }
+        sb.append("\n  Cookie: ");
+        if (cookie != null && cookie.getValue() != null) {
+            sb.append(ArrayConverter.bytesToHexString(cookie.getValue()));
+        } else {
+            sb.append("null");
+        }
         return sb.toString();
     }
 

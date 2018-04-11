@@ -48,7 +48,7 @@ public class StarttlsDelegateTest {
      */
     @Test
     public void testSetStarttlsType() {
-        assertTrue(delegate.getStarttlsType() == StarttlsType.NONE); // ?
+        assertTrue(delegate.getStarttlsType() == StarttlsType.NONE);
         delegate.setStarttlsType(StarttlsType.POP3);
         assertTrue(delegate.getStarttlsType() == StarttlsType.POP3);
     }

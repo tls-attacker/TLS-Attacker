@@ -18,7 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.parser.extension.PreSharedKeyExtensi
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.ExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.preparator.extension.PreSharedKeyExtensionPreparator;
 import de.rub.nds.tlsattacker.core.protocol.serializer.extension.ExtensionSerializer;
-import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;;
+import de.rub.nds.tlsattacker.core.protocol.serializer.extension.PreSharedKeyExtensionSerializer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
@@ -55,12 +55,16 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
             if (message.getSelectedIdentity() != null) {
                 adjustPsk(message);
             } else {
-                context.setEarlyDataPSKIdentity(context.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
-                context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
+                if (context.getChooser().getPskSets().size() > 0) {
+                    context.setEarlyDataPSKIdentity(context.getChooser().getPskSets().get(0).getPreSharedKeyIdentity());
+                    context.setEarlyDataCipherSuite(context.getChooser().getPskSets().get(0).getCipherSuite());
+                } else {
+                    LOGGER.warn("Could not adjust EarlyData Identity and Ciphersuite");
+                }
             }
         }
-        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER
-                && message.getIdentities() != null && message.getIdentities().size() > 0) {
+        if (context.getChooser().getConnectionEndType() == ConnectionEndType.SERVER && message.getIdentities() != null
+                && message.getIdentities().size() > 0) {
             selectPsk(message);
             if (context.isExtensionNegotiated(ExtensionType.EARLY_DATA)) {
                 selectEarlyDataPsk(message);
@@ -69,7 +73,8 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     }
 
     private void adjustPsk(PreSharedKeyExtensionMessage message) {
-        if (message.getSelectedIdentity().getValue() < context.getChooser().getPskSets().size()) {
+        if (message.getSelectedIdentity() != null && message.getSelectedIdentity().getValue() != null
+                && message.getSelectedIdentity().getValue() < context.getChooser().getPskSets().size()) {
             LOGGER.debug("Setting PSK as chosen by server");
             context.setPsk(context.getChooser().getPskSets().get(message.getSelectedIdentity().getValue())
                     .getPreSharedKey());
@@ -82,18 +87,20 @@ public class PreSharedKeyExtensionHandler extends ExtensionHandler<PreSharedKeyE
     private void selectPsk(PreSharedKeyExtensionMessage message) {
         int pskIdentityIndex = 0;
         List<PskSet> pskSets = context.getChooser().getPskSets();
-        for (PSKIdentity pskIdentity : message.getIdentities()) {
-            for (int x = 0; x < pskSets.size(); x++) {
-                if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), pskIdentity.getIdentity().getValue())) {
-                    LOGGER.debug("Selected PSK identity: "
-                            + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKeyIdentity()));
-                    context.setPsk(pskSets.get(x).getPreSharedKey());
-                    context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
-                    context.setSelectedIdentityIndex(pskIdentityIndex);
-                    return;
+        if (message.getIdentities() != null) {
+            for (PSKIdentity pskIdentity : message.getIdentities()) {
+                for (int x = 0; x < pskSets.size(); x++) {
+                    if (Arrays.equals(pskSets.get(x).getPreSharedKeyIdentity(), pskIdentity.getIdentity().getValue())) {
+                        LOGGER.debug("Selected PSK identity: "
+                                + ArrayConverter.bytesToHexString(pskSets.get(x).getPreSharedKeyIdentity()));
+                        context.setPsk(pskSets.get(x).getPreSharedKey());
+                        context.setEarlyDataCipherSuite(pskSets.get(x).getCipherSuite());
+                        context.setSelectedIdentityIndex(pskIdentityIndex);
+                        return;
+                    }
                 }
+                pskIdentityIndex++;
             }
-            pskIdentityIndex++;
         }
         LOGGER.warn("No matching PSK identity provided by client - no PSK was set");
     }

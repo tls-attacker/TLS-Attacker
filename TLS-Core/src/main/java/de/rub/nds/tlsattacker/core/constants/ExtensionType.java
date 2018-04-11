@@ -42,11 +42,14 @@ public enum ExtensionType {
     TOKEN_BINDING(new byte[] { (byte) 0, (byte) 24 }),
     CACHED_INFO(new byte[] { (byte) 0, (byte) 25 }),
     SESSION_TICKET(new byte[] { (byte) 0, (byte) 35 }),
-    KEY_SHARE(new byte[] { (byte) 0, (byte) 40 }),
+    KEY_SHARE_OLD(new byte[] { (byte) 0, (byte) 40 }), // This is the keyshare
+                                                       // extension before TLS
+                                                       // 1.3 Draft 23
     PRE_SHARED_KEY(new byte[] { (byte) 0, (byte) 41 }),
     EARLY_DATA(new byte[] { (byte) 0, (byte) 42 }),
     SUPPORTED_VERSIONS(new byte[] { (byte) 0, (byte) 43 }),
     PSK_KEY_EXCHANGE_MODES(new byte[] { (byte) 0, (byte) 45 }),
+    KEY_SHARE(new byte[] { (byte) 0, (byte) 51 }),
     RENEGOTIATION_INFO(new byte[] { (byte) 0xFF, (byte) 0x01 }),
     // TODO Grease logic implementation, because the tests fail if the lines
     // aren't commented

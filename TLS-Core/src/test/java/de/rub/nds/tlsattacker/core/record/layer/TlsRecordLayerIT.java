@@ -8,7 +8,6 @@
  */
 package de.rub.nds.tlsattacker.core.record.layer;
 
-import de.rub.nds.modifiablevariable.util.RandomHelper;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.util.tests.IntegrationTests;

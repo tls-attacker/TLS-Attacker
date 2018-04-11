@@ -18,8 +18,6 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
-import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 
 public class HeartbleedCommandConfig extends AttackConfig {
 
@@ -70,7 +68,6 @@ public class HeartbleedCommandConfig extends AttackConfig {
     public Config createConfig() {
         Config config = super.createConfig();
         config.setAddHeartbeatExtension(true);
-        config.setWorkflowTraceType(WorkflowTraceType.FULL);
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
         return config;
     }

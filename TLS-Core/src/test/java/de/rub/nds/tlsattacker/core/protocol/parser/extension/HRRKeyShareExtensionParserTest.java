@@ -25,7 +25,7 @@ public class HRRKeyShareExtensionParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays.asList(new Object[][] { { ArrayConverter.hexStringToByteArray("00280002001D"), 0,
-                ArrayConverter.hexStringToByteArray("00280002001D"), ExtensionType.KEY_SHARE, 2,
+                ArrayConverter.hexStringToByteArray("00280002001D"), ExtensionType.KEY_SHARE_OLD, 2,
                 ArrayConverter.hexStringToByteArray("001D") } });
     }
 

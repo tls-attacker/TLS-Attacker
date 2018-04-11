@@ -34,6 +34,10 @@ public enum ProtocolVersion {
     TLS13_DRAFT20(new byte[] { (byte) 0x7F, (byte) 0x14 }),
     TLS13_DRAFT21(new byte[] { (byte) 0x7F, (byte) 0x15 }),
     TLS13_DRAFT22(new byte[] { (byte) 0x7F, (byte) 0x16 }),
+    TLS13_DRAFT23(new byte[] { (byte) 0x7F, (byte) 0x17 }),
+    TLS13_DRAFT24(new byte[] { (byte) 0x7F, (byte) 0x18 }),
+    TLS13_DRAFT25(new byte[] { (byte) 0x7F, (byte) 0x19 }),
+    TLS13_DRAFT26(new byte[] { (byte) 0x7F, (byte) 0x20 }),
     DTLS10(new byte[] { (byte) 0xFE, (byte) 0xFF }),
     DTLS12(new byte[] { (byte) 0xFE, (byte) 0xFD });
 

@@ -29,7 +29,7 @@ public class ExtensionByteLength {
      * Supported Elliptic Curves length field of the elliptic curve extension
      * message
      */
-    public static final int SUPPORTED_ELLIPTIC_CURVES = 2;
+    public static final int SUPPORTED_GROUPS = 2;
     /**
      * Heartbeat mode length in the heartbeat extension message
      */

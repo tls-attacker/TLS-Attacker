@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.protocol.handler;
 
 import de.rub.nds.tlsattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import de.rub.nds.tlsattacker.core.protocol.parser.ProtocolMessageParser;
@@ -70,17 +69,21 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             Preparator preparator = getPreparator(message);
             preparator.prepare();
             preparator.afterPrepare();
-        }
-        Serializer serializer = getSerializer(message);
-        byte[] completeMessage = serializer.serialize();
-        message.setCompleteResultingMessage(completeMessage);
-        if (message instanceof HandshakeMessage) {
-            if (((HandshakeMessage) message).getIncludeInDigest()) {
-                tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+            Serializer serializer = getSerializer(message);
+            byte[] completeMessage = serializer.serialize();
+            message.setCompleteResultingMessage(completeMessage);
+            if (message instanceof HandshakeMessage) {
+                if (((HandshakeMessage) message).getIncludeInDigest()) {
+                    tlsContext.getDigest().append(message.getCompleteResultingMessage().getValue());
+                }
             }
         }
         try {
-            adjustTLSContext(message);
+            if (message.getAdjustContext()) {
+                adjustTLSContext(message);
+            } else {
+                LOGGER.debug("Not adjusting TLSContext for " + message.toCompactString());
+            }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);
@@ -141,7 +144,7 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
 
     public void prepareAfterParse(Message message) {
         ProtocolMessagePreparator prep = getPreparator(message);
-        prep.prepareAfterParse();
+        prep.prepareAfterParse(tlsContext.isReversePrepareAfterParse());
     }
 
     @Override

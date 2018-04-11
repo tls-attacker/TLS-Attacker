@@ -35,7 +35,7 @@ public class KeySetGenerator {
     protected static final Logger LOGGER = LogManager.getLogger(KeySetGenerator.class.getName());
 
     public static KeySet generateKeySet(TlsContext context, ProtocolVersion protocolVersion, Tls13KeySetType keySetType)
-            throws NoSuchAlgorithmException {
+            throws NoSuchAlgorithmException, CryptoException {
         if (protocolVersion.isTLS13()) {
             return getTls13KeySet(context, keySetType);
         } else {
@@ -44,12 +44,12 @@ public class KeySetGenerator {
 
     }
 
-    public static KeySet generateKeySet(TlsContext context) throws NoSuchAlgorithmException {
+    public static KeySet generateKeySet(TlsContext context) throws NoSuchAlgorithmException, CryptoException {
         return generateKeySet(context, context.getChooser().getSelectedProtocolVersion(),
                 context.getActiveKeySetTypeWrite());
     }
 
-    private static KeySet getTls13KeySet(TlsContext context, Tls13KeySetType keySetType) {
+    private static KeySet getTls13KeySet(TlsContext context, Tls13KeySetType keySetType) throws CryptoException {
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] clientSecret = new byte[0];
         byte[] serverSecret = new byte[0];
@@ -88,7 +88,7 @@ public class KeySetGenerator {
         return keySet;
     }
 
-    private static KeySet getTlsKeySet(TlsContext context) throws NoSuchAlgorithmException {
+    private static KeySet getTlsKeySet(TlsContext context) throws NoSuchAlgorithmException, CryptoException {
         ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
         byte[] masterSecret = context.getChooser().getMasterSecret();
@@ -112,7 +112,7 @@ public class KeySetGenerator {
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
-            throws NoSuchAlgorithmException {
+            throws NoSuchAlgorithmException, CryptoException {
         switch (AlgorithmResolver.getCipherType(cipherSuite)) {
             case AEAD:
                 return getAeadSecretSetSize(protocolVersion, cipherSuite);
@@ -125,20 +125,20 @@ public class KeySetGenerator {
         }
     }
 
-    private static int getBlockSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite) {
+    private static int getBlockSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
+            throws CryptoException {
         try {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             boolean useExplicitIv = protocolVersion.usesExplicitIv();
             int keySize = cipherAlg.getKeySize();
-            Cipher cipher = Cipher.getInstance(cipherAlg.getJavaName());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(protocolVersion, cipherSuite);
             Mac mac = Mac.getInstance(macAlg.getJavaName());
             int secretSetSize = 2 * keySize + 2 * mac.getMacLength();
             if (!useExplicitIv) {
-                secretSetSize += (2 * cipher.getBlockSize());
+                secretSetSize += (2 * cipherAlg.getBlocksize());
             }
             return secretSetSize;
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+        } catch (NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not calculate SecretSetSize", ex);
         }
     }

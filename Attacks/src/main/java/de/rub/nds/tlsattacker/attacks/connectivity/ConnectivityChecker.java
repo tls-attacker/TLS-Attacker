@@ -16,10 +16,6 @@ import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
 public class ConnectivityChecker {
 
     private final Connection connection;

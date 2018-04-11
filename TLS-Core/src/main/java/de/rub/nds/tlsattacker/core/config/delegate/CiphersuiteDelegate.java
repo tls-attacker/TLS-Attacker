@@ -12,6 +12,8 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.converters.CipherSuiteConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +35,10 @@ public class CiphersuiteDelegate extends Delegate {
 
     public void setCipherSuites(List<CipherSuite> cipherSuites) {
         this.cipherSuites = cipherSuites;
+    }
+
+    public void setCipherSuites(CipherSuite... cipherSuites) {
+        this.cipherSuites = new ArrayList(Arrays.asList(cipherSuites));
     }
 
     @Override

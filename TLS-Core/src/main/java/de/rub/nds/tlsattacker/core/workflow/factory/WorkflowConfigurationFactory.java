@@ -26,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -38,21 +39,21 @@ import de.rub.nds.tlsattacker.core.protocol.message.HelloRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloVerifyRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.NewSessionTicketMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SSL2ServerHelloMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloDoneMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ServerHelloMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskRsaClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskDheServerKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDhClientKeyExchangeMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.PskEcDheServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.SrpServerKeyExchangeMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.EarlyDataExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
@@ -99,8 +100,10 @@ public class WorkflowConfigurationFactory {
                 return createShortHelloWorkflow();
             case SSL2_HELLO:
                 return createSsl2HelloWorkflow();
-            case CLIENT_RENEGOTIATION:
+            case CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION:
                 return createClientRenegotiationWorkflow();
+            case CLIENT_RENEGOTIATION:
+                return createClientRenegotiationWithResumptionWorkflow();
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
             case HTTPS:
@@ -191,6 +194,9 @@ public class WorkflowConfigurationFactory {
         messages.add(new ServerHelloMessage(config));
 
         if (config.getHighestProtocolVersion().isTLS13()) {
+            if (config.getTls13BackwardsCompatibilityMode() == Boolean.TRUE) {
+                messages.add(new ChangeCipherSpecMessage());
+            }
             messages.add(new EncryptedExtensionsMessage(config));
             if (config.isClientAuthentication()) {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
@@ -397,6 +403,17 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
+    private WorkflowTrace createClientRenegotiationWithResumptionWorkflow() {
+        AliasedConnection conEnd = getConnection();
+        WorkflowTrace trace = createHandshakeWorkflow(conEnd);
+        trace.addTlsAction(new RenegotiationAction());
+        WorkflowTrace renegotiationTrace = createResumptionWorkflow();
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
+        return trace;
+    }
+
     private WorkflowTrace createClientRenegotiationWorkflow() {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow(conEnd);
@@ -532,6 +549,7 @@ public class WorkflowConfigurationFactory {
 
         clientMessages.add(new EndOfEarlyDataMessage());
         clientMessages.add(new FinishedMessage(config));
+        clientMessages.add(new ApplicationMessage(config));
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT, clientMessages));
         return trace;
     }
@@ -566,53 +584,49 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+    public ClientKeyExchangeMessage createClientKeyExchangeMessage(KeyExchangeAlgorithm algorithm) {
         if (algorithm != null) {
-
             switch (algorithm) {
                 case RSA:
-                    messages.add(new RSAClientKeyExchangeMessage(config));
-                    break;
+                    return new RSAClientKeyExchangeMessage(config);
                 case ECDHE_ECDSA:
                 case ECDH_ECDSA:
                 case ECDH_RSA:
                 case ECDHE_RSA:
-                    messages.add(new ECDHClientKeyExchangeMessage(config));
-                    break;
+                    return new ECDHClientKeyExchangeMessage(config);
                 case DHE_DSS:
                 case DHE_RSA:
                 case DH_ANON:
                 case DH_DSS:
                 case DH_RSA:
-                    messages.add(new DHClientKeyExchangeMessage(config));
-                    break;
+                    return new DHClientKeyExchangeMessage(config);
                 case PSK:
-                    messages.add(new PskClientKeyExchangeMessage(config));
-                    break;
+                    return new PskClientKeyExchangeMessage(config);
                 case DHE_PSK:
-                    messages.add(new PskDhClientKeyExchangeMessage(config));
-                    break;
+                    return new PskDhClientKeyExchangeMessage(config);
                 case ECDHE_PSK:
-                    messages.add(new PskEcDhClientKeyExchangeMessage(config));
-                    break;
+                    return new PskEcDhClientKeyExchangeMessage(config);
                 case RSA_PSK:
-                    messages.add(new PskRsaClientKeyExchangeMessage(config));
-                    break;
+                    return new PskRsaClientKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
-                    messages.add(new SrpClientKeyExchangeMessage(config));
-                    break;
+                    return new SrpClientKeyExchangeMessage(config);
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
-                            + ", not adding ClientKeyExchange Message");
-                    break;
+                            + ", not creating ClientKeyExchange Message");
+
             }
         } else {
-            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not adding ClientKeyExchange Message");
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not creating ClientKeyExchange Message");
         }
+        return null;
+    }
+
+    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        messages.add(message);
     }
 
     private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {

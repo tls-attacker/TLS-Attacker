@@ -14,7 +14,7 @@ import de.rub.nds.tlsattacker.core.config.TLSDelegateConfig;
 import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
-import de.rub.nds.tlsattacker.core.config.delegate.EllipticCurveDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
@@ -43,7 +43,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
     @ParametersDelegate
-    private EllipticCurveDelegate ellipticCurveDelegate;
+    private NamedGroupsDelegate ellipticCurveDelegate;
     @ParametersDelegate
     private MitmDelegate mitmDelegate;
     @ParametersDelegate
@@ -74,7 +74,7 @@ public class MitmCommandConfig extends TLSDelegateConfig {
         this.generalDelegate = delegate;
         this.ciphersuiteDelegate = new CiphersuiteDelegate();
         this.heartbeatDelegate = new HeartbeatDelegate();
-        this.ellipticCurveDelegate = new EllipticCurveDelegate();
+        this.ellipticCurveDelegate = new NamedGroupsDelegate();
         this.protocolVersionDelegate = new ProtocolVersionDelegate();
         this.mitmDelegate = new MitmDelegate();
         this.signatureAndHashAlgorithmDelegate = new SignatureAndHashAlgorithmDelegate();

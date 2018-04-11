@@ -10,9 +10,7 @@ package de.rub.nds.tlsattacker.core.config.converters;
 
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.ParameterException;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
-import java.util.Arrays;
 
 public class StarttlsTypeConverter implements IStringConverter<StarttlsType> {
 
