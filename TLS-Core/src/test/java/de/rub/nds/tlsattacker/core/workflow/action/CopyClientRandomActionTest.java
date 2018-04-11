@@ -19,7 +19,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-
 public class CopyClientRandomActionTest {
     private State state;
     private TlsContext tlsContextServer1;
@@ -41,15 +40,14 @@ public class CopyClientRandomActionTest {
         tlsContextServer1 = state.getTlsContext("server1");
         tlsContextServer2 = state.getTlsContext("server2");
 
-        tlsContextServer1.setClientRandom(new byte[] {1,2});
-        tlsContextServer2.setClientRandom(new byte[] {0,0});
+        tlsContextServer1.setClientRandom(new byte[] { 1, 2 });
+        tlsContextServer2.setClientRandom(new byte[] { 0, 0 });
     }
 
     @After
     public void tearDown() {
 
     }
-
 
     /**
      * Test of execute method, of class ChangeClientRandomAction.
@@ -59,13 +57,13 @@ public class CopyClientRandomActionTest {
         action.execute(state);
 
         assertArrayEquals(tlsContextServer1.getClientRandom(), tlsContextServer2.getClientRandom());
-        assertArrayEquals(tlsContextServer2.getClientRandom(), new byte[] {1,2});
+        assertArrayEquals(tlsContextServer2.getClientRandom(), new byte[] { 1, 2 });
         assertTrue(action.isExecuted());
     }
 
-
     /**
-     * Test of getSrc/DstContextAlias methods, of class ChangeClientRandomAction.
+     * Test of getSrc/DstContextAlias methods, of class
+     * ChangeClientRandomAction.
      */
     @Test
     public void testGetAlias() {
@@ -83,7 +81,6 @@ public class CopyClientRandomActionTest {
         assertNotEquals(action, new CopyClientRandomAction("null", "server2"));
         assertNotEquals(action, new CopyClientRandomAction("null", "null"));
     }
-
 
     /**
      * Test of getAllAliases method, of class ChangeClientRandomAction.
