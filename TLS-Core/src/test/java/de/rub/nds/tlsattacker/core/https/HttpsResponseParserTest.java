@@ -43,9 +43,8 @@ public class HttpsResponseParserTest {
      */
     @Test
     public void testParseMessageContentSuccess() {
-        String message = "HTTP/1.1 200 OK\n" + "Date: Mon, 27 Jul 2009 12:28:53 GMT\n"
-                + "Server: Apache/2.2.14 (Win32)\n" + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\n"
-                + "Content-Length: 88\n" + "Content-Type: text/html\n" + "Connection: Closed\n" + "\n" + "test";
+        String message = "HTTP/1.1 200 OK\r\nDate: Mon, 27 Jul 2009 12:28:53 GMT\r\nServer: Apache/2.2.14 (Win32)\r\n"
+                + "Last-Modified: Wed, 22 Jul 2009 19:15:56 GMT\r\nContent-Length: 88\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\ntest";
 
         HttpsResponseParser parser = new HttpsResponseParser(0, message.getBytes(Charset.forName("UTF-8")),
                 ProtocolVersion.TLS12);

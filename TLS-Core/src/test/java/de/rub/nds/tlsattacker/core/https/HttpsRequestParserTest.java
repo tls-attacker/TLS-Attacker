@@ -42,7 +42,7 @@ public class HttpsRequestParserTest {
      */
     @Test
     public void testParseMessageContentSuccess() {
-        String message = "GET /index.html HTTP/1.1\n" + "User-Agent: Test\n" + "Host: www.rub.de\n\n";
+        String message = "GET /index.html HTTP/1.1\r\nUser-Agent: Test\r\nHost: www.rub.de\r\n\r\n";
 
         HttpsRequestParser parser = new HttpsRequestParser(0, message.getBytes(Charset.forName("UTF-8")),
                 ProtocolVersion.TLS12);
