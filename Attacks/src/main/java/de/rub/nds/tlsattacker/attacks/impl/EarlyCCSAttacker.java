@@ -13,6 +13,7 @@ import java.util.List;
 
 import de.rub.nds.tlsattacker.attacks.actions.EarlyCcsAction;
 import de.rub.nds.tlsattacker.attacks.config.EarlyCCSCommandConfig;
+import de.rub.nds.tlsattacker.attacks.constants.EarlyCcsVulnerabilityType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
@@ -52,10 +53,20 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        return isVulnerable(TargetVersion.OPENSSL_1_0_0) || isVulnerable(TargetVersion.OPENSSL_1_0_1);
+        EarlyCcsVulnerabilityType earlyCcsVulnerabilityType = getEarlyCcsVulnerabilityType();
+        switch (earlyCcsVulnerabilityType) {
+            case EXPLOITABLE:
+            case NOT_EXPLOITABLE:
+                return true;
+            case NOT_VULNERABLE:
+                return false;
+            case UNKNOWN:
+                return null;
+        }
+        return null;
     }
 
-    public Boolean isVulnerable(TargetVersion targetVersion) {
+    public boolean checkTargetVersion(TargetVersion targetVersion) {
         Config tlsConfig = config.createConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
         WorkflowTrace workflowTrace = new WorkflowTrace();
@@ -103,5 +114,15 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
                     "Not vulnerable (probably), No Finished message found, yet also no alert");
             return false;
         }
+    }
+
+    public EarlyCcsVulnerabilityType getEarlyCcsVulnerabilityType() {
+        if (checkTargetVersion(TargetVersion.OPENSSL_1_0_0)) {
+            return EarlyCcsVulnerabilityType.NOT_EXPLOITABLE;
+        }
+        if (checkTargetVersion(TargetVersion.OPENSSL_1_0_1)) {
+            return EarlyCcsVulnerabilityType.EXPLOITABLE;
+        }
+        return EarlyCcsVulnerabilityType.NOT_VULNERABLE;
     }
 }
