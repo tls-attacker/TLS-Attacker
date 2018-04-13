@@ -41,7 +41,7 @@ public class EarlyCcsAction extends TlsAction {
         Record r = new Record();
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(state.getConfig());
         ClientKeyExchangeMessage message = factory.createClientKeyExchangeMessage(AlgorithmResolver
-                .getKeyExchangeAlgorithm(state.getTlsContext().getSelectedCipherSuite()));
+                .getKeyExchangeAlgorithm(state.getTlsContext().getChooser().getSelectedCipherSuite()));
         ModifiableBoolean modifiableBoolean = new ModifiableBoolean();
         modifiableBoolean.setModification(new BooleanExplicitValueModification(false));
         if (!targetOpenssl1_0_0) {
