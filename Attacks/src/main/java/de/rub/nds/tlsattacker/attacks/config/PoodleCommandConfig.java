@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 
 public class PoodleCommandConfig extends AttackConfig {
 
@@ -21,13 +22,17 @@ public class PoodleCommandConfig extends AttackConfig {
     private ClientDelegate clientDelegate;
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     public PoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     @Override
