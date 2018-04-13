@@ -32,17 +32,14 @@ public class HttpsRequestParser extends ProtocolMessageParser<HttpsRequestMessag
         message.setRequestType(split[0]);
         message.setRequestPath(split[1]);
         message.setRequestProtocol(split[2]);
-        byte[] bytesLeft = parseArrayOrTillEnd(getBytesLeft());
-        int pointer = 0;
-        while (getBytesLeft() > 0) {
-            HttpsHeaderParser parser = new HttpsHeaderParser(pointer, bytesLeft);
+        String line = parseStringTill((byte) 0x0A);
+
+        // compatible with \r\n and \n line endings
+        while (!line.trim().equals("")) {
+            HttpsHeaderParser parser = new HttpsHeaderParser(0, line.getBytes(Charset.forName("ASCII")));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
-            if (pointer == parser.getPointer()) {
-                throw new ParserException("Ran into infinite Loop while parsing HttpsHeader");
-            }
-            pointer = parser.getPointer();
-
+            line = parseStringTill((byte) 0x0A);
         }
         LOGGER.info(new String(getAlreadyParsed(), Charset.forName("ASCII")));
         return message;

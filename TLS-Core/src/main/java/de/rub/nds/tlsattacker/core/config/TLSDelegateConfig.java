@@ -37,7 +37,7 @@ public abstract class TLSDelegateConfig {
         }
     }
 
-    public void addDelegate(Delegate delegate) {
+    public final void addDelegate(Delegate delegate) {
         delegateList.add(delegate);
     }
 

@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
@@ -929,6 +930,8 @@ public class Config implements Serializable {
     private Boolean useAllProvidedRecords = false;
 
     private Boolean httpsParsingEnabled = false;
+
+    private StarttlsType starttlsType = StarttlsType.NONE;
 
     /**
      * The Ticket Lifetime Hint, Ticket Key and Ticket Key Name used in the
@@ -2925,6 +2928,14 @@ public class Config implements Serializable {
 
     public void setDefaultClientDhModulus(BigInteger defaultClientDhModulus) {
         this.defaultClientDhModulus = defaultClientDhModulus;
+    }
+
+    public StarttlsType getStarttlsType() {
+        return starttlsType;
+    }
+
+    public void setStarttlsType(StarttlsType starttlsType) {
+        this.starttlsType = starttlsType;
     }
 
     public BigInteger getDefaultKeySharePrivateKey() {

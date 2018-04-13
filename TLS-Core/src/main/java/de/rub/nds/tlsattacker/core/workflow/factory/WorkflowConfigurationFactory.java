@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsMessage;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -60,8 +62,10 @@ import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
@@ -155,6 +159,9 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
+        }
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
@@ -310,6 +317,9 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createShortHelloWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = new WorkflowTrace();
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), trace);
+        }
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
@@ -654,5 +664,62 @@ public class WorkflowConfigurationFactory {
         if (cs.isSrp()) {
             messages.add(new SrpServerKeyExchangeMessage(config));
         }
+    }
+
+    private WorkflowTrace addStartTlsActions(AliasedConnection connection, StarttlsType type,
+            WorkflowTrace workflowTrace) {
+        switch (type) {
+            case FTP: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.FTP_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.FTP_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+            case IMAP: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.IMAP_C_CAP.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.IMAP_S_CAP.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.IMAP_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.IMAP_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+            case POP3: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.POP3_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.POP3_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+            case SMTP: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_MIME.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_STARTTLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_DSN.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.SMTP_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+        }
+        return workflowTrace;
     }
 }
