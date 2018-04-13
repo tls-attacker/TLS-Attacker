@@ -55,8 +55,8 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
     public Boolean isVulnerable() {
         EarlyCcsVulnerabilityType earlyCcsVulnerabilityType = getEarlyCcsVulnerabilityType();
         switch (earlyCcsVulnerabilityType) {
-            case EXPLOITABLE:
-            case NOT_EXPLOITABLE:
+            case VULN_EXPLOITABLE:
+            case VULN_NOT_EXPLOITABLE:
                 return true;
             case NOT_VULNERABLE:
                 return false;
@@ -118,10 +118,10 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
     public EarlyCcsVulnerabilityType getEarlyCcsVulnerabilityType() {
         if (checkTargetVersion(TargetVersion.OPENSSL_1_0_0)) {
-            return EarlyCcsVulnerabilityType.NOT_EXPLOITABLE;
+            return EarlyCcsVulnerabilityType.VULN_NOT_EXPLOITABLE;
         }
         if (checkTargetVersion(TargetVersion.OPENSSL_1_0_1)) {
-            return EarlyCcsVulnerabilityType.EXPLOITABLE;
+            return EarlyCcsVulnerabilityType.VULN_EXPLOITABLE;
         }
         return EarlyCcsVulnerabilityType.NOT_VULNERABLE;
     }
