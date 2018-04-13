@@ -30,9 +30,11 @@ public class HttpsResponseParser extends ProtocolMessageParser<HttpsResponseMess
             throw new ParserException("Could not parse as HttpsResponseMessage");
         }
         message.setResponseProtocol(split[0]);
-        message.setResponseStatusCode(request.replaceFirst(split[0] + " ", ""));
+        message.setResponseStatusCode(request.replaceFirst(split[0] + " ", "").trim());
         String line = parseStringTill((byte) 0x0A);
-        while (!line.equals("\r\n")) {
+
+        // compatible with \r\n and \n line endings
+        while (!line.trim().equals("")) {
             HttpsHeaderParser parser = new HttpsHeaderParser(0, line.getBytes(Charset.forName("ASCII")));
             HttpsHeader header = parser.parse();
             message.getHeader().add(header);
