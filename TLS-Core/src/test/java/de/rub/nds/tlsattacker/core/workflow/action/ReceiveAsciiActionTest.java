@@ -75,6 +75,7 @@ public class ReceiveAsciiActionTest {
      */
     @Test
     public void testExecutdAsPlanned() {
-        assertTrue(action.executedAsPlanned());
+        assertFalse(action.executedAsPlanned());
+        //TODO add assertTrue after execute
     }
 }
