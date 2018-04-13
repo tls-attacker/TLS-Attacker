@@ -52,7 +52,7 @@ public class SendAsciiAction extends MessageAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return true;
+        return isExecuted();
     }
 
     public String getAsciiString() {

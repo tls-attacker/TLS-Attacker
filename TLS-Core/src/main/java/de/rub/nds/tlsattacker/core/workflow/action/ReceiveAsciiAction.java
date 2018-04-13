@@ -45,7 +45,7 @@ public class ReceiveAsciiAction extends MessageAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return true;
+        return isExecuted();
     }
 
 }
