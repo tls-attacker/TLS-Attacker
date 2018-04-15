@@ -501,10 +501,10 @@ public enum CipherSuite {
      * Returns true in case the cipher suite enforces ephemeral keys. This is
      * the case for ECDHE and DHE cipher suites.
      *
-     * @return True if the Ciphersuite is Ephermaral
+     * @return True if the Ciphersuite is Ephemeral
      */
     public boolean isEphemeral() {
-        return this.name().contains("DHE_");
+        return this.name().contains("DHE_") || this.isAnon();
     }
 
     public boolean isPskOrDhPsk() {
@@ -640,6 +640,7 @@ public enum CipherSuite {
         list.add(TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA);
+        list.add(TLS_DH_anon_WITH_RC4_128_MD5);
         list.add(TLS_DH_DSS_WITH_AES_128_CBC_SHA);
         list.add(TLS_DH_RSA_WITH_AES_128_CBC_SHA);
         list.add(TLS_DHE_DSS_WITH_AES_128_CBC_SHA);

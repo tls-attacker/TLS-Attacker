@@ -210,8 +210,8 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (!config.getDefaultSelectedCipherSuite().isSrpSha()
-                    && !config.getDefaultSelectedCipherSuite().isPskOrDhPsk()) {
+            CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
+            if (!selectedCipherSuite.isSrpSha() && !selectedCipherSuite.isPskOrDhPsk() && !selectedCipherSuite.isAnon()) {
                 if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                     messages.add(new CertificateMessage());
                 } else {
@@ -219,7 +219,7 @@ public class WorkflowConfigurationFactory {
                 }
             }
 
-            if (config.getDefaultSelectedCipherSuite().isEphemeral() || config.getDefaultSelectedCipherSuite().isSrp()) {
+            if (selectedCipherSuite.isEphemeral() || selectedCipherSuite.isSrp()) {
                 addServerKeyExchangeMessage(messages);
             }
 
@@ -227,7 +227,10 @@ public class WorkflowConfigurationFactory {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
                 messages.add(certRequest);
             }
-            messages.add(new ServerHelloDoneMessage(config));
+            if (!selectedCipherSuite.isAnon()) {
+                // Anon ciphersuites don't use ServerHelloDone for some reason.
+                messages.add(new ServerHelloDoneMessage(config));
+            }
         }
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
 
@@ -639,6 +642,7 @@ public class WorkflowConfigurationFactory {
                     break;
                 case DHE_DSS:
                 case DHE_RSA:
+                case DH_ANON:
                     messages.add(new DHEServerKeyExchangeMessage(config));
                     break;
                 case PSK:
