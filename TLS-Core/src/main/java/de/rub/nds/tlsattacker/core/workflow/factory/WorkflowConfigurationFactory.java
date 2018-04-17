@@ -227,10 +227,7 @@ public class WorkflowConfigurationFactory {
                 CertificateRequestMessage certRequest = new CertificateRequestMessage(config);
                 messages.add(certRequest);
             }
-            if (!selectedCipherSuite.isAnon()) {
-                // Anon ciphersuites don't use ServerHelloDone for some reason.
-                messages.add(new ServerHelloDoneMessage(config));
-            }
+            messages.add(new ServerHelloDoneMessage(config));
         }
         workflowTrace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, messages));
 
