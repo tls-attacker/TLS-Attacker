@@ -648,6 +648,7 @@ public enum CipherSuite {
         list.add(TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
+        list.add(TLS_DH_anon_EXPORT_WITH_DES40_CBC_SHA);
         list.add(TLS_DH_anon_WITH_RC4_128_MD5);
         list.add(TLS_DH_anon_WITH_DES_CBC_SHA);
         list.add(TLS_DH_anon_WITH_3DES_EDE_CBC_SHA);
