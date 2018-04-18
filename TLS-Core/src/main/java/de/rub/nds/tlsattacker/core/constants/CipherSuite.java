@@ -432,6 +432,8 @@ public enum CipherSuite {
 
     private int value;
 
+    public static final int EXPORT_SYMMETRIC_KEY_SIZE_BYTES = 5;
+
     private static final Map<Integer, CipherSuite> MAP;
 
     private CipherSuite(int value) {
@@ -530,6 +532,11 @@ public enum CipherSuite {
 
     public boolean isExport() {
         return this.name().contains("EXPORT");
+    }
+
+    public boolean isExportSymmetricCipher() {
+        return this.name().contains("DES40") || this.name().contains("RC4_40") || this.name().contains("RC2_CBC_40")
+                || this.name().contains("DES_CBC_40");
     }
 
     /**
@@ -640,6 +647,7 @@ public enum CipherSuite {
         list.add(TLS_DH_RSA_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DHE_DSS_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA);
+        list.add(TLS_DH_anon_EXPORT_WITH_RC4_40_MD5);
         list.add(TLS_DH_anon_WITH_RC4_128_MD5);
         list.add(TLS_DH_anon_WITH_DES_CBC_SHA);
         list.add(TLS_DH_anon_WITH_3DES_EDE_CBC_SHA);

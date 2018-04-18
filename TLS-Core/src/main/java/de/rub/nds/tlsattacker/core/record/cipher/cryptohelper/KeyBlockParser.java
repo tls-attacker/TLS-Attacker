@@ -110,6 +110,9 @@ public class KeyBlockParser extends Parser<KeySet> {
     }
 
     private int getKeySize() throws NoSuchAlgorithmException {
+        if (suite.isExportSymmetricCipher()) {
+            return CipherSuite.EXPORT_SYMMETRIC_KEY_SIZE_BYTES;
+        }
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(suite);
         return cipherAlg.getKeySize();
     }

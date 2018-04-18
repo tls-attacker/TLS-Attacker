@@ -24,11 +24,15 @@ import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.RecordAEADCipher;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.primitives.Bytes;
 
 public class KeySetGenerator {
 
@@ -108,7 +112,31 @@ public class KeySetGenerator {
         LOGGER.debug("A new key block was generated: {}", ArrayConverter.bytesToHexString(keyBlock));
         KeyBlockParser parser = new KeyBlockParser(keyBlock, cipherSuite, protocolVersion);
         KeySet keySet = parser.parse();
+        if (cipherSuite.isExportSymmetricCipher()) {
+            deriveExportKeys(keySet, context);
+        }
         return keySet;
+    }
+
+    private static void deriveExportKeys(KeySet keySet, TlsContext context) throws CryptoException {
+        ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
+        CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
+        byte[] concatenatedRandomValues = ArrayConverter.concatenate(context.getChooser().getClientRandom(), context
+                .getChooser().getServerRandom());
+        PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
+        int keySize = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
+
+        keySet.setClientWriteKey(PseudoRandomFunction.compute(prfAlgorithm, keySet.getClientWriteKey(),
+                PseudoRandomFunction.CLIENT_WRITE_KEY_LABEL, concatenatedRandomValues, keySize));
+        keySet.setServerWriteKey(PseudoRandomFunction.compute(prfAlgorithm, keySet.getServerWriteKey(),
+                PseudoRandomFunction.SERVER_WRITE_KEY_LABEL, concatenatedRandomValues, keySize));
+
+        int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
+        byte[] emptySecret = {};
+        byte[] ivBlock = PseudoRandomFunction.compute(prfAlgorithm, emptySecret, PseudoRandomFunction.IV_BLOCK_LABEL,
+                concatenatedRandomValues, 2 * blockSize);
+        keySet.setClientWriteIv(Arrays.copyOfRange(ivBlock, 0, blockSize));
+        keySet.setServerWriteIv(Arrays.copyOfRange(ivBlock, blockSize, 2 * blockSize));
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
