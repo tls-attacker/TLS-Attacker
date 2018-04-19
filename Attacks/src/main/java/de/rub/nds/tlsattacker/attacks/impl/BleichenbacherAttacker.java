@@ -117,7 +117,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                         pkcs1Vectors);
                 EqualityError error3 = getEqualityError(secondBleichenbacherVectorMap);
                 BleichenbacherVulnerabilityMap mapThree = new BleichenbacherVulnerabilityMap(
-                        secondBleichenbacherVectorMap, error2);
+                        thirdBleichenbacherVectorMap, error3);
                 if (!mapTwo.looksIdentical(mapThree)) {
                     LOGGER.debug("The third scan prove this vulnerability to be non existent");
                     error = EqualityError.NONE;
