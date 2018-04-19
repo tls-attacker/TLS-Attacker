@@ -96,9 +96,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         if (error != EqualityError.NONE) {
 
             for (List<ResponseFingerprint> fingerprintList : responseMap.values()) {
-                System.out.println("----------------Map-----------------");
+                LOGGER.debug("----------------Map-----------------");
                 for (ResponseFingerprint fingerprint : fingerprintList) {
-                    System.out.println(fingerprint.toString());
+                    LOGGER.debug(fingerprint.toString());
                 }
             }
         }
@@ -148,7 +148,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     responseFingerprintList = new LinkedList<>();
                     responseMap.put(length, responseFingerprintList);
                 }
-                System.out.println(fingerprint);
                 responseFingerprintList.add(fingerprint);
             } else {
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");
