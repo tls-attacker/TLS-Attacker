@@ -10,5 +10,6 @@ package de.rub.nds.tlsattacker.attacks.constants;
 
 public enum PaddingRecordGeneratorType {
     SHORT,
+    MEDIUM,
     LONG
 }

@@ -22,6 +22,9 @@ public abstract class PaddingVectorGenerator {
             case LONG:
                 recordGenerator = new LongRecordGenerator();
                 break;
+            case MEDIUM:
+                recordGenerator = new MediumRecordGenerator();
+                break;
             case SHORT:
                 recordGenerator = new ShortRecordGenerator();
                 break;
