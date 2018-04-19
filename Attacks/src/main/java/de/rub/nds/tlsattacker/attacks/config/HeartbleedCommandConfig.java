@@ -16,6 +16,8 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 
 public class HeartbleedCommandConfig extends AttackConfig {
@@ -64,6 +66,21 @@ public class HeartbleedCommandConfig extends AttackConfig {
         Config config = super.createConfig();
         config.setAddHeartbeatExtension(true);
         config.setHeartbeatMode(HeartbeatMode.PEER_ALLOWED_TO_SEND);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setQuickReceive(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
+        boolean containsEc = false;
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+            if (AlgorithmResolver.getKeyExchangeAlgorithm(suite).name().toUpperCase().contains("EC")) {
+                containsEc = true;
+            }
+        }
+        config.setAddECPointFormatExtension(containsEc);
+        config.setAddEllipticCurveExtension(containsEc);
         return config;
     }
 }

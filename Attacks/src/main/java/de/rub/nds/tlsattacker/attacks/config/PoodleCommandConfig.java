@@ -10,9 +10,15 @@ package de.rub.nds.tlsattacker.attacks.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class PoodleCommandConfig extends AttackConfig {
 
@@ -21,6 +27,8 @@ public class PoodleCommandConfig extends AttackConfig {
     private ClientDelegate clientDelegate;
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
+    @ParametersDelegate
+    private CiphersuiteDelegate cipherSuiteDelegate;
 
     public PoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -37,7 +45,40 @@ public class PoodleCommandConfig extends AttackConfig {
 
     @Override
     public Config createConfig() {
-        return super.createConfig();
+        Config config = super.createConfig();
+        if (cipherSuiteDelegate.getCipherSuites() == null) {
+            List<CipherSuite> cipherSuites = new LinkedList<>();
+            for (CipherSuite suite : CipherSuite.getImplemented()) {
+                if (suite.isCBC() && !suite.isPsk() && !suite.isSrp()) {
+                    cipherSuites.add(suite);
+                }
+            }
+            config.setDefaultClientSupportedCiphersuites(cipherSuites);
+        }
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+            if (!suite.isCBC()) {
+                throw new ConfigurationException("This attack only works with CBC Ciphersuites");
+            }
+        }
+        config.setStopActionsAfterFatal(true);
+        config.setQuickReceive(true);
+        config.setEarlyStop(true);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setQuickReceive(true);
+        config.setStopActionsAfterFatal(true);
+        config.setStopRecievingAfterFatal(true);
+        config.setEarlyStop(true);
+        boolean containsEc = false;
+        for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
+            if (AlgorithmResolver.getKeyExchangeAlgorithm(suite).name().toUpperCase().contains("EC")) {
+                containsEc = true;
+            }
+        }
+        config.setAddECPointFormatExtension(containsEc);
+        config.setAddEllipticCurveExtension(containsEc);
+        return config;
     }
 
 }

@@ -85,6 +85,8 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         }
         config.setQuickReceive(true);
         config.setEarlyStop(true);
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgrorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
         config.setAddECPointFormatExtension(false);

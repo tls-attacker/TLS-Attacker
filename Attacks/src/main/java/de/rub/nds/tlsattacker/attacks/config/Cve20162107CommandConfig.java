@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
@@ -66,6 +67,9 @@ public class Cve20162107CommandConfig extends AttackConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
+        config.setAddRenegotiationInfoExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddSignatureAndHashAlgrorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
         config.setStopRecievingAfterFatal(true);
@@ -79,11 +83,17 @@ public class Cve20162107CommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
+        boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
             if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
+            if (AlgorithmResolver.getKeyExchangeAlgorithm(suite).name().toUpperCase().contains("EC")) {
+                containsEc = true;
+            }
         }
+        config.setAddECPointFormatExtension(containsEc);
+        config.setAddEllipticCurveExtension(containsEc);
         return config;
     }
 }

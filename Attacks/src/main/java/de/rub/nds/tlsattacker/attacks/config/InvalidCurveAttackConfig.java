@@ -204,6 +204,8 @@ public class InvalidCurveAttackConfig extends AttackConfig {
         config.setEarlyStop(true);
         config.setAddECPointFormatExtension(true);
         config.setAddEllipticCurveExtension(true);
+        config.setAddServerNameIndicationExtension(true);
+        config.setAddRenegotiationInfoExtension(true);
         config.setDefaultClientSupportedCiphersuites(cipherSuites);
         List<NamedGroup> namedCurves = new LinkedList<>();
         namedCurves.add(namedGroup);
