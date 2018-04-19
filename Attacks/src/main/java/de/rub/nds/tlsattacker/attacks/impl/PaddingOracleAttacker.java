@@ -8,12 +8,10 @@
  */
 package de.rub.nds.tlsattacker.attacks.impl;
 
-import de.rub.nds.modifiablevariable.VariableModification;
-import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
 import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
+import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGeneratorFactory;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityError;
 import de.rub.nds.tlsattacker.attacks.util.response.EqualityErrorTranslator;
 import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
@@ -21,11 +19,8 @@ import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -33,10 +28,6 @@ import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
-import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -60,110 +51,21 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    public State executeTlsFlow(Record record) {
+    public State executeTlsFlow(WorkflowTrace trace) {
         tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
         tlsConfig.setEarlyStop(true);
         tlsConfig.setStopActionsAfterFatal(true);
         tlsConfig.setQuickReceive(true);
-        WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
-                WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
-        ApplicationMessage applicationMessage = new ApplicationMessage(tlsConfig);
-        SendAction sendAction = new SendAction(applicationMessage);
-        sendAction.setRecords(new LinkedList<AbstractRecord>());
-        sendAction.getRecords().add(record);
-        trace.addTlsAction(sendAction);
-        AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.addTlsAction(new ReceiveAction(alertMessage));
         tlsConfig.setWorkflowExecutorShouldClose(false);
         State state = new State(tlsConfig, trace);
-
         WorkflowExecutor workflowExecutor = WorkflowExecutorFactory.createWorkflowExecutor(
                 tlsConfig.getWorkflowExecutorType(), state);
-
         workflowExecutor.executeWorkflow();
         return state;
     }
 
-    private List<Record> createRecordsWithPlainData(int blocksize, int macSize) {
-        List<Record> records = new LinkedList<>();
-        for (int i = 0; i < 64; i++) {
-            byte[] padding = createPaddingBytes(i);
-            int messageSize = blocksize - (padding.length % blocksize);
-            byte[] message = new byte[messageSize];
-            byte[] plain = ArrayConverter.concatenate(message, padding);
-            if (plain.length > macSize) {
-                Record r = createRecordWithPlainData(plain);
-                records.add(r);
-            }
-        }
-        byte[] plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
-        if (plain.length > macSize) {
-            Record r = createRecordWithPlainData(plain);
-            records.add(r);
-        }
-        plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
-        if (plain.length > macSize) {
-            Record r = createRecordWithPlainData(plain);
-            records.add(r);
-        }
-        return records;
-    }
-
-    private Record createRecordWithPlainData(byte[] plain) {
-        Record r = new Record(tlsConfig);
-        r.prepareComputations();
-        ModifiableByteArray plainData = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.explicitValue(plain);
-        plainData.setModification(modifier);
-        r.getComputations().setPlainRecordBytes(plainData);
-        return r;
-    }
-
-    private List<Record> createRecordsWithModifiedPadding() {
-        List<Record> records = new LinkedList<>();
-
-        Record r = new Record();
-        r.prepareComputations();
-        ModifiableByteArray padding = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1 }, 0);
-        padding.setModification(modifier);
-        r.getComputations().setPadding(padding);
-        records.add(r);
-
-        return records;
-    }
-
-    private List<Record> createRecordsWithModifiedMac() {
-        List<Record> records = new LinkedList<>();
-
-        Record r = new Record();
-        r.prepareComputations();
-        ModifiableByteArray mac = new ModifiableByteArray();
-        VariableModification<byte[]> modifier = ByteArrayModificationFactory.xor(new byte[] { 1, 1, 1 }, 0);
-        mac.setModification(modifier);
-        r.getComputations().setMac(mac);
-        records.add(r);
-
-        return records;
-    }
-
-    private byte[] createPaddingBytes(int padding) {
-        byte[] paddingBytes = new byte[padding + 1];
-        for (int i = 0; i < paddingBytes.length; i++) {
-            paddingBytes[i] = (byte) padding;
-        }
-        return paddingBytes;
-    }
-
     @Override
     public Boolean isVulnerable() {
-
         LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                 "A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered secure if it always responds the same way.");
@@ -191,6 +93,15 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             }
         }
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, EqualityErrorTranslator.translation(error, null, null));
+        if (error != EqualityError.NONE) {
+
+            for (List<ResponseFingerprint> fingerprintList : responseMap.values()) {
+                System.out.println("----------------Map-----------------");
+                for (ResponseFingerprint fingerprint : fingerprintList) {
+                    System.out.println(fingerprint.toString());
+                }
+            }
+        }
         return error != EqualityError.NONE;
     }
 
@@ -217,16 +128,14 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 tlsConfig.getDefaultSelectedCipherSuite()).getSize();
         int blockSize = AlgorithmResolver.getCipher(tlsConfig.getDefaultSelectedCipherSuite())
                 .getNonceBytesFromHandshake();
-        List<Record> records = new LinkedList<>();
-        records.addAll(createRecordsWithPlainData(blockSize, macSize));
-        records.addAll(createRecordsWithModifiedMac());
-        records.addAll(createRecordsWithModifiedPadding());
+        PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
+        List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
 
         HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
-        for (Record record : records) {
+        for (WorkflowTrace trace : traceList) {
             State state;
             try {
-                state = executeTlsFlow(record);
+                state = executeTlsFlow(trace);
             } catch (WorkflowExecutionException | ConfigurationException E) {
                 LOGGER.warn(E);
                 LOGGER.warn("TLS-Attacker failed execute a Handshake. Skipping to next record");
@@ -258,6 +167,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                 EqualityError error = FingerPrintChecker.checkEquality(fingerprint, list.get(i), true);
                 if (error != EqualityError.NONE) {
                     LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found an equality Error: " + error);
+                    LOGGER.debug("Fingerprint1: " + fingerprint.toString());
+                    LOGGER.debug("Fingerprint2: " + list.get(i).toString());
+
                     return error;
                 }
             }

@@ -30,6 +30,7 @@ import org.junit.experimental.categories.Category;
 
 @Category(DockerTests.class)
 public class PaddingOracleAttackerTest {
+
     private DockerSpotifyTlsServerManager serverManager;
     private TlsServer server = null;
 
