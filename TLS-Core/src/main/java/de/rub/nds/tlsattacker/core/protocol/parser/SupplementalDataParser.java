@@ -8,9 +8,15 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupplementalData.SupplementalDataEntry;
+import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupplementalDataEntryParser;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * TODO
@@ -36,11 +42,31 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
     @Override
     protected void parseHandshakeMessageContent(SupplementalDataMessage msg) {
         LOGGER.debug("Parsing SupplementalDataMessage");
-        throw new UnsupportedOperationException("Not Implemented");
+        parseSupplementalDataLength(msg);
+        parseSupplementalDataBytes(msg);
     }
 
     @Override
     protected SupplementalDataMessage createHandshakeMessage() {
-        throw new UnsupportedOperationException("Not Implemented");
+        return new SupplementalDataMessage();
+    }
+    
+    private void parseSupplementalDataLength(SupplementalDataMessage msg) {
+        msg.setSupplementalDataLength(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_LENGTH));
+        LOGGER.debug("SupplementalDataLength: " + msg.getSupplementalDataLength().getValue());
+    }
+    
+    private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
+        byte[] supplementalDataBytes = parseByteArrayField(msg.getSupplementalDataLength().getValue());
+        msg.setSupplementalDataBytes(supplementalDataBytes);
+        LOGGER.debug("SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
+        List<SupplementalDataEntry> entryList = new LinkedList<>();
+        int pointer = 0;
+        while (pointer < supplementalDataBytes.length) {
+            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(pointer, supplementalDataBytes);
+            entryList.add(parser.parse());
+            pointer = parser.getPointer();
+        }
+        msg.setEntries(entryList);
     }
 }

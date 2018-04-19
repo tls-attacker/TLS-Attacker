@@ -215,6 +215,11 @@ public class HandshakeByteLength {
      * length of the ClientAuthenticationType in the TLS byte arrays
      */
     public static final int CLIENT_AUTHENTICATION_TYPE = 1;
+    
+    /**
+     * Length of the Supplemental Data Field
+     */
+    public static final int SUPPLEMENTAL_DATA_LENGTH = 3;
 
     private HandshakeByteLength() {
     }

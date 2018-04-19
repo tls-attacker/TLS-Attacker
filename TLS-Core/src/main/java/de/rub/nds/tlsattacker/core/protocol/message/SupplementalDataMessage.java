@@ -64,6 +64,11 @@ public class SupplementalDataMessage extends HandshakeMessage {
     public void setSupplementalDataLength(ModifiableInteger supplementalDataLength) {
         this.supplementalDataLength = supplementalDataLength;
     }
+    
+    public void setSupplementalDataLength(int supplementalDataLength) {
+        this.supplementalDataLength = ModifiableVariableFactory.safelySetValue(this.supplementalDataLength, 
+                supplementalDataLength);
+    }
 
     public ModifiableByteArray getSupplementalDataBytes() {
         return supplementalDataBytes;
