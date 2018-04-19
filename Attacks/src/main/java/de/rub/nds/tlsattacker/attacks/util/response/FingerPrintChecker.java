@@ -25,11 +25,11 @@ public class FingerPrintChecker {
         if (fingerprint1.isReceivedTransportHandlerException() != fingerprint2.isReceivedTransportHandlerException()) {
             return EqualityError.SOCKET_EXCEPTION;
         }
-        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
-            return EqualityError.ENCRYPTED_ALERT;
-        }
         if (fingerprint1.getNumberRecordsReceived() != fingerprint2.getNumberRecordsReceived()) {
             return EqualityError.RECORD_COUNT;
+        }
+        if (fingerprint1.isEncryptedAlert() != fingerprint2.isEncryptedAlert()) {
+            return EqualityError.ENCRYPTED_ALERT;
         }
         if (!checkRecordClassEquality(fingerprint1.getRecordClasses(), fingerprint2.getRecordClasses())) {
             return EqualityError.RECORD_CLASS;
