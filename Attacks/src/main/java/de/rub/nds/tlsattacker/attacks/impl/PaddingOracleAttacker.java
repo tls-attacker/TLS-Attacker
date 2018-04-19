@@ -52,7 +52,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     }
 
     public State executeTlsFlow(WorkflowTrace trace) {
-        tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
+        tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
         tlsConfig.setEarlyStop(true);
         tlsConfig.setStopActionsAfterFatal(true);
         tlsConfig.setQuickReceive(true);
@@ -124,10 +124,6 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     }
 
     public HashMap<Integer, List<ResponseFingerprint>> createResponseMap() {
-        int macSize = AlgorithmResolver.getMacAlgorithm(tlsConfig.getDefaultSelectedProtocolVersion(),
-                tlsConfig.getDefaultSelectedCipherSuite()).getSize();
-        int blockSize = AlgorithmResolver.getCipher(tlsConfig.getDefaultSelectedCipherSuite())
-                .getNonceBytesFromHandshake();
         PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
         List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
 
@@ -152,6 +148,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
                     responseFingerprintList = new LinkedList<>();
                     responseMap.put(length, responseFingerprintList);
                 }
+                System.out.println(fingerprint);
                 responseFingerprintList.add(fingerprint);
             } else {
                 LOGGER.warn("Could not execute Workflow. Something went wrong... Check the debug output for more information");

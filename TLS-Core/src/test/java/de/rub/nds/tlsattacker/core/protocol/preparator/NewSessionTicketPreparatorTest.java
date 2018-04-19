@@ -53,7 +53,7 @@ public class NewSessionTicketPreparatorTest {
      * 
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testPrepare() throws CryptoException {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setSelectedCipherSuite(CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256);
@@ -106,7 +106,7 @@ public class NewSessionTicketPreparatorTest {
                 macinput, context.getChooser().getConfig().getSessionTicketKeyHMAC()));
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testNoContextPrepare() {
         preparator.prepare();
     }

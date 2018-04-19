@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,15 +57,17 @@ public class EarlyCCSCommandConfig extends AttackConfig {
         Config config = super.createConfig();
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
         config.setStopRecievingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
-            if (AlgorithmResolver.getKeyExchangeAlgorithm(suite).name().toUpperCase().contains("EC")) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+            if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
                 containsEc = true;
+                break;
             }
         }
         config.setAddECPointFormatExtension(containsEc);

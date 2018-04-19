@@ -50,7 +50,8 @@ public class WorkflowTrace implements Serializable {
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
+    @XmlElements(value = { @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption"),
+            @XmlElement(type = ApplyBufferedMessagesAction.class, name = "ApplyBufferedMessages"),
             @XmlElement(type = BufferedGenericReceiveAction.class, name = "BufferedGenericReceive"),
             @XmlElement(type = BufferedSendAction.class, name = "BufferedSend"),
             @XmlElement(type = ChangeCipherSuiteAction.class, name = "ChangeCipherSuite"),
@@ -86,7 +87,9 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ReceiveAction.class, name = "Receive"),
             @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
-            @XmlElement(type = SendAction.class, name = "Send"), @XmlElement(type = WaitAction.class, name = "Wait") })
+            @XmlElement(type = SendAction.class, name = "Send"), @XmlElement(type = WaitAction.class, name = "Wait"),
+            @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
+            @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 
     private String name = null;

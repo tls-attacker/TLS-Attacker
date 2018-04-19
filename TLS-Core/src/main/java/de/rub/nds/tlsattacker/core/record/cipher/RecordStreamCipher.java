@@ -12,6 +12,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
+import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
+import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
@@ -21,10 +23,7 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.Cipher;
 import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class RecordStreamCipher extends RecordCipher {
@@ -46,22 +45,16 @@ public class RecordStreamCipher extends RecordCipher {
     private void initCipherAndMac() throws UnsupportedOperationException {
         try {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
-            encryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
-            decryptCipher = Cipher.getInstance(cipherAlg.getJavaName());
+            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg);
+            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg);
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
                     cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
             writeMac = Mac.getInstance(macAlg.getJavaName());
-            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-            SecretKey encryptKey = new SecretKeySpec(getKeySet().getWriteKey(localConEndType),
-                    bulkCipherAlg.getJavaName());
-            SecretKey decryptKey = new SecretKeySpec(getKeySet().getReadKey(localConEndType),
-                    bulkCipherAlg.getJavaName());
-            encryptCipher.init(Cipher.ENCRYPT_MODE, encryptKey);
-            decryptCipher.init(Cipher.DECRYPT_MODE, decryptKey);
             readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
             writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException ex) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException ex) {
             throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
         }
 
@@ -69,12 +62,29 @@ public class RecordStreamCipher extends RecordCipher {
 
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
-        return new EncryptionResult(encryptCipher.update(request.getPlainText()));
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+        try {
+            return new EncryptionResult(encryptCipher.encrypt(getKeySet().getWriteKey(localConEndType),
+                    request.getPlainText()));
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.");
+            LOGGER.debug(E);
+            return new EncryptionResult(request.getPlainText());
+        }
     }
 
     @Override
     public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
-        return new DecryptionResult(null, decryptCipher.update(decryptionRequest.getCipherText()), null);
+        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
+
+        try {
+            return new DecryptionResult(null, decryptCipher.decrypt(getKeySet().getReadKey(localConEndType),
+                    decryptionRequest.getCipherText()), null);
+        } catch (CryptoException E) {
+            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
+            LOGGER.debug(E);
+            return new DecryptionResult(null, decryptionRequest.getCipherText(), false);
+        }
     }
 
     @Override

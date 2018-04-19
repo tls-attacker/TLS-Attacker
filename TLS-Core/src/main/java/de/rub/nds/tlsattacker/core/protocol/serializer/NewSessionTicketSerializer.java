@@ -45,8 +45,8 @@ public class NewSessionTicketSerializer extends HandshakeMessageSerializer<NewSe
             writeTicketIdentity(msg);
             writeExtensions();
         } else {
-            writeTicketLength(msg);
-            writeTicket(msg);
+            throw new UnsupportedOperationException(
+                    "NewSessionTicket message is currently not supported for not TLS 1.3");
         }
 
         return getAlreadySerialized();

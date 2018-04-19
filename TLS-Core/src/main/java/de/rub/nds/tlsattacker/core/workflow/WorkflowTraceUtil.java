@@ -268,4 +268,10 @@ public class WorkflowTraceUtil {
         }
         return sendRecords;
     }
+
+    public static SendingAction getLastSendingAction(WorkflowTrace trace) {
+        List<SendingAction> sendingActions = trace.getSendingActions();
+        return sendingActions.get(sendingActions.size() - 1);
+    }
+
 }

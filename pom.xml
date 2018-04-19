@@ -72,29 +72,6 @@
         <module>TLS-Forensics</module>
         <module>TraceTool</module>
     </modules>
-    <profiles>
-        <profile>
-            <id>default</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <includegroups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</includegroups>
-            </properties>
-        </profile>
-        <profile>
-            <id>docker-it</id>
-            <activation>
-                <property>
-                    <name>env</name>
-                    <value>dev</value>
-                </property>
-            </activation>
-            <properties>
-                <includegroups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests,de.rub.nds.tlsattacker.util.tests.DockerTests</includegroups>
-            </properties>
-        </profile>
-    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -127,7 +104,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
@@ -165,12 +141,6 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
-        </dependency>
-        <dependency>
-            <groupId>de.rub.nds.tlsdockerlib</groupId>
-            <optional>true</optional>
-            <artifactId>TLS-Docker-Library</artifactId>
-            <version>1.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -223,7 +193,7 @@
                             <include>**/*.java</include>
                         </includes>
                         <!-- Integration tests and slow tests are excluded by default when runing mvn package. Fast tests and not annotated tests are executed -->
-                        <excludedGroups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests,de.rub.nds.tlsattacker.util.tests.DockerTests </excludedGroups>
+                        <excludedGroups>de.rub.nds.tlsattacker.util.tests.SlowTests,de.rub.nds.tlsattacker.util.tests.IntegrationTests</excludedGroups>
                     </configuration>
                 </plugin>
                 <plugin>

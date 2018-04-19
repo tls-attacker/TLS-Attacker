@@ -41,6 +41,8 @@
     </supportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA</defaultClientSupportedCiphersuites>
@@ -250,8 +252,28 @@
     <defaultClientSupportedCiphersuites>TLS_RSA_PSK_WITH_CAMELLIA_256_CBC_SHA384</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_ECDHE_PSK_WITH_CAMELLIA_128_CBC_SHA256</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_PSK_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_PSK_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_PSK_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>UNOFFICIAL_TLS_ECDH_ECDSA_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_PSK_WITH_NULL_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_PSK_WITH_NULL_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_PSK_WITH_NULL_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_DHE_PSK_WITH_NULL_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_PSK_WITH_NULL_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_RSA_PSK_WITH_NULL_SHA384</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_ECDSA_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDH_RSA_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_RSA_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_PSK_WITH_NULL_SHA</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_PSK_WITH_NULL_SHA256</defaultClientSupportedCiphersuites>
+    <defaultClientSupportedCiphersuites>TLS_ECDHE_PSK_WITH_NULL_SHA384</defaultClientSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_RSA_WITH_AES_256_CBC_SHA</defaultServerSupportedCiphersuites>
@@ -461,6 +483,24 @@
     <defaultServerSupportedCiphersuites>TLS_RSA_PSK_WITH_CAMELLIA_256_CBC_SHA384</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_PSK_WITH_CAMELLIA_128_CBC_SHA256</defaultServerSupportedCiphersuites>
     <defaultServerSupportedCiphersuites>TLS_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_PSK_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_DHE_PSK_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_PSK_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_WITH_NULL_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>UNOFFICIAL_TLS_ECDH_ECDSA_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_PSK_WITH_NULL_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_PSK_WITH_NULL_SHA384</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_DHE_PSK_WITH_NULL_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_DHE_PSK_WITH_NULL_SHA384</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_PSK_WITH_NULL_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_RSA_PSK_WITH_NULL_SHA384</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDH_ECDSA_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_ECDSA_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDH_RSA_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_RSA_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_PSK_WITH_NULL_SHA</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_PSK_WITH_NULL_SHA256</defaultServerSupportedCiphersuites>
+    <defaultServerSupportedCiphersuites>TLS_ECDHE_PSK_WITH_NULL_SHA384</defaultServerSupportedCiphersuites>
     <defaultClientNamedGroups>SECP192R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP256R1</defaultClientNamedGroups>
     <defaultClientNamedGroups>SECP384R1</defaultClientNamedGroups>
@@ -538,7 +578,7 @@
     <addHeartbeatExtension>false</addHeartbeatExtension>
     <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
-    <addSignatureAndHashAlgrorithmsExtension>false</addSignatureAndHashAlgrorithmsExtension>
+    <addSignatureAndHashAlgorithmsExtension>false</addSignatureAndHashAlgorithmsExtension>
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
@@ -888,6 +928,7 @@ EE 70 2A 05 B5 48 C5 F5  FC 2D E3 84 2B 63 66 A0
     <chooserType>DEFAULT</chooserType>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <httpsParsingEnabled>false</httpsParsingEnabled>
+    <starttlsType>NONE</starttlsType>
     <sessionTicketLifetimeHint>0</sessionTicketLifetimeHint>
     <sessionTicketKeyAES>
 53 65 63 75 72 65 53 54  69 63 6B 65 74 4B 65 79</sessionTicketKeyAES>

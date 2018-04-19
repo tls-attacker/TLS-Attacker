@@ -89,7 +89,7 @@ public class SerializationFullTest {
         config.setAddHeartbeatExtension(true);
         config.setAddMaxFragmentLengthExtenstion(true);
         config.setAddServerNameIndicationExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddKeyShareExtension(true);
         config.setAddPaddingExtension(true);

@@ -79,7 +79,11 @@ public abstract class ProtocolMessageHandler<Message extends ProtocolMessage> ex
             }
         }
         try {
-            adjustTLSContext(message);
+            if (message.getAdjustContext()) {
+                adjustTLSContext(message);
+            } else {
+                LOGGER.debug("Not adjusting TLSContext for " + message.toCompactString());
+            }
         } catch (AdjustmentException E) {
             LOGGER.warn("Could not adjust TLSContext");
             LOGGER.debug(E);

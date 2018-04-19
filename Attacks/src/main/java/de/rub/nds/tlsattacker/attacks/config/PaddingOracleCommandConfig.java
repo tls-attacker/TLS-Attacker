@@ -19,7 +19,9 @@ import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +44,8 @@ public class PaddingOracleCommandConfig extends AttackConfig {
     private CiphersuiteDelegate ciphersuiteDelegate;
     @ParametersDelegate
     private ProtocolVersionDelegate protocolVersionDelegate;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     public PaddingOracleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -49,10 +53,12 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     public PaddingRecordGeneratorType getRecordGeneratorType() {
@@ -81,11 +87,10 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         Config config = super.createConfig();
         if (ciphersuiteDelegate.getCipherSuites() == null) {
             List<CipherSuite> cipherSuites = new LinkedList<>();
-            for (CipherSuite suite : CipherSuite.getImplemented()) {
-                if (suite.isCBC() && !suite.isPsk() && !suite.isSrp()) {
-                    cipherSuites.add(suite);
-                }
-            }
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA256);
+            cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
@@ -97,15 +102,17 @@ public class PaddingOracleCommandConfig extends AttackConfig {
         // config.setEarlyStop(true);
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
         config.setStopRecievingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
-            if (AlgorithmResolver.getKeyExchangeAlgorithm(suite).name().toUpperCase().contains("EC")) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+            if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
                 containsEc = true;
+                break;
             }
         }
         config.setAddECPointFormatExtension(containsEc);

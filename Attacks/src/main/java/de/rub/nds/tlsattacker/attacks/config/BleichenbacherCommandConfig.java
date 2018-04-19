@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ProtocolVersionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
@@ -47,6 +48,8 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     @Parameter(names = "-msgPkcsConform", description = "Used by the real Bleichenbacher attack. Indicates whether the original "
             + "message that we are going to decrypt is PKCS#1 conform or not (more precisely, whether it starts with 0x00 0x02).", arity = 1)
     private boolean msgPkcsConform = true;
+    @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
 
     public BleichenbacherCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -55,11 +58,13 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         ciphersuiteDelegate = new CiphersuiteDelegate();
         protocolVersionDelegate = new ProtocolVersionDelegate();
         attackDelegate = new AttackDelegate();
+        starttlsDelegate = new StarttlsDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
         addDelegate(ciphersuiteDelegate);
         addDelegate(protocolVersionDelegate);
         addDelegate(attackDelegate);
+        addDelegate(starttlsDelegate);
     }
 
     public Type getType() {
@@ -87,7 +92,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         config.setEarlyStop(true);
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setStopActionsAfterFatal(true);
         config.setAddECPointFormatExtension(false);
         config.setAddEllipticCurveExtension(false);

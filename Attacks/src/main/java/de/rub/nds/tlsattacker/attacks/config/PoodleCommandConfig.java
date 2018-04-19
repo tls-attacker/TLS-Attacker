@@ -14,8 +14,10 @@ import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HostnameExtensionDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.StarttlsDelegate;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,14 +30,20 @@ public class PoodleCommandConfig extends AttackConfig {
     @ParametersDelegate
     private HostnameExtensionDelegate hostnameExtensionDelegate;
     @ParametersDelegate
+    private StarttlsDelegate starttlsDelegate;
+    @ParametersDelegate
     private CiphersuiteDelegate cipherSuiteDelegate;
 
     public PoodleCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
         hostnameExtensionDelegate = new HostnameExtensionDelegate();
+        starttlsDelegate = new StarttlsDelegate();
+        cipherSuiteDelegate = new CiphersuiteDelegate();
         addDelegate(clientDelegate);
         addDelegate(hostnameExtensionDelegate);
+        addDelegate(starttlsDelegate);
+        addDelegate(cipherSuiteDelegate);
     }
 
     @Override
@@ -65,15 +73,17 @@ public class PoodleCommandConfig extends AttackConfig {
         config.setEarlyStop(true);
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
-        config.setAddSignatureAndHashAlgrorithmsExtension(true);
+        config.setAddSignatureAndHashAlgorithmsExtension(true);
         config.setQuickReceive(true);
         config.setStopActionsAfterFatal(true);
         config.setStopRecievingAfterFatal(true);
         config.setEarlyStop(true);
         boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
-            if (AlgorithmResolver.getKeyExchangeAlgorithm(suite).name().toUpperCase().contains("EC")) {
+            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+            if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
                 containsEc = true;
+                break;
             }
         }
         config.setAddECPointFormatExtension(containsEc);

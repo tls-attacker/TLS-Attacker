@@ -15,6 +15,8 @@ import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.StarttlsMessage;
+import de.rub.nds.tlsattacker.core.constants.StarttlsType;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.https.HttpsRequestMessage;
 import de.rub.nds.tlsattacker.core.https.HttpsResponseMessage;
@@ -24,6 +26,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.CertificateRequestMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.CertificateVerifyMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.ClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHClientKeyExchangeMessage;
@@ -59,8 +62,10 @@ import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.LinkedList;
@@ -95,8 +100,10 @@ public class WorkflowConfigurationFactory {
                 return createShortHelloWorkflow();
             case SSL2_HELLO:
                 return createSsl2HelloWorkflow();
-            case CLIENT_RENEGOTIATION:
+            case CLIENT_RENEGOTIATION_WITHOUT_RESUMPTION:
                 return createClientRenegotiationWorkflow();
+            case CLIENT_RENEGOTIATION:
+                return createClientRenegotiationWithResumptionWorkflow();
             case SERVER_RENEGOTIATION:
                 return createServerRenegotiationWorkflow();
             case HTTPS:
@@ -152,6 +159,9 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), workflowTrace);
+        }
         List<ProtocolMessage> messages = new LinkedList<>();
         ClientHelloMessage clientHello = null;
         if (config.getHighestProtocolVersion() == ProtocolVersion.DTLS10
@@ -307,6 +317,9 @@ public class WorkflowConfigurationFactory {
     private WorkflowTrace createShortHelloWorkflow() {
         AliasedConnection connection = getConnection();
         WorkflowTrace trace = new WorkflowTrace();
+        if (config.getStarttlsType() != StarttlsType.NONE) {
+            addStartTlsActions(connection, config.getStarttlsType(), trace);
+        }
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new ClientHelloMessage(config)));
         trace.addTlsAction(MessageActionFactory.createAction(connection, ConnectionEndType.SERVER,
@@ -387,6 +400,17 @@ public class WorkflowConfigurationFactory {
                 config), new FinishedMessage(config));
         trace.addTlsAction(action);
 
+        return trace;
+    }
+
+    private WorkflowTrace createClientRenegotiationWithResumptionWorkflow() {
+        AliasedConnection conEnd = getConnection();
+        WorkflowTrace trace = createHandshakeWorkflow(conEnd);
+        trace.addTlsAction(new RenegotiationAction());
+        WorkflowTrace renegotiationTrace = createResumptionWorkflow();
+        for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
+            trace.addTlsAction(reneAction);
+        }
         return trace;
     }
 
@@ -560,53 +584,49 @@ public class WorkflowConfigurationFactory {
         return trace;
     }
 
-    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
-        CipherSuite cs = config.getDefaultSelectedCipherSuite();
-        KeyExchangeAlgorithm algorithm = AlgorithmResolver.getKeyExchangeAlgorithm(cs);
+    public ClientKeyExchangeMessage createClientKeyExchangeMessage(KeyExchangeAlgorithm algorithm) {
         if (algorithm != null) {
-
             switch (algorithm) {
                 case RSA:
-                    messages.add(new RSAClientKeyExchangeMessage(config));
-                    break;
+                    return new RSAClientKeyExchangeMessage(config);
                 case ECDHE_ECDSA:
                 case ECDH_ECDSA:
                 case ECDH_RSA:
                 case ECDHE_RSA:
-                    messages.add(new ECDHClientKeyExchangeMessage(config));
-                    break;
+                    return new ECDHClientKeyExchangeMessage(config);
                 case DHE_DSS:
                 case DHE_RSA:
                 case DH_ANON:
                 case DH_DSS:
                 case DH_RSA:
-                    messages.add(new DHClientKeyExchangeMessage(config));
-                    break;
+                    return new DHClientKeyExchangeMessage(config);
                 case PSK:
-                    messages.add(new PskClientKeyExchangeMessage(config));
-                    break;
+                    return new PskClientKeyExchangeMessage(config);
                 case DHE_PSK:
-                    messages.add(new PskDhClientKeyExchangeMessage(config));
-                    break;
+                    return new PskDhClientKeyExchangeMessage(config);
                 case ECDHE_PSK:
-                    messages.add(new PskEcDhClientKeyExchangeMessage(config));
-                    break;
+                    return new PskEcDhClientKeyExchangeMessage(config);
                 case RSA_PSK:
-                    messages.add(new PskRsaClientKeyExchangeMessage(config));
-                    break;
+                    return new PskRsaClientKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:
                 case SRP_SHA:
-                    messages.add(new SrpClientKeyExchangeMessage(config));
-                    break;
+                    return new SrpClientKeyExchangeMessage(config);
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm
-                            + ", not adding ClientKeyExchange Message");
-                    break;
+                            + ", not creating ClientKeyExchange Message");
+
             }
         } else {
-            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not adding ClientKeyExchange Message");
+            LOGGER.warn("Unsupported key exchange algorithm: " + algorithm + ", not creating ClientKeyExchange Message");
         }
+        return null;
+    }
+
+    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+        CipherSuite cs = config.getDefaultSelectedCipherSuite();
+        ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
+        messages.add(message);
     }
 
     private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
@@ -644,5 +664,62 @@ public class WorkflowConfigurationFactory {
         if (cs.isSrp()) {
             messages.add(new SrpServerKeyExchangeMessage(config));
         }
+    }
+
+    private WorkflowTrace addStartTlsActions(AliasedConnection connection, StarttlsType type,
+            WorkflowTrace workflowTrace) {
+        switch (type) {
+            case FTP: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.FTP_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.FTP_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.FTP_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+            case IMAP: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.IMAP_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.IMAP_C_CAP.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.IMAP_S_CAP.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.IMAP_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.IMAP_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+            case POP3: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.POP3_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.POP3_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.POP3_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+            case SMTP: {
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.SMTP_C_CONNECTED.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_MIME.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_STARTTLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_OK_DSN.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.CLIENT,
+                        StarttlsMessage.SMTP_TLS.getStarttlsMessage()));
+                workflowTrace.addTlsAction(MessageActionFactory.createAsciiAction(connection, ConnectionEndType.SERVER,
+                        StarttlsMessage.SMTP_S_READY.getStarttlsMessage()));
+                return workflowTrace;
+            }
+        }
+        return workflowTrace;
     }
 }

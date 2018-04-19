@@ -538,7 +538,7 @@ public class TlsContext {
      *            The Config for which the TlsContext should be created
      */
     public TlsContext(Config config) {
-        RunningModeType mode = config.getDefaulRunningMode();
+        RunningModeType mode = config.getDefaultRunningMode();
         if (null == mode) {
             throw new ConfigurationException("Cannot create connection, running mode not set");
         } else {
