@@ -40,8 +40,8 @@ import org.bouncycastle.crypto.params.KeyParameter;
 
 public class DrownAttacker extends Attacker<DrownCommandConfig> {
 
-    public DrownAttacker(DrownCommandConfig config) {
-        super(config);
+    public DrownAttacker(DrownCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
     }
 
     public DrownVulnerabilityType getDrownVulnerabilityType() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new SSL2ClientMasterKeyMessage()));

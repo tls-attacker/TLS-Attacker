@@ -31,8 +31,8 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
 
     private GuessProvider guessProvider;
 
-    public PskBruteForcerAttackServer(PskBruteForcerAttackServerCommandConfig config) {
-        super(config);
+    public PskBruteForcerAttackServer(PskBruteForcerAttackServerCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
     }
 
     private CipherSuite getSupportedPskCiphersuite() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
 
         String clientIdentity = config.getPskIdentity();
         LOGGER.debug("Client Identity: " + clientIdentity);
@@ -120,7 +120,7 @@ public class PskBruteForcerAttackServer extends Attacker<PskBruteForcerAttackSer
     }
 
     private boolean executeProtocolFlowToServer(CipherSuite suite, byte[] pskGuess) {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
         tlsConfig.setDefaultClientSupportedCiphersuites(suite);
         tlsConfig.setDefaultSelectedCipherSuite(suite);
         tlsConfig.setDefaultPSKKey(pskGuess);

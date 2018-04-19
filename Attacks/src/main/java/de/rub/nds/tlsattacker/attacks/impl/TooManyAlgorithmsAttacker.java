@@ -25,13 +25,13 @@ import java.util.Random;
 
 public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackConfig> {
 
-    public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config) {
-        super(config);
+    public TooManyAlgorithmsAttacker(TooManyAlgorithmsAttackConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
         tlsConfig.setAddSignatureAndHashAlgrorithmsExtension(true);
         List<SignatureAndHashAlgorithm> algorithmList = new LinkedList<>();
         Random random = new Random(0);
@@ -50,15 +50,15 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
     @Override
     public Boolean isVulnerable() {
         throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // change
+        // body
+        // of
+        // generated
+        // methods,
+        // choose
+        // Tools
+        // |
+        // Templates.
     }
 
 }

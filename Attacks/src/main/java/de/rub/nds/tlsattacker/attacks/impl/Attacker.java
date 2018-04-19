@@ -31,8 +31,11 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
 
     protected AttConfig config;
 
-    public Attacker(AttConfig config) {
+    private Config baseConfig;
+
+    public Attacker(AttConfig config, Config baseConfig) {
         this.config = config;
+        this.baseConfig = baseConfig;
     }
 
     public void attack() {
@@ -68,6 +71,10 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
 
     public AttConfig getConfig() {
         return config;
+    }
+
+    public Config getBaseConfig() {
+        return baseConfig.createCopy();
     }
 
     protected Boolean canConnect() {

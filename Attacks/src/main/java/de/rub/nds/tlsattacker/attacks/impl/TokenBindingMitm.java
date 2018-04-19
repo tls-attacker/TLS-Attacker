@@ -35,15 +35,15 @@ import java.util.List;
 
 public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
 
-    public TokenBindingMitm(TokenBindingMitmCommandConfig config) {
-        super(config);
+    public TokenBindingMitm(TokenBindingMitmCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
 
     }
 
     @Override
     public void executeAttack() {
 
-        Config conf = config.createConfig();
+        Config conf = getBaseConfig();
         conf.setQuickReceive(true);
 
         AliasedConnection clientCon = conf.getDefaultClientConnection();

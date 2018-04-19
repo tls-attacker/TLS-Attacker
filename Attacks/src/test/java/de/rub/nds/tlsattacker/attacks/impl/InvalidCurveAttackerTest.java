@@ -74,7 +74,7 @@ public class InvalidCurveAttackerTest {
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
+        InvalidCurveAttacker attacker = new InvalidCurveAttacker(config, config.createConfig());
         assertTrue(attacker.isVulnerable() == Boolean.FALSE);
     }
 
@@ -87,7 +87,7 @@ public class InvalidCurveAttackerTest {
         InvalidCurveAttackConfig config = new InvalidCurveAttackConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        InvalidCurveAttacker attacker = new InvalidCurveAttacker(config);
+        InvalidCurveAttacker attacker = new InvalidCurveAttacker(config, config.createConfig());
         assertTrue(attacker.isVulnerable() == Boolean.TRUE);
     }
 

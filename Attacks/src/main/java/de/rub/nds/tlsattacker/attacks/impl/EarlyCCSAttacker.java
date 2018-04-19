@@ -28,8 +28,8 @@ import java.util.List;
 
 public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
-    public EarlyCCSAttacker(EarlyCCSCommandConfig config) {
-        super(config);
+    public EarlyCCSAttacker(EarlyCCSCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
         WorkflowTrace workflowTrace = new WorkflowTrace();
         workflowTrace.addTlsAction(new SendAction(new ClientHelloMessage(tlsConfig)));
         List<ProtocolMessage> messageList = new LinkedList<>();

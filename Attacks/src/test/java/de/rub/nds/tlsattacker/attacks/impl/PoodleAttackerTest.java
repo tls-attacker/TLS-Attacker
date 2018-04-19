@@ -66,7 +66,7 @@ public class PoodleAttackerTest {
         PoodleCommandConfig config = new PoodleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        PoodleAttacker attacker = new PoodleAttacker(config);
+        PoodleAttacker attacker = new PoodleAttacker(config, config.createConfig());
         assertFalse(attacker.isVulnerable());
     }
 
@@ -78,7 +78,7 @@ public class PoodleAttackerTest {
         PoodleCommandConfig config = new PoodleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        PoodleAttacker attacker = new PoodleAttacker(config);
+        PoodleAttacker attacker = new PoodleAttacker(config, config.createConfig());
         assertTrue(attacker.isVulnerable());
     }
 

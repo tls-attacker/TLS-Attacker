@@ -56,8 +56,8 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     private GuessProvider guessProvider;
 
-    public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config) {
-        super(config);
+    public PskBruteForcerAttackClient(PskBruteForcerAttackClientCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
     }
 
     private State executeHandshakeWithClient() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
         tlsConfig.setWorkflowExecutorShouldClose(false);
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Started TLS-Server - waiting for a client to connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
@@ -166,7 +166,7 @@ public class PskBruteForcerAttackClient extends Attacker<PskBruteForcerAttackCli
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Started TLS-Server - waiting for a client to Connect...");
         State state = executeClientHelloWorkflow(tlsConfig);
         TlsContext tlsContext = state.getTlsContext();

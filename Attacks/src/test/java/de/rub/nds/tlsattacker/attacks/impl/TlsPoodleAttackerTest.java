@@ -68,7 +68,7 @@ public class TlsPoodleAttackerTest {
         TLSPoodleCommandConfig config = new TLSPoodleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        TLSPoodleAttacker attacker = new TLSPoodleAttacker(config);
+        TLSPoodleAttacker attacker = new TLSPoodleAttacker(config, config.createConfig());
         assertFalse(attacker.isVulnerable());
     }
 

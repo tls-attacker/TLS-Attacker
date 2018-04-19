@@ -66,7 +66,7 @@ public class PaddingOracleAttackerTest {
         PaddingOracleCommandConfig config = new PaddingOracleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        PaddingOracleAttacker attacker = new PaddingOracleAttacker(config);
+        PaddingOracleAttacker attacker = new PaddingOracleAttacker(config, config.createConfig());
         assertFalse(attacker.isVulnerable());
     }
 
@@ -78,7 +78,7 @@ public class PaddingOracleAttackerTest {
         PaddingOracleCommandConfig config = new PaddingOracleCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        PaddingOracleAttacker attacker = new PaddingOracleAttacker(config);
+        PaddingOracleAttacker attacker = new PaddingOracleAttacker(config, config.createConfig());
         assertTrue(attacker.isVulnerable());
     }
 

@@ -73,7 +73,7 @@ public class Cve20162107AttackerTest {
         Cve20162107CommandConfig config = new Cve20162107CommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        Cve20162107Attacker attacker = new Cve20162107Attacker(config);
+        Cve20162107Attacker attacker = new Cve20162107Attacker(config, config.createConfig());
         assertFalse(attacker.isVulnerable());
     }
 
@@ -85,7 +85,7 @@ public class Cve20162107AttackerTest {
         Cve20162107CommandConfig config = new Cve20162107CommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        Cve20162107Attacker attacker = new Cve20162107Attacker(config);
+        Cve20162107Attacker attacker = new Cve20162107Attacker(config, config.createConfig());
         assertTrue(attacker.isVulnerable());
     }
 

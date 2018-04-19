@@ -108,53 +108,55 @@ public class Main {
         Attacker<? extends TLSDelegateConfig> attacker = null;
         switch (jc.getParsedCommand()) {
             case BleichenbacherCommandConfig.ATTACK_COMMAND:
-                attacker = new BleichenbacherAttacker(bleichenbacherTest);
+                attacker = new BleichenbacherAttacker(bleichenbacherTest, bleichenbacherTest.createConfig());
                 break;
             case InvalidCurveAttackConfig.ATTACK_COMMAND:
-                attacker = new InvalidCurveAttacker(ellipticTest);
+                attacker = new InvalidCurveAttacker(ellipticTest, ellipticTest.createConfig());
                 break;
             case HeartbleedCommandConfig.ATTACK_COMMAND:
-                attacker = new HeartbleedAttacker(heartbleed);
+                attacker = new HeartbleedAttacker(heartbleed, heartbleed.createConfig());
                 break;
             // case Lucky13CommandConfig.ATTACK_COMMAND:
             // attacker = new Lucky13Attacker(lucky13);
             // break;
             case TLSPoodleCommandConfig.ATTACK_COMMAND:
-                attacker = new TLSPoodleAttacker(tlsPoodle);
+                attacker = new TLSPoodleAttacker(tlsPoodle, tlsPoodle.createConfig());
                 break;
             case PaddingOracleCommandConfig.ATTACK_COMMAND:
-                attacker = new PaddingOracleAttacker(paddingOracle);
+                attacker = new PaddingOracleAttacker(paddingOracle, paddingOracle.createConfig());
                 break;
             case Cve20162107CommandConfig.ATTACK_COMMAND:
-                attacker = new Cve20162107Attacker(cve20162107);
+                attacker = new Cve20162107Attacker(cve20162107, cve20162107.createConfig());
                 break;
             case WinshockCommandConfig.ATTACK_COMMAND:
-                attacker = new WinshockAttacker(winshock);
+                attacker = new WinshockAttacker(winshock, winshock.createConfig());
                 break;
             case TooManyAlgorithmsAttackConfig.ATTACK_COMMAND:
-                attacker = new TooManyAlgorithmsAttacker(tooManyAlgorithms);
+                attacker = new TooManyAlgorithmsAttacker(tooManyAlgorithms, tooManyAlgorithms.createConfig());
                 break;
             // case DtlsPaddingOracleAttackCommandConfig.ATTACK_COMMAND:
             // attacker = new
             // DtlsPaddingOracleAttacker(dtlsPaddingOracleAttackTest);
             // break;
             case EarlyCCSCommandConfig.ATTACK_COMMAND:
-                attacker = new EarlyCCSAttacker(earlyCCS);
+                attacker = new EarlyCCSAttacker(earlyCCS, earlyCCS.createConfig());
                 break;
             case PoodleCommandConfig.ATTACK_COMMAND:
-                attacker = new PoodleAttacker(poodle);
+                attacker = new PoodleAttacker(poodle, poodle.createConfig());
                 break;
             case SimpleMitmProxyCommandConfig.ATTACK_COMMAND:
-                attacker = new SimpleMitmProxy(simpleMitmProxy);
+                attacker = new SimpleMitmProxy(simpleMitmProxy, simpleMitmProxy.createConfig());
                 break;
             case PskBruteForcerAttackClientCommandConfig.ATTACK_COMMAND:
-                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest);
+                attacker = new PskBruteForcerAttackClient(pskBruteForcerAttackClientTest,
+                        pskBruteForcerAttackClientTest.createConfig());
                 break;
             case PskBruteForcerAttackServerCommandConfig.ATTACK_COMMAND:
-                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest);
+                attacker = new PskBruteForcerAttackServer(pskBruteForcerAttackServerTest,
+                        pskBruteForcerAttackServerTest.createConfig());
                 break;
             case DrownCommandConfig.COMMAND:
-                attacker = new DrownAttacker(drownConfig);
+                attacker = new DrownAttacker(drownConfig, drownConfig.createConfig());
                 break;
             // case TokenBindingMitmCommandConfig.ATTACK_COMMAND:
             // attacker = new TokenBindingMitm(tokenBindingMitm);

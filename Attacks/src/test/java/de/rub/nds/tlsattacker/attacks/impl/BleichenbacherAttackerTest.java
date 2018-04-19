@@ -70,7 +70,7 @@ public class BleichenbacherAttackerTest {
         BleichenbacherCommandConfig config = new BleichenbacherCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        BleichenbacherAttacker attacker = new BleichenbacherAttacker(config);
+        BleichenbacherAttacker attacker = new BleichenbacherAttacker(config, config.createConfig());
         assertFalse(attacker.isVulnerable());
     }
 
@@ -82,7 +82,7 @@ public class BleichenbacherAttackerTest {
         BleichenbacherCommandConfig config = new BleichenbacherCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        BleichenbacherAttacker attacker = new BleichenbacherAttacker(config);
+        BleichenbacherAttacker attacker = new BleichenbacherAttacker(config, config.createConfig());
         assertTrue(attacker.isVulnerable());
     }
 

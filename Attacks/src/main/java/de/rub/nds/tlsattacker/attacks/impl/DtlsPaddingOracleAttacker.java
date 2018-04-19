@@ -62,9 +62,9 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
     private WorkflowTrace trace;
     private final Config tlsConfig;
 
-    public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config) {
-        super(config);
-        tlsConfig = config.createConfig();
+    public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
+        tlsConfig = getBaseConfig();
     }
 
     @Override

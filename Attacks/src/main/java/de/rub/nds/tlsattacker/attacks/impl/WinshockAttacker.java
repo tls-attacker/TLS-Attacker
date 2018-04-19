@@ -32,13 +32,13 @@ import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowTraceType;
  */
 public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
-    public WinshockAttacker(WinshockCommandConfig config) {
-        super(config);
+    public WinshockAttacker(WinshockCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = config.createConfig();
+        Config tlsConfig = getBaseConfig();
         tlsConfig.setClientAuthentication(true);
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);

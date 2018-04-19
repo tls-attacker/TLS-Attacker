@@ -41,9 +41,9 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     private final Config tlsConfig;
 
-    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig) {
-        super(paddingOracleConfig);
-        tlsConfig = paddingOracleConfig.createConfig();
+    public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
+        super(paddingOracleConfig, baseConfig);
+        tlsConfig = getBaseConfig();
     }
 
     @Override

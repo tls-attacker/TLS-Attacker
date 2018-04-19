@@ -65,7 +65,7 @@ public class EarlyCCSAttackerTest {
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
+        EarlyCCSAttacker attacker = new EarlyCCSAttacker(config, config.createConfig());
         assertFalse(attacker.isVulnerable());
     }
 
@@ -77,7 +77,7 @@ public class EarlyCCSAttackerTest {
         EarlyCCSCommandConfig config = new EarlyCCSCommandConfig(new GeneralAttackDelegate());
         ClientDelegate delegate = (ClientDelegate) config.getDelegate(ClientDelegate.class);
         delegate.setHost(server.host + ":" + server.port);
-        EarlyCCSAttacker attacker = new EarlyCCSAttacker(config);
+        EarlyCCSAttacker attacker = new EarlyCCSAttacker(config, config.createConfig());
         assertTrue(attacker.isVulnerable());
     }
 

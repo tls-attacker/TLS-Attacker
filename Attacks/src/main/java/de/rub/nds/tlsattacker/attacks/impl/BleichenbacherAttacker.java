@@ -45,13 +45,12 @@ import java.util.List;
  */
 public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig> {
 
-    private final Config tlsConfig;
+    private Config tlsConfig;
 
     private BleichenbacherWorkflowType vulnerableType;
 
-    public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig) {
-        super(bleichenbacherConfig);
-        tlsConfig = bleichenbacherConfig.createConfig();
+    public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
+        super(bleichenbacherConfig, baseConfig);
     }
 
     public State executeTlsFlow(BleichenbacherWorkflowType type, byte[] encryptedPMS) {
@@ -66,6 +65,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public Boolean isVulnerable() {
+        tlsConfig = getBaseConfig();
         RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
@@ -208,7 +208,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
                     + "is not equal to the server public key length. Have you selected the correct value?");
         }
-        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, config,
+        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getBaseConfig(),
                 extractValidFingerprint(publicKey, tlsConfig.getDefaultHighestClientProtocolVersion()), null,
                 vulnerableType);
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());
