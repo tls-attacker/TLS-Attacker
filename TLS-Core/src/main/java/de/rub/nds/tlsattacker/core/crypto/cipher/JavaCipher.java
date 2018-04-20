@@ -8,6 +8,7 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.security.InvalidAlgorithmParameterException;
@@ -123,7 +124,10 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             cipher = Cipher.getInstance(algorithm.getJavaName());
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), decryptIv);
             byte[] result = cipher.doFinal(someBytes);
-            this.iv = cipher.getIV();
+            if (result.length >= getBlocksize()) {
+                this.iv = new byte[getBlocksize()];
+                System.arraycopy(someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
+            }
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
@@ -153,7 +157,10 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             cipher = Cipher.getInstance(algorithm.getJavaName());
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), decryptIv);
             byte[] result = cipher.doFinal(someBytes);
-            this.iv = cipher.getIV();
+            if (result.length >= getBlocksize()) {
+                this.iv = new byte[getBlocksize()];
+                System.arraycopy(someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
+            }
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
@@ -170,7 +177,10 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, algorithm.getJavaName()), decryptIv);
             cipher.updateAAD(additionAuthenticatedData);
             byte[] result = cipher.doFinal(someBytes);
-            this.iv = cipher.getIV();
+            if (result.length >= getBlocksize()) {
+                this.iv = new byte[getBlocksize()];
+                System.arraycopy(someBytes, someBytes.length - getBlocksize(), this.iv, 0, getBlocksize());
+            }
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
