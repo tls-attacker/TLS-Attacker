@@ -220,6 +220,16 @@ public class HandshakeByteLength {
      * Length of the Supplemental Data Field
      */
     public static final int SUPPLEMENTAL_DATA_LENGTH = 3;
+    
+    /**
+     * Length of the Supplemental Data Entry Type
+     */
+    public static final int SUPPLEMENTAL_DATA_ENTRY_TYPE_LENGTH = 2;
+
+    /**
+     * Length of the Supplemental Data Entry
+     */
+    public static final int SUPPLEMENTAL_DATA_ENTRY_LENGTH = 2;
 
     private HandshakeByteLength() {
     }

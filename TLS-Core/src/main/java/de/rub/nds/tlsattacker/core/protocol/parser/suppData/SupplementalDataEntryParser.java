@@ -9,7 +9,7 @@
 package de.rub.nds.tlsattacker.core.protocol.parser.suppData;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.ExtensionByteLength;
+import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.suppData.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 
@@ -29,12 +29,12 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
     }
     
     private void parseSupplementalDataEntryType(SupplementalDataEntry entry) {
-        entry.setSupplementalDataEntryType(parseIntField(ExtensionByteLength.SUPPLEMENTAL_DATA_ENTRY_TYPE_LENGTH));
+        entry.setSupplementalDataEntryType(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_TYPE_LENGTH));
         LOGGER.debug("SupplementalDataEntryType: " + entry.getSupplementalDataEntryType().getValue());
     }
     
     private void parseSupplementalDataEntryLength(SupplementalDataEntry entry) {
-        entry.setSupplementalDataEntryLength(parseIntField(ExtensionByteLength.SUPPLEMENTAL_DATA_ENTRY_LENGTH));
+        entry.setSupplementalDataEntryLength(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_ENTRY_LENGTH));
         LOGGER.debug("SupplementalDataEntryLength: " + entry.getSupplementalDataEntryLength().getValue());
     }
     

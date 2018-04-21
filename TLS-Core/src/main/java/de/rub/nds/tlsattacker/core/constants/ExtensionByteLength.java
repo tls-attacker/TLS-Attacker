@@ -236,16 +236,6 @@ public class ExtensionByteLength {
 
     public static final int RENEGOTIATION_INFO = 1;
 
-    /**
-     * Length of the Supplemental Data Entry Type
-     */
-    public static final int SUPPLEMENTAL_DATA_ENTRY_TYPE_LENGTH = 2;
-
-    /**
-     * Length of the Supplemental Data Entry
-     */
-    public static final int SUPPLEMENTAL_DATA_ENTRY_LENGTH = 2;
-
     private ExtensionByteLength() {
     }
 }
