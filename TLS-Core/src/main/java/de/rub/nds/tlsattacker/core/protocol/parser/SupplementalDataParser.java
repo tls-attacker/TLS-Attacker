@@ -12,9 +12,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
+import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.message.SupplementalDataMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupplementalData.SupplementalDataEntry;
-import de.rub.nds.tlsattacker.core.protocol.parser.extension.SupplementalDataEntryParser;
+import de.rub.nds.tlsattacker.core.protocol.message.suppData.SupplementalDataEntry;
+import de.rub.nds.tlsattacker.core.protocol.parser.suppData.SupplementalDataEntryParser;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,27 +45,33 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
         LOGGER.debug("Parsing SupplementalDataMessage");
         parseSupplementalDataLength(msg);
         parseSupplementalDataBytes(msg);
+        parseSupplementalDataEntries(msg);
     }
 
     @Override
     protected SupplementalDataMessage createHandshakeMessage() {
         return new SupplementalDataMessage();
     }
-    
+
     private void parseSupplementalDataLength(SupplementalDataMessage msg) {
         msg.setSupplementalDataLength(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_LENGTH));
         LOGGER.debug("SupplementalDataLength: " + msg.getSupplementalDataLength().getValue());
     }
     
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
-        byte[] supplementalDataBytes = parseByteArrayField(msg.getSupplementalDataLength().getValue());
-        msg.setSupplementalDataBytes(supplementalDataBytes);
+        msg.setSupplementalDataBytes(parseByteArrayField(msg.getSupplementalDataLength().getValue()));
         LOGGER.debug("SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
-        List<SupplementalDataEntry> entryList = new LinkedList<>();
+    }
+
+    private void parseSupplementalDataEntries(SupplementalDataMessage msg) {
         int pointer = 0;
-        while (pointer < supplementalDataBytes.length) {
-            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(pointer, supplementalDataBytes);
+        List<SupplementalDataEntry> entryList = new LinkedList<>();
+        while (pointer < msg.getSupplementalDataLength().getValue()) {
+            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(pointer, msg.getSupplementalDataBytes().getValue());
             entryList.add(parser.parse());
+            if (pointer == parser.getPointer()) {
+                throw new ParserException("Ran into infinite Loop while parsing SupplementalDataEntries");
+            }
             pointer = parser.getPointer();
         }
         msg.setEntries(entryList);
