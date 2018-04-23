@@ -19,9 +19,6 @@ import de.rub.nds.tlsattacker.core.protocol.parser.suppData.SupplementalDataEntr
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * TODO
- */
 public class SupplementalDataParser extends HandshakeMessageParser<SupplementalDataMessage> {
 
     /**

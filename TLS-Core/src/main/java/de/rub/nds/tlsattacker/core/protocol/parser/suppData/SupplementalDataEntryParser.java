@@ -41,7 +41,8 @@ public class SupplementalDataEntryParser extends Parser<SupplementalDataEntry> {
 
     private void parseSupplementalDataEntry(SupplementalDataEntry entry) {
         entry.setSupplementalDataEntry(parseByteArrayField(entry.getSupplementalDataEntryLength().getValue()));
-        LOGGER.debug("SupplementalDataEntry: " + ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
+        LOGGER.debug("SupplementalDataEntry: "
+                + ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
     }
 
 }
