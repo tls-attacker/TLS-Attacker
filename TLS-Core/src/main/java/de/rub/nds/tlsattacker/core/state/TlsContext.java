@@ -372,6 +372,20 @@ public class TlsContext {
 
     private BigInteger clientRSAPrivateKey;
 
+    private BigInteger clientDsaPrivateKey;
+
+    private BigInteger serverDsaPrivateKey;
+
+    private BigInteger dsaPrimeP;
+
+    private BigInteger dsaPrimeQ;
+
+    private BigInteger dsaGenerator;
+
+    private BigInteger serverDsaPublicKey;
+
+    private BigInteger clientDsaPublicKey;
+
     private List<NamedGroup> clientNamedGroupsList;
 
     private List<NamedGroup> serverNamedGroupsList;
@@ -1990,5 +2004,61 @@ public class TlsContext {
 
     public void setClientDhModulus(BigInteger clientDhModulus) {
         this.clientDhModulus = clientDhModulus;
+    }
+
+    public BigInteger getClientDsaPrivateKey() {
+        return clientDsaPrivateKey;
+    }
+
+    public void setClientDsaPrivateKey(BigInteger clientDsaPrivateKey) {
+        this.clientDsaPrivateKey = clientDsaPrivateKey;
+    }
+
+    public BigInteger getServerDsaPrivateKey() {
+        return serverDsaPrivateKey;
+    }
+
+    public void setServerDsaPrivateKey(BigInteger serverDsaPrivateKey) {
+        this.serverDsaPrivateKey = serverDsaPrivateKey;
+    }
+
+    public BigInteger getDsaPrimeP() {
+        return dsaPrimeP;
+    }
+
+    public void setDsaPrimeP(BigInteger dsaPrimeP) {
+        this.dsaPrimeP = dsaPrimeP;
+    }
+
+    public BigInteger getDsaPrimeQ() {
+        return dsaPrimeQ;
+    }
+
+    public void setDsaPrimeQ(BigInteger dsaPrimeQ) {
+        this.dsaPrimeQ = dsaPrimeQ;
+    }
+
+    public BigInteger getDsaGenerator() {
+        return dsaGenerator;
+    }
+
+    public void setDsaGenerator(BigInteger dsaGenerator) {
+        this.dsaGenerator = dsaGenerator;
+    }
+
+    public BigInteger getServerDsaPublicKey() {
+        return serverDsaPublicKey;
+    }
+
+    public void setServerDsaPublicKey(BigInteger serverDsaPublicKey) {
+        this.serverDsaPublicKey = serverDsaPublicKey;
+    }
+
+    public BigInteger getClientDsaPublicKey() {
+        return clientDsaPublicKey;
+    }
+
+    public void setClientDsaPublicKey(BigInteger clientDsaPublicKey) {
+        this.clientDsaPublicKey = clientDsaPublicKey;
     }
 }

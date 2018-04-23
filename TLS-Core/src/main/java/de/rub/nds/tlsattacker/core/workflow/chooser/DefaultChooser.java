@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
@@ -33,7 +32,6 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
-import java.util.LinkedList;
 import java.util.List;
 
 public class DefaultChooser extends Chooser {
@@ -844,6 +842,42 @@ public class DefaultChooser extends Chooser {
             return context.getServerKeyShareStoreEntry();
         } else {
             return config.getDefaultServerKeyShareEntry();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaServerPublicKey() {
+        if (context.getServerDsaPublicKey() != null) {
+            return context.getServerDsaPublicKey();
+        } else {
+            return config.getDefaultServerDsaPublicKey();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaPrimeP() {
+        if (context.getDsaPrimeP() != null) {
+            return context.getDsaPrimeP();
+        } else {
+            return config.getDefaultDsaPrimeP();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaPrimeQ() {
+        if (context.getDsaPrimeQ() != null) {
+            return context.getDsaPrimeQ();
+        } else {
+            return config.getDefaultDsaPrimeQ();
+        }
+    }
+
+    @Override
+    public BigInteger getDsaGenerator() {
+        if (context.getDsaGenerator() != null) {
+            return context.getDsaGenerator();
+        } else {
+            return config.getDefaultDsaGenerator();
         }
     }
 }

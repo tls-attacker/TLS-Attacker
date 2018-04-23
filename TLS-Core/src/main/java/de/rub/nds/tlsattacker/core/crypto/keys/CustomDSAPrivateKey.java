@@ -9,22 +9,33 @@
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import java.math.BigInteger;
-import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.DSAParams;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.spec.DSAParameterSpec;
 
-public class CustomDSAPrivateKey implements RSAPrivateKey {
+public class CustomDSAPrivateKey implements DSAPrivateKey {
 
-    private final BigInteger privateExponent;
+    private final BigInteger privateKey;
 
-    private final BigInteger modulus;
+    private final BigInteger primeP;
+    private final BigInteger primeQ;
+    private final BigInteger generator;
 
-    public CustomDSAPrivateKey(BigInteger privateExponent, BigInteger modulus) {
-        this.privateExponent = privateExponent;
-        this.modulus = modulus;
+    public CustomDSAPrivateKey(BigInteger privateKey, BigInteger primeP, BigInteger primeQ, BigInteger generator) {
+        this.privateKey = privateKey;
+        this.primeP = primeP;
+        this.primeQ = primeQ;
+        this.generator = generator;
     }
 
     @Override
-    public BigInteger getPrivateExponent() {
-        return privateExponent;
+    public BigInteger getX() {
+        return privateKey;
+    }
+
+    @Override
+    public DSAParams getParams() {
+        return new DSAParameterSpec(primeP, primeQ, generator);
     }
 
     @Override
@@ -34,17 +45,12 @@ public class CustomDSAPrivateKey implements RSAPrivateKey {
 
     @Override
     public String getFormat() {
-        return "None";
+        return "DSA";
     }
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("CustomKey cannot be encoded");
-    }
-
-    @Override
-    public BigInteger getModulus() {
-        return modulus;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

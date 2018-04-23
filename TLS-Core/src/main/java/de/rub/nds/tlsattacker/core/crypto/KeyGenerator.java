@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -19,6 +20,8 @@ import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import javax.crypto.interfaces.DHPrivateKey;
+import org.bouncycastle.crypto.params.DSAParameters;
+import org.bouncycastle.crypto.params.DSAPrivateKeyParameters;
 
 public class KeyGenerator {
 
@@ -60,6 +63,12 @@ public class KeyGenerator {
     }
 
     public static DSAPrivateKey getDSAPrivateKey(Chooser chooser) {
-        return null;
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            // TODO
+            throw new UnsupportedOperationException("DSA currently only supported for Servers");
+        } else {
+            return new CustomDSAPrivateKey(chooser.getConfig().getDefaultServerDsaPrivateKey(), chooser.getDsaPrimeP(),
+                    chooser.getDsaPrimeQ(), chooser.getDsaGenerator());
+        }
     }
 }

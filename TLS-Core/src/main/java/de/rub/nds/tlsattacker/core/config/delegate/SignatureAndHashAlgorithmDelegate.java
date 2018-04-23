@@ -39,6 +39,7 @@ public class SignatureAndHashAlgorithmDelegate extends Delegate {
         if (signatureAndHashAlgorithms != null) {
             config.setAddSignatureAndHashAlgorithmsExtension(true);
             config.setSupportedSignatureAndHashAlgorithms(signatureAndHashAlgorithms);
+            config.setDefaultSelectedSignatureAndHashAlgorithm(signatureAndHashAlgorithms.get(0));
         }
     }
 }

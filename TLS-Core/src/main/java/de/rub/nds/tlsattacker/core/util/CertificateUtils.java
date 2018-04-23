@@ -15,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
+import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -106,6 +107,50 @@ public class CertificateUtils {
         }
         PublicKey key = parsePublicKey(cert);
         return key != null && key instanceof RSAPublicKey;
+    }
+
+    public static boolean hasDsaParameters(Certificate cert) {
+        if (cert.isEmpty()) {
+            return false;
+        }
+        PublicKey key = parsePublicKey(cert);
+        return key != null && key instanceof DSAPublicKey;
+    }
+
+    public static BigInteger extractDsaPublicKey(Certificate cert) {
+        if (hasDsaParameters(cert)) {
+            DSAPublicKey parsePublicKey = (DSAPublicKey) parsePublicKey(cert);
+            return parsePublicKey.getY();
+        } else {
+            return null;
+        }
+    }
+
+    public static BigInteger extractDsaGenerator(Certificate cert) {
+        if (hasDsaParameters(cert)) {
+            DSAPublicKey parsePublicKey = (DSAPublicKey) parsePublicKey(cert);
+            return parsePublicKey.getParams().getG();
+        } else {
+            return null;
+        }
+    }
+
+    public static BigInteger extractDsaPrimeQ(Certificate cert) {
+        if (hasDsaParameters(cert)) {
+            DSAPublicKey parsePublicKey = (DSAPublicKey) parsePublicKey(cert);
+            return parsePublicKey.getParams().getQ();
+        } else {
+            return null;
+        }
+    }
+
+    public static BigInteger extractDsaPrimeP(Certificate cert) {
+        if (hasDsaParameters(cert)) {
+            DSAPublicKey parsePublicKey = (DSAPublicKey) parsePublicKey(cert);
+            return parsePublicKey.getParams().getP();
+        } else {
+            return null;
+        }
     }
 
     public static DHPublicKeyParameters extractDHPublicKeyParameters(Certificate cert) throws IOException {

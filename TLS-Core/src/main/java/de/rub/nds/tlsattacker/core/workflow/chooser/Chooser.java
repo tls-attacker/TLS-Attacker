@@ -241,4 +241,13 @@ public abstract class Chooser {
     public abstract List<KeyShareStoreEntry> getClientKeyShares();
 
     public abstract KeyShareStoreEntry getServerKeyShare();
+
+    public abstract BigInteger getDsaServerPublicKey();
+
+    public abstract BigInteger getDsaPrimeP();
+
+    public abstract BigInteger getDsaPrimeQ();
+
+    public abstract BigInteger getDsaGenerator();
+
 }

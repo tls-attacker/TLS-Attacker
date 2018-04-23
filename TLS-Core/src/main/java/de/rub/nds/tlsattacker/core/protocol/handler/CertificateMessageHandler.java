@@ -30,6 +30,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -113,6 +114,17 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     tlsContext.setServerRSAPrivateKey(tlsContext.getConfig().getDefaultServerRSAPrivateKey());
                     tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
                 }
+            } else if (CertificateUtils.hasDsaParameters(cert)) {
+                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+                    // Currently not supported
+                    throw new UnsupportedOperationException();
+                } else {
+                    tlsContext.setServerDsaPublicKey(CertificateUtils.extractDsaPublicKey(cert));
+                    tlsContext.setDsaPrimeP(CertificateUtils.extractDsaPrimeP(cert));
+                    tlsContext.setDsaPrimeQ(CertificateUtils.extractDsaPrimeQ(cert));
+                    tlsContext.setDsaGenerator(CertificateUtils.extractDsaGenerator(cert));
+                }
+
             } else {
                 LOGGER.warn("Could not adjust Certificate publicKey. Ceritifcate does not seem to Contain a PublicKey");
             }
@@ -170,9 +182,9 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     for (ExtensionMessage extension : entry.getExtensions()) {
                         HandshakeMessageType handshakeMessageType = HandshakeMessageType.CERTIFICATE;
                         if (extension instanceof HRRKeyShareExtensionMessage) { // TODO
-                                                                                // fix
-                                                                                // design
-                                                                                // flaw
+                            // fix
+                            // design
+                            // flaw
                             handshakeMessageType = HandshakeMessageType.HELLO_RETRY_REQUEST;
                         }
                         ExtensionHandler handler = HandlerFactory.getExtensionHandler(tlsContext,
