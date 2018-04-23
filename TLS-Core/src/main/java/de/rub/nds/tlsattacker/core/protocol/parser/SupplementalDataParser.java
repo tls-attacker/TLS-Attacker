@@ -57,17 +57,19 @@ public class SupplementalDataParser extends HandshakeMessageParser<SupplementalD
         msg.setSupplementalDataLength(parseIntField(HandshakeByteLength.SUPPLEMENTAL_DATA_LENGTH));
         LOGGER.debug("SupplementalDataLength: " + msg.getSupplementalDataLength().getValue());
     }
-    
+
     private void parseSupplementalDataBytes(SupplementalDataMessage msg) {
         msg.setSupplementalDataBytes(parseByteArrayField(msg.getSupplementalDataLength().getValue()));
-        LOGGER.debug("SupplementalDataBytes: " + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
+        LOGGER.debug("SupplementalDataBytes: "
+                + ArrayConverter.bytesToHexString(msg.getSupplementalDataBytes().getValue()));
     }
 
     private void parseSupplementalDataEntries(SupplementalDataMessage msg) {
         int pointer = 0;
         List<SupplementalDataEntry> entryList = new LinkedList<>();
         while (pointer < msg.getSupplementalDataLength().getValue()) {
-            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(pointer, msg.getSupplementalDataBytes().getValue());
+            SupplementalDataEntryParser parser = new SupplementalDataEntryParser(pointer, msg
+                    .getSupplementalDataBytes().getValue());
             entryList.add(parser.parse());
             if (pointer == parser.getPointer()) {
                 throw new ParserException("Ran into infinite Loop while parsing SupplementalDataEntries");

@@ -37,7 +37,8 @@ public class SupplementalDataEntry {
     }
 
     public void setSupplementalDataEntry(byte[] supplementalDataEntry) {
-        this.supplementalDataEntry = ModifiableVariableFactory.safelySetValue(this.supplementalDataEntry, supplementalDataEntry);
+        this.supplementalDataEntry = ModifiableVariableFactory.safelySetValue(this.supplementalDataEntry,
+                supplementalDataEntry);
     }
 
     public ModifiableInteger getSupplementalDataEntryType() {
