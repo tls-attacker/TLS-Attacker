@@ -762,6 +762,7 @@ public enum CipherSuite {
         list.add(TLS_ECDH_ECDSA_WITH_RC4_128_SHA);
         list.add(TLS_ECDHE_ECDSA_WITH_RC4_128_SHA);
         list.add(TLS_ECDH_RSA_WITH_RC4_128_SHA);
+        list.add(TLS_ECDH_anon_WITH_NULL_SHA);
         list.add(TLS_SRP_SHA_WITH_AES_128_CBC_SHA);
         list.add(TLS_SRP_SHA_WITH_AES_256_CBC_SHA);
         list.add(TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256);

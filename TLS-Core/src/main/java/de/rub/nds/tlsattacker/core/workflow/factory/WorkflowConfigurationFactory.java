@@ -593,6 +593,7 @@ public class WorkflowConfigurationFactory {
                 case ECDH_ECDSA:
                 case ECDH_RSA:
                 case ECDHE_RSA:
+                case ECDH_ANON:
                     return new ECDHClientKeyExchangeMessage(config);
                 case DHE_DSS:
                 case DHE_RSA:
@@ -635,6 +636,7 @@ public class WorkflowConfigurationFactory {
             switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
                 case ECDHE_ECDSA:
                 case ECDHE_RSA:
+                case ECDH_ANON:
                     messages.add(new ECDHEServerKeyExchangeMessage(config));
                     break;
                 case DHE_DSS:
