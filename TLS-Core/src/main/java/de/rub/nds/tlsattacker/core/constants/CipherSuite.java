@@ -656,10 +656,12 @@ public enum CipherSuite {
         list.add(TLS_DH_RSA_WITH_AES_128_CBC_SHA);
         list.add(TLS_DHE_DSS_WITH_AES_128_CBC_SHA);
         list.add(TLS_DHE_RSA_WITH_AES_128_CBC_SHA);
+        list.add(TLS_DH_anon_WITH_AES_128_CBC_SHA);
         list.add(TLS_DH_DSS_WITH_AES_256_CBC_SHA);
         list.add(TLS_DH_RSA_WITH_AES_256_CBC_SHA);
         list.add(TLS_DHE_DSS_WITH_AES_256_CBC_SHA);
         list.add(TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
+        list.add(TLS_DH_anon_WITH_AES_256_CBC_SHA);
         list.add(TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA);
         list.add(TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA);
         list.add(TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA);
