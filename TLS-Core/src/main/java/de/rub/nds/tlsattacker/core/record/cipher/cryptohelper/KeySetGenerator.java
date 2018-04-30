@@ -31,6 +31,7 @@ import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.digests.MD5Digest;
 
 import com.google.common.primitives.Bytes;
 
@@ -120,23 +121,52 @@ public class KeySetGenerator {
 
     private static void deriveExportKeys(KeySet keySet, TlsContext context) throws CryptoException {
         ProtocolVersion protocolVersion = context.getChooser().getSelectedProtocolVersion();
+        byte[] clientRandom = context.getChooser().getClientRandom();
+        byte[] serverRandom = context.getChooser().getServerRandom();
+
+        if (protocolVersion == ProtocolVersion.SSL3) {
+            deriveSSL3ExportKeys(keySet, clientRandom, serverRandom);
+            return;
+        }
+
+        byte[] clientAndServerRandom = ArrayConverter.concatenate(clientRandom, serverRandom);
         CipherSuite cipherSuite = context.getChooser().getSelectedCipherSuite();
-        byte[] concatenatedRandomValues = ArrayConverter.concatenate(context.getChooser().getClientRandom(), context
-                .getChooser().getServerRandom());
         PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
         int keySize = AlgorithmResolver.getCipher(cipherSuite).getKeySize();
 
         keySet.setClientWriteKey(PseudoRandomFunction.compute(prfAlgorithm, keySet.getClientWriteKey(),
-                PseudoRandomFunction.CLIENT_WRITE_KEY_LABEL, concatenatedRandomValues, keySize));
+                PseudoRandomFunction.CLIENT_WRITE_KEY_LABEL, clientAndServerRandom, keySize));
         keySet.setServerWriteKey(PseudoRandomFunction.compute(prfAlgorithm, keySet.getServerWriteKey(),
-                PseudoRandomFunction.SERVER_WRITE_KEY_LABEL, concatenatedRandomValues, keySize));
+                PseudoRandomFunction.SERVER_WRITE_KEY_LABEL, clientAndServerRandom, keySize));
 
         int blockSize = AlgorithmResolver.getCipher(cipherSuite).getBlocksize();
         byte[] emptySecret = {};
         byte[] ivBlock = PseudoRandomFunction.compute(prfAlgorithm, emptySecret, PseudoRandomFunction.IV_BLOCK_LABEL,
-                concatenatedRandomValues, 2 * blockSize);
+                clientAndServerRandom, 2 * blockSize);
         keySet.setClientWriteIv(Arrays.copyOfRange(ivBlock, 0, blockSize));
         keySet.setServerWriteIv(Arrays.copyOfRange(ivBlock, blockSize, 2 * blockSize));
+    }
+
+    private static void md5Update(MD5Digest md5, byte[] bytes) {
+        // TOOD: Move to utility class?
+        md5.update(bytes, 0, bytes.length);
+    }
+
+    private static byte[] MD5(byte[]... byteArrays) {
+        MD5Digest md5 = new MD5Digest();
+        for (byte[] bytes : byteArrays) {
+            md5Update(md5, bytes);
+        }
+        byte[] md5Output = new byte[md5.getDigestSize()];
+        md5.doFinal(md5Output, 0);
+        return md5Output;
+    }
+
+    private static void deriveSSL3ExportKeys(KeySet keySet, byte[] clientRandom, byte[] serverRandom) {
+        keySet.setClientWriteKey(MD5(keySet.getClientWriteKey(), clientRandom, serverRandom));
+        keySet.setServerWriteKey(MD5(keySet.getServerWriteKey(), serverRandom, clientRandom));
+        keySet.setClientWriteIv(MD5(clientRandom, serverRandom));
+        keySet.setServerWriteIv(MD5(serverRandom, clientRandom));
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)

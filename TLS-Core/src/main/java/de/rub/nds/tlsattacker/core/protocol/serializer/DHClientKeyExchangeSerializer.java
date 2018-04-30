@@ -33,17 +33,13 @@ public class DHClientKeyExchangeSerializer<T extends DHClientKeyExchangeMessage>
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing DHClientKeyExchangeMessage");
-        if (!version.isSSL()) {
-            writeSerializedPublicKeyLength(msg);
-        }
-        writeSerializedPublicKey(msg);
-        return getAlreadySerialized();
+        return serializeDhParams();
     }
 
     protected byte[] serializeDhParams() {
-        if (!version.isSSL()) {
-            writeSerializedPublicKeyLength(msg);
-        }
+        // Contrary to what the SSLv3 RFC states, the message also includes the
+        // DH public key length
+        writeSerializedPublicKeyLength(msg);
         writeSerializedPublicKey(msg);
         return getAlreadySerialized();
     }
