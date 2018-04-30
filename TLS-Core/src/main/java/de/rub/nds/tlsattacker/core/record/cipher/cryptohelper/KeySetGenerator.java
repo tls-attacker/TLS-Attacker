@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.HKDFunction;
+import de.rub.nds.tlsattacker.core.crypto.MD5Utils;
 import de.rub.nds.tlsattacker.core.crypto.PseudoRandomFunction;
 import de.rub.nds.tlsattacker.core.crypto.SSLUtils;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
@@ -31,7 +32,6 @@ import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.digests.MD5Digest;
 
 import com.google.common.primitives.Bytes;
 
@@ -104,7 +104,6 @@ public class KeySetGenerator {
         if (protocolVersion.isSSL()) {
             keyBlock = SSLUtils.calculateKeyBlockSSL3(masterSecret, seed,
                     getSecretSetSize(protocolVersion, cipherSuite));
-            ;
         } else {
             PRFAlgorithm prfAlgorithm = AlgorithmResolver.getPRFAlgorithm(protocolVersion, cipherSuite);
             keyBlock = PseudoRandomFunction.compute(prfAlgorithm, masterSecret,
@@ -147,26 +146,11 @@ public class KeySetGenerator {
         keySet.setServerWriteIv(Arrays.copyOfRange(ivBlock, blockSize, 2 * blockSize));
     }
 
-    private static void md5Update(MD5Digest md5, byte[] bytes) {
-        // TOOD: Move to utility class?
-        md5.update(bytes, 0, bytes.length);
-    }
-
-    private static byte[] MD5(byte[]... byteArrays) {
-        MD5Digest md5 = new MD5Digest();
-        for (byte[] bytes : byteArrays) {
-            md5Update(md5, bytes);
-        }
-        byte[] md5Output = new byte[md5.getDigestSize()];
-        md5.doFinal(md5Output, 0);
-        return md5Output;
-    }
-
     private static void deriveSSL3ExportKeys(KeySet keySet, byte[] clientRandom, byte[] serverRandom) {
-        keySet.setClientWriteKey(MD5(keySet.getClientWriteKey(), clientRandom, serverRandom));
-        keySet.setServerWriteKey(MD5(keySet.getServerWriteKey(), serverRandom, clientRandom));
-        keySet.setClientWriteIv(MD5(clientRandom, serverRandom));
-        keySet.setServerWriteIv(MD5(serverRandom, clientRandom));
+        keySet.setClientWriteKey(MD5Utils.MD5(keySet.getClientWriteKey(), clientRandom, serverRandom));
+        keySet.setServerWriteKey(MD5Utils.MD5(keySet.getServerWriteKey(), serverRandom, clientRandom));
+        keySet.setClientWriteIv(MD5Utils.MD5(clientRandom, serverRandom));
+        keySet.setServerWriteIv(MD5Utils.MD5(serverRandom, clientRandom));
     }
 
     private static int getSecretSetSize(ProtocolVersion protocolVersion, CipherSuite cipherSuite)
