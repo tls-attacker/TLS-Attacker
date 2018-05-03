@@ -12,32 +12,41 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
-import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
 import java.security.spec.DSAParameterSpec;
 
-public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateKey {
+/**
+ *
+ * @author robert
+ */
+public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey {
 
-    private final BigInteger privateKey;
+    private final BigInteger p;
+    private final BigInteger q;
+    private final BigInteger g;
 
-    private final BigInteger primeP;
-    private final BigInteger primeQ;
-    private final BigInteger generator;
+    private final BigInteger publicKey;
 
-    public CustomDSAPrivateKey(BigInteger privateKey, BigInteger primeP, BigInteger primeQ, BigInteger generator) {
-        this.privateKey = privateKey;
-        this.primeP = primeP;
-        this.primeQ = primeQ;
-        this.generator = generator;
+    public CustomDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger publicKey) {
+        this.p = p;
+        this.q = q;
+        this.g = g;
+        this.publicKey = publicKey;
+    }
+    
+    @Override
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BigInteger getX() {
-        return privateKey;
+    public BigInteger getY() {
+        return publicKey;
     }
 
     @Override
     public DSAParams getParams() {
-        return new DSAParameterSpec(primeP, primeQ, generator);
+        return new DSAParameterSpec(p, q, g);
     }
 
     @Override
@@ -47,16 +56,11 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
 
     @Override
     public String getFormat() {
-        return "DSA";
+        return "None";
     }
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

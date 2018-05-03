@@ -61,7 +61,7 @@ public class CipherSuiteTest {
     public void testUnimplemented() {
         for (CipherSuite suite : CipherSuite.getNotImplemented()) {
             LOGGER.debug(suite.name());
-
+            System.out.println(suite.name());
         }
         LOGGER.debug("Not implemented: " + CipherSuite.getNotImplemented().size());
         LOGGER.debug("Implemented: " + CipherSuite.getImplemented().size());
@@ -80,5 +80,10 @@ public class CipherSuiteTest {
                 fail("" + suite + " is a duplicate in the getImplemented Ciphersuite list");
             }
         }
+    }
+
+    @Test
+    public void countImplemented() {
+        System.out.println("CipherSuites implemented: " + CipherSuite.getImplemented().size());
     }
 }

@@ -11,21 +11,27 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
-import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
-public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateKey {
+public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey {
+
+    private final BigInteger publicExponent;
 
     private final BigInteger modulus;
-    private final BigInteger privateExponent;
 
-    public CustomRSAPrivateKey(BigInteger modulus, BigInteger privateExponent) {
+    public CustomRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
+        this.publicExponent = publicExponent;
         this.modulus = modulus;
-        this.privateExponent = privateExponent;
     }
 
     @Override
-    public BigInteger getPrivateExponent() {
-        return privateExponent;
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BigInteger getPublicExponent() {
+        return publicExponent;
     }
 
     @Override
@@ -40,17 +46,12 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("CustomKey cannot be encoded");
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public BigInteger getModulus() {
         return modulus;
-    }
-
-    @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

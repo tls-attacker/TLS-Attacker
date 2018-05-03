@@ -8,6 +8,13 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomECPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomPrivateKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomPublicKey;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyFactory;
@@ -15,6 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateParsingException;
+import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
@@ -22,6 +30,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
+import javax.crypto.interfaces.DHPrivateKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -36,11 +45,36 @@ public class CertificateUtils {
 
     protected static final Logger LOGGER = LogManager.getLogger(CertificateUtils.class.getName());
 
+    public static CustomPrivateKey parseCustomPrivateKey(PrivateKey key) {
+        if (key instanceof RSAPrivateKey) {
+            RSAPrivateKey privKey = (RSAPrivateKey) key;
+            return new CustomRSAPrivateKey(privKey.getModulus(), privKey.getPrivateExponent());
+        } else if (key instanceof DSAPrivateKey) {
+            DSAPrivateKey privKey = (DSAPrivateKey) key;
+            return new CustomDSAPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getQ(), privKey.getParams().getG());
+        } else if (key instanceof DHPrivateKey) {
+            DHPrivateKey privKey = (DHPrivateKey) key;
+            return new CustomDHPrivateKey(privKey.getX(), privKey.getParams().getP(), privKey.getParams().getG());
+        } else if (key instanceof ECPrivateKey) {
+            ECPrivateKey privKey = (ECPrivateKey) key;
+            return new CustomECPrivateKey(privKey.getS(), NamedGroup.NONE)
+        } else
+        {
+            throw new UnsupportedOperationException("This private key is not supporter:" +key.toString());
+        }
+    }
+
+    public static CustomPublicKey parseCustomPublicKey(Certificate cert) {
+        PublicKey parsePublicKey = parsePublicKey(cert);
+        if (hasDsaParameters(cert)) {
+
+        }
+    }
+
     /**
      * Parses the leaf Certificate PublicKey from the CertificateStructure
      *
-     * @param cert
-     *            The Certificate from which the PublicKey should be extracted
+     * @param cert The Certificate from which the PublicKey should be extracted
      * @return The parsed PublicKey
      */
     public static PublicKey parsePublicKey(Certificate cert) {

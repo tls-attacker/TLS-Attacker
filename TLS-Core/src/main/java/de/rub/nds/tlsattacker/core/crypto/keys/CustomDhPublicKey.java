@@ -11,24 +11,31 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
-import javax.crypto.interfaces.DHPrivateKey;
+import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
 
-public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey {
+public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
-    private final BigInteger privateKey;
     private final BigInteger modulus;
+    
     private final BigInteger generator;
+    
+    private final BigInteger publicKey;
 
-    public CustomDHPrivateKey(BigInteger privateKey, BigInteger modulus, BigInteger generator) {
-        this.privateKey = privateKey;
+    public CustomDhPublicKey(BigInteger modulus, BigInteger generator, BigInteger publicKey) {
         this.modulus = modulus;
         this.generator = generator;
+        this.publicKey = publicKey;
+    }
+    
+    @Override
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public BigInteger getX() {
-        return privateKey;
+    public BigInteger getY() {
+        return publicKey;
     }
 
     @Override
@@ -48,11 +55,6 @@ public class CustomDHPrivateKey extends CustomPrivateKey implements DHPrivateKey
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("CustomKey cannot be encoded");
-    }
-
-    @Override
-    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
