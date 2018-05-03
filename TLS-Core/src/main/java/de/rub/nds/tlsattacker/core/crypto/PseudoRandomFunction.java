@@ -55,6 +55,12 @@ public class PseudoRandomFunction {
      */
     public static final String EXTENDED_MASTER_SECRET_LABEL = "extended master secret";
 
+    public static final String CLIENT_WRITE_KEY_LABEL = "client write key";
+
+    public static final String SERVER_WRITE_KEY_LABEL = "server write key";
+
+    public static final String IV_BLOCK_LABEL = "IV block";
+
     /**
      * Computes PRF output of the provided size using the given mac algorithm
      *

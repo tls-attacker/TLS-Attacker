@@ -210,8 +210,8 @@ public class WorkflowConfigurationFactory {
             messages.add(new CertificateVerifyMessage(config));
             messages.add(new FinishedMessage(config));
         } else {
-            if (!config.getDefaultSelectedCipherSuite().isSrpSha()
-                    && !config.getDefaultSelectedCipherSuite().isPskOrDhPsk()) {
+            CipherSuite selectedCipherSuite = config.getDefaultSelectedCipherSuite();
+            if (!selectedCipherSuite.isSrpSha() && !selectedCipherSuite.isPskOrDhPsk() && !selectedCipherSuite.isAnon()) {
                 if (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT) {
                     messages.add(new CertificateMessage());
                 } else {
@@ -219,7 +219,7 @@ public class WorkflowConfigurationFactory {
                 }
             }
 
-            if (config.getDefaultSelectedCipherSuite().isEphemeral() || config.getDefaultSelectedCipherSuite().isSrp()) {
+            if (selectedCipherSuite.isEphemeral() || selectedCipherSuite.isSrp()) {
                 addServerKeyExchangeMessage(messages);
             }
 
@@ -593,6 +593,7 @@ public class WorkflowConfigurationFactory {
                 case ECDH_ECDSA:
                 case ECDH_RSA:
                 case ECDHE_RSA:
+                case ECDH_ANON:
                     return new ECDHClientKeyExchangeMessage(config);
                 case DHE_DSS:
                 case DHE_RSA:
@@ -635,10 +636,12 @@ public class WorkflowConfigurationFactory {
             switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
                 case ECDHE_ECDSA:
                 case ECDHE_RSA:
+                case ECDH_ANON:
                     messages.add(new ECDHEServerKeyExchangeMessage(config));
                     break;
                 case DHE_DSS:
                 case DHE_RSA:
+                case DH_ANON:
                     messages.add(new DHEServerKeyExchangeMessage(config));
                     break;
                 case PSK:
