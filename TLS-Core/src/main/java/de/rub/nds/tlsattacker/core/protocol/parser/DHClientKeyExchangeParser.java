@@ -56,11 +56,7 @@ public class DHClientKeyExchangeParser<T extends DHClientKeyExchangeMessage> ext
      *            Message to write in
      */
     private void parseSerializedPublicKeyLength(T message) {
-        if (getVersion().isSSL()) {
-            message.setPublicKeyLength(getBytesLeft());
-        } else {
-            message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
-        }
+        message.setPublicKeyLength(parseIntField(HandshakeByteLength.DH_PUBLICKEY_LENGTH));
         LOGGER.debug("SerializedPublicKeyLength: " + message.getPublicKeyLength().getValue());
     }
 
