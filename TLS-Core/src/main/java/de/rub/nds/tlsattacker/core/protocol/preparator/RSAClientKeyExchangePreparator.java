@@ -45,8 +45,8 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     protected byte[] generatePremasterSecret() {
         byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
         chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
-        tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
-        tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
+        tempPremasterSecret[0] = chooser.getHighestClientProtocolVersion().getMajor();
+        tempPremasterSecret[1] = chooser.getHighestClientProtocolVersion().getMinor();
         return tempPremasterSecret;
     }
 
