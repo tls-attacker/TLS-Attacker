@@ -10,6 +10,8 @@ package de.rub.nds.tlsattacker.core.crypto.keys;
 
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -18,7 +20,7 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
-public class CustomECPrivateKey implements ECPrivateKey {
+public class CustomECPrivateKey extends CustomPrivateKey implements ECPrivateKey {
 
     private final BigInteger privatekey;
 
@@ -59,6 +61,11 @@ public class CustomECPrivateKey implements ECPrivateKey {
         } catch (NoSuchAlgorithmException | InvalidParameterSpecException ex) {
             throw new UnsupportedOperationException("Could not generate ECParameterSpec", ex);
         }
+    }
+
+    @Override
+    public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
+        // TODO
     }
 
 }

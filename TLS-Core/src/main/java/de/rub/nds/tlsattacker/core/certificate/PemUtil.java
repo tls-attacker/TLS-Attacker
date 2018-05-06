@@ -15,11 +15,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.openssl.PEMKeyPair;
@@ -68,8 +70,29 @@ public class PemUtil {
             reader.close();
         }
     }
-    
-    
+
+    public static PublicKey readPublicKey(File f) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(f);
+        InputStreamReader reader = new InputStreamReader(fileInputStream);
+        PEMParser parser = null;
+        try {
+            parser = new PEMParser(reader);
+            Object obj = parser.readObject();
+            if (obj instanceof PEMKeyPair) {
+                PEMKeyPair pair = (PEMKeyPair) obj;
+                obj = pair.getPublicKeyInfo();
+            }
+            SubjectPublicKeyInfo publicKeyInfo = (SubjectPublicKeyInfo) obj;
+            JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+            return converter.getPublicKey(publicKeyInfo);
+        } finally {
+            if (parser != null) {
+                parser.close();
+            }
+            fileInputStream.close();
+            reader.close();
+        }
+    }
 
     public static byte[] encodeCert(Certificate cert) throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

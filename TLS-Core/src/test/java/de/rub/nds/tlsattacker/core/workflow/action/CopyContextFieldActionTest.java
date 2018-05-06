@@ -23,22 +23,22 @@ import static org.junit.Assert.*;
  * @author robert
  */
 public class CopyContextFieldActionTest {
-    
+
     public CopyContextFieldActionTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -79,10 +79,4 @@ public class CopyContextFieldActionTest {
     public void testAssertAliasesSetProperly() {
     }
 
-    public class CopyContextFieldActionImpl extends CopyContextFieldAction {
-
-        public void copyField(TlsContext srcContext, TlsContext dstContext) {
-        }
-    }
-    
 }

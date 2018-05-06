@@ -12,6 +12,6 @@ import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public abstract class CustomPublicKey {
-    
+
     public abstract void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey);
 }

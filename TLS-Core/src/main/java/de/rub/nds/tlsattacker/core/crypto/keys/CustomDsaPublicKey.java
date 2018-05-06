@@ -33,10 +33,19 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
         this.g = g;
         this.publicKey = publicKey;
     }
-    
+
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
     @Override
@@ -61,7 +70,16 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
 }

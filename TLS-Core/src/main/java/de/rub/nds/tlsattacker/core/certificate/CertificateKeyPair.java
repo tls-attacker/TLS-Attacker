@@ -19,22 +19,24 @@ import java.security.cert.CertificateException;
 import org.bouncycastle.crypto.tls.Certificate;
 
 public class CertificateKeyPair {
-    
+
     private final CertificateKeyType certPublicKeyType;
-    
+
     private final CertificateKeyType certSignatureType;
-    
+
     private final byte[] certificateBytes;
-    
+
     private final CustomPublicKey publicKey;
-    
+
     private final CustomPrivateKey privateKey;
 
     private final NamedGroup signatureGroup;
-    
+
     private final NamedGroup publicKeyGroup;
 
-    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType, byte[] certificateBytes, CustomPublicKey publicKey, CustomPrivateKey privateKey, NamedGroup signatureGroup, NamedGroup publicKeyGroup) {
+    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
+            byte[] certificateBytes, CustomPublicKey publicKey, CustomPrivateKey privateKey, NamedGroup signatureGroup,
+            NamedGroup publicKeyGroup) {
         this.certPublicKeyType = certPublicKeyType;
         this.certSignatureType = certSignatureType;
         this.certificateBytes = certificateBytes;
@@ -43,13 +45,19 @@ public class CertificateKeyPair {
         this.signatureGroup = signatureGroup;
         this.publicKeyGroup = publicKeyGroup;
     }
-    
-    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType, File certFile, File privateKeyFile) throws CertificateException, IOException {
+
+    public CertificateKeyPair(CertificateKeyType certPublicKeyType, CertificateKeyType certSignatureType,
+            File certFile, File privateKeyFile) throws CertificateException, IOException {
         this.certPublicKeyType = certPublicKeyType;
         this.certSignatureType = certSignatureType;
         Certificate certificate = PemUtil.readCertificate(certFile);
-        this.publicKey = CertificateUtils.parseCustomPublicKey(certificate);
-        this.privateKey = PemUtil.readPrivateKey(privateKeyFile);
+        this.publicKey = CertificateUtils.parseCustomPublicKey(PemUtil.readPublicKey(certFile));
+        this.privateKey = CertificateUtils.parseCustomPrivateKey(PemUtil.readPrivateKey(privateKeyFile));
+        certificateBytes = certificate.getCertificateAt(0).getEncoded();
+        certSignatureType = null;
+        certPublicKeyType = null;
+        signatureGroup = null;
+        publicKeyGroup = null; // TODO
     }
 
     public CertificateKeyType getCertPublicKeyType() {

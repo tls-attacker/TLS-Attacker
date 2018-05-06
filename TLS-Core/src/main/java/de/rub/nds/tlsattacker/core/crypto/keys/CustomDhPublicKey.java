@@ -17,9 +17,9 @@ import javax.crypto.spec.DHParameterSpec;
 public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     private final BigInteger modulus;
-    
+
     private final BigInteger generator;
-    
+
     private final BigInteger publicKey;
 
     public CustomDhPublicKey(BigInteger modulus, BigInteger generator, BigInteger publicKey) {
@@ -27,7 +27,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         this.generator = generator;
         this.publicKey = publicKey;
     }
-    
+
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -55,7 +55,16 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     @Override
     public byte[] getEncoded() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 
 }
