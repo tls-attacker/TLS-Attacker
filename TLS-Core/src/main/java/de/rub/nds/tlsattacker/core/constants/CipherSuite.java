@@ -952,4 +952,13 @@ public enum CipherSuite {
     public boolean isAnon() {
         return this.name().contains("anon");
     }
+
+    public boolean isNull() {
+        return this.name().toLowerCase().contains("null");
+    }
+
+    // Note: We don't consider DES as weak for these purposes.
+    public boolean isWeak() {
+        return this.isExport() || this.isExportSymmetricCipher() || this.isAnon() || this.isNull();
+    }
 }
