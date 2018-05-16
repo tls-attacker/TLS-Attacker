@@ -222,6 +222,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 .getEncryptedValue());
     }
 
+    public BleichenbacherWorkflowType getVulnerableType() {
+        return vulnerableType;
+    }
+
     private ResponseFingerprint extractInvalidFingerprint() {
         return null;
     }
