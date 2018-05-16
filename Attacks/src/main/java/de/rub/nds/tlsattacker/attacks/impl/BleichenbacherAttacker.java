@@ -49,6 +49,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private BleichenbacherWorkflowType vulnerableType;
 
+    private EqualityError errorType;
+
     public BleichenbacherAttacker(BleichenbacherCommandConfig bleichenbacherConfig, Config baseConfig) {
         super(bleichenbacherConfig, baseConfig);
     }
@@ -83,8 +85,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered secure if it always responds the same way.");
         for (BleichenbacherWorkflowType bbWorkflowType : BleichenbacherWorkflowType.values()) {
             LOGGER.debug("Testing: " + bbWorkflowType);
-            EqualityError error = isVulnerable(bbWorkflowType, pkcs1Vectors);
-            if (error != EqualityError.NONE) {
+            errorType = isVulnerable(bbWorkflowType, pkcs1Vectors);
+            if (errorType != EqualityError.NONE) {
                 vulnerableType = bbWorkflowType;
                 return true;
             }
@@ -237,4 +239,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             LOGGER.debug(ex);
         }
     }
+
+    public EqualityError getErrorType() {
+        return errorType;
+    }
+
 }
