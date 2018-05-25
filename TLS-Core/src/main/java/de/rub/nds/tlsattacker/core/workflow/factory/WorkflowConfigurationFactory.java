@@ -156,7 +156,8 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a hello workflow for the given connection end.
      */
-    private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
+    // TODO: Should I have changed this method to public? :-)
+    public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
         if (config.getStarttlsType() != StarttlsType.NONE) {
@@ -624,7 +625,8 @@ public class WorkflowConfigurationFactory {
         return null;
     }
 
-    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+    // TODO: Public? :-)
+    public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         messages.add(message);
