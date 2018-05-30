@@ -53,7 +53,6 @@ public class RecordedWorkflowTest {
     @Before
     public void setUp() {
         RandomHelper.setRandom(new Random(0));
-        Configurator.setRootLevel(Level.INFO);
         TimeHelper.setProvider(new FixedTimeProvider(1000));
         try {
             KeyPair k = KeyStoreGenerator.createRSAKeyPair(1024, new BadRandom());

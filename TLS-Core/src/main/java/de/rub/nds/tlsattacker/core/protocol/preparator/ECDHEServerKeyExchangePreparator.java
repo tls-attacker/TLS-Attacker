@@ -50,7 +50,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         setEcDhParams();
         prepareEcDhParams();
         SignatureAndHashAlgorithm signHashAlgo;
-        signHashAlgo = chooser.getConfig().getDefaultSelectedSignatureAndHashAlgorithm();
+        signHashAlgo = chooser.getSelectedSigHashAlgorithm();
         prepareSignatureAndHashAlgorithm(msg, signHashAlgo);
         byte[] signature = new byte[0];
         try {

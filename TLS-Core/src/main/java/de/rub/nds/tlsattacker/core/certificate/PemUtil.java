@@ -12,13 +12,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -27,17 +32,34 @@ import org.bouncycastle.crypto.tls.TlsUtils;
 import org.bouncycastle.openssl.PEMKeyPair;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemWriter;
 
-/**
- *
- * @author robert
- */
 public class PemUtil {
 
-    public static Certificate readCertificate(File f) throws FileNotFoundException, CertificateException, IOException {
+    public static void writePublicKey(PublicKey key, File targetFile) {
+        PemWriter writer = null;
+        PemObject pemObject = new PemObject("PublicKey", key.getEncoded());
+        PemWriter pemWriter = null;
+        try {
+            pemWriter = new PemWriter(new FileWriter(targetFile));
+            pemWriter.writeObject(pemObject);
+        } catch (IOException ex) {
+            Logger.getLogger(PemUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                pemWriter.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+    }
+
+    public static Certificate readCertificate(InputStream stream) throws FileNotFoundException, CertificateException,
+            IOException {
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-        Collection<? extends java.security.cert.Certificate> certs = certFactory
-                .generateCertificates(new FileInputStream(f));
+        Collection<? extends java.security.cert.Certificate> certs = certFactory.generateCertificates(stream);
         java.security.cert.Certificate sunCert = (java.security.cert.Certificate) certs.toArray()[0];
         byte[] certBytes = sunCert.getEncoded();
         ASN1Primitive asn1Cert = TlsUtils.readASN1Object(certBytes);
@@ -48,32 +70,39 @@ public class PemUtil {
         return tlsCerts;
     }
 
-    public static PrivateKey readPrivateKey(File f) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(f);
-        InputStreamReader reader = new InputStreamReader(fileInputStream);
-        PEMParser parser = null;
-        try {
-            parser = new PEMParser(reader);
+    public static Certificate readCertificate(File f) throws FileNotFoundException, CertificateException, IOException {
+        return readCertificate(new FileInputStream(f));
+    }
+
+    public static PrivateKey readPrivateKey(InputStream stream) throws IOException {
+        InputStreamReader reader = new InputStreamReader(stream);
+        try (PEMParser parser = new PEMParser(reader)) {
             Object obj = parser.readObject();
             if (obj instanceof PEMKeyPair) {
+                PEMKeyPair pair = (PEMKeyPair) obj;
+                obj = pair.getPrivateKeyInfo();
+            } else if (obj instanceof ASN1ObjectIdentifier) {
+                obj = parser.readObject();
                 PEMKeyPair pair = (PEMKeyPair) obj;
                 obj = pair.getPrivateKeyInfo();
             }
             PrivateKeyInfo privKeyInfo = (PrivateKeyInfo) obj;
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
             return converter.getPrivateKey(privKeyInfo);
+        } catch (Exception E) {
+            throw new IOException("Could not read private key", E);
         } finally {
-            if (parser != null) {
-                parser.close();
-            }
-            fileInputStream.close();
+            stream.close();
             reader.close();
         }
     }
 
-    public static PublicKey readPublicKey(File f) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(f);
-        InputStreamReader reader = new InputStreamReader(fileInputStream);
+    public static PrivateKey readPrivateKey(File f) throws IOException {
+        return readPrivateKey(new FileInputStream(f));
+    }
+
+    public static PublicKey readPublicKey(InputStream stream) throws IOException {
+        InputStreamReader reader = new InputStreamReader(stream);
         PEMParser parser = null;
         try {
             parser = new PEMParser(reader);
@@ -85,13 +114,19 @@ public class PemUtil {
             SubjectPublicKeyInfo publicKeyInfo = (SubjectPublicKeyInfo) obj;
             JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
             return converter.getPublicKey(publicKeyInfo);
+        } catch (Exception E) {
+            throw new IOException("Could not read public key", E);
         } finally {
             if (parser != null) {
                 parser.close();
             }
-            fileInputStream.close();
+            stream.close();
             reader.close();
         }
+    }
+
+    public static PublicKey readPublicKey(File f) throws IOException {
+        return readPublicKey(new FileInputStream(f));
     }
 
     public static byte[] encodeCert(Certificate cert) throws IOException {

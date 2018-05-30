@@ -57,7 +57,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     }
 
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
 
         List<CipherSuite> suiteList = new LinkedList<>();
         suiteList.add(suite);
@@ -150,7 +150,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
     @Override
     public Boolean isVulnerable() {
         List<ProtocolVersion> versions = config.getVersions();
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         List<CipherSuite> ciphers = new LinkedList<>();
         if (tlsConfig.getDefaultClientSupportedCiphersuites().isEmpty()) {
             for (CipherSuite cs : CipherSuite.getImplemented()) {

@@ -376,15 +376,21 @@ public class TlsContext {
 
     private BigInteger serverDsaPrivateKey;
 
-    private BigInteger dsaPrimeP;
+    private BigInteger serverDsaPrimeP;
 
-    private BigInteger dsaPrimeQ;
+    private BigInteger serverDsaPrimeQ;
 
-    private BigInteger dsaGenerator;
+    private BigInteger serverDsaGenerator;
 
     private BigInteger serverDsaPublicKey;
 
     private BigInteger clientDsaPublicKey;
+
+    private BigInteger clientDsaPrimeP;
+
+    private BigInteger clientDsaPrimeQ;
+
+    private BigInteger clientDsaGenerator;
 
     private List<NamedGroup> clientNamedGroupsList;
 
@@ -1067,14 +1073,6 @@ public class TlsContext {
 
     public void setClientPointFormatsList(ECPointFormat... clientPointFormatsList) {
         this.clientPointFormatsList = new ArrayList(Arrays.asList(clientPointFormatsList));
-    }
-
-    public SignatureAndHashAlgorithm getSelectedSigHashAlgorithm() {
-        return selectedSigHashAlgorithm;
-    }
-
-    public void setSelectedSigHashAlgorithm(SignatureAndHashAlgorithm selectedSigHashAlgorithm) {
-        this.selectedSigHashAlgorithm = selectedSigHashAlgorithm;
     }
 
     public MaxFragmentLength getMaxFragmentLength() {
@@ -2022,28 +2020,28 @@ public class TlsContext {
         this.serverDsaPrivateKey = serverDsaPrivateKey;
     }
 
-    public BigInteger getDsaPrimeP() {
-        return dsaPrimeP;
+    public BigInteger getServerDsaPrimeP() {
+        return serverDsaPrimeP;
     }
 
-    public void setDsaPrimeP(BigInteger dsaPrimeP) {
-        this.dsaPrimeP = dsaPrimeP;
+    public void setServerDsaPrimeP(BigInteger serverDsaPrimeP) {
+        this.serverDsaPrimeP = serverDsaPrimeP;
     }
 
-    public BigInteger getDsaPrimeQ() {
-        return dsaPrimeQ;
+    public BigInteger getServerDsaPrimeQ() {
+        return serverDsaPrimeQ;
     }
 
-    public void setDsaPrimeQ(BigInteger dsaPrimeQ) {
-        this.dsaPrimeQ = dsaPrimeQ;
+    public void setServerDsaPrimeQ(BigInteger serverDsaPrimeQ) {
+        this.serverDsaPrimeQ = serverDsaPrimeQ;
     }
 
-    public BigInteger getDsaGenerator() {
-        return dsaGenerator;
+    public BigInteger getServerDsaGenerator() {
+        return serverDsaGenerator;
     }
 
-    public void setDsaGenerator(BigInteger dsaGenerator) {
-        this.dsaGenerator = dsaGenerator;
+    public void setServerDsaGenerator(BigInteger serverDsaGenerator) {
+        this.serverDsaGenerator = serverDsaGenerator;
     }
 
     public BigInteger getServerDsaPublicKey() {
@@ -2061,4 +2059,29 @@ public class TlsContext {
     public void setClientDsaPublicKey(BigInteger clientDsaPublicKey) {
         this.clientDsaPublicKey = clientDsaPublicKey;
     }
+
+    public BigInteger getClientDsaPrimeP() {
+        return clientDsaPrimeP;
+    }
+
+    public void setClientDsaPrimeP(BigInteger clientDsaPrimeP) {
+        this.clientDsaPrimeP = clientDsaPrimeP;
+    }
+
+    public BigInteger getClientDsaPrimeQ() {
+        return clientDsaPrimeQ;
+    }
+
+    public void setClientDsaPrimeQ(BigInteger clientDsaPrimeQ) {
+        this.clientDsaPrimeQ = clientDsaPrimeQ;
+    }
+
+    public BigInteger getClientDsaGenerator() {
+        return clientDsaGenerator;
+    }
+
+    public void setClientDsaGenerator(BigInteger clientDsaGenerator) {
+        this.clientDsaGenerator = clientDsaGenerator;
+    }
+
 }

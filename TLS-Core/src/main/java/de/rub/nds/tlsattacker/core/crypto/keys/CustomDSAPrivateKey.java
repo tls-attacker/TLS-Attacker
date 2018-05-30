@@ -8,13 +8,18 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.spec.DSAParameterSpec;
+import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateKey {
 
     private final BigInteger privateKey;
@@ -28,6 +33,13 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
         this.primeP = primeP;
         this.primeQ = primeQ;
         this.generator = generator;
+    }
+
+    private CustomDSAPrivateKey() {
+        primeP = null;
+        primeQ = null;
+        generator = null;
+        privateKey = null;
     }
 
     @Override
@@ -57,16 +69,72 @@ public class CustomDSAPrivateKey extends CustomPrivateKey implements DSAPrivateK
 
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        if (ownerOfKey == ConnectionEndType.CLIENT) {
+            context.setClientDsaPrivateKey(privateKey);
+            context.setClientDsaGenerator(generator);
+            context.setClientDsaPrimeP(primeP);
+            context.setClientDsaPrimeQ(primeQ);
+        } else if (ownerOfKey == ConnectionEndType.SERVER) {
+            context.setServerDsaPrivateKey(privateKey);
+            context.setServerDsaGenerator(generator);
+            context.setServerDsaPrimeP(primeP);
+            context.setServerDsaPrimeQ(primeQ);
+        } else {
+            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+        }
     }
 
+    @Override
+    public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
+        if (ownerOfKey == ConnectionEndType.CLIENT) {
+            config.setDefaultClientDsaPrivateKey(privateKey);
+            config.setDefaultClientDsaPrimeP(primeP);
+            config.setDefaultClientDsaPrimeQ(primeQ);
+            config.setDefaultClientDsaGenerator(generator);
+        } else if (ownerOfKey == ConnectionEndType.SERVER) {
+            config.setDefaultServerDsaPrivateKey(privateKey);
+            config.setDefaultServerDsaPrimeP(primeP);
+            config.setDefaultServerDsaPrimeQ(primeQ);
+            config.setDefaultServerDsaGenerator(generator);
+        } else {
+            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.privateKey);
+        hash = 53 * hash + Objects.hashCode(this.primeP);
+        hash = 53 * hash + Objects.hashCode(this.primeQ);
+        hash = 53 * hash + Objects.hashCode(this.generator);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CustomDSAPrivateKey other = (CustomDSAPrivateKey) obj;
+        if (!Objects.equals(this.privateKey, other.privateKey)) {
+            return false;
+        }
+        if (!Objects.equals(this.primeP, other.primeP)) {
+            return false;
+        }
+        if (!Objects.equals(this.primeQ, other.primeQ)) {
+            return false;
+        }
+        if (!Objects.equals(this.generator, other.generator)) {
+            return false;
+        }
+        return true;
+    }
 }

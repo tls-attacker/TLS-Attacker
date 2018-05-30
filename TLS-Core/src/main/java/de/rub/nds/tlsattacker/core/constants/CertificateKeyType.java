@@ -17,4 +17,5 @@ public enum CertificateKeyType {
     RSA,
     DSS,
     ECDSA,
+    NONE,
 }

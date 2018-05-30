@@ -38,7 +38,7 @@ public class WinshockAttacker extends Attacker<WinshockCommandConfig> {
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setClientAuthentication(true);
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);

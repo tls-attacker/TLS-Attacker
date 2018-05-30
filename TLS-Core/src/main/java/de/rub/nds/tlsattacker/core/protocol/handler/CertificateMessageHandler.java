@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
@@ -85,78 +84,11 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             LOGGER.debug("Setting ServerCertificate in Context");
             tlsContext.setServerCertificate(cert);
         }
-        if (cert != null) {
-            adjustPublicKeyParameters(cert);
+        if (message.getCertificateKeyPair() != null) {
+            message.getCertificateKeyPair().adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
         }
         if (tlsContext.getChooser().getSelectedProtocolVersion().isTLS13()) {
             adjustExtensions(message);
-        }
-    }
-
-    private void adjustPublicKeyParameters(Certificate cert) {
-        try {
-            if (CertificateUtils.hasDHParameters(cert)) {
-                LOGGER.debug("Adjusting DH PublicKey");
-                DHPublicKeyParameters dhParameters = CertificateUtils.extractDHPublicKeyParameters(cert);
-                adjustDHParameters(dhParameters);
-            } else if (CertificateUtils.hasECParameters(cert)) {
-                LOGGER.debug("Adjusting EC PublicKey");
-                ECPublicKeyParameters ecParameters = CertificateUtils.extractECPublicKeyParameters(cert);
-                adjustECParameters(ecParameters);
-            } else if (CertificateUtils.hasRSAParameters(cert)) {
-                LOGGER.debug("Adjusting RSA PublicKey");
-                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                    tlsContext.setClientRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
-                    tlsContext.setClientRSAPrivateKey(tlsContext.getConfig().getDefaultClientRSAPrivateKey());
-                    tlsContext.setClientRsaModulus(CertificateUtils.extractRSAModulus(cert));
-                } else {
-                    tlsContext.setServerRSAPublicKey(CertificateUtils.extractRSAPublicKey(cert));
-                    tlsContext.setServerRSAPrivateKey(tlsContext.getConfig().getDefaultServerRSAPrivateKey());
-                    tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
-                }
-            } else if (CertificateUtils.hasDsaParameters(cert)) {
-                if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-                    // Currently not supported
-                    throw new UnsupportedOperationException();
-                } else {
-                    tlsContext.setServerDsaPublicKey(CertificateUtils.extractDsaPublicKey(cert));
-                    tlsContext.setDsaPrimeP(CertificateUtils.extractDsaPrimeP(cert));
-                    tlsContext.setDsaPrimeQ(CertificateUtils.extractDsaPrimeQ(cert));
-                    tlsContext.setDsaGenerator(CertificateUtils.extractDsaGenerator(cert));
-                }
-
-            } else {
-                LOGGER.warn("Could not adjust Certificate publicKey. Ceritifcate does not seem to Contain a PublicKey");
-            }
-        } catch (IOException | IllegalArgumentException E) {
-            LOGGER.debug(E);
-            throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", E);
-        }
-    }
-
-    private void adjustDHParameters(DHPublicKeyParameters dhPublicKeyParameters) {
-        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientDhGenerator(dhPublicKeyParameters.getParameters().getG());
-            tlsContext.setClientDhModulus(dhPublicKeyParameters.getParameters().getP());
-            tlsContext.setClientDhPublicKey(dhPublicKeyParameters.getY());
-        } else {
-            tlsContext.setServerDhGenerator(dhPublicKeyParameters.getParameters().getG());
-            tlsContext.setServerDhModulus(dhPublicKeyParameters.getParameters().getP());
-            tlsContext.setServerDhPublicKey(dhPublicKeyParameters.getY());
-        }
-    }
-
-    private void adjustECParameters(ECPublicKeyParameters ecPublicKeyParameters) {
-        CustomECPoint publicKey = new CustomECPoint(ecPublicKeyParameters.getQ().getRawXCoord().toBigInteger(),
-                ecPublicKeyParameters.getQ().getRawYCoord().toBigInteger());
-        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
-            tlsContext.setClientEcPublicKey(publicKey);
-            tlsContext.setEcCertificateCurve(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters
-                    .getParameters().getCurve()));
-        } else {
-            tlsContext.setServerEcPublicKey(publicKey);
-            tlsContext.setSelectedGroup(CurveNameRetriever.getNamedCuveFromECCurve(ecPublicKeyParameters
-                    .getParameters().getCurve()));
         }
     }
 

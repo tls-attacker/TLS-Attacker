@@ -606,7 +606,7 @@ public class WorkflowConfigurationFactory {
                     return new PskDhClientKeyExchangeMessage(config);
                 case ECDHE_PSK:
                     return new PskEcDhClientKeyExchangeMessage(config);
-                case RSA_PSK:
+                case PSK_RSA:
                     return new PskRsaClientKeyExchangeMessage(config);
                 case SRP_SHA_DSS:
                 case SRP_SHA_RSA:

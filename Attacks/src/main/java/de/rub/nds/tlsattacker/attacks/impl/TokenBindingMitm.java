@@ -43,7 +43,7 @@ public class TokenBindingMitm extends Attacker<TokenBindingMitmCommandConfig> {
     @Override
     public void executeAttack() {
 
-        Config conf = getBaseConfig();
+        Config conf = getTlsConfig();
         conf.setQuickReceive(true);
 
         AliasedConnection clientCon = conf.getDefaultClientConnection();

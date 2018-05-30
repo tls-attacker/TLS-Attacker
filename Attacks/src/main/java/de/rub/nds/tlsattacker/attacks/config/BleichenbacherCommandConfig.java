@@ -82,7 +82,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             List<CipherSuite> cipherSuites = new LinkedList<>();
             for (CipherSuite suite : CipherSuite.getImplemented()) {
                 if (AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA
-                        || AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.RSA_PSK) {
+                        || AlgorithmResolver.getKeyExchangeAlgorithm(suite) == KeyExchangeAlgorithm.PSK_RSA) {
                     cipherSuites.add(suite);
                 }
             }
@@ -113,7 +113,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     }
 
     public enum Type {
-
         FULL,
         FAST
     }

@@ -202,9 +202,9 @@
                     <version>2.20.1</version>
                     <configuration>
                         <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
-                        <includes>
-                            <include>**/*.java</include>
-                        </includes>
+                        <excludes>
+                            <exclude>**/*.java</exclude>
+                        </excludes>
                         <!-- Integration tests and slow tests are started -->
                         <groups>${includegroups}</groups>
                     </configuration>

@@ -856,28 +856,28 @@ public class DefaultChooser extends Chooser {
 
     @Override
     public BigInteger getDsaPrimeP() {
-        if (context.getDsaPrimeP() != null) {
-            return context.getDsaPrimeP();
+        if (context.getServerDsaPrimeP() != null) {
+            return context.getServerDsaPrimeP();
         } else {
-            return config.getDefaultDsaPrimeP();
+            return config.getDefaultServerDsaPrimeP();
         }
     }
 
     @Override
     public BigInteger getDsaPrimeQ() {
-        if (context.getDsaPrimeQ() != null) {
-            return context.getDsaPrimeQ();
+        if (context.getServerDsaPrimeQ() != null) {
+            return context.getServerDsaPrimeQ();
         } else {
-            return config.getDefaultDsaPrimeQ();
+            return config.getDefaultServerDsaPrimeQ();
         }
     }
 
     @Override
     public BigInteger getDsaGenerator() {
-        if (context.getDsaGenerator() != null) {
-            return context.getDsaGenerator();
+        if (context.getServerDsaGenerator() != null) {
+            return context.getServerDsaGenerator();
         } else {
-            return config.getDefaultDsaGenerator();
+            return config.getDefaultServerDsaGenerator();
         }
     }
 }

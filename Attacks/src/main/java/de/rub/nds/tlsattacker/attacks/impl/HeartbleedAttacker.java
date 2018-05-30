@@ -47,7 +47,7 @@ public class HeartbleedAttacker extends Attacker<HeartbleedCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
         HeartbeatMessage message = new HeartbeatMessage(tlsConfig);

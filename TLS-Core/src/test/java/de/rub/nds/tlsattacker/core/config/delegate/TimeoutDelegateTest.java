@@ -77,7 +77,7 @@ public class TimeoutDelegateTest {
         Config config = Config.createConfig();
         Config config2 = Config.createConfig();
         delegate.applyDelegate(config);
-        assertTrue(EqualsBuilder.reflectionEquals(config, config2, "keyStore", "ourCertificate"));// little
+        assertTrue(EqualsBuilder.reflectionEquals(config, config2));// little
         // ugly
     }
 }

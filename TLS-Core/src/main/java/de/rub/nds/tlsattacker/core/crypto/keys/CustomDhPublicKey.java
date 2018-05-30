@@ -8,12 +8,17 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.keys;
 
+import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.math.BigInteger;
+import java.util.Objects;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
     private final BigInteger modulus;
@@ -28,9 +33,25 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
         this.publicKey = publicKey;
     }
 
+    private CustomDhPublicKey() {
+        modulus = null;
+        generator = null;
+        publicKey = null;
+    }
+
     @Override
     public void adjustInContext(TlsContext context, ConnectionEndType ownerOfKey) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (ownerOfKey == ConnectionEndType.CLIENT) {
+            context.setClientDhGenerator(generator);
+            context.setClientDhModulus(modulus);
+            context.setClientDhPublicKey(publicKey);
+        } else if (ownerOfKey == ConnectionEndType.SERVER) {
+            context.setServerDhGenerator(generator);
+            context.setServerDhModulus(modulus);
+            context.setServerDhPublicKey(publicKey);
+        } else {
+            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+        }
     }
 
     @Override
@@ -56,15 +77,62 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     @Override
     public byte[] getEncoded() {
         throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        // change
+        // body
+        // of
+        // generated
+        // methods,
+        // choose
+        // Tools
+        // |
+        // Templates.
     }
 
+    @Override
+    public void adjustInConfig(Config config, ConnectionEndType ownerOfKey) {
+        if (ownerOfKey == ConnectionEndType.CLIENT) {
+            config.setDefaultClientDhGenerator(generator);
+            config.setDefaultClientDhModulus(modulus);
+            config.setDefaultClientDhPublicKey(publicKey);
+        } else if (ownerOfKey == ConnectionEndType.SERVER) {
+            config.setDefaultServerDhGenerator(generator);
+            config.setDefaultServerDhModulus(modulus);
+            config.setDefaultServerDhPublicKey(publicKey);
+        } else {
+            throw new IllegalArgumentException("Owner of Key " + ownerOfKey + " is not supported");
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.modulus);
+        hash = 79 * hash + Objects.hashCode(this.generator);
+        hash = 79 * hash + Objects.hashCode(this.publicKey);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CustomDhPublicKey other = (CustomDhPublicKey) obj;
+        if (!Objects.equals(this.modulus, other.modulus)) {
+            return false;
+        }
+        if (!Objects.equals(this.generator, other.generator)) {
+            return false;
+        }
+        if (!Objects.equals(this.publicKey, other.publicKey)) {
+            return false;
+        }
+        return true;
+    }
 }

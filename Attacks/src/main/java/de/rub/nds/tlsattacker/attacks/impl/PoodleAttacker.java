@@ -33,7 +33,7 @@ public class PoodleAttacker extends Attacker {
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setHighestProtocolVersion(ProtocolVersion.SSL3);
         tlsConfig.setDefaultClientSupportedCiphersuites(getCbcCiphers());
         tlsConfig.setWorkflowTraceType(WorkflowTraceType.HELLO);

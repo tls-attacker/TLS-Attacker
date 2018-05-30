@@ -10,9 +10,12 @@ package de.rub.nds.tlsattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
+import de.rub.nds.tlsattacker.core.certificate.CertificateByteChooser;
+import de.rub.nds.tlsattacker.core.certificate.CertificateKeyPair;
 import de.rub.nds.tlsattacker.core.connection.InboundConnection;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
 import de.rub.nds.tlsattacker.core.constants.AuthzDataFormat;
+import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
 import de.rub.nds.tlsattacker.core.constants.CertificateStatusRequestType;
 import de.rub.nds.tlsattacker.core.constants.CertificateType;
 import de.rub.nds.tlsattacker.core.constants.ChooserType;
@@ -39,6 +42,8 @@ import de.rub.nds.tlsattacker.core.constants.TokenBindingType;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.constants.UserMappingExtensionHintType;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
+import de.rub.nds.tlsattacker.core.crypto.keys.CustomRSAPrivateKey;
+import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
@@ -52,16 +57,19 @@ import de.rub.nds.tlsattacker.core.workflow.filter.FilterType;
 import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.crypto.tls.Certificate;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -99,6 +107,18 @@ public class Config implements Serializable {
         ConfigIO.write(this, stream);
         return ConfigIO.read(new ByteArrayInputStream(stream.toByteArray()));
     }
+
+    private CertificateKeyType preferedCertificateSignatureType = CertificateKeyType.RSA;
+
+    private NamedGroup preferedCertificateSignatureGroup = NamedGroup.SECP256R1;
+
+    private Boolean autoSelectCertificate = true;
+
+    private CertificateKeyPair defaultExplicitCertificateKeyPair;
+
+    private Boolean autoAdjustSignatureAndHashAlgorithm = true;
+
+    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA256;
 
     /**
      * List of filters to apply on workflow traces before serialization.
@@ -186,7 +206,7 @@ public class Config implements Serializable {
     /**
      * Key type for KeyShareExtension
      */
-    private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP192R1;
+    private NamedGroup defaultSelectedNamedGroup = NamedGroup.SECP256R1;
 
     private BigInteger defaultKeySharePrivateKey = new BigInteger(
             "03BD8BCA70C19F657E897E366DBE21A466E4924AF6082DBDF573827BCDDE5DEF", 16);
@@ -617,21 +637,6 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] earlyData = ArrayConverter.hexStringToByteArray("544c532d41747461636b65720a");
 
-    /**
-     * The Certificate we initialize CertificateMessages with
-     */
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultRsaCertificate = ArrayConverter
-            .hexStringToByteArray("0003970003943082039030820278A003020102020900A650C00794049FCD300D06092A864886F70D01010B0500305C310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643115301306035504030C0C544C532D41747461636B65723020170D3137303731333132353331385A180F32313137303631393132353331385A305C310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643115301306035504030C0C544C532D41747461636B657230820122300D06092A864886F70D01010105000382010F003082010A0282010100C8820D6C3CE84C8430F6835ABFC7D7A912E1664F44578751F376501A8C68476C3072D919C5D39BD0DBE080E71DB83BD4AB2F2F9BDE3DFFB0080F510A5F6929C196551F2B3C369BE051054C877573195558FD282035934DC86EDAB8D4B1B7F555E5B2FEE7275384A756EF86CB86793B5D1333F0973203CB96966766E655CD2CCCAE1940E4494B8E9FB5279593B75AFD0B378243E51A88F6EB88DEF522A8CD5C6C082286A04269A2879760FCBA45005D7F2672DD228809D47274F0FE0EA5531C2BD95366C05BF69EDC0F3C3189866EDCA0C57ADCCA93250AE78D9EACA0393A95FF9952FC47FB7679DD3803E6A7A6FA771861E3D99E4B551A4084668B111B7EEF7D0203010001A3533051301D0603551D0E04160414E7A92FE5543AEE2FF7592F800AC6E66541E3268B301F0603551D23041830168014E7A92FE5543AEE2FF7592F800AC6E66541E3268B300F0603551D130101FF040530030101FF300D06092A864886F70D01010B050003820101000D5C11E28CF19D1BC17E4FF543695168570AA7DB85B3ECB85405392A0EDAFE4F097EE4685B7285E3D9B869D23257161CA65E20B5E6A585D33DA5CD653AF81243318132C9F64A476EC08BA80486B3E439F765635A7EA8A969B3ABD8650036D74C5FC4A04589E9AC8DC3BE2708743A6CFE3B451E3740F735F156D6DC7FFC8A2C852CD4E397B942461C2FCA884C7AFB7EBEF7918D6AAEF1F0D257E959754C4665779FA0E3253EF2BEDBBD5BE5DA600A0A68E51D2D1C125C4E198669A6BC715E8F3884E9C3EFF39D40838ADA4B1F38313F6286AA395DC6DEA9DAF49396CF12EC47EFA7A0D3882F8B84D9AEEFFB252C6B81A566609605FBFD3F0D17E5B12401492A1A");
-
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultDsaCertificate = ArrayConverter
-            .hexStringToByteArray("00039000038d3082038930820346a00302010202146e3d953a100933142248afac42693b42da12074d300b06096086480165030403023077310b3009060355040613024445310c300a06035504080c034e5257310f300d06035504070c06426f6368756d312f302d060355040a0c263c7363726970743e616c6572742827544c532d41747461636b657227293c2f7363726970743e3118301606035504030c0f746c732d61747461636b65722e6465301e170d3138303430333136353930385a170d3139303430333136353930385a3077310b3009060355040613024445310c300a06035504080c034e5257310f300d06035504070c06426f6368756d312f302d060355040a0c263c7363726970743e616c6572742827544c532d41747461636b657227293c2f7363726970743e3118301606035504030c0f746c732d61747461636b65722e6465308201b63082012b06072a8648ce3804013082011e0281810093c33a88f3af1bacb3b20500fef26e70d08d1591874e9e77f1cc98ba004ae8c04d2022edce758e0ee8ceee9520381a9d4b2dda1c8f7b249aa2c452e8cada51ab57709053184316eb691f3dace9f4b60f8e70c95314b473782f8d6401181945ae83c3befcb9478e0b050ad4e146eedbdd42afb136eef59ec751af958f35466529021500ac2ef188503342ec5ccb04541dfa5d5eade8b0190281801e813bdd058e57f807aef75c3626dfae3918be6dd87efe5739201b37581d33865b9626aff787aa847e9dbdbf20f57f7d2fce39a5f53c6869254d12fa6b95cfeebc2c1151e69b3d52073d6c23d7cb7c830e2cbb286a624cebbab5648b6d0276dfede31c4717ec03035f13ed81d183a07076a53d79f746f6f67237dbfc6211dc5a038184000281803c991ffbb26fce963dae6540ce45904079c50398b0c32fa8485ada51dd9614e150bc8983ab6996ce4d7f8237aeeef9ec97a10e6c0949417b8412cc5711a8482f540d6b030da4e1ed591c152062775e61e6fef897c3b12a38185c12d8feddbe85298dc41324b2450d83e3b90a419373380b60ee1ca9094437c0be19fb73184726a350304e301d0603551d0e04160414d83193bedd17b41036ffd80ae7e4258e060a4bdd301f0603551d23041830168014d83193bedd17b41036ffd80ae7e4258e060a4bdd300c0603551d13040530030101ff300b0609608648016503040302033000302d0214762030afd46e4b0a009e55c381349e0306c892b8021500827cdd1f741bde0d266ee412ec3c2a81f8f5d820");
-
-    @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultEcCertificate = ArrayConverter
-            .hexStringToByteArray("0001BD0001BA308201B63082016CA003020102020900B9FB5B9B7B19C211300A06082A8648CE3D0403023045310B30090603550406130244453113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643020170D3137303731333132353530375A180F32313137303631393132353530375A3045310B30090603550406130244453113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643049301306072A8648CE3D020106082A8648CE3D03010103320004DF647234F375CB38137C6775B04A40950C932E180620717F802B21FE868479987D990383D908E19B683F412ECDF397E1A3533051301D0603551D0E04160414ACF90511E691018C1B69177AF743321486EE09D5301F0603551D23041830168014ACF90511E691018C1B69177AF743321486EE09D5300F0603551D130101FF040530030101FF300A06082A8648CE3D04030203380030350219009E8F2E5C4D6C4179B60E12B46B7AD19F7AF39F11731A359702180CDC387E4A12F6BBEE702A05B548C5F5FC2DE3842B6366A0");
-
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] distinguishedNames = new byte[0];
 
@@ -676,15 +681,36 @@ public class Config implements Serializable {
             ArrayConverter
                     .hexStringToByteArray("3c991ffbb26fce963dae6540ce45904079c50398b0c32fa8485ada51dd9614e150bc8983ab6996ce4d7f8237aeeef9ec97a10e6c0949417b8412cc5711a8482f540d6b030da4e1ed591c152062775e61e6fef897c3b12a38185c12d8feddbe85298dc41324b2450d83e3b90a419373380b60ee1ca9094437c0be19fb73184726"));
 
-    private BigInteger defaultDsaPrimeP = new BigInteger(
+    private BigInteger defaultServerDsaPrimeP = new BigInteger(
             1,
             ArrayConverter
                     .hexStringToByteArray("0093c33a88f3af1bacb3b20500fef26e70d08d1591874e9e77f1cc98ba004ae8c04d2022edce758e0ee8ceee9520381a9d4b2dda1c8f7b249aa2c452e8cada51ab57709053184316eb691f3dace9f4b60f8e70c95314b473782f8d6401181945ae83c3befcb9478e0b050ad4e146eedbdd42afb136eef59ec751af958f35466529"));
 
-    private BigInteger defaultDsaPrimeQ = new BigInteger(1,
+    private BigInteger defaultServerDsaPrimeQ = new BigInteger(1,
             ArrayConverter.hexStringToByteArray("00ac2ef188503342ec5ccb04541dfa5d5eade8b019"));
 
-    private BigInteger defaultDsaGenerator = new BigInteger(
+    private BigInteger defaultServerDsaGenerator = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("1e813bdd058e57f807aef75c3626dfae3918be6dd87efe5739201b37581d33865b9626aff787aa847e9dbdbf20f57f7d2fce39a5f53c6869254d12fa6b95cfeebc2c1151e69b3d52073d6c23d7cb7c830e2cbb286a624cebbab5648b6d0276dfede31c4717ec03035f13ed81d183a07076a53d79f746f6f67237dbfc6211dc5a"));
+
+    private BigInteger defaultClientDsaPrivateKey = new BigInteger(1,
+            ArrayConverter.hexStringToByteArray("0096b3295e0f7412b07600aaa92b26bfe1db7e4849"));
+
+    private BigInteger defaultClientDsaPublicKey = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("3c991ffbb26fce963dae6540ce45904079c50398b0c32fa8485ada51dd9614e150bc8983ab6996ce4d7f8237aeeef9ec97a10e6c0949417b8412cc5711a8482f540d6b030da4e1ed591c152062775e61e6fef897c3b12a38185c12d8feddbe85298dc41324b2450d83e3b90a419373380b60ee1ca9094437c0be19fb73184726"));
+
+    private BigInteger defaultClientDsaPrimeP = new BigInteger(
+            1,
+            ArrayConverter
+                    .hexStringToByteArray("0093c33a88f3af1bacb3b20500fef26e70d08d1591874e9e77f1cc98ba004ae8c04d2022edce758e0ee8ceee9520381a9d4b2dda1c8f7b249aa2c452e8cada51ab57709053184316eb691f3dace9f4b60f8e70c95314b473782f8d6401181945ae83c3befcb9478e0b050ad4e146eedbdd42afb136eef59ec751af958f35466529"));
+
+    private BigInteger defaultClientDsaPrimeQ = new BigInteger(1,
+            ArrayConverter.hexStringToByteArray("00ac2ef188503342ec5ccb04541dfa5d5eade8b019"));
+
+    private BigInteger defaultClientDsaGenerator = new BigInteger(
             1,
             ArrayConverter
                     .hexStringToByteArray("1e813bdd058e57f807aef75c3626dfae3918be6dd87efe5739201b37581d33865b9626aff787aa847e9dbdbf20f57f7d2fce39a5f53c6869254d12fa6b95cfeebc2c1151e69b3d52073d6c23d7cb7c830e2cbb286a624cebbab5648b6d0276dfede31c4717ec03035f13ed81d183a07076a53d79f746f6f67237dbfc6211dc5a"));
@@ -837,7 +863,7 @@ public class Config implements Serializable {
 
     private Byte defaultAlertLevel = 0;
 
-    private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP192R1;
+    private NamedGroup defaultEcCertificateCurve = NamedGroup.SECP256R1;
 
     private CustomECPoint defaultClientEcPublicKey;
 
@@ -1097,6 +1123,25 @@ public class Config implements Serializable {
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_KE);
         pskKeyExchangeModes.add(PskKeyExchangeMode.PSK_DHE_KE);
         defaultPskSets = new LinkedList<>();
+        Certificate cert;
+        try {
+            cert = Certificate
+                    .parse(new ByteArrayInputStream(
+                            ArrayConverter
+                                    .hexStringToByteArray("0003970003943082039030820278A003020102020900A650C00794049FCD300D06092A864886F70D01010B0500305C310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643115301306035504030C0C544C532D41747461636B65723020170D3137303731333132353331385A180F32313137303631393132353331385A305C310B30090603550406130241553113301106035504080C0A536F6D652D53746174653121301F060355040A0C18496E7465726E6574205769646769747320507479204C74643115301306035504030C0C544C532D41747461636B657230820122300D06092A864886F70D01010105000382010F003082010A0282010100C8820D6C3CE84C8430F6835ABFC7D7A912E1664F44578751F376501A8C68476C3072D919C5D39BD0DBE080E71DB83BD4AB2F2F9BDE3DFFB0080F510A5F6929C196551F2B3C369BE051054C877573195558FD282035934DC86EDAB8D4B1B7F555E5B2FEE7275384A756EF86CB86793B5D1333F0973203CB96966766E655CD2CCCAE1940E4494B8E9FB5279593B75AFD0B378243E51A88F6EB88DEF522A8CD5C6C082286A04269A2879760FCBA45005D7F2672DD228809D47274F0FE0EA5531C2BD95366C05BF69EDC0F3C3189866EDCA0C57ADCCA93250AE78D9EACA0393A95FF9952FC47FB7679DD3803E6A7A6FA771861E3D99E4B551A4084668B111B7EEF7D0203010001A3533051301D0603551D0E04160414E7A92FE5543AEE2FF7592F800AC6E66541E3268B301F0603551D23041830168014E7A92FE5543AEE2FF7592F800AC6E66541E3268B300F0603551D130101FF040530030101FF300D06092A864886F70D01010B050003820101000D5C11E28CF19D1BC17E4FF543695168570AA7DB85B3ECB85405392A0EDAFE4F097EE4685B7285E3D9B869D23257161CA65E20B5E6A585D33DA5CD653AF81243318132C9F64A476EC08BA80486B3E439F765635A7EA8A969B3ABD8650036D74C5FC4A04589E9AC8DC3BE2708743A6CFE3B451E3740F735F156D6DC7FFC8A2C852CD4E397B942461C2FCA884C7AFB7EBEF7918D6AAEF1F0D257E959754C4665779FA0E3253EF2BEDBBD5BE5DA600A0A68E51D2D1C125C4E198669A6BC715E8F3884E9C3EFF39D40838ADA4B1F38313F6286AA395DC6DEA9DAF49396CF12EC47EFA7A0D3882F8B84D9AEEFFB252C6B81A566609605FBFD3F0D17E5B12401492A1A")));
+        } catch (IOException ex) {
+            throw new ConfigurationException("Could not create default config");
+        }
+        PrivateKey key = new CustomRSAPrivateKey(
+                new BigInteger(
+                        "25311792238044219946174684693224603884785773358330971609415825404567987089738069857630011723336937795827963868604847118759739071441983186580158833210553280838765514351236797316564714837320618887805126341832834827826790060810763662161735652692660340953325435378344445537136408926502767545150207605087601783216982476527090447255508303291994973748877217756699811604529317375418362425978959405980207726316912995165050065189202729278788324244413992973017231054259638764128689366135764356716715140925548909967670376902528818677308871053953559814432449223427664069339511214707847837366043835739060653160903099571514118172541"),
+                new BigInteger(
+                        "15874858421354831201422373086128612745111153124913833804748747602178280564406425154617488927847142136837462790351481317765255581632968169400556456985418488827925888221598273953686611745401672309465708043217648197631331184971921491765473252248751361737713587292004390571935209364268173007740802648762007661253254661694353602685239350183219876383969245059520622897526828073822681994419744648185400986499062312630392385618231497966730037670361639244062483305891646041343885072158127929403028249239589737831073084456798375448844113695963693837622356344855176327289719518978665114515326513514352049909912072269175924872321"));
+        try {
+            defaultExplicitCertificateKeyPair = new CertificateKeyPair(cert, key);
+        } catch (IOException ex) {
+            throw new ConfigurationException("Could not create default config");
+        }
     }
 
     public Boolean getStopActionsAfterIOException() {
@@ -1249,30 +1294,6 @@ public class Config implements Serializable {
 
     public void setDefaultTokenBindingType(TokenBindingType defaultTokenBindingType) {
         this.defaultTokenBindingType = defaultTokenBindingType;
-    }
-
-    public byte[] getDefaultRsaCertificate() {
-        return defaultRsaCertificate;
-    }
-
-    public void setDefaultRsaCertificate(byte[] defaultRsaCertificate) {
-        this.defaultRsaCertificate = defaultRsaCertificate;
-    }
-
-    public byte[] getDefaultDsaCertificate() {
-        return defaultDsaCertificate;
-    }
-
-    public void setDefaultDsaCertificate(byte[] defaultDsaCertificate) {
-        this.defaultDsaCertificate = defaultDsaCertificate;
-    }
-
-    public byte[] getDefaultEcCertificate() {
-        return defaultEcCertificate;
-    }
-
-    public void setDefaultEcCertificate(byte[] defaultEcCertificate) {
-        this.defaultEcCertificate = defaultEcCertificate;
     }
 
     public byte[] getDefaultClientHandshakeTrafficSecret() {
@@ -3005,27 +3026,115 @@ public class Config implements Serializable {
         this.defaultServerDsaPublicKey = defaultServerDsaPublicKey;
     }
 
-    public BigInteger getDefaultDsaPrimeP() {
-        return defaultDsaPrimeP;
+    public BigInteger getDefaultServerDsaPrimeP() {
+        return defaultServerDsaPrimeP;
     }
 
-    public void setDefaultDsaPrimeP(BigInteger defaultDsaPrimeP) {
-        this.defaultDsaPrimeP = defaultDsaPrimeP;
+    public void setDefaultServerDsaPrimeP(BigInteger defaultServerDsaPrimeP) {
+        this.defaultServerDsaPrimeP = defaultServerDsaPrimeP;
     }
 
-    public BigInteger getDefaultDsaPrimeQ() {
-        return defaultDsaPrimeQ;
+    public BigInteger getDefaultServerDsaPrimeQ() {
+        return defaultServerDsaPrimeQ;
     }
 
-    public void setDefaultDsaPrimeQ(BigInteger defaultDsaPrimeQ) {
-        this.defaultDsaPrimeQ = defaultDsaPrimeQ;
+    public void setDefaultServerDsaPrimeQ(BigInteger defaultServerDsaPrimeQ) {
+        this.defaultServerDsaPrimeQ = defaultServerDsaPrimeQ;
     }
 
-    public BigInteger getDefaultDsaGenerator() {
-        return defaultDsaGenerator;
+    public BigInteger getDefaultServerDsaGenerator() {
+        return defaultServerDsaGenerator;
     }
 
-    public void setDefaultDsaGenerator(BigInteger defaultDsaGenerator) {
-        this.defaultDsaGenerator = defaultDsaGenerator;
+    public void setDefaultServerDsaGenerator(BigInteger defaultServerDsaGenerator) {
+        this.defaultServerDsaGenerator = defaultServerDsaGenerator;
+    }
+
+    public boolean isAutoSelectCertificate() {
+        return autoSelectCertificate;
+    }
+
+    public void setAutoSelectCertificate(boolean autoSelectCertificate) {
+        this.autoSelectCertificate = autoSelectCertificate;
+    }
+
+    public NamedGroup getPreferedCertificateSignatureGroup() {
+        return preferedCertificateSignatureGroup;
+    }
+
+    public void setPreferedCertificateSignatureGroup(NamedGroup preferedCertificateSignatureGroup) {
+        this.preferedCertificateSignatureGroup = preferedCertificateSignatureGroup;
+    }
+
+    public CertificateKeyType getPreferedCertificateSignatureType() {
+        return preferedCertificateSignatureType;
+    }
+
+    public void setPreferedCertificateSignatureType(CertificateKeyType preferedCertificateSignatureType) {
+        this.preferedCertificateSignatureType = preferedCertificateSignatureType;
+    }
+
+    public CertificateKeyPair getDefaultExplicitCertificateKeyPair() {
+        return defaultExplicitCertificateKeyPair;
+    }
+
+    public void setDefaultExplicitCertificateKeyPair(CertificateKeyPair defaultExplicitCertificateKeyPair) {
+        this.defaultExplicitCertificateKeyPair = defaultExplicitCertificateKeyPair;
+    }
+
+    public BigInteger getDefaultClientDsaPrivateKey() {
+        return defaultClientDsaPrivateKey;
+    }
+
+    public void setDefaultClientDsaPrivateKey(BigInteger defaultClientDsaPrivateKey) {
+        this.defaultClientDsaPrivateKey = defaultClientDsaPrivateKey;
+    }
+
+    public BigInteger getDefaultClientDsaPublicKey() {
+        return defaultClientDsaPublicKey;
+    }
+
+    public void setDefaultClientDsaPublicKey(BigInteger defaultClientDsaPublicKey) {
+        this.defaultClientDsaPublicKey = defaultClientDsaPublicKey;
+    }
+
+    public BigInteger getDefaultClientDsaPrimeP() {
+        return defaultClientDsaPrimeP;
+    }
+
+    public void setDefaultClientDsaPrimeP(BigInteger defaultClientDsaPrimeP) {
+        this.defaultClientDsaPrimeP = defaultClientDsaPrimeP;
+    }
+
+    public BigInteger getDefaultClientDsaPrimeQ() {
+        return defaultClientDsaPrimeQ;
+    }
+
+    public void setDefaultClientDsaPrimeQ(BigInteger defaultClientDsaPrimeQ) {
+        this.defaultClientDsaPrimeQ = defaultClientDsaPrimeQ;
+    }
+
+    public BigInteger getDefaultClientDsaGenerator() {
+        return defaultClientDsaGenerator;
+    }
+
+    public void setDefaultClientDsaGenerator(BigInteger defaultClientDsaGenerator) {
+        this.defaultClientDsaGenerator = defaultClientDsaGenerator;
+    }
+
+    public Boolean getAutoAdjustSignatureAndHashAlgorithm() {
+        return autoAdjustSignatureAndHashAlgorithm;
+    }
+
+    public void setAutoAdjustSignatureAndHashAlgorithm(Boolean autoAdjustSignatureAndHashAlgorithm) {
+        this.autoAdjustSignatureAndHashAlgorithm = autoAdjustSignatureAndHashAlgorithm;
+    }
+
+    public HashAlgorithm getPreferredHashAlgorithm() {
+        return preferredHashAlgorithm;
+    }
+
+    public void setPreferredHashAlgorithm(HashAlgorithm preferredHashAlgorithm) {
+        this.preferredHashAlgorithm = preferredHashAlgorithm;
     }
 }

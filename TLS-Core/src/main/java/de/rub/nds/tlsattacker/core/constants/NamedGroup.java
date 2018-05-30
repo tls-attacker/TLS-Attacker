@@ -122,6 +122,18 @@ public enum NamedGroup {
         }
     }
 
+    public static NamedGroup fromJavaName(String name) {
+        if (name.equals("prime256v1")) {
+            return SECP256R1;
+        }
+        for (NamedGroup group : values()) {
+            if (group.getJavaName().equals(name)) {
+                return group;
+            }
+        }
+        return null;
+    }
+
     public String getJavaName() {
         return javaName;
     }

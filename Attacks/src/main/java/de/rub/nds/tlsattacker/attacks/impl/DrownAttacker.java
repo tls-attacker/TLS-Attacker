@@ -70,7 +70,7 @@ public class DrownAttacker extends Attacker<DrownCommandConfig> {
     }
 
     public DrownVulnerabilityType getDrownVulnerabilityType() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.SSL2_HELLO, RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new SSL2ClientMasterKeyMessage()));

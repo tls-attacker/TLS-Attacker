@@ -67,7 +67,7 @@ public class EarlyCCSAttacker extends Attacker<EarlyCCSCommandConfig> {
     }
 
     public boolean checkTargetVersion(TargetVersion targetVersion) {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setFiltersKeepUserSettings(false);
         WorkflowTrace workflowTrace = new WorkflowTrace();
 

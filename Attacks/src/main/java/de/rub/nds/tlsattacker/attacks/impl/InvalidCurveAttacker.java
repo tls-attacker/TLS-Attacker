@@ -49,7 +49,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultClientNamedGroups()
                 .get(0));
         Curve curve = CurveFactory.getNamedCurve(tlsConfig.getDefaultClientNamedGroups().get(0).name());
@@ -62,9 +62,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        if (!AlgorithmResolver.getKeyExchangeAlgorithm(getBaseConfig().getDefaultSelectedCipherSuite()).isEC()) {
+        if (!AlgorithmResolver.getKeyExchangeAlgorithm(getTlsConfig().getDefaultSelectedCipherSuite()).isEC()) {
             LOGGER.info("The CipherSuite that should be tested is not an Ec one:"
-                    + getBaseConfig().getDefaultSelectedCipherSuite().name());
+                    + getTlsConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
         ECComputer computer = new ECComputer();
@@ -108,7 +108,7 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     }
 
     private WorkflowTrace executeProtocolFlow() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(WorkflowTraceType.HELLO,
                 RunningModeType.CLIENT);
         trace.addTlsAction(new SendAction(new ECDHClientKeyExchangeMessage(tlsConfig), new ChangeCipherSpecMessage(

@@ -64,7 +64,7 @@ public class DtlsPaddingOracleAttacker extends Attacker<DtlsPaddingOracleAttackC
 
     public DtlsPaddingOracleAttacker(DtlsPaddingOracleAttackCommandConfig config, Config baseConfig) {
         super(config, baseConfig);
-        tlsConfig = getBaseConfig();
+        tlsConfig = getTlsConfig();
     }
 
     @Override

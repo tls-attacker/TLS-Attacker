@@ -31,7 +31,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
 
     protected AttConfig config;
 
-    private Config baseConfig;
+    private final Config baseConfig;
 
     public Attacker(AttConfig config, Config baseConfig) {
         this.config = config;
@@ -39,7 +39,7 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
     }
 
     public void attack() {
-        LOGGER.debug("Attackign with: " + this.getClass().getSimpleName());
+        LOGGER.debug("Attacking with: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
                 LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Cannot reach Server. Is the server online?");
@@ -71,6 +71,14 @@ public abstract class Attacker<AttConfig extends AttackConfig> {
 
     public AttConfig getConfig() {
         return config;
+    }
+
+    public Config getTlsConfig() {
+        if (config.hasDifferntConfig()) {
+            return config.createConfig();
+        } else {
+            return config.createConfig(baseConfig);
+        }
     }
 
     public Config getBaseConfig() {

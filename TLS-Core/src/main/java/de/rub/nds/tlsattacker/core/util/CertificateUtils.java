@@ -8,6 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.util;
 
+import com.sun.crypto.provider.DHParameters;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDHPrivateKey;
 import de.rub.nds.tlsattacker.core.crypto.keys.CustomDSAPrivateKey;
@@ -32,13 +34,29 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.ECPrivateKeySpec;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.security.spec.RSAPrivateKeySpec;
+import java.util.Enumeration;
+import java.util.logging.Level;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.interfaces.DHPublicKey;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.ASN1Primitive;
+import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.ASN1SequenceParser;
+import org.bouncycastle.asn1.BERTags;
+import org.bouncycastle.asn1.DERApplicationSpecific;
+import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DLSequence;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ObjectIdentifiers;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
@@ -46,6 +64,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.bouncycastle.jce.provider.X509CertificateObject;
+import sun.security.x509.X509Key;
 
 public class CertificateUtils {
 
@@ -86,7 +105,7 @@ public class CertificateUtils {
             ECPublicKey pubKey = (ECPublicKey) key;
             return new CustomEcPublicKey(pubKey.getW().getAffineX(), pubKey.getW().getAffineY(), NamedGroup.NONE);
         } else {
-            throw new UnsupportedOperationException("This private key is not supporter:" + key.toString());
+            throw new UnsupportedOperationException("This public key is not supporter:" + key.toString());
         }
     }
 
@@ -99,9 +118,24 @@ public class CertificateUtils {
      */
     public static PublicKey parsePublicKey(Certificate cert) {
         try {
-            X509CertificateObject certObj = new X509CertificateObject(cert.getCertificateAt(0));
-            return certObj.getPublicKey();
-        } catch (CertificateParsingException | IllegalArgumentException | ClassCastException ex) {
+            X509Certificate x509Cert = X509Certificate.getInstance(cert.getCertificateAt(0).getEncoded());
+            PublicKey key = x509Cert.getPublicKey();
+            if (key instanceof RSAPublicKey || key instanceof ECPublicKey || key instanceof DSAPublicKey) {
+                return key;
+            } else {
+                // Since java does not support DH nativly we can try to manually
+                // parse this, this may fail
+                ASN1InputStream stream = new ASN1InputStream(cert.getCertificateAt(0).getSubjectPublicKeyInfo()
+                        .toASN1Primitive().getEncoded());
+                DLSequence sequence = (DLSequence) stream.readObject();
+                DLSequence objectAt = (DLSequence) sequence.getObjectAt(0).toASN1Primitive();
+                DLSequence dhparams = (DLSequence) objectAt.getObjectAt(1);
+                ASN1Integer asnModulus = (ASN1Integer) dhparams.getObjectAt(0); // modulus
+                ASN1Integer asnGenerator = (ASN1Integer) dhparams.getObjectAt(1); // generator
+                BigInteger publicKey = new BigInteger(1, x509Cert.getPublicKey().getEncoded());
+                return new CustomDhPublicKey(asnModulus.getPositiveValue(), asnGenerator.getPositiveValue(), publicKey);
+            }
+        } catch (IOException | CertificateException | IllegalArgumentException | ClassCastException ex) {
             LOGGER.warn("Could not extract public key from Certificate!");
             LOGGER.debug(ex);
             return null;

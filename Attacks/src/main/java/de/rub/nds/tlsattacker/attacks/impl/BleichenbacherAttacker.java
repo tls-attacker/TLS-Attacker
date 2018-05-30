@@ -67,7 +67,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public Boolean isVulnerable() {
-        tlsConfig = getBaseConfig();
+        tlsConfig = getTlsConfig();
         RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
@@ -210,7 +210,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             throw new ConfigurationException("The length of the encrypted premaster secret you have "
                     + "is not equal to the server public key length. Have you selected the correct value?");
         }
-        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getBaseConfig(),
+        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getTlsConfig(),
                 extractValidFingerprint(publicKey, tlsConfig.getDefaultHighestClientProtocolVersion()), null,
                 vulnerableType);
         Bleichenbacher attacker = new Bleichenbacher(pms, oracle, config.isMsgPkcsConform());

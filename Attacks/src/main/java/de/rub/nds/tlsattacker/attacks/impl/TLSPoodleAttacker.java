@@ -48,7 +48,7 @@ public class TLSPoodleAttacker extends Attacker<TLSPoodleCommandConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         WorkflowTrace trace = new WorkflowConfigurationFactory(tlsConfig).createWorkflowTrace(
                 WorkflowTraceType.HANDSHAKE, RunningModeType.CLIENT);
 

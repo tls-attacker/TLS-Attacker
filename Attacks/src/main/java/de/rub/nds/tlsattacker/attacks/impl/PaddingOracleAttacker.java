@@ -43,7 +43,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
         super(paddingOracleConfig, baseConfig);
-        tlsConfig = getBaseConfig();
+        tlsConfig = getTlsConfig();
     }
 
     @Override

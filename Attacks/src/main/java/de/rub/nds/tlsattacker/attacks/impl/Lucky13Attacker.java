@@ -71,7 +71,7 @@ public class Lucky13Attacker extends Attacker<Lucky13CommandConfig> {
     }
 
     public void executeAttackRound(Record record) throws IOException {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
 
         transportHandler = new TimingClientTcpTransportHandler(tlsConfig.getDefaultClientConnection());
         transportHandler.initialize();

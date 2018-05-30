@@ -31,7 +31,7 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
 
     @Override
     public void executeAttack() {
-        Config tlsConfig = getBaseConfig();
+        Config tlsConfig = getTlsConfig();
         tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
         List<SignatureAndHashAlgorithm> algorithmList = new LinkedList<>();
         Random random = new Random(0);
@@ -49,16 +49,7 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
 
     @Override
     public Boolean isVulnerable() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-        // change
-        // body
-        // of
-        // generated
-        // methods,
-        // choose
-        // Tools
-        // |
-        // Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }
