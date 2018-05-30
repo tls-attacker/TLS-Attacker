@@ -39,6 +39,54 @@
         <hashAlgorithm>MD5</hashAlgorithm>
         <signatureAlgorithm>RSA</signatureAlgorithm>
     </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA512</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA384</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA256</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA224</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA1</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>MD5</hashAlgorithm>
+        <signatureAlgorithm>ECDSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA512</hashAlgorithm>
+        <signatureAlgorithm>DSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA384</hashAlgorithm>
+        <signatureAlgorithm>DSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA256</hashAlgorithm>
+        <signatureAlgorithm>DSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA224</hashAlgorithm>
+        <signatureAlgorithm>DSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>SHA1</hashAlgorithm>
+        <signatureAlgorithm>DSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
+    <supportedSignatureAndHashAlgorithms>
+        <hashAlgorithm>MD5</hashAlgorithm>
+        <signatureAlgorithm>DSA</signatureAlgorithm>
+    </supportedSignatureAndHashAlgorithms>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_3DES_EDE_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_AES_128_CBC_SHA</defaultClientSupportedCiphersuites>
     <defaultClientSupportedCiphersuites>TLS_RSA_WITH_NULL_MD5</defaultClientSupportedCiphersuites>
@@ -704,7 +752,7 @@
     <addHeartbeatExtension>false</addHeartbeatExtension>
     <addMaxFragmentLengthExtenstion>false</addMaxFragmentLengthExtenstion>
     <addServerNameIndicationExtension>false</addServerNameIndicationExtension>
-    <addSignatureAndHashAlgorithmsExtension>false</addSignatureAndHashAlgorithmsExtension>
+    <addSignatureAndHashAlgorithmsExtension>true</addSignatureAndHashAlgorithmsExtension>
     <addSupportedVersionsExtension>false</addSupportedVersionsExtension>
     <addKeyShareExtension>false</addKeyShareExtension>
     <addEarlyDataExtension>false</addEarlyDataExtension>
