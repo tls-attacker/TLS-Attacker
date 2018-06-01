@@ -121,7 +121,7 @@ public class WorkflowTraceSerializerTest {
             action = new SendAction(new ClientHelloMessage(config));
             trace.addTlsAction(action);
 
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            StringBuilder sb = new StringBuilder();
             sb.append("<workflowTrace>\n");
             sb.append("    <Send>\n");
             sb.append("        <messages>\n");
@@ -164,7 +164,7 @@ public class WorkflowTraceSerializerTest {
             action.setConnectionAlias(con.getAlias());
             trace.addTlsAction(action);
 
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            StringBuilder sb = new StringBuilder("");
             sb.append("<workflowTrace>\n");
             sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>theAlias</alias>\n");
@@ -214,7 +214,7 @@ public class WorkflowTraceSerializerTest {
             action = new SendAction(con3.getAlias(), new ClientHelloMessage(config));
             trace.addTlsAction(action);
 
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            StringBuilder sb = new StringBuilder("");
             sb.append("<workflowTrace>\n");
             sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>alias1</alias>\n");

@@ -146,7 +146,7 @@ public class ForwardActionTest {
         try {
             action = new ForwardAction(ctx1Alias, ctx2Alias);
             trace.addTlsAction(action);
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            StringBuilder sb = new StringBuilder("");
             sb.append("<workflowTrace>\n");
             sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>ctx1</alias>\n");
