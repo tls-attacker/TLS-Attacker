@@ -1,13 +1,11 @@
 Test a MITM workflow trace
 
 # Given this config:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
     <runningMode>MITM</runningMode>
 </config>
 
 # And this input trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <InboundConnection>
         <alias>server</alias>
@@ -84,7 +82,6 @@ Test a MITM workflow trace
 
 
 # We expect this normalized trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <InboundConnection>
         <alias>server</alias>
@@ -178,7 +175,6 @@ Test a MITM workflow trace
 
 
 # And this after default filter application:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <InboundConnection>
         <alias>server</alias>
