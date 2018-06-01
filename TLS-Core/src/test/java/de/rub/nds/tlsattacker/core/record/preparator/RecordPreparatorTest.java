@@ -23,6 +23,8 @@ import de.rub.nds.tlsattacker.core.record.crypto.Encryptor;
 import de.rub.nds.tlsattacker.core.record.crypto.RecordEncryptor;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -37,12 +39,15 @@ public class RecordPreparatorTest {
     public RecordPreparator preparator;
 
     public RecordPreparatorTest() {
+        setUp();
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Before
     public void setUp() {
         context = new TlsContext();
         record = new Record();
+
     }
 
     /**
