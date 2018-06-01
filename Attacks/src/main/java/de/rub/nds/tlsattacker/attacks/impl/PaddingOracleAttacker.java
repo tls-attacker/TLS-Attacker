@@ -33,6 +33,7 @@ import de.rub.nds.tlsattacker.core.util.LogLevel;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowExecutorFactory;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -72,8 +73,7 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         sendAction.setRecords(new LinkedList<AbstractRecord>());
         sendAction.getRecords().add(record);
         trace.addTlsAction(sendAction);
-        AlertMessage alertMessage = new AlertMessage(tlsConfig);
-        trace.addTlsAction(new ReceiveAction(alertMessage));
+        trace.addTlsAction(new GenericReceiveAction());
         tlsConfig.setWorkflowExecutorShouldClose(false);
         State state = new State(tlsConfig, trace);
 

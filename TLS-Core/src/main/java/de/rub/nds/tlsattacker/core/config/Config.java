@@ -405,7 +405,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
-    private Boolean addSignatureAndHashAlgorithmsExtension = false;
+    private Boolean addSignatureAndHashAlgorithmsExtension = true;
 
     /**
      * If we generate ClientHello with the SupportedVersion extension
@@ -989,6 +989,30 @@ public class Config implements Serializable {
                 HashAlgorithm.SHA1));
         supportedSignatureAndHashAlgorithms
                 .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA512));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA384));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA256));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA224));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA1));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.MD5));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA512));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA384));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA256));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA224));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA1));
+        supportedSignatureAndHashAlgorithms
+                .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.MD5));
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();

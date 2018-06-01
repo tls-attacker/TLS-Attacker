@@ -17,6 +17,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ChangeCipherSpecMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.FinishedMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.RSAClientKeyExchangeMessage;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -54,7 +55,7 @@ public class BleichenbacherWorkflowGenerator {
                 default:
                     break;
             }
-        trace.addTlsAction(new ReceiveAction(new AlertMessage(tlsConfig)));
+        trace.addTlsAction(new GenericReceiveAction());
 
         return trace;
     }
