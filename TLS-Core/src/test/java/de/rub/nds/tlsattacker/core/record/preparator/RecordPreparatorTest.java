@@ -39,15 +39,13 @@ public class RecordPreparatorTest {
     public RecordPreparator preparator;
 
     public RecordPreparatorTest() {
-        setUp();
-        Security.addProvider(new BouncyCastleProvider());
     }
 
     @Before
     public void setUp() {
         context = new TlsContext();
         record = new Record();
-
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     /**
