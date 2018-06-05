@@ -60,7 +60,7 @@ public class RSAClientKeyExchangePreparatorTest {
         assertArrayEquals(
                 ArrayConverter.concatenate(ArrayConverter.hexStringToByteArray("AABBCCDDEEFF"),
                         ArrayConverter.hexStringToByteArray("AABBCCDDEEFF")), message.getComputations()
-                        .getClientRandom().getValue());
+                        .getClientServerRandom().getValue());
         assertNotNull(message.getComputations().getPremasterSecret().getValue());
         assertEquals(HandshakeByteLength.PREMASTER_SECRET,
                 message.getComputations().getPremasterSecret().getValue().length);

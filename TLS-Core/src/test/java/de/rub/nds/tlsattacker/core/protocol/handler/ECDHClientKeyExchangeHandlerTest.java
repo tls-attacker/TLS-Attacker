@@ -73,6 +73,8 @@ public class ECDHClientKeyExchangeHandlerTest {
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setRecordLayer(new TlsRecordLayer(context));
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        context.setClientRandom(new byte[] {});
+        context.setServerRandom(new byte[] {});
 
         ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
         ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);

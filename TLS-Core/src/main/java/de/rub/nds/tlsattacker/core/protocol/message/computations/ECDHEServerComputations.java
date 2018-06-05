@@ -25,10 +25,6 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.TLS_CONSTANT)
     private ModifiableByteArray namedGroupList;
 
-    // TODO: serverRandom might be better placed in KeyExchangeComputations.
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    protected ModifiableByteArray serverRandom;
-
     public ECDHEServerComputations() {
     }
 
@@ -54,18 +50,6 @@ public class ECDHEServerComputations extends KeyExchangeComputations {
 
     public void setNamedGroupList(byte[] groups) {
         this.namedGroupList = ModifiableVariableFactory.safelySetValue(this.namedGroupList, groups);
-    }
-
-    public ModifiableByteArray getServerRandom() {
-        return serverRandom;
-    }
-
-    public void setServerRandom(ModifiableByteArray random) {
-        this.serverRandom = random;
-    }
-
-    public void setServerRandom(byte[] random) {
-        this.serverRandom = ModifiableVariableFactory.safelySetValue(this.serverRandom, random);
     }
 
     @Override

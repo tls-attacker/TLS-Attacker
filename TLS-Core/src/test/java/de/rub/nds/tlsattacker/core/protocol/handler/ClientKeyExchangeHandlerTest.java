@@ -63,7 +63,7 @@ public class ClientKeyExchangeHandlerTest {
         DHClientKeyExchangeMessage message = new DHClientKeyExchangeMessage();
         message.prepareComputations();
         message.getComputations().setPremasterSecret(preMasterSecret);
-        message.getComputations().setClientRandom(ArrayConverter.concatenate(clientRdm, serverRdm));
+        message.getComputations().setClientServerRandom(ArrayConverter.concatenate(clientRdm, serverRdm));
         context.setServerRandom(serverRdm);
         context.setSelectedCipherSuite(CipherSuite.TLS_DHE_RSA_WITH_AES_256_CBC_SHA);
         context.setSelectedProtocolVersion(ProtocolVersion.SSL3);

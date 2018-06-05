@@ -43,7 +43,7 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         preparePremasterSecret(msg);
         preparePublicKey(msg);
         preparePublicKeyLength(msg);
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
     }
 
     protected BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
@@ -89,18 +89,18 @@ public class DHClientKeyExchangePreparator<T extends DHClientKeyExchangeMessage>
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    protected void prepareClientRandom(T msg) {
+    protected void prepareClientServerRandom(T msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(random);
-        random = msg.getComputations().getClientRandom().getValue();
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(random);
+        random = msg.getComputations().getClientServerRandom().getValue();
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
         setComputationGenerator(msg);
         setComputationModulus(msg);
         setComputationPrivateKey(msg, clientMode);
