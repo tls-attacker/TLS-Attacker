@@ -16,6 +16,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
@@ -47,6 +48,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.SessionTicketTLSEx
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignatureAndHashAlgorithmsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SignedCertificateTimestampExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SrtpExtensionMessage;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.SupportedVersionsExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TokenBindingExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TruncatedHmacExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.TrustedCaIndicationExtensionMessage;
@@ -81,11 +83,13 @@ public class ServerHelloMessage extends HelloMessage {
             extension.getServerNameList().add(pair);
             addExtension(extension);
         }
-        if (tlsConfig.isAddSignatureAndHashAlgrorithmsExtension() && !tlsConfig.getHighestProtocolVersion().isTLS13()) {
-            addExtension(new SignatureAndHashAlgorithmsExtensionMessage());
-        }
         if (tlsConfig.isAddKeyShareExtension()) {
-            addExtension(new KeyShareExtensionMessage(tlsConfig));
+            if (tlsConfig.getHighestProtocolVersion() != ProtocolVersion.TLS13
+                    && tlsConfig.getHighestProtocolVersion().getMinor() < 0x17) {
+                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE_OLD, tlsConfig));
+            } else {
+                addExtension(new KeyShareExtensionMessage(ExtensionType.KEY_SHARE, tlsConfig));
+            }
         }
         if (tlsConfig.isAddExtendedMasterSecretExtension()) {
             addExtension(new ExtendedMasterSecretExtensionMessage());
@@ -154,7 +158,10 @@ public class ServerHelloMessage extends HelloMessage {
             addExtension(new CertificateStatusRequestV2ExtensionMessage());
         }
         if (tlsConfig.isAddPreSharedKeyExtension()) {
-            addExtension(new PreSharedKeyExtensionMessage());
+            addExtension(new PreSharedKeyExtensionMessage(tlsConfig));
+        }
+        if (tlsConfig.isAddSupportedVersionsExtension()) {
+            addExtension(new SupportedVersionsExtensionMessage());
         }
     }
 

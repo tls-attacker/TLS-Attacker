@@ -122,6 +122,10 @@ public class SessionTicket extends ModifiableVariableHolder implements Serializa
         } else {
             sb.append("null");
         }
+        if (identity != null) {
+            sb.append("\n    Identity: ");
+            sb.append(ArrayConverter.bytesToHexString(identity.getValue()));
+        }
         return sb.toString();
     }
 

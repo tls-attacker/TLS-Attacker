@@ -150,7 +150,7 @@ public class ForwardMessagesActionTest {
         try {
             action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
             trace.addTlsAction(action);
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            StringBuilder sb = new StringBuilder("");
             sb.append("<workflowTrace>\n");
             sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>ctx1</alias>\n");
@@ -194,6 +194,7 @@ public class ForwardMessagesActionTest {
         ApplicationMessage msg = new ApplicationMessage(state.getConfig());
         String receivedData = "Forward application message test";
         msg.setData(receivedData.getBytes());
+        msg.setCompleteResultingMessage(receivedData.getBytes());
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
         FakeReceiveMessageHelper fakeReceiveHelper = new FakeReceiveMessageHelper();

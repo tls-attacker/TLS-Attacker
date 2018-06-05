@@ -204,6 +204,7 @@ public class HandlerFactory {
                     return new ExtendedMasterSecretExtensionHandler(context);
                 case HEARTBEAT:
                     return new HeartbeatExtensionHandler(context);
+                case KEY_SHARE_OLD:
                 case KEY_SHARE:
                     if (handshakeMessageType == HandshakeMessageType.HELLO_RETRY_REQUEST) {
                         return new HrrKeyShareExtensionHandler(context);
@@ -309,6 +310,7 @@ public class HandlerFactory {
             case ECDH_ECDSA:
             case ECDH_RSA:
             case ECDHE_RSA:
+            case ECDH_ANON:
                 return new ECDHEServerKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:

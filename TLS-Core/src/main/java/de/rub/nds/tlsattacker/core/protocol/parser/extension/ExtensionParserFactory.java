@@ -55,6 +55,7 @@ public class ExtensionParserFactory {
             case SUPPORTED_VERSIONS:
                 parser = new SupportedVersionsExtensionParser(pointer, extensionBytes);
                 break;
+            case KEY_SHARE_OLD: // Extension was moved
             case KEY_SHARE:
                 parser = getKeyShareParser(extensionBytes, pointer, handshakeMessageType);
                 break;

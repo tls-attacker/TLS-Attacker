@@ -30,7 +30,7 @@ public class HRRKeyShareExtensionPreparator extends ExtensionPreparator<HRRKeySh
     }
 
     private void prepareSelectedGroup(HRRKeyShareExtensionMessage msg) {
-        msg.setSelectedGroup(chooser.getConfig().getKeyShareType().getValue());
+        msg.setSelectedGroup(chooser.getConfig().getDefaultSelectedNamedGroup().getValue());
         LOGGER.debug("SelectedGroup: " + ArrayConverter.bytesToHexString(msg.getSelectedGroup().getValue()));
     }
 

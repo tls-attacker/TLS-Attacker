@@ -3,12 +3,10 @@ if there is only one connection defined in the workflow trace. This is
 true for default and custom connections.
 
 # Given this config:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
 </config>
 
 # And this input trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
@@ -22,7 +20,6 @@ true for default and custom connections.
 </workflowTrace>
 
 # We expect this normalized trace
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>
@@ -41,7 +38,6 @@ true for default and custom connections.
 </workflowTrace>
 
 # And this after default filter application:
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workflowTrace>
     <OutboundConnection>
         <alias>custom</alias>

@@ -68,6 +68,7 @@ public class RemBufferedChExtensionsActionTest {
         config.setAddEncryptThenMacExtension(true);
         config.setAddExtendedMasterSecretExtension(true);
         config.setAddRenegotiationInfoExtension(false);
+        config.setAddSignatureAndHashAlgorithmsExtension(false);
 
         action = new RemBufferedChExtensionsAction();
         trace = new WorkflowTrace();

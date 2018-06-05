@@ -22,6 +22,10 @@ import de.rub.nds.tlsattacker.core.record.cipher.RecordCipher;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySetGenerator;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.security.NoSuchAlgorithmException;
+import java.security.Security;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -39,6 +43,7 @@ public class RecordDecryptorTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         record = new Record();
         record.setContentType(ProtocolMessageType.HANDSHAKE.getValue());

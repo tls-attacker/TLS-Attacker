@@ -16,14 +16,15 @@ import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
 import de.rub.nds.tlsattacker.core.constants.EllipticCurveType;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
-import de.rub.nds.tlsattacker.core.constants.NamedCurve;
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KSEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
@@ -57,13 +58,13 @@ public abstract class Chooser {
         return context;
     }
 
-    public abstract List<KSEntry> getClientKeyShareEntryList();
-
     public abstract List<ECPointFormat> getClientSupportedPointFormats();
 
     public abstract SignatureAndHashAlgorithm getSelectedSigHashAlgorithm();
 
-    public abstract List<NamedCurve> getClientSupportedNamedCurves();
+    public abstract List<NamedGroup> getClientSupportedNamedGroups();
+
+    public abstract List<NamedGroup> getServerSupportedNamedGroups();
 
     public abstract List<ECPointFormat> getServerSupportedPointFormats();
 
@@ -175,9 +176,9 @@ public abstract class Chooser {
 
     public abstract BigInteger getClientEcPrivateKey();
 
-    public abstract NamedCurve getSelectedCurve();
+    public abstract NamedGroup getSelectedNamedGroup();
 
-    public abstract NamedCurve getEcCertificateCurve();
+    public abstract NamedGroup getEcCertificateCurve();
 
     public abstract CustomECPoint getClientEcPublicKey();
 
@@ -202,8 +203,6 @@ public abstract class Chooser {
     public abstract byte[] getClientApplicationTrafficSecret();
 
     public abstract byte[] getServerApplicationTrafficSecret();
-
-    public abstract KSEntry getServerKSEntry();
 
     public abstract RecordLayerType getRecordLayerType();
 
@@ -238,4 +237,8 @@ public abstract class Chooser {
     public abstract byte[] getEarlySecret();
 
     public abstract byte[] getEarlyDataPsk();
+
+    public abstract List<KeyShareStoreEntry> getClientKeyShares();
+
+    public abstract KeyShareStoreEntry getServerKeyShare();
 }

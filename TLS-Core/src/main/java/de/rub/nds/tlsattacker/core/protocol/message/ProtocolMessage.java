@@ -40,6 +40,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     @XmlTransient
     protected boolean REQUIRED_DEFAULT = true;
+
+    @XmlTransient
+    protected boolean ADJUST_CONTEXT_DEFAULT = true;
+
     /**
      * Defines whether this message is necessarily required in the workflow.
      */
@@ -52,6 +56,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean goingToBeSent;
+
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
+    private ModifiableBoolean adjustContext;
+
     /**
      * resulting message
      */
@@ -87,6 +95,10 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
         this.goingToBeSent = ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
     }
 
+    public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
+        this.goingToBeSent = goingToBeSent;
+    }
+
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
@@ -111,6 +123,21 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     public void setCompleteResultingMessage(byte[] completeResultingMessage) {
         this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
                 completeResultingMessage);
+    }
+
+    public boolean getAdjustContext() {
+        if (adjustContext == null || adjustContext.getValue() == null) {
+            return ADJUST_CONTEXT_DEFAULT;
+        }
+        return adjustContext.getValue();
+    }
+
+    public void setAdjustContext(ModifiableBoolean adjustContext) {
+        this.adjustContext = adjustContext;
+    }
+
+    public void setAdjustContext(Boolean adjustContext) {
+        this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
     public boolean isHandshakeMessage() {

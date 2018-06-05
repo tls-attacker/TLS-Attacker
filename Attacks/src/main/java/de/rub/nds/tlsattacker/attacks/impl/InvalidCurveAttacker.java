@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.attacks.ec.oracles.RealDirectMessageECOracle;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
-import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.crypto.ec.Curve;
 import de.rub.nds.tlsattacker.core.crypto.ec.CurveFactory;
@@ -51,8 +50,9 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
     @Override
     public void executeAttack() {
         Config tlsConfig = config.createConfig();
-        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getNamedCurves().get(0));
-        Curve curve = CurveFactory.getNamedCurve(tlsConfig.getNamedCurves().get(0).name());
+        LOGGER.info("Executing attack against the server with named curve {}", tlsConfig.getDefaultClientNamedGroups()
+                .get(0));
+        Curve curve = CurveFactory.getNamedCurve(tlsConfig.getDefaultClientNamedGroups().get(0).name());
         RealDirectMessageECOracle oracle = new RealDirectMessageECOracle(tlsConfig, curve);
         ICEAttacker attacker = new ICEAttacker(oracle, config.getServerType(), config.getAdditionalEquations());
         attacker.attack();
@@ -62,15 +62,13 @@ public class InvalidCurveAttacker extends Attacker<InvalidCurveAttackConfig> {
 
     @Override
     public Boolean isVulnerable() {
-        if (!KeyExchangeAlgorithm.isEC(AlgorithmResolver.getKeyExchangeAlgorithm(config.createConfig()
-                .getDefaultSelectedCipherSuite()))) {
+        if (!AlgorithmResolver.getKeyExchangeAlgorithm(config.createConfig().getDefaultSelectedCipherSuite()).isEC()) {
             LOGGER.info("The CipherSuite that should be tested is not an Ec one:"
                     + config.createConfig().getDefaultSelectedCipherSuite().name());
             return null;
         }
         ECComputer computer = new ECComputer();
-        CurveFactory.getNamedCurve(config.getNamedCurve().getJavaName());
-        Curve curve = CurveFactory.getNamedCurve(config.getNamedCurve().getJavaName());
+        Curve curve = CurveFactory.getNamedCurve(config.getNamedGroup().getJavaName());
         computer.setCurve(curve);
         Point point = new Point(config.getPublicPointBaseX(), config.getPublicPointBaseY());
         for (int i = 0; i < getConfig().getProtocolFlows(); i++) {

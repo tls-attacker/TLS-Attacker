@@ -37,7 +37,7 @@ import org.junit.experimental.categories.Category;
 public class BasicTlsClientServerTest {
 
     private static final Logger LOGGER = LogManager.getLogger(BasicTlsClientServerTest.class);
-    private static final int SERVER_PORT = 44335;
+    private static final int SERVER_PORT = 0;
     private BadRandom random = new BadRandom(new Random(0), null);
 
     public BasicTlsClientServerTest() {
@@ -64,7 +64,7 @@ public class BasicTlsClientServerTest {
                 ;
 
             LOGGER.info("Starting test client");
-            BasicTlsClient client = new BasicTlsClient("localhost", SERVER_PORT, ProtocolVersion.TLS12,
+            BasicTlsClient client = new BasicTlsClient("localhost", tlsServer.getPort(), ProtocolVersion.TLS12,
                     CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA);
             client.setRetryConnect(false);
             Thread clientThread = new Thread(client);
