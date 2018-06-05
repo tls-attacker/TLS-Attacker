@@ -149,7 +149,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @XmlElementWrapper
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -202,7 +202,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -317,9 +317,6 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     void receiveMessages(TlsContext receiveFromCtx) {
         LOGGER.debug("Receiving Messages...");
-        System.out.println("messages: " + messages);
-        System.out.println("receiveFromCtx: " + receiveFromCtx);
-        System.out.println("receiveMessageHelper: " + receiveMessageHelper);
         MessageActionResult result = receiveMessageHelper.receiveMessages(messages, receiveFromCtx);
         receivedRecords = result.getRecordList();
         receivedMessages = result.getMessageList();
