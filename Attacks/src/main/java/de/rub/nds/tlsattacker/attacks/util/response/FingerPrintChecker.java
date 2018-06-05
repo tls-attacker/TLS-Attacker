@@ -43,20 +43,19 @@ public class FingerPrintChecker {
         if (!checkRecordContentTypeEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
             return EqualityError.RECORD_CONTENT_TYPE;
         }
-        if (!checkAlertRecordEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-            return EqualityError.ALERT_RECORD_CONTENT;
-        }
-        if (!checkAlertMessageEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
-            return EqualityError.ALERT_MESSAGE_CONTENT;
-        }
-        // If it contains an encrypted alert it is very likely that we cannot
-        // just compare the protocolmessages
-        // We should focus on the record layer instead
-        if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
-            return EqualityError.MESSAGE_COUNT;
-        }
-        if (!checkMessageClassEquality(fingerprint1.getMessageClasses(), fingerprint2.getMessageClasses())) {
-            return EqualityError.MESSAGE_CLASS;
+        if ((!fingerprint1.isEncryptedAlert() && !canDecryptAlerts) || canDecryptAlerts) {
+            if (!checkAlertRecordEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
+                return EqualityError.ALERT_RECORD_CONTENT;
+            }
+            if (!checkAlertMessageEquality(fingerprint1.getRecordList(), fingerprint2.getRecordList())) {
+                return EqualityError.ALERT_MESSAGE_CONTENT;
+            }
+            if (fingerprint1.getNumberOfMessageReceived() != fingerprint2.getNumberOfMessageReceived()) {
+                return EqualityError.MESSAGE_COUNT;
+            }
+            if (!checkMessageClassEquality(fingerprint1.getMessageClasses(), fingerprint2.getMessageClasses())) {
+                return EqualityError.MESSAGE_CLASS;
+            }
         }
         if (!checkSocketState(fingerprint1, fingerprint2)) {
             return EqualityError.SOCKET_STATE;
