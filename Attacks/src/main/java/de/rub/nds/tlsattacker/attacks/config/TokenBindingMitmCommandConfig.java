@@ -19,13 +19,6 @@ public class TokenBindingMitmCommandConfig extends AttackConfig {
 
     public static final String ATTACK_COMMAND = "token_binding_mitm";
 
-    // @Parameter(names = "-certificate", description =
-    // "Path to a certificate file in PEM format. "
-    // +
-    // "This is the 'faked' certificate that the MitM presents to the client as server "
-    // + "certifcate.")
-    // private String serverCertPath;
-
     @Parameter(names = "-chrome", description = "Set this if using chrome. Allows to handle multiple requests.")
     private Boolean chrome = false;
 
@@ -41,14 +34,6 @@ public class TokenBindingMitmCommandConfig extends AttackConfig {
         timeoutDelegate = new TimeoutDelegate();
         addDelegate(timeoutDelegate);
     }
-
-    // public String getServerCertPath() {
-    // return serverCertPath;
-    // }
-    //
-    // public void setServerCertPath(String serverCertPath) {
-    // this.serverCertPath = serverCertPath;
-    // }
 
     public Boolean isChrome() {
         return chrome;
