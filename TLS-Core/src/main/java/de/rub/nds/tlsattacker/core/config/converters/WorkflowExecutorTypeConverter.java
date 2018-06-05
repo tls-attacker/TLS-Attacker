@@ -19,7 +19,7 @@ public class WorkflowExecutorTypeConverter implements IStringConverter<WorkflowE
         try {
             return WorkflowExecutorType.valueOf(value);
         } catch (IllegalArgumentException e) {
-            throw new ParameterException("Could not parse WorkflowTraceType.");
+            throw new ParameterException("Could not parse WorkfloweExecutorType.");
         }
     }
 
