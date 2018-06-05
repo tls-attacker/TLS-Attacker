@@ -75,6 +75,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable,
         }
     }
 
+    public abstract String toCompactString();
+
     @Override
     public String aliasesToString() {
         return alias;

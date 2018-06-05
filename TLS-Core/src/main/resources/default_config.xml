@@ -1032,8 +1032,14 @@
     <defaultServerSupportedCompressionMethods>NULL</defaultServerSupportedCompressionMethods>
     <defaultMasterSecret/>
     <defaultPreMasterSecret/>
-    <defaultClientRandom/>
-    <defaultServerRandom/>
+    <defaultClientRandom>
+        00 11 22 33 44 55 66 77  88 99 AA BB CC DD EE FF
+        FF EE DD CC BB AA 99 88  77 66 55 44 33 22 11 00
+    </defaultClientRandom>
+    <defaultServerRandom>
+        00 11 22 33 44 55 66 77  88 99 AA BB CC DD EE FF
+        FF EE DD CC BB AA 99 88  77 66 55 44 33 22 11 00
+    </defaultServerRandom>
     <defaultClientSessionId/>
     <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
@@ -1096,7 +1102,7 @@
     <defaultTokenBindingRsaPrivateKey>89489425009274444368228545921773093919669586065884257445497854456487674839629818390934941973262879616797970608917283679875499331574161113854088813275488110588247193077582527278437906504015680623423550067240042466665654232383502922215493623289472138866445818789127946123407807725702626644091036502372545139713</defaultTokenBindingRsaPrivateKey>
     <defaultTokenBindingEcPrivateKey>3</defaultTokenBindingEcPrivateKey>
     <defaultTokenBindingRsaModulus>145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053</defaultTokenBindingRsaModulus>
-    <useRandomUnixTime>true</useRandomUnixTime>
+    <useFreshRandom>true</useFreshRandom>
     <chooserType>DEFAULT</chooserType>
     <useAllProvidedRecords>false</useAllProvidedRecords>
     <httpsParsingEnabled>false</httpsParsingEnabled>

@@ -221,6 +221,15 @@ public class State {
     }
 
     /**
+     * Get state's (normalized) workflow trace.
+     * 
+     * @return a copy of the state's (normalized) workflow trace
+     */
+    public WorkflowTrace getWorkflowTraceCopy() {
+        return WorkflowTrace.copy(workflowTrace);
+    }
+
+    /**
      * Get a filtered copy of the state's workflow trace.
      * 
      * @return a filtered copy of the input workflow trace

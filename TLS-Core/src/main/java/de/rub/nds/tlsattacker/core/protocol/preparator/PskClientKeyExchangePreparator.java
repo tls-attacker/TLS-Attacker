@@ -35,7 +35,7 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         msg.prepareComputations();
         premasterSecret = generatePremasterSecret();
         preparePremasterSecret(msg);
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
     }
 
     public byte[] generatePremasterSecret() {
@@ -62,12 +62,11 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    private void prepareClientRandom(PskClientKeyExchangeMessage msg) {
-        // TODO spooky
+    private void prepareClientServerRandom(PskClientKeyExchangeMessage msg) {
         clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(clientRandom);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(clientRandom);
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -76,7 +75,7 @@ public class PskClientKeyExchangePreparator extends ClientKeyExchangePreparator<
             msg.prepareComputations();
             premasterSecret = generatePremasterSecret();
             preparePremasterSecret(msg);
-            prepareClientRandom(msg);
+            prepareClientServerRandom(msg);
         }
     }
 }

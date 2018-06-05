@@ -25,6 +25,11 @@ public class ChangeCipherSuiteAction extends ConnectionBoundAction {
         this.newValue = newValue;
     }
 
+    public ChangeCipherSuiteAction(String alias, CipherSuite newValue) {
+        super(alias);
+        this.newValue = newValue;
+    }
+
     public ChangeCipherSuiteAction() {
     }
 

@@ -14,6 +14,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
 import de.rub.nds.tlsattacker.core.state.State;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Apply buffered message to the given context.
@@ -37,10 +38,15 @@ public class ApplyBufferedMessagesAction extends ConnectionBoundAction {
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-        for (ProtocolMessage msg : ctx.getMessageBuffer()) {
-            LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
-            ProtocolMessageHandler h = msg.getHandler(ctx);
-            h.adjustTLSContext(msg);
+        List<ProtocolMessage> messages = ctx.getMessageBuffer();
+        if (messages.size() == 0) {
+            LOGGER.debug("Empty buffer, no messages to apply");
+        } else {
+            for (ProtocolMessage msg : messages) {
+                LOGGER.debug("Applying buffered " + msg.toCompactString() + " to context " + ctx);
+                ProtocolMessageHandler h = msg.getHandler(ctx);
+                h.adjustTLSContext(msg);
+            }
         }
         setExecuted(true);
     }

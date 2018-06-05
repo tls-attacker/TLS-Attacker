@@ -27,8 +27,8 @@ import java.io.IOException;
  */
 public class FindReceivedProtocolMessageAction extends ConnectionBoundAction {
 
-    ProtocolMessageType protocolMessageType;
-    Boolean found = false;
+    private ProtocolMessageType protocolMessageType;
+    private Boolean found = false;
 
     public FindReceivedProtocolMessageAction() {
     }

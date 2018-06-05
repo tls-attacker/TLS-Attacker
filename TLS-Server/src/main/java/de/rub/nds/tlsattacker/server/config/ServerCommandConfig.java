@@ -15,6 +15,7 @@ import de.rub.nds.tlsattacker.core.config.delegate.CertificateDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.CiphersuiteDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.ConfigOutputDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.NamedGroupsDelegate;
+import de.rub.nds.tlsattacker.core.config.delegate.ExecutorTypeDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.FilterDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.tlsattacker.core.config.delegate.HeartbeatDelegate;
@@ -67,6 +68,8 @@ public class ServerCommandConfig extends TLSDelegateConfig {
     @ParametersDelegate
     private ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate
+    private ExecutorTypeDelegate executorTypeDelegate;
+    @ParametersDelegate
     private StarttlsDelegate starttlsDelegate;
 
     public ServerCommandConfig(GeneralDelegate delegate) {
@@ -87,6 +90,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         this.filterDelegate = new FilterDelegate();
         this.listDelegate = new ListDelegate();
         this.configOutputDelegate = new ConfigOutputDelegate();
+        this.executorTypeDelegate = new ExecutorTypeDelegate();
         this.starttlsDelegate = new StarttlsDelegate();
         addDelegate(maxFragmentLengthDelegate);
         addDelegate(ciphersuiteDelegate);
@@ -103,6 +107,7 @@ public class ServerCommandConfig extends TLSDelegateConfig {
         addDelegate(filterDelegate);
         addDelegate(listDelegate);
         addDelegate(configOutputDelegate);
+        addDelegate(executorTypeDelegate);
         addDelegate(starttlsDelegate);
     }
 

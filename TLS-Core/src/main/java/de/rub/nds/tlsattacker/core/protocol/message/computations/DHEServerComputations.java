@@ -29,9 +29,6 @@ public class DHEServerComputations extends KeyExchangeComputations {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PUBLIC_KEY)
     private ModifiableBigInteger generator;
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.KEY_MATERIAL)
-    private ModifiableByteArray serverRandom;
-
     public DHEServerComputations() {
     }
 
@@ -57,18 +54,6 @@ public class DHEServerComputations extends KeyExchangeComputations {
 
     public void setGenerator(BigInteger generator) {
         this.generator = ModifiableVariableFactory.safelySetValue(this.generator, generator);
-    }
-
-    public ModifiableByteArray getServerRandom() {
-        return serverRandom;
-    }
-
-    public void setServerRandom(ModifiableByteArray serverRandom) {
-        this.serverRandom = serverRandom;
-    }
-
-    public void setServerRandom(byte[] serverRandom) {
-        this.serverRandom = ModifiableVariableFactory.safelySetValue(this.serverRandom, serverRandom);
     }
 
     @Override

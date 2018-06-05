@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ExtensionType;
 import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
@@ -58,16 +59,31 @@ import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PreSharedKeyExtensionMessage;
 import de.rub.nds.tlsattacker.core.record.BlobRecord;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.tlsattacker.core.workflow.action.ForwardAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedGenericReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageActionFactory;
+import de.rub.nds.tlsattacker.core.workflow.action.PopAndSendAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedMessageAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBufferedRecordAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PopBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.PrintLastHandledApplicationDataAction;
-import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.PrintSecretsAction;
+import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChCiphersAction;
+import de.rub.nds.tlsattacker.core.workflow.action.RemBufferedChExtensionsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.RenegotiationAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ResetConnectionAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAsciiAction;
+import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.TlsAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -120,6 +136,8 @@ public class WorkflowConfigurationFactory {
                 return createFullZeroRttWorkflow();
             case FALSE_START:
                 return createFalseStartWorkflow();
+            case RSA_SYNC_PROXY:
+                return createSyncProxyWorkflow();
         }
         throw new ConfigurationException("Unknown WorkflowTraceType " + type.name());
     }
@@ -482,24 +500,24 @@ public class WorkflowConfigurationFactory {
         trace.addTlsActions(mitmToServerHandshake.getTlsActions());
 
         // Forward request client -> server
-        ForwardAction f = new ForwardAction(clientToMitmAlias, mitmToServerAlias, new ApplicationMessage(config));
+        ForwardMessagesAction f = new ForwardMessagesAction(clientToMitmAlias, mitmToServerAlias,
+                new ApplicationMessage(config));
         trace.addTlsAction(f);
 
-        // Print the application data contents to console
+        // Print client's app data contents
         PrintLastHandledApplicationDataAction p = new PrintLastHandledApplicationDataAction(clientToMitmAlias);
-        p.setStringEncoding("US_ASCII");
+        p.setStringEncoding("US-ASCII");
         trace.addTlsAction(p);
 
-        // // Forward response server -> client
-        // List<ProtocolMessage> messages = new LinkedList<>();
-        // f = new ForwardAction(mitmToServerAlias, clientToMitmAlias, new
-        // ApplicationMessage(config));
-        // trace.addTlsAction(f);
-        //
-        // // Print the server's answer
-        // p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
-        // p.setStringEncoding(StandardCharsets.US_ASCII);
-        // trace.addTlsAction(p);
+        // Forward response server -> client
+        f = new ForwardMessagesAction(mitmToServerAlias, clientToMitmAlias, new ApplicationMessage(config));
+        trace.addTlsAction(f);
+
+        // Print server's app data contents
+        p = new PrintLastHandledApplicationDataAction(mitmToServerAlias);
+        p.setStringEncoding("US-ASCII");
+        trace.addTlsAction(p);
+
         return trace;
     }
 
@@ -581,6 +599,109 @@ public class WorkflowConfigurationFactory {
         for (TlsAction zeroRttAction : zeroRttTrace.getTlsActions()) {
             trace.addTlsAction(zeroRttAction);
         }
+        return trace;
+    }
+
+    /**
+     * A simple synchronizing proxy for RSA KE.
+     * 
+     * Synchronizes the secrets between all parties and forwards first round of
+     * exchanged application data messages.
+     * 
+     * Works only for RSA KE ciphers. Extended Master Secret (and possibly other
+     * extensions) will brake it. So per default, all extensions are removed and
+     * all cipher suites except RSA suites are removed, too.
+     */
+    private WorkflowTrace createSyncProxyWorkflow() {
+
+        if (mode != RunningModeType.MITM) {
+            throw new ConfigurationException("This workflow trace can only be created when running"
+                    + " in MITM mode. Actual mode: " + mode);
+        }
+
+        // client -> mitm
+        AliasedConnection inboundConnection = config.getDefaultServerConnection();
+        String clientToMitmAlias = inboundConnection.getAlias();
+        // mitm -> server
+        AliasedConnection outboundConnection = config.getDefaultClientConnection();
+        String mitmToServerAlias = outboundConnection.getAlias();
+
+        if (outboundConnection == null || inboundConnection == null) {
+            throw new ConfigurationException("Could not find both necesary connection ends");
+        }
+
+        LOGGER.info("Building synchronizing proxy trace for:\n" + inboundConnection.toCompactString() + ", "
+                + outboundConnection.toCompactString());
+
+        WorkflowTrace trace = new WorkflowTrace();
+        trace.addConnection(inboundConnection);
+        trace.addConnection(outboundConnection);
+
+        List<CipherSuite> removeCiphers = CipherSuite.getImplemented();
+        removeCiphers.addAll(CipherSuite.getNotImplemented());
+        List<CipherSuite> keepCiphers = new ArrayList();
+        for (CipherSuite cs : removeCiphers) {
+            if (cs.name().startsWith("TLS_RSA")) {
+                keepCiphers.add(cs);
+            }
+        }
+        removeCiphers.removeAll(keepCiphers);
+
+        List<ExtensionType> removeExtensions = ExtensionType.getReceivable();
+        List<ExtensionType> keepExtensions = new ArrayList();
+        // keepExtensions.add(ExtensionType.EXTENDED_MASTER_SECRET);
+        removeExtensions.removeAll(keepExtensions);
+
+        // Sorry for fooling the silly formatter with EOL comments :>
+        trace.addTlsActions( //
+                // Forward CH, remove extensions and non RSA KE ciphers
+                new BufferedGenericReceiveAction(clientToMitmAlias), //
+                new CopyBuffersAction(clientToMitmAlias, mitmToServerAlias), //
+                new RemBufferedChCiphersAction(mitmToServerAlias, removeCiphers), //
+                new RemBufferedChExtensionsAction(mitmToServerAlias, removeExtensions), //
+                new BufferedSendAction(mitmToServerAlias), //
+                new ClearBuffersAction(clientToMitmAlias), //
+
+                // Forward SH
+                new BufferedGenericReceiveAction(mitmToServerAlias), //
+                new CopyBuffersAction(mitmToServerAlias, clientToMitmAlias), //
+                new PopAndSendAction(clientToMitmAlias), //
+                new PrintSecretsAction(clientToMitmAlias), //
+                new PrintSecretsAction(mitmToServerAlias), //
+                // But send our own certificate
+                new PopBufferedMessageAction(clientToMitmAlias), //
+                new PopBufferedRecordAction(clientToMitmAlias), //
+                new SendAction(clientToMitmAlias, new CertificateMessage(config)), //
+                // Send SHD
+                new PopAndSendAction(clientToMitmAlias), //
+                new ClearBuffersAction(mitmToServerAlias), //
+
+                // Forward CKE (use received PMS)
+                new BufferedGenericReceiveAction(clientToMitmAlias), //
+                new CopyBuffersAction(clientToMitmAlias, mitmToServerAlias), //
+                new PopBuffersAction(mitmToServerAlias), //
+                new CopyPreMasterSecretAction(clientToMitmAlias, mitmToServerAlias), //
+                new SendAction(mitmToServerAlias, new RSAClientKeyExchangeMessage()), //
+                // Sends CCS
+                new PopAndSendAction(mitmToServerAlias), //
+                new ClearBuffersAction(mitmToServerAlias), //
+                new ClearBuffersAction(clientToMitmAlias), //
+
+                // Send fresh FIN
+                new SendAction(mitmToServerAlias, new FinishedMessage()), //
+                new PrintSecretsAction(clientToMitmAlias), //
+                new PrintSecretsAction(mitmToServerAlias), //
+
+                // Finish the handshake, and print the secrets we negotiated
+                new ReceiveAction(mitmToServerAlias, new ChangeCipherSpecMessage(), new FinishedMessage()), //
+                new PrintSecretsAction(clientToMitmAlias), //
+                new PrintSecretsAction(mitmToServerAlias), //
+                new SendAction(clientToMitmAlias, new ChangeCipherSpecMessage(), new FinishedMessage()), //
+
+                // Step out, enjoy :)
+                new ForwardRecordsAction(clientToMitmAlias, mitmToServerAlias), //
+                new ForwardRecordsAction(mitmToServerAlias, clientToMitmAlias)); //
+
         return trace;
     }
 

@@ -129,7 +129,7 @@ public class ConfigTest {
     }
 
     /**
-     * Test of isUseRandomUnixTime method, of class Config.
+     * Test of isUseFreshRandom method, of class Config.
      */
     @Test
     public void testIsUseRandomUnixTime() {
