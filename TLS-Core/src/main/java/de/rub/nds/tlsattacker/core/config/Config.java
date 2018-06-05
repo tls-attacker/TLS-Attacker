@@ -791,10 +791,10 @@ public class Config implements Serializable {
     private byte[] defaultServerRandom = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultClientSessionId = new byte[32];
+    private byte[] defaultClientSessionId = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerSessionId = new byte[32];
+    private byte[] defaultServerSessionId = new byte[0];
 
     private CompressionMethod defaultSelectedCompressionMethod = CompressionMethod.NULL;
 
