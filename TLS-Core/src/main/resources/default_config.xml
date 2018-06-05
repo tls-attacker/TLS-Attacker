@@ -1040,14 +1040,8 @@
         00 11 22 33 44 55 66 77  88 99 AA BB CC DD EE FF
         FF EE DD CC BB AA 99 88  77 66 55 44 33 22 11 00
     </defaultServerRandom>
-    <defaultClientSessionId>
-        00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
-        00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
-    </defaultClientSessionId>
-    <defaultServerSessionId>
-        00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
-        00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00
-    </defaultServerSessionId>
+    <defaultClientSessionId/>
+    <defaultServerSessionId/>
     <defaultSelectedCompressionMethod>NULL</defaultSelectedCompressionMethod>
     <defaultDtlsCookie/>
     <defaultCertificateRequestContext/>

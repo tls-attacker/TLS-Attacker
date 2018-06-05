@@ -793,10 +793,10 @@ public class Config implements Serializable {
             .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultClientSessionId = new byte[32];
+    private byte[] defaultClientSessionId = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerSessionId = new byte[32];
+    private byte[] defaultServerSessionId = new byte[0];
 
     private CompressionMethod defaultSelectedCompressionMethod = CompressionMethod.NULL;
 

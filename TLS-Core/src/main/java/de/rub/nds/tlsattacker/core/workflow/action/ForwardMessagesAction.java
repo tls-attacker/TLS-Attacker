@@ -149,7 +149,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @XmlElementWrapper
     @HoldsModifiableVariable
-        @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
@@ -202,7 +202,7 @@ public class ForwardMessagesAction extends TlsAction implements ReceivingAction,
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-        @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+    @XmlElements(value = { @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
             @XmlElement(type = CertificateMessage.class, name = "Certificate"),
             @XmlElement(type = CertificateVerifyMessage.class, name = "CertificateVerify"),
             @XmlElement(type = CertificateRequestMessage.class, name = "CertificateRequest"),
