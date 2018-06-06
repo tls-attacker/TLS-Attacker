@@ -17,6 +17,8 @@ import de.rub.nds.tlsattacker.core.protocol.preparator.ECDHClientKeyExchangePrep
 import de.rub.nds.tlsattacker.core.protocol.serializer.ECDHClientKeyExchangeSerializer;
 import de.rub.nds.tlsattacker.core.record.layer.TlsRecordLayer;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import java.security.Security;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -29,6 +31,7 @@ public class ECDHClientKeyExchangeHandlerTest {
 
     @Before
     public void setUp() {
+        Security.addProvider(new BouncyCastleProvider());
         context = new TlsContext();
         handler = new ECDHClientKeyExchangeHandler(context);
 
@@ -67,12 +70,15 @@ public class ECDHClientKeyExchangeHandlerTest {
      */
     @Test
     public void testAdjustTLSContext() {
-        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
-        ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
-        prep.prepare();
         context.setSelectedProtocolVersion(ProtocolVersion.TLS12);
         context.setRecordLayer(new TlsRecordLayer(context));
         context.setSelectedCipherSuite(CipherSuite.TLS_ECDH_RSA_WITH_AES_128_CBC_SHA);
+        context.setClientRandom(new byte[] {});
+        context.setServerRandom(new byte[] {});
+
+        ECDHClientKeyExchangeMessage message = new ECDHClientKeyExchangeMessage();
+        ECDHClientKeyExchangePreparator prep = new ECDHClientKeyExchangePreparator(context.getChooser(), message);
+        prep.prepare();
 
         handler.adjustTLSContext(message);
         assertArrayEquals(ArrayConverter.hexStringToByteArray("A3B5299147537E6696500AB8CD870DB3BA78303DE749DFBA"),

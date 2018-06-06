@@ -76,7 +76,7 @@ public class PskRsaClientKeyExchangeHandlerTest {
                         ArrayConverter
                                 .hexStringToByteArray("0303d3fad5b20109834717bac4e7762e217add183d0c4852ab054f65ba6e93b1ed83ca5c5fa614cd3b810f4766c66feb"));
         message.getComputations()
-                .setClientRandom(
+                .setClientServerRandom(
                         ArrayConverter
                                 .hexStringToByteArray("a449532975d478abeefcfafa7522b9312bdbd0bb294fe460c4d52bab13a425b7594d0e9508874a67db6d9b8e91db4f38600e88f006bbe58f2b41deb6811c74cc"));
 

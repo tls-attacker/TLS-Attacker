@@ -50,9 +50,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-public class ForwardActionTest {
+public class ForwardMessagesActionTest {
 
-    private static final Logger LOGGER = LogManager.getLogger(ForwardActionTest.class);
+    private static final Logger LOGGER = LogManager.getLogger(ForwardMessagesActionTest.class);
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -64,7 +64,7 @@ public class ForwardActionTest {
     private TlsContext ctx2;
     private final String ctx2Alias = "ctx2";
     private AlertMessage alert;
-    ForwardAction action;
+    ForwardMessagesAction action;
     WorkflowTrace trace;
 
     @Before
@@ -99,7 +99,7 @@ public class ForwardActionTest {
 
     @Test
     public void executingSetsExecutionFlagsCorrectly() throws Exception {
-        action = new ForwardAction(ctx1Alias, ctx2Alias, alert);
+        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, alert);
         action.execute(state);
         assertTrue(action.isExecuted());
         assertTrue(action.executedAsPlanned());
@@ -107,7 +107,7 @@ public class ForwardActionTest {
 
     @Test
     public void executingTwiceThrowsException() throws Exception {
-        action = new ForwardAction(ctx1Alias, ctx2Alias, alert);
+        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, alert);
         action.execute(state);
         assertTrue(action.isExecuted());
         exception.expect(WorkflowExecutionException.class);
@@ -117,36 +117,40 @@ public class ForwardActionTest {
 
     @Test
     public void executingWithNullAliasThrowsException() throws Exception {
-        action = new ForwardAction(null, ctx2Alias, alert);
+        action = new ForwardMessagesAction(null, ctx2Alias, alert);
         exception.expect(WorkflowExecutionException.class);
-        exception.expectMessage("Can't execute ForwardAction with empty");
+        exception
+                .expectMessage("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>");
         action.execute(state);
 
-        action = new ForwardAction(ctx1Alias, null, alert);
+        action = new ForwardMessagesAction(ctx1Alias, null, alert);
         exception.expect(WorkflowExecutionException.class);
-        exception.expectMessage("Can't execute ForwardAction with empty");
+        exception
+                .expectMessage("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>");
         action.execute(state);
     }
 
     @Test
     public void executingWithEmptyAliasThrowsException() throws Exception {
-        action = new ForwardAction("", ctx2Alias, alert);
+        action = new ForwardMessagesAction("", ctx2Alias, alert);
         exception.expect(WorkflowExecutionException.class);
-        exception.expectMessage("Can't execute ForwardAction with empty");
+        exception
+                .expectMessage("Can't execute ForwardMessagesAction with empty receive alias (if using XML: add <from/>");
         action.execute(state);
 
-        action = new ForwardAction(ctx1Alias, "", alert);
+        action = new ForwardMessagesAction(ctx1Alias, "", alert);
         exception.expect(WorkflowExecutionException.class);
-        exception.expectMessage("Can't execute ForwardAction with empty");
+        exception
+                .expectMessage("Can't execute ForwardMessagesAction with empty forward alias (if using XML: add <to/>");
         action.execute(state);
     }
 
     @Test
     public void marshalingEmptyActionYieldsMinimalOutput() {
         try {
-            action = new ForwardAction(ctx1Alias, ctx2Alias);
+            action = new ForwardMessagesAction(ctx1Alias, ctx2Alias);
             trace.addTlsAction(action);
-            StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n");
+            StringBuilder sb = new StringBuilder("");
             sb.append("<workflowTrace>\n");
             sb.append("    <OutboundConnection>\n");
             sb.append("        <alias>ctx1</alias>\n");
@@ -154,10 +158,10 @@ public class ForwardActionTest {
             sb.append("    <InboundConnection>\n");
             sb.append("        <alias>ctx2</alias>\n");
             sb.append("    </InboundConnection>\n");
-            sb.append("    <Forward>\n");
-            sb.append("        <receiveFromAlias>ctx1</receiveFromAlias>\n");
-            sb.append("        <forwardToAlias>ctx2</forwardToAlias>\n");
-            sb.append("    </Forward>\n");
+            sb.append("    <ForwardMessages>\n");
+            sb.append("        <from>ctx1</from>\n");
+            sb.append("        <to>ctx2</to>\n");
+            sb.append("    </ForwardMessages>\n");
             sb.append("</workflowTrace>\n");
             String expected = sb.toString();
 
@@ -177,11 +181,11 @@ public class ForwardActionTest {
 
     @Test
     public void marshalingAndUnmarshalingYieldsEqualObject() {
-        action = new ForwardAction(ctx1Alias, ctx2Alias, new ClientHelloMessage());
+        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, new ClientHelloMessage());
         // action.filter();
         StringWriter writer = new StringWriter();
         JAXB.marshal(action, writer);
-        TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardAction.class);
+        TlsAction actual = JAXB.unmarshal(new StringReader(writer.getBuffer().toString()), ForwardMessagesAction.class);
         assertEquals(action, actual);
     }
 
@@ -190,12 +194,13 @@ public class ForwardActionTest {
         ApplicationMessage msg = new ApplicationMessage(state.getConfig());
         String receivedData = "Forward application message test";
         msg.setData(receivedData.getBytes());
+        msg.setCompleteResultingMessage(receivedData.getBytes());
         List<ProtocolMessage> receivedMsgs = new ArrayList<>();
         receivedMsgs.add(msg);
         FakeReceiveMessageHelper fakeReceiveHelper = new FakeReceiveMessageHelper();
         fakeReceiveHelper.setMessagesToReturn(receivedMsgs);
 
-        action = new ForwardAction(ctx1Alias, ctx2Alias, fakeReceiveHelper);
+        action = new ForwardMessagesAction(ctx1Alias, ctx2Alias, fakeReceiveHelper);
         action.setMessages(new ApplicationMessage());
 
         action.execute(state);
@@ -209,4 +214,5 @@ public class ForwardActionTest {
         String forwardedData = new String(forwardedMsg.getData().getValue());
         assertThat(forwardedData, equalTo(receivedData));
     }
+
 }

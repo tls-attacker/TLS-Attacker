@@ -12,6 +12,7 @@ import com.beust.jcommander.JCommander;
 import de.rub.nds.tlsattacker.core.config.Config;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.logging.log4j.Level;
+import org.junit.After;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -27,6 +28,12 @@ public class GeneralDelegateTest {
     public void setUp() {
         this.delegate = new GeneralDelegate();
         this.jcommander = new JCommander(delegate);
+    }
+
+    @After
+    public void tearDown() {
+        this.delegate.setLogLevel(Level.OFF);
+        delegate.applyDelegate(Config.createConfig());
     }
 
     /**

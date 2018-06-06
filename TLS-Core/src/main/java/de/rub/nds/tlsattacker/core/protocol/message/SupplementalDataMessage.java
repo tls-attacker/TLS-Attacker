@@ -17,7 +17,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
 import de.rub.nds.tlsattacker.core.protocol.handler.SupplementalDataHandler;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.SupplementalData.SupplementalDataEntry;
+import de.rub.nds.tlsattacker.core.protocol.message.suppData.SupplementalDataEntry;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,6 +65,11 @@ public class SupplementalDataMessage extends HandshakeMessage {
         this.supplementalDataLength = supplementalDataLength;
     }
 
+    public void setSupplementalDataLength(int supplementalDataLength) {
+        this.supplementalDataLength = ModifiableVariableFactory.safelySetValue(this.supplementalDataLength,
+                supplementalDataLength);
+    }
+
     public ModifiableByteArray getSupplementalDataBytes() {
         return supplementalDataBytes;
     }
@@ -96,10 +101,10 @@ public class SupplementalDataMessage extends HandshakeMessage {
         sb.append("\n  SupplementalDataEntries:\n");
         if (!entries.isEmpty()) {
             for (SupplementalDataEntry entry : entries) {
-                sb.append("\n   Supplemental Data Type: ").append(entry.getSupplementalDataType().getValue());
-                sb.append("\n   Supplemental Data Length: ").append(entry.getSupplementalDataLength().getValue());
+                sb.append("\n   Supplemental Data Type: ").append(entry.getSupplementalDataEntryType().getValue());
+                sb.append("\n   Supplemental Data Length: ").append(entry.getSupplementalDataEntryLength().getValue());
                 sb.append("\n   Supplemental Data : ").append(
-                        ArrayConverter.bytesToHexString(entry.getSupplementalData().getValue()));
+                        ArrayConverter.bytesToHexString(entry.getSupplementalDataEntry().getValue()));
             }
         } else {
             sb.append("null");

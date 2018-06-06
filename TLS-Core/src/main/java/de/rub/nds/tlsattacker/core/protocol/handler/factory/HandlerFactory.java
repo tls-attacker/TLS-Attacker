@@ -310,6 +310,7 @@ public class HandlerFactory {
             case ECDH_ECDSA:
             case ECDH_RSA:
             case ECDHE_RSA:
+            case ECDH_ANON:
                 return new ECDHEServerKeyExchangeHandler(context);
             case DHE_DSS:
             case DHE_RSA:

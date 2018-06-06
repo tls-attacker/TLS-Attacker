@@ -90,18 +90,17 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPremasterSecret().getValue()));
     }
 
-    protected void prepareClientRandom(T msg) {
-        // TODO this is spooky
+    protected void prepareClientServerRandom(T msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(random);
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(random);
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
         NamedGroup usedGroup = chooser.getSelectedNamedGroup();
         LOGGER.debug("Used Group: " + usedGroup.name());
         setComputationPrivateKey(msg, clientMode);
@@ -113,7 +112,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
                 msg.getComputations().setComputedPublicKeyX(clientPublicKey.getRawXCoord().toBigInteger());
                 msg.getComputations().setComputedPublicKeyY(clientPublicKey.getRawYCoord().toBigInteger());
             } else {
-                // TODO Logger.warn
+                LOGGER.warn("Could not compute correct public key. Using empty one instead");
                 msg.getComputations().setComputedPublicKeyX(BigInteger.ZERO);
                 msg.getComputations().setComputedPublicKeyY(BigInteger.ZERO);
             }

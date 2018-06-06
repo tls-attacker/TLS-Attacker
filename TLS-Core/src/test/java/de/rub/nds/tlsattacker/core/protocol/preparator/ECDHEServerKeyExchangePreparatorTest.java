@@ -85,8 +85,8 @@ public class ECDHEServerKeyExchangePreparatorTest {
                         .getDefaultClientEcPrivateKey(), tlsContext.getConfig().getDefaultSelectedNamedGroup())));
         tlsContext.getConfig().setAutoSelectCertificate(false);
 
-        assertArrayEquals(tlsContext.getClientRandom(), msg.getComputations().getClientRandom().getValue());
-        assertArrayEquals(tlsContext.getServerRandom(), msg.getComputations().getServerRandom().getValue());
+        assertArrayEquals(ArrayConverter.concatenate(tlsContext.getClientRandom(), tlsContext.getServerRandom()), msg
+                .getComputations().getClientServerRandom().getValue());
 
         assertEquals(EllipticCurveType.NAMED_CURVE, EllipticCurveType.getCurveType(msg.getGroupType().getValue()));
         assertArrayEquals(NamedGroup.SECP384R1.getValue(), msg.getNamedGroup().getValue());

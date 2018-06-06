@@ -13,6 +13,7 @@ import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.protocol.message.HandshakeMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.HelloMessage;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.util.TimeHelper;
 
 /**
@@ -31,18 +32,19 @@ public abstract class HelloMessagePreparator<T extends HelloMessage> extends
 
     protected void prepareRandom() {
         byte[] random;
-        if (chooser.getConfig().isUseRandomUnixTime()) {
+        if (chooser.getConfig().isUseFreshRandom()) {
             random = new byte[HandshakeByteLength.RANDOM - HandshakeByteLength.UNIX_TIME];
             chooser.getContext().getRandom().nextBytes(random);
             msg.setUnixTime(ArrayConverter.longToUint32Bytes(TimeHelper.getTime()));
             random = ArrayConverter.concatenate(msg.getUnixTime().getValue(), random);
-            msg.setRandom(random);
         } else {
-            random = new byte[HandshakeByteLength.RANDOM];
-            chooser.getContext().getRandom().nextBytes(random);
-            msg.setRandom(random);
+            if (chooser.getTalkingConnectionEnd() == ConnectionEndType.CLIENT) {
+                random = chooser.getClientRandom();
+            } else {
+                random = chooser.getServerRandom();
+            }
         }
-
+        msg.setRandom(random);
         LOGGER.debug("Random: " + ArrayConverter.bytesToHexString(msg.getRandom().getValue()));
     }
 

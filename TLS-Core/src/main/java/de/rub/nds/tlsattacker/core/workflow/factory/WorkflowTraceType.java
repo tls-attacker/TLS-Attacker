@@ -23,5 +23,6 @@ public enum WorkflowTraceType {
     SIMPLE_MITM_PROXY,
     ZERO_RTT,
     FULL_ZERO_RTT,
-    FALSE_START;
+    FALSE_START,
+    RSA_SYNC_PROXY;
 }

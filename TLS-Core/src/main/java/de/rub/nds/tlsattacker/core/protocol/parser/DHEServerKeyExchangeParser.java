@@ -8,15 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.protocol.parser;
 
+import org.bouncycastle.util.Arrays;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.DHEServerKeyExchangeMessage;
 
 public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
 
     private final ProtocolVersion version;
+
+    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
     /**
      * Constructor for the Parser class
@@ -29,10 +35,21 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
      *            parse
      * @param version
      *            Version of the Protocol
+     * @param keyExchangeAlgorithm
+     *            The selected key exchange algorithm (affects which fields are
+     *            present).
      */
-    public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
+    public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
+            KeyExchangeAlgorithm keyExchangeAlgorithm) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
         this.version = version;
+        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
+
+    }
+
+    public DHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
+        // TODO: Delete when done
+        this(pointer, array, version, null);
     }
 
     @Override
@@ -44,11 +61,15 @@ public class DHEServerKeyExchangeParser<T extends DHEServerKeyExchangeMessage> e
         parseG(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-        if (isTLS12() || isDTLS12()) {
-            parseSignatureAndHashAlgorithm(msg);
+        // TODO: this.keyExchangeAlgorithm can currently be null, only for test
+        // code that needs to be reworked.
+        if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
+            if (isTLS12() || isDTLS12()) {
+                parseSignatureAndHashAlgorithm(msg);
+            }
+            parseSignatureLength(msg);
+            parseSignature(msg);
         }
-        parseSignatureLength(msg);
-        parseSignature(msg);
     }
 
     protected void parseDheParams(T msg) {

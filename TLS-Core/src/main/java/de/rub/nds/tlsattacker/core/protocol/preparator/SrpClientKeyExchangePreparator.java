@@ -57,7 +57,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                 .getValue(), msg.getComputations().getSRPIdentity().getValue(), msg.getComputations().getSRPPassword()
                 .getValue());
         preparePremasterSecret(msg);
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
     }
 
     private BigInteger calculatePublicKey(BigInteger generator, BigInteger modulus, BigInteger privateKey) {
@@ -207,12 +207,12 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
-    private void prepareClientRandom(SrpClientKeyExchangeMessage msg) {
+    private void prepareClientServerRandom(SrpClientKeyExchangeMessage msg) {
         random = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(random);
-        random = msg.getComputations().getClientRandom().getValue();
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+        msg.getComputations().setClientServerRandom(random);
+        random = msg.getComputations().getClientServerRandom().getValue();
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     @Override
@@ -225,7 +225,7 @@ public class SrpClientKeyExchangePreparator extends ClientKeyExchangePreparator<
                     privateKey, chooser.getSRPServerPublicKey(), clientPublic, chooser.getSRPServerSalt(),
                     chooser.getSRPIdentity(), chooser.getSRPPassword());
             preparePremasterSecret(msg);
-            prepareClientRandom(msg);
+            prepareClientServerRandom(msg);
         }
     }
 

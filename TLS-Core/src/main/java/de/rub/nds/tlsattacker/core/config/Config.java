@@ -314,7 +314,7 @@ public class Config implements Serializable {
      * Default SRTP extension master key identifier
      */
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[] {};
+    private byte[] secureRealTimeTransportProtocolMasterKeyIdentifier = new byte[0];
 
     /**
      * Default user mapping extension hint type
@@ -431,7 +431,7 @@ public class Config implements Serializable {
     /**
      * If we generate ClientHello with the SignatureAndHashAlgorithm extension
      */
-    private Boolean addSignatureAndHashAlgorithmsExtension = false;
+    private Boolean addSignatureAndHashAlgorithmsExtension = true;
 
     /**
      * If we generate ClientHello with the SupportedVersion extension
@@ -838,10 +838,12 @@ public class Config implements Serializable {
     private byte[] defaultPreMasterSecret = new byte[0];
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultClientRandom = new byte[0];
+    private byte[] defaultClientRandom = ArrayConverter
+            .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
-    private byte[] defaultServerRandom = new byte[0];
+    private byte[] defaultServerRandom = ArrayConverter
+            .hexStringToByteArray("00112233445566778899AABBCCDDEEFFFFEEDDCCBBAA99887766554433221100");
 
     @XmlJavaTypeAdapter(ByteArrayAdapter.class)
     private byte[] defaultClientSessionId = new byte[0];
@@ -976,7 +978,7 @@ public class Config implements Serializable {
     private BigInteger defaultTokenBindingRsaModulus = new BigInteger(
             "145906768007583323230186939349070635292401872375357164399581871019873438799005358938369571402670149802121818086292467422828157022922076746906543401224889672472407926969987100581290103199317858753663710862357656510507883714297115637342788911463535102712032765166518411726859837988672111837205085526346618740053");
 
-    private Boolean useRandomUnixTime = true;
+    private Boolean useFreshRandom = true;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
@@ -1042,6 +1044,30 @@ public class Config implements Serializable {
                 HashAlgorithm.SHA1));
         supportedSignatureAndHashAlgorithms
                 .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA512));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA384));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA256));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA224));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.SHA1));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
+                HashAlgorithm.MD5));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA512));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA384));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA256));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA224));
+        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
+                HashAlgorithm.SHA1));
+        supportedSignatureAndHashAlgorithms
+                .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.MD5));
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();
@@ -1208,12 +1234,12 @@ public class Config implements Serializable {
         this.httpsParsingEnabled = httpsParsingEnabled;
     }
 
-    public Boolean isUseRandomUnixTime() {
-        return useRandomUnixTime;
+    public Boolean isUseFreshRandom() {
+        return useFreshRandom;
     }
 
-    public void setUseRandomUnixTime(Boolean useRandomUnixTime) {
-        this.useRandomUnixTime = useRandomUnixTime;
+    public void setUseFreshRandom(Boolean useFreshRandom) {
+        this.useFreshRandom = useFreshRandom;
     }
 
     public Boolean isUseAllProvidedRecords() {

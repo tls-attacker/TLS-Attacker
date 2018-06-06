@@ -24,7 +24,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
 
     protected byte[] padding;
     protected byte[] premasterSecret;
-    protected byte[] clientRandom;
+    protected byte[] clientServerRandom;
     protected byte[] masterSecret;
     protected byte[] encrypted;
     protected final T msg;
@@ -43,10 +43,15 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     }
 
     protected byte[] generatePremasterSecret() {
-        byte[] tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
+        byte[] tempPremasterSecret = chooser.getContext().getPreMasterSecret();
+        if (tempPremasterSecret != null) {
+            LOGGER.debug("Using preset PreMasterSecret from context.");
+            return tempPremasterSecret;
+        }
+        tempPremasterSecret = new byte[HandshakeByteLength.PREMASTER_SECRET];
         chooser.getContext().getRandom().nextBytes(tempPremasterSecret);
-        tempPremasterSecret[0] = chooser.getSelectedProtocolVersion().getMajor();
-        tempPremasterSecret[1] = chooser.getSelectedProtocolVersion().getMinor();
+        tempPremasterSecret[0] = chooser.getHighestClientProtocolVersion().getMajor();
+        tempPremasterSecret[1] = chooser.getHighestClientProtocolVersion().getMinor();
         return tempPremasterSecret;
     }
 
@@ -80,12 +85,11 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
                 + ArrayConverter.bytesToHexString(msg.getComputations().getPlainPaddedPremasterSecret().getValue()));
     }
 
-    protected void prepareClientRandom(T msg) {
-        // TODO spooky
-        clientRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
-        msg.getComputations().setClientRandom(clientRandom);
+    protected void prepareClientServerRandom(T msg) {
+        clientServerRandom = ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom());
+        msg.getComputations().setClientServerRandom(clientServerRandom);
         LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSerializedPublicKey(T msg) {
@@ -113,7 +117,7 @@ public class RSAClientKeyExchangePreparator<T extends RSAClientKeyExchangeMessag
     @Override
     public void prepareAfterParse(boolean clientMode) {
         msg.prepareComputations();
-        prepareClientRandom(msg);
+        prepareClientServerRandom(msg);
         int keyByteLength = chooser.getServerRsaModulus().bitLength() / 8;
         if (clientMode && (msg.getPublicKey() == null || msg.getPublicKey().getValue() == null)) {
             int randomByteLength = keyByteLength - HandshakeByteLength.PREMASTER_SECRET - 3;

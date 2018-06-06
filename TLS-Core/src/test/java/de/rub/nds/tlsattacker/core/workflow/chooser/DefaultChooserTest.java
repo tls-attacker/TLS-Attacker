@@ -435,7 +435,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, config.getDefaultClientSessionId());
         assertArrayEquals(sessionID, chooser.getClientSessionId());
         context.setClientSessionId(sessionID);
-        assertArrayEquals(sessionID, chooser.getServerRandom());
+        assertArrayEquals(sessionID, chooser.getClientSessionId());
     }
 
     /**
@@ -448,7 +448,7 @@ public class DefaultChooserTest {
         assertArrayEquals(sessionID, config.getDefaultServerSessionId());
         assertArrayEquals(sessionID, chooser.getServerSessionId());
         context.setServerSessionId(sessionID);
-        assertArrayEquals(sessionID, chooser.getServerRandom());
+        assertArrayEquals(sessionID, chooser.getServerSessionId());
     }
 
     /**

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.protocol.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.HandshakeByteLength;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessage;
@@ -18,6 +19,8 @@ import de.rub.nds.tlsattacker.core.protocol.message.ECDHEServerKeyExchangeMessag
 public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessage> extends ServerKeyExchangeParser<T> {
 
     private final ProtocolVersion version;
+
+    private final KeyExchangeAlgorithm keyExchangeAlgorithm;
 
     /**
      * Constructor for the Parser class
@@ -32,8 +35,14 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
      *            Version of the Protocol
      */
     public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version) {
+        this(pointer, array, version, null);
+    }
+
+    public ECDHEServerKeyExchangeParser(int pointer, byte[] array, ProtocolVersion version,
+            KeyExchangeAlgorithm keyExchangeAlgorithm) {
         super(pointer, array, HandshakeMessageType.SERVER_KEY_EXCHANGE, version);
         this.version = version;
+        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }
 
     @Override
@@ -43,11 +52,13 @@ public class ECDHEServerKeyExchangeParser<T extends ECDHEServerKeyExchangeMessag
         parseNamedGroup(msg);
         parseSerializedPublicKeyLength(msg);
         parseSerializedPublicKey(msg);
-        if (isTLS12() || isDTLS12()) {
-            parseSignatureAndHashAlgorithm(msg);
+        if (this.keyExchangeAlgorithm == null || !this.keyExchangeAlgorithm.isAnon()) {
+            if (isTLS12() || isDTLS12()) {
+                parseSignatureAndHashAlgorithm(msg);
+            }
+            parseSignatureLength(msg);
+            parseSignature(msg);
         }
-        parseSignatureLength(msg);
-        parseSignature(msg);
     }
 
     protected void parseEcDheParams(T msg) {

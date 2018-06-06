@@ -18,6 +18,7 @@ import de.rub.nds.tlsattacker.core.protocol.message.ApplicationMessage;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
 import de.rub.nds.tlsattacker.core.record.Record;
 import de.rub.nds.tlsattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.tlsattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.tlsattacker.core.workflow.action.SendAction;
 import de.rub.nds.tlsattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -51,8 +52,7 @@ public class ClassicCloseNotifyVectorGenerator extends PaddingVectorGenerator {
             sendAction.getRecords().add(new Record(config));
 
             trace.addTlsAction(sendAction);
-            AlertMessage alertMessage = new AlertMessage(config);
-            trace.addTlsAction(new ReceiveAction(alertMessage));
+            trace.addTlsAction(new GenericReceiveAction());
             traceList.add(trace);
         }
         return traceList;

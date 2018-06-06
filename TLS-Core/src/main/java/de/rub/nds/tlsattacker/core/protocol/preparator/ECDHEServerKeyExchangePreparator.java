@@ -66,9 +66,7 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
         preparePrivateKey(msg);
         prepareSerializedPublicKey(msg, pubEcParams.getQ());
         prepareSerializedPublicKeyLength(msg);
-        prepareClientRandom(msg);
-        prepareServerRandom(msg);
-
+        prepareClientServerRandom(msg);
     }
 
     protected void setEcDhParams() {
@@ -222,8 +220,8 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
             throw new PreparationException("Failed to add serializedPublicKey to ECDHEServerKeyExchange signature.", ex);
         }
 
-        return ArrayConverter.concatenate(msg.getComputations().getClientRandom().getValue(), msg.getComputations()
-                .getServerRandom().getValue(), ecParams.toByteArray());
+        return ArrayConverter.concatenate(msg.getComputations().getClientServerRandom().getValue(),
+                ecParams.toByteArray());
 
     }
 
@@ -237,16 +235,11 @@ public class ECDHEServerKeyExchangePreparator<T extends ECDHEServerKeyExchangeMe
                 + ArrayConverter.bytesToHexString(msg.getSignatureAndHashAlgorithm().getValue()));
     }
 
-    protected void prepareClientRandom(T msg) {
-        msg.getComputations().setClientRandom(chooser.getClientRandom());
-        LOGGER.debug("ClientRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getClientRandom().getValue()));
-    }
-
-    protected void prepareServerRandom(T msg) {
-        msg.getComputations().setServerRandom(chooser.getServerRandom());
-        LOGGER.debug("ServerRandom: "
-                + ArrayConverter.bytesToHexString(msg.getComputations().getServerRandom().getValue()));
+    protected void prepareClientServerRandom(T msg) {
+        msg.getComputations().setClientServerRandom(
+                ArrayConverter.concatenate(chooser.getClientRandom(), chooser.getServerRandom()));
+        LOGGER.debug("ClientServerRandom: "
+                + ArrayConverter.bytesToHexString(msg.getComputations().getClientServerRandom().getValue()));
     }
 
     protected void prepareSignature(T msg, byte[] signature) {

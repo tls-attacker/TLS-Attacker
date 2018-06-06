@@ -81,4 +81,8 @@ public enum KeyExchangeAlgorithm {
     public boolean isEC() {
         return this.name().contains("EC");
     }
+
+    public boolean isAnon() {
+        return this.name().contains("ANON");
+    }
 }
