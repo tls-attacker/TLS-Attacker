@@ -52,7 +52,7 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         InputStream stream = new ByteArrayInputStream(ArrayConverter.concatenate(new byte[] { curveType.getValue() },
                 namedGroup.getValue()));
         try {
-            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { chooser.getSelectedNamedGroup() },
+            return ECCUtilsBCWrapper.readECParameters(new NamedGroup[] { namedGroup },
                     new ECPointFormat[] { ECPointFormat.UNCOMPRESSED }, stream);
         } catch (IOException ex) {
             throw new PreparationException("Failed to generate EC domain parameters", ex);
@@ -120,9 +120,10 @@ public class ECDHClientKeyExchangePreparator<T extends ECDHClientKeyExchangeMess
         setComputationPublicKey(msg, clientMode);
 
         LOGGER.debug("PublicKey used:" + msg.getComputations().getPublicKey().toString());
-        LOGGER.debug("PrivateKey used:" + chooser.getServerEcPrivateKey());
+        LOGGER.debug("PrivateKey used:" + msg.getComputations().getPrivateKey().getValue());
         ECPoint publicKey = ecParams.getCurve().createPoint(msg.getComputations().getPublicKey().getX(),
                 msg.getComputations().getPublicKey().getY());
+        publicKey = publicKey.normalize();
         premasterSecret = computePremasterSecret(new ECPublicKeyParameters(publicKey, ecParams),
                 new ECPrivateKeyParameters(msg.getComputations().getPrivateKey().getValue(), ecParams));
         preparePremasterSecret(msg);

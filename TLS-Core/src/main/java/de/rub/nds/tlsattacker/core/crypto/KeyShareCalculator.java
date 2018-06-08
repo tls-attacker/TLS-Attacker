@@ -37,7 +37,7 @@ public class KeyShareCalculator {
         }
         ECDomainParameters ecDomainParameters = generateEcParameters(group);
         ECPoint ecPoint = ecDomainParameters.getG().multiply(privateKey);
-        ecPoint.normalize();
+        ecPoint = ecPoint.normalize();
         if (ecPoint.isInfinity()) {
             // TODO ???
             return new CustomECPoint(BigInteger.ZERO, BigInteger.ZERO);
@@ -52,7 +52,7 @@ public class KeyShareCalculator {
         }
         ECDomainParameters ecDomainParameters = generateEcParameters(group);
         ECPoint ecPoint = ecDomainParameters.getG().multiply(privateKey);
-        ecPoint.normalize();
+        ecPoint = ecPoint.normalize();
         return ecPoint;
     }
 

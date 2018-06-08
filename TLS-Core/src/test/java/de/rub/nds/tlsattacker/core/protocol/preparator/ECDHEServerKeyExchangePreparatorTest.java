@@ -36,6 +36,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.crypto.tls.Certificate;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -57,6 +59,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
 
     @Before
     public void setUp() throws Exception {
+        Configurator.setRootLevel(Level.ALL);
         this.tlsContext = new TlsContext();
         BadFixedRandom rnd = new BadFixedRandom((byte) 0x23);
         random = new BadRandom(rnd, null);

@@ -1102,11 +1102,11 @@ public class Config implements Serializable {
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);
         defaultClientEcPublicKey = new CustomECPoint(new BigInteger(
-                "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
-                "3142682168214624565874993023364886040439474355932713162721"));
+                "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
+                "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
         defaultServerEcPublicKey = new CustomECPoint(new BigInteger(
-                "5477564916791683905639217522063413790465252514105158300031"), new BigInteger(
-                "3142682168214624565874993023364886040439474355932713162721"));
+                "18331185786522319349444255540874590232255475110717040504630785378857839293510"), new BigInteger(
+                "77016287303447444409379355974404854219241223376914775755121063765271326101171"));
         secureRealTimeTransportProtocolProtectionProfiles = new LinkedList<>();
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_80);
         secureRealTimeTransportProtocolProtectionProfiles.add(SrtpProtectionProfiles.SRTP_AES128_CM_HMAC_SHA1_32);

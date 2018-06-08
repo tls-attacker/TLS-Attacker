@@ -297,7 +297,7 @@ public class ServerHelloHandler extends HandshakeMessageHandler<ServerHelloMessa
             case SECT571R1:
                 ECDomainParameters generateEcParameters = generateEcParameters(keyShare.getGroup());
                 ECPoint deserializeEcPoint = deserializeEcPoint(generateEcParameters, keyShare.getPublicKey());
-                deserializeEcPoint.normalize();
+                deserializeEcPoint = deserializeEcPoint.normalize();
                 ECPublicKeyParameters params = new ECPublicKeyParameters(deserializeEcPoint, generateEcParameters);
                 ECPrivateKeyParameters privParams = new ECPrivateKeyParameters(tlsContext.getConfig()
                         .getDefaultKeySharePrivateKey(), generateEcParameters);

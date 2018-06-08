@@ -61,6 +61,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
         List<CipherSuite> suiteList = new LinkedList<>();
         suiteList.add(suite);
+        tlsConfig.setDefaultSelectedCipherSuite(suite);
         tlsConfig.setDefaultClientSupportedCiphersuites(suiteList);
         tlsConfig.setEnforceSettings(true);
         tlsConfig.setHighestProtocolVersion(version);
