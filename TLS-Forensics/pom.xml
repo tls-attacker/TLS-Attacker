@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.tlsattacker</groupId>
         <artifactId>TLS-Attacker</artifactId>
-        <version>2.5</version>
+        <version>2.6</version>
     </parent>
     <artifactId>TLS-Forensics</artifactId>
     <packaging>jar</packaging>
