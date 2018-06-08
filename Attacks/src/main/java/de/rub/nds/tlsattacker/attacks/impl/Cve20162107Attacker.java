@@ -15,11 +15,16 @@ import de.rub.nds.tlsattacker.attacks.config.Cve20162107CommandConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.AlertDescription;
 import de.rub.nds.tlsattacker.core.constants.AlertLevel;
+import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.HandshakeMessageType;
+import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
+import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
+import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.protocol.message.AlertMessage;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
@@ -58,12 +63,16 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
 
     private Boolean executeAttackRound(ProtocolVersion version, CipherSuite suite) {
         Config tlsConfig = getTlsConfig();
-
-        List<CipherSuite> suiteList = new LinkedList<>();
-        suiteList.add(suite);
         tlsConfig.setDefaultSelectedCipherSuite(suite);
-        tlsConfig.setDefaultClientSupportedCiphersuites(suiteList);
-        tlsConfig.setEnforceSettings(true);
+        tlsConfig.setDefaultClientSupportedCiphersuites(suite);
+        KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
+        if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
+            tlsConfig.setAddECPointFormatExtension(true);
+            tlsConfig.setAddEllipticCurveExtension(true);
+        } else {
+            tlsConfig.setAddECPointFormatExtension(false);
+            tlsConfig.setAddEllipticCurveExtension(false);
+        }
         tlsConfig.setHighestProtocolVersion(version);
         LOGGER.info("Testing {}, {}", version.name(), suite.name());
 
@@ -124,7 +133,7 @@ public class Cve20162107Attacker extends Attacker<Cve20162107CommandConfig> {
             LOGGER.info("  Vulnerable");
             return true;
         } else {
-            LOGGER.info(suite.name() + " - " + version.name() + ": Not Vulnerable / Not supported");
+            LOGGER.info(suite.name() + " - " + version.name() + ": Not Vulnerable");
             return false;
         }
     }

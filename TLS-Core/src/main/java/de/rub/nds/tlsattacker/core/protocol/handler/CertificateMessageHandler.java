@@ -82,7 +82,8 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
             tlsContext.setServerCertificate(cert);
         }
         if (cert != null) {
-            CustomPublicKey customPublicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils.parsePublicKey(cert));
+            CustomPublicKey customPublicKey = CertificateUtils.parseCustomPublicKey(CertificateUtils
+                    .parsePublicKey(cert));
             customPublicKey.adjustInContext(tlsContext, tlsContext.getTalkingConnectionEndType());
         }
         if (message.getCertificateKeyPair() != null) {

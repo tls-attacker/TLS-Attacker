@@ -647,7 +647,7 @@ public class Config implements Serializable {
      */
     private Boolean earlyStop = false;
 
-    private Boolean stopActionsAfterIOException = true;
+    private Boolean stopActionsAfterIOException = false;
 
     private Boolean doDTLSRetransmits = false;
 

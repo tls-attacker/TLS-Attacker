@@ -89,19 +89,12 @@ public class Cve20162107CommandConfig extends AttackConfig {
             cipherSuites.add(CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA256);
             config.setDefaultClientSupportedCiphersuites(cipherSuites);
         }
-        boolean containsEc = false;
         for (CipherSuite suite : config.getDefaultClientSupportedCiphersuites()) {
             if (!suite.isCBC()) {
                 throw new ConfigurationException("This attack only works with CBC Ciphersuites");
             }
-            KeyExchangeAlgorithm keyExchangeAlgorithm = AlgorithmResolver.getKeyExchangeAlgorithm(suite);
-            if (keyExchangeAlgorithm != null && keyExchangeAlgorithm.name().toUpperCase().contains("EC")) {
-                containsEc = true;
-                break;
-            }
+
         }
-        config.setAddECPointFormatExtension(containsEc);
-        config.setAddEllipticCurveExtension(containsEc);
         return config;
     }
 }
