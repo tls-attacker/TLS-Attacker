@@ -1,0 +1,10 @@
+00 00 00 1a 00 18 00 00 15 63 6f 6d 70 6c 65 74 69 6f 6e 2e 61 6d 61 7a 6f 6e 2e 63 6f 6d
+
+Extension: server_name
+    Type: server_name (0x0000)
+    Length: 26
+    Server Name Indication extension
+        Server Name list length: 24
+        Server Name Type: host_name (0)
+        Server Name length: 21
+        Server Name: completion.amazon.com
