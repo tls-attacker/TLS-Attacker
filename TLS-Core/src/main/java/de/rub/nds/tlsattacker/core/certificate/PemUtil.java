@@ -38,7 +38,6 @@ import org.bouncycastle.util.io.pem.PemWriter;
 public class PemUtil {
 
     public static void writePublicKey(PublicKey key, File targetFile) {
-        PemWriter writer = null;
         PemObject pemObject = new PemObject("PublicKey", key.getEncoded());
         PemWriter pemWriter = null;
         try {
@@ -53,7 +52,27 @@ public class PemUtil {
                 ex.printStackTrace();
             }
         }
+    }
 
+    public static void writeCertificate(Certificate cert, File file) {
+
+        PemWriter pemWriter = null;
+        try {
+            pemWriter = new PemWriter(new FileWriter(file));
+            for (org.bouncycastle.asn1.x509.Certificate tempCert : cert.getCertificateList()) {
+                PemObject pemObject = new PemObject("CERTIFICATE", tempCert.getEncoded());
+                pemWriter.writeObject(pemObject);
+            }
+            pemWriter.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(PemUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                pemWriter.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public static Certificate readCertificate(InputStream stream) throws FileNotFoundException, CertificateException,
