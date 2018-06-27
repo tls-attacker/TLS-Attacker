@@ -149,7 +149,7 @@ public class WorkflowConfigurationFactory {
      *
      * @return A HelloWorkflow
      */
-    private WorkflowTrace createHelloWorkflow() {
+    public WorkflowTrace createHelloWorkflow() {
         return createHelloWorkflow(getConnection());
     }
 
