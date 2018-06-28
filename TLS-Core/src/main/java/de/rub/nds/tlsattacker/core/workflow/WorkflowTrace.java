@@ -96,6 +96,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
             @XmlElement(type = SendAction.class, name = "Send"), @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
+            @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
             @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })
     private List<TlsAction> tlsActions = new ArrayList<>();
 

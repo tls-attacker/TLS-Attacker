@@ -64,6 +64,7 @@ import de.rub.nds.tlsattacker.core.workflow.action.BufferedSendAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ClearBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyBuffersAction;
 import de.rub.nds.tlsattacker.core.workflow.action.CopyPreMasterSecretAction;
+import de.rub.nds.tlsattacker.core.workflow.action.FlushSessionCacheAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardMessagesAction;
 import de.rub.nds.tlsattacker.core.workflow.action.ForwardRecordsAction;
 import de.rub.nds.tlsattacker.core.workflow.action.MessageAction;
@@ -436,6 +437,7 @@ public class WorkflowConfigurationFactory {
         AliasedConnection conEnd = getConnection();
         WorkflowTrace trace = createHandshakeWorkflow(conEnd);
         trace.addTlsAction(new RenegotiationAction());
+        trace.addTlsAction(new FlushSessionCacheAction());
         WorkflowTrace renegotiationTrace = createHandshakeWorkflow(conEnd);
         for (TlsAction reneAction : renegotiationTrace.getTlsActions()) {
             trace.addTlsAction(reneAction);
