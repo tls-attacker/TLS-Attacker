@@ -25,10 +25,9 @@ import static org.junit.Assert.assertEquals;
 
 public class ServerNameIndicationExtensionPreparatorTest {
 
-    Chooser chooser;
-    ServerNameIndicationExtensionMessage message;
-    ServerNameIndicationExtensionSerializer serializer;
-
+    private Chooser chooser;
+    private ServerNameIndicationExtensionMessage message;
+    private ServerNameIndicationExtensionSerializer serializer;
 
     @Before
     public void setUp() {
@@ -51,12 +50,14 @@ public class ServerNameIndicationExtensionPreparatorTest {
         pairList.add(pair);
         message.setServerNameList(pairList);
 
-        ServerNameIndicationExtensionPreparator serverprep = new ServerNameIndicationExtensionPreparator(chooser,message,serializer);
+        ServerNameIndicationExtensionPreparator serverprep = new ServerNameIndicationExtensionPreparator(chooser,
+                message, serializer);
 
         serverprep.prepareExtensionContent();
 
-        assertArrayEquals(new byte[] {0x01, 0x00, 0x02, 0x01, 0x02}, serverprep.getObject().getServerNameListBytes().getValue());
-        assertEquals(5,(int) serverprep.getObject().getServerNameListLength().getOriginalValue());
+        assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02 }, serverprep.getObject().getServerNameListBytes()
+                .getValue());
+        assertEquals(5, (int) serverprep.getObject().getServerNameListLength().getOriginalValue());
     }
 
     @Test
@@ -74,12 +75,14 @@ public class ServerNameIndicationExtensionPreparatorTest {
         pairList.add(pair2);
         message.setServerNameList(pairList);
 
-        ServerNameIndicationExtensionPreparator serverprep = new ServerNameIndicationExtensionPreparator(chooser,message,serializer);
+        ServerNameIndicationExtensionPreparator serverprep = new ServerNameIndicationExtensionPreparator(chooser,
+                message, serializer);
 
         serverprep.prepareExtensionContent();
 
-        assertArrayEquals(new byte[] {0x01, 0x00, 0x02, 0x01, 0x02, 0x02, 0x00, 0x04, 0x03, 0x04, 0x05, 0x06}, serverprep.getObject().getServerNameListBytes().getValue());
-        assertEquals(12,(int) serverprep.getObject().getServerNameListLength().getOriginalValue());
+        assertArrayEquals(new byte[] { 0x01, 0x00, 0x02, 0x01, 0x02, 0x02, 0x00, 0x04, 0x03, 0x04, 0x05, 0x06 },
+                serverprep.getObject().getServerNameListBytes().getValue());
+        assertEquals(12, (int) serverprep.getObject().getServerNameListLength().getOriginalValue());
     }
 
 }
