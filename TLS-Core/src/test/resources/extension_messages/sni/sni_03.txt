@@ -1,0 +1,25 @@
+0000   00 00 00 24 00 22 00 00 0e 77 77 77 2e 67 6f 6f  ...$."...www.goo
+0010   67 6c 65 2e 63 6f 6d 00 00 0e 74 65 73 74 2e 64  gle.com...test.d
+0020   75 6d 6d 79 2e 63 6f 6d                          ummy.com
+
+Extension: server_name
+    Type: server_name (0x0000)
+    Length: 36
+    Server Name Indication extension
+        Server Name list length: 34
+        Server Name Type: host_name (0)
+        Server Name length: 14
+        Server Name: www.google.com
+        Server Name Type: host_name (0)
+        Server Name length: 14
+        Server Name: test.dummy.com
+        
+Secure Sockets Layer
+    TLSv1.2 Record Layer: Alert (Level: Fatal, Description: Decode Error)
+        Content Type: Alert (21)
+        Version: TLS 1.2 (0x0303)
+        Length: 2
+        Alert Message
+            Level: Fatal (2)
+            Description: Decode Error (50)
+        
