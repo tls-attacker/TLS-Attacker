@@ -25,7 +25,7 @@ public class TimingClientTcpTransportHandlerTest {
     }
 
     /**
-     * Test of closeConnection method, of class ClientTcpTransportHandler.
+     * Test of closeConnection method, of class TimingClientTcpTransportHandler.
      *
      * @throws java.io.IOException
      */
@@ -36,7 +36,7 @@ public class TimingClientTcpTransportHandlerTest {
     }
 
     /**
-     * Test of initialize method, of class ClientTcpTransportHandler.
+     * Test of initialize method, of class TimingClientTcpTransportHandler.
      *
      * @throws java.io.IOException
      */
