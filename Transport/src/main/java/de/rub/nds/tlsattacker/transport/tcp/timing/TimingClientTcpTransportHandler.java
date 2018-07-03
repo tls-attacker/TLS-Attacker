@@ -13,7 +13,13 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler {
+    private long measurement = 0;
+    private boolean prependEarlyReadData = false;
+    private int earlyReadData = 0;
 
     public TimingClientTcpTransportHandler(Connection connection) {
         super(connection);
@@ -24,17 +30,35 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
     }
 
     @Override
+    public void sendData(byte[] data) throws IOException {
+        long startTime = System.nanoTime();
+        super.sendData(data);
+        // read will block until data is available
+        earlyReadData = inStream.read();
+        long endTime = System.nanoTime();
+        measurement = (endTime - startTime);
+        prependEarlyReadData = true;
+    }
+
+   @Override
+   public byte[] fetchData() throws IOException {
+       byte[] data = super.fetchData();
+       if (!prependEarlyReadData) {
+           return data;
+       }else {
+           byte[] dataWithEarlyReadByte = new byte[data.length + 1];
+           dataWithEarlyReadByte[0] = (byte) earlyReadData;
+           prependEarlyReadData = false;
+           for (int i=0; i < data.length; i++) {
+               dataWithEarlyReadByte[i+1] = data[i];
+           }
+           return  dataWithEarlyReadByte;
+       }
+   }
+
+    @Override
     public long getLastMeasurement() {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        return measurement;
     }
 
 }
