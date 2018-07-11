@@ -12,8 +12,6 @@ package de.rub.nds.tlsattacker.transport.tcp.timing;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TimeableTransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler implements TimeableTransportHandler {
@@ -40,21 +38,19 @@ public class TimingClientTcpTransportHandler extends ClientTcpTransportHandler i
         prependEarlyReadData = true;
     }
 
-   @Override
-   public byte[] fetchData() throws IOException {
-       byte[] data = super.fetchData();
-       if (!prependEarlyReadData) {
-           return data;
-       }else {
-           byte[] dataWithEarlyReadByte = new byte[data.length + 1];
-           dataWithEarlyReadByte[0] = (byte) earlyReadData;
-           prependEarlyReadData = false;
-           for (int i=0; i < data.length; i++) {
-               dataWithEarlyReadByte[i+1] = data[i];
-           }
-           return  dataWithEarlyReadByte;
-       }
-   }
+    @Override
+    public byte[] fetchData() throws IOException {
+        byte[] data = super.fetchData();
+        if (!prependEarlyReadData) {
+            return data;
+        } else {
+            byte[] dataWithEarlyReadByte = new byte[data.length + 1];
+            dataWithEarlyReadByte[0] = (byte) earlyReadData;
+            prependEarlyReadData = false;
+            System.arraycopy(data, 0, dataWithEarlyReadByte, 1, data.length);
+            return dataWithEarlyReadByte;
+        }
+    }
 
     @Override
     public long getLastMeasurement() {
