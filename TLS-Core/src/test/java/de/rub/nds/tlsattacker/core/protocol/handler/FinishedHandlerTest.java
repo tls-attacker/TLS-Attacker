@@ -78,53 +78,42 @@ public class FinishedHandlerTest {
     public void testAdjustTLSContext() {
         FinishedMessage message = new FinishedMessage();
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        
+
         handler.adjustTLSContext(message);
-        
+
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());        
-        
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
+
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
     }
-    
+
     @Test
     public void testAdjustTlsContextAfterSerializedTls12() {
         FinishedMessage message = new FinishedMessage();
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
-        
+
         handler.adjustTlsContextAfterSerialize(message);
-        
+
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());        
-        
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
+
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
     }
+
     @Test
     public void testAdjustTLSContextTls13ServerOutbound() {
         FinishedMessage message = new FinishedMessage();
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        context.setConnection(new OutboundConnection());        
+        context.setConnection(new OutboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -133,11 +122,11 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
-        
+
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());        
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
         assertEquals(99, context.getWriteSequenceNumber());
         assertEquals(0, context.getReadSequenceNumber());
 
@@ -150,7 +139,7 @@ public class FinishedHandlerTest {
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
                 context.getMasterSecret());
-                
+
     }
 
     @Test
@@ -158,7 +147,7 @@ public class FinishedHandlerTest {
         FinishedMessage message = new FinishedMessage();
         context.setRecordLayer(RecordLayerFactory.getRecordLayer(RecordLayerType.RECORD, context));
         context.setTalkingConnectionEndType(ConnectionEndType.SERVER);
-        context.setConnection(new InboundConnection());        
+        context.setConnection(new InboundConnection());
         context.setSelectedProtocolVersion(ProtocolVersion.TLS13);
         context.setHandshakeSecret(new byte[] { 0, 1, 2, 3, 4 });
         context.setSelectedCipherSuite(CipherSuite.TLS_AES_128_GCM_SHA256);
@@ -167,26 +156,19 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
-        
-        assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());        
-        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());        
+
+        assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(99, context.getWriteSequenceNumber());
         assertEquals(0, context.getReadSequenceNumber());
 
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
     }
-    
-    
+
     @Test
     public void testAdjustTLSContextTls13ClientOutbound() {
         FinishedMessage message = new FinishedMessage();
@@ -201,7 +183,7 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
-        
+
         assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastClientVerifyData());
@@ -209,18 +191,12 @@ public class FinishedHandlerTest {
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
 
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
-        
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
+
     }
- 
+
     @Test
     public void testAdjustTLSContextTls13ClientInbound() {
         FinishedMessage message = new FinishedMessage();
@@ -235,26 +211,19 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
-        
+
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());        
+        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertEquals(99, context.getWriteSequenceNumber());
         assertEquals(0, context.getReadSequenceNumber());
 
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
-    }    
-    
-    
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
+    }
+
     @Test
     public void testAdjustTlsContextAfterSerializedTls13ClientInbound() {
         FinishedMessage message = new FinishedMessage();
@@ -269,9 +238,9 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTlsContextAfterSerialize(message);
-        
+
         assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
-        assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());        
+        assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertEquals(0, context.getWriteSequenceNumber());
@@ -302,25 +271,19 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTlsContextAfterSerialize(message);
-        
+
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());        
+        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
 
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
     }
-    
+
     @Test
     public void testAdjustTlsContextAfterSerializeTls13ServerOutbound() {
         FinishedMessage message = new FinishedMessage();
@@ -335,24 +298,18 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTlsContextAfterSerialize(message);
-        
+
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
-        assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());        
+        assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
 
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
-                
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
+
     }
 
     @Test
@@ -367,13 +324,13 @@ public class FinishedHandlerTest {
         message.setVerifyData(new byte[] { 0, 1, 2, 3, 4 });
         context.setReadSequenceNumber(99);
         context.setWriteSequenceNumber(99);
-        
+
         handler.adjustTlsContextAfterSerialize(message);
-        
+
         assertArrayEquals(null, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(Tls13KeySetType.APPLICATION_TRAFFIC_SECRETS, context.getActiveServerKeySetType());
-        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());        
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
         assertEquals(0, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
 
@@ -386,9 +343,9 @@ public class FinishedHandlerTest {
         assertArrayEquals(
                 ArrayConverter.hexStringToByteArray("9AD9F506B33C740C483E54321EBE59268F7D588356F07ADED4149164D0A18FCA"),
                 context.getMasterSecret());
-                
+
     }
-    
+
     @Test
     public void testAdjustTLSContextTls13ServerInboundWithoutEarlyData() {
         FinishedMessage message = new FinishedMessage();
@@ -402,25 +359,19 @@ public class FinishedHandlerTest {
         context.getNegotiatedExtensionSet().remove(ExtensionType.EARLY_DATA);
         context.setReadSequenceNumber(99);
         context.setWriteSequenceNumber(99);
-        
+
         handler.adjustTLSContext(message);
-        
-        assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());        
-        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());        
+
+        assertEquals(Tls13KeySetType.HANDSHAKE_TRAFFIC_SECRETS, context.getActiveClientKeySetType());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(99, context.getWriteSequenceNumber());
         assertEquals(0, context.getReadSequenceNumber());
 
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
 
     }
 
@@ -439,24 +390,17 @@ public class FinishedHandlerTest {
         context.setWriteSequenceNumber(99);
 
         handler.adjustTLSContext(message);
-        
-        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());        
-        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());        
+
+        assertEquals(Tls13KeySetType.NONE, context.getActiveClientKeySetType());
+        assertEquals(Tls13KeySetType.NONE, context.getActiveServerKeySetType());
         assertArrayEquals(new byte[] { 0, 1, 2, 3, 4 }, context.getLastServerVerifyData());
         assertArrayEquals(null, context.getLastClientVerifyData());
         assertEquals(99, context.getWriteSequenceNumber());
         assertEquals(99, context.getReadSequenceNumber());
-        
-        assertArrayEquals(
-        		null,
-                context.getClientApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getServerApplicationTrafficSecret());
-        assertArrayEquals(
-        		null,
-                context.getMasterSecret());
+
+        assertArrayEquals(null, context.getClientApplicationTrafficSecret());
+        assertArrayEquals(null, context.getServerApplicationTrafficSecret());
+        assertArrayEquals(null, context.getMasterSecret());
     }
-    
-    
+
 }
