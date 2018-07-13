@@ -45,7 +45,7 @@ public class ServerNameIndicationExtensionParserTest {
         		20,
         		ArrayConverter.hexStringToByteArray("00001167757a7a6f6e692e6170706c652e636f6d"),
         	},
-        	// case 2: www.google.com, test.dummy.com
+        	// case 3: www.google.com, test.dummy.com
         	{
         		ArrayConverter.hexStringToByteArray("00000024002200000e7777772e676f6f676c652e636f6d00000e746573742e64756d6d792e636f6d"),
         		0,
