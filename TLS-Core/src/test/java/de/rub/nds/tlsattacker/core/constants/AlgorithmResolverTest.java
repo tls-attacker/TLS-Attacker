@@ -45,7 +45,8 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.DTLS12, CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == PRFAlgorithm.TLS_PRF_SHA256);
-
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -92,7 +93,8 @@ public class AlgorithmResolverTest {
                 CipherSuite.TLS_DHE_PSK_WITH_AES_256_CCM) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == DigestAlgorithm.SHA256);
-
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411);
     }
 
     /**

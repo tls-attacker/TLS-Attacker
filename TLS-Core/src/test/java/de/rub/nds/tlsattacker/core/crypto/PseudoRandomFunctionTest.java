@@ -8,8 +8,10 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
+import java.security.Security;
 import java.util.Random;
 import mockit.Expectations;
 import mockit.Mocked;
@@ -18,6 +20,7 @@ import org.bouncycastle.crypto.tls.ProtocolVersion;
 import org.bouncycastle.crypto.tls.SecurityParameters;
 import org.bouncycastle.crypto.tls.TlsContext;
 import org.bouncycastle.crypto.tls.TlsUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static org.junit.Assert.assertArrayEquals;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +30,7 @@ public class PseudoRandomFunctionTest {
 
     /**
      * Test of compute method, of class PseudoRandomFunction.
-     * 
+     *
      * @param mockedTlsContext
      * @param mockedParameters
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
@@ -74,11 +77,18 @@ public class PseudoRandomFunctionTest {
         result2 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_SHA384, secret, label, seed, size);
 
         assertArrayEquals(result1, result2);
+
+        Security.addProvider(new BouncyCastleProvider());
+        seed = ArrayConverter.hexStringToByteArray("DD65AFF37A86CD3BECFAF84BE5C85787009FCE23DED71B513EC6F97BA44CF654C6891E4146BBE9DE33DFE9936917C47ED8810D90DDFA90CBDFFAEAD7");
+        result1 = PseudoRandomFunction.compute(PRFAlgorithm.TLS_PRF_GOSTR3411, secret, label, seed, size);
+        result2 = ArrayConverter.hexStringToByteArray("49BC96FF7CB5A404DFBE1F06CFE49A01D728BDBCDA0FDD87F9B349FF9E2537959F2D0DB3C4480E2C1916D19C2FF5623D");
+
+        assertArrayEquals(result1, result2);
     }
 
     /**
      * Test of compute method, of class PseudoRandomFunction.
-     * 
+     *
      * @throws de.rub.nds.tlsattacker.core.exceptions.CryptoException
      */
     @Test

@@ -83,6 +83,7 @@ public class PseudoRandomFunction {
         switch (prfAlgorithm) {
             case TLS_PRF_SHA256:
             case TLS_PRF_SHA384:
+            case TLS_PRF_GOSTR3411:
                 return computeTls12(secret, label, seed, size, prfAlgorithm.getMacAlgorithm().getJavaName());
             case TLS_PRF_LEGACY:
                 // prf legacy is the prf computation function for older protocol

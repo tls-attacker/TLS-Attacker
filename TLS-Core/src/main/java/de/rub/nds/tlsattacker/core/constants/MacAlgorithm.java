@@ -20,7 +20,7 @@ public enum MacAlgorithm {
     HMAC_SHA384("HmacSHA384", 48),
     HMAC_SHA512("HmacSHA512", 64),
     IMIT_GOST28147("IMIT_GOST28147", 0), // java name not verified, size unknown
-    HMAC_GOSTR3411("HmacGOSTR3411", 0);// java name not verified
+    HMAC_GOSTR3411("HmacGOST3411", 32);
 
     private int size;
 

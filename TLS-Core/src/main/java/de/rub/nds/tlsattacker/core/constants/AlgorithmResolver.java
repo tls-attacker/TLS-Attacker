@@ -45,6 +45,8 @@ public class AlgorithmResolver {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = PRFAlgorithm.TLS_PRF_SHA384;
+        } else if (cipherSuite.usesGOSTR3411()) {
+            result = PRFAlgorithm.TLS_PRF_GOSTR3411;
         } else {
             result = PRFAlgorithm.TLS_PRF_SHA256;
         }
