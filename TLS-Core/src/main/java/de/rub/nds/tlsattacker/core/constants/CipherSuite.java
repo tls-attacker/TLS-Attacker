@@ -590,6 +590,10 @@ public enum CipherSuite {
         return this.name().endsWith("SHA384");
     }
 
+    public boolean usesGOSTR3411() {
+        return this.name().contains("TLS_GOSTR3410");
+    }
+
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version. TODO: this is still very imprecise and must be improved with new

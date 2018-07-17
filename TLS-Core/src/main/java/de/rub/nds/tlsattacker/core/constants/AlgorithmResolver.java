@@ -79,6 +79,8 @@ public class AlgorithmResolver {
             result = DigestAlgorithm.LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
+        } else if (cipherSuite.usesGOSTR3411()) {
+            result = DigestAlgorithm.GOSTR3411;
         } else {
             result = DigestAlgorithm.SHA256;
         }
