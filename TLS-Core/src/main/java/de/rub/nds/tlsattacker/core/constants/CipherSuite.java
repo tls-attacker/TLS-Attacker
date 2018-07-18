@@ -559,7 +559,7 @@ public enum CipherSuite {
             if (cipher.endsWith("NULL")) {
                 return false;
             }
-            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "CNT_INIT", "GOSTR3411" };
+            String[] hashFunctionNames = { "MD5", "SHA", "SHA256", "SHA384", "SHA512", "IMIT", "GOSTR3411" };
             for (String hashFunction : hashFunctionNames) {
                 if (cipher.endsWith(hashFunction)) {
                     return true;
@@ -567,7 +567,7 @@ public enum CipherSuite {
             }
             return false;
         }
-        return (this.name().contains("_CBC") || this.name().contains("RC4"));
+        return (this.name().contains("_CBC") || this.name().contains("RC4") || this.name().contains("CNT"));
     }
 
     public boolean isSCSV() {

@@ -310,9 +310,9 @@ public class AlgorithmResolver {
                 result = MacAlgorithm.HMAC_SHA512;
             } else if (cipher.endsWith("NULL")) {
                 result = MacAlgorithm.NULL;
-            } else if (cipher.contains("CNT_IMIT")) {
+            } else if (cipher.endsWith("IMIT")) {
                 result = MacAlgorithm.IMIT_GOST28147;
-            } else if (cipher.contains("GOSTR3411")) {
+            } else if (cipher.endsWith("GOSTR3411")) {
                 result = MacAlgorithm.HMAC_GOSTR3411;
             }
         }

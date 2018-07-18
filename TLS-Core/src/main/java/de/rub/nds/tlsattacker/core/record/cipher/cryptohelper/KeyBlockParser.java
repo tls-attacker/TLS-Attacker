@@ -18,7 +18,6 @@ import de.rub.nds.tlsattacker.core.exceptions.ParserException;
 import de.rub.nds.tlsattacker.core.protocol.parser.Parser;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.Cipher;
-import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 
 public class KeyBlockParser extends Parser<KeySet> {
@@ -96,17 +95,17 @@ public class KeyBlockParser extends Parser<KeySet> {
         keys.setServerWriteKey(parseByteArrayField(getKeySize()));
     }
 
-    private void parseClientWriteMacSecret(KeySet keys) throws NoSuchAlgorithmException {
-        keys.setClientWriteMacSecret(parseByteArrayField(getMacLength()));
+    private void parseClientWriteMacSecret(KeySet keys) {
+        keys.setClientWriteMacSecret(parseByteArrayField(getMacKeySize()));
     }
 
-    private void parseServerWriteMacSecret(KeySet keys) throws NoSuchAlgorithmException {
-        keys.setServerWriteMacSecret(parseByteArrayField(getMacLength()));
+    private void parseServerWriteMacSecret(KeySet keys) {
+        keys.setServerWriteMacSecret(parseByteArrayField(getMacKeySize()));
     }
 
-    private int getMacLength() throws NoSuchAlgorithmException {
+    private int getMacKeySize() {
         MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(version, suite);
-        return Mac.getInstance(macAlg.getJavaName()).getMacLength();
+        return macAlg.getKeySize();
     }
 
     private int getKeySize() throws NoSuchAlgorithmException {
