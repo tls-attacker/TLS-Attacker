@@ -238,7 +238,7 @@ public class AlgorithmResolver {
         } else if (cipher.contains("ARIA_256_GCM")) {
             return CipherAlgorithm.ARIA_256_GCM;
         } else if (cipher.contains("28147_CNT")) {
-            return CipherAlgorithm.GOST_28147;
+            return CipherAlgorithm.GOST_28147_CNT;
         } else if (cipher.contains("CHACHA20_POLY1305")) {
             return CipherAlgorithm.ChaCha20Poly1305;
         }
@@ -270,10 +270,11 @@ public class AlgorithmResolver {
         if (cipherSuite.isGCM() || cipherSuite.isCCM() || cipherSuite.isOCB()) {
             return CipherType.AEAD;
         } else if (cs.contains("AES") || cs.contains("DES") || cs.contains("IDEA") || cs.contains("WITH_FORTEZZA")
-                || cs.contains("CAMELLIA") || cs.contains("GOST") || cs.contains("WITH_SEED")
+                || cs.contains("CAMELLIA") || cs.contains("WITH_SEED")
                 || cs.contains("WITH_ARIA") || cs.contains("RC2")) {
             return CipherType.BLOCK;
-        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA")) {
+        } else if (cs.contains("RC4") || cs.contains("WITH_NULL") || cs.contains("CHACHA")
+                || cs.contains("28147_CNT")) {
             return CipherType.STREAM;
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV

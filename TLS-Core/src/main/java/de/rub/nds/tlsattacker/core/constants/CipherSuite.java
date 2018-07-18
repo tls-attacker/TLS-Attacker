@@ -607,7 +607,7 @@ public enum CipherSuite {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
-        if (this.name().endsWith("256") || this.name().endsWith("384")) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") || this.usesGOSTR3411()) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;

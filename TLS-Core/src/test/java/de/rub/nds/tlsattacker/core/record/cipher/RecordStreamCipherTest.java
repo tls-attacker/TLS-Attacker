@@ -51,7 +51,7 @@ public class RecordStreamCipherTest {
         for (CipherSuite suite : CipherSuite.values()) {
             if (!suite.isSCSV() && !suite.name().contains("WITH_NULL") && !suite.name().contains("CHACHA20_POLY1305")
                     && AlgorithmResolver.getCipherType(suite) == CipherType.STREAM
-                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
+                    && !suite.name().contains("FORTEZZA")
                     && !suite.name().contains("ARIA")) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : connections) {
