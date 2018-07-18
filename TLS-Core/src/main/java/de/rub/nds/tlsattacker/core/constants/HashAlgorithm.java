@@ -20,7 +20,8 @@ public enum HashAlgorithm {
     SHA224((byte) 3, "SHA-224"),
     SHA256((byte) 4, "SHA-256"),
     SHA384((byte) 5, "SHA-384"),
-    SHA512((byte) 6, "SHA-512");
+    SHA512((byte) 6, "SHA-512"),
+    GOSTR3411((byte) 237, "GOST3411");
 
     private final byte value;
 
