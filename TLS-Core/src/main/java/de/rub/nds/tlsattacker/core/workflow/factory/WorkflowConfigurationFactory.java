@@ -167,14 +167,14 @@ public class WorkflowConfigurationFactory {
      *
      * @return A HelloWorkflow
      */
-    private WorkflowTrace createHelloWorkflow() {
+    public WorkflowTrace createHelloWorkflow() {
         return createHelloWorkflow(getConnection());
     }
 
     /**
      * Create a hello workflow for the given connection end.
      */
-    private WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
+    public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
         if (config.getStarttlsType() != StarttlsType.NONE) {
@@ -745,13 +745,13 @@ public class WorkflowConfigurationFactory {
         return null;
     }
 
-    private void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
+    public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         messages.add(message);
     }
 
-    private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
+    public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         if (cs.isEphemeral()) {
             switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
