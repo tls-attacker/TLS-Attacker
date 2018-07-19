@@ -586,6 +586,10 @@ public enum CipherSuite {
         return (this.name().contains("_OCB"));
     }
 
+    public boolean isSteamCipherWithIV() {
+        return this.name().contains("28147_CNT");
+    }
+
     public boolean usesSHA384() {
         return this.name().endsWith("SHA384");
     }
