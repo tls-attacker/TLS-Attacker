@@ -46,8 +46,8 @@ public class RecordStreamCipher extends RecordCipher {
         try {
             CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg);
-            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg);
+            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg, localConEndType, getKeySet());
+            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg, localConEndType, getKeySet());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
                     cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
@@ -62,10 +62,8 @@ public class RecordStreamCipher extends RecordCipher {
 
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
-        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
         try {
-            return new EncryptionResult(encryptCipher.encrypt(getKeySet().getWriteKey(localConEndType),
-                    request.getPlainText()));
+            return new EncryptionResult(encryptCipher.encrypt(request.getPlainText()));
         } catch (CryptoException E) {
             LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.");
             LOGGER.debug(E);
@@ -75,11 +73,9 @@ public class RecordStreamCipher extends RecordCipher {
 
     @Override
     public DecryptionResult decrypt(DecryptionRequest decryptionRequest) {
-        ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-
         try {
-            return new DecryptionResult(null, decryptCipher.decrypt(getKeySet().getReadKey(localConEndType),
-                    decryptionRequest.getCipherText()), null);
+            return new DecryptionResult(null,
+                    decryptCipher.decrypt(decryptionRequest.getCipherText()), null);
         } catch (CryptoException E) {
             LOGGER.warn("Could not decrypt Data with the provided parameters. Returning undecrypted data.");
             LOGGER.debug(E);

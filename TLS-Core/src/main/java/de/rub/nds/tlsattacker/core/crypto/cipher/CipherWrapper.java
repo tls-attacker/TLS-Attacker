@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.core.crypto.cipher;
 
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
+import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,9 +18,10 @@ public class CipherWrapper {
 
     protected static final Logger LOGGER = LogManager.getLogger(CipherWrapper.class.getName());
 
-    public static EncryptionCipher getEncryptionCipher(CipherAlgorithm cipherAlg) {
+    public static EncryptionCipher getEncryptionCipher(CipherAlgorithm cipherAlg,
+            ConnectionEndType connectionEndType, KeySet keySet) {
         if (cipherAlg.getJavaName() != null) {
-            return new JavaCipher(cipherAlg);
+            return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {
@@ -27,9 +30,10 @@ public class CipherWrapper {
         }
     }
 
-    public static DecryptionCipher getDecryptionCipher(CipherAlgorithm cipherAlg) {
+    public static DecryptionCipher getDecryptionCipher(CipherAlgorithm cipherAlg,
+            ConnectionEndType connectionEndType, KeySet keySet) {
         if (cipherAlg.getJavaName() != null) {
-            return new JavaCipher(cipherAlg);
+            return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
         } else {

@@ -51,8 +51,8 @@ public final class RecordBlockCipher extends RecordCipher {
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
 
         try {
-            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg);
-            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg);
+            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg, localConEndType, getKeySet());
+            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg, localConEndType, getKeySet());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
                     cipherSuite);
             readMac = Mac.getInstance(macAlg.getJavaName());
@@ -90,8 +90,7 @@ public final class RecordBlockCipher extends RecordCipher {
     @Override
     public EncryptionResult encrypt(EncryptionRequest request) {
         try {
-            byte[] ciphertext = encryptCipher.encrypt(getKeySet().getWriteKey(context.getTalkingConnectionEndType()),
-                    request.getInitialisationVector(), request.getPlainText());
+            byte[] ciphertext = encryptCipher.encrypt(request.getInitialisationVector(), request.getPlainText());
             if (!useExplicitIv) {
                 encryptCipher.setIv(extractNextEncryptIv(ciphertext));
             }
@@ -123,19 +122,17 @@ public final class RecordBlockCipher extends RecordCipher {
                 LOGGER.warn("Ciphertext is not a multiple of the Blocksize. Not Decrypting");
                 return new DecryptionResult(new byte[0], decryptionRequest.getCipherText(), useExplicitIv);
             }
-            ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
             if (useExplicitIv) {
                 byte[] decryptIv = Arrays.copyOf(decryptionRequest.getCipherText(), decryptCipher.getBlocksize());
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
-                plaintext = decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIv, Arrays
+                plaintext = decryptCipher.decrypt(decryptIv, Arrays
                         .copyOfRange(decryptionRequest.getCipherText(), decryptCipher.getBlocksize(),
                                 decryptionRequest.getCipherText().length));
                 usedIv = decryptCipher.getIv();
             } else {
                 byte[] decryptIv = getDecryptionIV();
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
-                plaintext = decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIv,
-                        decryptionRequest.getCipherText());
+                plaintext = decryptCipher.decrypt(decryptIv, decryptionRequest.getCipherText());
                 usedIv = decryptCipher.getIv();
                 // Set next IV
             }
