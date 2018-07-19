@@ -24,7 +24,8 @@ public class FieldElementF2m extends FieldElement {
      * 
      * @param data
      *            The binary polynomial representing the element.<br />
-     *            The degree must be smaller than the reduction polynomial's degree.
+     *            The degree must be smaller than the reduction polynomial's
+     *            degree.
      * @param modulus
      *            The binary reduction polynomial defining the field.
      */
@@ -69,16 +70,14 @@ public class FieldElementF2m extends FieldElement {
 
     @Override
     public FieldElement multInv() {
-    	if(this.getData().equals(BigInteger.ZERO))
-    	{
-    		throw new ArithmeticException();
-    	}
-    	
-    	if(this.getData().equals(BigInteger.ONE))
-    	{
-    		return this;
-    	}
-    	
+        if (this.getData().equals(BigInteger.ZERO)) {
+            throw new ArithmeticException();
+        }
+
+        if (this.getData().equals(BigInteger.ONE)) {
+            return this;
+        }
+
         // Polynomial EEA:
         BigInteger r2 = this.getModulus();
         BigInteger r1 = this.getData();

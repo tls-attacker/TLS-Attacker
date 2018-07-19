@@ -46,10 +46,9 @@ public class FieldElementFp extends FieldElement {
 
     @Override
     public FieldElement multInv() {
-    	if(this.getData().equals(BigInteger.ZERO))
-    	{
-    		throw new ArithmeticException();
-    	}
+        if (this.getData().equals(BigInteger.ZERO)) {
+            throw new ArithmeticException();
+        }
         BigInteger tmp = this.getData().modInverse(this.getModulus());
         return new FieldElementFp(tmp, this.getModulus());
     }

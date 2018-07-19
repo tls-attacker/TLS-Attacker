@@ -45,32 +45,29 @@ public class EllipticCurveTest {
         final int implemented = 28;
         int counter = 0;
 
-        for (NamedGroup name: NamedGroup.values()) {
+        for (NamedGroup name : NamedGroup.values()) {
             System.out.println("Testing elliptic curve: " + name);
 
-            try
-            {
-	            EllipticCurve curve = CurveFactory.getCurve(name);
-	            Point basePoint = curve.getBasePoint();
-	            BigInteger basePointOrder = curve.getBasePointOrder();
-	
-	            this.testCurveParameters(curve, basePoint);
-	
-	            this.testCurveGroupLaws(curve, basePoint, basePointOrder);
-	
-	            this.testCurveArithmetic(curve, basePoint, basePointOrder);
-	            
-	            counter ++;
-            }
-            catch(UnsupportedOperationException e)
-            {
-            	System.out.println("\t" + name + " is not implemented.");
+            try {
+                EllipticCurve curve = CurveFactory.getCurve(name);
+                Point basePoint = curve.getBasePoint();
+                BigInteger basePointOrder = curve.getBasePointOrder();
+
+                this.testCurveParameters(curve, basePoint);
+
+                this.testCurveGroupLaws(curve, basePoint, basePointOrder);
+
+                this.testCurveArithmetic(curve, basePoint, basePointOrder);
+
+                counter++;
+            } catch (UnsupportedOperationException e) {
+                System.out.println("\t" + name + " is not implemented.");
             }
         }
-        
-        if(counter!=implemented)
-        	fail();
-        
+
+        if (counter != implemented)
+            fail();
+
         System.out.println("All elliptic curves work as expected.");
     }
 

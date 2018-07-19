@@ -94,13 +94,11 @@ public class FieldElementFpTest {
         assertEquals(result, tmp);
         result = new FieldElementFp(new BigInteger("1881"), modulus);
         assertEquals(result, tmp);
-        
-        try
-        {
-        	e1.divide(zero);
-        	fail();
-        }catch(ArithmeticException e)
-        {
+
+        try {
+            e1.divide(zero);
+            fail();
+        } catch (ArithmeticException e) {
         }
     }
 
@@ -116,13 +114,11 @@ public class FieldElementFpTest {
         FieldElementFp tmp = (FieldElementFp) e2.multInv();
         FieldElementFp result = new FieldElementFp(new BigInteger("33"), modulus);
         assertEquals(result, tmp);
-        
-        try
-        {
-        	zero.multInv();
-        	fail();
-        }catch(ArithmeticException e)
-        {
+
+        try {
+            zero.multInv();
+            fail();
+        } catch (ArithmeticException e) {
         }
     }
 
