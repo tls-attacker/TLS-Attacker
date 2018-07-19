@@ -174,7 +174,6 @@ public class WorkflowConfigurationFactory {
     /**
      * Create a hello workflow for the given connection end.
      */
-    // TODO: Should I have changed this method to public? :-)
     public WorkflowTrace createHelloWorkflow(AliasedConnection connection) {
         WorkflowTrace workflowTrace = new WorkflowTrace();
 
@@ -746,14 +745,13 @@ public class WorkflowConfigurationFactory {
         return null;
     }
 
-    // TODO: Public? :-)
     public void addClientKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         ClientKeyExchangeMessage message = createClientKeyExchangeMessage(AlgorithmResolver.getKeyExchangeAlgorithm(cs));
         messages.add(message);
     }
 
-    private void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
+    public void addServerKeyExchangeMessage(List<ProtocolMessage> messages) {
         CipherSuite cs = config.getDefaultSelectedCipherSuite();
         if (cs.isEphemeral()) {
             switch (AlgorithmResolver.getKeyExchangeAlgorithm(cs)) {
