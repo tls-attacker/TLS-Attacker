@@ -18,6 +18,8 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.rub.nds.tlsattacker.core.constants.NamedGroup;
+
 /**
  * Testing EllipticCurve, CurveFactory, ElllipticCurveOverFp and
  * EllipticCurveOverF2m
@@ -41,29 +43,34 @@ public class EllipticCurveTest {
     @Test
     public void test() {
         final int implemented = 28;
+        int counter = 0;
 
-        String[] curves = { "secp160k1", "secp160r1", "secp160r2", "secp192k1", "secp192r1", "secp224k1", "secp224r1",
-                "secp256k1", "secp256r1", "secp384r1", "secp521r1", "brainpoolp256r1", "brainpoolp384r1",
-                "brainpoolp512r1", "sect163k1", "sect163r1", "sect163r2", "sect193r1", "sect193r2", "sect233k1",
-                "sect233r1", "sect239k1", "sect283k1", "sect283r1", "sect409k1", "sect409r1", "sect571k1", "sect571r1" };
+        for (NamedGroup name: NamedGroup.values()) {
+            System.out.println("Testing elliptic curve: " + name);
 
-        if (curves.length != implemented)
-            fail();
-
-        for (String s : curves) {
-            System.out.println("Testing elliptic curve: " + s);
-
-            EllipticCurve curve = CurveFactory.getCurve(s);
-            Point basePoint = curve.getBasePoint();
-            BigInteger basePointOrder = curve.getBasePointOrder();
-
-            this.testCurveParameters(curve, basePoint);
-
-            this.testCurveGroupLaws(curve, basePoint, basePointOrder);
-
-            this.testCurveArithmetic(curve, basePoint, basePointOrder);
+            try
+            {
+	            EllipticCurve curve = CurveFactory.getCurve(name);
+	            Point basePoint = curve.getBasePoint();
+	            BigInteger basePointOrder = curve.getBasePointOrder();
+	
+	            this.testCurveParameters(curve, basePoint);
+	
+	            this.testCurveGroupLaws(curve, basePoint, basePointOrder);
+	
+	            this.testCurveArithmetic(curve, basePoint, basePointOrder);
+	            
+	            counter ++;
+            }
+            catch(UnsupportedOperationException e)
+            {
+            	System.out.println("\t" + name + " is not implemented.");
+            }
         }
-
+        
+        if(counter!=implemented)
+        	fail();
+        
         System.out.println("All elliptic curves work as expected.");
     }
 
