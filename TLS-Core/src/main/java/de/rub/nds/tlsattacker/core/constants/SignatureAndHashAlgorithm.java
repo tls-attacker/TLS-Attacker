@@ -64,6 +64,22 @@ public class SignatureAndHashAlgorithm implements Serializable {
                     + ArrayConverter.bytesToHexString(value));
         }
         if (value[0] == (byte) 8) {
+            if (value[1] == 7) {
+                hashAlgorithm = HashAlgorithm.NONE;
+                signatureAlgorithm = SignatureAlgorithm.X25519;
+            } else if (value[1] == 8) {
+                hashAlgorithm = HashAlgorithm.NONE;
+                signatureAlgorithm = SignatureAlgorithm.X448;
+            } else if (value[1] == 9) {
+                hashAlgorithm = HashAlgorithm.SHA256;
+                signatureAlgorithm = SignatureAlgorithm.RSA_PSS;
+            } else if (value[1] == 0xA) {
+                hashAlgorithm = HashAlgorithm.SHA384;
+                signatureAlgorithm = SignatureAlgorithm.RSA_PSS;
+            } else if (value[1] == 0xB) {
+                hashAlgorithm = HashAlgorithm.SHA512;
+                signatureAlgorithm = SignatureAlgorithm.RSA_PSS;
+            }
             hashAlgorithm = HashAlgorithm.getHashAlgorithm(value[1]);
             signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(value[0]);
         } else {
@@ -88,7 +104,19 @@ public class SignatureAndHashAlgorithm implements Serializable {
     }
 
     public byte[] getByteValue() {
-        if (signatureAlgorithm == SignatureAlgorithm.RSA_PSS) {
+        // TODO Clean up this madness
+        if (signatureAlgorithm == SignatureAlgorithm.X25519) {
+            return new byte[] { 8, 7 };
+        } else if (signatureAlgorithm == SignatureAlgorithm.X448) {
+            return new byte[] { 8, 8 };
+        } else if (signatureAlgorithm == SignatureAlgorithm.RSA_PSS) {
+            if (hashAlgorithm == HashAlgorithm.SHA256) {
+                return new byte[] { 8, 9 };
+            } else if (hashAlgorithm == HashAlgorithm.SHA384) {
+                return new byte[] { 8, 0xA };
+            } else if (hashAlgorithm == HashAlgorithm.SHA512) {
+                return new byte[] { 8, 0xB };
+            }
             return new byte[] { signatureAlgorithm.getValue(), hashAlgorithm.getValue() };
         } else {
             return new byte[] { hashAlgorithm.getValue(), signatureAlgorithm.getValue() };

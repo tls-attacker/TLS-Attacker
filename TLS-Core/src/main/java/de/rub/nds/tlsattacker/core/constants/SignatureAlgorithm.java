@@ -18,7 +18,9 @@ public enum SignatureAlgorithm {
     RSA((byte) 1),
     DSA((byte) 2),
     ECDSA((byte) 3),
-    RSA_PSS((byte) 8);
+    RSA_PSS((byte) 8),
+    X448((byte) 0xFF), // byte value not defined
+    X25519((byte) 0xFF);// Byte value not defined
 
     private byte value;
 
