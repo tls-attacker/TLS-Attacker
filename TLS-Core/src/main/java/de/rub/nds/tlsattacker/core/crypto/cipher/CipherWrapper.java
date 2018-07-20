@@ -20,7 +20,10 @@ public class CipherWrapper {
 
     public static EncryptionCipher getEncryptionCipher(CipherAlgorithm cipherAlg,
             ConnectionEndType connectionEndType, KeySet keySet) {
-        if (cipherAlg.getJavaName() != null) {
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+            return new GOST28147Cipher(cipherAlg, keySet.getWriteKey(connectionEndType),
+                    keySet.getWriteIv(connectionEndType));
+        } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
@@ -32,7 +35,10 @@ public class CipherWrapper {
 
     public static DecryptionCipher getDecryptionCipher(CipherAlgorithm cipherAlg,
             ConnectionEndType connectionEndType, KeySet keySet) {
-        if (cipherAlg.getJavaName() != null) {
+        if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
+            return new GOST28147Cipher(cipherAlg, keySet.getReadKey(connectionEndType),
+                    keySet.getReadIv(connectionEndType));
+        } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
             return new NullCipher();
