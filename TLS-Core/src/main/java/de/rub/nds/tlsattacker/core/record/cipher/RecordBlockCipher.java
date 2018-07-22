@@ -13,6 +13,8 @@ import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
+import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
+import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
@@ -36,11 +38,11 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * mac for verification of incoming messages
      */
-    private Mac readMac;
+    private WrappedMac readMac;
     /**
      * mac object for macing outgoing messages
      */
-    private Mac writeMac;
+    private WrappedMac writeMac;
 
     public RecordBlockCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
@@ -55,11 +57,9 @@ public final class RecordBlockCipher extends RecordCipher {
             decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg, localConEndType, getKeySet());
             MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
                     cipherSuite);
-            readMac = Mac.getInstance(macAlg.getJavaName());
-            writeMac = Mac.getInstance(macAlg.getJavaName());
-            readMac.init(new SecretKeySpec(getKeySet().getReadMacSecret(localConEndType), readMac.getAlgorithm()));
-            writeMac.init(new SecretKeySpec(getKeySet().getWriteMacSecret(localConEndType), writeMac.getAlgorithm()));
-        } catch (NoSuchAlgorithmException | InvalidKeyException E) {
+            readMac = MacWrapper.getMac(macAlg, getKeySet().getReadMacSecret(localConEndType));
+            writeMac = MacWrapper.getMac(macAlg, getKeySet().getWriteMacSecret(localConEndType));
+        } catch (NoSuchAlgorithmException E) {
             throw new UnsupportedOperationException("Unsupported Ciphersuite:" + cipherSuite.name(), E);
         }
     }
@@ -69,12 +69,9 @@ public final class RecordBlockCipher extends RecordCipher {
         LOGGER.debug("The MAC was calculated over the following data: {}", ArrayConverter.bytesToHexString(data));
         byte[] result;
         if (connectionEndType == context.getChooser().getConnectionEndType()) {
-            writeMac.update(data);
-            result = writeMac.doFinal();
-
+            result = writeMac.calculateMac(data);
         } else {
-            readMac.update(data);
-            result = readMac.doFinal();
+            result = readMac.calculateMac(data);
         }
         LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(result));
         return result;
