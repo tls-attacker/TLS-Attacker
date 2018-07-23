@@ -10,8 +10,6 @@ package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.TooManyAlgorithmsAttackConfig;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.protocol.message.ClientHelloMessage;
 import de.rub.nds.tlsattacker.core.state.State;
@@ -34,10 +32,8 @@ public class TooManyAlgorithmsAttacker extends Attacker<TooManyAlgorithmsAttackC
         Config tlsConfig = config.createConfig();
         tlsConfig.setAddSignatureAndHashAlgorithmsExtension(true);
         List<SignatureAndHashAlgorithm> algorithmList = new LinkedList<>();
-        Random random = new Random(0);
         for (int i = 0; i < 33; i++) {
-            algorithmList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.getRandom(random), HashAlgorithm
-                    .getRandom(random)));
+            algorithmList.add(SignatureAndHashAlgorithm.DSA_MD5);
         }
         tlsConfig.setSupportedSignatureAndHashAlgorithms(algorithmList);
         WorkflowTrace trace = new WorkflowTrace();
