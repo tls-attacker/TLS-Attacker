@@ -61,8 +61,7 @@ public class RecordBlockCipherTest {
         context.setMasterSecret(new byte[] { 0 });
         for (CipherSuite suite : CipherSuite.getImplemented()) {
             if (!suite.isSCSV() && AlgorithmResolver.getCipherType(suite) == CipherType.BLOCK
-                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")
-                    && !suite.name().contains("ARIA")) {
+                    && !suite.name().contains("FORTEZZA") && !suite.name().contains("GOST")) {
                 context.setSelectedCipherSuite(suite);
                 for (AliasedConnection con : mixedConnections) {
                     context.setConnection(con);
