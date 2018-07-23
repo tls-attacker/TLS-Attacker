@@ -40,15 +40,15 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
             throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
         }
-        if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
+        if (cipherSuite.usesGOSTR3411()) {
+            result = PRFAlgorithm.TLS_PRF_GOSTR3411;
+        } else if (cipherSuite.usesGOSTR34112012()) {
+            result = PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256;
+        } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = PRFAlgorithm.TLS_PRF_LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = PRFAlgorithm.TLS_PRF_SHA384;
-        } else if (cipherSuite.usesGOSTR3411()) {
-            result = PRFAlgorithm.TLS_PRF_GOSTR3411;
-        } else if (cipherSuite.usesGOSTR34112012()) {
-            result = PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256;
         } else {
             result = PRFAlgorithm.TLS_PRF_SHA256;
         }
@@ -78,15 +78,15 @@ public class AlgorithmResolver {
         if (protocolVersion == ProtocolVersion.SSL3 || protocolVersion == ProtocolVersion.SSL2) {
             throw new UnsupportedOperationException("SSL3 and SSL2 PRF currently not supported");
         }
-        if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
+        if (cipherSuite.usesGOSTR3411()) {
+            result = DigestAlgorithm.GOSTR3411;
+        } else if (cipherSuite.usesGOSTR34112012()) {
+            result = DigestAlgorithm.GOSTR3411_2012_256;
+        } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
         } else if (cipherSuite.usesSHA384()) {
             result = DigestAlgorithm.SHA384;
-        } else if (cipherSuite.usesGOSTR3411()) {
-            result = DigestAlgorithm.GOSTR3411;
-        } else if (cipherSuite.usesGOSTR34112012()) {
-            result = DigestAlgorithm.GOSTR3411_2012_256;
         } else {
             result = DigestAlgorithm.SHA256;
         }
