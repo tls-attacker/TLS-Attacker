@@ -51,7 +51,8 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             return result;
         } catch (IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
                 | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchPaddingException ex) {
-            throw new CryptoException("Could not initialize JavaCipher", ex);
+            throw new CryptoException("Could not initialize JavaCipher. "
+                    + "Did you forget to use UnlimitedStrengthEnabler/add BouncyCastleProvider?", ex);
         }
     }
 
