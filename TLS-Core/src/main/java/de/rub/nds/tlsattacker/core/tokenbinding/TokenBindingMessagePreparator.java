@@ -38,7 +38,6 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
-import org.bouncycastle.crypto.tls.NamedCurve;
 import org.bouncycastle.math.ec.ECPoint;
 
 public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<TokenBindingMessage> {
@@ -90,8 +89,7 @@ public class TokenBindingMessagePreparator extends ProtocolMessagePreparator<Tok
         message.setKeyLength(serializer.serializeKey().length);
         message.setExtensionBytes(new byte[0]);
         message.setExtensionLength(message.getExtensionBytes().getValue().length);
-        SignatureAndHashAlgorithm algorithm = new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA1);
+        SignatureAndHashAlgorithm algorithm = SignatureAndHashAlgorithm.ECDSA_SHA1;
         // message.setSignature(SignatureCalculator.generateSignature(chooser.getConfig()
         // .getDefaultTokenBindingKeyParameters().get(0), chooser,));
         message.setSignatureLength(message.getSignature().getValue().length);

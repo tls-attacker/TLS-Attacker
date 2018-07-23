@@ -57,8 +57,7 @@ public class TokenbindingMessagePreparatorTest {
         chooser = context.getChooser();
         message = new TokenBindingMessage();
         preparator = new TokenBindingMessagePreparator(chooser, message);
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA256));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.ECDSA_SHA256);
         context.setClientRandom(ArrayConverter
                 .hexStringToByteArray("772EF595D8B1885E8F5DA5B0595B9E324E04571D5392BF99A046F00A1D331AEB"));
         context.setServerRandom(ArrayConverter
