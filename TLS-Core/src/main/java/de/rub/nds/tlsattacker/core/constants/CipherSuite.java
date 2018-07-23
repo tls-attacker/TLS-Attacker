@@ -409,7 +409,7 @@ public enum CipherSuite {
     TLS_CECPQ1_RSA_WITH_CHACHA20_POLY1305_SHA256(0x16B7),
     TLS_CECPQ1_ECDSA_WITH_CHACHA20_POLY1305_SHA256(0x16B8),
     TLS_CECPQ1_RSA_WITH_AES_256_GCM_SHA384(0x16B9),
-    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA);
+    TLS_CECPQ1_ECDSA_WITH_AES_256_GCM_SHA384(0x16BA),
     // TODO Grease logic implementation, because the tests fail if the lines
     // aren't commented
     // GREASE constants
@@ -429,6 +429,8 @@ public enum CipherSuite {
     // GREASE_13(0xDADA),
     // GREASE_14(0xEAEA),
     // GREASE_15(0xFAFA);
+    TLS_GOSTR341112_256_WITH_28147_CNT_IMIT(0xFF85),
+    TLS_GOSTR341112_256_WITH_NULL_GOSTR3411(0xFF87);
 
     private int value;
 
@@ -598,6 +600,10 @@ public enum CipherSuite {
         return this.name().contains("TLS_GOSTR3410");
     }
 
+    public boolean usesGOSTR34112012() {
+        return this.name().contains("TLS_GOSTR3411");
+    }
+
     /**
      * Returns true if the cipher suite is supported by the specified protocol
      * version. TODO: this is still very imprecise and must be improved with new
@@ -611,7 +617,8 @@ public enum CipherSuite {
         if (version == ProtocolVersion.SSL3) {
             return SSL3_SUPPORTED_CIPHERSUITES.contains(this);
         }
-        if (this.name().endsWith("256") || this.name().endsWith("384") || this.usesGOSTR3411()) {
+        if (this.name().endsWith("256") || this.name().endsWith("384") || this.usesGOSTR3411()
+                || usesGOSTR34112012()) {
             return (version == ProtocolVersion.TLS12);
         }
         return true;

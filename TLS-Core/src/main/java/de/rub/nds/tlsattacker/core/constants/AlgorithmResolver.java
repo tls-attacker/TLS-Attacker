@@ -47,6 +47,8 @@ public class AlgorithmResolver {
             result = PRFAlgorithm.TLS_PRF_SHA384;
         } else if (cipherSuite.usesGOSTR3411()) {
             result = PRFAlgorithm.TLS_PRF_GOSTR3411;
+        } else if (cipherSuite.usesGOSTR34112012()) {
+            result = PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256;
         } else {
             result = PRFAlgorithm.TLS_PRF_SHA256;
         }
@@ -83,6 +85,8 @@ public class AlgorithmResolver {
             result = DigestAlgorithm.SHA384;
         } else if (cipherSuite.usesGOSTR3411()) {
             result = DigestAlgorithm.GOSTR3411;
+        } else if (cipherSuite.usesGOSTR34112012()) {
+            result = DigestAlgorithm.GOSTR3411_2012_256;
         } else {
             result = DigestAlgorithm.SHA256;
         }
@@ -313,8 +317,10 @@ public class AlgorithmResolver {
                 result = MacAlgorithm.NULL;
             } else if (cipher.endsWith("IMIT")) {
                 result = MacAlgorithm.IMIT_GOST28147;
-            } else if (cipher.endsWith("GOSTR3411")) {
+            } else if (cipherSuite.usesGOSTR3411()) {
                 result = MacAlgorithm.HMAC_GOSTR3411;
+            } else if (cipherSuite.usesGOSTR34112012()) {
+                result = MacAlgorithm.HMAC_GOSTR3411_2012_256;
             }
         }
         if (cipherSuite == CipherSuite.TLS_FALLBACK_SCSV

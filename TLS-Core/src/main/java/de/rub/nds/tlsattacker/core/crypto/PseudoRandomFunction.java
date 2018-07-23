@@ -9,11 +9,13 @@
 package de.rub.nds.tlsattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.tlsattacker.core.constants.DigestAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import javax.crypto.Mac;
@@ -81,6 +83,16 @@ public class PseudoRandomFunction {
             throws CryptoException {
 
         switch (prfAlgorithm) {
+            case TLS_PRF_GOSTR3411_2012_256:
+                try  {
+                    //GOSTR3411-2012-256 actually has a block size of 64 byte but the GOST TLS
+                    //standards only use a 32 byte master secret to initialize the HMAC
+                    String algorithm = DigestAlgorithm.GOSTR3411_2012_256.getJavaName();
+                    MessageDigest digest = MessageDigest.getInstance(algorithm);
+                    secret = digest.digest(secret);
+                } catch (NoSuchAlgorithmException e) {
+                   throw new CryptoException("Could not initialize " + prfAlgorithm + "!");
+                }
             case TLS_PRF_SHA256:
             case TLS_PRF_SHA384:
             case TLS_PRF_GOSTR3411:

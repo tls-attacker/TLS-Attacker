@@ -47,6 +47,8 @@ public class AlgorithmResolverTest {
                 CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == PRFAlgorithm.TLS_PRF_SHA256);
         assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411);
+        assertTrue(AlgorithmResolver.getPRFAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == PRFAlgorithm.TLS_PRF_GOSTR3411_2012_256);
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -95,6 +97,8 @@ public class AlgorithmResolverTest {
                 CipherSuite.TLS_DH_anon_EXPORT_WITH_RC4_40_MD5) == DigestAlgorithm.SHA256);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411);
+        assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
+                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411_2012_256);
     }
 
     /**
@@ -300,6 +304,7 @@ public class AlgorithmResolverTest {
     public void testGetMacAlgorithm() {
         assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT), MacAlgorithm.IMIT_GOST28147);
         assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341001_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411);
+        assertEquals(AlgorithmResolver.getMacAlgorithm(ProtocolVersion.TLS12, CipherSuite.TLS_GOSTR341112_256_WITH_NULL_GOSTR3411), MacAlgorithm.HMAC_GOSTR3411_2012_256);
     }
 
     // Test get Mac algorithm for all ciphersuites

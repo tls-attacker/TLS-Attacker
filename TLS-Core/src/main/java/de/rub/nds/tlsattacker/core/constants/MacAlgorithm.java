@@ -20,7 +20,8 @@ public enum MacAlgorithm {
     HMAC_SHA384("HmacSHA384", 48),
     HMAC_SHA512("HmacSHA512", 64),
     IMIT_GOST28147("GOST28147MAC", 4, 32),
-    HMAC_GOSTR3411("HmacGOST3411", 32);
+    HMAC_GOSTR3411("HmacGOST3411", 32),
+    HMAC_GOSTR3411_2012_256("HmacGOST3411-2012-256", 32);
 
     private int size;
     private int keySize;

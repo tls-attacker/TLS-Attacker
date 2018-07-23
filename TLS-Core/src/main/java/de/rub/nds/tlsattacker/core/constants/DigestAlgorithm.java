@@ -14,7 +14,8 @@ public enum DigestAlgorithm {
     LEGACY(""),
     SHA256("SHA-256"),
     SHA384("SHA-384"),
-    GOSTR3411("GOST3411");
+    GOSTR3411("GOST3411"),
+    GOSTR3411_2012_256("GOST3411-2012-256");
 
     private DigestAlgorithm(String digestAlgorithm) {
         this.javaName = digestAlgorithm;
