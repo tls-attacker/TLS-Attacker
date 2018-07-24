@@ -18,7 +18,10 @@ public enum SignatureAlgorithm {
     RSA((byte) 1),
     DSA((byte) 2),
     ECDSA((byte) 3),
-    RSA_PSS((byte) 8);
+    RSA_PSS((byte) 8),
+    GOSTR34102001((byte) 237),
+    GOSTR34102012_256((byte) 238),
+    GOSTR34102012_512((byte) 239);
 
     private byte value;
 

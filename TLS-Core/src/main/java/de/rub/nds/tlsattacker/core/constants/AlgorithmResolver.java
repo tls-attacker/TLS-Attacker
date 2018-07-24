@@ -81,7 +81,7 @@ public class AlgorithmResolver {
         if (cipherSuite.usesGOSTR3411()) {
             result = DigestAlgorithm.GOSTR3411;
         } else if (cipherSuite.usesGOSTR34112012()) {
-            result = DigestAlgorithm.GOSTR3411_2012_256;
+            result = DigestAlgorithm.GOSTR34112012_256;
         } else if (protocolVersion == ProtocolVersion.TLS10 || protocolVersion == ProtocolVersion.TLS11
                 || protocolVersion == ProtocolVersion.DTLS10) {
             result = DigestAlgorithm.LEGACY;
@@ -140,9 +140,11 @@ public class AlgorithmResolver {
         } else if (cipher.startsWith("TLS_SRP_SHA")) {
             return KeyExchangeAlgorithm.SRP_SHA;
         } else if (cipher.startsWith("TLS_GOSTR341001_")) {
-            return KeyExchangeAlgorithm.GOSTR341001;
+            return KeyExchangeAlgorithm.VKO_GOSTR3410_2001;
         } else if (cipher.startsWith("TLS_GOSTR341094_")) {
-            return KeyExchangeAlgorithm.GOSTR341094;
+            return KeyExchangeAlgorithm.VKO_GOSTR3410_94;
+        } else if (cipher.startsWith("TLS_GOSTR341112_")) {
+            return KeyExchangeAlgorithm.VKO_GOSTR3410_2012_256;
         } else if (cipher.startsWith("TLS_CECPQ1_")) {
             return KeyExchangeAlgorithm.CECPQ1_ECDSA;
         } else if (cipher.contains("SSL_FORTEZZA_KEA")) {

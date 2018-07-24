@@ -98,7 +98,7 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
                 CipherSuite.TLS_GOSTR341094_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411);
         assertTrue(AlgorithmResolver.getDigestAlgorithm(ProtocolVersion.TLS12,
-                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR3411_2012_256);
+                CipherSuite.TLS_GOSTR341112_256_WITH_28147_CNT_IMIT) == DigestAlgorithm.GOSTR34112012_256);
     }
 
     /**
@@ -124,7 +124,7 @@ public class AlgorithmResolverTest {
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ECDSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA) == KeyExchangeAlgorithm.ECDH_RSA);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_ECDH_anon_WITH_AES_128_CBC_SHA) == KeyExchangeAlgorithm.ECDH_ANON);
-        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == KeyExchangeAlgorithm.GOSTR341001);
+        assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_GOSTR341001_WITH_28147_CNT_IMIT) == KeyExchangeAlgorithm.VKO_GOSTR3410_2001);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_KRB5_EXPORT_WITH_RC2_CBC_40_MD5) == KeyExchangeAlgorithm.KRB5);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_KRB5_WITH_DES_CBC_SHA) == KeyExchangeAlgorithm.KRB5);
         assertTrue(AlgorithmResolver.getKeyExchangeAlgorithm(CipherSuite.TLS_NULL_WITH_NULL_NULL) == KeyExchangeAlgorithm.NULL);

@@ -87,7 +87,7 @@ public class PseudoRandomFunction {
                 try  {
                     //GOSTR3411-2012-256 actually has a block size of 64 byte but the GOST TLS
                     //standards only use a 32 byte master secret to initialize the HMAC
-                    String algorithm = DigestAlgorithm.GOSTR3411_2012_256.getJavaName();
+                    String algorithm = DigestAlgorithm.GOSTR34112012_256.getJavaName();
                     MessageDigest digest = MessageDigest.getInstance(algorithm);
                     secret = digest.digest(secret);
                 } catch (NoSuchAlgorithmException e) {
