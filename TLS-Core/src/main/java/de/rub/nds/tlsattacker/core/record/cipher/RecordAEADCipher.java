@@ -9,13 +9,10 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.RecordByteLength;
 import de.rub.nds.tlsattacker.core.constants.Tls13KeySetType;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
-import static de.rub.nds.tlsattacker.core.record.cipher.RecordCipher.LOGGER;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionRequest;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.DecryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionRequest;
@@ -42,10 +39,9 @@ public class RecordAEADCipher extends RecordCipher {
 
     public RecordAEADCipher(TlsContext context, KeySet keySet) {
         super(context, keySet);
-        CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-        encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg, localConEndType, getKeySet());
-        decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg, localConEndType, getKeySet());
+        encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
+        decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
     }
 
     @Override

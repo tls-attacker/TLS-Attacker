@@ -8,8 +8,8 @@
  */
 package de.rub.nds.tlsattacker.core.crypto.mac;
 
+import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Mac;
-import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.util.Memoable;
 
 public class ContinuousMac implements WrappedMac {
@@ -17,15 +17,15 @@ public class ContinuousMac implements WrappedMac {
     private Mac mac;
     private Memoable underlying;
 
-    public ContinuousMac(Mac mac, Memoable underlying, byte[] key) {
+    public ContinuousMac(Mac mac, Memoable underlying, CipherParameters parameters) {
         this.mac = mac;
         this.underlying = underlying;
 
-        mac.init(new KeyParameter(key));
+        mac.init(parameters);
     }
 
-    public <T extends Mac & Memoable> ContinuousMac(T mac, byte[] key) {
-        this(mac, mac, key);
+    public <T extends Mac & Memoable> ContinuousMac(T mac, CipherParameters parameters) {
+        this(mac, mac, parameters);
     }
 
     @Override

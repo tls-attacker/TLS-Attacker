@@ -9,9 +9,6 @@
 package de.rub.nds.tlsattacker.core.record.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
-import de.rub.nds.tlsattacker.core.constants.CipherAlgorithm;
-import de.rub.nds.tlsattacker.core.constants.MacAlgorithm;
 import de.rub.nds.tlsattacker.core.crypto.cipher.CipherWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.MacWrapper;
 import de.rub.nds.tlsattacker.core.crypto.mac.WrappedMac;
@@ -23,10 +20,7 @@ import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.EncryptionResult;
 import de.rub.nds.tlsattacker.core.record.cipher.cryptohelper.KeySet;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
 public class RecordStreamCipher extends RecordCipher {
 
@@ -46,18 +40,14 @@ public class RecordStreamCipher extends RecordCipher {
 
     private void initCipherAndMac() throws UnsupportedOperationException {
         try {
-            CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
             ConnectionEndType localConEndType = context.getConnection().getLocalConnectionEndType();
-            encryptCipher = CipherWrapper.getEncryptionCipher(cipherAlg, localConEndType, getKeySet());
-            decryptCipher = CipherWrapper.getDecryptionCipher(cipherAlg, localConEndType, getKeySet());
-            MacAlgorithm macAlg = AlgorithmResolver.getMacAlgorithm(context.getChooser().getSelectedProtocolVersion(),
-                    cipherSuite);
-            readMac = MacWrapper.getMac(macAlg, getKeySet().getReadMacSecret(localConEndType));
-            writeMac = MacWrapper.getMac(macAlg, getKeySet().getWriteMacSecret(localConEndType));
+            encryptCipher = CipherWrapper.getEncryptionCipher(cipherSuite, localConEndType, getKeySet());
+            decryptCipher = CipherWrapper.getDecryptionCipher(cipherSuite, localConEndType, getKeySet());
+            readMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getReadMacSecret(localConEndType));
+            writeMac = MacWrapper.getMac(version, cipherSuite, getKeySet().getWriteMacSecret(localConEndType));
         } catch (NoSuchAlgorithmException ex) {
             throw new UnsupportedOperationException("Cipher not supported: " + cipherSuite.name(), ex);
         }
-
     }
 
     @Override
