@@ -10,7 +10,6 @@ package de.rub.nds.tlsattacker.core.constants;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.core.exceptions.UnknownSignatureAndHashAlgorithm;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,7 +59,7 @@ public enum SignatureAndHashAlgorithm {
     /* RSASSA-PSS algorithms with public key OID RSASSA-PSS */
     RSA_PSS_PSS_SHA256(0x0809),
     RSA_PSS_PSS_SHA384(0x080a),
-    RSA_PSS_PSS_SHA512(0x080b);
+    RSA_PSS_PSS_SHA512(0x080b); 
 
     protected static final Logger LOGGER = LogManager.getLogger(SignatureAndHashAlgorithm.class.getName());
 
