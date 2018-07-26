@@ -1,12 +1,13 @@
 package de.rub.nds.tlsattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.tlsattacker.core.config.Config;
+import de.rub.nds.tlsattacker.core.crypto.keyexchange.TLSGostKeyTransportBlob;
 import de.rub.nds.tlsattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.tlsattacker.core.protocol.handler.GOSTClientKeyExchangeHandler;
 import de.rub.nds.tlsattacker.core.protocol.handler.ProtocolMessageHandler;
 import de.rub.nds.tlsattacker.core.protocol.message.computations.GOSTClientComputations;
-import de.rub.nds.tlsattacker.core.protocol.message.computations.KeyExchangeComputations;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
@@ -19,8 +20,19 @@ public class GOSTClientKeyExchangeMessage extends ClientKeyExchangeMessage {
     @XmlElement
     protected GOSTClientComputations computations;
 
+    @ModifiableVariableProperty(format = ModifiableVariableProperty.Format.ASN1, type = ModifiableVariableProperty.Type.KEY_MATERIAL)
+    private TLSGostKeyTransportBlob keyTransportBlob;
+
+    public void setKeyTransportBlob(TLSGostKeyTransportBlob keyTransportBlob) {
+        this.keyTransportBlob = keyTransportBlob;
+    }
+
+    public TLSGostKeyTransportBlob getKeyTransportBlob() {
+        return keyTransportBlob;
+    }
+
     @Override
-    public KeyExchangeComputations getComputations() {
+    public GOSTClientComputations getComputations() {
         return computations;
     }
 

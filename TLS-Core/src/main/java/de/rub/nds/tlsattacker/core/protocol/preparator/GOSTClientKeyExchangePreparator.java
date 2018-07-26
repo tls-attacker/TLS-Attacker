@@ -15,4 +15,9 @@ public class GOSTClientKeyExchangePreparator extends ClientKeyExchangePreparator
 
     }
 
+    @Override
+    public void prepareAfterParse(boolean clientMode) {
+
+    }
+
 }
