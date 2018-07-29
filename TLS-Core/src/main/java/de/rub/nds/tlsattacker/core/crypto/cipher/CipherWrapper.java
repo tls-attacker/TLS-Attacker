@@ -25,14 +25,8 @@ public class CipherWrapper {
             ConnectionEndType connectionEndType, KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
-            GOST28147ParameterSpec spec;
-            if (cipherSuite.usesGOSTR34112012()) {
-                spec = new GOST28147ParameterSpec("E-A");
-            }  else {
-                spec = new GOST28147ParameterSpec(GOST28147Cipher.SBox_Z);
-            }
-            return new GOST28147Cipher(cipherAlg, spec, keySet.getWriteKey(connectionEndType),
-                    keySet.getWriteIv(connectionEndType));
+            return new GOST28147Cipher(cipherAlg, getGostSpec(cipherSuite),
+                    keySet.getWriteKey(connectionEndType), keySet.getWriteIv(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getWriteKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
@@ -47,14 +41,8 @@ public class CipherWrapper {
             ConnectionEndType connectionEndType, KeySet keySet) {
         CipherAlgorithm cipherAlg = AlgorithmResolver.getCipher(cipherSuite);
         if (cipherAlg == CipherAlgorithm.GOST_28147_CNT) {
-            GOST28147ParameterSpec spec;
-            if (cipherSuite.usesGOSTR34112012()) {
-                spec = new GOST28147ParameterSpec("E-A");
-            }  else {
-                spec = new GOST28147ParameterSpec(GOST28147Cipher.SBox_Z);
-            }
-            return new GOST28147Cipher(cipherAlg, spec, keySet.getReadKey(connectionEndType),
-                    keySet.getReadIv(connectionEndType));
+            return new GOST28147Cipher(cipherAlg, getGostSpec(cipherSuite),
+                    keySet.getReadKey(connectionEndType), keySet.getReadIv(connectionEndType));
         } else if (cipherAlg.getJavaName() != null) {
             return new JavaCipher(cipherAlg, keySet.getReadKey(connectionEndType));
         } else if (cipherAlg == CipherAlgorithm.NULL) {
@@ -62,6 +50,14 @@ public class CipherWrapper {
         } else {
             LOGGER.warn("Cipher:" + cipherAlg + " is not supported - Using NullCipher!");
             return new NullCipher();
+        }
+    }
+
+    private static GOST28147ParameterSpec getGostSpec(CipherSuite cipherSuite) {
+        if (cipherSuite.usesGOSTR34112012()) {
+            return new GOST28147ParameterSpec(GOST28147Cipher.SBox_Z);
+        } else {
+            return new GOST28147ParameterSpec("E-A");
         }
     }
 
