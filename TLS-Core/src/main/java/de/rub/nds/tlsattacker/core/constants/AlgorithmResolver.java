@@ -139,12 +139,8 @@ public class AlgorithmResolver {
             return KeyExchangeAlgorithm.SRP_SHA_DSS;
         } else if (cipher.startsWith("TLS_SRP_SHA")) {
             return KeyExchangeAlgorithm.SRP_SHA;
-        } else if (cipher.startsWith("TLS_GOSTR341001_")) {
-            return KeyExchangeAlgorithm.VKO_GOSTR3410_2001;
-        } else if (cipher.startsWith("TLS_GOSTR341094_")) {
-            return KeyExchangeAlgorithm.VKO_GOSTR3410_94;
-        } else if (cipher.startsWith("TLS_GOSTR341112_")) {
-            return KeyExchangeAlgorithm.VKO_GOSTR3410_2012_256;
+        } else if (cipher.contains("GOST")) {
+            return KeyExchangeAlgorithm.VKO_GOST;
         } else if (cipher.startsWith("TLS_CECPQ1_")) {
             return KeyExchangeAlgorithm.CECPQ1_ECDSA;
         } else if (cipher.contains("SSL_FORTEZZA_KEA")) {
