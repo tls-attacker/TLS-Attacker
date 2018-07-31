@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.rub.nds.tlsattacker.attacks.config.EarlyFinishedCommandConfig;
-import de.rub.nds.tlsattacker.attacks.constants.EarlyCcsVulnerabilityType;
 import de.rub.nds.tlsattacker.attacks.constants.EarlyFinishedVulnerabilityType;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.connection.OutboundConnection;
@@ -33,8 +32,8 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class EarlyFinishedAttacker extends Attacker<EarlyFinishedCommandConfig> {
 
-    public EarlyFinishedAttacker(EarlyFinishedCommandConfig config) {
-        super(config);
+    public EarlyFinishedAttacker(EarlyFinishedCommandConfig config, Config baseConfig) {
+        super(config, baseConfig);
     }
 
     @Override

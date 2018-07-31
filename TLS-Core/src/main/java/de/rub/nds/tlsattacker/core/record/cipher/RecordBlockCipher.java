@@ -83,8 +83,7 @@ public final class RecordBlockCipher extends RecordCipher {
     /**
      * Takes correctly padded data and encrypts it
      *
-     * @param request
-     *            The RequestedEncryption operation
+     * @param request The RequestedEncryption operation
      * @return The EncryptionResult
      */
     @Override
@@ -130,13 +129,13 @@ public final class RecordBlockCipher extends RecordCipher {
                 plaintext = decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIv, Arrays
                         .copyOfRange(decryptionRequest.getCipherText(), decryptCipher.getBlocksize(),
                                 decryptionRequest.getCipherText().length));
-                usedIv = decryptCipher.getIv();
+                usedIv = decryptIv;
             } else {
                 byte[] decryptIv = getDecryptionIV();
                 LOGGER.debug("decryptionIV: " + ArrayConverter.bytesToHexString(decryptIv));
                 plaintext = decryptCipher.decrypt(getKeySet().getReadKey(localConEndType), decryptIv,
                         decryptionRequest.getCipherText());
-                usedIv = decryptCipher.getIv();
+                usedIv = decryptIv;
                 // Set next IV
             }
 
