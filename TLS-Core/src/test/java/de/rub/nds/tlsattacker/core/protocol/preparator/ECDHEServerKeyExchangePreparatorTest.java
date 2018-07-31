@@ -133,8 +133,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         serverCurves.add(NamedGroup.SECP256R1);
         tlsContext.setClientNamedGroupsList(clientCurves);
         config.setDefaultServerNamedGroups(serverCurves);
-        config.setDefaultSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA512));
+        config.setDefaultSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.RSA_SHA512);
         List<ECPointFormat> clientFormats = new ArrayList<>();
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_CHAR2);
         clientFormats.add(ECPointFormat.ANSIX962_COMPRESSED_PRIME);
@@ -145,7 +144,7 @@ public class ECDHEServerKeyExchangePreparatorTest {
         config.setDefaultServerSupportedPointFormats(serverFormats);
 
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
-        SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA512));
+        SigAndHashList.add(SignatureAndHashAlgorithm.RSA_SHA512);
         config.setSupportedSignatureAndHashAlgorithms(SigAndHashList);
     }
 

@@ -11,6 +11,7 @@ package de.rub.nds.tlsattacker.core.certificate;
 import de.rub.nds.modifiablevariable.util.ByteArrayAdapter;
 import de.rub.nds.tlsattacker.core.config.Config;
 import de.rub.nds.tlsattacker.core.constants.CertificateKeyType;
+import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.NamedGroup;
 import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
@@ -264,8 +265,8 @@ public class CertificateKeyPair implements Serializable {
                     signatureAlgorithm = SignatureAlgorithm.DSA;
                     break;
             }
-            context.setSelectedSignatureAndHashAlgorithm(new SignatureAndHashAlgorithm(signatureAlgorithm, context
-                    .getConfig().getPreferredHashAlgorithm()));
+            context.setSelectedSignatureAndHashAlgorithm(SignatureAndHashAlgorithm.getSignatureAndHashAlgorithm(
+                    signatureAlgorithm, context.getConfig().getPreferredHashAlgorithm()));
         }
     }
 

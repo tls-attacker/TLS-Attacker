@@ -8,60 +8,21 @@
  */
 package de.rub.nds.tlsattacker.core.constants;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 public enum SignatureAlgorithm {
 
-    ANONYMOUS((byte) 0),
-    RSA((byte) 1),
-    DSA((byte) 2),
-    ECDSA((byte) 3),
-    ED25519((byte) 7),
-    ED448((byte) 8),
-    RSA_PSS((byte) 8);
+    ANONYMOUS,
+    RSA,
+    DSA,
+    ECDSA,
+    RSA_PSS_RSAE,
+    RSA_PSS_PSS,
+    ED25519,
+    ED448;
 
-    private byte value;
-
-    private static final Map<Byte, SignatureAlgorithm> MAP;
-
-    private SignatureAlgorithm(byte value) {
-        this.value = value;
-    }
-
-    static {
-        MAP = new HashMap<>();
-        for (SignatureAlgorithm cm : SignatureAlgorithm.values()) {
-            MAP.put(cm.value, cm);
-        }
-    }
-
-    public static SignatureAlgorithm getSignatureAlgorithm(byte value) {
-        return MAP.get(value);
-    }
-
-    public byte getValue() {
-        return value;
-    }
-
-    public byte[] getArrayValue() {
-        return new byte[] { value };
-    }
-
-    public static SignatureAlgorithm getRandom(Random random) {
-        SignatureAlgorithm c = null;
-        while (c == null) {
-            Object[] o = MAP.values().toArray();
-            c = (SignatureAlgorithm) o[random.nextInt(o.length)];
-        }
-        return c;
+    private SignatureAlgorithm() {
     }
 
     public String getJavaName() {
-        if (value == 0) {
-            return "";
-        }
         return toString();
     }
 }
