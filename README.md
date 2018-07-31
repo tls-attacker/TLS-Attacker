@@ -249,6 +249,7 @@ The following people have contributed code to the TLS-Attacker project:
 - Pierre Tilhaus: Code quality improvements
 - Felix Kleine-Wilde: SSL 3 Support
 - Marcel Maehren: 0-RTT Support
+- Asli Yardim: STARTTLS
 Additionally we would like to thank all the other people who have contributed code to the project.
 
 Further contributions and pull requests are welcome.
