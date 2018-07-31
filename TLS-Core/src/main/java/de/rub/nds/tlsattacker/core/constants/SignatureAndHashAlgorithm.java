@@ -59,7 +59,7 @@ public enum SignatureAndHashAlgorithm {
     /* RSASSA-PSS algorithms with public key OID RSASSA-PSS */
     RSA_PSS_PSS_SHA256(0x0809),
     RSA_PSS_PSS_SHA384(0x080a),
-    RSA_PSS_PSS_SHA512(0x080b); 
+    RSA_PSS_PSS_SHA512(0x080b);
 
     protected static final Logger LOGGER = LogManager.getLogger(SignatureAndHashAlgorithm.class.getName());
 
