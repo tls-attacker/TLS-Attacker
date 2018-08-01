@@ -56,6 +56,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -64,6 +65,10 @@ import java.util.List;
 import java.util.Random;
 import javax.xml.bind.annotation.XmlTransient;
 import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 
 public class TlsContext {
 
@@ -393,6 +398,22 @@ public class TlsContext {
     private List<KeyShareStoreEntry> clientKeyShareStoreEntryList;
 
     private KeyShareStoreEntry serverKeyShareStoreEntry;
+
+    private BCECGOST3410PrivateKey clientGostEc01PrivateKey;
+
+    private BCECGOST3410PrivateKey serverGostEc01PrivateKey;
+
+    private BCECGOST3410PublicKey clientGostEc01PublicKey;
+
+    private BCECGOST3410PublicKey serverGostEc01PublicKey;
+
+    private BCECGOST3410_2012PrivateKey clientGostEc12PrivateKey;
+
+    private BCECGOST3410_2012PrivateKey serverGostEc12PrivateKey;
+
+    private BCECGOST3410_2012PublicKey clientGostEc12PublicKey;
+
+    private BCECGOST3410_2012PublicKey serverGostEc12PublicKey;
 
     /**
      * the currently used type of keySet by the client
@@ -934,6 +955,70 @@ public class TlsContext {
 
     public void setServerDhPrivateKey(BigInteger serverDhPrivateKey) {
         this.serverDhPrivateKey = serverDhPrivateKey;
+    }
+
+    public BCECGOST3410PrivateKey getClientGostEc01PrivateKey() {
+        return clientGostEc01PrivateKey;
+    }
+
+    public void setClientGostEc01PrivateKey(BCECGOST3410PrivateKey clientGostEc01PrivateKey) {
+        this.clientGostEc01PrivateKey = clientGostEc01PrivateKey;
+    }
+
+    public BCECGOST3410PrivateKey getServerGostEc01PrivateKey() {
+        return serverGostEc01PrivateKey;
+    }
+
+    public void setServerGostEc01PrivateKey(BCECGOST3410PrivateKey serverGostEc01PrivateKey) {
+        this.serverGostEc01PrivateKey = serverGostEc01PrivateKey;
+    }
+
+    public BCECGOST3410PublicKey getClientGostEc01PublicKey() {
+        return clientGostEc01PublicKey;
+    }
+
+    public void setClientGostEc01PublicKey(BCECGOST3410PublicKey clientGostEc01PublicKey) {
+        this.clientGostEc01PublicKey = clientGostEc01PublicKey;
+    }
+
+    public BCECGOST3410PublicKey getServerGostEc01PublicKey() {
+        return serverGostEc01PublicKey;
+    }
+
+    public void setServerGostEc01PublicKey(BCECGOST3410PublicKey serverGostEc01PublicKey) {
+        this.serverGostEc01PublicKey = serverGostEc01PublicKey;
+    }
+
+    public BCECGOST3410_2012PrivateKey getClientGostEc12PrivateKey() {
+        return clientGostEc12PrivateKey;
+    }
+
+    public void setClientGostEc12PrivateKey(BCECGOST3410_2012PrivateKey clientGostEc12PrivateKey) {
+        this.clientGostEc12PrivateKey = clientGostEc12PrivateKey;
+    }
+
+    public BCECGOST3410_2012PrivateKey getServerGostEc12PrivateKey() {
+        return serverGostEc12PrivateKey;
+    }
+
+    public void setServerGostEc12PrivateKey(BCECGOST3410_2012PrivateKey serverGostEc12PrivateKey) {
+        this.serverGostEc12PrivateKey = serverGostEc12PrivateKey;
+    }
+
+    public BCECGOST3410_2012PublicKey getClientGostEc12PublicKey() {
+        return clientGostEc12PublicKey;
+    }
+
+    public void setClientGostEc12PublicKey(BCECGOST3410_2012PublicKey clientGostEc12PublicKey) {
+        this.clientGostEc12PublicKey = clientGostEc12PublicKey;
+    }
+
+    public BCECGOST3410_2012PublicKey getServerGostEc12PublicKey() {
+        return serverGostEc12PublicKey;
+    }
+
+    public void setServerGostEc12PublicKey(BCECGOST3410_2012PublicKey serverGostEc12PublicKey) {
+        this.serverGostEc12PublicKey = serverGostEc12PublicKey;
     }
 
     public SignatureAndHashAlgorithm getSelectedSignatureAndHashAlgorithm() {

@@ -23,7 +23,6 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
@@ -36,6 +35,10 @@ import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 
 public abstract class Chooser {
 
@@ -141,6 +144,22 @@ public abstract class Chooser {
     public abstract BigInteger getDhServerPublicKey();
 
     public abstract BigInteger getDhClientPublicKey();
+
+    public abstract BCECGOST3410PublicKey getServerGost01PublicKey();
+
+    public abstract BCECGOST3410PrivateKey getServerGost01PrivateKey();
+
+    public abstract BCECGOST3410PublicKey getClientGost01PublicKey();
+
+    public abstract BCECGOST3410PrivateKey getClientGost01PrivateKey();
+
+    public abstract BCECGOST3410_2012PublicKey getServerGost12PublicKey();
+
+    public abstract BCECGOST3410_2012PrivateKey getServerGost12PrivateKey();
+
+    public abstract BCECGOST3410_2012PublicKey getClientGost12PublicKey();
+
+    public abstract BCECGOST3410_2012PrivateKey getClientGost12PrivateKey();
 
     public abstract BigInteger getSRPModulus();
 

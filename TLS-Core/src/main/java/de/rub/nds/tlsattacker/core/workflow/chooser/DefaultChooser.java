@@ -23,18 +23,21 @@ import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingKeyParameters;
 import de.rub.nds.tlsattacker.core.constants.TokenBindingVersion;
 import de.rub.nds.tlsattacker.core.crypto.ec.CustomECPoint;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.KS.KeyShareStoreEntry;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.PSK.PskSet;
 import de.rub.nds.tlsattacker.core.protocol.message.extension.SNI.SNIEntry;
 import de.rub.nds.tlsattacker.core.record.layer.RecordLayerType;
 import de.rub.nds.tlsattacker.core.state.TlsContext;
+import de.rub.nds.tlsattacker.core.util.GOSTUtils;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
-import java.util.LinkedList;
 import java.util.List;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 
 public class DefaultChooser extends Chooser {
 
@@ -549,6 +552,86 @@ public class DefaultChooser extends Chooser {
             return context.getServerEcPrivateKey();
         } else {
             return config.getDefaultServerEcPrivateKey();
+        }
+    }
+
+    @Override
+    public BCECGOST3410PublicKey getServerGost01PublicKey() {
+        if (context.getServerGostEc01PublicKey() != null) {
+            return context.getServerGostEc01PublicKey();
+        } else {
+            return GOSTUtils.generate01PublicKey(config.getDefaultGost01Curve(),
+                    config.getDefaultServerGost01PublicKey());
+        }
+    }
+
+    @Override
+    public BCECGOST3410PrivateKey getServerGost01PrivateKey() {
+        if (context.getServerGostEc01PrivateKey() != null) {
+            return context.getServerGostEc01PrivateKey();
+        } else {
+            return GOSTUtils.generate01PrivateKey(config.getDefaultGost01Curve(),
+                    config.getDefaultServerGost01PrivateKey());
+        }
+    }
+
+    @Override
+    public BCECGOST3410PublicKey getClientGost01PublicKey() {
+        if (context.getClientGostEc01PublicKey() != null) {
+            return context.getClientGostEc01PublicKey();
+        } else {
+            return GOSTUtils.generate01PublicKey(config.getDefaultGost01Curve(),
+                    config.getDefaultClientGost01PublicKey());
+        }
+    }
+
+    @Override
+    public BCECGOST3410PrivateKey getClientGost01PrivateKey() {
+        if (context.getClientGostEc01PrivateKey() != null) {
+            return context.getClientGostEc01PrivateKey();
+        } else {
+            return GOSTUtils.generate01PrivateKey(config.getDefaultGost01Curve(),
+                    config.getDefaultClientGost01PrivateKey());
+        }
+    }
+
+    @Override
+    public BCECGOST3410_2012PublicKey getServerGost12PublicKey() {
+        if (context.getServerGostEc12PublicKey() != null) {
+            return context.getServerGostEc12PublicKey();
+        } else {
+            return GOSTUtils.generate12PublicKey(config.getDefaultGost12Curve(),
+                    config.getDefaultServerGost12EcPublicKey());
+        }
+    }
+
+    @Override
+    public BCECGOST3410_2012PrivateKey getServerGost12PrivateKey() {
+        if (context.getServerGostEc12PrivateKey() != null) {
+            return context.getServerGostEc12PrivateKey();
+        } else {
+            return GOSTUtils.generate12PrivateKey(config.getDefaultGost12Curve(),
+                    config.getDefaultServerGostEc12PrivateKey());
+        }
+    }
+
+    @Override
+    public BCECGOST3410_2012PublicKey getClientGost12PublicKey() {
+        if (context.getClientGostEc12PublicKey() != null) {
+            return context.getClientGostEc12PublicKey();
+        } else {
+            return GOSTUtils.generate12PublicKey(config.getDefaultGost12Curve(),
+                    config.getDefaultClientGostEc12PublicKey());
+        }
+    }
+
+    @Override
+    public BCECGOST3410_2012PrivateKey getClientGost12PrivateKey() {
+        if (context.getClientGostEc12PrivateKey() != null) {
+            return context.getClientGostEc12PrivateKey();
+        } else {
+            return GOSTUtils.generate12PrivateKey(config.getDefaultGost12Curve(),
+                    config.getDefaultClientGostEc12PrivateKey());
         }
     }
 
