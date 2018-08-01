@@ -33,6 +33,8 @@ import java.io.IOException;
 import org.bouncycastle.crypto.params.DHPublicKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.tls.Certificate;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PublicKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PublicKey;
 
 public class CertificateMessageHandler extends HandshakeMessageHandler<CertificateMessage> {
 
@@ -113,12 +115,34 @@ public class CertificateMessageHandler extends HandshakeMessageHandler<Certifica
                     tlsContext.setServerRSAPrivateKey(tlsContext.getConfig().getDefaultServerRSAPrivateKey());
                     tlsContext.setServerRsaModulus(CertificateUtils.extractRSAModulus(cert));
                 }
+            } else if (CertificateUtils.hasGost01EcParameters(cert)) {
+                adjustGost01Parameters(CertificateUtils.extract01PublicKey(cert));
+            } else if (CertificateUtils.hasGost12EcParameters(cert)) {
+                adjustGost12Parameters(CertificateUtils.extract12PublicKey(cert));
             } else {
                 LOGGER.warn("Could not adjust Certificate publicKey. Ceritifcate does not seem to Contain a PublicKey");
             }
         } catch (IOException | IllegalArgumentException E) {
             LOGGER.debug(E);
             throw new AdjustmentException("Could not adjust PublicKey Information from Certificate", E);
+        }
+    }
+
+    private void adjustGost01Parameters(BCECGOST3410PublicKey publicKey) {
+        LOGGER.debug("Adjusting GOST 2001 ECPublicKey");
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientGostEc01PublicKey(publicKey);
+        } else {
+            tlsContext.setServerGostEc01PublicKey(publicKey);
+        }
+    }
+
+    private void adjustGost12Parameters(BCECGOST3410_2012PublicKey publicKey) {
+        LOGGER.debug("Adjusting GOST 2012 ECPublicKey");
+        if (tlsContext.getTalkingConnectionEndType() == ConnectionEndType.CLIENT) {
+            tlsContext.setClientGostEc12PublicKey(publicKey);
+        } else {
+            tlsContext.setServerGostEc12PublicKey(publicKey);
         }
     }
 
