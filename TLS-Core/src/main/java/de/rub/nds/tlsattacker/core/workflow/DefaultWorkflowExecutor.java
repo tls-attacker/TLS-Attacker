@@ -59,11 +59,11 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Clean shutdown of execution flow");
                 break;
             }
-            if ((state.getConfig().isStopActionsAfterFatal() && isIoException())) {
+            if ((state.getConfig().isStopActionsAfterFatal() && isReceivedFatalAlert())) {
                 LOGGER.trace("Skipping all Actions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
-            if ((state.getConfig().getStopActionsAfterIOException() && isReceivedFatalAlert())) {
+            if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
                 LOGGER.trace("Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
