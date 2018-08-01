@@ -18,6 +18,8 @@ import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import javax.crypto.interfaces.DHPrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost.BCECGOST3410PrivateKey;
+import org.bouncycastle.jcajce.provider.asymmetric.ecgost12.BCECGOST3410_2012PrivateKey;
 
 public class KeyGenerator {
 
@@ -38,6 +40,22 @@ public class KeyGenerator {
         } else {
             return new CustomECPrivateKey(chooser.getServerEcPrivateKey(), chooser.getConfig()
                     .getDefaultEcCertificateCurve());
+        }
+    }
+
+    public static BCECGOST3410PrivateKey getGost01PrivateKey(Chooser chooser) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            return chooser.getClientGost01PrivateKey();
+        } else {
+            return chooser.getServerGost01PrivateKey();
+        }
+    }
+
+    public static BCECGOST3410_2012PrivateKey getGost12PrivateKey(Chooser chooser) {
+        if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
+            return chooser.getClientGost12PrivateKey();
+        } else {
+            return chooser.getServerGost12PrivateKey();
         }
     }
 
