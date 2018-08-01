@@ -21,7 +21,6 @@ import de.rub.nds.tlsattacker.core.constants.ClientAuthenticationType;
 import de.rub.nds.tlsattacker.core.constants.ClientCertificateType;
 import de.rub.nds.tlsattacker.core.constants.CompressionMethod;
 import de.rub.nds.tlsattacker.core.constants.ECPointFormat;
-import de.rub.nds.tlsattacker.core.constants.HashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.HeartbeatMode;
 import de.rub.nds.tlsattacker.core.constants.MaxFragmentLength;
 import de.rub.nds.tlsattacker.core.constants.NameType;
@@ -30,7 +29,6 @@ import de.rub.nds.tlsattacker.core.constants.PRFAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.RunningModeType;
 import de.rub.nds.tlsattacker.core.constants.PskKeyExchangeMode;
-import de.rub.nds.tlsattacker.core.constants.SignatureAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.constants.SrtpProtectionProfiles;
 import de.rub.nds.tlsattacker.core.constants.StarttlsType;
@@ -759,8 +757,7 @@ public class Config implements Serializable {
 
     private List<SignatureAndHashAlgorithm> defaultServerSupportedSignatureAndHashAlgorithms;
 
-    private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = new SignatureAndHashAlgorithm(
-            SignatureAlgorithm.RSA, HashAlgorithm.SHA1);
+    private SignatureAndHashAlgorithm defaultSelectedSignatureAndHashAlgorithm = SignatureAndHashAlgorithm.RSA_SHA1;
 
     private List<SNIEntry> defaultClientSNIEntryList;
 
@@ -979,42 +976,7 @@ public class Config implements Serializable {
         workflowTraceType = WorkflowTraceType.HANDSHAKE;
 
         supportedSignatureAndHashAlgorithms = new LinkedList<>();
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA512));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA384));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA256));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA224));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA1));
-        supportedSignatureAndHashAlgorithms
-                .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.MD5));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA512));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA384));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA256));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA224));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.SHA1));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.ECDSA,
-                HashAlgorithm.MD5));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA512));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA384));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA256));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA224));
-        supportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA,
-                HashAlgorithm.SHA1));
-        supportedSignatureAndHashAlgorithms
-                .add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.MD5));
+        supportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
         defaultClientSupportedCompressionMethods = new LinkedList<>();
         defaultClientSupportedCompressionMethods.add(CompressionMethod.NULL);
         defaultServerSupportedCompressionMethods = new LinkedList<>();
@@ -1042,8 +1004,7 @@ public class Config implements Serializable {
         defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PKCS1_5);
         defaultTokenBindingKeyParameters.add(TokenBindingKeyParameters.RSA2048_PSS);
         defaultServerSupportedSignatureAndHashAlgorithms = new LinkedList<>();
-        defaultServerSupportedSignatureAndHashAlgorithms.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA,
-                HashAlgorithm.SHA1));
+        defaultServerSupportedSignatureAndHashAlgorithms.addAll(SignatureAndHashAlgorithm.getImplemented());
         defaultServerSupportedPointFormats = new LinkedList<>();
         defaultClientSupportedPointFormats = new LinkedList<>();
         defaultServerSupportedPointFormats.add(ECPointFormat.UNCOMPRESSED);

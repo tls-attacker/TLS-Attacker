@@ -55,8 +55,8 @@ public class DHEServerKeyExchangePreparatorTest {
         context.setServerRandom(ArrayConverter.hexStringToByteArray("AABBCCDD"));
         // Set Signature and Hash Algorithm
         List<SignatureAndHashAlgorithm> SigAndHashList = new LinkedList<>();
-        SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.RSA, HashAlgorithm.SHA1));
-        SigAndHashList.add(new SignatureAndHashAlgorithm(SignatureAlgorithm.DSA, HashAlgorithm.MD5));
+        SigAndHashList.add(SignatureAndHashAlgorithm.RSA_SHA1);
+        SigAndHashList.add(SignatureAndHashAlgorithm.DSA_MD5);
         context.getConfig().setSupportedSignatureAndHashAlgorithms(SigAndHashList);
         // Test
         preparator.prepareHandshakeMessageContents();
