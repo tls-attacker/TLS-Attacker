@@ -99,7 +99,7 @@ public final class RecordBlockCipher extends RecordCipher {
             return new EncryptionResult(encryptCipher.getIv(), ciphertext, useExplicitIv);
 
         } catch (CryptoException ex) {
-            LOGGER.warn("Could not decrypt Data with the provided parameters. Returning unencrypted data.", ex);
+            LOGGER.warn("Could not encrypt Data with the provided parameters. Returning unencrypted data.", ex);
             return new EncryptionResult(request.getPlainText());
         }
     }
