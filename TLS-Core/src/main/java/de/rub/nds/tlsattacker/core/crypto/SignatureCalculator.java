@@ -8,7 +8,9 @@
  */
 package de.rub.nds.tlsattacker.core.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.BadRandom;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.constants.SignatureAndHashAlgorithm;
 import de.rub.nds.tlsattacker.core.exceptions.CryptoException;
 import de.rub.nds.tlsattacker.core.workflow.chooser.Chooser;
@@ -20,8 +22,12 @@ import java.security.SignatureException;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SignatureCalculator {
+
+    protected static final Logger LOGGER = LogManager.getLogger(SignatureCalculator.class.getName());
 
     private SignatureCalculator() {
     }
@@ -44,12 +50,24 @@ public class SignatureCalculator {
     }
 
     public static byte[] generateSignature(PrivateKey key, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm,
-            BadRandom random) throws CryptoException {
+            BadRandom random, Chooser chooser) throws CryptoException {
         try {
-            Signature instance = Signature.getInstance(algorithm.getJavaName());
-            instance.initSign(key, random);
-            instance.update(toBeSigned);
-            return instance.sign();
+            if (chooser.getSelectedProtocolVersion() == ProtocolVersion.SSL3
+                    || chooser.getSelectedProtocolVersion() == ProtocolVersion.TLS10) {
+
+                byte[] legacyToBeSigned = ArrayConverter.concatenate(MD5Utils.MD5(toBeSigned),
+                        SHA1Utils.sha1(toBeSigned));
+                Signature instance = Signature.getInstance("RSA/None/PKCS1Padding");
+                instance.update(legacyToBeSigned);
+                return instance.sign();
+            } else {
+                LOGGER.trace("Creating Signature with " + algorithm.getJavaName() + " over "
+                        + ArrayConverter.bytesToHexString(toBeSigned) + " with the PrivateKey:" + key.toString());
+                Signature instance = Signature.getInstance(algorithm.getJavaName());
+                instance.initSign(key, random);
+                instance.update(toBeSigned);
+                return instance.sign();
+            }
         } catch (SignatureException | InvalidKeyException | NoSuchAlgorithmException ex) {
             throw new CryptoException("Could not sign Data", ex);
         }
@@ -58,19 +76,19 @@ public class SignatureCalculator {
     public static byte[] generateRSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
             throws CryptoException {
         RSAPrivateKey key = KeyGenerator.getRSAPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom());
+        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
     }
 
     public static byte[] generateDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
             throws CryptoException {
         DSAPrivateKey key = KeyGenerator.getDSAPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom());
+        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
     }
 
     public static byte[] generateECDSASignature(Chooser chooser, byte[] toBeSigned, SignatureAndHashAlgorithm algorithm)
             throws CryptoException {
         ECPrivateKey key = KeyGenerator.getECPrivateKey(chooser);
-        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom());
+        return generateSignature(key, toBeSigned, algorithm, chooser.getContext().getBadSecureRandom(), chooser);
     }
 
     public static byte[] generateAnonymousSignature(Chooser chooser, byte[] toBeSigned,

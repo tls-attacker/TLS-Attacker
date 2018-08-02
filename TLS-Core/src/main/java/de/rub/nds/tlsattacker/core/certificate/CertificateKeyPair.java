@@ -250,6 +250,7 @@ public class CertificateKeyPair implements Serializable {
     public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
         publicKey.adjustInContext(context, connectionEnd);
         privateKey.adjustInContext(context, connectionEnd);
+        System.out.println(privateKey);
         context.setSelectedGroup(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             // TODO rething auto selection

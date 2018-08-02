@@ -20,8 +20,6 @@ import java.security.interfaces.DSAPrivateKey;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.RSAPrivateKey;
 import javax.crypto.interfaces.DHPrivateKey;
-import org.bouncycastle.crypto.params.DSAParameters;
-import org.bouncycastle.crypto.params.DSAPrivateKeyParameters;
 
 public class KeyGenerator {
 
@@ -30,10 +28,10 @@ public class KeyGenerator {
         BigInteger key;
         if (chooser.getConnectionEndType() == ConnectionEndType.CLIENT) {
             modulus = chooser.getClientRsaModulus();
-            key = chooser.getConfig().getDefaultClientRSAPrivateKey();
+            key = chooser.getClientRSAPrivateKey();
         } else {
             modulus = chooser.getServerRsaModulus();
-            key = chooser.getConfig().getDefaultServerRSAPrivateKey();
+            key = chooser.getServerRSAPrivateKey();
         }
         return new CustomRSAPrivateKey(modulus, key);
     }

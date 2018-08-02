@@ -112,4 +112,10 @@ public class CustomRSAPrivateKey extends CustomPrivateKey implements RSAPrivateK
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "CustomRSAPrivateKey{" + "modulus=" + modulus + ", privateExponent=" + privateExponent + '}';
+    }
+
 }

@@ -115,7 +115,7 @@ public class Config implements Serializable {
 
     private Boolean autoAdjustSignatureAndHashAlgorithm = true;
 
-    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA256;
+    private HashAlgorithm preferredHashAlgorithm = HashAlgorithm.SHA1;
 
     /**
      * List of filters to apply on workflow traces before serialization.
