@@ -734,7 +734,8 @@ public class WorkflowConfigurationFactory {
                 case SRP_SHA_RSA:
                 case SRP_SHA:
                     return new SrpClientKeyExchangeMessage(config);
-                case VKO_GOST:
+                case VKO_GOST01:
+                case VKO_GOST12:
                     return new GOSTClientKeyExchangeMessage(config);
                 default:
                     LOGGER.warn("Unsupported key exchange algorithm: " + algorithm

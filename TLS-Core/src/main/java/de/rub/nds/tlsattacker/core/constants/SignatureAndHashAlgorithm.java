@@ -59,7 +59,10 @@ public enum SignatureAndHashAlgorithm {
     /* RSASSA-PSS algorithms with public key OID RSASSA-PSS */
     RSA_PSS_PSS_SHA256(0x0809),
     RSA_PSS_PSS_SHA384(0x080a),
-    RSA_PSS_PSS_SHA512(0x080b);
+    RSA_PSS_PSS_SHA512(0x080b),
+    GOSTR34102001_GOSTR3411(0xEDED),
+    GOSTR34102012_256_GOSTR34112012_256(0xEEEE),
+    GOSTR34102012_512_GOSTR34112012_512(0xEFEF);
 
     protected static final Logger LOGGER = LogManager.getLogger(SignatureAndHashAlgorithm.class.getName());
 
@@ -83,6 +86,9 @@ public enum SignatureAndHashAlgorithm {
         algoList.add(ECDSA_SHA256);
         algoList.add(ECDSA_SHA384);
         algoList.add(ECDSA_SHA512);
+        algoList.add(GOSTR34102001_GOSTR3411);
+        algoList.add(GOSTR34102012_256_GOSTR34112012_256);
+        algoList.add(GOSTR34102012_512_GOSTR34112012_512);
         return algoList;
     }
 
@@ -175,8 +181,12 @@ public enum SignatureAndHashAlgorithm {
     }
 
     public String getJavaName() {
-        String hashAlgorithmName = getHashAlgorithm().getJavaName().replace("-", "");
+        String hashAlgorithmName = getHashAlgorithm().getJavaName();
+        if (!hashAlgorithmName.contains("GOST")) {
+            hashAlgorithmName = hashAlgorithmName.replace("-", "");
+        }
         String signatureAlgorithmName = getSignatureAlgorithm().getJavaName();
         return hashAlgorithmName + "with" + signatureAlgorithmName;
     }
+
 }

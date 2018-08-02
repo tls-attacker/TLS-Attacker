@@ -292,7 +292,8 @@ public class HandlerFactory {
             case SRP_SHA_RSA:
             case SRP_SHA:
                 return new SrpClientKeyExchangeHandler(context);
-            case VKO_GOST:
+            case VKO_GOST01:
+            case VKO_GOST12:
                 return new GOSTClientKeyExchangeHandler(context);
             default:
                 throw new UnsupportedOperationException("Algorithm " + algorithm + " NOT supported yet.");
