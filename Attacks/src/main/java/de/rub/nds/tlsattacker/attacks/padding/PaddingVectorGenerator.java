@@ -28,6 +28,9 @@ public abstract class PaddingVectorGenerator {
             case SHORT:
                 recordGenerator = new ShortRecordGenerator();
                 break;
+            case VERY_SHORT:
+                recordGenerator = new VeryShortRecordGenerator();
+                break;
             default:
                 throw new IllegalArgumentException("Unknown RecordGenerator Type");
         }

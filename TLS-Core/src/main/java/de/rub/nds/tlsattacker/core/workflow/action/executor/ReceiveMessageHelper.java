@@ -80,6 +80,34 @@ public class ReceiveMessageHelper {
         return new MessageActionResult(realRecords, messages);
     }
 
+    public MessageActionResult receiveMessagesTill(ProtocolMessage waitTillMessage, TlsContext context) {
+        context.setTalkingConnectionEndType(context.getChooser().getMyConnectionPeer());
+        List<AbstractRecord> realRecords = new LinkedList<>();
+        List<ProtocolMessage> messages = new LinkedList<>();
+        try {
+            byte[] receivedBytes;
+            boolean shouldContinue = true;
+            do {
+                receivedBytes = receiveByteArray(context);
+                MessageActionResult tempMessageActionResult = handleReceivedBytes(receivedBytes, context);
+                messages.addAll(tempMessageActionResult.getMessageList());
+                realRecords.addAll(tempMessageActionResult.getRecordList());
+                for (ProtocolMessage message : messages) {
+                    if (message.getClass().equals(waitTillMessage.getClass())) {
+                        LOGGER.debug("Received message we waited for");
+                        shouldContinue = false;
+                        break;
+                    }
+                }
+            } while (receivedBytes.length != 0 && shouldContinue);
+        } catch (IOException ex) {
+            LOGGER.warn("Received " + ex.getLocalizedMessage() + " while recieving for Messages.");
+            LOGGER.debug(ex);
+            context.setReceivedTransportHandlerException(true);
+        }
+        return new MessageActionResult(realRecords, messages);
+    }
+
     public MessageActionResult handleReceivedBytes(byte[] receivedBytes, TlsContext context) {
         List<ProtocolMessage> messages = new LinkedList<>();
         List<AbstractRecord> records = new LinkedList<>();

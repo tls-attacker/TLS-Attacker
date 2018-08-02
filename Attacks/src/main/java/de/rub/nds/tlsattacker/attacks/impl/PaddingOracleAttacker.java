@@ -9,6 +9,8 @@
 package de.rub.nds.tlsattacker.attacks.impl;
 
 import de.rub.nds.tlsattacker.attacks.config.PaddingOracleCommandConfig;
+import de.rub.nds.tlsattacker.attacks.constants.PaddingRecordGeneratorType;
+import de.rub.nds.tlsattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.tlsattacker.attacks.exception.PaddingOracleUnstableException;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGenerator;
 import de.rub.nds.tlsattacker.attacks.padding.PaddingVectorGeneratorFactory;
@@ -18,7 +20,8 @@ import de.rub.nds.tlsattacker.attacks.util.response.FingerPrintChecker;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseExtractor;
 import de.rub.nds.tlsattacker.attacks.util.response.ResponseFingerprint;
 import de.rub.nds.tlsattacker.core.config.Config;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
+import de.rub.nds.tlsattacker.core.constants.CipherSuite;
+import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
@@ -32,6 +35,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.Level;
 
 /**
  * Executes a padding oracle attack check. It logs an error in case the tested
@@ -40,6 +44,14 @@ import java.util.List;
 public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> {
 
     private final Config tlsConfig;
+
+    private boolean groupRecords = true;
+
+    private HashMap<Integer, List<ResponseFingerprint>> responseMap;
+
+    private CipherSuite testedSuite;
+
+    private ProtocolVersion testedVersion;
 
     public PaddingOracleAttacker(PaddingOracleCommandConfig paddingOracleConfig, Config baseConfig) {
         super(paddingOracleConfig, baseConfig);
@@ -66,35 +78,43 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
 
     @Override
     public Boolean isVulnerable() {
+        if (config.getRecordGeneratorType() == PaddingRecordGeneratorType.VERY_SHORT) {
+            groupRecords = false;
+        }
         LOGGER.log(LogLevel.CONSOLE_OUTPUT,
                 "A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, "A server is considered secure if it always responds the same way.");
-        HashMap<Integer, List<ResponseFingerprint>> responseMap = createResponseMap();
+        EqualityError error;
 
-        EqualityError error = getEqualityError(responseMap);
-        if (error == EqualityError.SOCKET_EXCEPTION || error == EqualityError.SOCKET_STATE) {
-            LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found a candidate for a Socket difference performing rescan");
-            HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
-            EqualityError errorTwo = getEqualityError(responseMapTwo);
-            if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
-                HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
-                EqualityError errorThree = getEqualityError(responseMapThree);
-                if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT,
-                            "Found an equality Error in a SocketState, performed to rescans and it still presisted");
-                    LOGGER.log(LogLevel.CONSOLE_OUTPUT, "The Server is very likely vulnerabble");
+        try {
+            responseMap = createResponseMap();
+            error = getEqualityError(responseMap);
+            if (error == EqualityError.SOCKET_EXCEPTION || error == EqualityError.SOCKET_STATE) {
+                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Found a candidate for a Socket difference performing rescan");
+                HashMap<Integer, List<ResponseFingerprint>> responseMapTwo = createResponseMap();
+                EqualityError errorTwo = getEqualityError(responseMapTwo);
+                if (error == errorTwo && lookEqual(responseMap, responseMapTwo)) {
+                    HashMap<Integer, List<ResponseFingerprint>> responseMapThree = createResponseMap();
+                    EqualityError errorThree = getEqualityError(responseMapThree);
+                    if (error == errorThree && lookEqual(responseMap, responseMapThree)) {
+                        LOGGER.log(LogLevel.CONSOLE_OUTPUT,
+                                "Found an equality Error in a SocketState, performed to rescans and it still presisted");
+                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "The Server is very likely vulnerabble");
+                    } else {
+                        LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Rescan revealed a false positive");
+                        return false;
+                    }
                 } else {
                     LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Rescan revealed a false positive");
                     return false;
                 }
-            } else {
-                LOGGER.log(LogLevel.CONSOLE_OUTPUT, "Rescan revealed a false positive");
-                return false;
             }
+        } catch (AttackFailedException E) {
+            LOGGER.log(LogLevel.CONSOLE_OUTPUT, E.getMessage());
+            return null;
         }
         LOGGER.log(LogLevel.CONSOLE_OUTPUT, EqualityErrorTranslator.translation(error, null, null));
-        if (error != EqualityError.NONE) {
-
+        if (error != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
             for (List<ResponseFingerprint> fingerprintList : responseMap.values()) {
                 LOGGER.debug("----------------Map-----------------");
                 for (ResponseFingerprint fingerprint : fingerprintList) {
@@ -126,23 +146,35 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
     public HashMap<Integer, List<ResponseFingerprint>> createResponseMap() {
         PaddingVectorGenerator generator = PaddingVectorGeneratorFactory.getPaddingVectorGenerator(config);
         List<WorkflowTrace> traceList = generator.getPaddingOracleVectors(tlsConfig);
-
+        boolean first = true;
         HashMap<Integer, List<ResponseFingerprint>> responseMap = new HashMap<>();
         for (WorkflowTrace trace : traceList) {
             State state;
             try {
                 state = executeTlsFlow(trace);
+                testedSuite = state.getTlsContext().getSelectedCipherSuite();
+                testedVersion = state.getTlsContext().getSelectedProtocolVersion();
             } catch (WorkflowExecutionException | ConfigurationException E) {
                 LOGGER.warn(E);
-                LOGGER.warn("TLS-Attacker failed execute a Handshake. Skipping to next record");
-                continue;
+                LOGGER.warn("TLS-Attacker failed execute a Handshake. Reexecuting");
+                try {
+                    trace.reset();
+                    state = executeTlsFlow(trace);
+                } catch (WorkflowExecutionException | ConfigurationException Ex) {
+                    LOGGER.warn(Ex);
+                    LOGGER.warn("Could not execute Handshake with the Server");
+                    throw new AttackFailedException(
+                            "Could not execute Handshake with the Server. Maybe it does not support CBC. You will probably need to debug this");
+                }
+
             }
             if (state.getWorkflowTrace().allActionsExecuted()) {
                 ResponseFingerprint fingerprint = ResponseExtractor.getFingerprint(state);
                 clearConnections(state);
-                AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
-                        .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
-                int length = ((Record) lastRecord).getLength().getValue();
+                int length = getLastRecordLength(state);
+                if (!groupRecords) {
+                    length = 0;
+                }
                 List<ResponseFingerprint> responseFingerprintList = responseMap.get(length);
                 if (responseFingerprintList == null) {
                     responseFingerprintList = new LinkedList<>();
@@ -154,6 +186,12 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
             }
         }
         return responseMap;
+    }
+
+    private int getLastRecordLength(State state) {
+        AbstractRecord lastRecord = state.getWorkflowTrace().getLastSendingAction().getSendRecords()
+                .get(state.getWorkflowTrace().getLastSendingAction().getSendRecords().size() - 1);
+        return ((Record) lastRecord).getLength().getValue();
     }
 
     public EqualityError getEqualityError(HashMap<Integer, List<ResponseFingerprint>> responseMap) {
@@ -179,5 +217,17 @@ public class PaddingOracleAttacker extends Attacker<PaddingOracleCommandConfig> 
         } catch (IOException ex) {
             LOGGER.debug(ex);
         }
+    }
+
+    public HashMap<Integer, List<ResponseFingerprint>> getResponseMap() {
+        return responseMap;
+    }
+
+    public CipherSuite getTestedSuite() {
+        return testedSuite;
+    }
+
+    public ProtocolVersion getTestedVersion() {
+        return testedVersion;
     }
 }

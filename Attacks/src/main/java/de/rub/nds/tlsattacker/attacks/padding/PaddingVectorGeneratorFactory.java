@@ -22,6 +22,8 @@ public class PaddingVectorGeneratorFactory {
                 return new FinishedResumptionPaddingGenerator(config.getRecordGeneratorType());
             case CLOSE_NOTIFY:
                 return new ClassicCloseNotifyVectorGenerator(config.getRecordGeneratorType());
+            case CLASSIC_DYNAMIC:
+                return new ClassicDynamicPaddingGenerator(config.getRecordGeneratorType());
             default:
                 throw new IllegalArgumentException("Unknown PaddingVectorGenerator: " + config.getVectorGeneratorType());
         }

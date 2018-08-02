@@ -10,6 +10,7 @@ package de.rub.nds.tlsattacker.attacks.constants;
 
 public enum PaddingVectorGeneratorType {
     CLASSIC,
+    CLASSIC_DYNAMIC,
     FINISHED,
     FINISHED_RESUMPTION,
     CLOSE_NOTIFY,

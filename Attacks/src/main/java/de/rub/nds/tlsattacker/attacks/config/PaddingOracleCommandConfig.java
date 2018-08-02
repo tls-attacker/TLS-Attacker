@@ -99,7 +99,6 @@ public class PaddingOracleCommandConfig extends AttackConfig {
             }
         }
         config.setQuickReceive(true);
-        // config.setEarlyStop(true);
         config.setAddRenegotiationInfoExtension(true);
         config.setAddServerNameIndicationExtension(true);
         config.setAddSignatureAndHashAlgorithmsExtension(true);

@@ -75,7 +75,7 @@
         </RsaPrivateKey>
     </defaultExplicitCertificateKeyPair>
     <autoAdjustSignatureAndHashAlgorithm>true</autoAdjustSignatureAndHashAlgorithm>
-    <preferredHashAlgorithm>SHA256</preferredHashAlgorithm>
+    <preferredHashAlgorithm>SHA1</preferredHashAlgorithm>
     <outputFilters>DEFAULT</outputFilters>
     <applyFiltersInPlace>false</applyFiltersInPlace>
     <filtersKeepUserSettings>true</filtersKeepUserSettings>

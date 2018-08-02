@@ -79,6 +79,7 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = ForwardMessagesWithPrepareAction.class, name = "ForwardMessagesWithPrepare"),
             @XmlElement(type = ForwardRecordsAction.class, name = "ForwardRecords"),
             @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+            @XmlElement(type = ReceiveTillAction.class, name = "ReceiveTill"),
             @XmlElement(type = MultiReceiveAction.class, name = "MultiReceive"),
             @XmlElement(type = PopAndSendAction.class, name = "PopAndSend"),
             @XmlElement(type = PopAndSendMessageAction.class, name = "PopAndSendMessage"),
@@ -94,7 +95,9 @@ public class WorkflowTrace implements Serializable {
             @XmlElement(type = RemBufferedChExtensionsAction.class, name = "RemBufferedChExtensions"),
             @XmlElement(type = RenegotiationAction.class, name = "Renegotiation"),
             @XmlElement(type = ResetConnectionAction.class, name = "ResetConnection"),
-            @XmlElement(type = SendAction.class, name = "Send"), @XmlElement(type = WaitAction.class, name = "Wait"),
+            @XmlElement(type = SendAction.class, name = "Send"),
+            @XmlElement(type = SendDynamicClientKeyExchangeAction.class, name = "SendDynamicKeyExchange"),
+            @XmlElement(type = WaitAction.class, name = "Wait"),
             @XmlElement(type = SendAsciiAction.class, name = "SendAscii"),
             @XmlElement(type = FlushSessionCacheAction.class, name = "FlushSessionCache"),
             @XmlElement(type = ReceiveAsciiAction.class, name = "ReceiveAscii") })

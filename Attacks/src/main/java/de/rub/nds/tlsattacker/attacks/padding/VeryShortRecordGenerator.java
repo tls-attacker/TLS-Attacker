@@ -11,7 +11,6 @@ package de.rub.nds.tlsattacker.attacks.padding;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.tlsattacker.core.constants.AlgorithmResolver;
 import de.rub.nds.tlsattacker.core.constants.CipherSuite;
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.record.Record;
@@ -22,24 +21,26 @@ public class VeryShortRecordGenerator extends PaddingRecordGenerator {
 
     @Override
     public List<Record> getRecords(CipherSuite suite, ProtocolVersion version) {
-        int blockSize = AlgorithmResolver.getCipher(suite).getBlocksize();
-        int macSize = AlgorithmResolver.getMacAlgorithm(version, suite).getSize();
         List<Record> recordList = new LinkedList<>();
         recordList.addAll(createRecordsWithModifiedMac());
         recordList.addAll(createRecordsWithModifiedPadding());
-        recordList.addAll(createRecordsWithPlainData(blockSize, macSize));
+        recordList.addAll(createRecordsWithPlainData());
         return recordList;
     }
 
-    private List<Record> createRecordsWithPlainData(int blocksize, int macSize) {
+    private List<Record> createRecordsWithPlainData() {
         List<Record> records = new LinkedList<>();
-        byte[] plain = createPaddingBytes(47);
+        byte[] plain = createPaddingBytes(63);
         records.add(createRecordWithPlainData(plain));
         plain = new byte[] { (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
                 (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
-                (byte) 255 };
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255, (byte) 255,
+                (byte) 255, };
         records.add(createRecordWithPlainData(plain));
         return records;
     }
