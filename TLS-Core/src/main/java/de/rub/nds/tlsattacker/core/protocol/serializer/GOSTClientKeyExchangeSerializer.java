@@ -1,8 +1,15 @@
+/**
+ * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ *
+ * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.tlsattacker.core.protocol.serializer;
 
 import de.rub.nds.tlsattacker.core.constants.ProtocolVersion;
 import de.rub.nds.tlsattacker.core.protocol.message.GOSTClientKeyExchangeMessage;
-import java.io.IOException;
 
 public class GOSTClientKeyExchangeSerializer extends ClientKeyExchangeSerializer<GOSTClientKeyExchangeMessage> {
 
@@ -16,11 +23,7 @@ public class GOSTClientKeyExchangeSerializer extends ClientKeyExchangeSerializer
     @Override
     public byte[] serializeHandshakeMessageContent() {
         LOGGER.debug("Serializing GOSTClientKeyExchangeMessage");
-        try {
-            appendBytes(message.getKeyTransportBlob().getEncoded());
-        } catch (IOException e) {
-            LOGGER.error("Could not get encoded transport blob.", e);
-        }
+        appendBytes(message.getKeyTransportBlob().getValue());
         return getAlreadySerialized();
     }
 

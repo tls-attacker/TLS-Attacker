@@ -935,6 +935,10 @@ public enum CipherSuite {
         list.add(TLS_DH_DSS_WITH_CAMELLIA_256_GCM_SHA384);
         list.add(TLS_DH_anon_WITH_CAMELLIA_128_GCM_SHA256);
         list.add(TLS_DH_anon_WITH_CAMELLIA_256_GCM_SHA384);
+        list.add(TLS_GOSTR341001_WITH_28147_CNT_IMIT);
+        list.add(TLS_GOSTR341001_WITH_NULL_GOSTR3411);
+        list.add(TLS_GOSTR341112_256_WITH_28147_CNT_IMIT);
+        list.add(TLS_GOSTR341112_256_WITH_NULL_GOSTR3411);
         return list;
     }
 
