@@ -121,14 +121,14 @@ public class AlertMessage extends ProtocolMessage {
         String levelString;
         String descriptionString;
         if (level != null && level.getValue() != null) {
-            levelString = AlertLevel.getAlertLevel(level.getValue()).toString();
+            levelString = AlertLevel.getAlertLevel(level.getValue()).name();
         } else {
             levelString = "null";
         }
         if (description != null && description.getValue() != null) {
             AlertDescription desc = AlertDescription.getAlertDescription(description.getValue());
             if (desc != null) {
-                descriptionString = desc.toString();
+                descriptionString = desc.name();
             } else {
                 descriptionString = "" + description.getValue();
             }
