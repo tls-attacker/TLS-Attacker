@@ -86,10 +86,30 @@ public class ResponseFingerprint {
 
     @Override
     public String toString() {
-        return "ResponseFingerprint{" + "receivedTransportHandlerException=" + receivedTransportHandlerException
-                + ", encryptedAlert=" + encryptedAlert + ", numberRecordsReceived=" + numberRecordsReceived
-                + ", numberOfMessageReceived=" + numberOfMessageReceived + ", recordClasses=" + recordClasses
-                + ", messageClasses=" + messageClasses + ", messageList=" + messageList + ", recordList=" + recordList
-                + ", socketState=" + socketState + '}';
+        StringBuilder recordClasses = new StringBuilder();
+        for (Class<AbstractRecord> someClass : this.recordClasses) {
+            recordClasses.append(someClass.getSimpleName()).append(",");
+        }
+        StringBuilder messageClasses = new StringBuilder();
+        for (Class<ProtocolMessage> someClass : this.messageClasses) {
+            messageClasses.append(someClass.getSimpleName()).append(",");
+        }
+        StringBuilder messages = new StringBuilder();
+        for (ProtocolMessage someMessage : this.messageList) {
+            messages.append(someMessage.toCompactString()).append(",");
+        }
+        StringBuilder records = new StringBuilder();
+        for (AbstractRecord someRecord : this.getRecordList()) {
+            records.append(someRecord.toString()).append(",");
+        }
+
+        return "ResponseFingerprint[" + "Exception=" + receivedTransportHandlerException + ", Encrypted="
+                + encryptedAlert + ", #Records=" + numberRecordsReceived + ", #Messages=" + numberOfMessageReceived
+                + ", RecordClasses=[" + recordClasses.toString().substring(0, recordClasses.toString().length() - 1)
+                + "], MessageClasses=["
+                + messageClasses.toString().substring(0, messageClasses.toString().length() - 1) + "], Messages=["
+                + messages.toString().substring(0, messages.toString().length() - 1) + "], Reccords=["
+                + records.toString().substring(0, records.toString().length() - 1) + "], NetworkState=" + socketState
+                + ']';
     }
 }
