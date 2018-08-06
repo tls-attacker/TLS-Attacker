@@ -105,11 +105,11 @@ public class ResponseFingerprint {
 
         return "ResponseFingerprint[" + "Exception=" + receivedTransportHandlerException + ", Encrypted="
                 + encryptedAlert + ", #Records=" + numberRecordsReceived + ", #Messages=" + numberOfMessageReceived
-                + ", RecordClasses=[" + recordClasses.toString().substring(0, recordClasses.toString().length() - 1)
+                + ", RecordClasses=[" + recordClasses.toString()
                 + "], MessageClasses=["
-                + messageClasses.toString().substring(0, messageClasses.toString().length() - 1) + "], Messages=["
-                + messages.toString().substring(0, messages.toString().length() - 1) + "], Reccords=["
-                + records.toString().substring(0, records.toString().length() - 1) + "], NetworkState=" + socketState
+                + messageClasses.toString() + "], Messages=["
+                + messages.toString() + "], Reccords=["
+                + records.toString() + "], NetworkState=" + socketState
                 + ']';
     }
 }
