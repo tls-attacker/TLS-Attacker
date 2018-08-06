@@ -128,7 +128,6 @@ public class CertificateKeyPair implements Serializable {
                 return CertificateKeyType.DSS;
             default:
                 LOGGER.warn("Unknown algorithm ID: " + algorithm.getAlgorithm().getId() + " using \"NONE\"");
-                System.out.println("pk:" + algorithm.getAlgorithm().toString());
                 return CertificateKeyType.NONE;
         }
     }
@@ -146,7 +145,6 @@ public class CertificateKeyPair implements Serializable {
             case "2.16.840.1.101.3.4.3.2":
                 return CertificateKeyType.DSS;
             default:
-                System.out.println("sig:" + algorithm.getAlgorithm().toString());
                 LOGGER.warn("Unknown algorithm ID: " + algorithm.getAlgorithm().getId() + " using \"NONE\"");
                 return CertificateKeyType.NONE;
         }
@@ -250,7 +248,6 @@ public class CertificateKeyPair implements Serializable {
     public void adjustInContext(TlsContext context, ConnectionEndType connectionEnd) {
         publicKey.adjustInContext(context, connectionEnd);
         privateKey.adjustInContext(context, connectionEnd);
-        System.out.println(privateKey);
         context.setSelectedGroup(publicKeyGroup);
         if (context.getConfig().getAutoAdjustSignatureAndHashAlgorithm()) {
             // TODO rething auto selection

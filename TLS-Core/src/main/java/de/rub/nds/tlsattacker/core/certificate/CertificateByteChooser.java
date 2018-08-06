@@ -120,7 +120,6 @@ public class CertificateByteChooser {
                                 .getResourceAsStream(RESOURCE_PATH + keyName));
                         keyPairList.add(new CertificateKeyPair(readCertificate, privateKey));
                     } catch (Exception E) {
-                        System.out.println("Errorfile: " + file);
                         E.printStackTrace();
                         LOGGER.warn("Could not load: " + file, E);
                     }
